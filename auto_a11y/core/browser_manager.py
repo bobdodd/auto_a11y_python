@@ -35,6 +35,9 @@ class BrowserManager:
         
         launch_options = {
             'headless': self.config.get('headless', True),
+            'handleSIGINT': False,
+            'handleSIGTERM': False,
+            'handleSIGHUP': False,
             'args': [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',

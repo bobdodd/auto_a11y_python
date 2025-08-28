@@ -137,8 +137,14 @@ def add_website(project_id):
     
     website_id = current_app.db.create_website(website)
     
-    return jsonify({
-        'success': True,
-        'website_id': website_id,
-        'redirect': url_for('websites.view_website', website_id=website_id)
-    })
+    # Check if this is an AJAX request
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({
+            'success': True,
+            'website_id': website_id,
+            'redirect': url_for('websites.view_website', website_id=website_id)
+        })
+    else:
+        # Regular form submission - redirect directly
+        flash(f'Website "{name or url}" added successfully', 'success')
+        return redirect(url_for('websites.view_website', website_id=website_id))

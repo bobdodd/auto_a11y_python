@@ -92,12 +92,22 @@ def download_browser():
     logger = logging.getLogger(__name__)
     try:
         from pyppeteer import chromium_downloader
+        import os
+        
+        # Check if Chromium is already downloaded
+        chromium_path = chromium_downloader.chromium_executable()
+        if chromium_path and os.path.exists(chromium_path):
+            logger.info(f"Chromium already installed at: {chromium_path}")
+            return True
+        
         logger.info("Downloading Chromium browser...")
+        logger.info("This may take 5-10 minutes on first run...")
         chromium_downloader.download_chromium()
         logger.info("Chromium browser downloaded successfully")
         return True
     except Exception as e:
         logger.warning(f"Could not download Chromium: {e}")
+        logger.warning("You can manually download it by running: python download_chromium.py")
         return False
 
 
@@ -110,6 +120,7 @@ def main():
     parser.add_argument('--setup', action='store_true', help='Run initial setup')
     parser.add_argument('--test-db', action='store_true', help='Test database connection')
     parser.add_argument('--download-browser', action='store_true', help='Download Chromium browser')
+    parser.add_argument('--skip-browser', action='store_true', help='Skip browser download during setup')
     
     args = parser.parse_args()
     
@@ -161,8 +172,11 @@ def main():
             logger.error("Database setup failed")
             sys.exit(1)
         
-        # Download browser
-        download_browser()
+        # Download browser (unless skipped)
+        if not args.skip_browser:
+            download_browser()
+        else:
+            logger.info("Skipping browser download (--skip-browser flag)")
         
         logger.info("\n" + "="*60)
         logger.info("Setup complete! You can now run the application with:")

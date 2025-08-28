@@ -140,9 +140,22 @@ def discover_pages(website_id):
         task_id = f'discovery_{website_id}_{datetime.now().timestamp()}'
         logger.info(f"Submitting discovery task with ID: {task_id}")
         
+        # Create a wrapper that handles the async execution properly
+        def discovery_wrapper():
+            import asyncio
+            import nest_asyncio
+            nest_asyncio.apply()
+            
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                return loop.run_until_complete(website_manager.discover_pages(website_id))
+            finally:
+                loop.close()
+        
         submitted_id = task_runner.submit_task(
-            func=asyncio.run,
-            args=(website_manager.discover_pages(website_id),),
+            func=discovery_wrapper,
+            args=(),
             task_id=task_id
         )
         

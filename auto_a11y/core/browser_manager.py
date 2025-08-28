@@ -332,7 +332,10 @@ class BrowserManager:
     
     async def is_running(self) -> bool:
         """Check if browser is running"""
-        return self.browser is not None and not self.browser.process.returncode
+        try:
+            return self.browser is not None and self.browser.process and not self.browser.process.returncode
+        except:
+            return False
 
 
 class BrowserPool:

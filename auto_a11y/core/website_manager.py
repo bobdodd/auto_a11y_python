@@ -183,10 +183,11 @@ class WebsiteManager:
         # Store job
         self.active_jobs[job_id] = job
         
-        # Run discovery asynchronously
-        asyncio.create_task(self._run_discovery(job))
+        # Run discovery directly instead of creating a task
+        # This ensures it completes within the event loop
+        await self._run_discovery(job)
         
-        logger.info(f"Started discovery job {job_id} for website {website_id}")
+        logger.info(f"Completed discovery job {job_id} for website {website_id}")
         return job
     
     async def _run_discovery(self, job: ScrapingJob):

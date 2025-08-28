@@ -62,7 +62,7 @@ def setup_database():
     logger = logging.getLogger(__name__)
     logger.info("Setting up database...")
     
-    db = Database(config.MONGO_URI, config.DATABASE_NAME)
+    db = Database(config.MONGODB_URI, config.DATABASE_NAME)
     
     # Test connection
     if not db.test_connection():
@@ -76,11 +76,11 @@ def setup_database():
     # Create sample project if no projects exist
     projects = db.get_all_projects()
     if not projects:
-        sample_project = {
-            'name': 'Sample Project',
-            'description': 'A sample project to get started',
-            'tags': ['sample', 'demo']
-        }
+        from auto_a11y.models import Project
+        sample_project = Project(
+            name='Sample Project',
+            description='A sample project to get started'
+        )
         project_id = db.create_project(sample_project)
         logger.info(f"Created sample project: {project_id}")
     
@@ -135,7 +135,7 @@ def main():
     # Test database if requested
     if args.test_db:
         logger.info("Testing database connection...")
-        db = Database(config.MONGO_URI, config.DATABASE_NAME)
+        db = Database(config.MONGODB_URI, config.DATABASE_NAME)
         if db.test_connection():
             logger.info("✓ Database connection successful!")
         else:
@@ -172,7 +172,7 @@ def main():
     
     # Print configuration
     logger.info(f"Debug mode: {config.DEBUG}")
-    logger.info(f"MongoDB: {config.DATABASE_NAME}")
+    logger.info(f"MongoDB: {config.MONGODB_URI}/{config.DATABASE_NAME}")
     logger.info(f"AI Analysis: {'Enabled' if config.RUN_AI_ANALYSIS else 'Disabled'}")
     logger.info(f"Screenshots: {config.SCREENSHOTS_DIR}")
     logger.info(f"Reports: {config.REPORTS_DIR}")

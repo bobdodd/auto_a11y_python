@@ -39,9 +39,9 @@ class Config:
     
     # Claude AI
     CLAUDE_API_KEY: str = os.getenv('CLAUDE_API_KEY', '')
-    CLAUDE_MODEL: str = os.getenv('CLAUDE_MODEL', 'claude-3-opus-20240229')
+    CLAUDE_MODEL: str = os.getenv('CLAUDE_MODEL', 'claude-opus-4-1-20250805')
     CLAUDE_MAX_TOKENS: int = int(os.getenv('CLAUDE_MAX_TOKENS', 4096))
-    CLAUDE_TEMPERATURE: float = float(os.getenv('CLAUDE_TEMPERATURE', 1.0))
+    CLAUDE_TEMPERATURE: float = float(os.getenv('CLAUDE_TEMPERATURE', 0.5))
     
     # Pyppeteer
     BROWSER_HEADLESS: bool = os.getenv('BROWSER_HEADLESS', 'True').lower() == 'true'

@@ -63,6 +63,20 @@ class Database:
         self.test_results.create_index("page_id")
         self.test_results.create_index("test_date")
     
+    def test_connection(self) -> bool:
+        """Test database connection"""
+        try:
+            # Ping the database
+            self.client.admin.command('ping')
+            return True
+        except Exception as e:
+            logger.error(f"Database connection test failed: {e}")
+            return False
+    
+    def create_indexes(self):
+        """Public method to create indexes"""
+        self._create_indexes()
+    
     def close(self):
         """Close database connection"""
         self.client.close()
@@ -94,6 +108,11 @@ class Database:
             query["status"] = status.value
         
         docs = self.projects.find(query).limit(limit).skip(skip)
+        return [Project.from_dict(doc) for doc in docs]
+    
+    def get_all_projects(self) -> List[Project]:
+        """Get all projects"""
+        docs = self.projects.find()
         return [Project.from_dict(doc) for doc in docs]
     
     def update_project(self, project: Project) -> bool:

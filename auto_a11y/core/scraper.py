@@ -210,7 +210,7 @@ class ScrapingEngine:
         except TimeoutError:
             logger.warning(f"Timeout loading page: {url}")
         except Exception as e:
-            logger.error(f"Error discovering page {url}: {e}")
+            logger.error(f"Error discovering page {url}: {e}", exc_info=True)
         
         return None
     

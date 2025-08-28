@@ -101,30 +101,58 @@ def discover_pages(website_id):
         # Check if Chromium is available
         from pyppeteer import chromium_downloader
         import os
-        chromium_path = chromium_downloader.chromium_executable()
-        if not chromium_path or not os.path.exists(chromium_path):
-            logger.warning("Chromium not found for discovery")
+        
+        try:
+            chromium_path = chromium_downloader.chromium_executable()
+            logger.info(f"Chromium path detected: {chromium_path}")
+            
+            if not chromium_path:
+                logger.warning("Chromium path is None")
+                return jsonify({
+                    'success': False,
+                    'error': 'Chromium browser not found. Please run: python run.py --download-browser',
+                    'message': 'Browser required for page discovery'
+                }), 500
+                
+            if not os.path.exists(chromium_path):
+                logger.warning(f"Chromium path does not exist: {chromium_path}")
+                return jsonify({
+                    'success': False,
+                    'error': f'Chromium browser not found at {chromium_path}. Please run: python run.py --download-browser',
+                    'message': 'Browser required for page discovery'
+                }), 500
+                
+            logger.info(f"Chromium found and verified at: {chromium_path}")
+            
+        except Exception as chrome_error:
+            logger.error(f"Error checking Chromium: {chrome_error}")
             return jsonify({
                 'success': False,
-                'error': 'Chromium browser not installed. Please run: python run.py --download-browser',
-                'message': 'Browser required for page discovery'
+                'error': f'Error checking Chromium: {chrome_error}',
+                'message': 'Failed to verify browser installation'
             }), 500
         
         # Create website manager
         website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+        logger.info(f"Created website manager for website {website_id}")
         
         # Submit discovery task
-        task_id = task_runner.submit_task(
+        task_id = f'discovery_{website_id}_{datetime.now().timestamp()}'
+        logger.info(f"Submitting discovery task with ID: {task_id}")
+        
+        submitted_id = task_runner.submit_task(
             func=asyncio.run,
             args=(website_manager.discover_pages(website_id),),
-            task_id=f'discovery_{website_id}_{datetime.now().timestamp()}'
+            task_id=task_id
         )
+        
+        logger.info(f"Discovery task submitted successfully with ID: {submitted_id}")
         
         return jsonify({
             'success': True,
             'message': 'Page discovery started',
-            'job_id': task_id,
-            'status_url': url_for('websites.discovery_status', website_id=website_id, job_id=task_id)
+            'job_id': submitted_id,
+            'status_url': url_for('websites.discovery_status', website_id=website_id, job_id=submitted_id)
         })
         
     except Exception as e:

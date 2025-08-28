@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Project Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">
+                {{ project.name }}
+                <span class="badge bg-{{ {'active': 'success', 'paused': 'warning', 'completed': 'info', 'archived': 'secondary'}[project.status.value] }}">
+                    {{ project.status.value|title }}
+                </span>
+            </h1>
+            <p class="text-muted">{{ project.description or 'No description' }}</p>
+        </div>
+        <div>
+            <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="bi bi-trash"></i> Delete
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Websites</h5>
+                    <p class="display-6">{{ stats.website_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Pages</h5>
+                    <p class="display-6">{{ stats.total_pages }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Tested</h5>
+                    <p class="display-6">{{ stats.tested_pages }}</p>
+                    <small class="text-muted">{{ "%.1f"|format(stats.test_coverage) }}% coverage</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Issues</h5>
+                    <p class="display-6 text-danger">{{ stats.total_violations }}</p>
+                    <small class="text-warning">{{ stats.total_warnings }} warnings</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Websites -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Websites</h5>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addWebsiteModal">
+                <i class="bi bi-plus-circle"></i> Add Website
+            </button>
+        </div>
+        <div class="card-body">
+            {% if websites %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>URL</th>
+                            <th>Pages</th>
+                            <th>Last Tested</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for website in websites %}
+                        <tr>
+                            <td>{{ website.display_name }}</td>
+                            <td>
+                                <a href="{{ website.url }}" target="_blank">
+                                    {{ website.url }} <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </td>
+                            <td>{{ website.page_count }}</td>
+                            <td>
+                                {{ website.last_tested.strftime('%Y-%m-%d %H:%M') if website.last_tested else 'Never' }}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('websites.view_website', website_id=website.id) }}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <button class="btn btn-sm btn-success" onclick="discoverPages('{{ website.id }}')">
+                                    <i class="bi bi-search"></i> Discover
+                                </button>
+                                <button class="btn btn-sm btn-info" onclick="testWebsite('{{ website.id }}')">
+                                    <i class="bi bi-play"></i> Test
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No websites added yet. Add a website to start testing.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Website Modal -->
+<div class="modal fade" id="addWebsiteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Website</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('projects.add_website', project_id=project.id) }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="url" class="form-label">Website URL *</label>
+                        <input type="url" class="form-control" id="url" name="url" required 
+                               placeholder="https://example.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name (Optional)</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               placeholder="Main Website">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Website</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Project Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the project "{{ project.name }}"?</p>
+                <p class="text-danger">This will permanently delete all websites, pages, and test results associated with this project.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ url_for('projects.delete_project', project_id=project.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete Project</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function discoverPages(websiteId) {
+    $.post(`/websites/${websiteId}/discover`, function(data) {
+        if (data.success) {
+            alert('Page discovery started. This may take a few minutes.');
+        }
+    });
+}
+
+function testWebsite(websiteId) {
+    $.post(`/websites/${websiteId}/test-all`, function(data) {
+        if (data.success) {
+            alert(`Testing queued for ${data.pages_queued} pages.`);
+        } else {
+            alert(data.message);
+        }
+    });
+}
+</script>
+{% endblock %}

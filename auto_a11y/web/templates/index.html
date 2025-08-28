@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 mb-4">
+                <i class="bi bi-universal-access-circle text-primary"></i>
+                Auto A11y
+            </h1>
+            <p class="lead">Automated Accessibility Testing Platform</p>
+            <p class="text-muted">
+                Comprehensive web accessibility testing combining browser automation, 
+                AI-powered analysis, and detailed reporting.
+            </p>
+            
+            <div class="mt-5">
+                <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="bi bi-plus-circle"></i> New Project
+                </a>
+                <a href="{{ url_for('projects.list_projects') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-folder"></i> View Projects
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-robot display-4 text-primary"></i>
+                    <h5 class="card-title mt-3">AI-Powered Analysis</h5>
+                    <p class="card-text">
+                        Claude AI detects complex accessibility issues that require visual understanding
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-browser-chrome display-4 text-primary"></i>
+                    <h5 class="card-title mt-3">Browser Testing</h5>
+                    <p class="card-text">
+                        Real browser testing with Puppeteer ensures accurate DOM-based results
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-file-earmark-check display-4 text-primary"></i>
+                    <h5 class="card-title mt-3">WCAG Compliance</h5>
+                    <p class="card-text">
+                        Comprehensive testing against WCAG 2.1 Level A, AA, and AAA guidelines
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

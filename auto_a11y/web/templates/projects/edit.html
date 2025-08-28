@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ project.name }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+            <h1 class="h2 mb-4">Edit Project</h1>
+            
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('projects.edit_project', project_id=project.id) }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Project Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ project.name }}" required maxlength="100">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="3" maxlength="500">{{ project.description or '' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="active" {% if project.status.value == 'active' %}selected{% endif %}>Active</option>
+                                <option value="paused" {% if project.status.value == 'paused' %}selected{% endif %}>Paused</option>
+                                <option value="completed" {% if project.status.value == 'completed' %}selected{% endif %}>Completed</option>
+                                <option value="archived" {% if project.status.value == 'archived' %}selected{% endif %}>Archived</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Update Project
+                            </button>
+                            <a href="{{ url_for('projects.view_project', project_id=project.id) }}" 
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

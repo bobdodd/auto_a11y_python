@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Testing Dashboard - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h2 mb-4">Testing Dashboard</h1>
+
+    <!-- Status Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Active Tests</h6>
+                    <h3 class="card-title mb-0">{{ stats.active_tests }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Queued Tests</h6>
+                    <h3 class="card-title mb-0">{{ stats.queued_tests }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Completed Today</h6>
+                    <h3 class="card-title mb-0">{{ stats.completed_today }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2">Failed Tests</h6>
+                    <h3 class="card-title mb-0">{{ stats.failed_tests }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Test -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Quick Test</h5>
+        </div>
+        <div class="card-body">
+            <form id="quickTestForm" class="row g-3">
+                <div class="col-md-8">
+                    <label for="testUrl" class="visually-hidden">URL to test</label>
+                    <input type="url" class="form-control" id="testUrl" 
+                           placeholder="Enter URL to test (e.g., https://example.com)">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-play-circle"></i> Run Test
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Recent Test Results -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recent Test Results</h5>
+            <a href="{{ url_for('testing.configure_testing') }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-gear"></i> Configure
+            </a>
+        </div>
+        <div class="card-body">
+            {% if recent_results %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Page</th>
+                            <th>Test Date</th>
+                            <th>Duration</th>
+                            <th>Violations</th>
+                            <th>Warnings</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in recent_results %}
+                        <tr>
+                            <td class="text-truncate" style="max-width: 300px;">
+                                <a href="{{ url_for('pages.view_page', page_id=result.page_id) }}">
+                                    Page {{ result.page_id[:8] }}...
+                                </a>
+                            </td>
+                            <td>{{ result.test_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ result.duration_ms }}ms</td>
+                            <td>
+                                <span class="badge bg-danger">{{ result.violation_count }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning">{{ result.warning_count }}</span>
+                            </td>
+                            <td>
+                                {% if result.error %}
+                                    <span class="badge bg-danger">Error</span>
+                                {% else %}
+                                    <span class="badge bg-success">Complete</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('pages.view_page', page_id=result.page_id) }}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No recent test results</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$('#quickTestForm').submit(function(e) {
+    e.preventDefault();
+    
+    const url = $('#testUrl').val();
+    if (!url) {
+        alert('Please enter a URL to test');
+        return;
+    }
+    
+    // In production, this would create a temporary page and test it
+    alert('Quick test functionality will be implemented');
+});
+</script>
+{% endblock %}

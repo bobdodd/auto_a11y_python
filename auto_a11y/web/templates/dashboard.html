@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h2 mb-4">Dashboard</h1>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Projects</h6>
+                            <h3 class="card-title mb-0">{{ stats.projects }}</h3>
+                        </div>
+                        <i class="bi bi-folder display-4 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Total Pages</h6>
+                            <h3 class="card-title mb-0">{{ stats.total_pages }}</h3>
+                        </div>
+                        <i class="bi bi-file-text display-4 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Tested Pages</h6>
+                            <h3 class="card-title mb-0">{{ stats.tested_pages }}</h3>
+                        </div>
+                        <i class="bi bi-check-circle display-4 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Total Violations</h6>
+                            <h3 class="card-title mb-0">{{ stats.total_violations }}</h3>
+                        </div>
+                        <i class="bi bi-exclamation-triangle display-4 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary me-2">
+                        <i class="bi bi-plus-circle"></i> New Project
+                    </a>
+                    <a href="{{ url_for('testing.testing_dashboard') }}" class="btn btn-success me-2">
+                        <i class="bi bi-play-circle"></i> Run Tests
+                    </a>
+                    <a href="{{ url_for('reports.reports_dashboard') }}" class="btn btn-info">
+                        <i class="bi bi-download"></i> Generate Report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Coverage Chart (placeholder) -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Test Coverage</h5>
+                </div>
+                <div class="card-body">
+                    <div class="progress" style="height: 30px;">
+                        {% set coverage = (stats.tested_pages / stats.total_pages * 100) if stats.total_pages > 0 else 0 %}
+                        <div class="progress-bar bg-success" style="width: {{ coverage }}%">
+                            {{ "%.1f"|format(coverage) }}% Tested
+                        </div>
+                    </div>
+                    <p class="text-muted mt-2">
+                        {{ stats.tested_pages }} of {{ stats.total_pages }} pages tested
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">System Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Database</span>
+                        <span class="badge bg-success">Connected</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Browser Engine</span>
+                        <span class="badge bg-success">Ready</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>AI Analysis</span>
+                        <span class="badge bg-{{ 'success' if config.RUN_AI_ANALYSIS else 'secondary' }}">
+                            {{ 'Enabled' if config.RUN_AI_ANALYSIS else 'Disabled' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

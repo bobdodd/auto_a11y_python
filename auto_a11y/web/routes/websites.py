@@ -97,33 +97,80 @@ def discover_pages(website_id):
     if not website:
         return jsonify({'error': 'Website not found'}), 404
     
-    # Create website manager
-    website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
-    
-    # Submit discovery task
-    task_id = task_runner.submit_task(
-        func=asyncio.run,
-        args=(website_manager.discover_pages(website_id),),
-        task_id=f'discovery_{website_id}_{datetime.now().timestamp()}'
-    )
-    
-    return jsonify({
-        'success': True,
-        'message': 'Page discovery started',
-        'job_id': task_id,
-        'status_url': url_for('websites.discovery_status', website_id=website_id, job_id=task_id)
-    })
+    try:
+        # Check if Chromium is available
+        from pyppeteer import chromium_downloader
+        import os
+        chromium_path = chromium_downloader.chromium_executable()
+        if not chromium_path or not os.path.exists(chromium_path):
+            logger.warning("Chromium not found for discovery")
+            return jsonify({
+                'success': False,
+                'error': 'Chromium browser not installed. Please run: python run.py --download-browser',
+                'message': 'Browser required for page discovery'
+            }), 500
+        
+        # Create website manager
+        website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+        
+        # Submit discovery task
+        task_id = task_runner.submit_task(
+            func=asyncio.run,
+            args=(website_manager.discover_pages(website_id),),
+            task_id=f'discovery_{website_id}_{datetime.now().timestamp()}'
+        )
+        
+        return jsonify({
+            'success': True,
+            'message': 'Page discovery started',
+            'job_id': task_id,
+            'status_url': url_for('websites.discovery_status', website_id=website_id, job_id=task_id)
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to start discovery: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Failed to start page discovery'
+        }), 500
 
 
 @websites_bp.route('/<website_id>/discovery-status')
 def discovery_status(website_id):
     """Check discovery job status"""
-    # In production, check actual job status
+    from auto_a11y.core.task_runner import task_runner
+    
+    job_id = request.args.get('job_id')
+    if not job_id:
+        return jsonify({'error': 'Job ID required'}), 400
+    
+    # Get job status from task runner
+    job_status = task_runner.get_job_status(job_id)
+    
+    if not job_status:
+        # Check if website has pages (job might have completed)
+        pages = current_app.db.get_pages(website_id, limit=1)
+        if pages:
+            return jsonify({
+                'status': 'completed',
+                'pages_found': current_app.db.pages.count_documents({'website_id': website_id}),
+                'message': 'Discovery completed'
+            })
+        else:
+            return jsonify({
+                'status': 'unknown',
+                'message': 'Job not found or failed'
+            })
+    
+    # Return actual job status
     return jsonify({
-        'status': 'in_progress',
-        'pages_found': 42,
-        'current_depth': 2,
-        'message': 'Discovering pages...'
+        'status': job_status.get('status', 'unknown'),
+        'pages_found': job_status.get('progress', {}).get('pages_found', 0),
+        'current_depth': job_status.get('progress', {}).get('current_depth', 0),
+        'current_url': job_status.get('progress', {}).get('current_url'),
+        'error': job_status.get('error'),
+        'message': job_status.get('error') or f"Discovering pages... ({job_status.get('status')})"
     })
 
 

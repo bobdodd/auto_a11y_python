@@ -60,6 +60,20 @@ class ScrapingEngine:
         self.discovered_urls.clear()
         self.queued_urls.clear()
         
+        # Check browser availability first
+        try:
+            if not await self.browser_manager.is_running():
+                await self.browser_manager.start()
+        except Exception as e:
+            error_msg = f"Failed to start browser: {e}. Make sure Chromium is installed (run: python run.py --download-browser)"
+            logger.error(error_msg)
+            if progress_callback:
+                await progress_callback({
+                    'status': 'failed',
+                    'error': error_msg
+                })
+            raise RuntimeError(error_msg)
+        
         # Parse base URL
         base_url = self._normalize_url(website.url)
         base_domain = urlparse(base_url).netloc

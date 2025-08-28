@@ -1,0 +1,164 @@
+"""
+Testing and analysis routes
+"""
+
+from flask import Blueprint, render_template, request, jsonify, current_app, url_for
+from auto_a11y.models import PageStatus
+import asyncio
+import logging
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+testing_bp = Blueprint('testing', __name__)
+
+
+@testing_bp.route('/dashboard')
+def testing_dashboard():
+    """Testing dashboard showing active jobs"""
+    # Get testing statistics
+    stats = {
+        'active_tests': 0,  # Would come from job queue
+        'queued_tests': 0,
+        'completed_today': current_app.db.test_results.count_documents({
+            'test_date': {'$gte': datetime.now().replace(hour=0, minute=0, second=0)}
+        }),
+        'failed_tests': 0
+    }
+    
+    # Get recent test results
+    recent_results = current_app.db.get_test_results(limit=20)
+    
+    return render_template('testing/dashboard.html',
+                         stats=stats,
+                         recent_results=recent_results)
+
+
+@testing_bp.route('/run-test', methods=['POST'])
+def run_test():
+    """Run accessibility test on specified page(s)"""
+    data = request.get_json()
+    
+    page_ids = data.get('page_ids', [])
+    test_config = data.get('config', {})
+    
+    if not page_ids:
+        return jsonify({'error': 'No pages specified'}), 400
+    
+    # Validate pages exist
+    valid_pages = []
+    for page_id in page_ids:
+        page = current_app.db.get_page(page_id)
+        if page:
+            valid_pages.append(page)
+    
+    if not valid_pages:
+        return jsonify({'error': 'No valid pages found'}), 400
+    
+    # Queue test jobs
+    job_ids = []
+    for page in valid_pages:
+        job_id = f'test_{page.id}_{datetime.now().timestamp()}'
+        job_ids.append(job_id)
+        
+        # Update page status
+        page.status = PageStatus.QUEUED
+        current_app.db.update_page(page)
+    
+    return jsonify({
+        'success': True,
+        'jobs_created': len(job_ids),
+        'job_ids': job_ids,
+        'message': f'Queued {len(job_ids)} pages for testing'
+    })
+
+
+@testing_bp.route('/batch-test', methods=['POST'])
+def batch_test():
+    """Run batch testing on multiple pages"""
+    data = request.get_json()
+    
+    website_id = data.get('website_id')
+    filter_criteria = data.get('filter', {})
+    test_config = data.get('config', {})
+    
+    if not website_id:
+        return jsonify({'error': 'Website ID required'}), 400
+    
+    # Get pages based on filter
+    pages = current_app.db.get_pages(website_id)
+    
+    # Apply filters
+    if filter_criteria.get('untested_only'):
+        pages = [p for p in pages if p.needs_testing]
+    
+    if filter_criteria.get('priority'):
+        priority = filter_criteria['priority']
+        pages = [p for p in pages if p.priority == priority]
+    
+    if not pages:
+        return jsonify({'error': 'No pages match criteria'}), 404
+    
+    # Queue batch job
+    batch_id = f'batch_{website_id}_{datetime.now().timestamp()}'
+    
+    return jsonify({
+        'success': True,
+        'batch_id': batch_id,
+        'pages_queued': len(pages),
+        'message': f'Batch testing started for {len(pages)} pages'
+    })
+
+
+@testing_bp.route('/job/<job_id>/status')
+def job_status(job_id):
+    """Get status of testing job"""
+    # In production, check actual job queue
+    return jsonify({
+        'job_id': job_id,
+        'status': 'in_progress',
+        'progress': 45,
+        'current_page': 'https://example.com/page',
+        'pages_completed': 5,
+        'pages_total': 10,
+        'violations_found': 23
+    })
+
+
+@testing_bp.route('/job/<job_id>/cancel', methods=['POST'])
+def cancel_job(job_id):
+    """Cancel testing job"""
+    # In production, cancel actual job
+    return jsonify({
+        'success': True,
+        'message': f'Job {job_id} cancelled'
+    })
+
+
+@testing_bp.route('/configure', methods=['GET', 'POST'])
+def configure_testing():
+    """Configure testing settings"""
+    if request.method == 'POST':
+        # Save testing configuration
+        config = request.get_json()
+        
+        # Validate configuration
+        if not config:
+            return jsonify({'error': 'Invalid configuration'}), 400
+        
+        # In production, save to database or config file
+        return jsonify({
+            'success': True,
+            'message': 'Testing configuration updated'
+        })
+    
+    # Get current configuration
+    current_config = {
+        'parallel_tests': current_app.app_config.PARALLEL_TESTS,
+        'test_timeout': current_app.app_config.TEST_TIMEOUT,
+        'run_ai_analysis': current_app.app_config.RUN_AI_ANALYSIS,
+        'browser_headless': current_app.app_config.BROWSER_HEADLESS,
+        'viewport_width': current_app.app_config.BROWSER_VIEWPORT_WIDTH,
+        'viewport_height': current_app.app_config.BROWSER_VIEWPORT_HEIGHT
+    }
+    
+    return render_template('testing/configure.html', config=current_config)

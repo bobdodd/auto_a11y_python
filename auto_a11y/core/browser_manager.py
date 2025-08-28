@@ -114,8 +114,7 @@ class BrowserManager:
                     await page.setUserAgent(self.config['user_agent'])
                 
                 # Set default timeout
-                page.setDefaultNavigationTimeout(self.config.get('timeout', 30000))
-                page.setDefaultTimeout(self.config.get('timeout', 30000))
+                await page.setDefaultNavigationTimeout(self.config.get('timeout', 30000))
                 
                 self.pages.append(page)
                 yield page

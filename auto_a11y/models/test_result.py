@@ -51,9 +51,22 @@ class Violation:
     @classmethod
     def from_dict(cls, data: dict) -> 'Violation':
         """Create from dictionary"""
+        # Map old impact levels to new ones for backward compatibility
+        impact_mapping = {
+            'critical': 'high',
+            'serious': 'high',
+            'moderate': 'medium',
+            'minor': 'low'
+        }
+        
+        impact_value = data['impact']
+        # If it's an old value, map it to the new one
+        if impact_value in impact_mapping:
+            impact_value = impact_mapping[impact_value]
+        
         return cls(
             id=data['id'],
-            impact=ImpactLevel(data['impact']),
+            impact=ImpactLevel(impact_value),
             category=data['category'],
             description=data['description'],
             help_url=data.get('help_url'),
@@ -93,9 +106,22 @@ class AIFinding:
     @classmethod
     def from_dict(cls, data: dict) -> 'AIFinding':
         """Create from dictionary"""
+        # Map old impact levels to new ones for backward compatibility
+        impact_mapping = {
+            'critical': 'high',
+            'serious': 'high',
+            'moderate': 'medium',
+            'minor': 'low'
+        }
+        
+        severity_value = data['severity']
+        # If it's an old value, map it to the new one
+        if severity_value in impact_mapping:
+            severity_value = impact_mapping[severity_value]
+        
         return cls(
             type=data['type'],
-            severity=ImpactLevel(data['severity']),
+            severity=ImpactLevel(severity_value),
             description=data['description'],
             suggested_fix=data.get('suggested_fix'),
             confidence=data.get('confidence', 0.0),

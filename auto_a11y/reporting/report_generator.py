@@ -169,7 +169,7 @@ class ReportGenerator:
             test_result = self.db.get_latest_test_result(page.id)
             if test_result:
                 page_results.append({
-                    'page': page,
+                    'page': page.__dict__ if hasattr(page, '__dict__') else page,
                     'test_result': test_result
                 })
         
@@ -363,12 +363,12 @@ class ReportGenerator:
                 test_result = self.db.get_latest_test_result(page.id)
                 if test_result:
                     page_results.append({
-                        'page': page,
+                        'page': page.__dict__ if hasattr(page, '__dict__') else page,
                         'test_result': test_result
                     })
             
             website_data.append({
-                'website': website,
+                'website': website.__dict__ if hasattr(website, '__dict__') else website,
                 'pages': page_results
             })
         
@@ -462,7 +462,7 @@ class ReportGenerator:
                         'wcag': v.wcag_criteria if hasattr(v, 'wcag_criteria') else []
                     }
                 violation_types[vtype]['count'] += 1
-                violation_types[vtype]['pages'].append(pr['page'].url)
+                violation_types[vtype]['pages'].append(pr['page'].get('url', 'Unknown') if isinstance(pr['page'], dict) else pr['page'].url)
         
         # Sort pages by violation count
         page_results.sort(

@@ -2,6 +2,16 @@
 
 {% block title %}{{ page.title or page.url }} - Auto A11y{% endblock %}
 
+{% block extra_css %}
+<style>
+    .impact-badge {
+        min-width: 75px;
+        display: inline-block;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
     <!-- Page Header -->
@@ -170,7 +180,7 @@
                         <button class="accordion-button collapsed" type="button" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#violation-{{ loop.index }}">
-                            <span class="badge bg-danger me-2">{{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}</span>
+                            <span class="badge bg-danger me-2 impact-badge">{{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}</span>
                             {{ violation.description }}
                         </button>
                     </h2>
@@ -242,7 +252,7 @@
                                 <div class="col-md-6">
                                     <p><strong>Category:</strong> {{ violation.category|default('General') }}</p>
                                     <p><strong>Impact:</strong> 
-                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }}">
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
                                             {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
                                         </span>
                                     </p>
@@ -296,7 +306,7 @@
                         <button class="accordion-button collapsed" type="button" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#warning-{{ loop.index }}">
-                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'warning' }} me-2">
+                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'warning' }} me-2 impact-badge">
                                 {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
                             </span>
                             {{ warning.id }} - {{ warning.description }}
@@ -608,7 +618,7 @@
                         <button class="accordion-button collapsed" type="button" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#ai-{{ loop.index }}">
-                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[finding.severity.value|lower if finding.severity.value else finding.severity|lower] or 'secondary' }} me-2">
+                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[finding.severity.value|lower if finding.severity.value else finding.severity|lower] or 'secondary' }} me-2 impact-badge">
                                 {{ finding.severity.value|upper if finding.severity.value else finding.severity|upper }}
                             </span>
                             {{ finding.issue }}

@@ -8,6 +8,7 @@ from datetime import datetime
 
 from auto_a11y.models import TestResult, Violation, ImpactLevel
 from auto_a11y.reporting.issue_descriptions import get_issue_description, get_wcag_link
+from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
 
 logger = logging.getLogger(__name__)
 
@@ -186,38 +187,63 @@ class ResultProcessor:
             error_code = violation_data.get('err', 'UnknownError')
             violation_id = f"{source_test}_{error_code}"
             
-            # Try to get detailed description from our comprehensive mapping
-            detailed_desc = get_issue_description(violation_id)
+            # Try to get enhanced detailed description using actual metadata
+            enhanced_desc = get_detailed_issue_description(error_code, violation_data)
             
-            if detailed_desc:
-                # Use detailed description if available
-                impact = ImpactLevel[detailed_desc.impact.name]
-                description = detailed_desc.what
-                wcag_criteria = detailed_desc.wcag
+            if enhanced_desc:
+                # Use enhanced description with context-specific details
+                impact_str = enhanced_desc.get('impact', 'Medium')
+                impact = ImpactLevel.CRITICAL if impact_str == 'High' else (
+                    ImpactLevel.MODERATE if impact_str == 'Medium' else ImpactLevel.MINOR
+                )
+                description = enhanced_desc.get('what', '')
+                wcag_criteria = [c.split()[0] for c in enhanced_desc.get('wcag', [])]  # Extract just the numbers
                 help_url = get_wcag_link(wcag_criteria[0]) if wcag_criteria else self._get_help_url(error_code)
-                failure_summary = detailed_desc.remediation
+                failure_summary = enhanced_desc.get('remediation', '')
                 
-                # Store additional details in metadata
+                # Store all enhanced details in metadata
                 metadata = {
-                    'title': detailed_desc.title,
-                    'why': detailed_desc.why,
-                    'who': detailed_desc.who,
-                    'full_remediation': detailed_desc.remediation
+                    'title': enhanced_desc.get('title', ''),
+                    'why': enhanced_desc.get('why', ''),
+                    'who': enhanced_desc.get('who', ''),
+                    'impact_detail': enhanced_desc.get('impact', ''),
+                    'wcag_full': enhanced_desc.get('wcag', []),
+                    'full_remediation': enhanced_desc.get('remediation', ''),
+                    **violation_data  # Include all original metadata from JS tests
                 }
             else:
-                # Fall back to original mapping
-                if error_code in self.IMPACT_MAPPING:
-                    impact = self.IMPACT_MAPPING[error_code]
-                elif violation_type == 'warning':
-                    impact = ImpactLevel.MINOR
-                else:
-                    impact = ImpactLevel.MODERATE
+                # Try original description mapping
+                detailed_desc = get_issue_description(violation_id)
                 
-                wcag_criteria = self.WCAG_MAPPING.get(error_code, [])
-                description = self._get_error_description(error_code)
-                help_url = self._get_help_url(error_code)
-                failure_summary = self._get_failure_summary(error_code, violation_data)
-                metadata = {}
+                if detailed_desc:
+                    # Use detailed description if available
+                    impact = ImpactLevel[detailed_desc.impact.name]
+                    description = detailed_desc.what
+                    wcag_criteria = detailed_desc.wcag
+                    help_url = get_wcag_link(wcag_criteria[0]) if wcag_criteria else self._get_help_url(error_code)
+                    failure_summary = detailed_desc.remediation
+                    
+                    # Store additional details in metadata
+                    metadata = {
+                        'title': detailed_desc.title,
+                        'why': detailed_desc.why,
+                        'who': detailed_desc.who,
+                        'full_remediation': detailed_desc.remediation
+                    }
+                else:
+                    # Fall back to original mapping
+                    if error_code in self.IMPACT_MAPPING:
+                        impact = self.IMPACT_MAPPING[error_code]
+                    elif violation_type == 'warning':
+                        impact = ImpactLevel.MINOR
+                    else:
+                        impact = ImpactLevel.MODERATE
+                    
+                    wcag_criteria = self.WCAG_MAPPING.get(error_code, [])
+                    description = self._get_error_description(error_code)
+                    help_url = self._get_help_url(error_code)
+                    failure_summary = self._get_failure_summary(error_code, violation_data)
+                    metadata = {}
             
             # Create violation
             violation = Violation(

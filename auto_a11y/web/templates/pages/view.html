@@ -9,6 +9,27 @@
         display: inline-block;
         text-align: center;
     }
+    
+    /* Move accordion indicators to the left for accessibility */
+    .accordion-button {
+        padding-left: 2.5rem;
+        padding-right: 1.25rem;
+    }
+    
+    .accordion-button::after {
+        position: absolute;
+        left: 1rem;
+        right: auto;
+    }
+    
+    /* Ensure proper spacing for content */
+    .accordion-button > * {
+        margin-left: 0.5rem;
+    }
+    
+    .accordion-button > *:first-child {
+        margin-left: 0;
+    }
 </style>
 {% endblock %}
 

@@ -492,14 +492,24 @@ class ReportGenerator:
     ) -> Dict[str, Any]:
         """Prepare data for project report"""
         
-        # Calculate aggregate statistics
+        # Calculate aggregate statistics for all categories
         total_websites = len(website_data)
         total_pages = sum(len(wd['pages']) for wd in website_data)
-        total_violations = sum(
-            pr['test_result'].violation_count 
-            for wd in website_data 
-            for pr in wd['pages']
-        )
+        total_violations = 0
+        total_warnings = 0
+        total_info = 0
+        total_discovery = 0
+        total_passes = 0
+        
+        for wd in website_data:
+            for pr in wd['pages']:
+                test_result = pr['test_result']
+                if hasattr(test_result, 'violation_count'):
+                    total_violations += test_result.violation_count
+                    total_warnings += test_result.warning_count
+                    total_info += test_result.info_count
+                    total_discovery += test_result.discovery_count
+                    total_passes += test_result.pass_count
         
         return {
             'project': project.__dict__,
@@ -508,7 +518,12 @@ class ReportGenerator:
                 'total_websites': total_websites,
                 'total_pages': total_pages,
                 'total_violations': total_violations,
-                'average_violations_per_page': total_violations / total_pages if total_pages else 0
+                'total_warnings': total_warnings,
+                'total_info': total_info,
+                'total_discovery': total_discovery,
+                'total_passes': total_passes,
+                'average_violations_per_page': total_violations / total_pages if total_pages else 0,
+                'average_warnings_per_page': total_warnings / total_pages if total_pages else 0
             },
             'generated_at': datetime.now().isoformat()
         }

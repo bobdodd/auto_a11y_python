@@ -277,13 +277,28 @@ class HTMLFormatter(BaseFormatter):
                     <h3>{data['statistics']['total_pages']}</h3>
                     <p>Pages Tested</p>
                 </div>
+            </div>
+            <h3>Test Results Summary</h3>
+            <div class="stats-grid">
                 <div class="stat-card violations">
-                    <h3>{data['statistics']['total_violations']}</h3>
-                    <p>Total Violations</p>
+                    <h3>{data['statistics'].get('total_violations', 0)}</h3>
+                    <p>Errors</p>
                 </div>
-                <div class="stat-card average">
-                    <h3>{data['statistics']['average_violations_per_page']:.1f}</h3>
-                    <p>Avg Violations/Page</p>
+                <div class="stat-card warnings">
+                    <h3>{data['statistics'].get('total_warnings', 0)}</h3>
+                    <p>Warnings</p>
+                </div>
+                <div class="stat-card info">
+                    <h3>{data['statistics'].get('total_info', 0)}</h3>
+                    <p>Info Notes</p>
+                </div>
+                <div class="stat-card discovery">
+                    <h3>{data['statistics'].get('total_discovery', 0)}</h3>
+                    <p>Discovery</p>
+                </div>
+                <div class="stat-card passes">
+                    <h3>{data['statistics'].get('total_passes', 0)}</h3>
+                    <p>Passed</p>
                 </div>
             </div>
         </section>
@@ -682,21 +697,113 @@ class HTMLFormatter(BaseFormatter):
         return html
     
     def _format_websites_section(self, websites: List[Dict]) -> str:
-        """Format websites section"""
+        """Format websites section with detailed test results"""
         html = "<section class='websites'><h2>Websites</h2>"
         
         for wd in websites:
             website = wd['website']
             pages = wd['pages']
             
-            total_violations = sum(p['test_result'].violation_count for p in pages)
-            total_warnings = sum(p['test_result'].warning_count for p in pages)
+            # Calculate totals for all categories
+            total_violations = 0
+            total_warnings = 0
+            total_info = 0
+            total_discovery = 0
+            total_passes = 0
             
+            all_violations = []
+            all_warnings = []
+            all_info = []
+            all_discovery = []
+            
+            for p in pages:
+                test_result = p['test_result']
+                if hasattr(test_result, 'violation_count'):
+                    total_violations += test_result.violation_count
+                    total_warnings += test_result.warning_count
+                    total_info += test_result.info_count
+                    total_discovery += test_result.discovery_count
+                    total_passes += test_result.pass_count
+                    
+                    # Collect all issues for detailed display
+                    for v in test_result.violations:
+                        all_violations.append({'page': p['page'].url, 'issue': v})
+                    for w in test_result.warnings:
+                        all_warnings.append({'page': p['page'].url, 'issue': w})
+                    for i in test_result.info:
+                        all_info.append({'page': p['page'].url, 'issue': i})
+                    for d in test_result.discovery:
+                        all_discovery.append({'page': p['page'].url, 'issue': d})
+            
+            # Website header with all statistics
             html += f"""
             <div class="website">
-                <h3>{website.name} - {website.url}</h3>
-                <p>Pages: {len(pages)} | Violations: {total_violations} | Warnings: {total_warnings}</p>
-            </div>"""
+                <h3>{website.name}</h3>
+                <p><a href="{website.url}" target="_blank">{website.url}</a></p>
+                <div class="stats-grid" style="margin: 20px 0;">
+                    <div class="stat-card violations">
+                        <h4>{total_violations}</h4>
+                        <p>Errors</p>
+                    </div>
+                    <div class="stat-card warnings">
+                        <h4>{total_warnings}</h4>
+                        <p>Warnings</p>
+                    </div>
+                    <div class="stat-card info">
+                        <h4>{total_info}</h4>
+                        <p>Info</p>
+                    </div>
+                    <div class="stat-card discovery">
+                        <h4>{total_discovery}</h4>
+                        <p>Discovery</p>
+                    </div>
+                    <div class="stat-card passes">
+                        <h4>{total_passes}</h4>
+                        <p>Passed</p>
+                    </div>
+                </div>
+                
+                <p><strong>Pages Tested:</strong> {len(pages)}</p>
+                """
+            
+            # Add detailed issues if they exist
+            if all_violations:
+                html += "<h4>Errors (Violations)</h4><ul>"
+                for item in all_violations[:10]:  # Show first 10
+                    issue = item['issue']
+                    html += f"<li><strong>{issue.id if hasattr(issue, 'id') else 'Unknown'}:</strong> {issue.description if hasattr(issue, 'description') else 'No description'} - <em>{item['page']}</em></li>"
+                if len(all_violations) > 10:
+                    html += f"<li><em>... and {len(all_violations) - 10} more errors</em></li>"
+                html += "</ul>"
+            
+            if all_warnings:
+                html += "<h4>Warnings</h4><ul>"
+                for item in all_warnings[:10]:  # Show first 10
+                    issue = item['issue']
+                    html += f"<li><strong>{issue.id if hasattr(issue, 'id') else 'Unknown'}:</strong> {issue.description if hasattr(issue, 'description') else 'No description'} - <em>{item['page']}</em></li>"
+                if len(all_warnings) > 10:
+                    html += f"<li><em>... and {len(all_warnings) - 10} more warnings</em></li>"
+                html += "</ul>"
+            
+            if all_info:
+                html += "<h4>Information Notes</h4><ul>"
+                for item in all_info[:5]:  # Show first 5
+                    issue = item['issue']
+                    html += f"<li><strong>{issue.id if hasattr(issue, 'id') else 'Unknown'}:</strong> {issue.description if hasattr(issue, 'description') else 'No description'} - <em>{item['page']}</em></li>"
+                if len(all_info) > 5:
+                    html += f"<li><em>... and {len(all_info) - 5} more info notes</em></li>"
+                html += "</ul>"
+            
+            if all_discovery:
+                html += "<h4>Discovery Items</h4><ul>"
+                for item in all_discovery[:5]:  # Show first 5
+                    issue = item['issue']
+                    html += f"<li><strong>{issue.id if hasattr(issue, 'id') else 'Unknown'}:</strong> {issue.description if hasattr(issue, 'description') else 'No description'} - <em>{item['page']}</em></li>"
+                if len(all_discovery) > 5:
+                    html += f"<li><em>... and {len(all_discovery) - 5} more discovery items</em></li>"
+                html += "</ul>"
+            
+            html += "</div>"
         
         html += "</section>"
         return html

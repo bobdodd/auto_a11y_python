@@ -71,6 +71,8 @@ def create_app(config):
         pages = list(app.db.pages.find({'status': 'tested'}))
         total_violations = 0
         total_warnings = 0
+        total_info = 0
+        total_discovery = 0
         
         for page in pages:
             # Get the latest test result for this page
@@ -81,13 +83,31 @@ def create_app(config):
             )
             
             if latest_result:
-                # Count violations from the violations array
-                violations = latest_result.get('violations', [])
-                total_violations += len(violations)
-                
-                # Count warnings from the warnings array
-                warnings = latest_result.get('warnings', [])
-                total_warnings += len(warnings)
+                # For existing data, we need to categorize from violations array
+                # New data will have separate arrays
+                if 'info' in latest_result and 'discovery' in latest_result:
+                    # New format with separate arrays
+                    total_violations += len(latest_result.get('violations', []))
+                    total_warnings += len(latest_result.get('warnings', []))
+                    total_info += len(latest_result.get('info', []))
+                    total_discovery += len(latest_result.get('discovery', []))
+                else:
+                    # Old format - categorize based on ID patterns
+                    for item in latest_result.get('violations', []):
+                        item_id = item.get('id', '')
+                        if '_Err' in item_id:
+                            total_violations += 1
+                        elif '_Warn' in item_id:
+                            total_warnings += 1
+                        elif '_Info' in item_id:
+                            total_info += 1
+                        elif '_Disco' in item_id:
+                            total_discovery += 1
+                        else:
+                            total_violations += 1  # Default to violations
+                    
+                    # Also count items in warnings array
+                    total_warnings += len(latest_result.get('warnings', []))
         
         stats = {
             'projects': len(app.db.get_projects()),
@@ -95,6 +115,8 @@ def create_app(config):
             'tested_pages': app.db.pages.count_documents({'status': 'tested'}),
             'total_violations': total_violations,
             'total_warnings': total_warnings,
+            'total_info': total_info,
+            'total_discovery': total_discovery,
             'total_test_results': app.db.test_results.count_documents({})
         }
         return render_template('dashboard.html', stats=stats, config=app.app_config)

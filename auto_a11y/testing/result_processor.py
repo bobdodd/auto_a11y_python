@@ -104,8 +104,10 @@ class ResultProcessor:
         Returns:
             Processed TestResult
         """
-        violations = []
-        warnings = []
+        violations = []  # _Err issues
+        warnings = []    # _Warn issues  
+        info = []        # _Info issues
+        discovery = []   # _Disco issues
         passes = []
         
         # Process each test's results
@@ -114,19 +116,29 @@ class ResultProcessor:
                 logger.warning(f"Test {test_name} had execution error: {test_result['error']}")
                 continue
             
-            # Process errors as violations
+            # Process errors and warnings (they come together from JS tests)
+            all_issues = []
             if 'errors' in test_result and test_result['errors']:
-                for error in test_result['errors']:
-                    violation = self._process_violation(error, test_name, 'error')
-                    if violation:
-                        violations.append(violation)
-            
-            # Process warnings
+                all_issues.extend(test_result['errors'])
             if 'warnings' in test_result and test_result['warnings']:
-                for warning in test_result['warnings']:
-                    violation = self._process_violation(warning, test_name, 'warning')
-                    if violation:
-                        warnings.append(violation)
+                all_issues.extend(test_result['warnings'])
+            
+            # Categorize issues based on their ID pattern
+            for issue in all_issues:
+                processed = self._process_violation(issue, test_name, 'unknown')
+                if processed:
+                    # Categorize based on ID pattern
+                    if '_Err' in processed.id:
+                        violations.append(processed)
+                    elif '_Warn' in processed.id:
+                        warnings.append(processed)
+                    elif '_Info' in processed.id:
+                        info.append(processed)
+                    elif '_Disco' in processed.id:
+                        discovery.append(processed)
+                    else:
+                        # Default to warnings if pattern not recognized
+                        warnings.append(processed)
             
             # Process passes
             if 'passes' in test_result and test_result['passes']:
@@ -139,6 +151,8 @@ class ResultProcessor:
             duration_ms=duration_ms,
             violations=violations,
             warnings=warnings,
+            info=info,
+            discovery=discovery,
             passes=passes,
             screenshot_path=screenshot_path,
             js_test_results=raw_results,

@@ -172,7 +172,7 @@
                         <button class="accordion-button collapsed" type="button" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#violation-{{ loop.index }}">
-                            <span class="badge bg-danger me-2">{{ violation.impact|upper }}</span>
+                            <span class="badge bg-danger me-2">{{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}</span>
                             {{ violation.description }}
                         </button>
                     </h2>
@@ -184,23 +184,51 @@
                             <!-- Enhanced description available -->
                             <div class="alert alert-danger mb-3">
                                 <h6 class="alert-heading">{{ violation.metadata.title }}</h6>
-                                <p class="mb-0">{{ violation.description }}</p>
                             </div>
                             
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <h6><i class="bi bi-question-circle"></i> Why This Matters</h6>
-                                    <p>{{ violation.metadata.why }}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6><i class="bi bi-people"></i> Who Is Affected</h6>
-                                    <p>{{ violation.metadata.who }}</p>
-                                </div>
+                            <h6 class="text-danger mb-2">About this issue:</h6>
+                            
+                            <div class="mb-3">
+                                <strong>What the issue is:</strong>
+                                <p>{{ violation.metadata.what|default(violation.description) }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <h6><i class="bi bi-tools"></i> How to Fix</h6>
+                                <strong>Why this is important:</strong>
+                                <p>{{ violation.metadata.why }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Who it affects:</strong>
+                                <p>{{ violation.metadata.who }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>How to remediate:</strong>
                                 <pre class="bg-light p-3 rounded"><code>{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</code></pre>
+                            </div>
+                            
+                            <h6 class="text-danger mb-2 mt-4">Relevant test criteria:</h6>
+                            <div class="mb-3">
+                                {% if violation.metadata.wcag_full %}
+                                <strong>WCAG Success Criteria:</strong>
+                                <ul>
+                                {% for criterion in violation.metadata.wcag_full %}
+                                    <li>{{ criterion }}</li>
+                                {% endfor %}
+                                </ul>
+                                {% elif violation.wcag_criteria %}
+                                <strong>WCAG Success Criteria:</strong>
+                                <ul>
+                                {% for criterion in violation.wcag_criteria %}
+                                    <li>
+                                        <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                            {{ criterion }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                                {% endif %}
                             </div>
                             {% else %}
                             <!-- Standard description -->
@@ -216,8 +244,8 @@
                                 <div class="col-md-6">
                                     <p><strong>Category:</strong> {{ violation.category|default('General') }}</p>
                                     <p><strong>Impact:</strong> 
-                                        <span class="badge bg-{{ {'critical': 'danger', 'serious': 'warning', 'moderate': 'info', 'minor': 'secondary'}[violation.impact] or 'secondary' }}">
-                                            {{ violation.impact|upper }}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }}">
+                                            {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
                                         </span>
                                     </p>
                                 </div>
@@ -270,8 +298,8 @@
                         <button class="accordion-button collapsed" type="button" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#warning-{{ loop.index }}">
-                            <span class="badge bg-{{ {'critical': 'danger', 'serious': 'warning', 'moderate': 'info', 'minor': 'secondary'}[warning.impact] or 'warning' }} me-2">
-                                {{ warning.impact|upper }}
+                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'warning' }} me-2">
+                                {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
                             </span>
                             {{ warning.id }} - {{ warning.description }}
                         </button>
@@ -280,6 +308,70 @@
                          class="accordion-collapse collapse" 
                          data-bs-parent="#warningsAccordion">
                         <div class="accordion-body">
+                            {% if warning.metadata and warning.metadata.title %}
+                            <!-- Enhanced description available -->
+                            <div class="alert alert-warning mb-3">
+                                <h6 class="alert-heading">{{ warning.metadata.title }}</h6>
+                            </div>
+                            
+                            <h6 class="text-warning mb-2">About this issue:</h6>
+                            
+                            <div class="mb-3">
+                                <strong>What the issue is:</strong>
+                                <p>{{ warning.metadata.what|default(warning.description) }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Why this is important:</strong>
+                                <p>{{ warning.metadata.why }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Who it affects:</strong>
+                                <p>{{ warning.metadata.who }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>How to remediate:</strong>
+                                <pre class="bg-light p-3 rounded"><code>{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</code></pre>
+                            </div>
+                            
+                            <h6 class="text-warning mb-2 mt-4">Relevant test criteria:</h6>
+                            <div class="mb-3">
+                                {% if warning.metadata.wcag_full %}
+                                <strong>WCAG Success Criteria:</strong>
+                                <ul>
+                                {% for criterion in warning.metadata.wcag_full %}
+                                    <li>{{ criterion }}</li>
+                                {% endfor %}
+                                </ul>
+                                {% elif warning.wcag_criteria %}
+                                <strong>WCAG Success Criteria:</strong>
+                                <ul>
+                                {% for criterion in warning.wcag_criteria %}
+                                    <li>
+                                        <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                            {{ criterion }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                            
+                            <hr>
+                            <p><strong>Category:</strong> {{ warning.category }}</p>
+                            {% if warning.xpath %}
+                            <p><strong>Location:</strong> <code>{{ warning.xpath }}</code></p>
+                            {% endif %}
+                            {% if warning.html %}
+                            <div class="mt-3">
+                                <h6>Code Snippet</h6>
+                                <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            <!-- Standard description -->
                             <p><strong>Category:</strong> {{ warning.category }}</p>
                             {% if warning.help_url %}
                             <p><strong>Help:</strong> <a href="{{ warning.help_url }}" target="_blank">Learn more</a></p>
@@ -289,6 +381,7 @@
                             {% endif %}
                             {% if warning.html %}
                             <pre><code>{{ warning.html|e }}</code></pre>
+                            {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -316,6 +409,70 @@
                          class="accordion-collapse collapse" 
                          data-bs-parent="#infoAccordion">
                         <div class="accordion-body">
+                            {% if info.metadata and info.metadata.title %}
+                            <!-- Enhanced description available -->
+                            <div class="alert alert-info mb-3">
+                                <h6 class="alert-heading">{{ info.metadata.title }}</h6>
+                            </div>
+                            
+                            <h6 class="text-info mb-2">About this issue:</h6>
+                            
+                            <div class="mb-3">
+                                <strong>What the issue is:</strong>
+                                <p>{{ info.metadata.what|default(info.description) }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Why this is important:</strong>
+                                <p>{{ info.metadata.why }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Who it affects:</strong>
+                                <p>{{ info.metadata.who }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>How to remediate:</strong>
+                                <pre class="bg-light p-3 rounded"><code>{{ info.metadata.full_remediation|default(info.failure_summary) }}</code></pre>
+                            </div>
+                            
+                            <h6 class="text-info mb-2 mt-4">Relevant test criteria:</h6>
+                            <div class="mb-3">
+                                {% if info.metadata.wcag_full %}
+                                <strong>WCAG Success Criteria:</strong>
+                                <ul>
+                                {% for criterion in info.metadata.wcag_full %}
+                                    <li>{{ criterion }}</li>
+                                {% endfor %}
+                                </ul>
+                                {% elif info.wcag_criteria %}
+                                <strong>WCAG Success Criteria:</strong>
+                                <ul>
+                                {% for criterion in info.wcag_criteria %}
+                                    <li>
+                                        <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                            {{ criterion }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                            
+                            <hr>
+                            <p><strong>Category:</strong> {{ info.category }}</p>
+                            {% if info.xpath %}
+                            <p><strong>Location:</strong> <code>{{ info.xpath }}</code></p>
+                            {% endif %}
+                            {% if info.html %}
+                            <div class="mt-3">
+                                <h6>Code Snippet</h6>
+                                <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            <!-- Standard description -->
                             <p><strong>Category:</strong> {{ info.category }}</p>
                             {% if info.help_url %}
                             <p><strong>Help:</strong> <a href="{{ info.help_url }}" target="_blank">Learn more</a></p>
@@ -325,6 +482,7 @@
                             {% endif %}
                             {% if info.html %}
                             <pre><code>{{ info.html|e }}</code></pre>
+                            {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -352,6 +510,73 @@
                          class="accordion-collapse collapse" 
                          data-bs-parent="#discoveryAccordion">
                         <div class="accordion-body">
+                            {% if discovery.metadata and discovery.metadata.title %}
+                            <!-- Enhanced description available -->
+                            <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
+                                <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.metadata.title }}</h6>
+                            </div>
+                            
+                            <h6 style="color: #6f42c1;" class="mb-2">About this discovery item:</h6>
+                            
+                            <div class="mb-3">
+                                <strong>What was found:</strong>
+                                <p>{{ discovery.metadata.what|default(discovery.description) }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Why manual review is needed:</strong>
+                                <p>{{ discovery.metadata.why }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>Who could be affected:</strong>
+                                <p>{{ discovery.metadata.who }}</p>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>What to check manually:</strong>
+                                <pre class="bg-light p-3 rounded"><code>{{ discovery.metadata.full_remediation|default(discovery.failure_summary) }}</code></pre>
+                            </div>
+                            
+                            <h6 style="color: #6f42c1;" class="mb-2 mt-4">Relevant test criteria:</h6>
+                            <div class="mb-3">
+                                {% if discovery.metadata.wcag_full %}
+                                <strong>WCAG Success Criteria:</strong>
+                                <ul>
+                                {% for criterion in discovery.metadata.wcag_full %}
+                                    <li>{{ criterion }}</li>
+                                {% endfor %}
+                                </ul>
+                                {% elif discovery.wcag_criteria %}
+                                <strong>WCAG Success Criteria:</strong>
+                                <ul>
+                                {% for criterion in discovery.wcag_criteria %}
+                                    <li>
+                                        <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                            {{ criterion }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                            
+                            <hr>
+                            <p><strong>Category:</strong> {{ discovery.category }}</p>
+                            <p class="text-muted">
+                                <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
+                            </p>
+                            {% if discovery.xpath %}
+                            <p><strong>Location:</strong> <code>{{ discovery.xpath }}</code></p>
+                            {% endif %}
+                            {% if discovery.html %}
+                            <div class="mt-3">
+                                <h6>Code Snippet</h6>
+                                <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            <!-- Standard description -->
                             <p><strong>Category:</strong> {{ discovery.category }}</p>
                             <p class="text-muted">
                                 <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
@@ -364,6 +589,7 @@
                             {% endif %}
                             {% if discovery.html %}
                             <pre><code>{{ discovery.html|e }}</code></pre>
+                            {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -384,8 +610,8 @@
                         <button class="accordion-button collapsed" type="button" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#ai-{{ loop.index }}">
-                            <span class="badge bg-{{ {'high': 'warning', 'medium': 'info', 'low': 'secondary'}[finding.severity] or 'secondary' }} me-2">
-                                {{ finding.severity|upper }}
+                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[finding.severity.value|lower if finding.severity.value else finding.severity|lower] or 'secondary' }} me-2">
+                                {{ finding.severity.value|upper if finding.severity.value else finding.severity|upper }}
                             </span>
                             {{ finding.issue }}
                         </button>

@@ -11,10 +11,9 @@ from bson import ObjectId
 
 class ImpactLevel(Enum):
     """Impact level for violations"""
-    MINOR = "minor"
-    MODERATE = "moderate"
-    SERIOUS = "serious"
-    CRITICAL = "critical"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
 
 
 @dataclass
@@ -165,10 +164,9 @@ class TestResult:
             'discovery': self.discovery_count,
             'passes': self.pass_count,
             'ai_findings': len(self.ai_findings),
-            'critical': len([v for v in self.violations if v.impact == ImpactLevel.CRITICAL]),
-            'serious': len([v for v in self.violations if v.impact == ImpactLevel.SERIOUS]),
-            'moderate': len([v for v in self.violations if v.impact == ImpactLevel.MODERATE]),
-            'minor': len([v for v in self.violations if v.impact == ImpactLevel.MINOR])
+            'high': len([v for v in self.violations if v.impact == ImpactLevel.HIGH]),
+            'medium': len([v for v in self.violations if v.impact == ImpactLevel.MEDIUM]),
+            'low': len([v for v in self.violations if v.impact == ImpactLevel.LOW])
         }
     
     def to_dict(self) -> dict:

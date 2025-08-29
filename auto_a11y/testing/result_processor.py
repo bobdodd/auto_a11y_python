@@ -62,29 +62,27 @@ class ResultProcessor:
     
     # Map error codes to impact levels
     IMPACT_MAPPING = {
-        # Critical - blocks access completely
-        'ErrNoAlt': ImpactLevel.CRITICAL,
-        'ErrNoLabel': ImpactLevel.CRITICAL,
-        'ErrNoPageTitle': ImpactLevel.CRITICAL,
-        'ErrNoPageLanguage': ImpactLevel.CRITICAL,
+        # High - blocks access completely or significant barriers
+        'ErrNoAlt': ImpactLevel.HIGH,
+        'ErrNoLabel': ImpactLevel.HIGH,
+        'ErrNoPageTitle': ImpactLevel.HIGH,
+        'ErrNoPageLanguage': ImpactLevel.HIGH,
+        'ErrEmptyHeading': ImpactLevel.HIGH,
+        'ErrSkippedHeadingLevel': ImpactLevel.HIGH,
+        'ErrInsufficientContrast': ImpactLevel.HIGH,
+        'ErrNoMainLandmark': ImpactLevel.HIGH,
+        'ErrEmptyLabel': ImpactLevel.HIGH,
         
-        # Serious - significant barriers
-        'ErrEmptyHeading': ImpactLevel.SERIOUS,
-        'ErrSkippedHeadingLevel': ImpactLevel.SERIOUS,
-        'ErrInsufficientContrast': ImpactLevel.SERIOUS,
-        'ErrNoMainLandmark': ImpactLevel.SERIOUS,
-        'ErrEmptyLabel': ImpactLevel.SERIOUS,
+        # Medium - noticeable issues
+        'ErrMultipleH1': ImpactLevel.MEDIUM,
+        'ErrAltTooLong': ImpactLevel.MEDIUM,
+        'ErrPlaceholderAsLabel': ImpactLevel.MEDIUM,
+        'ErrInvalidTabindex': ImpactLevel.MEDIUM,
         
-        # Moderate - noticeable issues
-        'ErrMultipleH1': ImpactLevel.MODERATE,
-        'ErrAltTooLong': ImpactLevel.MODERATE,
-        'ErrPlaceholderAsLabel': ImpactLevel.MODERATE,
-        'ErrInvalidTabindex': ImpactLevel.MODERATE,
-        
-        # Minor - small issues
-        'WarnHeadingOver60CharsLong': ImpactLevel.MINOR,
-        'ErrRedundantAlt': ImpactLevel.MINOR,
-        'WarnHeadingInsideDisplayNone': ImpactLevel.MINOR,
+        # Low - small issues
+        'WarnHeadingOver60CharsLong': ImpactLevel.LOW,
+        'ErrRedundantAlt': ImpactLevel.LOW,
+        'WarnHeadingInsideDisplayNone': ImpactLevel.LOW,
     }
     
     def process_test_results(
@@ -193,8 +191,8 @@ class ResultProcessor:
             if enhanced_desc:
                 # Use enhanced description with context-specific details
                 impact_str = enhanced_desc.get('impact', 'Medium')
-                impact = ImpactLevel.CRITICAL if impact_str == 'High' else (
-                    ImpactLevel.MODERATE if impact_str == 'Medium' else ImpactLevel.MINOR
+                impact = ImpactLevel.HIGH if impact_str == 'High' else (
+                    ImpactLevel.MEDIUM if impact_str == 'Medium' else ImpactLevel.LOW
                 )
                 description = enhanced_desc.get('what', '')
                 wcag_criteria = [c.split()[0] for c in enhanced_desc.get('wcag', [])]  # Extract just the numbers
@@ -235,9 +233,9 @@ class ResultProcessor:
                     if error_code in self.IMPACT_MAPPING:
                         impact = self.IMPACT_MAPPING[error_code]
                     elif violation_type == 'warning':
-                        impact = ImpactLevel.MINOR
+                        impact = ImpactLevel.LOW
                     else:
-                        impact = ImpactLevel.MODERATE
+                        impact = ImpactLevel.MEDIUM
                     
                     wcag_criteria = self.WCAG_MAPPING.get(error_code, [])
                     description = self._get_error_description(error_code)
@@ -360,14 +358,14 @@ class ResultProcessor:
             Score dictionary
         """
         total_issues = len(test_result.violations) + len(test_result.warnings)
-        critical_count = sum(1 for v in test_result.violations if v.impact == ImpactLevel.CRITICAL)
-        serious_count = sum(1 for v in test_result.violations if v.impact == ImpactLevel.SERIOUS)
+        high_count = sum(1 for v in test_result.violations if v.impact == ImpactLevel.HIGH)
+        medium_count = sum(1 for v in test_result.violations if v.impact == ImpactLevel.MEDIUM)
         
         # Simple scoring algorithm
-        if critical_count > 0:
-            score = 0  # Fail if any critical issues
-        elif serious_count > 0:
-            score = max(0, 50 - (serious_count * 10))
+        if high_count > 0:
+            score = 0  # Fail if any high impact issues
+        elif medium_count > 0:
+            score = max(0, 50 - (medium_count * 10))
         elif total_issues > 0:
             score = max(0, 100 - (total_issues * 5))
         else:
@@ -376,8 +374,8 @@ class ResultProcessor:
         return {
             'score': score,
             'grade': self._get_grade(score),
-            'critical_issues': critical_count,
-            'serious_issues': serious_count,
+            'high_issues': high_count,
+            'medium_issues': medium_count,
             'total_issues': total_issues,
             'passes': len(test_result.passes)
         }

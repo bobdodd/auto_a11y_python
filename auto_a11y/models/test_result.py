@@ -31,6 +31,7 @@ class Violation:
     html: Optional[str] = None
     failure_summary: Optional[str] = None
     wcag_criteria: List[str] = field(default_factory=list)
+    metadata: Dict[str, Any] = field(default_factory=dict)  # Additional details
     
     def to_dict(self) -> dict:
         """Convert to dictionary"""
@@ -44,7 +45,8 @@ class Violation:
             'element': self.element,
             'html': self.html,
             'failure_summary': self.failure_summary,
-            'wcag_criteria': self.wcag_criteria
+            'wcag_criteria': self.wcag_criteria,
+            'metadata': self.metadata
         }
     
     @classmethod
@@ -60,7 +62,8 @@ class Violation:
             element=data.get('element'),
             html=data.get('html'),
             failure_summary=data.get('failure_summary'),
-            wcag_criteria=data.get('wcag_criteria', [])
+            wcag_criteria=data.get('wcag_criteria', []),
+            metadata=data.get('metadata', {})
         )
 
 

@@ -180,20 +180,76 @@
                          class="accordion-collapse collapse" 
                          data-bs-parent="#violationsAccordion">
                         <div class="accordion-body">
-                            <p><strong>Rule:</strong> {{ violation.rule_id }}</p>
-                            <p><strong>Help:</strong> {{ violation.help_text }}</p>
-                            {% if violation.help_url %}
-                            <p><strong>More Info:</strong> 
-                                <a href="{{ violation.help_url }}" target="_blank">
-                                    {{ violation.help_url }} <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                            </p>
+                            {% if violation.metadata and violation.metadata.title %}
+                            <!-- Enhanced description available -->
+                            <div class="alert alert-danger mb-3">
+                                <h6 class="alert-heading">{{ violation.metadata.title }}</h6>
+                                <p class="mb-0">{{ violation.description }}</p>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <h6><i class="bi bi-question-circle"></i> Why This Matters</h6>
+                                    <p>{{ violation.metadata.why }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6><i class="bi bi-people"></i> Who Is Affected</h6>
+                                    <p>{{ violation.metadata.who }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <h6><i class="bi bi-tools"></i> How to Fix</h6>
+                                <pre class="bg-light p-3 rounded"><code>{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</code></pre>
+                            </div>
+                            {% else %}
+                            <!-- Standard description -->
+                            <p><strong>Rule:</strong> {{ violation.rule_id|default(violation.id) }}</p>
+                            <p><strong>Help:</strong> {{ violation.help_text|default(violation.description) }}</p>
+                            {% if violation.failure_summary %}
+                            <p><strong>How to fix:</strong> {{ violation.failure_summary }}</p>
                             {% endif %}
-                            {% if violation.selector %}
-                            <p><strong>Element:</strong> <code>{{ violation.selector }}</code></p>
                             {% endif %}
+                            
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Category:</strong> {{ violation.category|default('General') }}</p>
+                                    <p><strong>Impact:</strong> 
+                                        <span class="badge bg-{{ {'critical': 'danger', 'serious': 'warning', 'moderate': 'info', 'minor': 'secondary'}[violation.impact] or 'secondary' }}">
+                                            {{ violation.impact|upper }}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    {% if violation.wcag_criteria %}
+                                    <p><strong>WCAG Criteria:</strong> 
+                                        {% for criterion in violation.wcag_criteria %}
+                                        <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="badge bg-primary text-decoration-none">
+                                            {{ criterion }}
+                                        </a>
+                                        {% endfor %}
+                                    </p>
+                                    {% endif %}
+                                    {% if violation.help_url %}
+                                    <p><strong>Learn More:</strong> 
+                                        <a href="{{ violation.help_url }}" target="_blank">
+                                            Documentation <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            {% if violation.selector or violation.xpath %}
+                            <p><strong>Location:</strong> <code>{{ violation.selector|default(violation.xpath) }}</code></p>
+                            {% endif %}
+                            
                             {% if violation.html %}
-                            <pre><code>{{ violation.html|e }}</code></pre>
+                            <div class="mt-3">
+                                <h6>Code Snippet</h6>
+                                <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                            </div>
                             {% endif %}
                         </div>
                     </div>

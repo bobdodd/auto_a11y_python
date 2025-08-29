@@ -7,6 +7,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 
 from auto_a11y.models import TestResult, Violation, ImpactLevel
+from auto_a11y.reporting.issue_descriptions import get_issue_description, get_wcag_link
 
 logger = logging.getLogger(__name__)
 
@@ -183,31 +184,58 @@ class ResultProcessor:
         """
         try:
             error_code = violation_data.get('err', 'UnknownError')
+            violation_id = f"{source_test}_{error_code}"
             
-            # Determine impact level
-            if error_code in self.IMPACT_MAPPING:
-                impact = self.IMPACT_MAPPING[error_code]
-            elif violation_type == 'warning':
-                impact = ImpactLevel.MINOR
+            # Try to get detailed description from our comprehensive mapping
+            detailed_desc = get_issue_description(violation_id)
+            
+            if detailed_desc:
+                # Use detailed description if available
+                impact = ImpactLevel[detailed_desc.impact.name]
+                description = detailed_desc.what
+                wcag_criteria = detailed_desc.wcag
+                help_url = get_wcag_link(wcag_criteria[0]) if wcag_criteria else self._get_help_url(error_code)
+                failure_summary = detailed_desc.remediation
+                
+                # Store additional details in metadata
+                metadata = {
+                    'title': detailed_desc.title,
+                    'why': detailed_desc.why,
+                    'who': detailed_desc.who,
+                    'full_remediation': detailed_desc.remediation
+                }
             else:
-                impact = ImpactLevel.MODERATE
-            
-            # Get WCAG criteria
-            wcag_criteria = self.WCAG_MAPPING.get(error_code, [])
+                # Fall back to original mapping
+                if error_code in self.IMPACT_MAPPING:
+                    impact = self.IMPACT_MAPPING[error_code]
+                elif violation_type == 'warning':
+                    impact = ImpactLevel.MINOR
+                else:
+                    impact = ImpactLevel.MODERATE
+                
+                wcag_criteria = self.WCAG_MAPPING.get(error_code, [])
+                description = self._get_error_description(error_code)
+                help_url = self._get_help_url(error_code)
+                failure_summary = self._get_failure_summary(error_code, violation_data)
+                metadata = {}
             
             # Create violation
             violation = Violation(
-                id=f"{source_test}_{error_code}",
+                id=violation_id,
                 impact=impact,
                 category=violation_data.get('cat', source_test),
-                description=self._get_error_description(error_code),
-                help_url=self._get_help_url(error_code),
+                description=description,
+                help_url=help_url,
                 xpath=violation_data.get('xpath'),
                 element=violation_data.get('element'),
                 html=violation_data.get('html'),
-                failure_summary=self._get_failure_summary(error_code, violation_data),
+                failure_summary=failure_summary,
                 wcag_criteria=wcag_criteria
             )
+            
+            # Add metadata if we have detailed description
+            if metadata:
+                violation.metadata = metadata
             
             return violation
             

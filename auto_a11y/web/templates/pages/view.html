@@ -107,15 +107,15 @@
     <!-- Test Results Summary -->
     {% if page.status.value == 'tested' %}
     <div class="row mb-4 g-3">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card border-danger">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-danger">Violations</h5>
+                    <h5 class="card-title text-danger">Errors</h5>
                     <p class="display-6 mb-0">{{ page.violation_count }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card border-warning">
                 <div class="card-body text-center">
                     <h5 class="card-title text-warning">Warnings</h5>
@@ -123,10 +123,28 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info">Info</h5>
+                    <p class="display-6 mb-0">{{ page.info_count|default(0) }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="border-color: #6f42c1;">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="color: #6f42c1;">Discovery</h5>
+                    <p class="display-6 mb-0">{{ page.discovery_count|default(0) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-12">
             <div class="card border-success">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-success">Passed</h5>
+                    <h5 class="card-title text-success">Passed Tests</h5>
                     <p class="display-6 mb-0">{{ page.pass_count }}</p>
                 </div>
             </div>
@@ -142,10 +160,10 @@
             <small class="text-muted">Tested on {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}</small>
         </div>
         <div class="card-body">
-            <!-- Violations -->
+            <!-- Errors (Violations) -->
             {% if latest_result.violations %}
             <h6 class="text-danger mb-3">
-                <i class="bi bi-x-circle"></i> Violations ({{ latest_result.violations|length }})
+                <i class="bi bi-x-circle"></i> Errors ({{ latest_result.violations|length }})
             </h6>
             <div class="accordion mb-4" id="violationsAccordion">
                 {% for violation in latest_result.violations %}
@@ -176,6 +194,120 @@
                             {% endif %}
                             {% if violation.html %}
                             <pre><code>{{ violation.html|e }}</code></pre>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Warnings -->
+            {% if latest_result.warnings %}
+            <h6 class="text-warning mb-3">
+                <i class="bi bi-exclamation-triangle"></i> Warnings ({{ latest_result.warnings|length }})
+            </h6>
+            <div class="accordion mb-4" id="warningsAccordion">
+                {% for warning in latest_result.warnings %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="warning-heading-{{ loop.index }}">
+                        <button class="accordion-button collapsed" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#warning-{{ loop.index }}">
+                            <span class="badge bg-{{ {'critical': 'danger', 'serious': 'warning', 'moderate': 'info', 'minor': 'secondary'}[warning.impact] or 'warning' }} me-2">
+                                {{ warning.impact|upper }}
+                            </span>
+                            {{ warning.id }} - {{ warning.description }}
+                        </button>
+                    </h2>
+                    <div id="warning-{{ loop.index }}" 
+                         class="accordion-collapse collapse" 
+                         data-bs-parent="#warningsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Category:</strong> {{ warning.category }}</p>
+                            {% if warning.help_url %}
+                            <p><strong>Help:</strong> <a href="{{ warning.help_url }}" target="_blank">Learn more</a></p>
+                            {% endif %}
+                            {% if warning.xpath %}
+                            <p><strong>XPath:</strong> <code>{{ warning.xpath }}</code></p>
+                            {% endif %}
+                            {% if warning.html %}
+                            <pre><code>{{ warning.html|e }}</code></pre>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Info Notes -->
+            {% if latest_result.info %}
+            <h6 class="text-info mb-3">
+                <i class="bi bi-info-circle"></i> Info Notes ({{ latest_result.info|length }})
+            </h6>
+            <div class="accordion mb-4" id="infoAccordion">
+                {% for info in latest_result.info %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="info-heading-{{ loop.index }}">
+                        <button class="accordion-button collapsed" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#info-{{ loop.index }}">
+                            {{ info.id }} - {{ info.description }}
+                        </button>
+                    </h2>
+                    <div id="info-{{ loop.index }}" 
+                         class="accordion-collapse collapse" 
+                         data-bs-parent="#infoAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Category:</strong> {{ info.category }}</p>
+                            {% if info.help_url %}
+                            <p><strong>Help:</strong> <a href="{{ info.help_url }}" target="_blank">Learn more</a></p>
+                            {% endif %}
+                            {% if info.xpath %}
+                            <p><strong>XPath:</strong> <code>{{ info.xpath }}</code></p>
+                            {% endif %}
+                            {% if info.html %}
+                            <pre><code>{{ info.html|e }}</code></pre>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Discovery Items -->
+            {% if latest_result.discovery %}
+            <h6 class="mb-3" style="color: #6f42c1;">
+                <i class="bi bi-search"></i> Discovery Items ({{ latest_result.discovery|length }})
+            </h6>
+            <div class="accordion mb-4" id="discoveryAccordion">
+                {% for discovery in latest_result.discovery %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="discovery-heading-{{ loop.index }}">
+                        <button class="accordion-button collapsed" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#discovery-{{ loop.index }}">
+                            {{ discovery.id }} - {{ discovery.description }}
+                        </button>
+                    </h2>
+                    <div id="discovery-{{ loop.index }}" 
+                         class="accordion-collapse collapse" 
+                         data-bs-parent="#discoveryAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Category:</strong> {{ discovery.category }}</p>
+                            <p class="text-muted">
+                                <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
+                            </p>
+                            {% if discovery.help_url %}
+                            <p><strong>Help:</strong> <a href="{{ discovery.help_url }}" target="_blank">Learn more</a></p>
+                            {% endif %}
+                            {% if discovery.xpath %}
+                            <p><strong>XPath:</strong> <code>{{ discovery.xpath }}</code></p>
+                            {% endif %}
+                            {% if discovery.html %}
+                            <pre><code>{{ discovery.html|e }}</code></pre>
                             {% endif %}
                         </div>
                     </div>
@@ -257,8 +389,10 @@
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Violations</th>
+                            <th>Errors</th>
                             <th>Warnings</th>
+                            <th>Info</th>
+                            <th>Discovery</th>
                             <th>Passed</th>
                             <th>Duration</th>
                             <th>Actions</th>
@@ -269,7 +403,9 @@
                         <tr>
                             <td>{{ result.test_date.strftime('%Y-%m-%d %H:%M') }}</td>
                             <td><span class="badge bg-danger">{{ result.violation_count }}</span></td>
-                            <td><span class="badge bg-warning">{{ result.warning_count }}</span></td>
+                            <td><span class="badge bg-warning text-dark">{{ result.warning_count }}</span></td>
+                            <td><span class="badge bg-info">{{ result.info_count|default(0) }}</span></td>
+                            <td><span class="badge" style="background-color: #6f42c1;">{{ result.discovery_count|default(0) }}</span></td>
                             <td><span class="badge bg-success">{{ result.pass_count }}</span></td>
                             <td>{{ "%.2f"|format(result.duration_ms / 1000) }}s</td>
                             <td>

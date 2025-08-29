@@ -189,7 +189,7 @@
 
     <!-- Test Results Detail -->
     {% if latest_result %}
-    <div class="card">
+    <div class="card test-results-card" data-filterable="true">
         <div class="card-header">
             <h5 class="mb-0">Latest Test Results</h5>
             <small class="text-muted">Tested on {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}</small>
@@ -783,4 +783,7 @@ function testPage(pageId) {
     });
 }
 </script>
+
+<!-- Include the issue filtering script -->
+<script src="{{ url_for('static', filename='js/issue-filters.js') }}"></script>
 {% endblock %}

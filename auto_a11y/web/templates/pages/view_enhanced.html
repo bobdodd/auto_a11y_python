@@ -1,0 +1,763 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title or 'Page' }} - {{ website.display_name }} - Auto A11y{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Filter Controls Styling */
+    .filter-panel {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .filter-group {
+        margin-bottom: 1rem;
+    }
+    
+    .filter-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .filter-chip {
+        padding: 0.25rem 0.75rem;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.875rem;
+    }
+    
+    .filter-chip:hover {
+        background: #e9ecef;
+    }
+    
+    .filter-chip.active {
+        background: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+    
+    .active-filters {
+        padding: 1rem;
+        background: #e7f3ff;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    
+    .active-filter-tag {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: #0d6efd;
+        color: white;
+        border-radius: 15px;
+        margin: 0.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .active-filter-tag .remove-filter {
+        margin-left: 0.5rem;
+        cursor: pointer;
+    }
+    
+    .filter-stats {
+        padding: 0.75rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        margin-bottom: 1rem;
+    }
+    
+    .issue-item {
+        transition: opacity 0.3s;
+    }
+    
+    .issue-item.filtered-out {
+        display: none;
+    }
+    
+    /* Enhanced accordion styling */
+    .accordion-button .filter-tags {
+        margin-left: auto;
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .filter-tag {
+        padding: 0.125rem 0.5rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Existing breadcrumb and header content -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ page.title or 'Page' }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">{{ page.title or 'Untitled Page' }}</h1>
+            <p class="text-muted mb-0">
+                <a href="{{ page.url }}" target="_blank" rel="noopener noreferrer">
+                    {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            </p>
+        </div>
+        <div>
+            <button id="runTestBtn" class="btn btn-primary">
+                <i class="bi bi-play-circle"></i> Run Test
+            </button>
+            <a href="{{ url_for('pages.edit_page', page_id=page.id) }}" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+        </div>
+    </div>
+
+    <!-- Existing summary cards -->
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-lg">
+            <div class="card border-danger">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-danger">Errors</h5>
+                    <p class="display-6 mb-0">{{ page.violation_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-warning">Warnings</h5>
+                    <p class="display-6 mb-0">{{ page.warning_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info">Info</h5>
+                    <p class="display-6 mb-0">{{ page.info_count|default(0) }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="card" style="border-color: #6f42c1;">
+                <div class="card-body text-center">
+                    <h5 class="card-title" style="color: #6f42c1;">Discovery</h5>
+                    <p class="display-6 mb-0">{{ page.discovery_count|default(0) }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success">Passed</h5>
+                    <p class="display-6 mb-0">{{ page.pass_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Panel -->
+    {% if latest_result and (latest_result.violations or latest_result.warnings or latest_result.info or latest_result.discovery) %}
+    <div class="filter-panel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Test Results</h5>
+            <button class="btn btn-sm btn-outline-secondary" id="clearFilters">
+                <i class="bi bi-x-circle"></i> Clear All Filters
+            </button>
+        </div>
+
+        <!-- Active Filters Display -->
+        <div id="activeFilters" class="active-filters" style="display: none;">
+            <strong>Active Filters:</strong>
+            <div id="activeFilterTags"></div>
+        </div>
+
+        <!-- Filter Statistics -->
+        <div class="filter-stats">
+            <strong>Showing:</strong> 
+            <span id="visibleCount">0</span> of <span id="totalCount">0</span> items
+            | <span id="filterSummary"></span>
+        </div>
+
+        <!-- Filter Groups -->
+        <div class="row">
+            <!-- Issue Type Filter -->
+            <div class="col-md-3">
+                <div class="filter-group">
+                    <label class="form-label fw-bold">Issue Type</label>
+                    <div class="filter-chips">
+                        <div class="filter-chip" data-filter-type="type" data-filter-value="error">
+                            Errors ({{ latest_result.violations|length if latest_result.violations else 0 }})
+                        </div>
+                        <div class="filter-chip" data-filter-type="type" data-filter-value="warning">
+                            Warnings ({{ latest_result.warnings|length if latest_result.warnings else 0 }})
+                        </div>
+                        <div class="filter-chip" data-filter-type="type" data-filter-value="info">
+                            Info ({{ latest_result.info|length if latest_result.info else 0 }})
+                        </div>
+                        <div class="filter-chip" data-filter-type="type" data-filter-value="discovery">
+                            Discovery ({{ latest_result.discovery|length if latest_result.discovery else 0 }})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impact Level Filter -->
+            <div class="col-md-3">
+                <div class="filter-group">
+                    <label class="form-label fw-bold">Impact Level</label>
+                    <div class="filter-chips">
+                        <div class="filter-chip" data-filter-type="impact" data-filter-value="high">
+                            <span class="badge bg-danger me-1">High</span>
+                            <span id="highImpactCount">0</span>
+                        </div>
+                        <div class="filter-chip" data-filter-type="impact" data-filter-value="medium">
+                            <span class="badge bg-warning text-dark me-1">Medium</span>
+                            <span id="mediumImpactCount">0</span>
+                        </div>
+                        <div class="filter-chip" data-filter-type="impact" data-filter-value="low">
+                            <span class="badge bg-info me-1">Low</span>
+                            <span id="lowImpactCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WCAG Criteria Filter -->
+            <div class="col-md-3">
+                <div class="filter-group">
+                    <label class="form-label fw-bold">WCAG Success Criteria</label>
+                    <select class="form-select form-select-sm" id="wcagFilter" multiple size="3">
+                        <option value="">All Criteria</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="col-md-3">
+                <div class="filter-group">
+                    <label class="form-label fw-bold">Issue Category</label>
+                    <select class="form-select form-select-sm" id="categoryFilter" multiple size="3">
+                        <option value="">All Categories</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Impact Filter -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="filter-group">
+                    <label class="form-label fw-bold">Affected User Groups</label>
+                    <div class="filter-chips">
+                        <div class="filter-chip" data-filter-type="user" data-filter-value="vision">
+                            <i class="bi bi-eye-slash"></i> Vision Impairments
+                        </div>
+                        <div class="filter-chip" data-filter-type="user" data-filter-value="hearing">
+                            <i class="bi bi-ear"></i> Hearing Impairments
+                        </div>
+                        <div class="filter-chip" data-filter-type="user" data-filter-value="motor">
+                            <i class="bi bi-hand-index"></i> Motor Impairments
+                        </div>
+                        <div class="filter-chip" data-filter-type="user" data-filter-value="cognitive">
+                            <i class="bi bi-brain"></i> Cognitive Impairments
+                        </div>
+                        <div class="filter-chip" data-filter-type="user" data-filter-value="seizure">
+                            <i class="bi bi-lightning"></i> Seizure Disorders
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Search -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" id="quickSearch" 
+                           placeholder="Search in issue descriptions, IDs, or HTML...">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Detailed Test Results (Modified to support filtering) -->
+    {% if latest_result %}
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Detailed Test Results</h5>
+        </div>
+        <div class="card-body">
+            <!-- Errors (Violations) -->
+            {% if latest_result.violations %}
+            <h6 class="text-danger mb-3">
+                <i class="bi bi-x-circle"></i> Errors (<span class="type-count" data-type="error">{{ latest_result.violations|length }}</span>)
+            </h6>
+            <div class="accordion mb-4" id="violationsAccordion">
+                {% for violation in latest_result.violations %}
+                <div class="accordion-item issue-item" 
+                     data-type="error"
+                     data-impact="{{ violation.impact.value|lower if violation.impact.value else violation.impact|lower }}"
+                     data-wcag="{{ violation.wcag_criteria|join(',') if violation.wcag_criteria else '' }}"
+                     data-category="{{ violation.category|lower }}"
+                     data-id="{{ violation.id }}"
+                     data-description="{{ violation.description|lower }}"
+                     data-html="{{ violation.html|lower if violation.html else '' }}">
+                    <h2 class="accordion-header" id="violation-heading-{{ loop.index }}">
+                        <button class="accordion-button collapsed" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#violation-{{ loop.index }}">
+                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} me-2">
+                                {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
+                            </span>
+                            <span class="me-2">{{ violation.id }}</span>
+                            <span class="text-muted">- {{ violation.description }}</span>
+                            <span class="filter-tags">
+                                {% if violation.wcag_criteria %}
+                                {% for criterion in violation.wcag_criteria[:2] %}
+                                <span class="filter-tag">{{ criterion }}</span>
+                                {% endfor %}
+                                {% endif %}
+                            </span>
+                        </button>
+                    </h2>
+                    <div id="violation-{{ loop.index }}" 
+                         class="accordion-collapse collapse" 
+                         data-bs-parent="#violationsAccordion">
+                        <div class="accordion-body">
+                            <!-- Existing violation content -->
+                            {{ render_issue_content(violation) }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Similar structure for Warnings, Info, and Discovery with data attributes -->
+            <!-- ... (Continue with similar pattern for other sections) ... -->
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Enhanced Filtering System
+class IssueFilterManager {
+    constructor() {
+        this.activeFilters = {
+            type: new Set(),
+            impact: new Set(),
+            wcag: new Set(),
+            category: new Set(),
+            user: new Set(),
+            search: ''
+        };
+        
+        this.issueUserMapping = {
+            // Map issue categories/IDs to affected user groups
+            'color': ['vision'],
+            'contrast': ['vision'],
+            'images': ['vision'],
+            'alt': ['vision'],
+            'landmarks': ['vision', 'motor', 'cognitive'],
+            'headings': ['vision', 'cognitive'],
+            'focus': ['motor', 'vision'],
+            'keyboard': ['motor'],
+            'forms': ['vision', 'motor', 'cognitive'],
+            'labels': ['vision', 'motor', 'cognitive'],
+            'language': ['vision', 'cognitive'],
+            'captions': ['hearing'],
+            'audio': ['hearing'],
+            'video': ['hearing', 'vision'],
+            'animation': ['seizure', 'cognitive'],
+            'flashing': ['seizure'],
+            'timeout': ['motor', 'cognitive'],
+            'errors': ['cognitive', 'vision']
+        };
+        
+        this.init();
+    }
+    
+    init() {
+        this.populateFilterOptions();
+        this.attachEventListeners();
+        this.updateCounts();
+        this.updateDisplay();
+    }
+    
+    populateFilterOptions() {
+        // Collect unique WCAG criteria
+        const wcagCriteria = new Set();
+        const categories = new Set();
+        
+        document.querySelectorAll('.issue-item').forEach(item => {
+            const wcag = item.dataset.wcag;
+            if (wcag) {
+                wcag.split(',').forEach(criterion => {
+                    if (criterion) wcagCriteria.add(criterion);
+                });
+            }
+            
+            const category = item.dataset.category;
+            if (category) categories.add(category);
+        });
+        
+        // Populate WCAG filter
+        const wcagSelect = document.getElementById('wcagFilter');
+        if (wcagSelect) {
+            [...wcagCriteria].sort().forEach(criterion => {
+                const option = document.createElement('option');
+                option.value = criterion;
+                option.textContent = criterion;
+                wcagSelect.appendChild(option);
+            });
+        }
+        
+        // Populate Category filter
+        const categorySelect = document.getElementById('categoryFilter');
+        if (categorySelect) {
+            [...categories].sort().forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                categorySelect.appendChild(option);
+            });
+        }
+    }
+    
+    attachEventListeners() {
+        // Filter chips
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => this.toggleFilter(chip));
+        });
+        
+        // Select filters
+        document.getElementById('wcagFilter')?.addEventListener('change', (e) => {
+            this.updateMultiSelect('wcag', e.target);
+        });
+        
+        document.getElementById('categoryFilter')?.addEventListener('change', (e) => {
+            this.updateMultiSelect('category', e.target);
+        });
+        
+        // Quick search
+        document.getElementById('quickSearch')?.addEventListener('input', (e) => {
+            this.activeFilters.search = e.target.value.toLowerCase();
+            this.applyFilters();
+        });
+        
+        // Clear filters button
+        document.getElementById('clearFilters')?.addEventListener('click', () => {
+            this.clearAllFilters();
+        });
+    }
+    
+    toggleFilter(chip) {
+        const filterType = chip.dataset.filterType;
+        const filterValue = chip.dataset.filterValue;
+        
+        if (this.activeFilters[filterType].has(filterValue)) {
+            this.activeFilters[filterType].delete(filterValue);
+            chip.classList.remove('active');
+        } else {
+            this.activeFilters[filterType].add(filterValue);
+            chip.classList.add('active');
+        }
+        
+        this.applyFilters();
+    }
+    
+    updateMultiSelect(filterType, selectElement) {
+        this.activeFilters[filterType].clear();
+        
+        for (let option of selectElement.selectedOptions) {
+            if (option.value) {
+                this.activeFilters[filterType].add(option.value);
+            }
+        }
+        
+        this.applyFilters();
+    }
+    
+    applyFilters() {
+        const allItems = document.querySelectorAll('.issue-item');
+        let visibleCount = 0;
+        
+        allItems.forEach(item => {
+            const shouldShow = this.shouldShowItem(item);
+            
+            if (shouldShow) {
+                item.classList.remove('filtered-out');
+                visibleCount++;
+            } else {
+                item.classList.add('filtered-out');
+            }
+        });
+        
+        this.updateDisplay();
+        this.updateStatistics(visibleCount, allItems.length);
+    }
+    
+    shouldShowItem(item) {
+        // Check type filter
+        if (this.activeFilters.type.size > 0) {
+            if (!this.activeFilters.type.has(item.dataset.type)) {
+                return false;
+            }
+        }
+        
+        // Check impact filter
+        if (this.activeFilters.impact.size > 0) {
+            if (!this.activeFilters.impact.has(item.dataset.impact)) {
+                return false;
+            }
+        }
+        
+        // Check WCAG filter
+        if (this.activeFilters.wcag.size > 0) {
+            const itemWcag = (item.dataset.wcag || '').split(',');
+            const hasMatch = [...this.activeFilters.wcag].some(criterion => 
+                itemWcag.includes(criterion)
+            );
+            if (!hasMatch) return false;
+        }
+        
+        // Check category filter
+        if (this.activeFilters.category.size > 0) {
+            if (!this.activeFilters.category.has(item.dataset.category)) {
+                return false;
+            }
+        }
+        
+        // Check user impact filter
+        if (this.activeFilters.user.size > 0) {
+            const affectedUsers = this.getAffectedUsers(item);
+            const hasMatch = [...this.activeFilters.user].some(user => 
+                affectedUsers.includes(user)
+            );
+            if (!hasMatch) return false;
+        }
+        
+        // Check search filter
+        if (this.activeFilters.search) {
+            const searchText = [
+                item.dataset.id,
+                item.dataset.description,
+                item.dataset.html
+            ].join(' ').toLowerCase();
+            
+            if (!searchText.includes(this.activeFilters.search)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    getAffectedUsers(item) {
+        const affectedUsers = [];
+        const itemText = (item.dataset.id + ' ' + item.dataset.category).toLowerCase();
+        
+        for (const [keyword, users] of Object.entries(this.issueUserMapping)) {
+            if (itemText.includes(keyword)) {
+                affectedUsers.push(...users);
+            }
+        }
+        
+        return [...new Set(affectedUsers)];
+    }
+    
+    updateDisplay() {
+        const activeFiltersDiv = document.getElementById('activeFilters');
+        const activeFilterTags = document.getElementById('activeFilterTags');
+        
+        if (!activeFiltersDiv || !activeFilterTags) return;
+        
+        const hasActiveFilters = Object.values(this.activeFilters).some(filter => {
+            if (typeof filter === 'string') return filter.length > 0;
+            return filter.size > 0;
+        });
+        
+        if (hasActiveFilters) {
+            activeFiltersDiv.style.display = 'block';
+            activeFilterTags.innerHTML = '';
+            
+            // Display active filters as tags
+            Object.entries(this.activeFilters).forEach(([type, values]) => {
+                if (typeof values === 'string' && values) {
+                    // Search filter
+                    const tag = document.createElement('span');
+                    tag.className = 'active-filter-tag';
+                    tag.innerHTML = `Search: "${values}" <span class="remove-filter" data-type="${type}">×</span>`;
+                    activeFilterTags.appendChild(tag);
+                } else if (values.size > 0) {
+                    // Other filters
+                    values.forEach(value => {
+                        const tag = document.createElement('span');
+                        tag.className = 'active-filter-tag';
+                        tag.innerHTML = `${type}: ${value} <span class="remove-filter" data-type="${type}" data-value="${value}">×</span>`;
+                        activeFilterTags.appendChild(tag);
+                    });
+                }
+            });
+            
+            // Add remove handlers
+            activeFilterTags.querySelectorAll('.remove-filter').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const type = e.target.dataset.type;
+                    const value = e.target.dataset.value;
+                    
+                    if (type === 'search') {
+                        this.activeFilters.search = '';
+                        document.getElementById('quickSearch').value = '';
+                    } else if (value) {
+                        this.activeFilters[type].delete(value);
+                        // Update UI
+                        document.querySelector(`[data-filter-type="${type}"][data-filter-value="${value}"]`)?.classList.remove('active');
+                    }
+                    
+                    this.applyFilters();
+                });
+            });
+        } else {
+            activeFiltersDiv.style.display = 'none';
+        }
+    }
+    
+    updateStatistics(visible, total) {
+        document.getElementById('visibleCount').textContent = visible;
+        document.getElementById('totalCount').textContent = total;
+        
+        // Update type counts
+        const typeCounts = {};
+        document.querySelectorAll('.issue-item:not(.filtered-out)').forEach(item => {
+            const type = item.dataset.type;
+            typeCounts[type] = (typeCounts[type] || 0) + 1;
+        });
+        
+        document.querySelectorAll('.type-count').forEach(counter => {
+            const type = counter.dataset.type;
+            counter.textContent = typeCounts[type] || 0;
+        });
+        
+        // Update filter summary
+        const summary = [];
+        if (typeCounts.error) summary.push(`${typeCounts.error} errors`);
+        if (typeCounts.warning) summary.push(`${typeCounts.warning} warnings`);
+        if (typeCounts.info) summary.push(`${typeCounts.info} info`);
+        if (typeCounts.discovery) summary.push(`${typeCounts.discovery} discovery`);
+        
+        document.getElementById('filterSummary').textContent = summary.join(', ') || 'No items';
+    }
+    
+    updateCounts() {
+        // Count impact levels
+        const impactCounts = { high: 0, medium: 0, low: 0 };
+        
+        document.querySelectorAll('.issue-item').forEach(item => {
+            const impact = item.dataset.impact;
+            if (impact && impactCounts.hasOwnProperty(impact)) {
+                impactCounts[impact]++;
+            }
+        });
+        
+        document.getElementById('highImpactCount').textContent = impactCounts.high;
+        document.getElementById('mediumImpactCount').textContent = impactCounts.medium;
+        document.getElementById('lowImpactCount').textContent = impactCounts.low;
+    }
+    
+    clearAllFilters() {
+        // Clear all filter sets
+        Object.keys(this.activeFilters).forEach(key => {
+            if (typeof this.activeFilters[key] === 'string') {
+                this.activeFilters[key] = '';
+            } else {
+                this.activeFilters[key].clear();
+            }
+        });
+        
+        // Reset UI
+        document.querySelectorAll('.filter-chip.active').forEach(chip => {
+            chip.classList.remove('active');
+        });
+        
+        document.getElementById('wcagFilter').selectedIndex = -1;
+        document.getElementById('categoryFilter').selectedIndex = -1;
+        document.getElementById('quickSearch').value = '';
+        
+        this.applyFilters();
+    }
+}
+
+// Initialize filter manager when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.querySelector('.filter-panel')) {
+        new IssueFilterManager();
+    }
+});
+
+// Existing Run Test functionality
+document.getElementById('runTestBtn')?.addEventListener('click', function() {
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Testing...';
+    
+    fetch("{{ url_for('testing.test_page', page_id=page.id) }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Test failed: ' + (data.error || 'Unknown error'));
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-play-circle"></i> Run Test';
+        }
+    })
+    .catch(error => {
+        alert('Error running test: ' + error);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-play-circle"></i> Run Test';
+    });
+});
+</script>
+{% endblock %}
+
+{# Macro for rendering issue content #}
+{% macro render_issue_content(issue) %}
+    <!-- Implementation of issue content rendering -->
+    <div class="issue-content">
+        <!-- Add the existing issue content here -->
+    </div>
+{% endmacro %}

@@ -316,6 +316,8 @@ class Database:
             page.status = PageStatus.TESTED
             page.violation_count = test_result.violation_count
             page.warning_count = test_result.warning_count
+            page.info_count = test_result.info_count
+            page.discovery_count = test_result.discovery_count
             page.pass_count = test_result.pass_count
             page.test_duration_ms = test_result.duration_ms
             self.update_page(page)

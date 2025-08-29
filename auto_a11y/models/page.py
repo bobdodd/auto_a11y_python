@@ -32,6 +32,8 @@ class Page:
     status: PageStatus = PageStatus.DISCOVERED
     violation_count: int = 0
     warning_count: int = 0
+    info_count: int = 0
+    discovery_count: int = 0
     pass_count: int = 0
     test_duration_ms: Optional[int] = None
     priority: str = "normal"  # high, normal, low
@@ -51,7 +53,7 @@ class Page:
     @property
     def has_issues(self) -> bool:
         """Check if page has accessibility issues"""
-        return self.violation_count > 0 or self.warning_count > 0
+        return self.violation_count > 0 or self.warning_count > 0 or self.info_count > 0 or self.discovery_count > 0
     
     def to_dict(self) -> dict:
         """Convert to dictionary for MongoDB"""
@@ -65,6 +67,8 @@ class Page:
             'status': self.status.value,
             'violation_count': self.violation_count,
             'warning_count': self.warning_count,
+            'info_count': self.info_count,
+            'discovery_count': self.discovery_count,
             'pass_count': self.pass_count,
             'test_duration_ms': self.test_duration_ms,
             'priority': self.priority,
@@ -87,6 +91,8 @@ class Page:
             status=PageStatus(data.get('status', 'discovered')),
             violation_count=data.get('violation_count', 0),
             warning_count=data.get('warning_count', 0),
+            info_count=data.get('info_count', 0),
+            discovery_count=data.get('discovery_count', 0),
             pass_count=data.get('pass_count', 0),
             test_duration_ms=data.get('test_duration_ms'),
             priority=data.get('priority', 'normal'),

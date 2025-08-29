@@ -1414,11 +1414,30 @@ class ExcelFormatter(BaseFormatter):
             website = wd.get('website', {})
             pages = wd.get('pages', [])
             
-            total_violations = sum(p.get('test_result', {}).get('violation_count', 0) for p in pages)
-            total_warnings = sum(p.get('test_result', {}).get('warning_count', 0) for p in pages)
+            # Handle test_result as object or dict
+            total_violations = 0
+            total_warnings = 0
+            for p in pages:
+                test_result = p.get('test_result')
+                if test_result:
+                    if hasattr(test_result, 'violation_count'):
+                        # It's an object
+                        total_violations += test_result.violation_count
+                        total_warnings += test_result.warning_count
+                    elif isinstance(test_result, dict):
+                        # It's a dictionary
+                        total_violations += test_result.get('violation_count', 0)
+                        total_warnings += test_result.get('warning_count', 0)
             
-            ws.cell(row=row, column=1, value=website.get('name', ''))
-            ws.cell(row=row, column=2, value=website.get('url', website.get('base_url', '')))
+            # Handle website as object or dict
+            if hasattr(website, 'name'):
+                # It's an object
+                ws.cell(row=row, column=1, value=website.name or '')
+                ws.cell(row=row, column=2, value=getattr(website, 'url', None) or getattr(website, 'base_url', ''))
+            else:
+                # It's a dictionary
+                ws.cell(row=row, column=1, value=website.get('name', ''))
+                ws.cell(row=row, column=2, value=website.get('url', website.get('base_url', '')))
             ws.cell(row=row, column=3, value=len(pages))
             
             violations_cell = ws.cell(row=row, column=4, value=total_violations)

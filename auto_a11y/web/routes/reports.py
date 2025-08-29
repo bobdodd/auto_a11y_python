@@ -23,12 +23,32 @@ def reports_dashboard():
     
     reports = []
     for file in sorted(report_files, key=lambda x: x.stat().st_mtime, reverse=True)[:20]:
+        # Extract project name from filename if available
+        filename_parts = file.stem.split('_')
+        if len(filename_parts) > 1 and not filename_parts[0].isdigit():
+            # Likely a project name, use it
+            display_name = ' '.join(filename_parts[:-1]).replace('_', ' ').title()
+        else:
+            display_name = file.stem.replace('_', ' ').title()
+            
+        # Try to determine project name from filename
+        project_name = None
+        if 'all_projects' in file.stem.lower():
+            project_name = 'All Projects'
+        elif '_' in file.stem:
+            # Try to extract project name from filename pattern
+            name_parts = file.stem.split('_')
+            if len(name_parts) > 2:
+                # Skip timestamp parts at the end
+                project_name = ' '.join(name_parts[:-2]).replace('_', ' ').title()
+        
         reports.append({
             'filename': file.name,
-            'name': file.stem.replace('_', ' ').title(),
-            'size_kb': file.stat().st_size,  # Pass bytes, not KB - template will format it
+            'name': display_name,
+            'size_kb': file.stat().st_size,  # Pass bytes, template uses filesizeformat
             'created_at': datetime.fromtimestamp(file.stat().st_mtime),
-            'type': file.suffix[1:].lower()
+            'type': file.suffix[1:].lower(),
+            'project_name': project_name
         })
     
     # Get all projects for the dropdown

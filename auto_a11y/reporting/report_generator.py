@@ -7,6 +7,7 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 from pathlib import Path
 import json
+import re
 
 from auto_a11y.models import TestResult, Page, Website, Project, ImpactLevel
 from auto_a11y.core.database import Database
@@ -47,6 +48,31 @@ class ReportGenerator:
             'pdf': PDFFormatter(config)
         }
     
+    def _sanitize_filename(self, name: str, max_length: int = 50) -> str:
+        """
+        Sanitize a string to be safe for use in filenames
+        
+        Args:
+            name: The name to sanitize
+            max_length: Maximum length of the sanitized name
+            
+        Returns:
+            A sanitized filename-safe string
+        """
+        # Remove or replace unsafe characters
+        safe_name = re.sub(r'[<>:"/\\|?*]', '_', name)
+        # Replace multiple spaces/underscores with single underscore
+        safe_name = re.sub(r'[_\s]+', '_', safe_name)
+        # Remove leading/trailing underscores
+        safe_name = safe_name.strip('_')
+        # Truncate if too long
+        if len(safe_name) > max_length:
+            safe_name = safe_name[:max_length]
+        # If empty after sanitization, use a default
+        if not safe_name:
+            safe_name = 'report'
+        return safe_name
+    
     def generate_page_report(
         self,
         page_id: str,
@@ -86,9 +112,12 @@ class ReportGenerator:
         if not formatter:
             raise ValueError(f"Unsupported format: {format}")
         
-        # Create filename
+        # Create filename with page URL
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"page_{page_id}_{timestamp}.{formatter.extension}"
+        # Create a safe filename from the page URL
+        page_name = page.url.replace('https://', '').replace('http://', '')
+        page_name = self._sanitize_filename(page_name)
+        filename = f"page_{page_name}_{timestamp}.{formatter.extension}"
         filepath = self.report_dir / filename
         
         # Generate content
@@ -154,9 +183,12 @@ class ReportGenerator:
         if not formatter:
             raise ValueError(f"Unsupported format: {format}")
         
-        # Create filename
+        # Create filename with website name
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"website_{website_id}_{timestamp}.{formatter.extension}"
+        # Create a safe filename from the website name
+        website_name = website.name or website.url.replace('https://', '').replace('http://', '')
+        website_name = self._sanitize_filename(website_name)
+        filename = f"website_{website_name}_{timestamp}.{formatter.extension}"
         filepath = self.report_dir / filename
         
         # Generate content
@@ -348,9 +380,11 @@ class ReportGenerator:
         if not formatter:
             raise ValueError(f"Unsupported format: {format}")
         
-        # Create filename
+        # Create filename with project name
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"project_{project_id}_{timestamp}.{formatter.extension}"
+        # Create a safe filename from the project name
+        project_name = self._sanitize_filename(project.name)
+        filename = f"project_{project_name}_{timestamp}.{formatter.extension}"
         filepath = self.report_dir / filename
         
         # Generate content

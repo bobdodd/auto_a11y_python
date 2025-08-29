@@ -109,8 +109,10 @@ class TestResult:
     page_id: str
     test_date: datetime = field(default_factory=datetime.now)
     duration_ms: int = 0
-    violations: List[Violation] = field(default_factory=list)
-    warnings: List[Violation] = field(default_factory=list)
+    violations: List[Violation] = field(default_factory=list)  # Errors (_Err)
+    warnings: List[Violation] = field(default_factory=list)   # Warnings (_Warn)
+    info: List[Violation] = field(default_factory=list)       # Information notes (_Info)
+    discovery: List[Violation] = field(default_factory=list)  # Discovery items (_Disco)
     passes: List[Dict[str, Any]] = field(default_factory=list)
     ai_findings: List[AIFinding] = field(default_factory=list)
     screenshot_path: Optional[str] = None
@@ -136,6 +138,16 @@ class TestResult:
         return len(self.warnings)
     
     @property
+    def info_count(self) -> int:
+        """Get total info count"""
+        return len(self.info)
+    
+    @property
+    def discovery_count(self) -> int:
+        """Get total discovery count"""
+        return len(self.discovery)
+    
+    @property
     def pass_count(self) -> int:
         """Get total pass count"""
         return len(self.passes)
@@ -146,6 +158,8 @@ class TestResult:
         return {
             'violations': self.violation_count,
             'warnings': self.warning_count,
+            'info': self.info_count,
+            'discovery': self.discovery_count,
             'passes': self.pass_count,
             'ai_findings': len(self.ai_findings),
             'critical': len([v for v in self.violations if v.impact == ImpactLevel.CRITICAL]),
@@ -162,6 +176,8 @@ class TestResult:
             'duration_ms': self.duration_ms,
             'violations': [v.to_dict() for v in self.violations],
             'warnings': [w.to_dict() for w in self.warnings],
+            'info': [i.to_dict() for i in self.info],
+            'discovery': [d.to_dict() for d in self.discovery],
             'passes': self.passes,
             'ai_findings': [f.to_dict() for f in self.ai_findings],
             'screenshot_path': self.screenshot_path,
@@ -183,6 +199,8 @@ class TestResult:
             duration_ms=data.get('duration_ms', 0),
             violations=[Violation.from_dict(v) for v in data.get('violations', [])],
             warnings=[Violation.from_dict(w) for w in data.get('warnings', [])],
+            info=[Violation.from_dict(i) for i in data.get('info', [])],
+            discovery=[Violation.from_dict(d) for d in data.get('discovery', [])],
             passes=data.get('passes', []),
             ai_findings=[AIFinding.from_dict(f) for f in data.get('ai_findings', [])],
             screenshot_path=data.get('screenshot_path'),

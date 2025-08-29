@@ -8,6 +8,7 @@
 
     <!-- Statistics Cards -->
     <div class="row mb-4 g-3">
+        <!-- First Row - General Stats -->
         <div class="col-6 col-sm-6 col-lg-3">
             <div class="card bg-primary text-white h-100">
                 <div class="card-body">
@@ -22,7 +23,7 @@
             </div>
         </div>
         <div class="col-6 col-sm-6 col-lg-3">
-            <div class="card bg-info text-white h-100">
+            <div class="card bg-primary text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -48,14 +49,70 @@
             </div>
         </div>
         <div class="col-6 col-sm-6 col-lg-3">
+            <div class="card bg-secondary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2 fs-7">Total Issues</h6>
+                            <h3 class="card-title mb-0">{{ stats.total_violations + stats.total_warnings + stats.total_info + stats.total_discovery }}</h3>
+                        </div>
+                        <i class="bi bi-list-check display-6 opacity-50 d-none d-sm-block"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Second Row - Issue Breakdown -->
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-sm-6 col-lg-3">
+            <div class="card bg-danger text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2 fs-7">Errors</h6>
+                            <h3 class="card-title mb-0">{{ stats.total_violations }}</h3>
+                        </div>
+                        <i class="bi bi-x-circle display-6 opacity-50 d-none d-sm-block"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-6 col-lg-3">
             <div class="card bg-warning text-dark h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 fs-7">Violations</h6>
-                            <h3 class="card-title mb-0">{{ stats.total_violations }}</h3>
+                            <h6 class="card-subtitle mb-2 fs-7">Warnings</h6>
+                            <h3 class="card-title mb-0">{{ stats.total_warnings }}</h3>
                         </div>
                         <i class="bi bi-exclamation-triangle display-6 opacity-50 d-none d-sm-block"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-6 col-lg-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2 fs-7">Info Notes</h6>
+                            <h3 class="card-title mb-0">{{ stats.total_info }}</h3>
+                        </div>
+                        <i class="bi bi-info-circle display-6 opacity-50 d-none d-sm-block"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-6 col-lg-3">
+            <div class="card text-white h-100" style="background-color: #6f42c1;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2 fs-7">Discovery</h6>
+                            <h3 class="card-title mb-0">{{ stats.total_discovery }}</h3>
+                        </div>
+                        <i class="bi bi-search display-6 opacity-50 d-none d-sm-block"></i>
                     </div>
                 </div>
             </div>

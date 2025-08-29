@@ -288,17 +288,19 @@ class Database:
         if not new_pages:
             return 0
         
-        result = self.pages.insert_many(new_pages)
+        insert_result = self.pages.insert_many(new_pages)
         
         # Update website page count
         if new_pages:
             website_id = new_pages[0]["website_id"]
-            self.websites.update_one(
+            # website_id is already a string, need to find by string ID
+            update_result = self.websites.update_one(
                 {"_id": ObjectId(website_id)},
                 {"$inc": {"page_count": len(new_pages)}}
             )
+            logger.info(f"Updated website {website_id} page count by {len(new_pages)}, modified={update_result.modified_count}")
         
-        return len(result.inserted_ids)
+        return len(insert_result.inserted_ids)
     
     # Test result operations
     

@@ -32,8 +32,37 @@ def view_page(page_id):
                          page=page,
                          website=website,
                          project=project,
-                         test_result=test_result,
+                         latest_result=test_result,
                          test_history=test_history)
+
+
+@pages_bp.route('/<page_id>/edit', methods=['GET', 'POST'])
+def edit_page(page_id):
+    """Edit page details"""
+    page = current_app.db.get_page(page_id)
+    if not page:
+        flash('Page not found', 'error')
+        return redirect(url_for('projects.list_projects'))
+    
+    website = current_app.db.get_website(page.website_id)
+    project = current_app.db.get_project(website.project_id)
+    
+    if request.method == 'POST':
+        # Update page details
+        page.title = request.form.get('title', page.title)
+        page.priority = request.form.get('priority', page.priority)
+        page.notes = request.form.get('notes', page.notes)
+        
+        if current_app.db.update_page(page):
+            flash('Page updated successfully', 'success')
+            return redirect(url_for('pages.view_page', page_id=page_id))
+        else:
+            flash('Failed to update page', 'error')
+    
+    return render_template('pages/edit.html',
+                         page=page,
+                         website=website,
+                         project=project)
 
 
 @pages_bp.route('/<page_id>/test', methods=['POST'])

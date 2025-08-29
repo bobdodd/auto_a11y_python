@@ -19,18 +19,37 @@ def reports_dashboard():
     """Reports dashboard"""
     # Get available reports
     reports_dir = current_app.app_config.REPORTS_DIR
-    report_files = list(reports_dir.glob('*.xlsx')) + list(reports_dir.glob('*.html'))
+    report_files = list(reports_dir.glob('*.xlsx')) + list(reports_dir.glob('*.html')) + list(reports_dir.glob('*.json')) + list(reports_dir.glob('*.pdf'))
     
     reports = []
     for file in sorted(report_files, key=lambda x: x.stat().st_mtime, reverse=True)[:20]:
         reports.append({
             'filename': file.name,
-            'size': file.stat().st_size,
-            'created': datetime.fromtimestamp(file.stat().st_mtime),
-            'type': file.suffix[1:].upper()
+            'name': file.stem.replace('_', ' ').title(),
+            'size_kb': file.stat().st_size,  # Pass bytes, not KB - template will format it
+            'created_at': datetime.fromtimestamp(file.stat().st_mtime),
+            'type': file.suffix[1:].lower()
         })
     
-    return render_template('reports/dashboard.html', reports=reports)
+    # Get all projects for the dropdown
+    projects = current_app.db.get_projects()
+    
+    # Get all websites for the dropdown
+    websites = []
+    for project in projects:
+        project_websites = current_app.db.get_websites(project.id)
+        for website in project_websites:
+            websites.append({
+                'id': str(website.id),
+                'name': website.name,
+                'project_id': str(project.id),
+                'project_name': project.name
+            })
+    
+    return render_template('reports/dashboard.html', 
+                         reports=reports, 
+                         projects=projects,
+                         websites=websites)
 
 
 @reports_bp.route('/generate', methods=['POST'])
@@ -39,25 +58,86 @@ def generate_report():
     data = request.get_json()
     
     project_id = data.get('project_id')
-    report_type = data.get('format', 'xlsx')
-    include_options = data.get('include', {})
+    website_id = data.get('website_id')
+    report_type = data.get('type', 'xlsx')
+    report_name = data.get('name', f'Accessibility Report {datetime.now().strftime("%Y-%m-%d")}')
+    include_options = {
+        'violations': data.get('include_violations', True),
+        'warnings': data.get('include_warnings', True),
+        'ai': data.get('include_ai', True),
+        'screenshots': data.get('include_screenshots', False),
+        'summary': data.get('include_summary', True)
+    }
     
-    if not project_id:
-        return jsonify({'error': 'Project ID required'}), 400
+    # Determine scope
+    scope = 'all'
+    scope_id = None
     
-    project = current_app.db.get_project(project_id)
-    if not project:
-        return jsonify({'error': 'Project not found'}), 404
+    if project_id:
+        project = current_app.db.get_project(project_id)
+        if not project:
+            return jsonify({'error': 'Project not found'}), 404
+        scope = 'project'
+        scope_id = project_id
+    elif website_id:
+        website = current_app.db.get_website(website_id)
+        if not website:
+            return jsonify({'error': 'Website not found'}), 404
+        scope = 'website'
+        scope_id = website_id
     
-    # Queue report generation
-    report_id = f'report_{project_id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
-    
-    return jsonify({
-        'success': True,
-        'report_id': report_id,
-        'message': f'Report generation started',
-        'status_url': url_for('reports.report_status', report_id=report_id)
-    })
+    try:
+        # Initialize report generator
+        from auto_a11y.reporting import ReportGenerator
+        generator = ReportGenerator(current_app.db, current_app.app_config.__dict__)
+        
+        # Generate report based on scope and type
+        if report_type == 'excel' or report_type == 'xlsx':
+            if scope == 'all':
+                # Generate report for all projects
+                report_path = generator.generate_all_projects_report(format='xlsx')
+            elif scope == 'project':
+                report_path = generator.generate_project_report(project_id=scope_id, format='xlsx')
+            else:
+                report_path = generator.generate_website_report(website_id=scope_id, format='xlsx')
+        elif report_type == 'pdf':
+            # Generate PDF report
+            if scope == 'all':
+                report_path = generator.generate_all_projects_report(format='pdf')
+            elif scope == 'project':
+                report_path = generator.generate_project_report(project_id=scope_id, format='pdf')
+            else:
+                report_path = generator.generate_website_report(website_id=scope_id, format='pdf')
+        elif report_type == 'json':
+            # Generate JSON report
+            if scope == 'all':
+                report_path = generator.generate_all_projects_report(format='json')
+            elif scope == 'project':
+                report_path = generator.generate_project_report(project_id=scope_id, format='json')
+            else:
+                report_path = generator.generate_website_report(website_id=scope_id, format='json')
+        else:
+            # HTML report
+            if scope == 'all':
+                report_path = generator.generate_all_projects_report(format='html')
+            elif scope == 'project':
+                report_path = generator.generate_project_report(project_id=scope_id, format='html')
+            else:
+                report_path = generator.generate_website_report(website_id=scope_id, format='html')
+        
+        # Store report metadata (in production, this would be saved to database)
+        report_id = f'report_{scope}_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
+        
+        return jsonify({
+            'success': True,
+            'report_id': report_id,
+            'message': f'Report generated successfully',
+            'download_url': url_for('reports.download_report', filename=Path(report_path).name)
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to generate report: {e}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
 
 @reports_bp.route('/report/<report_id>/status')

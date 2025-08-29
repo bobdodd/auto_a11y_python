@@ -7,55 +7,55 @@
     <h1 class="h2 mb-4">Dashboard</h1>
 
     <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3 mb-3">
-            <div class="card bg-primary text-white">
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-sm-6 col-lg-3">
+            <div class="card bg-primary text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2">Projects</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">Projects</h6>
                             <h3 class="card-title mb-0">{{ stats.projects }}</h3>
                         </div>
-                        <i class="bi bi-folder display-4 opacity-50"></i>
+                        <i class="bi bi-folder display-6 opacity-50 d-none d-sm-block"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
-            <div class="card bg-info text-white">
+        <div class="col-6 col-sm-6 col-lg-3">
+            <div class="card bg-info text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2">Total Pages</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">Total Pages</h6>
                             <h3 class="card-title mb-0">{{ stats.total_pages }}</h3>
                         </div>
-                        <i class="bi bi-file-text display-4 opacity-50"></i>
+                        <i class="bi bi-file-text display-6 opacity-50 d-none d-sm-block"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
-            <div class="card bg-success text-white">
+        <div class="col-6 col-sm-6 col-lg-3">
+            <div class="card bg-success text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2">Tested Pages</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">Tested Pages</h6>
                             <h3 class="card-title mb-0">{{ stats.tested_pages }}</h3>
                         </div>
-                        <i class="bi bi-check-circle display-4 opacity-50"></i>
+                        <i class="bi bi-check-circle display-6 opacity-50 d-none d-sm-block"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
-            <div class="card bg-warning text-dark">
+        <div class="col-6 col-sm-6 col-lg-3">
+            <div class="card bg-warning text-dark h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2">Total Violations</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">Violations</h6>
                             <h3 class="card-title mb-0">{{ stats.total_violations }}</h3>
                         </div>
-                        <i class="bi bi-exclamation-triangle display-4 opacity-50"></i>
+                        <i class="bi bi-exclamation-triangle display-6 opacity-50 d-none d-sm-block"></i>
                     </div>
                 </div>
             </div>
@@ -70,15 +70,17 @@
                     <h5 class="card-title mb-0">Quick Actions</h5>
                 </div>
                 <div class="card-body">
-                    <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary me-2">
-                        <i class="bi bi-plus-circle"></i> New Project
-                    </a>
-                    <a href="{{ url_for('testing.testing_dashboard') }}" class="btn btn-success me-2">
-                        <i class="bi bi-play-circle"></i> Run Tests
-                    </a>
-                    <a href="{{ url_for('reports.reports_dashboard') }}" class="btn btn-info">
-                        <i class="bi bi-download"></i> Generate Report
-                    </a>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> New Project
+                        </a>
+                        <a href="{{ url_for('testing.testing_dashboard') }}" class="btn btn-success">
+                            <i class="bi bi-play-circle"></i> Run Tests
+                        </a>
+                        <a href="{{ url_for('reports.reports_dashboard') }}" class="btn btn-info">
+                            <i class="bi bi-download"></i> Generate Report
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

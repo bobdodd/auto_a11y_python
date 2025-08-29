@@ -60,20 +60,6 @@ class ScrapingEngine:
         self.discovered_urls.clear()
         self.queued_urls.clear()
         
-        # Check browser availability first
-        try:
-            if not await self.browser_manager.is_running():
-                await self.browser_manager.start()
-        except Exception as e:
-            error_msg = f"Failed to start browser: {e}. Make sure Chromium is installed (run: python run.py --download-browser)"
-            logger.error(error_msg)
-            if progress_callback:
-                await progress_callback({
-                    'status': 'failed',
-                    'error': error_msg
-                })
-            raise RuntimeError(error_msg)
-        
         # Parse base URL
         base_url = self._normalize_url(website.url)
         base_domain = urlparse(base_url).netloc
@@ -84,8 +70,19 @@ class ScrapingEngine:
         # Track discovered pages
         discovered_pages = []
         
-        # Start browser
-        await self.browser_manager.start()
+        # Start browser once for entire discovery session
+        try:
+            await self.browser_manager.start()
+            logger.info("Browser started for discovery session")
+        except Exception as e:
+            error_msg = f"Failed to start browser: {e}. Make sure Chromium is installed (run: python run.py --download-browser)"
+            logger.error(error_msg)
+            if progress_callback:
+                await progress_callback({
+                    'status': 'failed',
+                    'error': error_msg
+                })
+            raise RuntimeError(error_msg)
         
         try:
             depth = 0
@@ -147,8 +144,17 @@ class ScrapingEngine:
                 website.last_scraped = datetime.now()
                 self.db.update_website(website)
             
+        except Exception as e:
+            logger.error(f"Error during discovery: {e}", exc_info=True)
+            if progress_callback:
+                await progress_callback({
+                    'status': 'failed',
+                    'error': str(e)
+                })
+            raise
         finally:
             await self.browser_manager.stop()
+            logger.info("Browser stopped after discovery session")
         
         logger.info(f"Discovery complete. Found {len(discovered_pages)} pages")
         return discovered_pages
@@ -158,7 +164,8 @@ class ScrapingEngine:
         url: str,
         website: Website,
         depth: int,
-        base_domain: str
+        base_domain: str,
+        browser_page=None
     ) -> Optional[Page]:
         """
         Discover a single page and extract links
@@ -168,49 +175,79 @@ class ScrapingEngine:
             website: Website object
             depth: Current crawl depth
             base_domain: Base domain for filtering
+            browser_page: Optional existing page to reuse
             
         Returns:
             Page object or None if failed
         """
+        # Check if browser is still running
+        if not await self.browser_manager.is_running():
+            logger.error("Browser is not running, cannot discover page")
+            return None
+            
+        page = None
         try:
-            async with self.browser_manager.get_page() as page:
-                # Navigate to URL
-                response = await self.browser_manager.goto(
-                    page=page,
-                    url=url,
-                    wait_until='networkidle2',
-                    timeout=30000
-                )
+            # Check browser connection before creating page
+            if not self.browser_manager.browser:
+                logger.error("Browser instance is None")
+                return None
                 
-                if not response:
-                    logger.warning(f"Failed to load page: {url}")
-                    return None
-                
-                # Get page title
-                title = await self.browser_manager.get_page_title(page)
-                
-                # Extract links if not at max depth
-                if depth < website.scraping_config.max_depth:
-                    links = await self._extract_links(page, url, website, base_domain)
-                    self.queued_urls.update(links)
-                
-                # Create page object
-                page_obj = Page(
-                    website_id=website.id,
-                    url=url,
-                    title=title or "Untitled",
-                    discovered_from=website.url if depth == 0 else None,
-                    depth=depth,
-                    status=PageStatus.DISCOVERED
-                )
-                
-                logger.debug(f"Discovered page: {url} - {title}")
-                return page_obj
+            # Create a new page
+            page = await self.browser_manager.browser.newPage()
+            
+            # Set viewport
+            await page.setViewport({
+                'width': self.browser_manager.config.get('viewport_width', 1920),
+                'height': self.browser_manager.config.get('viewport_height', 1080)
+            })
+            
+            # Set navigation timeout
+            page.setDefaultNavigationTimeout(60000)
+            
+            # Navigate to URL with longer timeout and less strict wait condition
+            response = await self.browser_manager.goto(
+                page=page,
+                url=url,
+                wait_until='load',  # Less strict than networkidle2
+                timeout=60000  # 60 seconds timeout
+            )
+            
+            if not response:
+                logger.warning(f"Failed to load page: {url}")
+                return None
+            
+            # Get page title
+            title = await self.browser_manager.get_page_title(page)
+            
+            # Extract links if not at max depth
+            if depth < website.scraping_config.max_depth:
+                links = await self._extract_links(page, url, website, base_domain)
+                self.queued_urls.update(links)
+            
+            # Create page object
+            page_obj = Page(
+                website_id=website.id,
+                url=url,
+                title=title or "Untitled",
+                discovered_from=website.url if depth == 0 else None,
+                depth=depth,
+                status=PageStatus.DISCOVERED
+            )
+            
+            logger.debug(f"Discovered page: {url} - {title}")
+            return page_obj
                 
         except TimeoutError:
             logger.warning(f"Timeout loading page: {url}")
         except Exception as e:
             logger.error(f"Error discovering page {url}: {e}", exc_info=True)
+        finally:
+            # Close the page
+            if page:
+                try:
+                    await page.close()
+                except Exception as e:
+                    logger.warning(f"Error closing page: {e}")
         
         return None
     
@@ -324,9 +361,14 @@ class ScrapingEngine:
             # Remove fragment
             parsed = parsed._replace(fragment='')
             
-            # Remove trailing slash from path (except root)
+            # Normalize path - for root, remove the path entirely or use empty string
+            # This makes both "example.com" and "example.com/" normalize to "example.com"
             path = parsed.path
-            if path != '/' and path.endswith('/'):
+            if path == '/':
+                # Root path - remove it for consistent normalization
+                parsed = parsed._replace(path='')
+            elif path.endswith('/'):
+                # Non-root path with trailing slash - remove the slash
                 path = path[:-1]
                 parsed = parsed._replace(path=path)
             
@@ -355,26 +397,11 @@ class ScrapingEngine:
             
             # Check cache
             if robots_url not in self.robots_cache:
-                # Fetch and parse robots.txt
+                # For now, skip robots.txt checking to avoid page conflicts
+                # TODO: Implement proper robots.txt fetching with requests library
                 rp = RobotFileParser()
                 rp.set_url(robots_url)
-                
-                # Use custom fetch to handle async
-                async with self.browser_manager.get_page() as page:
-                    try:
-                        await page.goto(robots_url, {'waitUntil': 'domcontentloaded', 'timeout': 5000})
-                        content = await page.content()
-                        
-                        # Parse robots.txt content
-                        if 'text/plain' in content or 'User-agent' in content:
-                            rp.parse(content.split('\n'))
-                        else:
-                            # No valid robots.txt, allow all
-                            rp.parse(['User-agent: *', 'Allow: /'])
-                    except:
-                        # Error fetching robots.txt, assume allow all
-                        rp.parse(['User-agent: *', 'Allow: /'])
-                
+                rp.parse(['User-agent: *', 'Allow: /'])
                 self.robots_cache[robots_url] = rp
             
             # Check if URL is fetchable

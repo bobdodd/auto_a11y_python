@@ -12,7 +12,8 @@ from auto_a11y.models import TestResult, Page, Website, Project, ImpactLevel
 from auto_a11y.core.database import Database
 from auto_a11y.reporting.formatters import (
     HTMLFormatter,
-    JSONFormatter, 
+    JSONFormatter,
+    ExcelFormatter,
     CSVFormatter,
     PDFFormatter
 )
@@ -40,6 +41,8 @@ class ReportGenerator:
         self.formatters = {
             'html': HTMLFormatter(config),
             'json': JSONFormatter(config),
+            'xlsx': ExcelFormatter(config),
+            'excel': ExcelFormatter(config),  # alias
             'csv': CSVFormatter(config),
             'pdf': PDFFormatter(config)
         }
@@ -93,7 +96,13 @@ class ReportGenerator:
         
         # Save report
         if format == 'pdf':
-            formatter.save_pdf(content, filepath)
+            # PDF returns bytes, write in binary mode
+            with open(filepath, 'wb') as f:
+                f.write(content)
+        elif format in ['xlsx', 'excel']:
+            # Excel returns bytes, write in binary mode
+            with open(filepath, 'wb') as f:
+                f.write(content)
         else:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(content)
@@ -155,13 +164,141 @@ class ReportGenerator:
         
         # Save report
         if format == 'pdf':
-            formatter.save_pdf(content, filepath)
+            # PDF returns bytes, write in binary mode
+            with open(filepath, 'wb') as f:
+                f.write(content)
+        elif format in ['xlsx', 'excel']:
+            # Excel returns bytes, write in binary mode
+            with open(filepath, 'wb') as f:
+                f.write(content)
         else:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(content)
         
         logger.info(f"Generated {format} report: {filepath}")
         return str(filepath)
+    
+    def generate_all_projects_report(
+        self,
+        format: str = 'html',
+        include_ai: bool = True
+    ) -> str:
+        """
+        Generate report for all projects
+        
+        Args:
+            format: Output format (html, xlsx, json)
+            include_ai: Include AI analysis results
+            
+        Returns:
+            Path to generated report file
+        """
+        logger.info(f"Generating all projects report in {format} format")
+        
+        # Get all projects
+        projects = self.db.get_projects()
+        
+        if not projects:
+            raise ValueError("No projects found")
+        
+        # Collect data for all projects
+        all_projects_data = []
+        total_stats = {
+            'total_projects': len(projects),
+            'total_websites': 0,
+            'total_pages': 0,
+            'total_tested': 0,
+            'total_violations': 0,
+            'total_warnings': 0
+        }
+        
+        for project in projects:
+            websites = self.db.get_websites(project.id)
+            project_data = {
+                'project': project.__dict__,
+                'websites': [],
+                'stats': self.db.get_project_stats(project.id)
+            }
+            
+            for website in websites:
+                pages = self.db.get_pages(website.id)
+                website_data = {
+                    'website': website.__dict__,
+                    'pages': len(pages),
+                    'tested': sum(1 for p in pages if p.status.value == 'tested'),
+                    'violations': sum(p.violation_count for p in pages),
+                    'warnings': sum(p.warning_count for p in pages)
+                }
+                project_data['websites'].append(website_data)
+                
+                # Update totals
+                total_stats['total_websites'] += 1
+                total_stats['total_pages'] += len(pages)
+                total_stats['total_tested'] += website_data['tested']
+                total_stats['total_violations'] += website_data['violations']
+                total_stats['total_warnings'] += website_data['warnings']
+            
+            all_projects_data.append(project_data)
+        
+        # Prepare report data
+        report_data = {
+            'title': 'All Projects Accessibility Report',
+            'projects': all_projects_data,
+            'summary': total_stats,
+            'generated_at': datetime.now().isoformat()
+        }
+        
+        # Generate report
+        formatter = self.formatters.get(format)
+        if not formatter:
+            raise ValueError(f"Unsupported format: {format}")
+        
+        # Create filename
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"all_projects_{timestamp}.{formatter.extension}"
+        filepath = self.report_dir / filename
+        
+        # Generate content based on format  
+        if format in ['xlsx', 'excel']:
+            # For Excel, use the proper Excel formatter
+            content = formatter.format_all_projects_report(report_data)
+        elif format == 'html':
+            # For HTML, use the all projects formatter
+            content = formatter.format_all_projects_report(report_data)
+        elif format == 'pdf':
+            # For PDF, use the PDF formatter
+            content = formatter.format_all_projects_report(report_data)
+        else:
+            content = json.dumps(report_data, indent=2, default=str)
+        
+        self._save_report(filepath, content, format)
+        
+        logger.info(f"All projects report generated: {filepath}")
+        return str(filepath)
+    
+    def _save_report(self, filepath: Path, content, format: str):
+        """Save report content to file"""
+        if format == 'json':
+            filepath = filepath.with_suffix('.json')
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(content)
+        elif format == 'html':
+            filepath = filepath.with_suffix('.html')
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(content)
+        elif format in ['xlsx', 'excel']:
+            filepath = filepath.with_suffix('.xlsx')
+            # Excel content is bytes
+            with open(filepath, 'wb') as f:
+                f.write(content)
+        elif format == 'pdf':
+            filepath = filepath.with_suffix('.pdf')
+            # PDF content is bytes
+            with open(filepath, 'wb') as f:
+                f.write(content)
+        else:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(content)
     
     def generate_project_report(
         self,
@@ -221,7 +358,13 @@ class ReportGenerator:
         
         # Save report
         if format == 'pdf':
-            formatter.save_pdf(content, filepath)
+            # PDF returns bytes, write in binary mode
+            with open(filepath, 'wb') as f:
+                f.write(content)
+        elif format in ['xlsx', 'excel']:
+            # Excel returns bytes, write in binary mode
+            with open(filepath, 'wb') as f:
+                f.write(content)
         else:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(content)
@@ -442,6 +585,10 @@ class ReportGenerator:
         
         if format == 'pdf':
             formatter.save_pdf(content, filepath)
+        elif format in ['xlsx', 'excel']:
+            # Excel returns bytes, write in binary mode
+            with open(filepath, 'wb') as f:
+                f.write(content)
         else:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(content)

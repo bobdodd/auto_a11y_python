@@ -26,36 +26,36 @@
     </div>
 
     <!-- Statistics -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-center">
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-sm-6 col-md-3">
+            <div class="card text-center h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Websites</h5>
+                    <h5 class="card-title fs-6">Websites</h5>
                     <p class="display-6">{{ stats.website_count }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
+        <div class="col-6 col-sm-6 col-md-3">
+            <div class="card text-center h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Pages</h5>
+                    <h5 class="card-title fs-6">Pages</h5>
                     <p class="display-6">{{ stats.total_pages }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
+        <div class="col-6 col-sm-6 col-md-3">
+            <div class="card text-center h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Tested</h5>
+                    <h5 class="card-title fs-6">Tested</h5>
                     <p class="display-6">{{ stats.tested_pages }}</p>
                     <small class="text-muted">{{ "%.1f"|format(stats.test_coverage) }}% coverage</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
+        <div class="col-6 col-sm-6 col-md-3">
+            <div class="card text-center h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Issues</h5>
+                    <h5 class="card-title fs-6">Issues</h5>
                     <p class="display-6 text-danger">{{ stats.total_violations }}</p>
                     <small class="text-warning">{{ stats.total_warnings }} warnings</small>
                 </div>
@@ -98,16 +98,21 @@
                                 {{ website.last_tested.strftime('%Y-%m-%d %H:%M') if website.last_tested else 'Never' }}
                             </td>
                             <td>
-                                <a href="{{ url_for('websites.view_website', website_id=website.id) }}" 
-                                   class="btn btn-sm btn-primary">
-                                    <i class="bi bi-eye"></i> View
-                                </a>
-                                <button class="btn btn-sm btn-success" onclick="discoverPages('{{ website.id }}')">
-                                    <i class="bi bi-search"></i> Discover
-                                </button>
-                                <button class="btn btn-sm btn-info" onclick="testWebsite('{{ website.id }}')">
-                                    <i class="bi bi-play"></i> Test
-                                </button>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('websites.view_website', website_id=website.id) }}" 
+                                       class="btn btn-sm btn-primary" title="View website">
+                                        <i class="bi bi-eye"></i>
+                                        <span class="d-none d-lg-inline"> View</span>
+                                    </a>
+                                    <button class="btn btn-sm btn-success" onclick="discoverPages('{{ website.id }}')" title="Discover pages">
+                                        <i class="bi bi-search"></i>
+                                        <span class="d-none d-lg-inline"> Discover</span>
+                                    </button>
+                                    <button class="btn btn-sm btn-info" onclick="testWebsite('{{ website.id }}')" title="Test website">
+                                        <i class="bi bi-play"></i>
+                                        <span class="d-none d-lg-inline"> Test</span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}

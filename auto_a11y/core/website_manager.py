@@ -58,9 +58,10 @@ class WebsiteManager:
         if not parsed.scheme or not parsed.netloc:
             raise ValueError(f"Invalid URL: {url}")
         
-        # Normalize URL
-        if not url.endswith('/'):
-            url += '/'
+        # Normalize URL - remove trailing slash for consistency
+        if url.endswith('/') and len(parsed.path) <= 1:
+            # Remove trailing slash from root URL
+            url = url[:-1]
         
         # Check if website already exists in project
         existing = self.db.websites.find_one({

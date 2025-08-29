@@ -30,7 +30,8 @@ class BrowserManager:
         
     async def start(self):
         """Start browser instance"""
-        if self.browser:
+        if self.browser and await self.is_running():
+            logger.debug("Browser already running")
             return
         
         launch_options = {
@@ -44,13 +45,13 @@ class BrowserManager:
                 '--disable-dev-shm-usage',
                 '--disable-accelerated-2d-canvas',
                 '--no-first-run',
-                '--no-zygote',
-                '--single-process',
+                # Removed --no-zygote and --single-process as they can cause connection issues
                 '--disable-gpu',
                 f'--window-size={self.config.get("viewport_width", 1920)},{self.config.get("viewport_height", 1080)}'
             ],
-            'dumpio': self.config.get('dumpio', False),
-            'timeout': self.config.get('timeout', 30000)
+            'dumpio': self.config.get('dumpio', True),  # Enable to see browser output for debugging
+            'timeout': self.config.get('timeout', 60000),  # Increased to 60 seconds
+            'autoClose': False  # Prevent automatic closing
         }
         
         # Add user data directory if specified
@@ -60,8 +61,11 @@ class BrowserManager:
         try:
             self.browser = await launch(**launch_options)
             logger.info("Browser started successfully")
+            # Keep a reference to prevent garbage collection
+            self._browser_ref = self.browser
         except Exception as e:
             logger.error(f"Failed to start browser: {e}")
+            self.browser = None
             raise
     
     async def stop(self):
@@ -114,7 +118,7 @@ class BrowserManager:
                     await page.setUserAgent(self.config['user_agent'])
                 
                 # Set default timeout
-                page.setDefaultNavigationTimeout(self.config.get('timeout', 30000))
+                page.setDefaultNavigationTimeout(self.config.get('timeout', 60000))
                 
                 self.pages.append(page)
                 yield page
@@ -149,7 +153,7 @@ class BrowserManager:
         """
         options = {
             'waitUntil': wait_until,
-            'timeout': timeout or self.config.get('timeout', 30000)
+            'timeout': timeout or self.config.get('timeout', 60000)
         }
         
         try:
@@ -263,7 +267,7 @@ class BrowserManager:
         try:
             await page.waitForSelector(
                 selector,
-                {'timeout': timeout or self.config.get('timeout', 30000)}
+                {'timeout': timeout or self.config.get('timeout', 60000)}
             )
             return True
         except TimeoutError:
@@ -332,7 +336,19 @@ class BrowserManager:
     async def is_running(self) -> bool:
         """Check if browser is running"""
         try:
-            return self.browser is not None and self.browser.process and not self.browser.process.returncode
+            if not self.browser:
+                return False
+            # Check if the browser process is still alive
+            if hasattr(self.browser, 'process') and self.browser.process:
+                if self.browser.process.returncode is not None:
+                    return False
+            # Try to verify connection is still alive
+            try:
+                # Get browser version to check connection
+                await self.browser.version()
+                return True
+            except:
+                return False
         except:
             return False
 

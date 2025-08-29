@@ -12,6 +12,25 @@ logger = logging.getLogger(__name__)
 testing_bp = Blueprint('testing', __name__)
 
 
+@testing_bp.route('/result/<result_id>')
+def view_result(result_id):
+    """View individual test result details"""
+    result = current_app.db.get_test_result(result_id)
+    if not result:
+        return jsonify({'error': 'Test result not found'}), 404
+    
+    # Get related page and website info
+    page = current_app.db.get_page(result.page_id)
+    website = current_app.db.get_website(page.website_id) if page else None
+    project = current_app.db.get_project(website.project_id) if website else None
+    
+    return render_template('testing/result.html',
+                         result=result,
+                         page=page,
+                         website=website,
+                         project=project)
+
+
 @testing_bp.route('/dashboard')
 def testing_dashboard():
     """Testing dashboard showing active jobs"""

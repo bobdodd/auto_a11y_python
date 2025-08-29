@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title or page.url }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ page.title or 'Page' }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">{{ page.title or 'Untitled Page' }}</h1>
+            <p class="text-muted">
+                <a href="{{ page.url }}" target="_blank">
+                    {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            </p>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="testPage('{{ page.id }}')">
+                <i class="bi bi-play"></i> Run Test
+            </button>
+            <a href="{{ url_for('pages.edit_page', page_id=page.id) }}" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+        </div>
+    </div>
+
+    <!-- Page Status -->
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Status</h6>
+                    <p class="mb-0">
+                        {% if page.status.value == 'discovered' %}
+                            <span class="badge bg-secondary">Discovered</span>
+                        {% elif page.status.value == 'testing' %}
+                            <span class="badge bg-info">Testing</span>
+                        {% elif page.status.value == 'tested' %}
+                            <span class="badge bg-success">Tested</span>
+                        {% elif page.status.value == 'error' %}
+                            <span class="badge bg-danger">Error</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ page.status.value|title }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Priority</h6>
+                    <p class="mb-0">
+                        {% if page.priority == 'critical' %}
+                            <span class="badge bg-danger">Critical</span>
+                        {% elif page.priority == 'high' %}
+                            <span class="badge bg-warning">High</span>
+                        {% elif page.priority == 'normal' %}
+                            <span class="badge bg-info">Normal</span>
+                        {% elif page.priority == 'low' %}
+                            <span class="badge bg-secondary">Low</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ page.priority|title }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Last Tested</h6>
+                    <p class="mb-0">
+                        {{ page.last_tested.strftime('%Y-%m-%d %H:%M') if page.last_tested else 'Never' }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Test Duration</h6>
+                    <p class="mb-0">
+                        {% if page.test_duration_ms %}
+                            {{ "%.2f"|format(page.test_duration_ms / 1000) }}s
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Results Summary -->
+    {% if page.status.value == 'tested' %}
+    <div class="row mb-4 g-3">
+        <div class="col-md-4">
+            <div class="card border-danger">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-danger">Violations</h5>
+                    <p class="display-6 mb-0">{{ page.violation_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-warning">Warnings</h5>
+                    <p class="display-6 mb-0">{{ page.warning_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success">Passed</h5>
+                    <p class="display-6 mb-0">{{ page.pass_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Test Results Detail -->
+    {% if latest_result %}
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Latest Test Results</h5>
+            <small class="text-muted">Tested on {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+        </div>
+        <div class="card-body">
+            <!-- Violations -->
+            {% if latest_result.violations %}
+            <h6 class="text-danger mb-3">
+                <i class="bi bi-x-circle"></i> Violations ({{ latest_result.violations|length }})
+            </h6>
+            <div class="accordion mb-4" id="violationsAccordion">
+                {% for violation in latest_result.violations %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="violation-heading-{{ loop.index }}">
+                        <button class="accordion-button collapsed" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#violation-{{ loop.index }}">
+                            <span class="badge bg-danger me-2">{{ violation.impact|upper }}</span>
+                            {{ violation.description }}
+                        </button>
+                    </h2>
+                    <div id="violation-{{ loop.index }}" 
+                         class="accordion-collapse collapse" 
+                         data-bs-parent="#violationsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Rule:</strong> {{ violation.rule_id }}</p>
+                            <p><strong>Help:</strong> {{ violation.help_text }}</p>
+                            {% if violation.help_url %}
+                            <p><strong>More Info:</strong> 
+                                <a href="{{ violation.help_url }}" target="_blank">
+                                    {{ violation.help_url }} <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </p>
+                            {% endif %}
+                            {% if violation.selector %}
+                            <p><strong>Element:</strong> <code>{{ violation.selector }}</code></p>
+                            {% endif %}
+                            {% if violation.html %}
+                            <pre><code>{{ violation.html|e }}</code></pre>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- AI Findings -->
+            {% if latest_result.ai_findings %}
+            <h6 class="text-info mb-3">
+                <i class="bi bi-robot"></i> AI Analysis ({{ latest_result.ai_findings|length }})
+            </h6>
+            <div class="accordion mb-4" id="aiAccordion">
+                {% for finding in latest_result.ai_findings %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="ai-heading-{{ loop.index }}">
+                        <button class="accordion-button collapsed" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#ai-{{ loop.index }}">
+                            <span class="badge bg-{{ {'high': 'warning', 'medium': 'info', 'low': 'secondary'}[finding.severity] or 'secondary' }} me-2">
+                                {{ finding.severity|upper }}
+                            </span>
+                            {{ finding.issue }}
+                        </button>
+                    </h2>
+                    <div id="ai-{{ loop.index }}" 
+                         class="accordion-collapse collapse" 
+                         data-bs-parent="#aiAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Category:</strong> {{ finding.category }}</p>
+                            <p><strong>Description:</strong> {{ finding.description }}</p>
+                            {% if finding.recommendation %}
+                            <p><strong>Recommendation:</strong> {{ finding.recommendation }}</p>
+                            {% endif %}
+                            {% if finding.wcag_criteria %}
+                            <p><strong>WCAG Criteria:</strong> {{ finding.wcag_criteria|join(', ') }}</p>
+                            {% endif %}
+                            {% if finding.confidence_score %}
+                            <p><strong>Confidence:</strong> {{ "%.0f"|format(finding.confidence_score * 100) }}%</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Summary Stats -->
+            <div class="row text-center">
+                <div class="col">
+                    <small class="text-muted">
+                        Test completed in {{ "%.2f"|format(latest_result.duration_ms / 1000) }} seconds
+                        {% if latest_result.screenshot_path %}
+                        | <a href="{{ url_for('static', filename='screenshots/' ~ latest_result.screenshot_path) }}" target="_blank">
+                            View Screenshot <i class="bi bi-image"></i>
+                        </a>
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif page.status.value != 'tested' %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> This page has not been tested yet. Click "Run Test" to start accessibility testing.
+    </div>
+    {% endif %}
+
+    <!-- Test History -->
+    {% if test_history %}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Test History</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Violations</th>
+                            <th>Warnings</th>
+                            <th>Passed</th>
+                            <th>Duration</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in test_history %}
+                        <tr>
+                            <td>{{ result.test_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td><span class="badge bg-danger">{{ result.violation_count }}</span></td>
+                            <td><span class="badge bg-warning">{{ result.warning_count }}</span></td>
+                            <td><span class="badge bg-success">{{ result.pass_count }}</span></td>
+                            <td>{{ "%.2f"|format(result.duration_ms / 1000) }}s</td>
+                            <td>
+                                <a href="{{ url_for('testing.view_result', result_id=result.id) }}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Test Page Modal -->
+<div class="modal fade" id="testModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Running Test</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Testing...</span>
+                </div>
+                <p>Running accessibility tests on this page...</p>
+                <p class="text-muted">This may take a moment.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function testPage(pageId) {
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('testModal'));
+    modal.show();
+    
+    // Run test
+    $.post(`/pages/${pageId}/test`, function(data) {
+        if (data.success) {
+            // Reload page to show results
+            location.reload();
+        } else {
+            modal.hide();
+            alert('Test failed: ' + (data.error || 'Unknown error'));
+        }
+    }).fail(function() {
+        modal.hide();
+        alert('Failed to start test');
+    });
+}
+</script>
+{% endblock %}

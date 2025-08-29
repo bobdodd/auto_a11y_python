@@ -424,10 +424,12 @@ class ReportGenerator:
             'website': website.__dict__,
             'project': project.__dict__,
             'test_result': test_result.__dict__,
-            'violations': test_result.violations,
-            'warnings': test_result.warnings,
+            'violations': [v.to_dict() for v in test_result.violations],
+            'warnings': [w.to_dict() for w in test_result.warnings],
+            'info': [i.to_dict() for i in test_result.info],
+            'discovery': [d.to_dict() for d in test_result.discovery],
             'passes': test_result.passes,
-            'ai_findings': test_result.ai_findings if include_ai else [],
+            'ai_findings': [f.to_dict() for f in test_result.ai_findings] if include_ai else [],
             'statistics': stats,
             'generated_at': datetime.now().isoformat(),
             'wcag_levels': self._group_by_wcag_level(test_result.violations)
@@ -451,13 +453,13 @@ class ReportGenerator:
         violation_types = {}
         for pr in page_results:
             for v in pr['test_result'].violations:
-                vtype = v.get('rule_id', 'unknown')
+                vtype = v.id if hasattr(v, 'id') else 'unknown'
                 if vtype not in violation_types:
                     violation_types[vtype] = {
                         'count': 0,
                         'pages': [],
-                        'description': v.get('description', ''),
-                        'wcag': v.get('wcag_criteria', [])
+                        'description': v.description if hasattr(v, 'description') else '',
+                        'wcag': v.wcag_criteria if hasattr(v, 'wcag_criteria') else []
                     }
                 violation_types[vtype]['count'] += 1
                 violation_types[vtype]['pages'].append(pr['page'].url)

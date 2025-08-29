@@ -107,7 +107,7 @@
     <!-- Test Results Summary -->
     {% if page.status.value == 'tested' %}
     <div class="row mb-4 g-3">
-        <div class="col-md-3">
+        <div class="col-6 col-lg">
             <div class="card border-danger">
                 <div class="card-body text-center">
                     <h5 class="card-title text-danger">Errors</h5>
@@ -115,7 +115,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-lg">
             <div class="card border-warning">
                 <div class="card-body text-center">
                     <h5 class="card-title text-warning">Warnings</h5>
@@ -123,7 +123,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-lg">
             <div class="card border-info">
                 <div class="card-body text-center">
                     <h5 class="card-title text-info">Info</h5>
@@ -131,7 +131,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-lg">
             <div class="card" style="border-color: #6f42c1;">
                 <div class="card-body text-center">
                     <h5 class="card-title" style="color: #6f42c1;">Discovery</h5>
@@ -139,12 +139,10 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row mb-4">
-        <div class="col-md-12">
+        <div class="col-12 col-lg">
             <div class="card border-success">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-success">Passed Tests</h5>
+                    <h5 class="card-title text-success">Passed</h5>
                     <p class="display-6 mb-0">{{ page.pass_count }}</p>
                 </div>
             </div>

@@ -67,11 +67,35 @@ def create_app(config):
     @app.route('/dashboard')
     def dashboard():
         """Main dashboard"""
+        # Get only the latest test results for each page
+        pages = list(app.db.pages.find({'status': 'tested'}))
+        total_violations = 0
+        total_warnings = 0
+        
+        for page in pages:
+            # Get the latest test result for this page
+            # Note: page_id is stored as string in test_results
+            latest_result = app.db.test_results.find_one(
+                {'page_id': str(page['_id'])},
+                sort=[('created_at', -1)]
+            )
+            
+            if latest_result:
+                # Count violations from the violations array
+                violations = latest_result.get('violations', [])
+                total_violations += len(violations)
+                
+                # Count warnings from the warnings array
+                warnings = latest_result.get('warnings', [])
+                total_warnings += len(warnings)
+        
         stats = {
             'projects': len(app.db.get_projects()),
             'total_pages': app.db.pages.count_documents({}),
             'tested_pages': app.db.pages.count_documents({'status': 'tested'}),
-            'total_violations': app.db.test_results.count_documents({})
+            'total_violations': total_violations,
+            'total_warnings': total_warnings,
+            'total_test_results': app.db.test_results.count_documents({})
         }
         return render_template('dashboard.html', stats=stats, config=app.app_config)
     

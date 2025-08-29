@@ -20,6 +20,12 @@
         position: absolute;
         left: 1rem;
         right: auto;
+        transform: rotate(-90deg);
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .accordion-button:not(.collapsed)::after {
+        transform: rotate(0deg);
     }
     
     /* Ensure proper spacing for content */

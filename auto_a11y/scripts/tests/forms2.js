@@ -14,7 +14,7 @@ function walkDomToFindInteractiveNodes(n, nodeList) {
     return nodeList;
 }
 
-function formScrape() {
+function forms2Scrape() {
 
     let errorList = [];
 

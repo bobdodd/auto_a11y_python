@@ -241,7 +241,8 @@ class ResultProcessor:
                     description = self._get_error_description(error_code)
                     help_url = self._get_help_url(error_code)
                     failure_summary = self._get_failure_summary(error_code, violation_data)
-                    metadata = {}
+                    # Include original violation data in metadata
+                    metadata = dict(violation_data)
             
             # Create violation
             violation = Violation(
@@ -257,9 +258,8 @@ class ResultProcessor:
                 wcag_criteria=wcag_criteria
             )
             
-            # Add metadata if we have detailed description
-            if metadata:
-                violation.metadata = metadata
+            # Always add metadata (may be enriched later in pages.py)
+            violation.metadata = metadata
             
             return violation
             

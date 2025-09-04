@@ -208,7 +208,14 @@
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#violation-{{ loop.index }}">
                             <span class="badge bg-danger me-2 impact-badge">{{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}</span>
-                            {{ violation.description }}
+                            {% if violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
+                                {{ violation.metadata.what }}
+                            {% else %}
+                                {{ violation.description }}
+                            {% endif %}
+                            {% if violation.xpath %}
+                                <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ violation.xpath }}</span>
+                            {% endif %}
                         </button>
                     </h2>
                     <div id="violation-{{ loop.index }}" 
@@ -240,7 +247,7 @@
                             
                             <div class="mb-3">
                                 <strong>How to remediate:</strong>
-                                <pre class="bg-light p-3 rounded"><code>{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</code></pre>
+                                <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
                             </div>
                             
                             <h6 class="text-danger mb-2 mt-4">Relevant test criteria:</h6>
@@ -336,7 +343,14 @@
                             <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'warning' }} me-2 impact-badge">
                                 {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
                             </span>
-                            {{ warning.id }} - {{ warning.description }}
+                            {% if warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
+                                {{ warning.metadata.what }}
+                            {% else %}
+                                {{ warning.description }}
+                            {% endif %}
+                            {% if warning.xpath %}
+                                <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ warning.xpath }}</span>
+                            {% endif %}
                         </button>
                     </h2>
                     <div id="warning-{{ loop.index }}" 
@@ -368,7 +382,7 @@
                             
                             <div class="mb-3">
                                 <strong>How to remediate:</strong>
-                                <pre class="bg-light p-3 rounded"><code>{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</code></pre>
+                                <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</div>
                             </div>
                             
                             <h6 class="text-warning mb-2 mt-4">Relevant test criteria:</h6>
@@ -437,7 +451,14 @@
                         <button class="accordion-button collapsed" type="button" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#info-{{ loop.index }}">
-                            {{ info.id }} - {{ info.description }}
+                            {% if info.metadata and info.metadata.what and info.metadata.what != "Accessibility issue: " + info.id.split('_')[1] %}
+                                {{ info.metadata.what }}
+                            {% else %}
+                                {{ info.description }}
+                            {% endif %}
+                            {% if info.xpath %}
+                                <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ info.xpath }}</span>
+                            {% endif %}
                         </button>
                     </h2>
                     <div id="info-{{ loop.index }}" 
@@ -469,7 +490,7 @@
                             
                             <div class="mb-3">
                                 <strong>How to remediate:</strong>
-                                <pre class="bg-light p-3 rounded"><code>{{ info.metadata.full_remediation|default(info.failure_summary) }}</code></pre>
+                                <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation|default(info.failure_summary) }}</div>
                             </div>
                             
                             <h6 class="text-info mb-2 mt-4">Relevant test criteria:</h6>
@@ -538,7 +559,14 @@
                         <button class="accordion-button collapsed" type="button" 
                                 data-bs-toggle="collapse" 
                                 data-bs-target="#discovery-{{ loop.index }}">
-                            {{ discovery.id }} - {{ discovery.description }}
+                            {% if discovery.metadata and discovery.metadata.what and discovery.metadata.what != "Accessibility issue: " + discovery.id.split('_')[1] %}
+                                {{ discovery.metadata.what }}
+                            {% else %}
+                                {{ discovery.description }}
+                            {% endif %}
+                            {% if discovery.xpath %}
+                                <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ discovery.xpath }}</span>
+                            {% endif %}
                         </button>
                     </h2>
                     <div id="discovery-{{ loop.index }}" 
@@ -570,7 +598,7 @@
                             
                             <div class="mb-3">
                                 <strong>What to check manually:</strong>
-                                <pre class="bg-light p-3 rounded"><code>{{ discovery.metadata.full_remediation|default(discovery.failure_summary) }}</code></pre>
+                                <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation|default(discovery.failure_summary) }}</div>
                             </div>
                             
                             <h6 style="color: #6f42c1;" class="mb-2 mt-4">Relevant test criteria:</h6>

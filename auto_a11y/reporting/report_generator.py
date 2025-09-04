@@ -18,12 +18,33 @@ from auto_a11y.reporting.formatters import (
     CSVFormatter,
     PDFFormatter
 )
+from auto_a11y.reporting.issue_catalog import IssueCatalog
 
 logger = logging.getLogger(__name__)
 
 
 class ReportGenerator:
     """Generates accessibility reports in multiple formats"""
+    
+    @staticmethod
+    def get_issue_summary(issue_id: str) -> Dict[str, str]:
+        """
+        Get a brief summary of an issue for display
+        
+        Args:
+            issue_id: The issue identifier
+            
+        Returns:
+            Dictionary with key issue information
+        """
+        issue = IssueCatalog.get_issue(issue_id)
+        return {
+            'id': issue_id,
+            'description': issue['description'],
+            'impact': issue['impact'],
+            'category': issue['category'],
+            'wcag': ', '.join(issue['wcag']) if issue['wcag'] else 'N/A'
+        }
     
     def __init__(self, database: Database, config: Dict[str, Any]):
         """
@@ -406,6 +427,22 @@ class ReportGenerator:
         logger.info(f"Generated {format} report: {filepath}")
         return str(filepath)
     
+    def _enrich_issues_with_catalog(self, issues: List[Dict]) -> List[Dict]:
+        """Enrich issues with detailed information from the catalog"""
+        enriched_issues = []
+        for issue in issues:
+            # Convert to dict if needed
+            if hasattr(issue, 'to_dict'):
+                issue_dict = issue.to_dict()
+            else:
+                issue_dict = issue if isinstance(issue, dict) else issue.__dict__
+            
+            # Enrich with catalog data
+            enriched = IssueCatalog.enrich_issue(issue_dict)
+            enriched_issues.append(enriched)
+        
+        return enriched_issues
+    
     def _prepare_page_report_data(
         self,
         page: Page,
@@ -419,20 +456,26 @@ class ReportGenerator:
         # Calculate statistics
         stats = self._calculate_page_stats(test_result, include_ai)
         
+        # Enrich issues with catalog information
+        violations = self._enrich_issues_with_catalog(test_result.violations)
+        warnings = self._enrich_issues_with_catalog(test_result.warnings)
+        info = self._enrich_issues_with_catalog(test_result.info)
+        discovery = self._enrich_issues_with_catalog(test_result.discovery)
+        
         return {
             'page': page.__dict__,
             'website': website.__dict__,
             'project': project.__dict__,
             'test_result': test_result.__dict__,
-            'violations': [v.to_dict() for v in test_result.violations],
-            'warnings': [w.to_dict() for w in test_result.warnings],
-            'info': [i.to_dict() for i in test_result.info],
-            'discovery': [d.to_dict() for d in test_result.discovery],
+            'violations': violations,
+            'warnings': warnings,
+            'info': info,
+            'discovery': discovery,
             'passes': test_result.passes,
             'ai_findings': [f.to_dict() for f in test_result.ai_findings] if include_ai else [],
             'statistics': stats,
             'generated_at': datetime.now().isoformat(),
-            'wcag_levels': self._group_by_wcag_level(test_result.violations)
+            'wcag_levels': self._group_by_wcag_level(violations)
         }
     
     def _prepare_website_report_data(
@@ -449,17 +492,24 @@ class ReportGenerator:
         total_warnings = sum(pr['test_result'].warning_count for pr in page_results)
         total_passes = sum(pr['test_result'].pass_count for pr in page_results)
         
-        # Group violations by type
+        # Group violations by type and enrich with catalog data
         violation_types = {}
         for pr in page_results:
             for v in pr['test_result'].violations:
                 vtype = v.id if hasattr(v, 'id') else 'unknown'
                 if vtype not in violation_types:
+                    # Get enriched data from catalog
+                    catalog_info = IssueCatalog.get_issue(vtype)
                     violation_types[vtype] = {
                         'count': 0,
                         'pages': [],
-                        'description': v.description if hasattr(v, 'description') else '',
-                        'wcag': v.wcag_criteria if hasattr(v, 'wcag_criteria') else []
+                        'description': catalog_info['description'],
+                        'why_it_matters': catalog_info['why_it_matters'],
+                        'who_it_affects': catalog_info['who_it_affects'],
+                        'how_to_fix': catalog_info['how_to_fix'],
+                        'wcag': catalog_info['wcag'],
+                        'wcag_full': catalog_info['wcag_full'],
+                        'impact': catalog_info['impact']
                     }
                 violation_types[vtype]['count'] += 1
                 violation_types[vtype]['pages'].append(pr['page'].get('url', 'Unknown') if isinstance(pr['page'], dict) else pr['page'].url)

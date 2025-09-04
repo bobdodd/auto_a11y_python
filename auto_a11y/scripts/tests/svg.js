@@ -4,11 +4,11 @@ function svgScrape() {
 
 
     const svgImage = document.querySelectorAll('svg[role="image"]');
-    const svgInline = document.querySelectorAll('svg[not(role="image")]');
+    const svgInline = document.querySelectorAll('svg:not([role="image"])');
 
     svgImage.forEach(img=>{
 
-        const xpath = Elements.DOMPath.xPath(svgImage, true);
+        const xpath = Elements.DOMPath.xPath(img, true);
 
         errorList.push({
             url: window.location.href,
@@ -22,9 +22,9 @@ function svgScrape() {
     });
 
 
-    svgImage.forEach(img=>{
+    svgInline.forEach(svg=>{
 
-        const xpath = Elements.DOMPath.xPath(svgImage, true);
+        const xpath = Elements.DOMPath.xPath(svg, true);
 
         errorList.push({
             url: window.location.href,

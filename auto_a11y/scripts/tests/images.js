@@ -73,7 +73,7 @@ function imagesScrape() {
             const xpath = Elements.DOMPath.xPath(element, true);
 
             const txt = element.getAttribute('alt').trim();
-            if (txt.startsWith('http:') || txt.startsWith('https:')) {
+            if (txt.startsWith('http:') || txt.startsWith('https:') || txt.startsWith('www.')) {
                 let src = 'none';
                 if (element.hasAttribute('src')) {
                     src = element.getAttribute('src');
@@ -82,7 +82,7 @@ function imagesScrape() {
                     url: window.location.href,
                     type: 'err',
                     cat: 'img',
-                    err: 'ErrImageWithEmptyAlt',
+                    err: 'ErrImageWithURLAsAlt',
                     src: src,
                     xpath: xpath,
                     parentLandmark: element.getAttribute('a11y-parentLandmark'),

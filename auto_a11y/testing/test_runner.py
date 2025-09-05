@@ -124,10 +124,47 @@ class TestRunner:
                         'quality': 85
                     })
                 
-                # Run AI analysis if requested
+                # Check if project has AI testing enabled
                 ai_findings = []
                 ai_analysis_results = {}
-                if run_ai_analysis and ai_api_key and screenshot_bytes:
+                
+                # Get AI testing configuration from project
+                run_ai = False
+                ai_tests_to_run = []
+                
+                try:
+                    website = self.db.get_website(page.website_id)
+                    if website:
+                        project = self.db.get_project(website.project_id)
+                        if project and project.config:
+                            # Check if AI testing is enabled at project level
+                            if project.config.get('enable_ai_testing', False):
+                                run_ai = True
+                                ai_tests_to_run = project.config.get('ai_tests', [])
+                                logger.info(f"AI testing enabled for project '{project.name}', will run tests: {ai_tests_to_run}")
+                            else:
+                                logger.info(f"AI testing disabled for project '{project.name}'")
+                        else:
+                            logger.info(f"No config found for project, AI testing disabled")
+                    else:
+                        logger.warning(f"Could not find website with id {page.website_id}")
+                except Exception as e:
+                    logger.warning(f"Could not get AI config from project: {e}")
+                
+                # Override with explicit parameter if provided (for backward compatibility)
+                if run_ai_analysis is not None:
+                    logger.info(f"Overriding AI setting with explicit parameter: run_ai_analysis={run_ai_analysis}")
+                    run_ai = run_ai_analysis
+                    if run_ai and not ai_tests_to_run:
+                        # Default tests if not specified
+                        ai_tests_to_run = ['headings', 'reading_order', 'language', 'interactive']
+                        logger.info(f"Using default AI tests: {ai_tests_to_run}")
+                
+                # Log decision factors
+                logger.info(f"AI analysis decision - run_ai: {run_ai}, has_api_key: {bool(ai_api_key)}, has_screenshot: {bool(screenshot_bytes)}, tests_to_run: {ai_tests_to_run}")
+                
+                # Run AI analysis if enabled
+                if run_ai and ai_api_key and screenshot_bytes and ai_tests_to_run:
                     analyzer = None
                     try:
                         from auto_a11y.ai import ClaudeAnalyzer
@@ -138,12 +175,12 @@ class TestRunner:
                         # Initialize analyzer
                         analyzer = ClaudeAnalyzer(ai_api_key)
                         
-                        # Run analysis
-                        logger.info("Running AI accessibility analysis")
+                        # Run only the selected AI tests
+                        logger.info(f"Running AI accessibility analysis with tests: {ai_tests_to_run}")
                         ai_results = await analyzer.analyze_page(
                             screenshot=screenshot_bytes,
                             html=page_html,
-                            analyses=['headings', 'reading_order', 'language', 'interactive']
+                            analyses=ai_tests_to_run
                         )
                         
                         ai_findings = ai_results.get('findings', [])
@@ -172,10 +209,24 @@ class TestRunner:
                     duration_ms=duration_ms
                 )
                 
-                # Add AI findings to test result
+                # Merge AI findings into main test result categories
                 if ai_findings:
-                    test_result.ai_findings = ai_findings
+                    for finding in ai_findings:
+                        # AI findings are already Violation objects now
+                        # Categorize them based on their ID prefix
+                        if finding.id.startswith('AI_Err'):
+                            test_result.violations.append(finding)
+                        elif finding.id.startswith('AI_Warn'):
+                            test_result.warnings.append(finding)
+                        elif finding.id.startswith('AI_Info'):
+                            test_result.info.append(finding)
+                        else:
+                            # Default to warning if unclear
+                            test_result.warnings.append(finding)
+                    
+                    # Store raw AI analysis results for reference
                     test_result.ai_analysis_results = ai_analysis_results
+                    logger.info(f"Merged {len(ai_findings)} AI findings into test results")
                 
                 # Save test result to database
                 result_id = self.db.create_test_result(test_result)

@@ -237,6 +237,14 @@ class ClaudeClient:
             logger.error(f"Claude API error: {e}")
             raise
     
+    async def aclose(self):
+        """Close the async client properly"""
+        try:
+            if hasattr(self.async_client, '_client'):
+                await self.async_client._client.aclose()
+        except Exception as e:
+            logger.debug(f"Error closing Claude client: {e}")
+    
     def get_token_estimate(self, text: str) -> int:
         """
         Estimate token count for text

@@ -239,7 +239,9 @@ class ResultProcessor:
             violation_id = f"{source_test}_{error_code}"
             
             # Try to get enhanced detailed description using actual metadata
-            enhanced_desc = get_detailed_issue_description(error_code, violation_data)
+            # Pass violation_id (with test prefix) and the full violation data
+            logger.debug(f"Getting description for {violation_id} with metadata: {violation_data}")
+            enhanced_desc = get_detailed_issue_description(violation_id, violation_data)
             
             if enhanced_desc:
                 # Use enhanced description with context-specific details
@@ -256,8 +258,10 @@ class ResultProcessor:
                 failure_summary = enhanced_desc.get('remediation', '')
                 
                 # Store all enhanced details in metadata
+                # The enhanced_desc already has placeholders replaced with actual values
                 metadata = {
                     'title': enhanced_desc.get('title', ''),
+                    'what': enhanced_desc.get('what', ''),  # Add 'what' field with replaced values
                     'why': enhanced_desc.get('why', ''),
                     'who': enhanced_desc.get('who', ''),
                     'impact_detail': enhanced_desc.get('impact', ''),

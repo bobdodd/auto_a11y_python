@@ -32,7 +32,12 @@ def enrich_test_result_with_catalog(test_result):
             else:
                 error_code = issue_id
             
-            # Get catalog info for this issue
+            # Skip if already has enhanced metadata with 'what' field
+            # This preserves the metadata replacement done in result_processor.py
+            if violation.metadata.get('what'):
+                continue
+                
+            # Get catalog info for this issue as fallback
             catalog_info = IssueCatalog.get_issue(error_code)
             
             # Only update if we got meaningful enriched data
@@ -67,6 +72,10 @@ def enrich_test_result_with_catalog(test_result):
             else:
                 error_code = issue_id
             
+            # Skip if already has enhanced metadata with 'what' field
+            if warning.metadata.get('what'):
+                continue
+                
             catalog_info = IssueCatalog.get_issue(error_code)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
@@ -99,6 +108,10 @@ def enrich_test_result_with_catalog(test_result):
             else:
                 error_code = issue_id
             
+            # Skip if already has enhanced metadata with 'what' field
+            if info.metadata.get('what'):
+                continue
+                
             catalog_info = IssueCatalog.get_issue(error_code)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
@@ -131,6 +144,10 @@ def enrich_test_result_with_catalog(test_result):
             else:
                 error_code = issue_id
             
+            # Skip if already has enhanced metadata with 'what' field
+            if discovery.metadata.get('what'):
+                continue
+                
             logger.debug(f"Looking up discovery issue: {error_code} (from ID: {issue_id})")
             catalog_info = IssueCatalog.get_issue(error_code)
             

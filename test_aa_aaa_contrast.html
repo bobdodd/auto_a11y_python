@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test AA vs AAA Contrast</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        
+        .test-case {
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid #ccc;
+        }
+        
+        .test-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: #f0f0f0;
+            padding: 5px;
+        }
+        
+        /* Test Cases */
+        
+        /* 4.69:1 ratio - Passes AA (4.5:1), Fails AAA (7:1) */
+        .normal-text-aa-pass-aaa-fail {
+            color: #777777;
+            background: #ffffff;
+            font-size: 14px;
+        }
+        
+        /* 7.5:1 ratio - Passes both AA and AAA */
+        .normal-text-passes-both {
+            color: #595959;
+            background: #ffffff;
+            font-size: 14px;
+        }
+        
+        /* 3.5:1 ratio - Fails AA (4.5:1) for normal text */
+        .normal-text-fails-aa {
+            color: #888888;
+            background: #ffffff;
+            font-size: 14px;
+        }
+        
+        /* Large text 3.5:1 - Passes AA (3:1), Fails AAA (4.5:1) */
+        .large-text-aa-pass-aaa-fail {
+            color: #888888;
+            background: #ffffff;
+            font-size: 24px;
+        }
+        
+        /* Large text 4.69:1 - Passes both AA (3:1) and AAA (4.5:1) */
+        .large-text-passes-both {
+            color: #777777;
+            background: #ffffff;
+            font-size: 24px;
+        }
+        
+        /* Large text 2.5:1 - Fails AA (3:1) */
+        .large-text-fails-aa {
+            color: #999999;
+            background: #ffffff;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AA vs AAA Contrast Testing</h1>
+    <p>This page tests different contrast scenarios for WCAG AA and AAA compliance.</p>
+    
+    <div class="test-case">
+        <div class="test-header">Normal Text Tests (14px)</div>
+        
+        <div class="normal-text-aa-pass-aaa-fail">
+            4.69:1 ratio - Should PASS AA (needs 4.5:1), Should FAIL AAA (needs 7:1)
+        </div>
+        
+        <div class="normal-text-passes-both">
+            7.5:1 ratio - Should PASS both AA and AAA
+        </div>
+        
+        <div class="normal-text-fails-aa">
+            3.5:1 ratio - Should FAIL AA (needs 4.5:1)
+        </div>
+    </div>
+    
+    <div class="test-case">
+        <div class="test-header">Large Text Tests (24px)</div>
+        
+        <div class="large-text-aa-pass-aaa-fail">
+            3.5:1 ratio - Should PASS AA (needs 3:1), Should FAIL AAA (needs 4.5:1)
+        </div>
+        
+        <div class="large-text-passes-both">
+            4.69:1 ratio - Should PASS both AA (needs 3:1) and AAA (needs 4.5:1)
+        </div>
+        
+        <div class="large-text-fails-aa">
+            2.5:1 ratio - Should FAIL AA (needs 3:1)
+        </div>
+    </div>
+    
+    <div class="test-case">
+        <div class="test-header">Expected Results</div>
+        <p><strong>When testing with WCAG Level AA:</strong></p>
+        <ul>
+            <li>Normal text 4.69:1 - PASS (uses ErrTextContrastAA if failed)</li>
+            <li>Normal text 3.5:1 - FAIL with ErrTextContrastAA</li>
+            <li>Large text 3.5:1 - PASS (uses ErrLargeTextContrastAA if failed)</li>
+            <li>Large text 2.5:1 - FAIL with ErrLargeTextContrastAA</li>
+        </ul>
+        
+        <p><strong>When testing with WCAG Level AAA:</strong></p>
+        <ul>
+            <li>Normal text 4.69:1 - FAIL with ErrTextContrastAAA</li>
+            <li>Normal text 7.5:1 - PASS</li>
+            <li>Large text 3.5:1 - FAIL with ErrLargeTextContrastAAA</li>
+            <li>Large text 4.69:1 - PASS</li>
+        </ul>
+    </div>
+    
+    <script>
+        // Log the WCAG level being tested
+        console.log('Testing with WCAG Level:', window.WCAG_LEVEL || 'AA (default)');
+    </script>
+</body>
+</html>

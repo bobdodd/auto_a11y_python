@@ -168,17 +168,32 @@ function colorScrape() {
             
             const col = testContrast(fgColor, bgColor, element);
             
-            if (!col.isAA) {
+            if (!col.passesLevel) {
                 contrastCheck.failed++;
+                
+                // Determine the correct error code based on WCAG level and text size
+                let errorCode;
+                if (col.wcagLevel === 'AAA') {
+                    errorCode = col.isLargeText ? 'ErrLargeTextContrastAAA' : 'ErrTextContrastAAA';
+                } else {
+                    // Default to AA
+                    errorCode = col.isLargeText ? 'ErrLargeTextContrastAA' : 'ErrTextContrastAA';
+                }
+                
                 errorList.push({
                     url: window.location.href,
                     type: 'err',
                     cat: 'color',
-                    err: 'ErrTextContrast',
+                    err: errorCode,
                     fg: col.fgHex,
                     bg: col.bgHex,
                     ratio: col.ratio,
                     fontSize: col.fontSize,
+                    isBold: col.isBold,
+                    isLargeText: col.isLargeText,
+                    wcagLevel: col.wcagLevel,
+                    passesAA: col.isAA,
+                    passesAAA: col.isAAA,
                     xpath: xpath,
                     parentLandmark: element.getAttribute('a11y-parentLandmark'),
                     parentLandmarkXpath: element.getAttribute('a11y-parentLandmark.xpath'),
@@ -189,17 +204,25 @@ function colorScrape() {
                 contrastCheck.passed++;
                 
                 // Record pass with details
+                const levelPassed = col.isAAA ? 'AAA' : 'AA';
+                const wcagCriteria = col.wcagLevel === 'AAA' && col.isAAA 
+                    ? ['1.4.3', '1.4.6'] 
+                    : ['1.4.3'];
+                    
                 passList.push({
                     check: 'text_contrast',
                     element: element.tagName,
                     xpath: xpath,
-                    wcag: col.isAAA ? ['1.4.3', '1.4.6'] : ['1.4.3'],
-                    reason: `Contrast ratio ${col.ratio.toFixed(2)}:1 ${col.isAAA ? '(AAA)' : '(AA)'}`,
+                    wcag: wcagCriteria,
+                    reason: `Contrast ratio ${col.ratio.toFixed(2)}:1 passes ${col.wcagLevel} (${levelPassed} achieved)`,
                     details: {
                         foreground: col.fgHex,
                         background: col.bgHex,
                         ratio: col.ratio,
-                        fontSize: col.fontSize
+                        fontSize: col.fontSize,
+                        wcagLevel: col.wcagLevel,
+                        passesAA: col.isAA,
+                        passesAAA: col.isAAA
                     }
                 });
             }

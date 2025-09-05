@@ -30,6 +30,7 @@ def create_project():
     if request.method == 'POST':
         name = request.form.get('name')
         description = request.form.get('description', '')
+        wcag_level = request.form.get('wcag_level', 'AA')
         
         if not name:
             flash('Project name is required', 'error')
@@ -41,11 +42,12 @@ def create_project():
             flash(f'Project "{name}" already exists', 'error')
             return render_template('projects/create.html')
         
-        # Create project
+        # Create project with WCAG level in config
         project = Project(
             name=name,
             description=description,
-            status=ProjectStatus.ACTIVE
+            status=ProjectStatus.ACTIVE,
+            config={'wcag_level': wcag_level}
         )
         
         project_id = current_app.db.create_project(project)
@@ -86,6 +88,12 @@ def edit_project(project_id):
         project.description = request.form.get('description', project.description)
         status = request.form.get('status', project.status.value)
         project.status = ProjectStatus(status)
+        
+        # Update WCAG level in config
+        wcag_level = request.form.get('wcag_level', 'AA')
+        if not project.config:
+            project.config = {}
+        project.config['wcag_level'] = wcag_level
         
         if current_app.db.update_project(project):
             flash('Project updated successfully', 'success')

@@ -31,7 +31,7 @@ class BrowserManager:
     async def start(self):
         """Start browser instance"""
         if self.browser and await self.is_running():
-            logger.debug("Browser already running")
+            pass  # Browser already running
             return
         
         launch_options = {
@@ -60,7 +60,7 @@ class BrowserManager:
         
         try:
             self.browser = await launch(**launch_options)
-            logger.info("Browser started successfully")
+            pass  # Browser started
             # Keep a reference to prevent garbage collection
             self._browser_ref = self.browser
         except Exception as e:
@@ -85,7 +85,7 @@ class BrowserManager:
         # Close browser
         try:
             await self.browser.close()
-            logger.info("Browser stopped successfully")
+            pass  # Browser stopped
         except Exception as e:
             logger.error(f"Error stopping browser: {e}")
         finally:

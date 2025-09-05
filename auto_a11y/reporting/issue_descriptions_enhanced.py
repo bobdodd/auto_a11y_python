@@ -318,14 +318,42 @@ Use a contrast checker tool to verify your color choices meet requirements.
     if error_type in descriptions:
         return descriptions[error_type]
     
-    # Default fallback
+    # Default fallback with better WCAG mapping
+    # Try to determine WCAG criteria based on issue category and type
+    wcag_fallback = []
+    
+    # Map common patterns to WCAG criteria
+    if 'color' in error_type.lower() or 'contrast' in error_type.lower():
+        wcag_fallback = ["1.4.3 Contrast (Minimum)", "1.4.11 Non-text Contrast"]
+    elif 'label' in error_type.lower() or 'name' in error_type.lower():
+        wcag_fallback = ["1.3.1 Info and Relationships", "3.3.2 Labels or Instructions", "4.1.2 Name, Role, Value"]
+    elif 'heading' in error_type.lower():
+        wcag_fallback = ["1.3.1 Info and Relationships", "2.4.6 Headings and Labels"]
+    elif 'landmark' in error_type.lower() or 'region' in error_type.lower():
+        wcag_fallback = ["1.3.1 Info and Relationships", "2.4.1 Bypass Blocks"]
+    elif 'keyboard' in error_type.lower() or 'focus' in error_type.lower() or 'tabindex' in error_type.lower():
+        wcag_fallback = ["2.1.1 Keyboard", "2.4.3 Focus Order", "2.4.7 Focus Visible"]
+    elif 'image' in error_type.lower() or 'img' in error_type.lower() or 'alt' in error_type.lower():
+        wcag_fallback = ["1.1.1 Non-text Content"]
+    elif 'language' in error_type.lower() or 'lang' in error_type.lower():
+        wcag_fallback = ["3.1.1 Language of Page", "3.1.2 Language of Parts"]
+    elif 'title' in error_type.lower():
+        wcag_fallback = ["2.4.2 Page Titled"]
+    elif 'form' in error_type.lower():
+        wcag_fallback = ["1.3.1 Info and Relationships", "3.3.2 Labels or Instructions"]
+    elif 'aria' in error_type.lower():
+        wcag_fallback = ["4.1.2 Name, Role, Value", "1.3.1 Info and Relationships"]
+    else:
+        # Generic fallback for truly unknown issues
+        wcag_fallback = ["1.3.1 Info and Relationships", "4.1.1 Parsing"]
+    
     return {
         'title': f"Accessibility issue: {error_type}",
         'what': f"An accessibility issue of type '{error_type}' was detected at {metadata.get('xpath', 'unknown location')}.",
         'why': "This issue may create barriers for users with disabilities.",
         'who': "Users with disabilities",
         'impact': ImpactScale.MEDIUM.value,
-        'wcag': ["Multiple criteria may apply"],
+        'wcag': wcag_fallback,
         'remediation': "Review the specific issue and apply appropriate accessibility fixes."
     }
 

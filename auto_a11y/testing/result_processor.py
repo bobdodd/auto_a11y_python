@@ -9,6 +9,7 @@ from datetime import datetime
 from auto_a11y.models import TestResult, Violation, ImpactLevel
 from auto_a11y.reporting.issue_descriptions import get_issue_description, get_wcag_link
 from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+from auto_a11y.reporting.wcag_mapper import get_wcag_criteria, enrich_wcag_criteria
 
 logger = logging.getLogger(__name__)
 
@@ -109,6 +110,13 @@ class ResultProcessor:
         info = []        # _Info issues
         discovery = []   # _Disco issues
         passes = []
+        checks = []  # Track all accessibility checks performed
+        
+        # Track applicability statistics
+        total_applicable_checks = 0
+        total_passed_checks = 0
+        total_failed_checks = 0
+        not_applicable_tests = []
         
         # Process each test's results
         for test_name, test_result in raw_results.items():
@@ -116,7 +124,32 @@ class ResultProcessor:
                 logger.warning(f"Test {test_name} had execution error: {test_result['error']}")
                 continue
             
-            # Process errors and warnings (they come together from JS tests)
+            # Check if this test uses the new structure with applicability
+            if 'applicable' in test_result:
+                # New structure with applicability tracking
+                if not test_result['applicable']:
+                    # Test was not applicable
+                    not_applicable_tests.append({
+                        'test_name': test_result.get('test_name', test_name),
+                        'reason': test_result.get('not_applicable_reason', 'No applicable elements')
+                    })
+                    logger.debug(f"Test {test_name} not applicable: {test_result.get('not_applicable_reason')}")
+                else:
+                    # Test was applicable - process results
+                    if 'elements_tested' in test_result:
+                        total_applicable_checks += test_result['elements_tested']
+                    if 'elements_passed' in test_result:
+                        total_passed_checks += test_result['elements_passed']
+                    if 'elements_failed' in test_result:
+                        total_failed_checks += test_result['elements_failed']
+                    
+                    # Store check information
+                    if 'checks' in test_result:
+                        for check in test_result['checks']:
+                            check['test_name'] = test_name
+                            checks.append(check)
+            
+            # Process errors and warnings (works with both old and new structure)
             all_issues = []
             if 'errors' in test_result and test_result['errors']:
                 all_issues.extend(test_result['errors'])
@@ -127,15 +160,30 @@ class ResultProcessor:
             for issue in all_issues:
                 processed = self._process_violation(issue, test_name, 'unknown')
                 if processed:
-                    # Categorize based on ID pattern
-                    if '_Err' in processed.id:
+                    # Categorize based on ID pattern or type field
+                    issue_type = issue.get('type', '')
+                    
+                    # First check explicit type field
+                    if issue_type == 'disco':
+                        discovery.append(processed)
+                        # Don't count discovery items in pass/fail
+                        continue
+                    elif issue_type == 'info':
+                        info.append(processed)
+                        # Don't count info items in pass/fail
+                        continue
+                    
+                    # Then check ID pattern
+                    if '_Err' in processed.id or issue_type == 'err':
                         violations.append(processed)
-                    elif '_Warn' in processed.id:
+                    elif '_Warn' in processed.id or issue_type == 'warn':
                         warnings.append(processed)
                     elif '_Info' in processed.id:
                         info.append(processed)
+                        # Don't count in pass/fail
                     elif '_Disco' in processed.id:
                         discovery.append(processed)
+                        # Don't count in pass/fail
                     else:
                         # Default to warnings if pattern not recognized
                         warnings.append(processed)
@@ -158,7 +206,12 @@ class ResultProcessor:
             js_test_results=raw_results,
             metadata={
                 'test_count': len(raw_results),
-                'tests_run': list(raw_results.keys())
+                'tests_run': list(raw_results.keys()),
+                'applicable_checks': total_applicable_checks,
+                'passed_checks': total_passed_checks,
+                'failed_checks': total_failed_checks,
+                'not_applicable_tests': not_applicable_tests,
+                'checks': checks
             }
         )
         
@@ -195,7 +248,10 @@ class ResultProcessor:
                     ImpactLevel.MEDIUM if impact_str == 'Medium' else ImpactLevel.LOW
                 )
                 description = enhanced_desc.get('what', '')
-                wcag_criteria = [c.split()[0] for c in enhanced_desc.get('wcag', [])]  # Extract just the numbers
+                # Keep full WCAG descriptions, not just numbers
+                wcag_full = enhanced_desc.get('wcag', [])
+                # Also extract just numbers for backward compatibility
+                wcag_criteria = [c.split()[0] for c in wcag_full] if wcag_full else []
                 help_url = get_wcag_link(wcag_criteria[0]) if wcag_criteria else self._get_help_url(error_code)
                 failure_summary = enhanced_desc.get('remediation', '')
                 
@@ -205,7 +261,7 @@ class ResultProcessor:
                     'why': enhanced_desc.get('why', ''),
                     'who': enhanced_desc.get('who', ''),
                     'impact_detail': enhanced_desc.get('impact', ''),
-                    'wcag_full': enhanced_desc.get('wcag', []),
+                    'wcag_full': wcag_full,
                     'full_remediation': enhanced_desc.get('remediation', ''),
                     **violation_data  # Include all original metadata from JS tests
                 }
@@ -237,12 +293,20 @@ class ResultProcessor:
                     else:
                         impact = ImpactLevel.MEDIUM
                     
-                    wcag_criteria = self.WCAG_MAPPING.get(error_code, [])
+                    # Try to get WCAG from mapper first, then fallback to hardcoded mapping
+                    wcag_criteria = get_wcag_criteria(error_code)
+                    if not wcag_criteria:
+                        wcag_criteria = self.WCAG_MAPPING.get(error_code, [])
+                    # Enrich the criteria with full names
+                    wcag_full = enrich_wcag_criteria(wcag_criteria) if wcag_criteria else []
                     description = self._get_error_description(error_code)
                     help_url = self._get_help_url(error_code)
                     failure_summary = self._get_failure_summary(error_code, violation_data)
                     # Include original violation data in metadata
-                    metadata = dict(violation_data)
+                    metadata = {
+                        'wcag_full': wcag_full,
+                        **violation_data
+                    }
             
             # Create violation
             violation = Violation(
@@ -349,35 +413,86 @@ class ResultProcessor:
     
     def calculate_score(self, test_result: TestResult) -> Dict[str, Any]:
         """
-        Calculate accessibility score from test results
+        Calculate accessibility score from test results using applicability-aware scoring
         
         Args:
             test_result: Test result
             
         Returns:
-            Score dictionary
+            Score dictionary with compliance information
         """
-        total_issues = len(test_result.violations) + len(test_result.warnings)
+        # Get applicability data from metadata if available
+        metadata = test_result.metadata if hasattr(test_result, 'metadata') else {}
+        applicable_checks = metadata.get('applicable_checks', 0)
+        passed_checks = metadata.get('passed_checks', 0)
+        failed_checks = metadata.get('failed_checks', 0)
+        not_applicable_tests = metadata.get('not_applicable_tests', [])
+        
+        # Fall back to counting issues if no applicability data
+        if applicable_checks == 0:
+            # Old method for backward compatibility
+            # Only count violations and warnings, NOT info or discovery
+            total_issues = len(test_result.violations) + len(test_result.warnings)
+            high_count = sum(1 for v in test_result.violations if v.impact == ImpactLevel.HIGH)
+            medium_count = sum(1 for v in test_result.violations if v.impact == ImpactLevel.MEDIUM)
+            
+            # Simple scoring algorithm
+            if high_count > 0:
+                score = 0  # Fail if any high impact issues
+            elif medium_count > 0:
+                score = max(0, 50 - (medium_count * 10))
+            elif total_issues > 0:
+                score = max(0, 100 - (total_issues * 5))
+            else:
+                score = 100
+                
+            return {
+                'score': score,
+                'grade': self._get_grade(score),
+                'high_issues': high_count,
+                'medium_issues': medium_count,
+                'total_issues': total_issues,
+                'passes': len(test_result.passes),
+                'method': 'legacy'
+            }
+        
+        # New applicability-aware scoring
+        if applicable_checks == 0:
+            # No applicable tests - perfect score
+            score = 100
+            reason = 'No applicable accessibility tests'
+        else:
+            # Calculate score based on pass rate
+            score = round((passed_checks / applicable_checks) * 100, 1)
+            reason = f'{passed_checks} of {applicable_checks} checks passed'
+        
+        # Count issue severities (only violations and warnings count for scoring)
+        # Discovery and Info items are excluded from scoring
         high_count = sum(1 for v in test_result.violations if v.impact == ImpactLevel.HIGH)
         medium_count = sum(1 for v in test_result.violations if v.impact == ImpactLevel.MEDIUM)
+        low_count = sum(1 for v in test_result.violations if v.impact == ImpactLevel.LOW)
         
-        # Simple scoring algorithm
-        if high_count > 0:
-            score = 0  # Fail if any high impact issues
-        elif medium_count > 0:
-            score = max(0, 50 - (medium_count * 10))
-        elif total_issues > 0:
-            score = max(0, 100 - (total_issues * 5))
-        else:
-            score = 100
+        # Info and Discovery counts for reporting only (not used in score)
+        info_count = len(test_result.info) if hasattr(test_result, 'info') else 0
+        discovery_count = len(test_result.discovery) if hasattr(test_result, 'discovery') else 0
         
         return {
             'score': score,
             'grade': self._get_grade(score),
+            'reason': reason,
             'high_issues': high_count,
             'medium_issues': medium_count,
-            'total_issues': total_issues,
-            'passes': len(test_result.passes)
+            'low_issues': low_count,
+            'total_issues': len(test_result.violations) + len(test_result.warnings),
+            'info_count': info_count,  # Not used in scoring
+            'discovery_count': discovery_count,  # Not used in scoring
+            'passes': len(test_result.passes),
+            'applicable_checks': applicable_checks,
+            'passed_checks': passed_checks,
+            'failed_checks': failed_checks,
+            'not_applicable_count': len(not_applicable_tests),
+            'not_applicable_tests': not_applicable_tests,
+            'method': 'applicability-aware'
         }
     
     def _get_grade(self, score: int) -> str:

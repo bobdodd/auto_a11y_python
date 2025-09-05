@@ -1,0 +1,266 @@
+/**
+ * Help System Styles
+ */
+
+/* Help Modal */
+.help-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.help-modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.3s ease;
+}
+
+.help-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.help-modal-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.help-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.help-modal-close:hover {
+    background-color: #f0f0f0;
+}
+
+.help-modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.help-modal-body h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.help-modal-body h4 {
+    color: #34495e;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.help-modal-body p {
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.help-modal-body ul {
+    margin-bottom: 15px;
+    padding-left: 25px;
+}
+
+.help-modal-body li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.help-modal-body code {
+    background-color: #f4f4f4;
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.9em;
+    color: #d14;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.help-modal-body strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.help-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #e0e0e0;
+    text-align: right;
+}
+
+/* Example Box */
+.example-box {
+    background-color: #f9f9f9;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.example-box p {
+    margin-bottom: 10px;
+}
+
+.example-box ul {
+    margin-bottom: 10px;
+}
+
+/* Help Icons */
+.help-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 5px;
+    vertical-align: middle;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.help-icon:hover {
+    background-color: #2980b9;
+    transform: scale(1.1);
+}
+
+.help-icon:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+/* Help Tooltips */
+.help-tooltip {
+    position: absolute;
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 9999;
+    pointer-events: none;
+    transform: translateX(-50%);
+}
+
+.help-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+/* Inline Help Links */
+.help-link {
+    color: #3498db;
+    text-decoration: none;
+    cursor: pointer;
+    border-bottom: 1px dotted #3498db;
+}
+
+.help-link:hover {
+    color: #2980b9;
+    border-bottom-style: solid;
+}
+
+/* Score Help Section */
+.score-help-container {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.score-help-container h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #495057;
+}
+
+.score-help-container p {
+    margin: 5px 0;
+    color: #6c757d;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .help-modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .help-modal-body {
+        padding: 15px;
+    }
+    
+    .help-modal-header h2 {
+        font-size: 1.2rem;
+    }
+}

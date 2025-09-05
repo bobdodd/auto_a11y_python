@@ -129,6 +129,11 @@ def create_app(config):
             'database': 'connected' if app.db.client else 'disconnected'
         })
     
+    @app.route('/help')
+    def help():
+        """Help and documentation page"""
+        return render_template('help.html')
+    
     # Error handlers
     @app.errorhandler(404)
     def not_found(error):

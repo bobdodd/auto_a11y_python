@@ -224,35 +224,65 @@ function calculateRatio(color1rgb, color2rgb) {
 function testContrast(fgColor, bgColor, element) {
 
     // Large text ==
-    // Anything below 24px nprmal
-    // or 19px bold
+    // Anything >= 24px normal
+    // or >= 19px bold
+    // Everything else is normal text
 
-    // comparing with 4.5:1  for mormal
-    // and 3:1 for large
+    // comparing with 4.5:1 for normal text
+    // and 3:1 for large text
 
     const fontSize = parseFloat(getComputedStyle(element, "").fontSize);
-
+    const fontWeight = getComputedStyle(element, "").fontWeight;
+    
     let isAA = false;
     let isAAA = false;
 
-    const isBold = false;
-
+    // Check if text is bold (font-weight >= 700)
+    const isBold = parseInt(fontWeight) >= 700 || fontWeight === 'bold' || fontWeight === 'bolder';
+    
     let colFg = translateColorToRGB(fgColor);
     let colBg = translateColorToRGB(bgColor);
     let ratio = calculateRatio(colFg,colBg);
+    
+    // Round ratio to 2 decimal places for cleaner display
+    ratio = Math.round(ratio * 100) / 100;
 
-    if (isBold && fontSize < 19.0 || fontSize < 24.0) {
-        // Normal font size
-        isAA = (ratio >= 4.5);
-        isAA = (ratio >= 7);
+    // Determine if this is large text
+    // Large text is: >= 18pt (24px) normal OR >= 14pt (18.66px) bold
+    const isLargeText = (fontSize >= 24) || (isBold && fontSize >= 18.66);
+    
+    if (isLargeText) {
+        // Large text has lower contrast requirements
+        isAA = (ratio >= 3);
+        isAAA = (ratio >= 4.5);
     }
     else {
-        // large font size
-        isAA = (ratio >= 3);
+        // Normal text has higher contrast requirements
         isAA = (ratio >= 4.5);
+        isAAA = (ratio >= 7);
+    }
+    
+    // Check which level we're testing against (default to AA)
+    const wcagLevel = window.WCAG_LEVEL || 'AA';
+    const passesLevel = (wcagLevel === 'AAA') ? isAAA : isAA;
+    
+    // Debug logging
+    if (window.WCAG_LEVEL) {
+        console.log(`Contrast test: WCAG_LEVEL=${wcagLevel}, ratio=${ratio}, passesAA=${isAA}, passesAAA=${isAAA}, passesLevel=${passesLevel}`);
     }
 
-    return { isAA:isAA, isAAA:isAAA, fgHex:rgbToHex(colFg), bgHex:rgbToHex(colBg), fontSize: fontSize, ratio:ratio }
+    return { 
+        isAA: isAA, 
+        isAAA: isAAA, 
+        passesLevel: passesLevel,
+        wcagLevel: wcagLevel,
+        fgHex: rgbToHex(colFg), 
+        bgHex: rgbToHex(colBg), 
+        fontSize: fontSize, 
+        ratio: ratio,
+        isLargeText: isLargeText,
+        isBold: isBold
+    }
 
 
 }

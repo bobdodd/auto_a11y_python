@@ -104,7 +104,20 @@ Who it affects: Blind and low vision users using screen readers who depend on te
 How to fix: Verify the SVG with role="img" has appropriate accessible names through aria-label or aria-labelledby attributes, ensure any <title> or <desc> elements inside the SVG are properly referenced if used for labeling, confirm decorative SVGs are hidden with aria-hidden="true" rather than given role="img", check that the text alternative accurately describes the SVG's meaning in context, and test with screen readers to ensure the image is announced with meaningful information
 ```
 
-### 1.7 URL used as ALT text
+### 1.7 SVG Missing Label
+```
+ID: ErrSvgImageNoLabel
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Category: Images
+Description: SVG image element lacks accessible text alternatives, making it invisible to screen reader users
+Why it matters: SVG images without proper labeling are completely inaccessible to screen reader users - they are either skipped entirely or announced as "graphic" with no indication of what they represent. Unlike HTML img elements that can use alt attributes, SVGs require different techniques for accessibility. Without proper labeling, users miss important visual information, icons, charts, logos, or interactive graphics that may be essential for understanding or using the page.
+Who it affects: Blind and low vision users using screen readers who cannot perceive any information about unlabeled SVG content, users with cognitive disabilities who benefit from text descriptions of complex graphics, keyboard users who may encounter interactive SVGs without understanding their purpose, and users of assistive technologies that need text alternatives for all visual content
+How to fix: For simple SVGs, add role="img" and aria-label with descriptive text. For complex SVGs, use <title> as the first child element and reference it with aria-labelledby. For decorative SVGs, use aria-hidden="true" to hide from assistive technologies. For inline SVGs containing text, ensure text is in actual text elements not paths. For interactive SVGs, provide appropriate ARIA labels for all interactive elements. Always test with screen readers to verify SVGs are properly announced.
+```
+
+### 1.8 URL used as ALT text
 
 ```
 ID: ErrImageWithURLAsAlt
@@ -142,8 +155,8 @@ How to fix: Remove all HTML markup from alt attributes and use only plain text. 
 ID: ErrUnlabelledField
 Type: Error
 Impact: High
-3.3.2 Labels or Instructions (Level A)
-Category: Forms
+WCAG: 3.3.2 Labels or Instructions (Level A), 4.1.2 Name, Role, Value (Level A)
+Category: forms
 Description: Form input element lacks an accessible name through <label>, aria-label, aria-labelledby, or other labeling methods, leaving the field's purpose undefined for assistive technologies
 Why it matters: Without labels, users cannot determine what information to enter, leading to form errors, abandoned transactions, and inability to complete critical tasks. Screen readers announce only the field type like "edit" or "combo box" without context, forcing users to guess based on surrounding content that may not be programmatically associated. This creates barriers for independent form completion and may result in users submitting incorrect information or being unable to proceed.
 Who it affects: Blind and low vision users using screen readers who hear no field description when navigating forms, users with cognitive disabilities who need clear labels to understand what information is required, users with motor disabilities using voice control who cannot reference unlabeled fields by name, mobile users where placeholder text may disappear on focus, and users who rely on browser autofill features that depend on proper field labeling
@@ -385,7 +398,7 @@ How to fix: Use proper <label> elements or appropriate ARIA labeling
 ```
 
 ```
-ID: WarnFieldLabelledByMulitpleElements
+ID: WarnFieldLabelledByMultipleElements
 Type: Warning
 Impact: Low
 WCAG: 3.3.2
@@ -420,6 +433,19 @@ Who it affects: Screen reader users, voice control users
 How to fix: Add text content, aria-label, or aria-labelledby to button
 ```
 
+### 2.8 Field Labeling Info
+```
+ID: InfoFieldLabelledUsingAriaLabel
+Type: Info
+Impact: N/A
+WCAG: 3.3.2 Labels or Instructions (Level A)
+Category: forms
+Description: Field is labeled using aria-label, which is valid but may have usability considerations
+Why it matters: While aria-label is a valid way to label form fields, it has limitations: the label is not visible on screen which can confuse sighted users, voice control users cannot reference the field by visible text, the label won't be automatically translated by browser translation tools, and users with cognitive disabilities benefit from visible labels as memory aids. This is informational to help you consider if a visible label would be more appropriate.
+Who it affects: Sighted users who expect visible labels for context, voice control users who need visible text to reference fields, users relying on browser translation, users with cognitive disabilities who benefit from persistent visible labels, and users who may need to review form data before submission
+How to fix: Consider if a visible label would better serve all users. If space permits, use a visible <label> element. If aria-label must be used, ensure the label text is clear and descriptive. Consider adding visible helper text or placeholder text to provide visual context. For complex forms, visible labels generally provide better usability for all users.
+```
+
 ---
 
 ## 3. HEADINGS
@@ -438,8 +464,8 @@ How to fix: Add semantic heading elements (h1-h6) to structure your content. Sta
 ```
 
 ```
-ID: ErrNoH1OnPage
-Type: Error
+ID: WarnNoH1
+Type: Warning
 Impact: High
 WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
 Category: headings
@@ -464,39 +490,27 @@ How to fix: Either add meaningful text content to the heading that describes the
 
 ### 3.3 Heading Hierarchy
 ```
-ID: ErrHeadingLevelsSkipped
+ID: ErrSkippedHeadingLevel
 Type: Error
 Impact: Medium
 WCAG: 1.3.1 Info and Relationships
 Category: headings
-Description: Heading levels are not in sequential order - one or more levels are skipped (e.g., h1 followed by h3 with no h2)
-Why it matters: Heading levels create a hierarchical outline of your content, like nested bullet points. When you skip levels (jump from h1 to h3), you break this logical structure. It's like having chapter 1, then jumping to section 1.1.1 without section 1.1. Screen reader users navigating by headings will be confused about the relationship between sections - is the h3 a subsection of something that's missing? This broken hierarchy makes it hard to understand how content is organized and can cause users to think content is missing or that they've accidentally skipped something.
+Description: Heading levels are not in sequential order - jumped from h{skippedFrom} to h{skippedTo}, skipping intermediate level(s)
+Why it matters: Heading levels create a hierarchical outline of your content, like nested bullet points. Jumping from h{skippedFrom} to h{skippedTo} breaks this logical structure. It's like having chapter {skippedFrom}, then jumping to section {skippedTo} without the intermediate section. Screen reader users navigating by headings will be confused about the relationship between sections - is the h{skippedTo} a subsection of something that's missing? This broken hierarchy makes it hard to understand how content is organized and can cause users to think content is missing or that they've accidentally skipped something.
 Who it affects: Screen reader users navigating by heading structure who rely on levels to understand content relationships, users with cognitive disabilities who need logical, predictable content organization, users of assistive technology that generates document outlines, and developers or content authors maintaining the page who need to understand the intended structure
-How to fix: Always use heading levels sequentially. After h1, use h2 for the next level, then h3, and so on. Don't skip levels when going down (h1→h2→h3, not h1→h3). You can skip levels going back up (h3 can be followed by h2 for a new section). If you need a heading to look smaller visually, use CSS to style it rather than choosing a lower heading level. The heading level should reflect the content's logical structure, not its visual appearance.
+How to fix: Insert an h{expectedLevel} heading between the h{skippedFrom} and h{skippedTo}, or change the h{skippedTo} to h{expectedLevel} to maintain sequential order. After h{skippedFrom}, use h{expectedLevel} for the next level. Don't skip levels when going down the hierarchy. If you need a heading to look smaller visually, use CSS to style it rather than choosing a lower heading level. The heading level should reflect the content's logical structure, not its visual appearance.
 ```
 
 ```
-ID: ErrHeadingsDontStartWithH1
+ID: ErrMultipleH1
 Type: Error
 Impact: Medium
 WCAG: 1.3.1
 Category: headings
-Description: First heading on page is not h1
-Why it matters: Document structure should start with h1
-Who it affects: Screen reader users
-How to fix: Start heading hierarchy with h1
-```
-
-```
-ID: ErrMultipleH1HeadingsOnPage
-Type: Error
-Impact: Medium
-WCAG: 1.3.1
-Category: headings
-Description: Multiple h1 elements found on page
-Why it matters: Unclear main topic of page
-Who it affects: Screen reader users
-How to fix: Use only one h1 per page
+Description: Page contains {count} h1 elements instead of just one
+Why it matters: Having {count} h1 elements creates confusion about the page's main topic. Each h1 represents a primary heading, and multiple h1s suggest multiple main topics, breaking the document hierarchy. Screen readers users won't know which h1 represents the actual page topic.
+Who it affects: Screen reader users who expect a single h1 to identify the page topic, users navigating by headings who see multiple "top level" items, SEO and search engines that look for a single main topic
+How to fix: Keep only one h1 that represents the main page topic. Change the other {count-1} h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
 ```
 
 ### 3.4 ARIA Heading Issues
@@ -555,10 +569,10 @@ Type: Warning
 Impact: Low
 WCAG: 2.4.6
 Category: headings
-Description: Heading text exceeds 60 characters
-Why it matters: Long headings are hard to scan and understand
-Who it affects: Users with cognitive disabilities, screen reader users
-How to fix: Use concise heading text
+Description: Heading text is {length} characters long: "{headingText}"
+Why it matters: This heading has {length} characters. Long headings are harder to scan quickly, more difficult to understand at a glance, and can overwhelm users. Screen reader users hearing the full heading text may struggle to grasp the main point. Long headings also cause layout issues on mobile devices and in navigation menus.
+Who it affects: Users with cognitive disabilities who benefit from concise, clear headings, screen reader users who must listen to the entire heading, users scanning the page quickly for information, and mobile users with limited screen space
+How to fix: Shorten the heading to under 60 characters while preserving its meaning. Current: "{headingText}" - Consider breaking into a shorter heading with explanatory text below, or focus on the key message. Use descriptive but concise language.
 ```
 
 ```
@@ -591,7 +605,7 @@ How to fix: Ensure visible text matches or is contained within the accessible na
 
 ### 4.1 Missing Landmarks
 ```
-ID: ErrNoMainLandmarkOnPage
+ID: ErrNoMainLandmark
 Type: Error
 Impact: High
 WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
@@ -615,7 +629,19 @@ How to fix: Use the HTML5 <header> element for your site header (it has an impli
 ```
 
 ```
-ID: WarnNoContentinfoLandmarkOnPage
+ID: WarnNoBannerLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A), 2.4.1 Bypass Blocks (Level A)
+Category: landmarks
+Description: Page is missing a banner landmark to identify the header/masthead region
+Why it matters: The banner landmark identifies the site header containing the logo, primary navigation, and other site-wide content. Without it, screen reader users cannot quickly jump to the header area using landmark navigation. They must read through content linearly to find navigation and branding elements. This is especially frustrating when users want to access the main navigation or return to the homepage via the logo.
+Who it affects: Screen reader users who navigate by landmarks to quickly access header content, keyboard users with assistive technology looking for navigation, users with cognitive disabilities who rely on consistent page structure, and users who frequently need to access header elements like search or main navigation
+How to fix: Use the HTML5 <header> element at the page level (not within article, aside, main, nav, or section) as it has an implicit banner role. Alternatively, add role="banner" to your header container. Include site-wide elements like logo, primary navigation, site search, and utility navigation within the banner. Ensure only one banner landmark exists per page at the top level.
+```
+
+```
+ID: WarnNoContentinfoLandmark
 Type: Warning
 Impact: Low
 WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
@@ -627,7 +653,7 @@ How to fix: Use the HTML5 <footer> element for your page footer (it has an impli
 ```
 
 ```
-ID: WarnNoNavLandmarksOnPage
+ID: WarnNoNavigationLandmark
 Type: Warning
 Impact: Low
 WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
@@ -640,7 +666,7 @@ How to fix: Wrap navigation areas in <nav> elements or add role="navigation" to 
 
 ### 4.2 Multiple Landmarks
 ```
-ID: ErrMultipleMainLandmarksOnPage
+ID: ErrMultipleMainLandmarks
 Type: Error
 Impact: High
 WCAG: 1.3.1 Info and Relationships
@@ -652,7 +678,7 @@ How to fix: Use only one <main> element or role="main" per page. Identify which 
 ```
 
 ```
-ID: ErrMultipleBannerLandmarksOnPage
+ID: ErrMultipleBannerLandmarks
 Type: Error
 Impact: Medium
 WCAG: 1.3.1
@@ -664,7 +690,7 @@ How to fix: Use only one banner landmark
 ```
 
 ```
-ID: ErrMultipleContentinfoLandmarksOnPage
+ID: ErrMultipleContentinfoLandmarks
 Type: Error
 Impact: Medium
 WCAG: 1.3.1
@@ -710,6 +736,18 @@ Description: Navigation landmark lacks label
 Why it matters: Hard to distinguish multiple navigation areas
 Who it affects: Screen reader users
 How to fix: Add descriptive aria-label
+```
+
+```
+ID: WarnMultipleNavNeedsLabel
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Category: landmarks
+Description: Multiple navigation landmarks found without distinguishing labels
+Why it matters: When a page has multiple navigation areas (main menu, footer links, breadcrumbs, sidebar navigation), users need to distinguish between them. Without unique labels, screen reader users hear "navigation" multiple times with no indication of which navigation area they're entering. This creates confusion about which menu contains the desired links and requires users to explore each navigation to understand its purpose.
+Who it affects: Screen reader users who need to distinguish between different navigation areas, keyboard users navigating between multiple menus, users with cognitive disabilities who need clear labeling, and frequent users who want to quickly access specific navigation areas
+How to fix: Add unique aria-label attributes to each <nav> element or role="navigation" container. Use descriptive labels like aria-label="Main menu", aria-label="Footer links", aria-label="Breadcrumb", aria-label="Related articles". The labels should clearly indicate the purpose or location of each navigation. Test with screen readers to ensure each navigation is announced with its unique label.
 ```
 
 ### 4.4 Landmark Nesting
@@ -760,6 +798,19 @@ Description: Content exists outside of any landmark
 Why it matters: Content may be missed when navigating by landmarks
 Who it affects: Screen reader users using landmark navigation
 How to fix: Ensure all content is within appropriate landmarks
+```
+
+### 4.5 Content Outside Landmarks
+```
+ID: WarnElementNotInLandmark
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Category: landmarks
+Description: Important content found outside of any landmark region, making it harder for screen reader users to find and navigate to
+Why it matters: Landmarks create a navigable structure for your page, like a table of contents. Content outside landmarks is like having chapters missing from the table of contents - users may never find it when navigating by landmarks. Screen reader users often jump between landmarks to quickly scan page structure, and content outside landmarks requires them to read through the entire page linearly to discover it. This particularly affects users who are familiar with your site and want to quickly navigate to specific content areas.
+Who it affects: Screen reader users who navigate by landmarks to efficiently explore pages, keyboard users using browser extensions for landmark navigation, users with cognitive disabilities who rely on consistent page structure, and power users who use landmarks for quick navigation
+How to fix: Ensure all meaningful content is contained within appropriate landmark regions. Typically: use <header> or role="banner" for site headers, <nav> or role="navigation" for navigation menus, <main> or role="main" for primary content, <aside> or role="complementary" for sidebar content, <footer> or role="contentinfo" for footers. Decorative content or spacers can remain outside landmarks. Review your page structure to ensure no important content is orphaned outside the landmark structure.
 ```
 
 ### 4.6 Additional Landmark Issues
@@ -1342,17 +1393,54 @@ How to fix: Ensure all regions have labels or use different elements
 
 ## 5. COLOR & CONTRAST
 
-### 5.1 Contrast Errors
+### 5.1 Contrast Errors - Level AA
 ```
-ID: ErrTextContrast
+ID: ErrTextContrastAA
 Type: Error
 Impact: High
-WCAG: 1.4.3 Contrast (Minimum), 1.4.6 Contrast (Enhanced)
+WCAG: 1.4.3 Contrast (Minimum)
 Category: color
-Description: Text color has insufficient contrast ratio with its background color
-Why it matters: Users with low vision, color blindness, or who are viewing content in bright sunlight may not be able to read text that doesn't have sufficient contrast with its background. This creates barriers to accessing information and can make content completely unreadable. Insufficient contrast is one of the most common accessibility issues and affects a large number of users.
-Who it affects: Users with low vision who need higher contrast to distinguish text, users with color blindness who may have difficulty distinguishing certain color combinations, older users experiencing age-related vision changes, and any user viewing content in bright sunlight or on low-quality displays
-How to fix: Ensure text has a contrast ratio of at least 4.5:1 with its background for normal text, or 3:1 for large text (18pt or 14pt bold). For enhanced accessibility (Level AAA), use 7:1 for normal text and 4.5:1 for large text. Use a contrast checking tool to verify ratios and test with actual users when possible. Consider providing a high contrast mode option.
+Description: Text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This text with a contrast ratio of {ratio}:1 does not meet WCAG Level AA requirements. Normal text requires a minimum contrast ratio of 4.5:1 to pass Level AA. The foreground color ({fg}) against the background ({bg}) doesn't provide enough distinction for users with visual impairments.
+Who it affects: Users with low vision who need higher contrast to distinguish text, users with color blindness, older users experiencing age-related vision changes, and users viewing content in bright sunlight or on low-quality displays
+How to fix: Current contrast is {ratio}:1, but WCAG Level AA requires at least 4.5:1 for normal text ({fontSize}px). To fix, darken the foreground color from {fg} or lighten the background from {bg}. Consider using #595959 or darker on white background, or #FFFFFF on backgrounds darker than #767676.
+```
+
+```
+ID: ErrLargeTextContrastAA
+Type: Error
+Impact: High
+WCAG: 1.4.3 Contrast (Minimum)
+Category: color
+Description: Large text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This large text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AA requirements. Large text (24px+ or 18.66px+ bold) requires a minimum contrast ratio of 3:1 to pass Level AA. The foreground color ({fg}) against background ({bg}) doesn't provide enough distinction.
+Who it affects: Users with low vision, color blindness, or age-related vision changes who struggle to distinguish text with insufficient contrast, even when the text is larger
+How to fix: Current contrast is {ratio}:1, but WCAG Level AA requires at least 3:1 for large text. To fix, adjust the foreground color from {fg} or the background from {bg}. Consider using #949494 or darker on white background for large text.
+```
+
+### 5.2 Contrast Errors - Level AAA
+```
+ID: ErrTextContrastAAA
+Type: Error
+Impact: High
+WCAG: 1.4.6 Contrast (Enhanced)
+Category: color
+Description: Text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This text with a contrast ratio of {ratio}:1 does not meet WCAG Level AAA enhanced requirements. Normal text requires a minimum contrast ratio of 7:1 to pass Level AAA. The foreground color ({fg}) against the background ({bg}) doesn't provide optimal distinction for maximum accessibility.
+Who it affects: Users with moderate visual impairments, including those with low vision, color blindness, or contrast sensitivity who benefit from enhanced contrast for optimal readability
+How to fix: Current contrast is {ratio}:1, but WCAG Level AAA requires at least 7:1 for normal text ({fontSize}px). To fix, use high contrast combinations like #333333 or darker on white background, or white text on backgrounds darker than #565656.
+```
+
+```
+ID: ErrLargeTextContrastAAA
+Type: Error
+Impact: High
+WCAG: 1.4.6 Contrast (Enhanced)
+Category: color
+Description: Large text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This large text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AAA enhanced requirements. Large text (24px+ or 18.66px+ bold) requires a minimum contrast ratio of 4.5:1 to pass Level AAA for enhanced accessibility.
+Who it affects: Users with moderate visual impairments who benefit from enhanced contrast even for large text, ensuring optimal readability in all conditions
+How to fix: Current contrast is {ratio}:1, but WCAG Level AAA requires at least 4.5:1 for large text. To fix, adjust colors to achieve higher contrast, such as #767676 or darker on white background for large text at Level AAA.
 ```
 
 ### 5.2 Color Style Issues
@@ -1381,8 +1469,8 @@ How to fix: Use external stylesheets
 ```
 
 ```
-ID: ErrColorRelatedStyleDefinedExplicitlyInElement
-Type: Warning
+ID: ErrColorStyleDefinedExplicitlyInElement
+Type: Error
 Impact: Low
 WCAG: 1.4.3
 Category: color
@@ -1393,8 +1481,8 @@ How to fix: Use CSS classes instead of inline styles
 ```
 
 ```
-ID: ErrColorRelatedStyleDefinedExplicitlyInStyleTag
-Type: Warning
+ID: ErrColorStyleDefinedExplicitlyInStyleTag
+Type: Error
 Impact: Low
 WCAG: 1.4.3
 Category: color
@@ -1402,6 +1490,30 @@ Description: Color-related styles defined in style tag
 Why it matters: Embedded color styles harder to override for user preferences
 Who it affects: Users with custom stylesheets, high contrast mode users
 How to fix: Use external stylesheets for better maintainability
+```
+
+```
+ID: WarnColorRelatedStyleDefinedExplicitlyInElement
+Type: Warning
+Impact: Low
+WCAG: 1.4.3 Contrast (Minimum), 1.4.8 Visual Presentation
+Category: color
+Description: Color-related CSS properties found in inline style attributes on HTML elements
+Why it matters: Inline color styles bypass user stylesheets and browser extensions that help users with visual disabilities customize colors for better readability. Users who need high contrast, inverted colors, or specific color schemes cannot easily override inline styles. This also makes it difficult to implement dark mode, maintain consistent theming, or allow user color preferences.
+Who it affects: Users with low vision who need high contrast or specific color combinations, users with color blindness who need to adjust problematic color pairs, users with dyslexia who benefit from specific background colors, users with light sensitivity who need dark themes, and users who rely on browser extensions for color customization
+How to fix: Move color-related styles (color, background-color, border-color, etc.) to external CSS files using classes. This allows users to override styles with their own stylesheets, enables easier theme switching, improves maintainability, and supports user preference media queries like prefers-color-scheme. Use CSS custom properties (variables) for colors to make customization even easier.
+```
+
+```
+ID: WarnColorRelatedStyleDefinedExplicitlyInStyleTag
+Type: Warning
+Impact: Low
+WCAG: 1.4.3 Contrast (Minimum), 1.4.8 Visual Presentation
+Category: color
+Description: Color-related CSS found in <style> tags within the HTML document instead of external stylesheets
+Why it matters: Embedded styles in <style> tags are harder for users to override than external stylesheets and may not be cached efficiently. Users with visual disabilities who need custom color schemes must use more aggressive CSS overrides. This approach also makes it difficult to maintain consistent theming across pages and prevents users from disabling styles entirely if needed.
+Who it affects: Users with low vision requiring custom color schemes, users with photosensitivity needing to modify bright colors, users with color blindness who need to adjust color combinations, and users who benefit from consistent, predictable styling across pages
+How to fix: Move color styles to external CSS files linked with <link> tags. Organize colors using CSS custom properties for easy theming. Implement user preference support with @media (prefers-color-scheme) and similar queries. Consider providing theme switcher functionality. Ensure your external stylesheets are properly cached for performance.
 ```
 
 ---
@@ -1470,7 +1582,46 @@ Who it affects: Screen reader users
 How to fix: Use valid language codes
 ```
 
-### 6.3 Language Mismatches
+### 6.3 Empty Language Attribute
+```
+ID: ErrEmptyLanguageAttribute
+Type: Error
+Impact: High
+WCAG: 3.1.1 Language of Page (Level A)
+Category: language
+Description: HTML element has a lang attribute present but with no value (lang=""), preventing screen readers from determining the page language
+Why it matters: An empty lang attribute is worse than no lang attribute because it explicitly tells assistive technologies there's no language specified, potentially causing screen readers to use incorrect pronunciation rules or fail to switch language synthesizers. This can make content completely unintelligible when read aloud.
+Who it affects: Blind and low vision users using screen readers who need proper language identification for correct pronunciation, multilingual users who rely on automatic language switching in assistive technologies, users with dyslexia using reading tools that depend on language settings, and users of translation services
+How to fix: Add a valid language code to the lang attribute (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. For the HTML element, always specify the primary document language. If the language is truly unknown, remove the lang attribute entirely rather than leaving it empty.
+```
+
+### 6.4 Invalid Language Code
+```
+ID: ErrInvalidLanguageCode
+Type: Error
+Impact: High
+WCAG: 3.1.1 Language of Page (Level A), 3.1.2 Language of Parts (Level AA)
+Category: language
+Description: Language attribute contains invalid code '{found}' that doesn't conform to ISO 639 standards
+Why it matters: The language code '{found}' is not recognized as a valid ISO 639 language code. This prevents assistive technologies from properly processing content, causing screen readers to mispronounce words, use incorrect inflection patterns, or fail to switch language engines. This can make content difficult or impossible to understand when read aloud, especially if the content is in a non-English language but gets read with English pronunciation rules.
+Who it affects: Blind and low vision users relying on screen readers for accurate pronunciation, multilingual users who need proper language identification for comprehension, users with reading disabilities using text-to-speech tools, and international users accessing content in multiple languages
+How to fix: Replace '{found}' with a valid ISO 639-1 or ISO 639-2 language code. If '{found}' appears to be English, use "en". Common corrections: "english" → "en", "spanish" → "es", "french" → "fr", "deutsch" → "de", "eng" → "en". For regional variants use BCP 47 format (e.g., "en-US", "en-GB", "es-MX"). Check the official ISO 639 registry for the correct code.
+```
+
+### 6.5 No Page Language
+```
+ID: ErrNoPageLanguage
+Type: Error
+Impact: High
+WCAG: 3.1.1 Language of Page (Level A)
+Category: language
+Description: HTML element is missing the lang attribute, preventing assistive technologies from determining the primary language of the page
+Why it matters: Without a declared language, screen readers cannot determine which pronunciation rules and voice synthesizer to use, often defaulting to the user's system language which may be incorrect. This causes mispronunciation, incorrect inflection, and can make content unintelligible, especially for pages in languages different from the user's default settings.
+Who it affects: Blind and low vision users using screen readers who need correct pronunciation for comprehension, international users accessing content in different languages, users with dyslexia or reading disabilities using assistive reading tools, and users of automatic translation services
+How to fix: Add the lang attribute to the <html> element with the appropriate language code (e.g., <html lang="en"> for English, <html lang="fr"> for French). Use ISO 639-1 two-letter codes for modern languages. For XHTML, also include xml:lang with the same value. Ensure the declared language matches the actual primary language of your content. For multilingual pages, use the language that represents the majority of the content.
+```
+
+### 6.6 Language Mismatches
 ```
 ID: ErrPrimaryLangAndXmlLangMismatch
 Type: Error
@@ -1496,7 +1647,33 @@ Who it affects: Screen reader users
 How to fix: Move hreflang to anchor elements only
 ```
 
-### 6.5 Additional Language Issues
+### 6.5 Language Warnings
+
+```
+ID: WarnEmptyLangAttribute
+Type: Warning
+Impact: Medium
+WCAG: 3.1.1 Language of Page (Level A)
+Category: language
+Description: Language attribute exists but appears to be empty or contains only whitespace
+Why it matters: An empty or whitespace-only lang attribute is ambiguous - it's unclear if the language is truly unknown or if this is an error. Screen readers may use fallback behavior that doesn't match the actual content language. This is less severe than a completely empty lang="" but still prevents proper language identification. Browsers and assistive technologies cannot determine the intended language for pronunciation and processing.
+Who it affects: Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech
+How to fix: Either add a valid language code to the attribute (e.g., lang="en") or remove the attribute entirely if the language is unknown. Check for common causes like template variables that didn't populate, CMS configuration issues, or JavaScript that clears lang attributes. Ensure any whitespace is removed and a valid ISO 639 language code is provided.
+```
+
+```
+ID: WarnInvalidLangChange
+Type: Warning
+Impact: Medium
+WCAG: 3.1.2 Language of Parts (Level AA)
+Category: language
+Description: Language change indicated but with invalid or unrecognized language code
+Why it matters: Invalid language codes on content sections prevent screen readers from switching language processors correctly. This can cause content in foreign languages to be pronounced using the wrong language rules, making it incomprehensible. For example, French text might be read with English pronunciation rules. Users expect language changes to be handled smoothly, and invalid codes break this functionality.
+Who it affects: Multilingual screen reader users who need proper language switching, users reading content in multiple languages, users with reading disabilities using assistive tools, and users relying on proper pronunciation for comprehension
+How to fix: Verify all lang attributes on elements use valid ISO 639 language codes. Common fixes include correcting typos ("fre" → "fr"), using standard codes instead of full names ("French" → "fr"), and ensuring region codes are properly formatted ("en-us" → "en-US"). Test with screen readers to ensure language changes are announced and pronounced correctly.
+```
+
+### 6.6 Additional Language Issues
 
 ```
 ID: ErrRegionQualifierForPrimaryLangNotRecognized
@@ -1636,8 +1813,8 @@ How to fix: Add outline-offset for better visibility
 ```
 
 ```
-ID: ErrZeroOutlineOffset
-Type: Error
+ID: WarnZeroOutlineOffset
+Type: Warning
 Impact: Medium
 WCAG: 2.4.7
 Category: focus
@@ -1649,7 +1826,7 @@ How to fix: Use positive outline-offset value
 
 ### 7.2 Tab Order
 ```
-ID: ErrPositiveTabIndex
+ID: ErrPositiveTabindex
 Type: Error
 Impact: High
 WCAG: 2.4.3 Focus Order
@@ -1661,7 +1838,7 @@ How to fix: Remove positive tabindex values and use only tabindex="0" (adds elem
 ```
 
 ```
-ID: ErrNegativeTabIndex
+ID: ErrNegativeTabindex
 Type: Error
 Impact: Medium
 WCAG: 2.4.3
@@ -1708,6 +1885,44 @@ Who it affects: Keyboard users
 How to fix: Remove tabindex from non-interactive elements or make them properly interactive
 ```
 
+### 7.3 Invalid Tabindex
+```
+ID: ErrInvalidTabindex
+Type: Error
+Impact: High
+WCAG: 2.4.3 Focus Order (Level A)
+Category: focus
+Description: Element has a tabindex attribute with an invalid value (non-numeric or decimal)
+Why it matters: Invalid tabindex values are ignored by browsers, potentially making interactive elements unreachable by keyboard or creating unpredictable focus behavior. This can completely block keyboard users from accessing functionality. The element might be skipped during tabbing, receive focus unexpectedly, or behave differently across browsers.
+Who it affects: Keyboard users who cannot reach or interact with the element, screen reader users who may miss important interactive controls, users with motor disabilities relying on keyboard navigation, and users who cannot use a mouse
+How to fix: Use only valid integer values for tabindex: "0" to include in natural tab order, "-1" to remove from tab order but allow programmatic focus, or remove the tabindex attribute entirely if the element shouldn't be focusable. Never use decimal values (1.5), text ("first"), or empty values (tabindex="").
+```
+
+### 7.4 Focus Indicators
+```
+ID: ErrNoFocusIndicator
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible (Level AA)
+Category: focus
+Description: Interactive element has no visible focus indicator when focused, making keyboard navigation impossible to track
+Why it matters: Focus indicators show keyboard users where they are on the page - without them, it's like navigating in the dark. Users cannot see which element will be activated when they press Enter or Space, making it impossible to navigate confidently. They might activate the wrong control, skip important content, or become completely lost on the page. This is especially critical for forms where activating the wrong button could submit incomplete data or cancel an operation.
+Who it affects: Keyboard users who need to see their current position, users with attention or memory disabilities who lose track of focus position, users with low vision who need clear visual indicators, users with motor disabilities who need to carefully track navigation, and any user who temporarily cannot use a mouse
+How to fix: Ensure all interactive elements have a visible focus indicator using CSS :focus styles. Add outline, border, background color, or box-shadow changes. Make focus indicators clearly visible with sufficient color contrast (3:1 minimum). Never use outline: none without providing an alternative indicator. Consider using :focus-visible for keyboard-only focus styles. Test by tabbing through your entire page to ensure every interactive element shows focus clearly.
+```
+
+```
+ID: ErrTransparentFocusIndicator
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible (Level AA)
+Category: focus
+Description: Focus indicator uses transparent or nearly transparent color, making it effectively invisible
+Why it matters: A transparent focus indicator is functionally the same as no focus indicator - users cannot see where keyboard focus is located. This might occur from using rgba with 0 or very low alpha values, setting outline-color to transparent, or using colors that match the background. The focus indicator exists technically but provides no practical benefit to users trying to navigate.
+Who it affects: Keyboard users who need visible focus indicators to navigate, users with low vision who need clear visual cues, users with color blindness who may already struggle with certain color combinations, and users with cognitive disabilities who need obvious focus indicators
+How to fix: Use opaque colors with sufficient contrast for focus indicators. Replace transparent outlines with visible colors, ensure at least 3:1 contrast ratio between focus indicator and background, use solid colors or high alpha values (0.7 or higher) for rgba colors. Test focus indicators on different backgrounds across your site. Consider using box-shadow or background changes as additional focus indicators.
+```
+
 ---
 
 ## 8. FONTS
@@ -1744,10 +1959,10 @@ Type: Discovery
 Impact: N/A
 WCAG: N/A
 Category: fonts
-Description: Font usage detected for review
-Why it matters: Some fonts may have readability issues
-Who it affects: Users with reading disabilities
-How to fix: Review font choices for readability
+Description: Font '{found}' detected in use on the page for accessibility review
+Why it matters: Tracking font usage helps identify typography choices that may affect readability. Font '{found}' has been detected on this page. While not inherently an accessibility issue, certain fonts can be harder to read for users with dyslexia, low vision, or reading disabilities. This discovery item documents which fonts are in use so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.
+Who it affects: This information helps accessibility auditors and developers understand the typography landscape of the page, particularly relevant for users with dyslexia who benefit from clear sans-serif fonts, users with low vision who need good character distinction, and users with reading disabilities who benefit from consistent, readable typefaces
+How to fix: No action required - this is informational only. The font '{found}' is currently in use. For accessibility best practices, consider using fonts with clear character distinction (avoiding ambiguous characters like I/l/1), adequate spacing between letters, and good readability at various sizes. Popular accessible fonts include Arial, Verdana, Tahoma, and specialized dyslexia-friendly fonts like OpenDyslexic. Document your font choices and test readability with actual users when possible.
 ```
 
 ---
@@ -1755,6 +1970,30 @@ How to fix: Review font choices for readability
 ## 9. TITLE & ARIA
 
 ### 9.1 Title Issues
+```
+ID: WarnTitleAttrFound
+Type: Warning
+Impact: Low
+WCAG: 3.3.2 Labels or Instructions (Level A), 4.1.2 Name, Role, Value (Level A)
+Category: title
+Description: Title attribute is being used on an element, which has significant accessibility limitations
+Why it matters: Title attributes are problematic for accessibility: they don't appear on mobile devices or touch screens, keyboard users cannot access them without a mouse, screen readers handle them inconsistently (some ignore them, some read them), they disappear quickly making them hard to read for users with motor or cognitive disabilities, they cannot be styled or resized for users with low vision, and they're not translated by browser translation tools. Using title attributes for important information excludes many users from accessing that content.
+Who it affects: Mobile and touch screen users who never see title tooltips, keyboard-only users who cannot hover to trigger tooltips, screen reader users who may not hear title content reliably, users with motor disabilities who cannot hover precisely, users with cognitive disabilities who need more time to read, users with low vision who cannot resize tooltip text, and users relying on translation tools
+How to fix: Replace title attributes with visible, persistent text that all users can access. For form fields, use visible <label> elements or aria-label. For links and buttons, ensure the visible text is descriptive. For abbreviations, provide the full text on first use. For supplementary information, use visible helper text, details/summary elements, or clickable info icons. Only use title attributes for progressive enhancement where the information duplicates visible content. Never rely on title alone for important information.
+```
+
+```
+ID: ErrTitleAsOnlyLabel
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A), 1.3.1 Info and Relationships (Level A), 4.1.2 Name, Role, Value (Level A)
+Category: title
+Description: Form element is using title attribute as its only accessible label, which is insufficient for accessibility
+Why it matters: When title is the only labeling mechanism for a form field, many users cannot determine what information to enter. Title attributes are not announced by screen readers when navigating forms in normal mode, don't appear on mobile devices, cannot be accessed by keyboard users, and disappear too quickly for many users to read. This makes the form field essentially unlabeled for a large portion of users, preventing them from completing forms successfully.
+Who it affects: Screen reader users who won't hear the field's purpose when navigating the form, mobile users who cannot see title tooltips at all, keyboard users who cannot hover to see the tooltip, users with motor disabilities who struggle with precise hovering, users with cognitive disabilities who need persistent labels as memory aids, and voice control users who cannot reference fields without visible labels
+How to fix: Add a proper visible <label> element associated with the form field using the 'for' attribute. If space is limited, use placeholder text in addition to (not instead of) a label. For complex layouts, consider using aria-labelledby to reference existing visible text. If you must use aria-label, ensure it's descriptive and consider adding visible text for sighted users. Never rely solely on title attributes for labeling form fields - they should only supplement proper labels, not replace them.
+```
+
 ```
 ID: ErrTitleAttrFound
 Type: Error
@@ -1768,7 +2007,7 @@ How to fix: Use visible text or proper labels instead
 ```
 
 ```
-ID: ErrErrEmptyTitleAttr
+ID: ErrEmptyTitleAttr
 Type: Error
 Impact: Low
 WCAG: 3.3.2
@@ -1791,7 +2030,68 @@ Who it affects: Screen reader users who need to understand what each iframe cont
 How to fix: Add a title attribute to every iframe that concisely describes its content or purpose (e.g., title="YouTube video: Product demonstration", title="Google Maps: Office location", title="Payment form"). The title should be unique if there are multiple iframes. Keep it brief but descriptive enough that users understand what the iframe contains without having to enter it. For decorative iframes (rare), you can use title="" and add tabindex="-1" to remove it from tab order.
 ```
 
-### 9.2 ARIA Issues
+### 9.2 Page Title Issues
+```
+ID: ErrEmptyPageTitle
+Type: Error
+Impact: High
+WCAG: 2.4.2 Page Titled (Level A)
+Category: title
+Description: Page title element is present but contains no text content, making it impossible for users to identify the page
+Why it matters: Page titles appear in browser tabs, bookmarks, search results, and screen reader announcements. An empty title prevents users from identifying pages when multiple tabs are open, finding pages in browser history, understanding search results, or navigating between multiple application windows. Screen reader users often rely on titles as the first piece of information about a page.
+Who it affects: Screen reader users who hear page titles announced when pages load or when navigating between windows, users with cognitive disabilities who rely on clear page identification, users with multiple tabs open who need to distinguish between pages, and all users trying to find pages in bookmarks or history
+How to fix: Add descriptive text content to the <title> element in the document head. Use a clear format like "Page Topic - Section - Site Name". Make titles unique for each page, descriptive of the page's content or purpose, and concise (under 60 characters). Update titles dynamically for single-page applications when content changes significantly. Avoid generic titles like "Home" or "Page" without additional context.
+```
+
+```
+ID: WarnPageTitleTooShort
+Type: Warning
+Impact: Low
+WCAG: 2.4.2 Page Titled (Level A)
+Category: title
+Description: Page title is very short (under 10 characters), potentially not descriptive enough
+Why it matters: Very short page titles like "Home", "About", or "Contact" don't provide enough context, especially when users have multiple tabs open or are browsing history. Users can't distinguish between different sites with the same generic titles. Screen reader users hearing page titles announced need more descriptive information to understand where they are. Search results become less useful when titles aren't descriptive.
+Who it affects: Users with multiple browser tabs who need to distinguish between pages, screen reader users who rely on descriptive titles for context, users browsing history or bookmarks, users finding content through search engines, and users with cognitive disabilities who need clear page identification
+How to fix: Expand short titles to be more descriptive by including the site name and page purpose (change "Home" to "ACME Corp - Home", "About" to "About Our Services - ACME Corp"). Aim for 20-60 characters that clearly describe the page content. Ensure each page has a unique, descriptive title that makes sense out of context.
+```
+
+```
+ID: WarnPageTitleTooLong
+Type: Warning
+Impact: Low
+WCAG: 2.4.2 Page Titled (Level A)
+Category: title
+Description: Page title exceeds 60 characters, which may be truncated in browser tabs and search results
+Why it matters: Long titles get cut off in browser tabs (typically around 30 characters) and search engine results (typically 50-60 characters), losing important information. Users see "This is a very long page title that..." instead of the complete title. The most important information might be at the end and never seen. Screen reader users have to listen to lengthy titles repeatedly when navigating between windows.
+Who it affects: Users with multiple tabs open who see truncated titles, users searching for content who can't see full titles in results, screen reader users who must listen to long titles repeatedly, mobile users with even less space for title display, and users trying to share links where long titles may be problematic
+How to fix: Keep titles concise, ideally under 60 characters. Place the most important, unique information first. Use a format like "Page Topic - Category - Site Name" with the most specific information first. Remove unnecessary words like "Welcome to" or "This page contains". Test how titles appear in browser tabs and search results to ensure key information is visible.
+```
+
+```
+ID: WarnMultipleTitleElements
+Type: Warning
+Impact: Medium
+WCAG: 2.4.2 Page Titled (Level A)
+Category: title
+Description: Multiple <title> elements found in the document head, which may cause unpredictable behavior
+Why it matters: When multiple title elements exist, browsers may use only the first or last one unpredictably, causing inconsistent page identification. This often happens with content management systems or when scripts dynamically add titles. Different browsers and assistive technologies may choose different titles, creating an inconsistent experience. SEO is negatively affected as search engines may index the wrong title.
+Who it affects: All users seeing inconsistent titles in browser tabs, screen reader users who may hear different titles than what's visually displayed, users bookmarking pages with incorrect titles, search engine users finding pages with wrong titles, and developers debugging title-related issues
+How to fix: Remove all duplicate <title> elements, keeping only one in the document head. Check for scripts that might be adding titles dynamically. Ensure your CMS or framework isn't creating duplicate titles. If using a single-page application, manage title changes through a single mechanism. Validate that only one title element exists after the page fully loads.
+```
+
+```
+ID: WarnIframeTitleNotDescriptive
+Type: Warning
+Impact: Medium
+WCAG: 2.4.1 Bypass Blocks (Level A), 4.1.2 Name, Role, Value (Level A)
+Category: title
+Description: Iframe has a title attribute but it's generic or not descriptive (e.g., "iframe", "frame", "embedded content")
+Why it matters: Generic iframe titles like "iframe" or "embedded" provide no useful information about the embedded content. Screen reader users hear these unhelpful titles and must enter the iframe to understand what it contains. With multiple iframes, users cannot distinguish between them or determine which ones are worth exploring. This wastes time and creates confusion, especially if iframes contain important functionality like payment forms or videos.
+Who it affects: Screen reader users trying to understand and navigate between multiple iframes, keyboard users who encounter iframes in tab order, users with cognitive disabilities who need clear labeling of all content regions, and users trying to navigate efficiently through complex pages
+How to fix: Replace generic titles with descriptive ones that explain the iframe's content or purpose. Use specific descriptions like title="YouTube video: Product demo", title="Customer feedback form", title="Live chat support", or title="Interactive map of office locations". Each iframe title should be unique if there are multiple iframes. Avoid redundant words like "iframe" in the title since the element type is already announced.
+```
+
+### 9.3 ARIA Issues
 ```
 ID: ErrAriaLabelMayNotBeFoundByVoiceControl
 Type: Error

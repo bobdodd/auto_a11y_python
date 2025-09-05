@@ -81,7 +81,7 @@ class ScriptInjector:
             try:
                 with open(full_path, 'r', encoding='utf-8') as f:
                     scripts[script_path] = f.read()
-                    logger.debug(f"Loaded script: {script_path}")
+                    # Script loaded successfully - no need to log each one
             except Exception as e:
                 logger.error(f"Failed to load script {script_path}: {e}")
         
@@ -102,7 +102,7 @@ class ScriptInjector:
             for script_path in self.SCRIPT_LOAD_ORDER:
                 if script_path in self.loaded_scripts:
                     await page.evaluateOnNewDocument(self.loaded_scripts[script_path])
-                    logger.debug(f"Injected script: {script_path}")
+                    # Script injected - silent unless error
             
             # Add helper function to check if scripts are loaded
             await page.evaluateOnNewDocument('''
@@ -142,7 +142,7 @@ class ScriptInjector:
                 full_path = self.SCRIPT_DIR / script_path
                 if full_path.exists():
                     await page.addScriptTag({'path': str(full_path)})
-                    logger.debug(f"Injected script file: {script_path}")
+                    # Script file injected
             
             return True
             
@@ -207,7 +207,7 @@ class ScriptInjector:
             try:
                 result = await self.run_test(page, test_name)
                 results[test_name] = result
-                logger.debug(f"Completed test: {test_name}")
+                # Test completed
             except Exception as e:
                 logger.error(f"Test {test_name} failed: {e}")
                 results[test_name] = {

@@ -16,30 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from config import config
 from auto_a11y.web.app import create_app
 from auto_a11y.core.database import Database
-
-
-def setup_logging(debug=False):
-    """Configure logging"""
-    level = logging.DEBUG if debug else logging.INFO
-    
-    # Create logs directory
-    logs_dir = Path('logs')
-    logs_dir.mkdir(exist_ok=True)
-    
-    logging.basicConfig(
-        level=level,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.StreamHandler(),
-            logging.FileHandler(logs_dir / 'auto_a11y.log')
-        ]
-    )
-    
-    # Reduce noise from some libraries
-    logging.getLogger('werkzeug').setLevel(logging.WARNING)
-    logging.getLogger('pymongo').setLevel(logging.WARNING)
-    logging.getLogger('pyppeteer').setLevel(logging.INFO)
-    logging.getLogger('urllib3').setLevel(logging.WARNING)
+from auto_a11y.core.logging_config import setup_logging as configure_logging
 
 
 def init_directories():
@@ -132,8 +109,8 @@ def main():
     if args.port:
         config.PORT = args.port
     
-    # Setup logging
-    setup_logging(config.DEBUG)
+    # Setup logging using new configuration
+    configure_logging()
     logger = logging.getLogger(__name__)
     
     logger.info("="*60)

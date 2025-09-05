@@ -242,7 +242,7 @@ class HelpSystem {
             if (content[topic]) {
                 content = content[topic];
             } else {
-                console.error(`Help topic not found: ${topicPath}`);
+                // Help topic not found
                 return;
             }
         }

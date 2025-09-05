@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Contrast Logic</title>
+    <style>
+        .test-case {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+        }
+        
+        /* AA Pass case: 4.69:1 ratio (should PASS for normal text) */
+        .aa-pass {
+            color: #777777;
+            background: #000000;
+            font-size: 10px;
+        }
+        
+        /* AA Fail case: 3.5:1 ratio (should FAIL for normal text) */
+        .aa-fail {
+            color: #777777; 
+            background: #ffffff;
+            font-size: 10px;
+        }
+        
+        /* Large text AA Pass: 3.5:1 ratio (should PASS for large text) */
+        .large-aa-pass {
+            color: #777777;
+            background: #ffffff;
+            font-size: 24px; /* Large text */
+        }
+        
+        /* Large text AA Fail: 2.5:1 ratio (should FAIL even for large text) */
+        .large-aa-fail {
+            color: #999999;
+            background: #ffffff;
+            font-size: 24px; /* Large text */
+        }
+        
+        /* Bold large text AA Pass: 3.5:1 ratio */
+        .bold-large-aa-pass {
+            color: #777777;
+            background: #ffffff;
+            font-size: 19px; /* Large because bold */
+            font-weight: bold;
+        }
+        
+        /* AAA Pass: 7.5:1 ratio */
+        .aaa-pass {
+            color: #595959;
+            background: #ffffff;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contrast Testing Cases</h1>
+    
+    <div class="test-case aa-pass">
+        AA PASS: This text has 4.69:1 contrast (#777 on #000) - Should PASS AA (needs 4.5:1)
+    </div>
+    
+    <div class="test-case aa-fail">
+        AA FAIL: This text has 3.5:1 contrast (#777 on #fff) - Should FAIL AA (needs 4.5:1)
+    </div>
+    
+    <div class="test-case large-aa-pass">
+        LARGE AA PASS: This large text has 3.5:1 contrast (#777 on #fff) - Should PASS AA for large text (needs 3:1)
+    </div>
+    
+    <div class="test-case large-aa-fail">
+        LARGE AA FAIL: This large text has 2.5:1 contrast (#999 on #fff) - Should FAIL even for large text (needs 3:1)
+    </div>
+    
+    <div class="test-case bold-large-aa-pass">
+        BOLD LARGE AA PASS: This bold 19px text has 3.5:1 contrast (#777 on #fff) - Should PASS AA as large text (needs 3:1)
+    </div>
+    
+    <div class="test-case aaa-pass">
+        AAA PASS: This text has 7.5:1 contrast (#595959 on #fff) - Should PASS AAA (needs 7:1)
+    </div>
+    
+    <script>
+        // Include the colorContrast.js functions here for testing
+        // This would be loaded from the actual file in production
+        console.log("Test page loaded. Run accessibility tests to verify contrast logic.");
+    </script>
+</body>
+</html>

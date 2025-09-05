@@ -54,7 +54,7 @@ class TestRunner:
         Returns:
             Test result
         """
-        logger.info(f"Testing page: {page.url}")
+        # Testing page
         start_time = time.time()
         
         # Update page status
@@ -81,11 +81,35 @@ class TestRunner:
                 # Wait for content to be ready
                 await browser_page.waitForSelector('body', {'timeout': 5000})
                 
+                # Get WCAG compliance level from project
+                wcag_level = 'AA'  # Default to AA
+                try:
+                    # Get website to find project
+                    website = self.db.get_website(page.website_id)
+                    if website:
+                        project = self.db.get_project(website.project_id)
+                        if project and project.config:
+                            wcag_level = project.config.get('wcag_level', 'AA')
+                            logger.info(f"Project config: {project.config}")
+                            logger.info(f"Using WCAG {wcag_level} compliance level for testing")
+                        else:
+                            logger.info(f"No config found in project, using default AA")
+                    else:
+                        logger.warning(f"Could not find website for page {page.website_id}")
+                except Exception as e:
+                    logger.warning(f"Could not get WCAG level from project: {e}, defaulting to AA")
+                
                 # Inject test scripts
                 await self.script_injector.inject_script_files(browser_page)
                 
+                # Set WCAG level in page context
+                await browser_page.evaluate(f'''
+                    window.WCAG_LEVEL = "{wcag_level}";
+                    console.log("Testing with WCAG Level:", window.WCAG_LEVEL);
+                ''')
+                
                 # Run all tests
-                logger.debug("Running JavaScript tests")
+                # Running JavaScript tests
                 raw_results = await self.script_injector.run_all_tests(browser_page)
                 
                 # Take screenshot if requested
@@ -104,6 +128,7 @@ class TestRunner:
                 ai_findings = []
                 ai_analysis_results = {}
                 if run_ai_analysis and ai_api_key and screenshot_bytes:
+                    analyzer = None
                     try:
                         from auto_a11y.ai import ClaudeAnalyzer
                         
@@ -128,6 +153,13 @@ class TestRunner:
                         
                     except Exception as e:
                         logger.error(f"AI analysis failed: {e}")
+                    finally:
+                        # Clean up Claude client to avoid event loop errors
+                        if analyzer and hasattr(analyzer, 'client'):
+                            try:
+                                await analyzer.client.aclose()
+                            except Exception as cleanup_error:
+                                logger.debug(f"Error cleaning up AI analyzer: {cleanup_error}")
                 
                 # Calculate duration
                 duration_ms = int((time.time() - start_time) * 1000)
@@ -160,9 +192,7 @@ class TestRunner:
                 page.test_duration_ms = duration_ms
                 self.db.update_page(page)
                 
-                logger.info(f"Page tested successfully: {page.url} "
-                          f"({test_result.violation_count} violations, "
-                          f"{test_result.warning_count} warnings)")
+                # Page test completed successfully
                 
                 return test_result
                 

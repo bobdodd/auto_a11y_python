@@ -25,6 +25,18 @@
                             <div class="form-text">Optional description of the project goals</div>
                         </div>
                         
+                        <div class="mb-3">
+                            <label for="wcag_level" class="form-label">WCAG Compliance Level *</label>
+                            <select class="form-select" id="wcag_level" name="wcag_level" required>
+                                <option value="AA" selected>Level AA (Recommended)</option>
+                                <option value="AAA">Level AAA (Enhanced)</option>
+                            </select>
+                            <div class="form-text">
+                                <strong>Level AA:</strong> Standard compliance (4.5:1 contrast for normal text, 3:1 for large text)<br>
+                                <strong>Level AAA:</strong> Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)
+                            </div>
+                        </div>
+                        
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-check-circle"></i> Create Project

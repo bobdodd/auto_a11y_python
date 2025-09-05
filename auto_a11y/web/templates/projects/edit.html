@@ -33,6 +33,18 @@
                             </select>
                         </div>
                         
+                        <div class="mb-3">
+                            <label for="wcag_level" class="form-label">WCAG Compliance Level</label>
+                            <select class="form-select" id="wcag_level" name="wcag_level">
+                                <option value="AA" {% if project.config.get('wcag_level', 'AA') == 'AA' %}selected{% endif %}>Level AA (Recommended)</option>
+                                <option value="AAA" {% if project.config.get('wcag_level', 'AA') == 'AAA' %}selected{% endif %}>Level AAA (Enhanced)</option>
+                            </select>
+                            <div class="form-text">
+                                <strong>Level AA:</strong> Standard compliance (4.5:1 contrast for normal text, 3:1 for large text)<br>
+                                <strong>Level AAA:</strong> Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)
+                            </div>
+                        </div>
+                        
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-check-circle"></i> Update Project

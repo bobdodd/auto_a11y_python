@@ -63,7 +63,7 @@ class IssueFilterManager {
     
     init() {
         if (!document.querySelector('[data-filterable="true"]')) {
-            console.log('No filterable content found');
+            // No filterable content found
             return;
         }
         

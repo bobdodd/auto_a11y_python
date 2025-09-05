@@ -366,6 +366,57 @@ class ResultProcessor:
         
         return descriptions.get(error_code, f'Accessibility issue: {error_code}')
     
+    def enhance_ai_violation(self, violation: Violation) -> Violation:
+        """
+        Enhance an AI-detected violation with catalog descriptions
+        
+        Args:
+            violation: AI-detected Violation object
+            
+        Returns:
+            Enhanced Violation object
+        """
+        try:
+            # Get enhanced description using the AI issue ID
+            enhanced_desc = get_detailed_issue_description(violation.id, violation.metadata)
+            
+            if enhanced_desc:
+                # Update violation with enhanced description
+                violation.description = enhanced_desc.get('what', violation.description)
+                violation.failure_summary = enhanced_desc.get('remediation', violation.failure_summary)
+                
+                # Update impact level if provided
+                impact_str = enhanced_desc.get('impact', '')
+                if impact_str:
+                    violation.impact = ImpactLevel.HIGH if impact_str == 'High' else (
+                        ImpactLevel.MEDIUM if impact_str == 'Medium' else ImpactLevel.LOW
+                    )
+                
+                # Add WCAG criteria
+                wcag_full = enhanced_desc.get('wcag', [])
+                violation.wcag_criteria = [c.split()[0] for c in wcag_full] if wcag_full else []
+                
+                # Enhance metadata with catalog info
+                violation.metadata.update({
+                    'title': enhanced_desc.get('title', ''),
+                    'what': enhanced_desc.get('what', ''),
+                    'why': enhanced_desc.get('why', ''),
+                    'who': enhanced_desc.get('who', ''),
+                    'impact_detail': enhanced_desc.get('impact', ''),
+                    'wcag_full': wcag_full,
+                    'full_remediation': enhanced_desc.get('remediation', '')
+                })
+                
+                # Add help URL if we have WCAG criteria
+                if violation.wcag_criteria:
+                    violation.help_url = get_wcag_link(violation.wcag_criteria[0])
+            
+            return violation
+            
+        except Exception as e:
+            logger.error(f"Failed to enhance AI violation {violation.id}: {e}")
+            return violation
+    
     def _get_help_url(self, error_code: str) -> str:
         """
         Get help URL for error code

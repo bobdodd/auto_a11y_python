@@ -212,21 +212,23 @@ class TestRunner:
                 # Merge AI findings into main test result categories
                 if ai_findings:
                     for finding in ai_findings:
-                        # AI findings are already Violation objects now
+                        # Enhance AI violation with catalog descriptions
+                        enhanced_finding = self.result_processor.enhance_ai_violation(finding)
+                        
                         # Categorize them based on their ID prefix
-                        if finding.id.startswith('AI_Err'):
-                            test_result.violations.append(finding)
-                        elif finding.id.startswith('AI_Warn'):
-                            test_result.warnings.append(finding)
-                        elif finding.id.startswith('AI_Info'):
-                            test_result.info.append(finding)
+                        if enhanced_finding.id.startswith('AI_Err'):
+                            test_result.violations.append(enhanced_finding)
+                        elif enhanced_finding.id.startswith('AI_Warn'):
+                            test_result.warnings.append(enhanced_finding)
+                        elif enhanced_finding.id.startswith('AI_Info'):
+                            test_result.info.append(enhanced_finding)
                         else:
                             # Default to warning if unclear
-                            test_result.warnings.append(finding)
+                            test_result.warnings.append(enhanced_finding)
                     
                     # Store raw AI analysis results for reference
                     test_result.ai_analysis_results = ai_analysis_results
-                    logger.info(f"Merged {len(ai_findings)} AI findings into test results")
+                    logger.info(f"Merged {len(ai_findings)} AI findings into test results with enhanced descriptions")
                 
                 # Save test result to database
                 result_id = self.db.create_test_result(test_result)

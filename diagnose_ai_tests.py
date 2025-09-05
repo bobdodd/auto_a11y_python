@@ -125,16 +125,29 @@ async def test_ai_analysis():
                 analyses=['headings', 'interactive']
             )
             
+            # Test enhancement
+            from auto_a11y.testing.result_processor import ResultProcessor
+            processor = ResultProcessor()
+            
             print(f"   - Findings: {len(results.get('findings', []))}")
             for finding in results.get('findings', []):
-                print(f"      • {finding.id}: {finding.description}")
-                if finding.xpath:
-                    print(f"        XPath: {finding.xpath}")
-                if finding.element:
-                    print(f"        Element: {finding.element}")
-                if finding.html:
-                    print(f"        HTML: {finding.html[:100]}...")
-                print(f"        Metadata: {finding.metadata}")
+                # Enhance the finding
+                enhanced = processor.enhance_ai_violation(finding)
+                
+                print(f"      • {enhanced.id}: {enhanced.description}")
+                if enhanced.xpath:
+                    print(f"        XPath: {enhanced.xpath}")
+                if enhanced.element:
+                    print(f"        Element: {enhanced.element}")
+                if enhanced.html:
+                    print(f"        HTML: {enhanced.html[:100]}...")
+                if enhanced.wcag_criteria:
+                    print(f"        WCAG: {', '.join(enhanced.wcag_criteria)}")
+                if enhanced.metadata.get('what'):
+                    print(f"        What: {enhanced.metadata['what']}")
+                if enhanced.metadata.get('why'):
+                    print(f"        Why: {enhanced.metadata['why'][:100]}...")
+                print(f"        Full Metadata: {enhanced.metadata}")
             
             # Check raw results
             raw = results.get('raw_results', {}).get('headings', {})

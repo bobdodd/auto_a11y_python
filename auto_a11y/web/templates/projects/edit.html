@@ -45,6 +45,80 @@
                             </div>
                         </div>
                         
+                        <!-- AI Testing Configuration -->
+                        <div class="mb-3">
+                            <label class="form-label">AI-Assisted Testing</label>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="enable_ai_testing" name="enable_ai_testing" 
+                                       {% if project.config.get('enable_ai_testing', False) %}checked{% endif %} onchange="toggleAITests()">
+                                <label class="form-check-label" for="enable_ai_testing">
+                                    Enable AI-assisted accessibility testing
+                                </label>
+                            </div>
+                            <div class="form-text mb-3">
+                                AI testing uses Claude to analyze screenshots and HTML for issues that automated tests might miss.
+                                <strong>Note:</strong> AI testing incurs API costs based on usage.
+                            </div>
+                            
+                            <div id="ai_tests_selection" style="display: {% if project.config.get('enable_ai_testing', False) %}block{% else %}none{% endif %};">
+                                <label class="form-label">Select AI Tests to Run:</label>
+                                <div class="ms-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_headings" 
+                                               name="ai_test_headings" value="headings"
+                                               {% if 'headings' in project.config.get('ai_tests', []) %}checked{% endif %}>
+                                        <label class="form-check-label" for="ai_test_headings">
+                                            <strong>Heading Analysis</strong> - Detects visual headings not properly marked up
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_reading_order" 
+                                               name="ai_test_reading_order" value="reading_order"
+                                               {% if 'reading_order' in project.config.get('ai_tests', []) %}checked{% endif %}>
+                                        <label class="form-check-label" for="ai_test_reading_order">
+                                            <strong>Reading Order</strong> - Verifies logical reading sequence matches visual layout
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_modals" 
+                                               name="ai_test_modals" value="modals"
+                                               {% if 'modals' in project.config.get('ai_tests', []) %}checked{% endif %}>
+                                        <label class="form-check-label" for="ai_test_modals">
+                                            <strong>Modal Dialogs</strong> - Analyzes popup and overlay accessibility
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_language" 
+                                               name="ai_test_language" value="language"
+                                               {% if 'language' in project.config.get('ai_tests', []) %}checked{% endif %}>
+                                        <label class="form-check-label" for="ai_test_language">
+                                            <strong>Language Detection</strong> - Identifies mixed languages and missing declarations
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_animations" 
+                                               name="ai_test_animations" value="animations"
+                                               {% if 'animations' in project.config.get('ai_tests', []) %}checked{% endif %}>
+                                        <label class="form-check-label" for="ai_test_animations">
+                                            <strong>Animations</strong> - Detects potentially problematic motion
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_interactive" 
+                                               name="ai_test_interactive" value="interactive"
+                                               {% if 'interactive' in project.config.get('ai_tests', []) %}checked{% endif %}>
+                                        <label class="form-check-label" for="ai_test_interactive">
+                                            <strong>Interactive Elements</strong> - Analyzes buttons, links, and form controls
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-text mt-2">
+                                    <a href="#" onclick="selectAllAITests(event)">Select All</a> | 
+                                    <a href="#" onclick="deselectAllAITests(event)">Deselect All</a>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-check-circle"></i> Update Project
@@ -60,4 +134,35 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleAITests() {
+    const enabled = document.getElementById('enable_ai_testing').checked;
+    const selection = document.getElementById('ai_tests_selection');
+    selection.style.display = enabled ? 'block' : 'none';
+    
+    // If disabling, uncheck all tests
+    if (!enabled) {
+        document.querySelectorAll('.ai-test-checkbox').forEach(cb => {
+            cb.checked = false;
+        });
+    }
+}
+
+function selectAllAITests(event) {
+    event.preventDefault();
+    document.querySelectorAll('.ai-test-checkbox').forEach(cb => {
+        cb.checked = true;
+    });
+}
+
+function deselectAllAITests(event) {
+    event.preventDefault();
+    document.querySelectorAll('.ai-test-checkbox').forEach(cb => {
+        cb.checked = false;
+    });
+}
+</script>
 {% endblock %}

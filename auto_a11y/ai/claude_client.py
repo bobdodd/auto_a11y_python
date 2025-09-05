@@ -80,6 +80,14 @@ class ClaudeClient:
             Analysis results as dictionary
         """
         try:
+            # Detect actual image format from magic bytes
+            if image_data[:8] == b'\x89PNG\r\n\x1a\n':
+                actual_format = "image/png"
+            elif image_data[:2] == b'\xff\xd8':
+                actual_format = "image/jpeg"
+            else:
+                actual_format = image_format  # Use provided format as fallback
+            
             # Convert image to base64
             image_base64 = base64.b64encode(image_data).decode('utf-8')
             
@@ -96,7 +104,7 @@ class ClaudeClient:
                             "type": "image",
                             "source": {
                                 "type": "base64",
-                                "media_type": image_format,
+                                "media_type": actual_format,
                                 "data": image_base64
                             }
                         },
@@ -111,14 +119,19 @@ class ClaudeClient:
             # Extract and parse response
             response_text = message.content[0].text
             
-            # Try to parse as JSON if it looks like JSON
-            if response_text.strip().startswith('{'):
-                try:
-                    return json.loads(response_text)
-                except json.JSONDecodeError:
-                    logger.warning("Failed to parse Claude response as JSON")
+            # Parse response - extract JSON from text
+            try:
+                # Try to find JSON in the response
+                json_start = response_text.find('{')
+                json_end = response_text.rfind('}')
+                
+                if json_start != -1 and json_end != -1:
+                    json_str = response_text[json_start:json_end + 1]
+                    return json.loads(json_str)
+                else:
                     return {'raw_response': response_text}
-            else:
+            except json.JSONDecodeError:
+                logger.warning(f"Failed to parse JSON from Claude response")
                 return {'raw_response': response_text}
                 
         except Exception as e:
@@ -154,13 +167,19 @@ class ClaudeClient:
             
             response_text = message.content[0].text
             
-            # Try to parse as JSON
-            if response_text.strip().startswith('{'):
-                try:
-                    return json.loads(response_text)
-                except json.JSONDecodeError:
+            # Parse response - extract JSON from text
+            try:
+                # Try to find JSON in the response
+                json_start = response_text.find('{')
+                json_end = response_text.rfind('}')
+                
+                if json_start != -1 and json_end != -1:
+                    json_str = response_text[json_start:json_end + 1]
+                    return json.loads(json_str)
+                else:
                     return {'raw_response': response_text}
-            else:
+            except json.JSONDecodeError:
+                logger.warning(f"Failed to parse JSON from Claude response")
                 return {'raw_response': response_text}
                 
         except Exception as e:
@@ -187,6 +206,17 @@ class ClaudeClient:
             Analysis results
         """
         try:
+            # Detect actual image format from magic bytes
+            if image_data[:8] == b'\x89PNG\r\n\x1a\n':
+                actual_format = "image/png"
+                logger.debug("Detected PNG image format")
+            elif image_data[:2] == b'\xff\xd8':
+                actual_format = "image/jpeg"
+                logger.debug("Detected JPEG image format")
+            else:
+                actual_format = image_format  # Use provided format as fallback
+                logger.debug(f"Using provided format: {image_format}")
+            
             # Convert image to base64
             image_base64 = base64.b64encode(image_data).decode('utf-8')
             
@@ -210,7 +240,7 @@ class ClaudeClient:
                             "type": "image",
                             "source": {
                                 "type": "base64",
-                                "media_type": image_format,
+                                "media_type": actual_format,
                                 "data": image_base64
                             }
                         },
@@ -224,13 +254,20 @@ class ClaudeClient:
             
             response_text = message.content[0].text
             
-            # Parse response
-            if response_text.strip().startswith('{'):
-                try:
-                    return json.loads(response_text)
-                except json.JSONDecodeError:
+            # Parse response - extract JSON from text
+            # Claude sometimes prefixes JSON with explanatory text
+            try:
+                # Try to find JSON in the response
+                json_start = response_text.find('{')
+                json_end = response_text.rfind('}')
+                
+                if json_start != -1 and json_end != -1:
+                    json_str = response_text[json_start:json_end + 1]
+                    return json.loads(json_str)
+                else:
                     return {'raw_response': response_text}
-            else:
+            except json.JSONDecodeError:
+                logger.warning(f"Failed to parse JSON from Claude response")
                 return {'raw_response': response_text}
                 
         except Exception as e:

@@ -42,12 +42,25 @@ def create_project():
             flash(f'Project "{name}" already exists', 'error')
             return render_template('projects/create.html')
         
-        # Create project with WCAG level in config
+        # Get AI testing configuration
+        enable_ai_testing = request.form.get('enable_ai_testing') == 'on'
+        ai_tests = []
+        if enable_ai_testing:
+            # Collect selected AI tests
+            for test_name in ['headings', 'reading_order', 'modals', 'language', 'animations', 'interactive']:
+                if request.form.get(f'ai_test_{test_name}'):
+                    ai_tests.append(test_name)
+        
+        # Create project with WCAG level and AI config
         project = Project(
             name=name,
             description=description,
             status=ProjectStatus.ACTIVE,
-            config={'wcag_level': wcag_level}
+            config={
+                'wcag_level': wcag_level,
+                'enable_ai_testing': enable_ai_testing,
+                'ai_tests': ai_tests
+            }
         )
         
         project_id = current_app.db.create_project(project)
@@ -94,6 +107,18 @@ def edit_project(project_id):
         if not project.config:
             project.config = {}
         project.config['wcag_level'] = wcag_level
+        
+        # Update AI testing configuration
+        enable_ai_testing = request.form.get('enable_ai_testing') == 'on'
+        project.config['enable_ai_testing'] = enable_ai_testing
+        
+        ai_tests = []
+        if enable_ai_testing:
+            # Collect selected AI tests
+            for test_name in ['headings', 'reading_order', 'modals', 'language', 'animations', 'interactive']:
+                if request.form.get(f'ai_test_{test_name}'):
+                    ai_tests.append(test_name)
+        project.config['ai_tests'] = ai_tests
         
         if current_app.db.update_project(project):
             flash('Project updated successfully', 'success')

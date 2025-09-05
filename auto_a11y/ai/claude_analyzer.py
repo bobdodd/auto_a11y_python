@@ -17,7 +17,7 @@ from auto_a11y.ai.analysis_modules import (
     AnimationAnalyzer,
     InteractiveAnalyzer
 )
-from auto_a11y.models import AIFinding, ImpactLevel
+from auto_a11y.models import Violation, ImpactLevel
 
 logger = logging.getLogger(__name__)
 
@@ -114,9 +114,9 @@ class ClaudeAnalyzer:
         
         return results
     
-    def _process_findings(self, analysis_type: str, result: Dict[str, Any]) -> List[AIFinding]:
+    def _process_findings(self, analysis_type: str, result: Dict[str, Any]) -> List[Violation]:
         """
-        Process raw analysis results into AIFinding objects
+        Process raw analysis results into Violation objects
         
         Args:
             analysis_type: Type of analysis
@@ -147,14 +147,21 @@ class ClaudeAnalyzer:
             
             for vh in visual:
                 if vh.get('text', '').lower() not in html_texts:
-                    finding = AIFinding(
-                        type='visual_heading_not_marked',
-                        severity=ImpactLevel.SERIOUS,
+                    violation = Violation(
+                        id='AI_ErrVisualHeadingNotMarked',
+                        impact=ImpactLevel.HIGH,
+                        category='headings',
                         description=f"Text '{vh.get('text', '')}' appears to be a heading but is not marked up as one",
-                        suggested_fix=f"Use <h{vh.get('appears_to_be_level', 2)}> tag for this heading",
-                        confidence=0.8
+                        failure_summary=f"Use <h{vh.get('appears_to_be_level', 2)}> tag for this heading",
+                        metadata={
+                            'ai_detected': True,
+                            'ai_confidence': 0.8,
+                            'ai_analysis_type': 'headings',
+                            'visual_text': vh.get('text', ''),
+                            'suggested_level': vh.get('appears_to_be_level', 2)
+                        }
                     )
-                    findings.append(finding)
+                    findings.append(violation)
         
         return findings
     
@@ -163,9 +170,9 @@ class ClaudeAnalyzer:
         analysis_type: str,
         issue: Dict[str, Any],
         full_result: Dict[str, Any]
-    ) -> Optional[AIFinding]:
+    ) -> Optional[Violation]:
         """
-        Create an AIFinding from an issue
+        Create a Violation from an AI-detected issue
         
         Args:
             analysis_type: Type of analysis
@@ -173,52 +180,69 @@ class ClaudeAnalyzer:
             full_result: Complete analysis result
             
         Returns:
-            AIFinding object or None
+            Violation object or None
         """
         try:
-            # Map issue types to severity levels
-            severity_map = {
-                'visual_not_marked': ImpactLevel.SERIOUS,
-                'wrong_level': ImpactLevel.MODERATE,
-                'missing_role': ImpactLevel.CRITICAL,
-                'missing_label': ImpactLevel.CRITICAL,
-                'no_close': ImpactLevel.SERIOUS,
-                'missing_lang': ImpactLevel.CRITICAL,
-                'wrong_lang': ImpactLevel.SERIOUS,
-                'unmarked_foreign': ImpactLevel.MODERATE,
-                'infinite_animation': ImpactLevel.SERIOUS,
-                'no_pause_control': ImpactLevel.SERIOUS,
-                'no_reduced_motion': ImpactLevel.MODERATE,
-                'non_semantic_button': ImpactLevel.SERIOUS,
-                'missing_aria': ImpactLevel.SERIOUS,
-                'no_focus_indicator': ImpactLevel.CRITICAL
+            # Map issue types to AI issue codes and impact levels
+            issue_map = {
+                'visual_not_marked': ('AI_ErrVisualHeadingNotMarked', ImpactLevel.HIGH),
+                'wrong_level': ('AI_ErrHeadingLevelMismatch', ImpactLevel.MEDIUM),
+                'reading_order': ('AI_ErrReadingOrderMismatch', ImpactLevel.HIGH),
+                'modal_issue': ('AI_WarnModalAccessibility', ImpactLevel.HIGH),
+                'missing_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
+                'wrong_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
+                'unmarked_foreign': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
+                'animation_issue': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
+                'infinite_animation': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
+                'no_pause_control': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
+                'interactive_issue': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
+                'non_semantic_button': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
+                'missing_aria': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
+                'visual_cue': ('AI_InfoVisualCue', ImpactLevel.LOW)
             }
             
             issue_type = issue.get('type', 'unknown')
-            severity = severity_map.get(issue_type, ImpactLevel.MODERATE)
+            issue_code, impact = issue_map.get(issue_type, ('AI_ErrInteractiveElementIssue', ImpactLevel.MEDIUM))
             
-            finding = AIFinding(
-                type=f"{analysis_type}_{issue_type}",
-                severity=severity,
+            # Build metadata with AI-specific information
+            metadata = {
+                'ai_detected': True,
+                'ai_confidence': 0.85,
+                'ai_analysis_type': analysis_type
+            }
+            
+            # Add issue-specific metadata
+            if 'current_level' in issue:
+                metadata['current_level'] = issue['current_level']
+            if 'suggested_level' in issue:
+                metadata['suggested_level'] = issue['suggested_level']
+            if 'visual_text' in issue:
+                metadata['visual_text'] = issue['visual_text']
+            if 'heading_text' in issue:
+                metadata['heading_text'] = issue['heading_text']
+            
+            violation = Violation(
+                id=issue_code,
+                impact=impact,
+                category=analysis_type,
                 description=issue.get('description', 'AI-detected accessibility issue'),
-                suggested_fix=issue.get('fix') or issue.get('suggested_fix'),
-                confidence=0.85,  # Default confidence
-                related_html=issue.get('element') or issue.get('element_description')
+                element=issue.get('element') or issue.get('element_description'),
+                html=issue.get('related_html'),
+                failure_summary=issue.get('fix') or issue.get('suggested_fix'),
+                metadata=metadata
             )
             
             # Add visual location if available
             if 'location' in issue or 'approximate_location' in issue:
-                finding.visual_location = {
-                    'description': issue.get('location') or issue.get('approximate_location')
-                }
+                violation.metadata['visual_location'] = issue.get('location') or issue.get('approximate_location')
             
-            return finding
+            return violation
             
         except Exception as e:
             logger.error(f"Failed to create finding: {e}")
             return None
     
-    def _generate_summary(self, findings: List[AIFinding]) -> Dict[str, Any]:
+    def _generate_summary(self, findings: List[Violation]) -> Dict[str, Any]:
         """
         Generate summary of AI findings
         
@@ -228,29 +252,27 @@ class ClaudeAnalyzer:
         Returns:
             Summary dictionary
         """
-        critical = sum(1 for f in findings if f.severity == ImpactLevel.CRITICAL)
-        serious = sum(1 for f in findings if f.severity == ImpactLevel.SERIOUS)
-        moderate = sum(1 for f in findings if f.severity == ImpactLevel.MODERATE)
-        minor = sum(1 for f in findings if f.severity == ImpactLevel.MINOR)
+        high = sum(1 for f in findings if f.impact == ImpactLevel.HIGH)
+        medium = sum(1 for f in findings if f.impact == ImpactLevel.MEDIUM)
+        low = sum(1 for f in findings if f.impact == ImpactLevel.LOW)
         
         return {
             'total_findings': len(findings),
-            'by_severity': {
-                'critical': critical,
-                'serious': serious,
-                'moderate': moderate,
-                'minor': minor
+            'by_impact': {
+                'high': high,
+                'medium': medium,
+                'low': low
             },
             'by_type': self._count_by_type(findings),
-            'requires_immediate_attention': critical > 0,
-            'ai_confidence_avg': sum(f.confidence for f in findings) / len(findings) if findings else 0
+            'requires_immediate_attention': high > 0,
+            'ai_confidence_avg': sum(f.metadata.get('ai_confidence', 0.85) for f in findings) / len(findings) if findings else 0
         }
     
-    def _count_by_type(self, findings: List[AIFinding]) -> Dict[str, int]:
+    def _count_by_type(self, findings: List[Violation]) -> Dict[str, int]:
         """Count findings by type"""
         counts = {}
         for finding in findings:
-            base_type = finding.type.split('_')[0]  # Get analyzer name
+            base_type = finding.category  # Get analyzer name
             counts[base_type] = counts.get(base_type, 0) + 1
         return counts
     

@@ -247,9 +247,9 @@ def test_page(page_id):
     # Create test runner
     test_runner_instance = TestRunner(current_app.db, current_app.app_config.__dict__)
     
-    # Get AI settings from config
-    run_ai = current_app.app_config.RUN_AI_ANALYSIS
-    ai_key = current_app.app_config.CLAUDE_API_KEY if run_ai else None
+    # Get AI API key from config (if available)
+    # The test_runner will determine if AI should run based on project settings
+    ai_key = getattr(current_app.app_config, 'CLAUDE_API_KEY', None)
     
     # Submit test task
     job_id = task_runner.submit_task(
@@ -257,7 +257,7 @@ def test_page(page_id):
         args=(test_runner_instance.test_page(
             page,
             take_screenshot=True,
-            run_ai_analysis=run_ai,
+            run_ai_analysis=None,  # Let test_runner decide based on project config
             ai_api_key=ai_key
         ),),
         task_id=f'test_page_{page_id}_{datetime.now().timestamp()}'

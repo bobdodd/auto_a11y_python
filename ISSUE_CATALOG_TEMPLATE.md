@@ -207,10 +207,10 @@ Type: Error
 Impact: High
 WCAG: 1.3.1, 4.1.2
 Category: forms
-Description: aria-labelledby references non-existent element
-Why it matters: Broken reference means no label for screen readers
-Who it affects: Screen reader users
-How to fix: Fix the ID reference or use a different labeling method
+Description: aria-labelledby references non-existent element ID '{found}'
+Why it matters: The aria-labelledby attribute references '{found}' but no element with id="{found}" exists on the page. This broken reference means the field has no accessible label for screen readers.
+Who it affects: Screen reader users who receive no label for this field
+How to fix: Either create an element with id="{found}" to serve as the label, fix the ID reference to point to an existing element, or use a different labeling method like a <label> element
 ```
 
 ```
@@ -231,10 +231,10 @@ Type: Error
 Impact: Medium
 WCAG: 1.3.1, 3.3.2
 Category: forms
-Description: Single label contains multiple form fields
-Why it matters: Unclear which field the label describes
-Who it affects: Screen reader users
-How to fix: Use separate labels for each field
+Description: Single label contains {count} form fields
+Why it matters: A label containing {count} fields creates ambiguity about which field it describes. Screen readers will associate this label with all {count} fields, making it unclear which field is which.
+Who it affects: Screen reader users who need clear field identification, users with cognitive disabilities who need simple relationships
+How to fix: Split the label so each of the {count} fields has its own dedicated label. Use fieldset and legend for grouped fields if they're related.
 ```
 
 ```
@@ -280,10 +280,10 @@ Type: Warning
 Impact: Low
 WCAG: 2.4.6
 Category: forms
-Description: Button has generic text like "Submit" or "Click here"
-Why it matters: Button purpose is unclear out of context
-Who it affects: Screen reader users navigating by buttons
-How to fix: Use descriptive button text like "Submit registration"
+Description: Button has generic text "{text}"
+Why it matters: The button text "{text}" doesn't describe what the button does. When screen reader users navigate by buttons or hear buttons out of context, "{text}" provides no information about the button's purpose or action.
+Who it affects: Screen reader users navigating by buttons who hear "{text}" without context, users with cognitive disabilities who need clear action labels
+How to fix: Change "{text}" to describe the specific action, like "Submit registration", "Save changes", or "Search products" instead of just "{text}"
 ```
 
 ```
@@ -403,10 +403,10 @@ Type: Warning
 Impact: Low
 WCAG: 3.3.2
 Category: forms
-Description: Field is labeled by multiple elements via aria-labelledby
-Why it matters: Multiple labels may be confusing or incorrectly concatenated
-Who it affects: Screen reader users
-How to fix: Ensure multiple labels make sense when read together
+Description: Field is labeled by {count} elements via aria-labelledby
+Why it matters: When {count} elements label a field, they will be concatenated together. The order and combination may not make sense or could be confusing when read as a single label.
+Who it affects: Screen reader users who hear all {count} labels concatenated together
+How to fix: Review the {count} labeling elements to ensure they make sense when read together in order. Consider if a single, clear label would be better.
 ```
 
 ```
@@ -415,10 +415,10 @@ Type: Warning
 Impact: Medium
 WCAG: 1.3.1, 3.3.2
 Category: forms
-Description: Field labeled by element that is not semantically a label
-Why it matters: Non-label elements may not convey proper semantic meaning
-Who it affects: Screen reader users
-How to fix: Use proper label elements or ensure aria-labelledby references appropriate content
+Description: Field labeled by element '{found}' that is not semantically a label
+Why it matters: The element with ID '{found}' is being used as a label but is not a <label> element. While this can work, non-label elements may not convey proper semantic meaning or behave as users expect.
+Who it affects: Screen reader users who may not receive proper label semantics
+How to fix: Consider using a proper <label> element, or ensure the element '{found}' contains appropriate descriptive text for the field
 ```
 
 ```
@@ -440,10 +440,10 @@ Type: Info
 Impact: N/A
 WCAG: 3.3.2 Labels or Instructions (Level A)
 Category: forms
-Description: Field is labeled using aria-label, which is valid but may have usability considerations
-Why it matters: While aria-label is a valid way to label form fields, it has limitations: the label is not visible on screen which can confuse sighted users, voice control users cannot reference the field by visible text, the label won't be automatically translated by browser translation tools, and users with cognitive disabilities benefit from visible labels as memory aids. This is informational to help you consider if a visible label would be more appropriate.
-Who it affects: Sighted users who expect visible labels for context, voice control users who need visible text to reference fields, users relying on browser translation, users with cognitive disabilities who benefit from persistent visible labels, and users who may need to review form data before submission
-How to fix: Consider if a visible label would better serve all users. If space permits, use a visible <label> element. If aria-label must be used, ensure the label text is clear and descriptive. Consider adding visible helper text or placeholder text to provide visual context. For complex forms, visible labels generally provide better usability for all users.
+Description: Field is labeled using aria-label="{found}", which is valid but may have usability considerations
+Why it matters: While aria-label="{found}" is a valid way to label this form field, it has limitations: the label "{found}" is not visible on screen which can confuse sighted users, voice control users cannot reference the field by the visible text "{found}", the label won't be automatically translated by browser translation tools, and users with cognitive disabilities benefit from visible labels as memory aids.
+Who it affects: Sighted users who can't see "{found}" as a label, voice control users who can't say "click {found}", users relying on browser translation, users with cognitive disabilities who benefit from persistent visible labels
+How to fix: Consider if a visible label showing "{found}" would better serve all users. If space permits, use a visible <label> element with the text "{found}". If aria-label must be used, ensure "{found}" is clear and descriptive. Consider adding visible helper text or placeholder text to provide visual context.
 ```
 
 ---
@@ -482,10 +482,10 @@ Type: Error
 Impact: High
 WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
 Category: headings
-Description: Heading element (h1-h6) contains no text content or only whitespace
-Why it matters: Empty headings disrupt document structure and navigation. Screen reader users rely on headings to understand page organization and navigate efficiently using heading shortcuts. An empty heading creates a navigation point with no information, confusing users about the page structure. It may indicate missing content or poor markup practices that affect the overall accessibility of the page.
-Who it affects: Screen reader users who navigate by headings and cannot determine what section the empty heading represents, users with cognitive disabilities who rely on clear structure to understand content organization, and users of browser plugins or assistive technologies that generate page outlines
-How to fix: Either add meaningful text content to the heading that describes the section it introduces, or remove the empty heading element entirely if it serves no structural purpose. Never use headings for visual spacing - use CSS margin/padding instead. Ensure all headings have descriptive text that helps users understand the content structure.
+Description: Heading element contains only whitespace or special characters: "{text}"
+Why it matters: This heading contains only "{text}" which provides no meaningful content. Empty headings disrupt document structure and navigation. Screen reader users rely on headings to understand page organization and navigate efficiently using heading shortcuts. An empty heading creates a navigation point with no information, confusing users about the page structure.
+Who it affects: Screen reader users who navigate by headings and find a heading containing only "{text}", users with cognitive disabilities who rely on clear structure to understand content organization, and users of assistive technologies that generate page outlines
+How to fix: Either replace "{text}" with meaningful text content that describes the section, or remove the empty heading element entirely if it serves no structural purpose. Never use headings for visual spacing - use CSS margin/padding instead.
 ```
 
 ### 3.3 Heading Hierarchy
@@ -1946,10 +1946,10 @@ Type: Warning
 Impact: Medium
 WCAG: 1.4.4
 Category: fonts
-Description: Font size below 16px
-Why it matters: Small text is hard to read
-Who it affects: Users with low vision, older users
-How to fix: Use minimum 16px for body text
+Description: Font size is {fontSize}px, below recommended 16px minimum
+Why it matters: Text at {fontSize}px is harder to read than the recommended minimum of 16px. Small text requires more effort to read and can cause eye strain, especially for extended reading.
+Who it affects: Users with low vision, older users experiencing age-related vision changes, users with reading disabilities, and anyone viewing content on small screens
+How to fix: Increase font size from {fontSize}px to at least 16px for body text. Consider using relative units (rem, em) for better scalability.
 ```
 
 ### 8.2 Font Discovery
@@ -2049,10 +2049,10 @@ Type: Warning
 Impact: Low
 WCAG: 2.4.2 Page Titled (Level A)
 Category: title
-Description: Page title is very short (under 10 characters), potentially not descriptive enough
-Why it matters: Very short page titles like "Home", "About", or "Contact" don't provide enough context, especially when users have multiple tabs open or are browsing history. Users can't distinguish between different sites with the same generic titles. Screen reader users hearing page titles announced need more descriptive information to understand where they are. Search results become less useful when titles aren't descriptive.
-Who it affects: Users with multiple browser tabs who need to distinguish between pages, screen reader users who rely on descriptive titles for context, users browsing history or bookmarks, users finding content through search engines, and users with cognitive disabilities who need clear page identification
-How to fix: Expand short titles to be more descriptive by including the site name and page purpose (change "Home" to "ACME Corp - Home", "About" to "About Our Services - ACME Corp"). Aim for 20-60 characters that clearly describe the page content. Ensure each page has a unique, descriptive title that makes sense out of context.
+Description: Page title "{found}" is only {length} characters, potentially not descriptive enough
+Why it matters: The title "{found}" with only {length} characters doesn't provide enough context, especially when users have multiple tabs open or are browsing history. Users can't distinguish between different sites with the same generic titles. Screen reader users hearing page titles announced need more descriptive information to understand where they are.
+Who it affects: Users with multiple browser tabs who need to distinguish between pages, screen reader users who rely on descriptive titles for context, users browsing history or bookmarks, users with cognitive disabilities who need clear page identification
+How to fix: Expand "{found}" to be more descriptive by including the site name and page purpose. Aim for 20-60 characters that clearly describe the page content. Ensure each page has a unique, descriptive title that makes sense out of context.
 ```
 
 ```
@@ -2061,10 +2061,10 @@ Type: Warning
 Impact: Low
 WCAG: 2.4.2 Page Titled (Level A)
 Category: title
-Description: Page title exceeds 60 characters, which may be truncated in browser tabs and search results
-Why it matters: Long titles get cut off in browser tabs (typically around 30 characters) and search engine results (typically 50-60 characters), losing important information. Users see "This is a very long page title that..." instead of the complete title. The most important information might be at the end and never seen. Screen reader users have to listen to lengthy titles repeatedly when navigating between windows.
-Who it affects: Users with multiple tabs open who see truncated titles, users searching for content who can't see full titles in results, screen reader users who must listen to long titles repeatedly, mobile users with even less space for title display, and users trying to share links where long titles may be problematic
-How to fix: Keep titles concise, ideally under 60 characters. Place the most important, unique information first. Use a format like "Page Topic - Category - Site Name" with the most specific information first. Remove unnecessary words like "Welcome to" or "This page contains". Test how titles appear in browser tabs and search results to ensure key information is visible.
+Description: Page title is {length} characters long, exceeding the recommended 60 character limit
+Why it matters: The title "{title}" with {length} characters will get cut off in browser tabs (typically around 30 characters) and search engine results (typically 50-60 characters), losing important information. The most important information might be at the end and never seen. Screen reader users have to listen to lengthy titles repeatedly.
+Who it affects: Users with multiple tabs open who see truncated titles, users searching for content who can't see full titles in results, screen reader users who must listen to long titles repeatedly, mobile users with even less space for title display
+How to fix: Shorten the title from {length} to under 60 characters. Place the most important, unique information first. Remove unnecessary words like "Welcome to" or "This page contains". Test how titles appear in browser tabs and search results to ensure key information is visible.
 ```
 
 ```
@@ -2073,10 +2073,10 @@ Type: Warning
 Impact: Medium
 WCAG: 2.4.2 Page Titled (Level A)
 Category: title
-Description: Multiple <title> elements found in the document head, which may cause unpredictable behavior
-Why it matters: When multiple title elements exist, browsers may use only the first or last one unpredictably, causing inconsistent page identification. This often happens with content management systems or when scripts dynamically add titles. Different browsers and assistive technologies may choose different titles, creating an inconsistent experience. SEO is negatively affected as search engines may index the wrong title.
-Who it affects: All users seeing inconsistent titles in browser tabs, screen reader users who may hear different titles than what's visually displayed, users bookmarking pages with incorrect titles, search engine users finding pages with wrong titles, and developers debugging title-related issues
-How to fix: Remove all duplicate <title> elements, keeping only one in the document head. Check for scripts that might be adding titles dynamically. Ensure your CMS or framework isn't creating duplicate titles. If using a single-page application, manage title changes through a single mechanism. Validate that only one title element exists after the page fully loads.
+Description: {count} <title> elements found in the document head, which may cause unpredictable behavior
+Why it matters: Having {count} title elements causes browsers to choose unpredictably between them, creating inconsistent page identification. Different browsers and assistive technologies may choose different titles from the {count} available, creating an inconsistent experience. SEO is negatively affected as search engines may index the wrong title.
+Who it affects: All users seeing inconsistent titles in browser tabs, screen reader users who may hear different titles than what's visually displayed, users bookmarking pages with incorrect titles
+How to fix: Remove {count-1} duplicate <title> elements, keeping only one in the document head. Check for scripts that might be adding titles dynamically. Ensure your CMS or framework isn't creating duplicate titles.
 ```
 
 ```
@@ -2327,4 +2327,106 @@ Description: [what the issue is]
 Why it matters: [accessibility impact]
 Who it affects: [affected user groups]
 How to fix: [remediation steps]
+```
+
+---
+
+## AI-Detected Issues
+
+These issues are detected through AI visual and semantic analysis of the page.
+
+```
+ID: AI_ErrVisualHeadingNotMarked
+Type: Error
+Impact: High
+WCAG: 1.3.1, 2.4.1, 2.4.6
+Category: headings
+Description: Text appears visually as a heading but is not marked up with proper heading tags
+Why it matters: Screen reader users won't recognize this text as a heading, breaking navigation and document structure
+Who it affects: Screen reader users, users who navigate by headings
+How to fix: Use appropriate HTML heading tags (h1-h6) for text that serves as headings
+```
+
+```
+ID: AI_ErrHeadingLevelMismatch
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.1
+Category: headings
+Description: Heading level {current_level} doesn't match visual hierarchy (should be level {suggested_level})
+Why it matters: Incorrect heading levels create confusing document structure for screen reader users
+Who it affects: Screen reader users, users who navigate by headings
+How to fix: Adjust heading level to match the visual hierarchy of the page
+```
+
+```
+ID: AI_ErrReadingOrderMismatch
+Type: Error
+Impact: High
+WCAG: 1.3.2, 2.4.3
+Category: reading_order
+Description: Visual reading order doesn't match DOM order - content may be read out of sequence
+Why it matters: Screen readers follow DOM order, which may not match the visual layout, causing confusion
+Who it affects: Screen reader users
+How to fix: Reorder DOM elements to match the visual reading flow or use CSS flexbox/grid with proper order
+```
+
+```
+ID: AI_WarnModalAccessibility
+Type: Warning
+Impact: High
+WCAG: 2.1.2, 2.4.3, 4.1.2
+Category: modals
+Description: Modal dialog detected that may not be properly accessible
+Why it matters: Inaccessible modals can trap keyboard users or be invisible to screen readers
+Who it affects: Keyboard users, screen reader users
+How to fix: Ensure modal has proper ARIA attributes (role="dialog"), focus management, and escape key handling
+```
+
+```
+ID: AI_WarnMixedLanguage
+Type: Warning
+Impact: Medium
+WCAG: 3.1.2
+Category: language
+Description: Mixed language content detected without proper language declarations
+Why it matters: Screen readers may pronounce text incorrectly without language declarations
+Who it affects: Screen reader users who speak multiple languages
+How to fix: Add lang attributes to elements containing different languages
+```
+
+```
+ID: AI_WarnProblematicAnimation
+Type: Warning
+Impact: Medium
+WCAG: 2.2.2, 2.3.1
+Category: animations
+Description: Animation detected that may cause accessibility issues
+Why it matters: Animations can trigger seizures or make content difficult to read
+Who it affects: Users with vestibular disorders, photosensitive epilepsy, or cognitive disabilities
+How to fix: Provide pause/stop controls and respect prefers-reduced-motion preference
+```
+
+```
+ID: AI_ErrInteractiveElementIssue
+Type: Error
+Impact: High
+WCAG: 2.1.1, 4.1.2
+Category: interactive
+Description: Interactive element may not be properly accessible
+Why it matters: Inaccessible controls prevent users from interacting with the page
+Who it affects: Keyboard users, screen reader users
+How to fix: Ensure all interactive elements are keyboard accessible with proper ARIA labels
+```
+
+```
+ID: AI_InfoVisualCue
+Type: Info
+Impact: Low
+WCAG: 1.3.3, 1.4.1
+Category: visual
+Description: Information conveyed only through visual cues (color, position, size)
+Why it matters: Users who can't perceive visual cues miss important information
+Who it affects: Blind users, colorblind users
+How to fix: Provide text alternatives or additional cues beyond just visual ones
 ```

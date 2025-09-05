@@ -23,11 +23,11 @@ class ScriptInjector:
         'tests/colorContrast.js',   # Color contrast calculations
         'tests/xpath.js',           # XPath utilities
         'tests/a11yCodes.js',       # Error code definitions
+        'tests/passTracking.js',    # Pass tracking helpers
         
         # Test scripts
         'tests/headings.js',
         'tests/images.js',
-        'tests/form.js',
         'tests/forms2.js',
         'tests/landmarks.js',
         'tests/color.js',
@@ -45,7 +45,6 @@ class ScriptInjector:
     TEST_FUNCTIONS = {
         'headings': 'headingsScrape',
         'images': 'imagesScrape',
-        'forms': 'formScrape',
         'forms2': 'forms2Scrape',
         'landmarks': 'landmarksScrape',
         'color': 'colorScrape',
@@ -111,7 +110,7 @@ class ScriptInjector:
                 window.a11yTestFunctions = {
                     headings: typeof headingsScrape !== 'undefined',
                     images: typeof imagesScrape !== 'undefined',
-                    forms: typeof formScrape !== 'undefined',
+                    forms2: typeof forms2Scrape !== 'undefined',
                     landmarks: typeof landmarksScrape !== 'undefined',
                     color: typeof colorScrape !== 'undefined',
                     focus: typeof focusScrape !== 'undefined',

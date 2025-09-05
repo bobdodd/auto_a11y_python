@@ -471,6 +471,26 @@
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                             </div>
                             {% endif %}
+                            
+                            {% if violation.metadata.ai_detected %}
+                            <div class="mt-3">
+                                <h6><i class="bi bi-robot"></i> AI Detection Details</h6>
+                                <div class="small text-muted">
+                                    {% if violation.metadata.visual_location %}
+                                    <p><strong>Visual Location:</strong> {{ violation.metadata.visual_location }}</p>
+                                    {% endif %}
+                                    {% if violation.metadata.element_class %}
+                                    <p><strong>CSS Classes:</strong> <code>{{ violation.metadata.element_class }}</code></p>
+                                    {% endif %}
+                                    {% if violation.metadata.element_id %}
+                                    <p><strong>Element ID:</strong> <code>{{ violation.metadata.element_id }}</code></p>
+                                    {% endif %}
+                                    {% if violation.metadata.ai_confidence %}
+                                    <p><strong>Confidence:</strong> {{ (violation.metadata.ai_confidence * 100)|round }}%</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

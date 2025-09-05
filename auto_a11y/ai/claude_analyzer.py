@@ -15,7 +15,8 @@ from auto_a11y.ai.analysis_modules import (
     ModalAnalyzer,
     LanguageAnalyzer,
     AnimationAnalyzer,
-    InteractiveAnalyzer
+    InteractiveAnalyzer,
+    generate_xpath
 )
 from auto_a11y.models import Violation, ImpactLevel
 
@@ -147,18 +148,33 @@ class ClaudeAnalyzer:
             
             for vh in visual:
                 if vh.get('text', '').lower() not in html_texts:
+                    # Generate xpath if we have element info
+                    xpath = None
+                    if vh.get('likely_element'):
+                        xpath = generate_xpath(
+                            vh.get('likely_element', 'div'),
+                            vh.get('element_id'),
+                            vh.get('element_class')
+                        )
+                    
                     violation = Violation(
                         id='AI_ErrVisualHeadingNotMarked',
                         impact=ImpactLevel.HIGH,
                         category='headings',
                         description=f"Text '{vh.get('text', '')}' appears to be a heading but is not marked up as one",
                         failure_summary=f"Use <h{vh.get('appears_to_be_level', 2)}> tag for this heading",
+                        xpath=xpath,
+                        element=vh.get('likely_element'),
+                        html=vh.get('element_html'),
                         metadata={
                             'ai_detected': True,
                             'ai_confidence': 0.8,
                             'ai_analysis_type': 'headings',
                             'visual_text': vh.get('text', ''),
-                            'suggested_level': vh.get('appears_to_be_level', 2)
+                            'suggested_level': vh.get('appears_to_be_level', 2),
+                            'element_class': vh.get('element_class'),
+                            'element_id': vh.get('element_id'),
+                            'visual_location': vh.get('approximate_location')
                         }
                     )
                     findings.append(violation)
@@ -220,21 +236,33 @@ class ClaudeAnalyzer:
                 metadata['visual_text'] = issue['visual_text']
             if 'heading_text' in issue:
                 metadata['heading_text'] = issue['heading_text']
+            if 'element_class' in issue:
+                metadata['element_class'] = issue['element_class']
+            if 'element_id' in issue:
+                metadata['element_id'] = issue['element_id']
+            if 'approximate_location' in issue:
+                metadata['visual_location'] = issue['approximate_location']
+            
+            # Generate xpath if we have element info
+            xpath = None
+            if issue.get('element_tag') or issue.get('tag'):
+                xpath = generate_xpath(
+                    issue.get('element_tag') or issue.get('tag', 'div'),
+                    issue.get('element_id'),
+                    issue.get('element_class')
+                )
             
             violation = Violation(
                 id=issue_code,
                 impact=impact,
                 category=analysis_type,
                 description=issue.get('description', 'AI-detected accessibility issue'),
-                element=issue.get('element') or issue.get('element_description'),
-                html=issue.get('related_html'),
+                element=issue.get('element_tag') or issue.get('element') or issue.get('element_description'),
+                html=issue.get('element_html') or issue.get('related_html'),
+                xpath=xpath,
                 failure_summary=issue.get('fix') or issue.get('suggested_fix'),
                 metadata=metadata
             )
-            
-            # Add visual location if available
-            if 'location' in issue or 'approximate_location' in issue:
-                violation.metadata['visual_location'] = issue.get('location') or issue.get('approximate_location')
             
             return violation
             

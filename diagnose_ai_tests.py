@@ -89,9 +89,10 @@ async def test_ai_analysis():
     test_html = """
     <html>
     <body>
-        <div style="font-size: 24px; font-weight: bold;">This Should Be A Heading</div>
+        <div id="main-title" class="page-header bold-text" style="font-size: 24px; font-weight: bold;">This Should Be A Heading</div>
         <p>This is regular paragraph text.</p>
-        <h2>This is a proper h2 heading</h2>
+        <h2 class="section-heading">This is a proper h2 heading</h2>
+        <div class="clickable-card" onclick="doSomething()">Click Me - I Look Like a Button</div>
     </body>
     </html>
     """
@@ -117,16 +118,23 @@ async def test_ai_analysis():
             analyzer = ClaudeAnalyzer(api_key)
             
             # Run analysis
-            print("   - Running heading analysis...")
+            print("   - Running heading and interactive analysis...")
             results = await analyzer.analyze_page(
                 screenshot=screenshot,
                 html=test_html,
-                analyses=['headings']
+                analyses=['headings', 'interactive']
             )
             
             print(f"   - Findings: {len(results.get('findings', []))}")
             for finding in results.get('findings', []):
                 print(f"      • {finding.id}: {finding.description}")
+                if finding.xpath:
+                    print(f"        XPath: {finding.xpath}")
+                if finding.element:
+                    print(f"        Element: {finding.element}")
+                if finding.html:
+                    print(f"        HTML: {finding.html[:100]}...")
+                print(f"        Metadata: {finding.metadata}")
             
             # Check raw results
             raw = results.get('raw_results', {}).get('headings', {})

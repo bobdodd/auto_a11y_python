@@ -10,6 +10,33 @@ import re
 logger = logging.getLogger(__name__)
 
 
+def generate_xpath(element_tag: str, element_id: str = None, element_class: str = None) -> str:
+    """
+    Generate an XPath selector from element attributes
+    
+    Args:
+        element_tag: HTML tag name
+        element_id: Element ID attribute
+        element_class: Element class attribute
+        
+    Returns:
+        XPath selector string
+    """
+    if element_id:
+        return f"//*[@id='{element_id}']"
+    elif element_class:
+        # Handle multiple classes
+        classes = element_class.strip().split()
+        if len(classes) == 1:
+            return f"//{element_tag}[@class='{element_class}']"
+        else:
+            # Use contains for multiple classes
+            class_conditions = " and ".join([f"contains(@class, '{cls}')" for cls in classes])
+            return f"//{element_tag}[{class_conditions}]"
+    else:
+        return f"//{element_tag}"
+
+
 class HeadingAnalyzer:
     """Analyzes heading structure visually and semantically"""
     
@@ -46,8 +73,10 @@ class HeadingAnalyzer:
         Review the HTML and identify all:
         - <h1> through <h6> tags
         - Elements with role="heading" and aria-level
+        - For each element found, note its tag name, class, id, and surrounding HTML
         
         STEP 3 - Compare and Report Issues:
+        For visual headings not properly marked up, find the HTML element containing that text.
         
         Return ONLY valid JSON in this format:
         {
@@ -55,14 +84,20 @@ class HeadingAnalyzer:
                 {
                     "text": "heading text",
                     "approximate_location": "top/middle/bottom and left/center/right",
-                    "appears_to_be_level": 1-6
+                    "appears_to_be_level": 1-6,
+                    "likely_element": "tag name of element containing this text if found",
+                    "element_class": "class attribute if found",
+                    "element_id": "id attribute if found"
                 }
             ],
             "html_headings": [
                 {
                     "text": "heading text",
                     "tag": "h1/h2/etc",
-                    "level": 1-6
+                    "level": 1-6,
+                    "element_html": "the actual HTML of the heading element",
+                    "element_class": "class attribute",
+                    "element_id": "id attribute"
                 }
             ],
             "issues": [
@@ -70,14 +105,21 @@ class HeadingAnalyzer:
                     "type": "visual_not_marked",
                     "description": "Text appears to be a heading but not marked up",
                     "visual_text": "the text",
-                    "suggested_fix": "Use <h2> tag"
+                    "suggested_fix": "Use <h2> tag",
+                    "element_tag": "actual tag like div, span, p",
+                    "element_html": "the HTML of the element containing the visual heading",
+                    "element_class": "class attribute if present",
+                    "element_id": "id attribute if present"
                 },
                 {
                     "type": "wrong_level",
                     "description": "Heading level doesn't match visual hierarchy",
                     "heading_text": "the text",
                     "current_level": 3,
-                    "suggested_level": 2
+                    "suggested_level": 2,
+                    "element_html": "the HTML of the heading element",
+                    "element_class": "class attribute if present",
+                    "element_id": "id attribute if present"
                 }
             ],
             "hierarchy_valid": true/false,
@@ -369,6 +411,8 @@ class InteractiveAnalyzer:
         - Missing focus indicators
         - Keyboard traps
         
+        For each issue, try to identify the specific HTML element causing the problem.
+        
         Return ONLY valid JSON:
         {
             "interactive_elements_found": true/false,
@@ -377,7 +421,10 @@ class InteractiveAnalyzer:
                     "description": "What it appears to be",
                     "uses_semantic_html": true/false,
                     "has_proper_aria": true/false,
-                    "appears_keyboard_accessible": true/false
+                    "appears_keyboard_accessible": true/false,
+                    "element_tag": "div/span/etc if found",
+                    "element_class": "class attribute if found",
+                    "element_id": "id attribute if found"
                 }
             ],
             "focus_indicators_visible": true/false,
@@ -386,6 +433,11 @@ class InteractiveAnalyzer:
                     "type": "non_semantic_button/missing_aria/no_focus_indicator",
                     "description": "Issue description",
                     "element_description": "What element",
+                    "element_tag": "actual tag like div, span",
+                    "element_html": "the HTML snippet if found",
+                    "element_class": "class attribute if present",
+                    "element_id": "id attribute if present",
+                    "element_text": "visible text if any",
                     "wcag_criterion": "2.1.1/4.1.2",
                     "fix": "Use <button> or add role='button' and tabindex='0'"
                 }

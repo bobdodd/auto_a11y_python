@@ -31,11 +31,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         metadata = {}
     
     # Extract the error type from the issue code
-    # For AI issues, keep the full code (e.g., AI_ErrVisualHeadingNotMarked)
-    if issue_code.startswith('AI_'):
-        error_type = issue_code
-        category = 'AI'
-    elif '_' in issue_code:
+    if '_' in issue_code:
         category, error_type = issue_code.split('_', 1)
     else:
         category = 'unknown'
@@ -1637,8 +1633,8 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "[remediation steps]"
         },
         'AI_ErrVisualHeadingNotMarked': {
-            'title': "Text appears visually as a heading but is not marked up with proper heading tags",
-            'what': "Text appears visually as a heading but is not marked up with proper heading tags",
+            'title': "Text \"{visual_text}\" appears visually as a heading but is not marked up with proper heading tags",
+            'what': "Text \"{visual_text}\" appears visually as a heading but is not marked up with proper heading tags",
             'why': "Screen reader users won\'t recognize this text as a heading, breaking navigation and document structure",
             'who': "Screen reader users, users who navigate by headings",
             'impact': ImpactScale.HIGH.value,
@@ -1654,6 +1650,78 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1', '2.4.1'],
             'remediation': "Adjust heading level to match the visual hierarchy of the page"
         },
+        'AI_ErrNonSemanticButton': {
+            'title': "Clickable {element_tag} element \"{element_text}\" is not a semantic button",
+            'what': "Clickable {element_tag} element \"{element_text}\" is not a semantic button",
+            'why': "Non-semantic buttons are not keyboard accessible and invisible to screen readers",
+            'who': "Keyboard users, screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1', '4.1.2'],
+            'remediation': "Replace {element_tag} with <button> element or add role=\"button\" and tabindex=\"0\""
+        },
+        'AI_ErrMissingInteractiveRole': {
+            'title': "Interactive {element_tag} element lacks appropriate ARIA role",
+            'what': "Interactive {element_tag} element lacks appropriate ARIA role",
+            'why': "Screen readers won\'t announce this as an interactive control",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add appropriate ARIA role (button, link, checkbox, etc.) to the element"
+        },
+        'AI_ErrClickableWithoutKeyboard': {
+            'title': "Element with onclick handler is not keyboard accessible",
+            'what': "Element with onclick handler is not keyboard accessible",
+            'why': "Keyboard users cannot activate this control",
+            'who': "Keyboard users, users who cannot use a mouse",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1'],
+            'remediation': "Add tabindex=\"0\" and implement onkeypress/onkeydown handlers for Enter and Space keys"
+        },
+        'AI_ErrMissingFocusIndicator': {
+            'title': "Interactive element lacks visible focus indicator",
+            'what': "Interactive element lacks visible focus indicator",
+            'why': "Users can\'t see which element has keyboard focus",
+            'who': "Keyboard users, users with attention or memory issues",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.4.7'],
+            'remediation': "Add CSS :focus styles with visible outline, border, or background change"
+        },
+        'AI_ErrLinkWithoutText': {
+            'title': "Link element has no accessible text",
+            'what': "Link element has no accessible text",
+            'why': "Screen readers announce this as \"link\" without any context",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.4.4', '4.1.2'],
+            'remediation': "Add link text, aria-label, or aria-labelledby attribute"
+        },
+        'AI_ErrAmbiguousLinkText': {
+            'title': "Link text \"{element_text}\" is ambiguous without surrounding context",
+            'what': "Link text \"{element_text}\" is ambiguous without surrounding context",
+            'why': "Screen reader users navigating by links won\'t understand the link\'s purpose",
+            'who': "Screen reader users navigating out of context",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.4'],
+            'remediation': "Use descriptive link text that makes sense without context, or add aria-label"
+        },
+        'AI_ErrMenuWithoutARIA': {
+            'title': "Navigation menu lacks proper ARIA markup",
+            'what': "Navigation menu lacks proper ARIA markup",
+            'why': "Screen readers won\'t recognize this as a navigation menu",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add role=\"navigation\" to container and appropriate ARIA attributes for menu items"
+        },
+        'AI_ErrToggleWithoutState': {
+            'title': "Toggle button doesn\'t indicate its state (expanded/collapsed)",
+            'what': "Toggle button doesn\'t indicate its state (expanded/collapsed)",
+            'why': "Users don\'t know the current state of the control",
+            'who': "Screen reader users, cognitive disability users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add aria-expanded=\"true/false\" and update it when state changes"
+        },
         'AI_ErrReadingOrderMismatch': {
             'title': "Visual reading order doesn\'t match DOM order - content may be read out of sequence",
             'what': "Visual reading order doesn\'t match DOM order - content may be read out of sequence",
@@ -1663,14 +1731,23 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.2', '2.4.3'],
             'remediation': "Reorder DOM elements to match the visual reading flow or use CSS flexbox/grid with proper order"
         },
-        'AI_WarnModalAccessibility': {
-            'title': "Modal dialog detected that may not be properly accessible",
-            'what': "Modal dialog detected that may not be properly accessible",
-            'why': "Inaccessible modals can trap keyboard users or be invisible to screen readers",
+        'AI_WarnModalWithoutFocusTrap': {
+            'title': "Modal dialog doesn\'t trap focus within the dialog",
+            'what': "Modal dialog doesn\'t trap focus within the dialog",
+            'why': "Keyboard users can tab out of the modal into the page behind it",
             'who': "Keyboard users, screen reader users",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.1.2', '2.4.3', '4.1.2'],
-            'remediation': "Ensure modal has proper ARIA attributes (role=\"dialog\"), focus management, and escape key handling"
+            'wcag': ['2.1.2', '2.4.3'],
+            'remediation': "Implement focus trap that keeps tab navigation within the modal"
+        },
+        'AI_WarnModalMissingLabel': {
+            'title': "Modal dialog lacks accessible name or description",
+            'what': "Modal dialog lacks accessible name or description",
+            'why': "Screen readers won\'t announce what the dialog is for",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add aria-label or aria-labelledby to the dialog element"
         },
         'AI_WarnMixedLanguage': {
             'title': "Mixed language content detected without proper language declarations",
@@ -1689,15 +1766,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.2.2', '2.3.1'],
             'remediation': "Provide pause/stop controls and respect prefers-reduced-motion preference"
-        },
-        'AI_ErrInteractiveElementIssue': {
-            'title': "Interactive element may not be properly accessible",
-            'what': "Interactive element may not be properly accessible",
-            'why': "Inaccessible controls prevent users from interacting with the page",
-            'who': "Keyboard users, screen reader users",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.1.1', '4.1.2'],
-            'remediation': "Ensure all interactive elements are keyboard accessible with proper ARIA labels"
         },
         'AI_InfoVisualCue': {
             'title': "Information conveyed only through visual cues (color, position, size)",

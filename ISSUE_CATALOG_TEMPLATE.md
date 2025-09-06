@@ -2335,13 +2335,15 @@ How to fix: [remediation steps]
 
 These issues are detected through AI visual and semantic analysis of the page.
 
+### Heading Issues
+
 ```
 ID: AI_ErrVisualHeadingNotMarked
 Type: Error
 Impact: High
 WCAG: 1.3.1, 2.4.1, 2.4.6
 Category: headings
-Description: Text appears visually as a heading but is not marked up with proper heading tags
+Description: Text "{visual_text}" appears visually as a heading but is not marked up with proper heading tags
 Why it matters: Screen reader users won't recognize this text as a heading, breaking navigation and document structure
 Who it affects: Screen reader users, users who navigate by headings
 How to fix: Use appropriate HTML heading tags (h1-h6) for text that serves as headings
@@ -2359,29 +2361,147 @@ Who it affects: Screen reader users, users who navigate by headings
 How to fix: Adjust heading level to match the visual hierarchy of the page
 ```
 
+### Interactive Element Issues
+
+```
+ID: AI_ErrNonSemanticButton
+Type: Error
+Impact: High
+WCAG: 2.1.1, 4.1.2
+Category: buttons
+Description: Clickable {element_tag} element "{element_text}" is not a semantic button
+Why it matters: Non-semantic buttons are not keyboard accessible and invisible to screen readers
+Who it affects: Keyboard users, screen reader users
+How to fix: Replace {element_tag} with <button> element or add role="button" and tabindex="0"
+```
+
+```
+ID: AI_ErrMissingInteractiveRole
+Type: Error
+Impact: High
+WCAG: 4.1.2
+Category: forms
+Description: Interactive {element_tag} element lacks appropriate ARIA role
+Why it matters: Screen readers won't announce this as an interactive control
+Who it affects: Screen reader users
+How to fix: Add appropriate ARIA role (button, link, checkbox, etc.) to the element
+```
+
+```
+ID: AI_ErrClickableWithoutKeyboard
+Type: Error
+Impact: High
+WCAG: 2.1.1
+Category: keyboard
+Description: Element with onclick handler is not keyboard accessible
+Why it matters: Keyboard users cannot activate this control
+Who it affects: Keyboard users, users who cannot use a mouse
+How to fix: Add tabindex="0" and implement onkeypress/onkeydown handlers for Enter and Space keys
+```
+
+```
+ID: AI_ErrMissingFocusIndicator
+Type: Error
+Impact: High
+WCAG: 2.4.7
+Category: focus
+Description: Interactive element lacks visible focus indicator
+Why it matters: Users can't see which element has keyboard focus
+Who it affects: Keyboard users, users with attention or memory issues
+How to fix: Add CSS :focus styles with visible outline, border, or background change
+```
+
+```
+ID: AI_ErrLinkWithoutText
+Type: Error
+Impact: High
+WCAG: 2.4.4, 4.1.2
+Category: links
+Description: Link element has no accessible text
+Why it matters: Screen readers announce this as "link" without any context
+Who it affects: Screen reader users
+How to fix: Add link text, aria-label, or aria-labelledby attribute
+```
+
+```
+ID: AI_ErrAmbiguousLinkText
+Type: Error
+Impact: Medium
+WCAG: 2.4.4
+Category: links
+Description: Link text "{element_text}" is ambiguous without surrounding context
+Why it matters: Screen reader users navigating by links won't understand the link's purpose
+Who it affects: Screen reader users navigating out of context
+How to fix: Use descriptive link text that makes sense without context, or add aria-label
+```
+
+### Navigation Issues
+
+```
+ID: AI_ErrMenuWithoutARIA
+Type: Error
+Impact: High
+WCAG: 4.1.2
+Category: navigation
+Description: Navigation menu lacks proper ARIA markup
+Why it matters: Screen readers won't recognize this as a navigation menu
+Who it affects: Screen reader users
+How to fix: Add role="navigation" to container and appropriate ARIA attributes for menu items
+```
+
+```
+ID: AI_ErrToggleWithoutState
+Type: Error
+Impact: High
+WCAG: 4.1.2
+Category: forms
+Description: Toggle button doesn't indicate its state (expanded/collapsed)
+Why it matters: Users don't know the current state of the control
+Who it affects: Screen reader users, cognitive disability users
+How to fix: Add aria-expanded="true/false" and update it when state changes
+```
+
+### Reading Order Issues
+
 ```
 ID: AI_ErrReadingOrderMismatch
 Type: Error
 Impact: High
 WCAG: 1.3.2, 2.4.3
-Category: reading_order
+Category: structure
 Description: Visual reading order doesn't match DOM order - content may be read out of sequence
 Why it matters: Screen readers follow DOM order, which may not match the visual layout, causing confusion
 Who it affects: Screen reader users
 How to fix: Reorder DOM elements to match the visual reading flow or use CSS flexbox/grid with proper order
 ```
 
+### Modal and Dialog Issues
+
 ```
-ID: AI_WarnModalAccessibility
+ID: AI_WarnModalWithoutFocusTrap
 Type: Warning
 Impact: High
-WCAG: 2.1.2, 2.4.3, 4.1.2
+WCAG: 2.1.2, 2.4.3
 Category: modals
-Description: Modal dialog detected that may not be properly accessible
-Why it matters: Inaccessible modals can trap keyboard users or be invisible to screen readers
+Description: Modal dialog doesn't trap focus within the dialog
+Why it matters: Keyboard users can tab out of the modal into the page behind it
 Who it affects: Keyboard users, screen reader users
-How to fix: Ensure modal has proper ARIA attributes (role="dialog"), focus management, and escape key handling
+How to fix: Implement focus trap that keeps tab navigation within the modal
 ```
+
+```
+ID: AI_WarnModalMissingLabel
+Type: Warning
+Impact: High
+WCAG: 4.1.2
+Category: modals
+Description: Modal dialog lacks accessible name or description
+Why it matters: Screen readers won't announce what the dialog is for
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby to the dialog element
+```
+
+### Language Issues
 
 ```
 ID: AI_WarnMixedLanguage
@@ -2395,6 +2515,8 @@ Who it affects: Screen reader users who speak multiple languages
 How to fix: Add lang attributes to elements containing different languages
 ```
 
+### Animation Issues
+
 ```
 ID: AI_WarnProblematicAnimation
 Type: Warning
@@ -2407,17 +2529,7 @@ Who it affects: Users with vestibular disorders, photosensitive epilepsy, or cog
 How to fix: Provide pause/stop controls and respect prefers-reduced-motion preference
 ```
 
-```
-ID: AI_ErrInteractiveElementIssue
-Type: Error
-Impact: High
-WCAG: 2.1.1, 4.1.2
-Category: interactive
-Description: Interactive element may not be properly accessible
-Why it matters: Inaccessible controls prevent users from interacting with the page
-Who it affects: Keyboard users, screen reader users
-How to fix: Ensure all interactive elements are keyboard accessible with proper ARIA labels
-```
+### Visual Information Issues
 
 ```
 ID: AI_InfoVisualCue

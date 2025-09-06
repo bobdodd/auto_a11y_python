@@ -170,7 +170,7 @@ class ClaudeAnalyzer:
                             'ai_detected': True,
                             'ai_confidence': 0.8,
                             'ai_analysis_type': 'headings',
-                            'visual_text': vh.get('text', ''),
+                            'visual_text': vh.get('text', ''),  # Key used in template placeholder
                             'suggested_level': vh.get('appears_to_be_level', 2),
                             'element_class': vh.get('element_class'),
                             'element_id': vh.get('element_id'),
@@ -199,26 +199,13 @@ class ClaudeAnalyzer:
             Violation object or None
         """
         try:
-            # Map issue types to AI issue codes and impact levels
-            issue_map = {
-                'visual_not_marked': ('AI_ErrVisualHeadingNotMarked', ImpactLevel.HIGH),
-                'wrong_level': ('AI_ErrHeadingLevelMismatch', ImpactLevel.MEDIUM),
-                'reading_order': ('AI_ErrReadingOrderMismatch', ImpactLevel.HIGH),
-                'modal_issue': ('AI_WarnModalAccessibility', ImpactLevel.HIGH),
-                'missing_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
-                'wrong_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
-                'unmarked_foreign': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
-                'animation_issue': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
-                'infinite_animation': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
-                'no_pause_control': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
-                'interactive_issue': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
-                'non_semantic_button': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
-                'missing_aria': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
-                'visual_cue': ('AI_InfoVisualCue', ImpactLevel.LOW)
-            }
+            # Get more specific issue code based on the actual failure
+            issue_code, impact = self._determine_specific_issue_code(analysis_type, issue)
             
-            issue_type = issue.get('type', 'unknown')
-            issue_code, impact = issue_map.get(issue_type, ('AI_ErrInteractiveElementIssue', ImpactLevel.MEDIUM))
+            if not issue_code:
+                # Fall back to generic code if we can't determine specific issue
+                issue_code = 'AI_ErrInteractiveElementIssue'
+                impact = ImpactLevel.MEDIUM
             
             # Build metadata with AI-specific information
             metadata = {
@@ -227,15 +214,20 @@ class ClaudeAnalyzer:
                 'ai_analysis_type': analysis_type
             }
             
+            # Add metadata keys that match template placeholders
+            # For buttons/interactive elements
+            metadata['element_tag'] = issue.get('element_tag') or issue.get('tag', 'div')
+            metadata['element_text'] = issue.get('text', issue.get('element_text', issue.get('description', '')))
+            
+            # For headings
+            metadata['visual_text'] = issue.get('visual_text', issue.get('text', ''))
+            metadata['heading_text'] = issue.get('heading_text', issue.get('text', ''))
+            
             # Add issue-specific metadata
             if 'current_level' in issue:
                 metadata['current_level'] = issue['current_level']
             if 'suggested_level' in issue:
                 metadata['suggested_level'] = issue['suggested_level']
-            if 'visual_text' in issue:
-                metadata['visual_text'] = issue['visual_text']
-            if 'heading_text' in issue:
-                metadata['heading_text'] = issue['heading_text']
             if 'element_class' in issue:
                 metadata['element_class'] = issue['element_class']
             if 'element_id' in issue:
@@ -303,6 +295,116 @@ class ClaudeAnalyzer:
             base_type = finding.category  # Get analyzer name
             counts[base_type] = counts.get(base_type, 0) + 1
         return counts
+    
+    def _determine_specific_issue_code(
+        self,
+        analysis_type: str,
+        issue: Dict[str, Any]
+    ) -> tuple[Optional[str], Optional[ImpactLevel]]:
+        """
+        Determine the specific AI issue code based on the analysis type and issue details
+        
+        Args:
+            analysis_type: Type of analysis performed
+            issue: Issue dictionary with details
+            
+        Returns:
+            Tuple of (issue_code, impact_level)
+        """
+        issue_type = issue.get('type', '')
+        description = issue.get('description', '').lower()
+        element = issue.get('element_tag', '').lower()
+        
+        # Interactive element issues - most specific matching
+        if analysis_type == 'interactive':
+            # Check for specific interactive patterns
+            if 'button' in description or 'click' in description:
+                if 'div' in element or 'span' in element:
+                    return ('AI_ErrNonSemanticButton', ImpactLevel.HIGH)
+                elif 'keyboard' not in description and 'onclick' in description:
+                    return ('AI_ErrClickableWithoutKeyboard', ImpactLevel.HIGH)
+            
+            if 'toggle' in description or 'expand' in description or 'collapse' in description:
+                if 'aria-expanded' not in description:
+                    return ('AI_ErrToggleWithoutState', ImpactLevel.HIGH)
+            
+            if 'menu' in description or 'navigation' in description:
+                if 'aria' not in description:
+                    return ('AI_ErrMenuWithoutARIA', ImpactLevel.HIGH)
+            
+            if 'tab' in description:
+                if 'aria-selected' not in description and 'role' not in description:
+                    return ('AI_ErrTabsWithoutARIA', ImpactLevel.HIGH)
+            
+            if 'accordion' in description:
+                return ('AI_ErrAccordionWithoutARIA', ImpactLevel.HIGH)
+            
+            if 'carousel' in description or 'slider' in description:
+                return ('AI_ErrCarouselWithoutARIA', ImpactLevel.HIGH)
+            
+            if 'tooltip' in description:
+                return ('AI_WarnTooltipIssue', ImpactLevel.MEDIUM)
+            
+            if 'dropdown' in description:
+                return ('AI_ErrDropdownWithoutARIA', ImpactLevel.HIGH)
+            
+            if 'dialog' in description or 'modal' in description:
+                return ('AI_ErrDialogWithoutARIA', ImpactLevel.HIGH)
+            
+            # Generic interactive issue fallback
+            return ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH)
+        
+        # Heading issues
+        elif analysis_type == 'headings':
+            if issue_type == 'visual_not_marked':
+                return ('AI_ErrVisualHeadingNotMarked', ImpactLevel.HIGH)
+            elif issue_type == 'wrong_level':
+                return ('AI_ErrHeadingLevelMismatch', ImpactLevel.MEDIUM)
+            elif 'empty' in description:
+                return ('AI_ErrEmptyHeading', ImpactLevel.HIGH)
+            elif 'skip' in description:
+                return ('AI_ErrSkippedHeading', ImpactLevel.HIGH)
+        
+        # Reading order issues
+        elif analysis_type == 'reading_order':
+            return ('AI_ErrReadingOrderMismatch', ImpactLevel.HIGH)
+        
+        # Modal/Dialog issues
+        elif analysis_type == 'modals':
+            if 'focus' in description:
+                return ('AI_ErrModalFocusTrap', ImpactLevel.HIGH)
+            else:
+                return ('AI_ErrDialogWithoutARIA', ImpactLevel.HIGH)
+        
+        # Language issues
+        elif analysis_type == 'language':
+            if issue_type in ['missing_lang', 'wrong_lang', 'unmarked_foreign']:
+                return ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM)
+        
+        # Animation issues
+        elif analysis_type == 'animations':
+            if 'infinite' in description or 'pause' in description:
+                return ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM)
+        
+        # Default mapping for unrecognized patterns
+        issue_map = {
+            'visual_not_marked': ('AI_ErrVisualHeadingNotMarked', ImpactLevel.HIGH),
+            'wrong_level': ('AI_ErrHeadingLevelMismatch', ImpactLevel.MEDIUM),
+            'reading_order': ('AI_ErrReadingOrderMismatch', ImpactLevel.HIGH),
+            'modal_issue': ('AI_ErrDialogWithoutARIA', ImpactLevel.HIGH),
+            'missing_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
+            'wrong_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
+            'unmarked_foreign': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
+            'animation_issue': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
+            'infinite_animation': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
+            'no_pause_control': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
+            'interactive_issue': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
+            'non_semantic_button': ('AI_ErrNonSemanticButton', ImpactLevel.HIGH),
+            'missing_aria': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
+            'visual_cue': ('AI_InfoVisualCue', ImpactLevel.LOW)
+        }
+        
+        return issue_map.get(issue_type, (None, None))
     
     async def analyze_batch(
         self,

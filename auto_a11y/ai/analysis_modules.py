@@ -10,30 +10,61 @@ import re
 logger = logging.getLogger(__name__)
 
 
-def generate_xpath(element_tag: str, element_id: str = None, element_class: str = None) -> str:
+def generate_xpath(element_tag: str, element_id: str = None, element_class: str = None, 
+                   element_text: str = None, element_index: int = None) -> str:
     """
     Generate an XPath selector from element attributes
+    Similar to Chrome DevTools Elements.DOMPath.xPath for consistency
     
     Args:
         element_tag: HTML tag name
         element_id: Element ID attribute
         element_class: Element class attribute
+        element_text: Text content for more specific matching
+        element_index: Position index among siblings
         
     Returns:
-        XPath selector string
+        XPath selector string that can be used in Chrome DevTools
     """
+    # Priority 1: ID (most specific and reliable)
     if element_id:
         return f"//*[@id='{element_id}']"
+    
+    # Priority 2: Class name
     elif element_class:
         # Handle multiple classes
         classes = element_class.strip().split()
         if len(classes) == 1:
-            return f"//{element_tag}[@class='{element_class}']"
+            xpath = f"//{element_tag}[@class='{element_class}']"
         else:
             # Use contains for multiple classes
             class_conditions = " and ".join([f"contains(@class, '{cls}')" for cls in classes])
-            return f"//{element_tag}[{class_conditions}]"
+            xpath = f"//{element_tag}[{class_conditions}]"
+        
+        # Add text constraint if available for specificity
+        if element_text:
+            text_snippet = element_text[:30].replace("'", "&apos;").replace('"', "&quot;")
+            xpath = f"{xpath}[contains(text(), '{text_snippet}')]"
+        return xpath
+    
+    # Priority 3: Text content (when no ID or class)
+    elif element_text:
+        # Escape quotes and truncate for matching
+        text_snippet = element_text[:50].replace("'", "&apos;").replace('"', "&quot;")
+        if len(element_text) <= 50:
+            # Exact match for short text
+            return f"//{element_tag}[normalize-space()='{text_snippet}']"
+        else:
+            # Contains for longer text
+            return f"//{element_tag}[contains(normalize-space(), '{text_snippet}')]"
+    
+    # Priority 4: Position index
+    elif element_index is not None:
+        return f"(//{element_tag})[{element_index}]"
+    
+    # Last resort: Just tag name (not ideal, too generic)
     else:
+        logger.warning(f"Generating generic XPath for {element_tag} - consider adding more specific attributes")
         return f"//{element_tag}"
 
 

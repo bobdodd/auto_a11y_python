@@ -164,7 +164,8 @@ class ClaudeAnalyzer:
                         xpath = generate_xpath(
                             vh.get('likely_element', 'div'),
                             vh.get('element_id'),
-                            vh.get('element_class')
+                            vh.get('element_class'),
+                            vh.get('text')  # Include text for specificity
                         )
                     
                     violation = Violation(
@@ -262,7 +263,8 @@ class ClaudeAnalyzer:
                 xpath = generate_xpath(
                     issue.get('element_tag') or issue.get('tag', 'div'),
                     issue.get('element_id'),
-                    issue.get('element_class')
+                    issue.get('element_class'),
+                    issue.get('text') or issue.get('element_text') or issue.get('visual_text')
                 )
             
             violation = Violation(

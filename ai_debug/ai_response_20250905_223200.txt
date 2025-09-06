@@ -1,0 +1,578 @@
+============================================================
+PROMPT:
+============================================================
+Analyze interactive elements in this web page for keyboard accessibility.
+
+        Identify:
+        1. Buttons, links, form inputs (should be keyboard accessible)
+        2. Custom interactive elements (divs/spans with click handlers)
+        3. Dropdown menus, tabs, accordions
+        4. Focus indicators visibility
+        
+        Check for:
+        - Elements that look clickable but aren't semantic buttons/links
+        - Custom controls without proper ARIA
+        - Missing focus indicators
+        - Keyboard traps
+        
+        For each issue, try to identify the specific HTML element causing the problem.
+        
+        Return ONLY valid JSON:
+        {
+            "interactive_elements_found": true/false,
+            "custom_controls": [
+                {
+                    "description": "What it appears to be",
+                    "uses_semantic_html": true/false,
+                    "has_proper_aria": true/false,
+                    "appears_keyboard_accessible": true/false,
+                    "element_tag": "div/span/etc if found",
+                    "element_class": "class attribute if found",
+                    "element_id": "id attribute if found"
+                }
+            ],
+            "focus_indicators_visible": true/false,
+            "issues": [
+                {
+                    "type": "non_semantic_button/missing_aria/no_focus_indicator",
+                    "description": "Issue description",
+                    "element_description": "What element",
+                    "element_tag": "actual tag like div, span",
+                    "element_html": "the HTML snippet if found",
+                    "element_class": "class attribute if present",
+                    "element_id": "id attribute if present",
+                    "element_text": "visible text if any",
+                    "wcag_criterion": "2.1.1/4.1.2",
+                    "fix": "Use <button> or add role='button' and tabindex='0'"
+                }
+            ]
+        }
+            
+            HTML Content:
+            <html lang="en"><head>
+  <title></title>
+  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+  <style>
+    * {
+      font-family: "Lobster";
+    }
+
+    body {
+      background-color: #000;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background-color: transparent;
+      color: #fff;
+      padding: 8px;
+      z-index: 100;
+      transition: top 0.3s;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #333;
+    }
+
+    .logo img {
+      width: 100px;
+      height: auto;
+    }
+
+    .menu-toggle {
+      display: none;
+      cursor: pointer;
+    }
+
+    .menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .menu li {
+      margin-left: 20px;
+    }
+
+    .menu a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    h1 {
+      font-size: 48px;
+      text-align: center;
+      animation: colorChange 6s infinite;
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.5;
+      text-align: justify;
+      padding: 20px;
+      background-image: url('https://example.com/busy-background.gif');
+      background-size: cover;
+      margin-left: 100px;
+      margin-right: 100px;
+    }
+
+    a {
+      color: #ff0;
+      text-decoration: none;
+      font-size: 24px;
+      display: block;
+      margin-top: 20px;
+      /* animation: blink 1s infinite; */
+    }
+
+
+
+    .language-switcher a {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 16px;
+      color: #fff;
+      text-decoration: none;
+      pointer-events: none;
+    }
+
+    @media screen and (max-width: 768px) {
+      .menu {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .menu.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background-color: #333;
+        padding: 20px;
+      }
+
+      .menu.active li {
+        margin: 10px 0;
+      }
+    }
+
+    @keyframes colorChange {
+      0% {
+        color: #f00;
+      }
+
+      25% {
+        color: #0f0;
+      }
+
+      50% {
+        color: #00f;
+      }
+
+      75% {
+        color: #f0f;
+      }
+
+      100% {
+        color: #f00;
+      }
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .cookie-notice {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #f2f2f2;
+      padding: 10px;
+      text-align: center;
+      font-size: 10px;
+    }
+
+    .cookie-notice p {
+      margin: 0;
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 10px;
+
+      color: #777;
+    }
+
+    .cookie-notice a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .cookie-notice button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      margin-left: 10px;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+
+    #absolutePoistion {
+      position: absolute;
+      top: 70px;
+      left: 30%;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .carousel-container {
+      width: 600px;
+      height: 400px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-slide {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      transition: all 0.5s ease;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #french {
+      visibility: hidden;
+    }
+    
+  </style>
+
+<script type="text/javascript">/////////////////////////////////////////////////////////////
+// Calculation of the accessibe name
+/////////////////////////////////////////////////////////////
+
+/**
+ * Returns a context instance in its default state.
+ */
+function getDefaultContext() {
+    return {
+        inherited: {
+            visitedNodes: [],
+            nodesUsed: new Set(),
+            rulesApplied: new Set(),
+        },
+    };
+}
+
+/*
+ * Helper functions used by more than 1 rule 
+ */
+
+function closest(element, selector) {
+    if (element.closest) {
+        return element.closest(selector);
+    }
+}
+
+/**
+ * Calculates whether or not a given element is focusable.
+ * @param elem - The element whose focusability is to be calculated.
+ */
+function isFocusable(elem) {
+    // See https://html.spec.whatwg.org/multipage/interaction.html#the-tabindex-attribute
+    if ((elem instanceof HTMLAnchorElement ||
+        elem instanceof HTMLAreaElement ||
+        elem instanceof HTMLLinkElement) &&
+        elem.hasAttribute('href')) {
+        return true;
+    }
+    if ((elem instanceof HTMLInputElement ||
+        elem instanceof HTMLSelectElement ||
+        elem instanceof HTMLTextAreaElement ||
+        elem instanceof HTMLButtonElement) &&
+        !elem.hasAttribute('disabled')) {
+        return true;
+    }
+    return elem.hasAttribute('tabindex') || elem.isContentEditable;
+}
+
+/**
+ * Looks at a variety of characteristics (CSS, size on screen, attributes)
+ * to determine if 'node' should be considered hidden
+ * @param node - node whose hidden-ness is being calculated
+ * @return - whether or not the node is considered hidden
+ */
+// #SPEC_ASSUMPTION (A.2) : definition of 'hidden'
+function isHidden(node, context) {
+    if (!(node instanceof HTMLElement)) {
+        return false;
+    }
+    // #SPEC_ASSUMPTION (A.3) : options shouldn't be hidden
+    if (node instanceof HTMLOptionElement &&
+        closest(node, 'select') !== null &&
+        context.inherited.partOfName) {
+        return false;
+    }
+    const notDisplayed = node.offsetHeight === 0 && node.offsetWidth === 0;
+    if (notDisplayed && !isFocusable(node)) {
+        return true;
+    }
+    const visibility = window.getComputedStyle(node).visibility;
+    if (visibility === 'hidden') {
+        return true;
+    }
+    const hiddenAncestor = closest(node, '[hidden],[aria-hidden="true"]');
+    if (hiddenAncestor !== null) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Condition for applying rule 2A
+ * @param node - The node whose text alternative is being calculated
+ * @param context - Additional information relevant to the text alternative
+ *     computation for node
+ * @return - Whether or not node satisfies the condition for rule 2A
+ */
+function rule2ACondition(node, context) {
+    // #SPEC_ASSUMPTION (A.1) : definition of 'directly referenced'
+    return isHidden(node, context) && !context.directLabelReference;
+}
+
+/**
+ * Implementation of rule 2A
+ * @param node - The element whose text alternative is being calculated
+ * @param context - Additional information relevant to the text alternative
+ *     computation for node
+ * @return - The text alternative string is returned if condition is true,
+ * null is returned otherwise, indicating that the condition of this rule was
+ * not satisfied.
+ */
+function rule2A(node, context = getDefaultContext()) {
+    let result = null;
+    if (rule2ACondition(node, context)) {
+        result = '';
+    }
+    return result;
+}
+
+/**
+ * Get any HTMLElement referenced in the aria-labelledby attribute
+ * of 'elem' that exist in the document (i.e is 'valid')
+ * @param elem - element whose aria-labelledby attribute is considered
+ * @return - An array of any HTMLElement in the document that is referenced
+ * by elem's aria-labelledby
+ */
+function resolveValidAriaLabelledbyIdrefs(elem) {
+    var _a, _b;
+    const idrefs = (_b = (_a = elem.getAttribute('aria-labelledby')) === null || _a === void 0 ? void 0 : _a.split(' ')) !== null && _b !== void 0 ? _b : [];
+    const validElems = [];
+    for (const id of idrefs) {
+        const elem = document.getElementById(id);
+        if (elem) {
+            validElems.push(elem);
+        }
+    }
+    return validElems;
+}
+
+/**
+ * Implementation of rule 2B
+ * @param node - node whose text alternative is being computed
+ * @param context - Additional information relevant to the text alternative
+ * computation for node
+ * @return - The text alternative string is returned if condition is true,
+ * null is returned otherwise, indicating that the condition of this rule was
+ * not satisfied.
+ */
+function rule2B(node, context = getDefaultContext()) {
+    if (!(node instanceof HTMLElement)) {
+        return null;
+    }
+    // #SPEC_ASSUMPTION (B.1) : definition of 'part of an aria-labelledby traversal'
+    if (context.directLabelReference) {
+        return null;
+    }
+    const labelElems = resolveValidAriaLabelledbyIdrefs(node);
+    if (labelElems.length === 0) {
+        return null;
+    }
+    return labelElems
+        .map(labelElem => {
+            context.inherited.partOfName = true;
+            return computeTextAlternative(labelElem, {
+                directLabelReference: true,
+                inherited: context.inherited,
+            }).name;
+        })
+        .join(' ')
+        .trim();
+}
+
+// Input types that imply role 'textbox' if list attribute is not present,
+// and imply role 'combobox' if list attribute is present.
+const TEXT_INPUT_TYP  # Limit HTML to avoid token limits
+            
+============================================================
+RAW RESPONSE:
+============================================================
+```json
+{
+    "interactive_elements_found": true,
+    "custom_controls": [
+        {
+            "description": "Menu toggle button (hamburger menu)",
+            "uses_semantic_html": false,
+            "has_proper_aria": false,
+            "appears_keyboard_accessible": false,
+            "element_tag": "div",
+            "element_class": "menu-toggle",
+            "element_id": null
+        },
+        {
+            "description": "Modal close button",
+            "uses_semantic_html": false,
+            "has_proper_aria": false,
+            "appears_keyboard_accessible": false,
+            "element_tag": "span",
+            "element_class": "close",
+            "element_id": null
+        }
+    ],
+    "focus_indicators_visible": false,
+    "issues": [
+        {
+            "type": "non_semantic_button",
+            "description": "Menu toggle uses div instead of button element",
+            "element_description": "Hamburger menu toggle",
+            "element_tag": "div",
+            "element_html": "<div class='menu-toggle'>",
+            "element_class": "menu-toggle",
+            "element_id": null,
+            "element_text": "Menu toggle (likely)",
+            "wcag_criterion": "4.1.2",
+            "fix": "Use <button> element or add role='button', tabindex='0', and keyboard event handlers"
+        },
+        {
+            "type": "non_semantic_button",
+            "description": "Modal close uses span instead of button",
+            "element_description": "Modal close control",
+            "element_tag": "span",
+            "element_html": "<span class='close'>",
+            "element_class": "close",
+            "element_id": null,
+            "element_text": "×",
+            "wcag_criterion": "4.1.2",
+            "fix": "Use <button> element or add role='button', tabindex='0', and keyboard event handlers"
+        },
+        {
+            "type": "no_focus_indicator",
+            "description": "No visible focus indicators defined in CSS",
+            "element_description": "All interactive elements",
+            "element_tag": "various",
+            "element_html": null,
+            "element_class": null,
+            "element_id": null,
+            "element_text": null,
+            "wcag_criterion": "2.4.7",
+            "fix": "Add :focus styles with visible outline or border for all interactive elements"
+        },
+        {
+            "type": "disabled_interaction",
+            "description": "Language switcher links disabled with pointer-events: none",
+            "element_description": "Language switcher links",
+            "element_tag": "a",
+            "element_html": "<a> in .language-switcher",
+            "element_class": "language-switcher a",
+            "element_id": null,
+            "element_text": "Language options",
+            "wcag_criterion": "2.1.1",
+            "fix": "Remove pointer-events: none or use proper disabled attribute/aria-disabled"
+        },
+        {
+            "type": "missing_aria",
+            "description": "Menu toggle lacks ARIA attributes for screen reader users",
+            "element_description": "Mobile menu toggle",
+            "element_tag": "div",
+            "element_html": "<div class='menu-toggle'>",
+            "element_class": "menu-toggle",
+            "element_id": null,
+            "element_text": null,
+            "wcag_criterion": "4.1.2",
+            "fix": "Add aria-expanded, aria-controls, and aria-label attributes"
+        }
+    ]
+}
+```

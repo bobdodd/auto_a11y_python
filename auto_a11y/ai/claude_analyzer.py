@@ -217,7 +217,14 @@ class ClaudeAnalyzer:
             # Add metadata keys that match template placeholders
             # For buttons/interactive elements
             metadata['element_tag'] = issue.get('element_tag') or issue.get('tag', 'div')
-            metadata['element_text'] = issue.get('text', issue.get('element_text', issue.get('description', '')))
+            # Try multiple fields for element text, avoid 'None' string
+            element_text = (
+                issue.get('element_text') or 
+                issue.get('text') or 
+                issue.get('element_description') or 
+                issue.get('description', '')
+            )
+            metadata['element_text'] = element_text if element_text and element_text != 'None' else ''
             
             # For headings
             metadata['visual_text'] = issue.get('visual_text', issue.get('text', ''))
@@ -234,6 +241,10 @@ class ClaudeAnalyzer:
                 metadata['element_id'] = issue['element_id']
             if 'approximate_location' in issue:
                 metadata['visual_location'] = issue['approximate_location']
+            
+            # Additional metadata for specific issue types
+            metadata['heading_level'] = issue.get('level', issue.get('heading_level', ''))
+            metadata['next_level'] = issue.get('next_level', '')
             
             # Generate xpath if we have element info
             xpath = None

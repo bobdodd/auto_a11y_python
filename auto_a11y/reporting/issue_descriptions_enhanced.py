@@ -31,11 +31,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         metadata = {}
     
     # Extract the error type from the issue code
-    # Handle AI_ prefixed codes specially
-    if issue_code.startswith('AI_'):
-        error_type = issue_code  # Use full code for AI issues
-        category = 'AI'
-    elif '_' in issue_code:
+    if '_' in issue_code:
         category, error_type = issue_code.split('_', 1)
     else:
         category = 'unknown'
@@ -1770,15 +1766,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.2.2', '2.3.1'],
             'remediation': "Provide pause/stop controls and respect prefers-reduced-motion preference"
-        },
-        'AI_InfoVisualCue': {
-            'title': "Information conveyed only through visual cues (color, position, size)",
-            'what': "Information conveyed only through visual cues (color, position, size)",
-            'why': "Users who can\'t perceive visual cues miss important information",
-            'who': "Blind users, colorblind users",
-            'impact': ImpactScale.LOW.value,
-            'wcag': ['1.3.3', '1.4.1'],
-            'remediation': "Provide text alternatives or additional cues beyond just visual ones"
         },
     }
     

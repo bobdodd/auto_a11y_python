@@ -26,14 +26,24 @@ logger = logging.getLogger(__name__)
 class ClaudeAnalyzer:
     """Main Claude AI analyzer for comprehensive accessibility analysis"""
     
-    def __init__(self, api_key: str, model: str = "claude-3-opus-20240229"):
+    def __init__(self, api_key: str, model: str = None):
         """
         Initialize Claude analyzer
         
         Args:
             api_key: Anthropic API key
-            model: Claude model to use
+            model: Claude model to use (defaults to config)
         """
+        # Get model from config if not provided
+        if model is None:
+            try:
+                from config import config as app_config
+                model = getattr(app_config, 'CLAUDE_MODEL', 'claude-3-opus-20240229')
+                logger.info(f"Using CLAUDE_MODEL from config: {model}")
+            except Exception as e:
+                model = 'claude-3-opus-20240229'
+                logger.warning(f"Could not get CLAUDE_MODEL from config, using default: {model}")
+        
         # Initialize client
         config = ClaudeConfig(api_key=api_key, model=model)
         self.client = ClaudeClient(config)

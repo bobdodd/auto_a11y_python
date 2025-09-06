@@ -31,7 +31,11 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         metadata = {}
     
     # Extract the error type from the issue code
-    if '_' in issue_code:
+    # Handle AI_ prefixed codes specially
+    if issue_code.startswith('AI_'):
+        error_type = issue_code  # Use full code for AI issues
+        category = 'AI'
+    elif '_' in issue_code:
         category, error_type = issue_code.split('_', 1)
     else:
         category = 'unknown'
@@ -1766,6 +1770,96 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.2.2', '2.3.1'],
             'remediation': "Provide pause/stop controls and respect prefers-reduced-motion preference"
+        },
+        'AI_InfoVisualCue': {
+            'title': "Information conveyed only through visual cues (color, position, size)",
+            'what': "Information conveyed only through visual cues (color, position, size)",
+            'why': "Users who can\'t perceive visual cues miss important information",
+            'who': "Blind users, colorblind users",
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['1.3.3', '1.4.1'],
+            'remediation': "Provide text alternatives or additional cues beyond just visual ones"
+        },
+        'AI_ErrDialogWithoutARIA': {
+            'title': "{element_tag} element \"{element_text}\" appears to be a dialog/modal but lacks proper ARIA markup",
+            'what': "{element_tag} element \"{element_text}\" appears to be a dialog/modal but lacks proper ARIA markup",
+            'why': "Without proper ARIA attributes, screen readers cannot announce the dialog\'s purpose, state, or provide proper navigation",
+            'who': "Screen reader users, keyboard users who need focus management",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1', '4.1.2', '2.4.3'],
+            'remediation': "Add role=\"dialog\", aria-modal=\"true\", aria-label or aria-labelledby, and implement focus trap"
+        },
+        'AI_ErrInteractiveElementIssue': {
+            'title': "Interactive {element_tag} element \"{element_text}\" has accessibility issues",
+            'what': "Interactive {element_tag} element \"{element_text}\" has accessibility issues",
+            'why': "Interactive elements without proper semantic markup or keyboard support create barriers for assistive technology users",
+            'who': "Keyboard users, screen reader users, voice control users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1', '4.1.2'],
+            'remediation': "Use semantic HTML elements or add appropriate ARIA roles and keyboard support"
+        },
+        'AI_ErrTabsWithoutARIA': {
+            'title': "Tab interface \"{element_text}\" lacks proper ARIA markup",
+            'what': "Tab interface \"{element_text}\" lacks proper ARIA markup",
+            'why': "Without role=\"tablist\", role=\"tab\", and aria-selected attributes, screen readers cannot convey tab relationships and states",
+            'who': "Screen reader users, keyboard users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1', '4.1.2', '1.3.1'],
+            'remediation': "Add role=\"tablist\" to container, role=\"tab\" to tabs, role=\"tabpanel\" to panels, and manage aria-selected states"
+        },
+        'AI_ErrAccordionWithoutARIA': {
+            'title': "Accordion element \"{element_text}\" lacks proper ARIA markup",
+            'what': "Accordion element \"{element_text}\" lacks proper ARIA markup",
+            'why': "Without aria-expanded and proper roles, users cannot determine if sections are expanded or collapsed",
+            'who': "Screen reader users, keyboard users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1', '4.1.2', '1.3.1'],
+            'remediation': "Add button role to headers, aria-expanded to indicate state, and aria-controls to link headers to panels"
+        },
+        'AI_ErrCarouselWithoutARIA': {
+            'title': "Carousel/slider \"{element_text}\" lacks proper ARIA markup and controls",
+            'what': "Carousel/slider \"{element_text}\" lacks proper ARIA markup and controls",
+            'why': "Without proper ARIA and controls, users cannot understand or control the carousel\'s behavior",
+            'who': "Screen reader users, keyboard users, users with motor impairments",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1', '4.1.2', '2.2.2'],
+            'remediation': "Add role=\"region\", aria-label, aria-live for updates, and accessible previous/next controls"
+        },
+        'AI_ErrDropdownWithoutARIA': {
+            'title': "Dropdown menu \"{element_text}\" lacks proper ARIA markup",
+            'what': "Dropdown menu \"{element_text}\" lacks proper ARIA markup",
+            'why': "Without aria-expanded, aria-haspopup, and proper roles, users cannot understand the dropdown\'s state or navigate it properly",
+            'who': "Screen reader users, keyboard users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1', '4.1.2', '1.3.1'],
+            'remediation': "Add aria-haspopup=\"true\", aria-expanded state, and role=\"menu\" with role=\"menuitem\" for options"
+        },
+        'AI_ErrModalFocusTrap': {
+            'title': "Modal/dialog \"{element_text}\" does not properly trap focus",
+            'what': "Modal/dialog \"{element_text}\" does not properly trap focus",
+            'why': "Without focus trapping, keyboard users can navigate outside the modal while it\'s open, causing confusion",
+            'who': "Keyboard users, screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.2', '2.4.3'],
+            'remediation': "Implement focus trap to keep focus within modal while open, and return focus to trigger element on close"
+        },
+        'AI_ErrEmptyHeading': {
+            'title': "Heading element {element_tag} at level {heading_level} is empty or contains no text",
+            'what': "Heading element {element_tag} at level {heading_level} is empty or contains no text",
+            'why': "Empty headings break document structure and confuse screen reader users who navigate by headings",
+            'who': "Screen reader users, users who navigate by headings",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.3.1', '2.4.6'],
+            'remediation': "Remove empty heading or add meaningful text content"
+        },
+        'AI_ErrSkippedHeading': {
+            'title': "Heading level skipped from h{current_level} to h{next_level}",
+            'what': "Heading level skipped from h{current_level} to h{next_level}",
+            'why': "Skipped heading levels break the logical document structure and make navigation difficult",
+            'who': "Screen reader users, users who navigate by headings",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.3.1'],
+            'remediation': "Use sequential heading levels without skipping (h1, h2, h3, not h1, h3)"
         },
     }
     

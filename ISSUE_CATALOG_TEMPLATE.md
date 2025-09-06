@@ -2541,7 +2541,11 @@ Description: Information conveyed only through visual cues (color, position, siz
 Why it matters: Users who can't perceive visual cues miss important information
 Who it affects: Blind users, colorblind users
 How to fix: Provide text alternatives or additional cues beyond just visual ones
+```
 
+### Missing Interactive Element Issues
+
+```
 ID: AI_ErrDialogWithoutARIA
 Type: Error
 Impact: High
@@ -2551,7 +2555,9 @@ Description: {element_tag} element "{element_text}" appears to be a dialog/modal
 Why it matters: Without proper ARIA attributes, screen readers cannot announce the dialog's purpose, state, or provide proper navigation
 Who it affects: Screen reader users, keyboard users who need focus management
 How to fix: Add role="dialog", aria-modal="true", aria-label or aria-labelledby, and implement focus trap
+```
 
+```
 ID: AI_ErrInteractiveElementIssue
 Type: Error
 Impact: High
@@ -2561,7 +2567,9 @@ Description: Interactive {element_tag} element "{element_text}" has accessibilit
 Why it matters: Interactive elements without proper semantic markup or keyboard support create barriers for assistive technology users
 Who it affects: Keyboard users, screen reader users, voice control users
 How to fix: Use semantic HTML elements or add appropriate ARIA roles and keyboard support
+```
 
+```
 ID: AI_ErrTabsWithoutARIA
 Type: Error
 Impact: High
@@ -2571,7 +2579,9 @@ Description: Tab interface "{element_text}" lacks proper ARIA markup
 Why it matters: Without role="tablist", role="tab", and aria-selected attributes, screen readers cannot convey tab relationships and states
 Who it affects: Screen reader users, keyboard users
 How to fix: Add role="tablist" to container, role="tab" to tabs, role="tabpanel" to panels, and manage aria-selected states
+```
 
+```
 ID: AI_ErrAccordionWithoutARIA
 Type: Error
 Impact: High
@@ -2581,7 +2591,9 @@ Description: Accordion element "{element_text}" lacks proper ARIA markup
 Why it matters: Without aria-expanded and proper roles, users cannot determine if sections are expanded or collapsed
 Who it affects: Screen reader users, keyboard users
 How to fix: Add button role to headers, aria-expanded to indicate state, and aria-controls to link headers to panels
+```
 
+```
 ID: AI_ErrCarouselWithoutARIA
 Type: Error
 Impact: High
@@ -2591,7 +2603,9 @@ Description: Carousel/slider "{element_text}" lacks proper ARIA markup and contr
 Why it matters: Without proper ARIA and controls, users cannot understand or control the carousel's behavior
 Who it affects: Screen reader users, keyboard users, users with motor impairments
 How to fix: Add role="region", aria-label, aria-live for updates, and accessible previous/next controls
+```
 
+```
 ID: AI_ErrDropdownWithoutARIA
 Type: Error
 Impact: High
@@ -2601,7 +2615,9 @@ Description: Dropdown menu "{element_text}" lacks proper ARIA markup
 Why it matters: Without aria-expanded, aria-haspopup, and proper roles, users cannot understand the dropdown's state or navigate it properly
 Who it affects: Screen reader users, keyboard users
 How to fix: Add aria-haspopup="true", aria-expanded state, and role="menu" with role="menuitem" for options
+```
 
+```
 ID: AI_ErrModalFocusTrap
 Type: Error
 Impact: High
@@ -2611,7 +2627,9 @@ Description: Modal/dialog "{element_text}" does not properly trap focus
 Why it matters: Without focus trapping, keyboard users can navigate outside the modal while it's open, causing confusion
 Who it affects: Keyboard users, screen reader users
 How to fix: Implement focus trap to keep focus within modal while open, and return focus to trigger element on close
+```
 
+```
 ID: AI_ErrEmptyHeading
 Type: Error
 Impact: High
@@ -2621,7 +2639,9 @@ Description: Heading element {element_tag} at level {heading_level} is empty or 
 Why it matters: Empty headings break document structure and confuse screen reader users who navigate by headings
 Who it affects: Screen reader users, users who navigate by headings
 How to fix: Remove empty heading or add meaningful text content
+```
 
+```
 ID: AI_ErrSkippedHeading
 Type: Error
 Impact: High

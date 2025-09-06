@@ -254,6 +254,27 @@ class ClaudeClient:
             
             response_text = message.content[0].text
             
+            # DEBUG: Save raw response to file
+            import os
+            from datetime import datetime
+            debug_dir = "ai_debug"
+            if not os.path.exists(debug_dir):
+                os.makedirs(debug_dir)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            # Save the prompt and response
+            with open(f"{debug_dir}/ai_response_{timestamp}.txt", "w") as f:
+                f.write("=" * 60 + "\n")
+                f.write("PROMPT:\n")
+                f.write("=" * 60 + "\n")
+                f.write(full_prompt + "\n")
+                f.write("=" * 60 + "\n")
+                f.write("RAW RESPONSE:\n")
+                f.write("=" * 60 + "\n")
+                f.write(response_text + "\n")
+            
+            logger.info(f"DEBUG: Saved AI response to ai_debug/ai_response_{timestamp}.txt")
+            
             # Parse response - extract JSON from text
             # Claude sometimes prefixes JSON with explanatory text
             try:

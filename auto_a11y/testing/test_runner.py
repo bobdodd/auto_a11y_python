@@ -160,6 +160,16 @@ class TestRunner:
                         ai_tests_to_run = ['headings', 'reading_order', 'language', 'interactive']
                         logger.info(f"Using default AI tests: {ai_tests_to_run}")
                 
+                # Get API key from config if not provided
+                if not ai_api_key:
+                    try:
+                        from config import config
+                        ai_api_key = getattr(config, 'CLAUDE_API_KEY', None)
+                        if ai_api_key:
+                            logger.info("Using CLAUDE_API_KEY from config")
+                    except Exception as e:
+                        logger.warning(f"Could not get CLAUDE_API_KEY from config: {e}")
+                
                 # Log decision factors
                 logger.info(f"AI analysis decision - run_ai: {run_ai}, has_api_key: {bool(ai_api_key)}, has_screenshot: {bool(screenshot_bytes)}, tests_to_run: {ai_tests_to_run}")
                 

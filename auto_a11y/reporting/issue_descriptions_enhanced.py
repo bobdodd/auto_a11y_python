@@ -31,7 +31,11 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         metadata = {}
     
     # Extract the error type from the issue code
-    if '_' in issue_code:
+    # Handle AI_ prefixed codes specially
+    if issue_code.startswith('AI_'):
+        error_type = issue_code  # Use full code for AI issues
+        category = 'AI'
+    elif '_' in issue_code:
         category, error_type = issue_code.split('_', 1)
     else:
         category = 'unknown'

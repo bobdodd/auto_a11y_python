@@ -82,3 +82,19 @@ chrome_data/
 # MongoDB
 dump/
 mongodump/
+
+# AI Debug files
+ai_debug/
+ai_response_*.txt
+
+# Test scripts (not part of main codebase)
+test_*.py
+!auto_a11y/testing/touchpoint_tests/test_*.py
+verify_*.py
+adapt_*.py
+
+# Documentation drafts
+*_COMPLETE.md
+*_SUMMARY.md
+*_MIGRATION.md
+!docs/*.md

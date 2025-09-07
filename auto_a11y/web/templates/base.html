@@ -70,7 +70,7 @@
                 <div class="d-flex align-items-center">
                     <div class="spinner-border spinner-border-sm me-2" role="status"></div>
                     <div>
-                        <strong>Tests Running</strong> - <span id="global-test-message">Checking status...</span>
+                        <strong id="global-activity-title">Activity in Progress</strong> - <span id="global-test-message">Checking status...</span>
                         <a href="#" id="global-test-link" class="ms-2">View Details</a>
                     </div>
                 </div>
@@ -201,6 +201,11 @@
                     } else if (test.type === 'website') {
                         statusUrl = `/websites/${test.id}/test-status`;
                         detailUrl = `/websites/${test.id}`;
+                    } else if (test.type === 'discovery') {
+                        // Discovery is tracked separately, don't check status here
+                        // It will be removed by the discovery polling in the page
+                        activeCount++;
+                        continue;
                     }
                     
                     const response = await $.get(statusUrl);
@@ -235,18 +240,43 @@
             if (activeCount > 0) {
                 const message = document.getElementById('global-test-message');
                 const link = document.getElementById('global-test-link');
+                const titleElement = document.getElementById('global-activity-title');
+                
+                // Count different types of activities
+                const allTests = this.getActiveTests();
+                const discoveryCount = Object.values(allTests).filter(t => t.type === 'discovery').length;
+                const testCount = Object.values(allTests).filter(t => t.type === 'page' || t.type === 'website').length;
+                
+                // Update title based on activity types
+                if (discoveryCount > 0 && testCount === 0) {
+                    titleElement.textContent = 'Discovery Running';
+                } else if (discoveryCount === 0 && testCount > 0) {
+                    titleElement.textContent = 'Tests Running';
+                } else if (discoveryCount > 0 && testCount > 0) {
+                    titleElement.textContent = 'Discovery & Tests Running';
+                } else {
+                    titleElement.textContent = 'Activity in Progress';
+                }
                 
                 if (activeCount === 1) {
-                    const remainingTest = Object.values(this.getActiveTests())[0];
+                    const remainingTest = Object.values(allTests)[0];
                     message.textContent = remainingTest.description + (remainingTest.progress ? ` - ${remainingTest.progress}` : '');
                     
                     if (remainingTest.type === 'page') {
                         link.href = `/pages/${remainingTest.id}`;
-                    } else {
+                    } else if (remainingTest.type === 'website' || remainingTest.type === 'discovery') {
                         link.href = `/websites/${remainingTest.id}`;
                     }
                 } else {
-                    message.textContent = `${activeCount} tests running`;
+                    // Build message based on activity types
+                    let messages = [];
+                    if (discoveryCount > 0) {
+                        messages.push(`${discoveryCount} discover${discoveryCount > 1 ? 'ies' : 'y'}`);
+                    }
+                    if (testCount > 0) {
+                        messages.push(`${testCount} test${testCount > 1 ? 's' : ''}`);
+                    }
+                    message.textContent = messages.join(' and ') + ' running';
                     link.href = '/testing';
                 }
             }
@@ -255,7 +285,9 @@
             if (completedInThisCheck.length > 0) {
                 for (const test of completedInThisCheck) {
                     if (window.showNotification) {
-                        showNotification('Test Complete', `${test.description} has finished testing`, 'success');
+                        const title = test.type === 'discovery' ? 'Discovery Complete' : 'Test Complete';
+                        const message = test.type === 'discovery' ? `${test.description} has finished` : `${test.description} has finished testing`;
+                        showNotification(title, message, 'success');
                     }
                     
                     // Refresh page if we're viewing the tested item

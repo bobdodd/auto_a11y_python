@@ -94,8 +94,10 @@
                                 </a>
                             </td>
                             <td>{{ website.page_count }}</td>
-                            <td>
-                                {{ website.last_tested.strftime('%Y-%m-%d %H:%M') if website.last_tested else 'Never' }}
+                            <td class="website-status" data-website-id="{{ website.id }}">
+                                <span class="status-content">
+                                    {{ website.last_tested.strftime('%Y-%m-%d %H:%M') if website.last_tested else 'Never' }}
+                                </span>
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
@@ -182,22 +184,145 @@
 
 {% block extra_js %}
 <script>
+let statusPollingIntervals = {};
+let websitesBeingTested = new Set();
+
+function updateWebsiteStatus(websiteId, statusHtml) {
+    const statusCell = document.querySelector(`td[data-website-id="${websiteId}"] .status-content`);
+    if (statusCell) {
+        statusCell.innerHTML = statusHtml;
+    }
+}
+
+function startWebsiteStatusPolling(websiteId) {
+    // Don't start multiple pollers for the same website
+    if (statusPollingIntervals[websiteId]) {
+        return;
+    }
+    
+    // Show testing status immediately
+    updateWebsiteStatus(websiteId, '<span class="badge bg-info"><span class="spinner-border spinner-border-sm me-1" role="status"></span>Testing...</span>');
+    websitesBeingTested.add(websiteId);
+    
+    // Poll for website testing status
+    statusPollingIntervals[websiteId] = setInterval(() => {
+        // Check website pages status
+        $.get(`/websites/${websiteId}/test-status`, function(data) {
+            if (data.all_complete) {
+                // Testing complete - stop polling and refresh
+                stopWebsiteStatusPolling(websiteId);
+                
+                // Update with completion time
+                if (data.last_tested) {
+                    updateWebsiteStatus(websiteId, data.last_tested);
+                } else {
+                    updateWebsiteStatus(websiteId, 'Just completed');
+                }
+                
+                // Refresh the page after a short delay to update all statistics
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                // Still testing - show progress
+                const progressText = `Testing: ${data.tested_pages}/${data.total_pages} pages`;
+                updateWebsiteStatus(websiteId, 
+                    `<span class="badge bg-info"><span class="spinner-border spinner-border-sm me-1" role="status"></span>${progressText}</span>`
+                );
+            }
+        }).fail(function() {
+            // On error, just show generic testing message
+            updateWebsiteStatus(websiteId, 
+                '<span class="badge bg-info"><span class="spinner-border spinner-border-sm me-1" role="status"></span>Testing...</span>'
+            );
+        });
+    }, 3000); // Poll every 3 seconds
+}
+
+function stopWebsiteStatusPolling(websiteId) {
+    if (statusPollingIntervals[websiteId]) {
+        clearInterval(statusPollingIntervals[websiteId]);
+        delete statusPollingIntervals[websiteId];
+        websitesBeingTested.delete(websiteId);
+    }
+}
+
+function stopAllPolling() {
+    for (const websiteId in statusPollingIntervals) {
+        stopWebsiteStatusPolling(websiteId);
+    }
+}
+
 function discoverPages(websiteId) {
+    const btn = event.target.closest('button');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Discovering...';
+    
     $.post(`/websites/${websiteId}/discover`, function(data) {
         if (data.success) {
-            alert('Page discovery started. This may take a few minutes.');
+            // Show success message
+            if (window.showNotification) {
+                showNotification('Discovery Started', 'Page discovery is running. The page will refresh when complete.', 'info');
+            } else {
+                alert('Page discovery started. This may take a few minutes.');
+            }
+            
+            // Refresh page after delay to show discovered pages
+            setTimeout(() => location.reload(), 5000);
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> Discover</span>';
+            alert(data.message || 'Failed to start discovery');
         }
+    }).fail(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> Discover</span>';
+        alert('Failed to start page discovery');
     });
 }
 
 function testWebsite(websiteId) {
+    const btn = event.target.closest('button');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Starting...';
+    
+    // Get website name for tracking
+    const websiteRow = btn.closest('tr');
+    const websiteName = websiteRow ? websiteRow.querySelector('td:first-child').textContent.trim() : 'website';
+    
     $.post(`/websites/${websiteId}/test-all`, function(data) {
         if (data.success) {
-            alert(`Testing queued for ${data.pages_queued} pages.`);
+            // Add to global tracking
+            if (typeof trackWebsiteTest !== 'undefined') {
+                trackWebsiteTest(websiteId, websiteName);
+            }
+            
+            // Show notification
+            if (window.showNotification) {
+                showNotification('Testing Started', `Testing ${data.pages_queued} pages. The page will refresh when complete.`, 'info');
+            } else {
+                alert(`Testing queued for ${data.pages_queued} pages.`);
+            }
+            
+            // Start polling for this website
+            startWebsiteStatusPolling(websiteId);
+            
+            // Re-enable button but change text
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i><span class="d-none d-lg-inline"> Testing...</span>';
         } else {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-play"></i><span class="d-none d-lg-inline"> Test</span>';
             alert(data.message);
         }
+    }).fail(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-play"></i><span class="d-none d-lg-inline"> Test</span>';
+        alert('Failed to start testing');
     });
 }
+
+// Clean up on page unload
+window.addEventListener('beforeunload', function() {
+    stopAllPolling();
+});
 </script>
 {% endblock %}

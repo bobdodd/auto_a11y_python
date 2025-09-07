@@ -102,7 +102,7 @@
                                     {{ page.url }}
                                 </a>
                             </td>
-                            <td>
+                            <td class="page-status" data-page-id="{{ page.id }}">
                                 <span class="badge bg-{{ {
                                     'discovered': 'secondary',
                                     'queued': 'info',
@@ -111,6 +111,11 @@
                                     'error': 'danger',
                                     'skipped': 'secondary'
                                 }[page.status.value] }}">
+                                    {% if page.status.value == 'queued' %}
+                                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                                    {% elif page.status.value == 'testing' %}
+                                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                                    {% endif %}
                                     {{ page.status.value|title }}
                                 </span>
                             </td>
@@ -189,14 +194,152 @@
 
 {% block extra_js %}
 <script>
+let websiteStatusInterval = null;
+let testingInProgress = false;
+
+function updatePageStatus(pageId, status) {
+    const statusCell = document.querySelector(`td[data-page-id="${pageId}"]`);
+    if (!statusCell) return;
+    
+    let badgeClass = 'secondary';
+    let spinner = '';
+    
+    switch(status) {
+        case 'discovered':
+            badgeClass = 'secondary';
+            break;
+        case 'queued':
+            badgeClass = 'info';
+            spinner = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>';
+            break;
+        case 'testing':
+            badgeClass = 'warning';
+            spinner = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>';
+            break;
+        case 'tested':
+            badgeClass = 'success';
+            break;
+        case 'error':
+            badgeClass = 'danger';
+            break;
+    }
+    
+    statusCell.innerHTML = `<span class="badge bg-${badgeClass}">${spinner}${status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
+}
+
+function startWebsiteStatusPolling() {
+    if (websiteStatusInterval) return;
+    
+    const websiteId = '{{ website.id }}';
+    testingInProgress = true;
+    console.log('Starting website status polling for website:', websiteId);
+    
+    // Do an immediate check
+    checkWebsiteStatus();
+    
+    // Then poll for status updates
+    websiteStatusInterval = setInterval(() => {
+        checkWebsiteStatus();
+    }, 2000); // Poll every 2 seconds
+}
+
+function checkWebsiteStatus() {
+    const websiteId = '{{ website.id }}';
+    
+    $.get(`/websites/${websiteId}/test-status`, function(data) {
+        console.log('Website status:', data);
+        
+        // Update progress in UI
+        const testBtn = document.getElementById('testAllBtn');
+        if (testBtn && testingInProgress) {
+            testBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Testing: ${data.tested_pages}/${data.total_pages}`;
+        }
+        
+        // Check each page status
+        document.querySelectorAll('.page-status').forEach(cell => {
+            const pageId = cell.getAttribute('data-page-id');
+            // Check individual page status
+            $.get(`/pages/${pageId}/test-status`, function(pageData) {
+                const currentBadge = cell.querySelector('.badge');
+                let currentStatus = '';
+                
+                if (currentBadge) {
+                    // Extract just the status text, ignoring any spinner
+                    const badgeText = currentBadge.textContent.trim().toLowerCase();
+                    // Remove any leading/trailing whitespace and get the last word (the status)
+                    const words = badgeText.split(/\s+/);
+                    currentStatus = words[words.length - 1];
+                }
+                
+                // Update if status changed
+                if (pageData.status !== currentStatus) {
+                    console.log(`Page ${pageId} status changed from ${currentStatus} to ${pageData.status}`);
+                    updatePageStatus(pageId, pageData.status);
+                }
+            }).fail(function(error) {
+                console.error(`Failed to check status for page ${pageId}:`, error);
+            });
+        });
+        
+        // Check if all complete
+        if (data.all_complete) {
+            console.log('All pages complete, stopping polling...');
+            stopWebsiteStatusPolling();
+            
+            // Show notification
+            if (window.showNotification) {
+                showNotification('Testing Complete', 'All pages have been tested. Refreshing...', 'success');
+            }
+            
+            // Reload page to show updated results
+            setTimeout(() => location.reload(), 1500);
+        }
+    }).fail(function() {
+        console.error('Failed to check website test status');
+    });
+}
+
+function stopWebsiteStatusPolling() {
+    if (websiteStatusInterval) {
+        clearInterval(websiteStatusInterval);
+        websiteStatusInterval = null;
+    }
+    testingInProgress = false;
+    
+    // Re-enable test button
+    const testBtn = document.getElementById('testAllBtn');
+    if (testBtn) {
+        testBtn.disabled = false;
+        testBtn.innerHTML = '<i class="bi bi-play-fill"></i> Test All Pages';
+    }
+}
+
 $(document).ready(function() {
+    // Check if any pages are currently testing on page load
+    let hasTestingPages = false;
+    document.querySelectorAll('.page-status .badge').forEach(badge => {
+        const text = badge.textContent.trim().toLowerCase();
+        if (text.includes('testing') || text.includes('queued')) {
+            hasTestingPages = true;
+        }
+    });
+    
+    if (hasTestingPages) {
+        console.log('Found pages in testing/queued state, starting polling...');
+        startWebsiteStatusPolling();
+    }
+    
     $('#discoverBtn').click(function() {
         $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Discovering...');
         
         $.post("{{ url_for('websites.discover_pages', website_id=website.id) }}", function(data) {
             if (data.success) {
-                alert('Page discovery started. This may take a few minutes.');
-                setTimeout(function() { location.reload(); }, 2000);
+                if (window.showNotification) {
+                    showNotification('Discovery Started', 'Page discovery is running. The page will refresh when complete.', 'info');
+                } else {
+                    alert('Page discovery started. This may take a few minutes.');
+                }
+                setTimeout(function() { location.reload(); }, 5000);
             }
         });
     });
@@ -204,15 +347,46 @@ $(document).ready(function() {
     $('#testAllBtn').click(function() {
         if (!confirm('Test all pages? This may take some time.')) return;
         
-        $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Queueing...');
+        const btn = $(this);
+        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Starting...');
         
         $.post("{{ url_for('websites.test_all_pages', website_id=website.id) }}", function(data) {
+            console.log('Test all response:', data);
+            
             if (data.success) {
-                alert(data.message);
-                location.reload();
+                // Add to global tracking if available
+                if (typeof trackWebsiteTest !== 'undefined') {
+                    trackWebsiteTest('{{ website.id }}', '{{ website.display_name }}');
+                }
+                
+                if (window.showNotification) {
+                    showNotification('Testing Started', `Queued ${data.pages_queued} pages for testing`, 'info');
+                } else {
+                    alert(data.message);
+                }
+                
+                // Update button to show it's testing
+                btn.html(`<span class="spinner-border spinner-border-sm"></span> Testing: 0/${data.pages_queued}`);
+                
+                // Start polling for status immediately
+                console.log('Starting status polling...');
+                startWebsiteStatusPolling();
+                
+                // Also trigger an immediate page refresh for the table to show queued status
+                setTimeout(() => {
+                    document.querySelectorAll('.page-status').forEach(cell => {
+                        const pageId = cell.getAttribute('data-page-id');
+                        updatePageStatus(pageId, 'queued');
+                    });
+                }, 500);
             } else {
                 alert(data.message || 'Failed to queue tests');
+                btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> Test All Pages');
             }
+        }).fail(function(error) {
+            console.error('Failed to start testing:', error);
+            alert('Failed to start testing');
+            btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> Test All Pages');
         });
     });
     
@@ -234,12 +408,45 @@ $(document).ready(function() {
 });
 
 function testPage(pageId) {
+    const btn = event.target.closest('button');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    
     $.post(`/pages/${pageId}/test`, function(data) {
         if (data.success) {
-            alert('Page queued for testing');
-            location.reload();
+            // Add to global tracking if available
+            if (typeof trackPageTest !== 'undefined') {
+                trackPageTest(pageId, 'Page');
+            }
+            
+            // Update status immediately
+            updatePageStatus(pageId, 'queued');
+            
+            if (window.showNotification) {
+                showNotification('Test Started', 'Page queued for testing', 'info');
+            }
+            
+            // Start polling if not already running
+            if (!websiteStatusInterval) {
+                startWebsiteStatusPolling();
+            }
+            
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-play"></i>';
+            alert('Failed to start test');
         }
+    }).fail(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-play"></i>';
+        alert('Failed to start test');
     });
 }
+
+// Clean up on page unload
+window.addEventListener('beforeunload', function() {
+    stopWebsiteStatusPolling();
+});
 </script>
 {% endblock %}

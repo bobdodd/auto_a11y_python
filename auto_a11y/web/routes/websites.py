@@ -246,23 +246,89 @@ def add_page(website_id):
 @websites_bp.route('/<website_id>/test-all', methods=['POST'])
 def test_all_pages(website_id):
     """Start testing all pages in website"""
+    from auto_a11y.testing import TestRunner
+    from auto_a11y.core.task_runner import task_runner
+    
     website = current_app.db.get_website(website_id)
     if not website:
         return jsonify({'error': 'Website not found'}), 404
     
     pages = current_app.db.get_pages(website_id)
-    untested_pages = [p for p in pages if p.needs_testing]
+    # Allow testing of all pages, not just untested ones
+    # Users may want to re-test pages to check for improvements
+    testable_pages = [p for p in pages if p.status != PageStatus.TESTING]  # Exclude currently testing pages
     
-    if not untested_pages:
+    if not testable_pages:
         return jsonify({
             'success': False,
-            'message': 'No pages need testing'
+            'message': 'No pages available for testing (some may be currently testing)'
         })
     
-    # Queue testing job
+    # Queue all pages for testing
+    test_runner_instance = TestRunner(current_app.db, current_app.app_config.__dict__)
+    ai_key = getattr(current_app.app_config, 'CLAUDE_API_KEY', None)
+    
+    for page in testable_pages:
+        # Update page status to queued
+        page.status = PageStatus.QUEUED
+        current_app.db.update_page(page)
+        
+        # Submit test task
+        job_id = task_runner.submit_task(
+            func=asyncio.run,
+            args=(test_runner_instance.test_page(
+                page,
+                take_screenshot=True,
+                run_ai_analysis=None,
+                ai_api_key=ai_key
+            ),),
+            task_id=f'test_page_{page.id}_{datetime.now().timestamp()}'
+        )
+    
     return jsonify({
         'success': True,
-        'message': f'Testing {len(untested_pages)} pages',
+        'message': f'Testing {len(testable_pages)} pages',
         'job_id': f'test_{website_id}',
-        'pages_queued': len(untested_pages)
+        'pages_queued': len(testable_pages)
+    })
+
+
+@websites_bp.route('/<website_id>/test-status')
+def test_status(website_id):
+    """Check testing status for all pages in website"""
+    # Get fresh website data from database to get updated last_tested
+    website = current_app.db.get_website(website_id)
+    if not website:
+        return jsonify({'error': 'Website not found'}), 404
+    
+    pages = current_app.db.get_pages(website_id)
+    
+    # Count pages by status
+    total_pages = len(pages)
+    tested_pages = sum(1 for p in pages if p.status == PageStatus.TESTED)
+    testing_pages = sum(1 for p in pages if p.status == PageStatus.TESTING)
+    queued_pages = sum(1 for p in pages if p.status == PageStatus.QUEUED)
+    error_pages = sum(1 for p in pages if p.status == PageStatus.ERROR)
+    
+    # Check if all pages are complete (tested or error)
+    all_complete = (testing_pages == 0 and queued_pages == 0)
+    
+    # Get last tested time - refresh from database to get latest
+    if all_complete:
+        # Refresh website data to get the updated last_tested
+        website = current_app.db.get_website(website_id)
+    
+    last_tested = None
+    if website and website.last_tested:
+        last_tested = website.last_tested.strftime('%Y-%m-%d %H:%M')
+    
+    return jsonify({
+        'total_pages': total_pages,
+        'tested_pages': tested_pages,
+        'testing_pages': testing_pages,
+        'queued_pages': queued_pages,
+        'error_pages': error_pages,
+        'all_complete': all_complete,
+        'last_tested': last_tested,
+        'message': f'Testing: {tested_pages}/{total_pages} complete'
     })

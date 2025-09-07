@@ -261,6 +261,12 @@ class TestRunner:
                 page.test_duration_ms = duration_ms
                 self.db.update_page(page)
                 
+                # Update website's last_tested timestamp
+                website = self.db.get_website(page.website_id)
+                if website:
+                    website.last_tested = datetime.now()
+                    self.db.update_website(website)
+                
                 # Page test completed successfully
                 
                 return test_result

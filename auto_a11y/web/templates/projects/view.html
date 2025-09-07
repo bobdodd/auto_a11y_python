@@ -158,6 +158,39 @@
     </div>
 </div>
 
+<!-- Discovery Options Modal -->
+<div class="modal fade" id="discoveryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Discovery Options</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="discoveryForm">
+                <input type="hidden" id="discoveryWebsiteId" />
+                <input type="hidden" id="discoveryWebsiteName" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="maxPages" class="form-label">Maximum Pages to Discover</label>
+                        <input type="number" class="form-control" id="maxPages" min="1" max="1000"
+                               placeholder="Leave empty for no limit">
+                        <small class="text-muted">Limit the number of pages to discover (useful for large sites)</small>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Discovery will crawl the website starting from the home page, following links to find all accessible pages.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-search"></i> Start Discovery
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Delete Project Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
@@ -186,6 +219,8 @@
 <script>
 let statusPollingIntervals = {};
 let websitesBeingTested = new Set();
+let discoveryPollingIntervals = {};
+let discoveryJobs = {};
 
 function updateWebsiteStatus(websiteId, statusHtml) {
     const statusCell = document.querySelector(`td[data-website-id="${websiteId}"] .status-content`);
@@ -253,30 +288,215 @@ function stopAllPolling() {
 
 function discoverPages(websiteId) {
     const btn = event.target.closest('button');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Discovering...';
     
-    $.post(`/websites/${websiteId}/discover`, function(data) {
+    // Check if discovery is already running for this website
+    if (discoveryPollingIntervals[websiteId]) {
+        if (confirm('Discovery is already running for this website. Do you want to cancel it?')) {
+            cancelDiscovery(websiteId, btn);
+        }
+        return;
+    }
+    
+    // Get website name for tracking
+    const websiteRow = btn.closest('tr');
+    const websiteName = websiteRow ? websiteRow.querySelector('td:first-child').textContent.trim() : 'website';
+    
+    // Store website info and show modal
+    $('#discoveryWebsiteId').val(websiteId);
+    $('#discoveryWebsiteName').val(websiteName);
+    $('#discoveryModal').modal('show');
+}
+
+// Handle discovery form submission
+$('#discoveryForm').submit(function(e) {
+    e.preventDefault();
+    
+    const websiteId = $('#discoveryWebsiteId').val();
+    const websiteName = $('#discoveryWebsiteName').val();
+    const maxPages = $('#maxPages').val();
+    
+    // Find the button for this website
+    const btn = document.querySelector(`button[onclick="discoverPages('${websiteId}')"]`);
+    const originalHtml = btn ? btn.innerHTML : '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> Discover</span>';
+    
+    // Hide modal
+    $('#discoveryModal').modal('hide');
+    
+    // Prepare request data
+    const requestData = {};
+    if (maxPages && maxPages > 0) {
+        requestData.max_pages = parseInt(maxPages);
+    }
+    
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Starting...';
+    }
+    
+    $.post(`/websites/${websiteId}/discover`, requestData, function(data) {
         if (data.success) {
-            // Show success message
-            if (window.showNotification) {
-                showNotification('Discovery Started', 'Page discovery is running. The page will refresh when complete.', 'info');
-            } else {
-                alert('Page discovery started. This may take a few minutes.');
+            discoveryJobs[websiteId] = data.job_id;
+            
+            // Add to global tracking
+            if (typeof TestTracker !== 'undefined') {
+                let description = `Discovering pages for ${websiteName}`;
+                if (data.max_pages) {
+                    description += ` (max ${data.max_pages} pages)`;
+                }
+                TestTracker.addTest('discovery', websiteId, description);
             }
             
-            // Refresh page after delay to show discovered pages
-            setTimeout(() => location.reload(), 5000);
+            // Show success message
+            if (window.showNotification) {
+                showNotification('Discovery Started', data.message, 'info');
+            } else {
+                alert(data.message);
+            }
+            
+            // Start polling for discovery progress
+            if (btn) {
+                startDiscoveryPolling(websiteId, btn);
+            }
         } else {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> Discover</span>';
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
             alert(data.message || 'Failed to start discovery');
         }
     }).fail(function() {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> Discover</span>';
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
         alert('Failed to start page discovery');
     });
+});
+
+function cancelDiscovery(websiteId, btn) {
+    const jobId = discoveryJobs[websiteId];
+    if (!jobId) {
+        alert('No discovery job to cancel');
+        return;
+    }
+    
+    const originalHtml = '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> Discover</span>';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Cancelling...';
+    
+    $.post(`/websites/${websiteId}/cancel-discovery`, { job_id: jobId }, function(data) {
+        if (data.success) {
+            stopDiscoveryPolling(websiteId);
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+            
+            // Remove from global tracking
+            if (typeof TestTracker !== 'undefined') {
+                TestTracker.removeTest(`discovery_${websiteId}`);
+            }
+            
+            if (window.showNotification) {
+                showNotification('Discovery Cancelled', data.message, 'warning');
+            } else {
+                alert(data.message);
+            }
+        } else {
+            alert('Failed to cancel discovery: ' + (data.message || 'Unknown error'));
+        }
+    }).fail(function() {
+        alert('Failed to cancel discovery');
+    });
+}
+
+function startDiscoveryPolling(websiteId, btn) {
+    // Don't start multiple pollers for the same website
+    if (discoveryPollingIntervals[websiteId]) {
+        return;
+    }
+    
+    const originalHtml = '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> Discover</span>';
+    
+    // Change button to show cancel option
+    btn.disabled = false;
+    btn.classList.remove('btn-success');
+    btn.classList.add('btn-danger');
+    btn.innerHTML = '<i class="bi bi-x-circle"></i><span class="d-none d-lg-inline"> Cancel</span>';
+    btn.onclick = function() {
+        if (confirm('Cancel the discovery process?')) {
+            cancelDiscovery(websiteId, btn);
+        }
+    };
+    
+    discoveryPollingIntervals[websiteId] = setInterval(() => {
+        const jobId = discoveryJobs[websiteId];
+        const url = jobId 
+            ? `/websites/${websiteId}/discovery-status?job_id=${jobId}`
+            : `/websites/${websiteId}/discovery-status`;
+            
+        $.get(url, function(data) {
+            if (data.status === 'running') {
+                // Update button with progress
+                const progressText = data.message || `Found ${data.pages_found} pages...`;
+                // Truncate long messages
+                const displayText = progressText.length > 40 ? progressText.substring(0, 37) + '...' : progressText;
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span><span class="d-none d-lg-inline"> ${displayText}</span>`;
+            } else if (data.status === 'completed') {
+                // Discovery complete
+                stopDiscoveryPolling(websiteId);
+                
+                // Update button
+                btn.innerHTML = `<i class="bi bi-check-circle"></i><span class="d-none d-lg-inline"> Found ${data.pages_found} pages</span>`;
+                btn.disabled = false;
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-success');
+                btn.onclick = function() { discoverPages(websiteId); };
+                
+                // Remove from global tracking
+                if (typeof TestTracker !== 'undefined') {
+                    TestTracker.removeTest(`discovery_${websiteId}`);
+                }
+                
+                // Show completion notification
+                if (window.showNotification) {
+                    showNotification('Discovery Complete', `Found ${data.pages_found} pages. Refreshing...`, 'success');
+                }
+                
+                // Refresh page to show new pages
+                setTimeout(() => location.reload(), 2000);
+            } else if (data.status === 'failed') {
+                // Discovery failed
+                stopDiscoveryPolling(websiteId);
+                
+                // Update button
+                btn.innerHTML = '<i class="bi bi-x-circle"></i><span class="d-none d-lg-inline"> Failed</span>';
+                btn.disabled = false;
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-warning');
+                
+                // Remove from global tracking
+                if (typeof TestTracker !== 'undefined') {
+                    TestTracker.removeTest(`discovery_${websiteId}`);
+                }
+                
+                // Show error
+                alert('Discovery failed: ' + (data.error || 'Unknown error'));
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                }, 3000);
+            }
+        }).fail(function() {
+            console.error('Failed to check discovery status for website:', websiteId);
+        });
+    }, 2000); // Poll every 2 seconds
+}
+
+function stopDiscoveryPolling(websiteId) {
+    if (discoveryPollingIntervals[websiteId]) {
+        clearInterval(discoveryPollingIntervals[websiteId]);
+        delete discoveryPollingIntervals[websiteId];
+        delete discoveryJobs[websiteId];
+    }
 }
 
 function testWebsite(websiteId) {
@@ -323,6 +543,10 @@ function testWebsite(websiteId) {
 // Clean up on page unload
 window.addEventListener('beforeunload', function() {
     stopAllPolling();
+    // Stop all discovery polling
+    for (const websiteId in discoveryPollingIntervals) {
+        stopDiscoveryPolling(websiteId);
+    }
 });
 </script>
 {% endblock %}

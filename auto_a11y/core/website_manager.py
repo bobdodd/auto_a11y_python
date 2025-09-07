@@ -161,7 +161,8 @@ class WebsiteManager:
     async def discover_pages(
         self,
         website_id: str,
-        progress_callback: Optional[callable] = None
+        progress_callback: Optional[callable] = None,
+        max_pages: Optional[int] = None
     ) -> ScrapingJob:
         """
         Start page discovery for website
@@ -169,6 +170,7 @@ class WebsiteManager:
         Args:
             website_id: Website ID
             progress_callback: Optional progress callback
+            max_pages: Optional maximum number of pages to discover
             
         Returns:
             Scraping job
@@ -176,6 +178,11 @@ class WebsiteManager:
         website = self.get_website(website_id)
         if not website:
             raise ValueError(f"Website {website_id} not found")
+        
+        # Override max_pages if provided
+        if max_pages is not None and max_pages > 0:
+            website.scraping_config.max_pages = max_pages
+            logger.info(f"Setting max_pages to {max_pages} for discovery")
         
         # Create job
         job_id = f"discovery_{website_id}_{datetime.now().timestamp()}"

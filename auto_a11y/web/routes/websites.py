@@ -89,13 +89,30 @@ def delete_website(website_id):
 
 @websites_bp.route('/<website_id>/discover', methods=['POST'])
 def discover_pages(website_id):
-    """Start page discovery for website"""
+    """Start page discovery for website with optional max pages limit"""
     from auto_a11y.core.website_manager import WebsiteManager
     from auto_a11y.core.task_runner import task_runner
     
     website = current_app.db.get_website(website_id)
     if not website:
         return jsonify({'error': 'Website not found'}), 404
+    
+    # Get max_pages parameter from request
+    max_pages = None
+    if request.is_json:
+        max_pages = request.json.get('max_pages')
+    else:
+        max_pages = request.form.get('max_pages')
+    
+    if max_pages:
+        try:
+            max_pages = int(max_pages)
+            if max_pages <= 0:
+                max_pages = None
+            else:
+                logger.info(f"Discovery will be limited to {max_pages} pages")
+        except (ValueError, TypeError):
+            max_pages = None
     
     try:
         # Check if Chromium is available
@@ -149,7 +166,9 @@ def discover_pages(website_id):
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
-                return loop.run_until_complete(website_manager.discover_pages(website_id))
+                return loop.run_until_complete(
+                    website_manager.discover_pages(website_id, max_pages=max_pages)
+                )
             finally:
                 loop.close()
         
@@ -161,10 +180,15 @@ def discover_pages(website_id):
         
         logger.info(f"Discovery task submitted successfully with ID: {submitted_id}")
         
+        message = f'Page discovery started'
+        if max_pages:
+            message += f' (limited to {max_pages} pages)'
+        
         return jsonify({
             'success': True,
-            'message': 'Page discovery started',
+            'message': message,
             'job_id': submitted_id,
+            'max_pages': max_pages,
             'status_url': url_for('websites.discovery_status', website_id=website_id, job_id=submitted_id)
         })
         
@@ -179,40 +203,101 @@ def discover_pages(website_id):
 
 @websites_bp.route('/<website_id>/discovery-status')
 def discovery_status(website_id):
-    """Check discovery job status"""
+    """Check discovery job status with enhanced progress tracking"""
     from auto_a11y.core.task_runner import task_runner
     
     job_id = request.args.get('job_id')
+    
+    # Get total page count for website
+    total_pages = current_app.db.pages.count_documents({'website_id': website_id})
+    
+    if not job_id:
+        # No specific job requested, check if any discovery is running
+        # This helps with page refreshes where job_id might be lost
+        return jsonify({
+            'status': 'idle',
+            'pages_found': total_pages,
+            'message': f'{total_pages} pages in website'
+        })
+    
+    # Get job status from task runner
+    job_status = task_runner.get_task_status(job_id)
+    
+    if not job_status:
+        # Job not found - it might have completed
+        return jsonify({
+            'status': 'completed',
+            'pages_found': total_pages,
+            'message': f'Discovery completed - found {total_pages} pages'
+        })
+    
+    # Extract progress details
+    progress = job_status.get('progress', {})
+    status = job_status.get('status', 'unknown')
+    
+    # Build detailed response
+    response = {
+        'status': status,
+        'pages_found': progress.get('pages_found', 0),
+        'current_depth': progress.get('current_depth', 0),
+        'queue_size': progress.get('queue_size', 0),
+        'current_url': progress.get('current_url'),
+        'error': job_status.get('error')
+    }
+    
+    # Create informative message based on status
+    if status == 'running':
+        pages_found = progress.get('pages_found', 0)
+        queue_size = progress.get('queue_size', 0)
+        current_url = progress.get('current_url', '')
+        if current_url:
+            # Truncate URL for display
+            display_url = current_url if len(current_url) <= 50 else current_url[:47] + '...'
+            response['message'] = f'Found {pages_found} pages, {queue_size} in queue. Scanning: {display_url}'
+        else:
+            response['message'] = f'Found {pages_found} pages, {queue_size} in queue...'
+    elif status == 'completed':
+        response['message'] = f'Discovery completed - found {progress.get("pages_found", 0)} pages'
+    elif status == 'failed':
+        response['message'] = f'Discovery failed: {job_status.get("error", "Unknown error")}'
+    else:
+        response['message'] = f'Discovery {status}'
+    
+    return jsonify(response)
+
+
+@websites_bp.route('/<website_id>/cancel-discovery', methods=['POST'])
+def cancel_discovery(website_id):
+    """Cancel an active discovery job"""
+    from auto_a11y.core.task_runner import task_runner
+    
+    job_id = request.form.get('job_id') or request.json.get('job_id') if request.is_json else None
+    
     if not job_id:
         return jsonify({'error': 'Job ID required'}), 400
     
-    # Get job status from task runner
-    job_status = task_runner.get_job_status(job_id)
-    
-    if not job_status:
-        # Check if website has pages (job might have completed)
-        pages = current_app.db.get_pages(website_id, limit=1)
-        if pages:
+    try:
+        # Cancel the job in task runner
+        cancelled = task_runner.cancel_task(job_id)
+        
+        if cancelled:
+            logger.info(f"Cancelled discovery job {job_id} for website {website_id}")
             return jsonify({
-                'status': 'completed',
-                'pages_found': current_app.db.pages.count_documents({'website_id': website_id}),
-                'message': 'Discovery completed'
+                'success': True,
+                'message': 'Discovery cancelled successfully'
             })
         else:
             return jsonify({
-                'status': 'unknown',
-                'message': 'Job not found or failed'
+                'success': False,
+                'message': 'Job not found or already completed'
             })
-    
-    # Return actual job status
-    return jsonify({
-        'status': job_status.get('status', 'unknown'),
-        'pages_found': job_status.get('progress', {}).get('pages_found', 0),
-        'current_depth': job_status.get('progress', {}).get('current_depth', 0),
-        'current_url': job_status.get('progress', {}).get('current_url'),
-        'error': job_status.get('error'),
-        'message': job_status.get('error') or f"Discovering pages... ({job_status.get('status')})"
-    })
+    except Exception as e:
+        logger.error(f"Error cancelling discovery job: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Failed to cancel discovery'
+        }), 500
 
 
 @websites_bp.route('/<website_id>/add-page', methods=['POST'])

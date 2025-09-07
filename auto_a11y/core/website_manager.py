@@ -179,14 +179,15 @@ class WebsiteManager:
         if not website:
             raise ValueError(f"Website {website_id} not found")
         
-        # Override max_pages if provided
+        # Log max_pages setting
         if max_pages is not None and max_pages > 0:
-            website.scraping_config.max_pages = max_pages
-            logger.info(f"Setting max_pages to {max_pages} for discovery")
+            logger.info(f"Discovery will be limited to {max_pages} pages")
+        else:
+            logger.info(f"Using default max_pages: {website.scraping_config.max_pages}")
         
-        # Create job
+        # Create job with max_pages override
         job_id = f"discovery_{website_id}_{datetime.now().timestamp()}"
-        job = ScrapingJob(website_id, job_id)
+        job = ScrapingJob(website_id, job_id, max_pages=max_pages)
         
         # Store job
         self.active_jobs[job_id] = job

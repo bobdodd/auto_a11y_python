@@ -86,17 +86,21 @@ class ScrapingEngine:
         
         try:
             depth = 0
-            while self.queued_urls and depth <= website.scraping_config.max_depth:
+            max_pages_reached = False
+            logger.info(f"Starting discovery with max_pages={website.scraping_config.max_pages}, max_depth={website.scraping_config.max_depth}")
+            
+            while self.queued_urls and depth <= website.scraping_config.max_depth and not max_pages_reached:
                 # Get URLs at current depth
                 current_batch = list(self.queued_urls)
                 self.queued_urls.clear()
                 
-                logger.info(f"Processing depth {depth} with {len(current_batch)} URLs")
+                logger.info(f"Processing depth {depth} with {len(current_batch)} URLs, discovered so far: {len(discovered_pages)}")
                 
                 for url in current_batch:
                     # Check if we've hit page limit
                     if len(discovered_pages) >= website.scraping_config.max_pages:
-                        logger.info(f"Reached max pages limit: {website.scraping_config.max_pages}")
+                        logger.warning(f"Reached max pages limit: {website.scraping_config.max_pages} (discovered: {len(discovered_pages)})")
+                        max_pages_reached = True
                         break
                     
                     # Skip if already discovered
@@ -416,16 +420,18 @@ class ScrapingEngine:
 class ScrapingJob:
     """Represents a scraping job"""
     
-    def __init__(self, website_id: str, job_id: str):
+    def __init__(self, website_id: str, job_id: str, max_pages: Optional[int] = None):
         """
         Initialize scraping job
         
         Args:
             website_id: Website ID
             job_id: Unique job ID
+            max_pages: Optional override for max pages to discover
         """
         self.website_id = website_id
         self.job_id = job_id
+        self.max_pages = max_pages  # Store the override
         self.status = 'pending'
         self.progress = {
             'pages_found': 0,
@@ -453,6 +459,11 @@ class ScrapingJob:
             website = database.get_website(self.website_id)
             if not website:
                 raise ValueError(f"Website {self.website_id} not found")
+            
+            # Apply max_pages override if provided
+            if self.max_pages is not None and self.max_pages > 0:
+                logger.info(f"Applying max_pages override: {self.max_pages} (was {website.scraping_config.max_pages})")
+                website.scraping_config.max_pages = self.max_pages
             
             # Create scraper
             scraper = ScrapingEngine(database, browser_config)

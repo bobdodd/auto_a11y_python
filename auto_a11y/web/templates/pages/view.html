@@ -212,7 +212,7 @@
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-clipboard-check text-info me-2"></i>
                                 <div>
-                                    <div class="fw-bold">{{ score_data.applicable_checks|default(0) }}</div>
+                                    <div class="fw-bold">{{ score_data.passed_checks|default(0) + score_data.failed_checks|default(0) }}</div>
                                     <small class="text-muted">Total Tested</small>
                                 </div>
                             </div>
@@ -251,44 +251,156 @@
 
     <!-- Test Results Summary -->
     {% if page.status.value == 'tested' %}
-    <div class="row mb-4 g-3">
-        <div class="col-6 col-lg">
-            <div class="card border-danger">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-danger">Errors</h5>
-                    <p class="display-6 mb-0">{{ page.violation_count }}</p>
+    <!-- Two-section layout for clarity -->
+    <div class="mb-4">
+        <!-- Section 1: Issue Types Found -->
+        <div class="card mb-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="bi bi-bug"></i> Accessibility Issues Found
+                    <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="Number of unique issue types discovered. Each type may have multiple instances throughout the page.">
+                        <i class="bi bi-question-circle"></i>
+                    </button>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-danger mb-1">
+                                <i class="bi bi-x-circle"></i> Errors
+                            </h6>
+                            <p class="display-6 mb-0 text-danger">{{ page.violation_count }}</p>
+                            <small class="text-muted">types found</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-warning mb-1">
+                                <i class="bi bi-exclamation-triangle"></i> Warnings
+                            </h6>
+                            <p class="display-6 mb-0 text-warning">{{ page.warning_count }}</p>
+                            <small class="text-muted">types found</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="text-center">
+                            <h6 class="text-info mb-1">
+                                <i class="bi bi-info-circle"></i> Info
+                            </h6>
+                            <p class="display-6 mb-0 text-info">{{ page.info_count|default(0) }}</p>
+                            <small class="text-muted">types found</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="text-center">
+                            <h6 class="mb-1" style="color: #6f42c1;">
+                                <i class="bi bi-search"></i> Discovery
+                            </h6>
+                            <p class="display-6 mb-0" style="color: #6f42c1;">{{ page.discovery_count|default(0) }}</p>
+                            <small class="text-muted">types found</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-lg">
-            <div class="card border-warning">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-warning">Warnings</h5>
-                    <p class="display-6 mb-0">{{ page.warning_count }}</p>
-                </div>
+        
+        <!-- Section 2: Test Checks Performance -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="bi bi-check2-square"></i> Accessibility Checks Performance
+                    <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="Total individual checks performed on all page elements. High pass rate is good but doesn't guarantee full compliance if critical issues exist.">
+                        <i class="bi bi-question-circle"></i>
+                    </button>
+                </h5>
             </div>
-        </div>
-        <div class="col-6 col-lg">
-            <div class="card border-info">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-info">Info</h5>
-                    <p class="display-6 mb-0">{{ page.info_count|default(0) }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-lg">
-            <div class="card" style="border-color: #6f42c1;">
-                <div class="card-body text-center">
-                    <h5 class="card-title" style="color: #6f42c1;">Discovery</h5>
-                    <p class="display-6 mb-0">{{ page.discovery_count|default(0) }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-success">Passed</h5>
-                    <p class="display-6 mb-0">{{ page.pass_count }}</p>
+            <div class="card-body">
+                {# Calculate actual totals from metadata if available, otherwise use page counts #}
+                {% if latest_result and latest_result.metadata and latest_result.metadata.checks %}
+                    {# Use the accurate check counts from metadata #}
+                    {% set actual_passed = latest_result.metadata.checks | map(attribute='passed') | map('default', 0) | sum %}
+                    {% set actual_failed = latest_result.metadata.checks | map(attribute='failed') | map('default', 0) | sum %}
+                    {% set actual_na = latest_result.metadata.checks | selectattr('total', 'equalto', 0) | list | length %}
+                    {% set total_tested = actual_passed + actual_failed %}
+                    {% set pass_rate = (actual_passed / total_tested * 100) if total_tested > 0 else 0 %}
+                    {% set data_source = "checks" %}
+                {% elif latest_result and latest_result.metadata %}
+                    {# Use metadata counts if available (more accurate than page counts) #}
+                    {% set actual_passed = latest_result.metadata.get('passed_checks', 0) %}
+                    {% set actual_failed = latest_result.metadata.get('failed_checks', 0) %}
+                    {% set actual_na = latest_result.metadata.get('not_applicable_tests', []) | length %}
+                    {% set total_tested = actual_passed + actual_failed %}
+                    {% set pass_rate = (actual_passed / total_tested * 100) if total_tested > 0 else 0 %}
+                    {% set data_source = "metadata" %}
+                {% else %}
+                    {# Last resort: use page-level counts (least accurate - counts elements not checks) #}
+                    {% set actual_passed = page.pass_count %}
+                    {% set actual_failed = page.violation_count + page.warning_count + page.info_count|default(0) + page.discovery_count|default(0) %}
+                    {% set actual_na = 0 %}
+                    {% set total_tested = actual_passed + actual_failed %}
+                    {% set pass_rate = (actual_passed / total_tested * 100) if total_tested > 0 else 0 %}
+                    {% set data_source = "page" %}
+                {% endif %}
+                
+                
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <!-- Progress bar visualization -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span><strong>Overall Pass Rate</strong></span>
+                                <span class="{% if pass_rate >= 90 %}text-success{% elif pass_rate >= 70 %}text-warning{% else %}text-danger{% endif %}">
+                                    <strong>{{ "%.1f"|format(pass_rate) }}%</strong>
+                                </span>
+                            </div>
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar {% if pass_rate >= 90 %}bg-success{% elif pass_rate >= 70 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                     role="progressbar" style="width: {{ pass_rate }}%">
+                                    {{ actual_passed }} passed
+                                </div>
+                                {% if actual_failed > 0 %}
+                                <div class="progress-bar bg-secondary" role="progressbar" 
+                                     style="width: {{ 100 - pass_rate }}%">
+                                    {{ actual_failed }} failed
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row text-center">
+                            <div class="col">
+                                <h6 class="text-success">✓ Passed</h6>
+                                <p class="mb-0 fs-4">{{ actual_passed }}</p>
+                            </div>
+                            <div class="col">
+                                <h6 class="text-danger">✗ Failed</h6>
+                                <p class="mb-0 fs-4">{{ actual_failed }}</p>
+                            </div>
+                            {% if actual_na > 0 %}
+                            <div class="col">
+                                <h6 class="text-secondary">N/A</h6>
+                                <p class="mb-0 fs-4">{{ actual_na }}</p>
+                                <small class="text-muted">tests</small>
+                            </div>
+                            {% endif %}
+                            <div class="col">
+                                <h6 class="text-muted">Total Tested</h6>
+                                <p class="mb-0 fs-4">{{ total_tested }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="alert alert-info mb-0">
+                            <h6 class="alert-heading"><i class="bi bi-lightbulb"></i> Understanding the Numbers</h6>
+                            <small>
+                                <strong>Example:</strong> 95% pass rate (475/500 passed) might still mean critical issues exist. 
+                                Those 25 failed checks could all be "missing alt text" affecting every image on the page.
+                            </small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -344,6 +456,40 @@
                         </tr>
                         {% endfor %}
                     </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <th colspan="3">Totals</th>
+                            {% set total_passed = latest_result.metadata.checks | map(attribute='passed') | map('default', 0) | sum %}
+                            {% set total_failed = latest_result.metadata.checks | map(attribute='failed') | map('default', 0) | sum %}
+                            {% set total_na = latest_result.metadata.checks | selectattr('total', 'equalto', 0) | list | length %}
+                            {% set total_tested = total_passed + total_failed %}
+                            {% set total_elements = latest_result.metadata.checks | map(attribute='total') | map('default', 0) | sum %}
+                            <th class="text-center">
+                                {{ total_tested }}
+                                {% if total_na > 0 %}
+                                    <br><small class="text-muted">({{ total_na }} N/A checks)</small>
+                                {% endif %}
+                                {% if total_elements != total_tested %}
+                                    <br><small class="text-muted">({{ total_elements - total_tested }} skipped)</small>
+                                {% endif %}
+                            </th>
+                            <th class="text-center text-success">{{ total_passed }}</th>
+                            <th class="text-center text-danger">{{ total_failed }}</th>
+                            <th class="text-end">
+                                {% if total_tested > 0 %}
+                                    {% set overall_rate = (total_passed / total_tested * 100)|round(1) %}
+                                    <span class="badge 
+                                        {% if overall_rate >= 90 %}bg-success
+                                        {% elif overall_rate >= 70 %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ overall_rate }}%
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">N/A</span>
+                                {% endif %}
+                            </th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
@@ -1617,6 +1763,12 @@ function testPage(pageId) {
 document.addEventListener('DOMContentLoaded', function() {
     const pageStatus = '{{ page.status.value }}';
     const pageId = '{{ page.id }}';
+    
+    // Initialize Bootstrap tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
     
     // If page is queued or testing, start polling
     if (pageStatus === 'queued' || pageStatus === 'testing') {

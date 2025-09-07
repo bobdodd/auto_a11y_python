@@ -211,34 +211,17 @@ class TestRunner:
                 # Calculate duration
                 duration_ms = int((time.time() - start_time) * 1000)
                 
-                # Process results
+                # Process results (including AI findings)
                 test_result = self.result_processor.process_test_results(
                     page_id=page.id,
                     raw_results=raw_results,
                     screenshot_path=screenshot_path,
-                    duration_ms=duration_ms
+                    duration_ms=duration_ms,
+                    ai_findings=ai_findings,
+                    ai_analysis_results=ai_analysis_results
                 )
                 
-                # Merge AI findings into main test result categories
-                if ai_findings:
-                    for finding in ai_findings:
-                        # Enhance AI violation with catalog descriptions
-                        enhanced_finding = self.result_processor.enhance_ai_violation(finding)
-                        
-                        # Categorize them based on their ID prefix
-                        if enhanced_finding.id.startswith('AI_Err'):
-                            test_result.violations.append(enhanced_finding)
-                        elif enhanced_finding.id.startswith('AI_Warn'):
-                            test_result.warnings.append(enhanced_finding)
-                        elif enhanced_finding.id.startswith('AI_Info'):
-                            test_result.info.append(enhanced_finding)
-                        else:
-                            # Default to warning if unclear
-                            test_result.warnings.append(enhanced_finding)
-                    
-                    # Store raw AI analysis results for reference
-                    test_result.ai_analysis_results = ai_analysis_results
-                    logger.info(f"Merged {len(ai_findings)} AI findings into test results with enhanced descriptions")
+                # AI findings are now merged in result_processor.process_test_results()
                 
                 # Save test result to database
                 result_id = self.db.create_test_result(test_result)

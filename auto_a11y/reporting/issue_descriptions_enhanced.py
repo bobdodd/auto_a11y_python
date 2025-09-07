@@ -1781,8 +1781,8 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Provide text alternatives or additional cues beyond just visual ones"
         },
         'AI_ErrDialogWithoutARIA': {
-            'title': "{element_tag} element \"{element_text}\" appears to be a dialog/modal but lacks proper ARIA markup",
-            'what': "{element_tag} element \"{element_text}\" appears to be a dialog/modal but lacks proper ARIA markup",
+            'title': "Element appears to be a dialog/modal but lacks proper ARIA markup",
+            'what': "A {element_tag} element appears to be a dialog/modal but lacks proper ARIA markup",
             'why': "Without proper ARIA attributes, screen readers cannot announce the dialog\'s purpose, state, or provide proper navigation",
             'who': "Screen reader users, keyboard users who need focus management",
             'impact': ImpactScale.HIGH.value,
@@ -1790,8 +1790,8 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add role=\"dialog\", aria-modal=\"true\", aria-label or aria-labelledby, and implement focus trap"
         },
         'AI_ErrInteractiveElementIssue': {
-            'title': "Interactive {element_tag} element \"{element_text}\" has accessibility issues",
-            'what': "Interactive {element_tag} element \"{element_text}\" has accessibility issues",
+            'title': "Interactive element has accessibility issues",
+            'what': "An interactive {element_tag} element has accessibility issues",
             'why': "Interactive elements without proper semantic markup or keyboard support create barriers for assistive technology users",
             'who': "Keyboard users, screen reader users, voice control users",
             'impact': ImpactScale.HIGH.value,
@@ -1877,7 +1877,15 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
                 for meta_key, meta_value in metadata.items():
                     placeholder = '{' + meta_key + '}'
                     if placeholder in desc[key]:
-                        desc[key] = desc[key].replace(placeholder, str(meta_value))
+                        # Handle empty values specially
+                        if not meta_value or str(meta_value).lower() in ['none', 'null', '', 'undefined']:
+                            # Remove quotes around empty values
+                            desc[key] = desc[key].replace(f'"{placeholder}"', 'element')
+                            desc[key] = desc[key].replace(f"'{placeholder}'", 'element')
+                            # Then replace the placeholder itself
+                            desc[key] = desc[key].replace(placeholder, '')
+                        else:
+                            desc[key] = desc[key].replace(placeholder, str(meta_value))
         
         return desc
     

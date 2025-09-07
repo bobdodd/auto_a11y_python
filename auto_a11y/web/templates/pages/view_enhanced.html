@@ -254,12 +254,12 @@
                 </div>
             </div>
 
-            <!-- Category Filter -->
+            <!-- Touchpoint Filter -->
             <div class="col-md-3">
                 <div class="filter-group">
-                    <label class="form-label fw-bold">Issue Category</label>
-                    <select class="form-select form-select-sm" id="categoryFilter" multiple size="3">
-                        <option value="">All Categories</option>
+                    <label class="form-label fw-bold">Issue Touchpoint</label>
+                    <select class="form-select form-select-sm" id="touchpointFilter" multiple size="3">
+                        <option value="">All Touchpoints</option>
                         <!-- Will be populated dynamically -->
                     </select>
                 </div>
@@ -323,7 +323,7 @@
                      data-type="error"
                      data-impact="{{ violation.impact.value|lower if violation.impact.value else violation.impact|lower }}"
                      data-wcag="{{ violation.wcag_criteria|join(',') if violation.wcag_criteria else '' }}"
-                     data-category="{{ violation.category|lower }}"
+                     data-touchpoint="{{ violation.touchpoint|lower }}"
                      data-id="{{ violation.id }}"
                      data-description="{{ violation.description|lower }}"
                      data-html="{{ violation.html|lower if violation.html else '' }}">
@@ -375,7 +375,7 @@ class IssueFilterManager {
             type: new Set(),
             impact: new Set(),
             wcag: new Set(),
-            category: new Set(),
+            touchpoint: new Set(),
             user: new Set(),
             search: ''
         };
@@ -415,7 +415,7 @@ class IssueFilterManager {
     populateFilterOptions() {
         // Collect unique WCAG criteria
         const wcagCriteria = new Set();
-        const categories = new Set();
+        const touchpoints = new Set();
         
         document.querySelectorAll('.issue-item').forEach(item => {
             const wcag = item.dataset.wcag;
@@ -425,8 +425,8 @@ class IssueFilterManager {
                 });
             }
             
-            const category = item.dataset.category;
-            if (category) categories.add(category);
+            const touchpoint = item.dataset.touchpoint;
+            if (touchpoint) touchpoints.add(touchpoint);
         });
         
         // Populate WCAG filter
@@ -440,14 +440,16 @@ class IssueFilterManager {
             });
         }
         
-        // Populate Category filter
-        const categorySelect = document.getElementById('categoryFilter');
-        if (categorySelect) {
-            [...categories].sort().forEach(category => {
+        // Populate Touchpoint filter
+        const touchpointSelect = document.getElementById('touchpointFilter');
+        if (touchpointSelect) {
+            [...touchpoints].sort().forEach(touchpoint => {
                 const option = document.createElement('option');
-                option.value = category;
-                option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-                categorySelect.appendChild(option);
+                option.value = touchpoint;
+                option.textContent = touchpoint.split('_').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+                touchpointSelect.appendChild(option);
             });
         }
     }
@@ -463,8 +465,8 @@ class IssueFilterManager {
             this.updateMultiSelect('wcag', e.target);
         });
         
-        document.getElementById('categoryFilter')?.addEventListener('change', (e) => {
-            this.updateMultiSelect('category', e.target);
+        document.getElementById('touchpointFilter')?.addEventListener('change', (e) => {
+            this.updateMultiSelect('touchpoint', e.target);
         });
         
         // Quick search
@@ -550,8 +552,8 @@ class IssueFilterManager {
         }
         
         // Check category filter
-        if (this.activeFilters.category.size > 0) {
-            if (!this.activeFilters.category.has(item.dataset.category)) {
+        if (this.activeFilters.touchpoint.size > 0) {
+            if (!this.activeFilters.touchpoint.has(item.dataset.touchpoint)) {
                 return false;
             }
         }
@@ -709,7 +711,7 @@ class IssueFilterManager {
         });
         
         document.getElementById('wcagFilter').selectedIndex = -1;
-        document.getElementById('categoryFilter').selectedIndex = -1;
+        document.getElementById('touchpointFilter').selectedIndex = -1;
         document.getElementById('quickSearch').value = '';
         
         this.applyFilters();

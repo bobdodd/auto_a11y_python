@@ -10,6 +10,7 @@ from auto_a11y.models import TestResult, Violation, ImpactLevel
 from auto_a11y.reporting.issue_descriptions import get_issue_description, get_wcag_link
 from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
 from auto_a11y.reporting.wcag_mapper import get_wcag_criteria, enrich_wcag_criteria
+from auto_a11y.core.touchpoints import TouchpointMapper
 
 logger = logging.getLogger(__name__)
 
@@ -91,16 +92,20 @@ class ResultProcessor:
         page_id: str,
         raw_results: Dict[str, Dict[str, Any]],
         screenshot_path: Optional[str] = None,
-        duration_ms: int = 0
+        duration_ms: int = 0,
+        ai_findings: Optional[List[Any]] = None,
+        ai_analysis_results: Optional[Dict[str, Any]] = None
     ) -> TestResult:
         """
-        Process raw JavaScript test results into TestResult model
+        Process raw JavaScript test results and AI findings into TestResult model
         
         Args:
             page_id: Page ID
             raw_results: Raw results from JavaScript tests
             screenshot_path: Path to screenshot
             duration_ms: Test duration in milliseconds
+            ai_findings: AI-detected accessibility issues
+            ai_analysis_results: Raw AI analysis results
             
         Returns:
             Processed TestResult
@@ -117,6 +122,12 @@ class ResultProcessor:
         total_passed_checks = 0
         total_failed_checks = 0
         not_applicable_tests = []
+        
+        # Initialize AI data if not provided
+        if ai_findings is None:
+            ai_findings = []
+        if ai_analysis_results is None:
+            ai_analysis_results = {}
         
         # Process each test's results
         for test_name, test_result in raw_results.items():
@@ -146,7 +157,14 @@ class ResultProcessor:
                     # Store check information
                     if 'checks' in test_result:
                         for check in test_result['checks']:
-                            check['test_name'] = test_name
+                            # Map test name to touchpoint display name
+                            touchpoint_id = TouchpointMapper.get_touchpoint_for_category(test_name)
+                            if touchpoint_id:
+                                from auto_a11y.core.touchpoints import get_touchpoint
+                                touchpoint = get_touchpoint(touchpoint_id)
+                                check['test_name'] = touchpoint.name if touchpoint else test_name.title()
+                            else:
+                                check['test_name'] = test_name.title()
                             checks.append(check)
             
             # Process errors and warnings (works with both old and new structure)
@@ -192,15 +210,145 @@ class ResultProcessor:
             if 'passes' in test_result and test_result['passes']:
                 passes.extend(test_result['passes'])
         
+        # Process AI findings and add them to checks
+        if ai_findings:
+            # Group AI findings by analysis type
+            ai_checks_by_type = {}
+            
+            for finding in ai_findings:
+                # Enhance AI violation with catalog descriptions
+                enhanced_finding = self.enhance_ai_violation(finding)
+                
+                # Categorize based on ID prefix
+                if enhanced_finding.id.startswith('AI_Err'):
+                    violations.append(enhanced_finding)
+                elif enhanced_finding.id.startswith('AI_Warn'):
+                    warnings.append(enhanced_finding)
+                elif enhanced_finding.id.startswith('AI_Info'):
+                    info.append(enhanced_finding)
+                else:
+                    warnings.append(enhanced_finding)
+                
+                # Track for check statistics
+                analysis_type = finding.metadata.get('ai_analysis_type', 'AI Analysis')
+                if analysis_type not in ai_checks_by_type:
+                    ai_checks_by_type[analysis_type] = {
+                        'passed': 0,
+                        'failed': 0,
+                        'total': 0
+                    }
+                
+                # Count as failed check (since it's an issue)
+                ai_checks_by_type[analysis_type]['failed'] += 1
+                ai_checks_by_type[analysis_type]['total'] += 1
+                total_failed_checks += 1
+                total_applicable_checks += 1
+            
+            # Add AI checks to the checks list
+            for analysis_type, stats in ai_checks_by_type.items():
+                # Map AI analysis types directly to touchpoint IDs
+                from auto_a11y.core.touchpoints import TouchpointID
+                ai_to_touchpoint_map = {
+                    'headings': TouchpointID.HEADINGS,
+                    'reading_order': TouchpointID.FOCUS_MANAGEMENT,  # Reading order relates to focus/tab order
+                    'modals': TouchpointID.DIALOGS,
+                    'language': TouchpointID.LANGUAGE,
+                    'animations': TouchpointID.ANIMATION,
+                    'interactive': TouchpointID.EVENT_HANDLING  # Interactive elements need proper event handling
+                }
+                
+                # Get the touchpoint for this AI analysis
+                touchpoint_id = ai_to_touchpoint_map.get(analysis_type)
+                
+                if touchpoint_id:
+                    from auto_a11y.core.touchpoints import get_touchpoint
+                    touchpoint = get_touchpoint(touchpoint_id)
+                    test_name = touchpoint.name if touchpoint else analysis_type.title()
+                else:
+                    # If no touchpoint found, use the analysis type
+                    test_name = analysis_type.title()
+                
+                # Map analysis types to readable descriptions
+                check_descriptions = {
+                    'headings': 'Visual heading structure analysis',
+                    'reading_order': 'Reading order consistency check',
+                    'modals': 'Modal dialog accessibility check',
+                    'language': 'Language declaration check',
+                    'animations': 'Animation and motion check',
+                    'interactive': 'Interactive element keyboard accessibility'
+                }
+                
+                checks.append({
+                    'test_name': test_name,
+                    'description': check_descriptions.get(analysis_type, f'{analysis_type} analysis'),
+                    'wcag': self._get_ai_wcag_criteria(analysis_type),
+                    'total': stats['total'],
+                    'passed': stats['passed'],
+                    'failed': stats['failed']
+                })
+            
+            # If AI analysis ran but found no issues, add a passing check
+            if ai_analysis_results and not ai_findings:
+                for analysis_type in ai_analysis_results.keys():
+                    # Map AI analysis types directly to touchpoint IDs
+                    from auto_a11y.core.touchpoints import TouchpointID
+                    ai_to_touchpoint_map = {
+                        'headings': TouchpointID.HEADINGS,
+                        'reading_order': TouchpointID.FOCUS_MANAGEMENT,
+                        'modals': TouchpointID.DIALOGS,
+                        'language': TouchpointID.LANGUAGE,
+                        'animations': TouchpointID.ANIMATION,
+                        'interactive': TouchpointID.EVENT_HANDLING
+                    }
+                    
+                    # Get the touchpoint for this AI analysis
+                    touchpoint_id = ai_to_touchpoint_map.get(analysis_type)
+                    
+                    if touchpoint_id:
+                        from auto_a11y.core.touchpoints import get_touchpoint
+                        touchpoint = get_touchpoint(touchpoint_id)
+                        test_name = touchpoint.name if touchpoint else analysis_type.title()
+                    else:
+                        test_name = analysis_type.title()
+                    
+                    check_descriptions = {
+                        'headings': 'Visual heading structure analysis',
+                        'reading_order': 'Reading order consistency check',
+                        'modals': 'Modal dialog accessibility check',
+                        'language': 'Language declaration check',
+                        'animations': 'Animation and motion check',
+                        'interactive': 'Interactive element keyboard accessibility'
+                    }
+                    
+                    checks.append({
+                        'test_name': test_name,
+                        'description': check_descriptions.get(analysis_type, f'{analysis_type} analysis'),
+                        'wcag': self._get_ai_wcag_criteria(analysis_type),
+                        'total': 1,
+                        'passed': 1,
+                        'failed': 0
+                    })
+                    total_passed_checks += 1
+                    total_applicable_checks += 1
+        
+        # Sort checks by test name first, then by description
+        sorted_checks = sorted(checks, key=lambda x: (x.get('test_name', ''), x.get('description', '')))
+        
+        # Sort all issue lists by touchpoint first, then by ID/title
+        sorted_violations = sorted(violations, key=lambda x: (x.touchpoint, x.id))
+        sorted_warnings = sorted(warnings, key=lambda x: (x.touchpoint, x.id))
+        sorted_info = sorted(info, key=lambda x: (x.touchpoint, x.id))
+        sorted_discovery = sorted(discovery, key=lambda x: (x.touchpoint, x.id))
+        
         # Create test result
         test_result = TestResult(
             page_id=page_id,
             test_date=datetime.now(),
             duration_ms=duration_ms,
-            violations=violations,
-            warnings=warnings,
-            info=info,
-            discovery=discovery,
+            violations=sorted_violations,
+            warnings=sorted_warnings,
+            info=sorted_info,
+            discovery=sorted_discovery,
             passes=passes,
             screenshot_path=screenshot_path,
             js_test_results=raw_results,
@@ -211,7 +359,7 @@ class ResultProcessor:
                 'passed_checks': total_passed_checks,
                 'failed_checks': total_failed_checks,
                 'not_applicable_tests': not_applicable_tests,
-                'checks': checks
+                'checks': sorted_checks
             }
         )
         
@@ -312,11 +460,22 @@ class ResultProcessor:
                         **violation_data
                     }
             
+            # Map category to touchpoint
+            old_category = violation_data.get('cat', source_test)
+            
+            # First try to map by error code
+            touchpoint_id = TouchpointMapper.get_touchpoint_for_error_code(error_code)
+            if not touchpoint_id:
+                # Fall back to category mapping
+                touchpoint_id = TouchpointMapper.get_touchpoint_for_category(old_category)
+            
+            touchpoint_value = touchpoint_id.value if touchpoint_id else old_category
+            
             # Create violation
             violation = Violation(
                 id=violation_id,
                 impact=impact,
-                category=violation_data.get('cat', source_test),
+                touchpoint=touchpoint_value,
                 description=description,
                 help_url=help_url,
                 xpath=violation_data.get('xpath'),
@@ -365,6 +524,26 @@ class ResultProcessor:
         }
         
         return descriptions.get(error_code, f'Accessibility issue: {error_code}')
+    
+    def _get_ai_wcag_criteria(self, analysis_type: str) -> List[str]:
+        """
+        Get WCAG criteria for AI analysis types
+        
+        Args:
+            analysis_type: Type of AI analysis (headings, reading_order, etc.)
+            
+        Returns:
+            List of WCAG criteria
+        """
+        wcag_map = {
+            'headings': ['1.3.1', '2.4.6'],  # Info and Relationships, Headings and Labels
+            'reading_order': ['1.3.2', '2.4.3'],  # Meaningful Sequence, Focus Order
+            'modals': ['2.1.2', '4.1.2', '2.4.3'],  # No Keyboard Trap, Name/Role/Value, Focus Order
+            'language': ['3.1.1', '3.1.2'],  # Language of Page, Language of Parts
+            'animations': ['2.2.2', '2.3.1'],  # Pause/Stop/Hide, Three Flashes
+            'interactive': ['2.1.1', '4.1.2']  # Keyboard, Name/Role/Value
+        }
+        return wcag_map.get(analysis_type, ['4.1.2'])  # Default to Name/Role/Value
     
     def enhance_ai_violation(self, violation: Violation) -> Violation:
         """

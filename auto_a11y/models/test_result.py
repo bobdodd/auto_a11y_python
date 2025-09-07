@@ -22,7 +22,7 @@ class Violation:
     
     id: str  # Error code
     impact: ImpactLevel
-    category: str  # heading, image, form, etc.
+    touchpoint: str  # Renamed from category
     description: str
     help_url: Optional[str] = None
     xpath: Optional[str] = None
@@ -37,7 +37,7 @@ class Violation:
         return {
             'id': self.id,
             'impact': self.impact.value,
-            'category': self.category,
+            'touchpoint': self.touchpoint,
             'description': self.description,
             'help_url': self.help_url,
             'xpath': self.xpath,
@@ -64,10 +64,13 @@ class Violation:
         if impact_value in impact_mapping:
             impact_value = impact_mapping[impact_value]
         
+        # Handle both old 'category' and new 'touchpoint' field names
+        touchpoint = data.get('touchpoint', data.get('category', ''))
+        
         return cls(
             id=data['id'],
             impact=ImpactLevel(impact_value),
-            category=data['category'],
+            touchpoint=touchpoint,
             description=data['description'],
             help_url=data.get('help_url'),
             xpath=data.get('xpath'),

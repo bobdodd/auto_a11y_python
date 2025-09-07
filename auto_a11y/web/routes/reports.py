@@ -204,7 +204,7 @@ def project_summary(project_id):
     
     # Get violation breakdown
     violation_summary = {
-        'by_category': {},
+        'by_touchpoint': {},
         'by_severity': {
             'critical': 0,
             'serious': 0,
@@ -222,10 +222,10 @@ def project_summary(project_id):
                 result = current_app.db.get_latest_test_result(page.id)
                 if result:
                     for violation in result.violations:
-                        # Count by category
-                        if violation.category not in violation_summary['by_category']:
-                            violation_summary['by_category'][violation.category] = 0
-                        violation_summary['by_category'][violation.category] += 1
+                        # Count by touchpoint
+                        if violation.touchpoint not in violation_summary['by_touchpoint']:
+                            violation_summary['by_touchpoint'][violation.touchpoint] = 0
+                        violation_summary['by_touchpoint'][violation.touchpoint] += 1
                         
                         # Count by severity
                         violation_summary['by_severity'][violation.impact.value] += 1

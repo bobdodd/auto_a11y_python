@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def generate_xpath(element_tag: str, element_id: str = None, element_class: str = None, 
-                   element_text: str = None, element_index: int = None) -> str:
+                   element_text: str = None, element_index: int = None, use_text: bool = False) -> str:
     """
     Generate an XPath selector from element attributes
     Similar to Chrome DevTools Elements.DOMPath.xPath for consistency
@@ -20,52 +20,68 @@ def generate_xpath(element_tag: str, element_id: str = None, element_class: str 
         element_tag: HTML tag name
         element_id: Element ID attribute
         element_class: Element class attribute
-        element_text: Text content for more specific matching
+        element_text: Text content (only used if use_text=True)
         element_index: Position index among siblings
+        use_text: Whether to include text in XPath (default False for reliability)
         
     Returns:
         XPath selector string that can be used in Chrome DevTools
     """
+    # Sanitize inputs
+    if element_tag:
+        element_tag = element_tag.strip().lower()
+    if element_id:
+        element_id = element_id.strip()
+    if element_class:
+        element_class = element_class.strip()
+        
     # Priority 1: ID (most specific and reliable)
     if element_id:
-        return f"//*[@id='{element_id}']"
+        # Escape single quotes in ID
+        escaped_id = element_id.replace("'", "&apos;")
+        return f"//*[@id='{escaped_id}']"
     
-    # Priority 2: Class name
+    # Priority 2: Class name (without text to avoid duplicates)
     elif element_class:
         # Handle multiple classes
-        classes = element_class.strip().split()
+        classes = element_class.split()
         if len(classes) == 1:
-            xpath = f"//{element_tag}[@class='{element_class}']"
+            # Single class - exact match
+            escaped_class = element_class.replace("'", "&apos;")
+            xpath = f"//{element_tag}[@class='{escaped_class}']"
         else:
-            # Use contains for multiple classes
-            class_conditions = " and ".join([f"contains(@class, '{cls}')" for cls in classes])
+            # Multiple classes - use contains for each
+            class_conditions = " and ".join([f"contains(@class, '{cls.replace("'", "&apos;")}')" for cls in classes])
             xpath = f"//{element_tag}[{class_conditions}]"
         
-        # Add text constraint if available for specificity
-        if element_text:
-            text_snippet = element_text[:30].replace("'", "&apos;").replace('"', "&quot;")
-            xpath = f"{xpath}[contains(text(), '{text_snippet}')]"
+        # Add index if provided for more specificity
+        if element_index is not None and element_index > 0:
+            xpath = f"({xpath})[{element_index}]"
+            
         return xpath
     
-    # Priority 3: Text content (when no ID or class)
-    elif element_text:
-        # Escape quotes and truncate for matching
-        text_snippet = element_text[:50].replace("'", "&apos;").replace('"', "&quot;")
-        if len(element_text) <= 50:
-            # Exact match for short text
-            return f"//{element_tag}[normalize-space()='{text_snippet}']"
-        else:
-            # Contains for longer text
-            return f"//{element_tag}[contains(normalize-space(), '{text_snippet}')]"
-    
-    # Priority 4: Position index
-    elif element_index is not None:
+    # Priority 3: Position index (more reliable than text)
+    elif element_index is not None and element_index > 0:
         return f"(//{element_tag})[{element_index}]"
     
-    # Last resort: Just tag name (not ideal, too generic)
+    # Priority 4: Text content (only if explicitly requested and no other option)
+    elif use_text and element_text:
+        # Clean and escape text
+        text_snippet = element_text[:50].replace("'", "&apos;").replace('"', "&quot;")
+        
+        # Special case for single character elements (like × for close buttons)
+        if len(element_text) == 1:
+            return f"//{element_tag}[text()='{text_snippet}']"
+        elif len(element_text) <= 30:
+            return f"//{element_tag}[normalize-space()='{text_snippet}']"
+        else:
+            return f"//{element_tag}[contains(normalize-space(), '{text_snippet}')]"
+    
+    # Last resort: Tag with first position
     else:
-        logger.warning(f"Generating generic XPath for {element_tag} - consider adding more specific attributes")
-        return f"//{element_tag}"
+        # Return first occurrence to be more specific
+        logger.warning(f"Generating positional XPath for {element_tag}")
+        return f"(//{element_tag})[1]"
 
 
 class HeadingAnalyzer:
@@ -93,6 +109,8 @@ class HeadingAnalyzer:
         """
         prompt = """Analyze the heading structure in this web page screenshot and HTML.
 
+        CRITICAL REQUIREMENT: For EVERY issue you identify, you MUST provide element_tag, element_id (if exists), and element_class (if exists) to generate an XPath selector.
+
         STEP 1 - Visual Analysis (Image Only):
         Look at the screenshot and identify text that appears to be headings based on:
         - Larger font size compared to body text
@@ -108,6 +126,7 @@ class HeadingAnalyzer:
         
         STEP 3 - Compare and Report Issues:
         For visual headings not properly marked up, find the HTML element containing that text.
+        IMPORTANT: For every issue, you MUST identify the specific HTML element and provide element_tag, element_id (if present), and element_class (if present) so an XPath can be generated to locate it.
         
         Return ONLY valid JSON in this format:
         {
@@ -195,6 +214,8 @@ class ReadingOrderAnalyzer:
         """
         prompt = """Analyze the reading order of this web page.
 
+        CRITICAL REQUIREMENT: For EVERY issue you identify, you MUST provide element_tag, element_id (if exists), and element_class (if exists) to generate an XPath selector.
+
         Compare the natural visual reading order (left-to-right, top-to-bottom in English)
         with the DOM order in the HTML.
         
@@ -204,6 +225,12 @@ class ReadingOrderAnalyzer:
         3. Floating or absolutely positioned elements that disrupt reading order
         4. Content that visually appears related but is separated in DOM
         
+        IMPORTANT: For any reading order issues, identify the specific elements involved and provide:
+        - element_tag (HTML tag of the misplaced element)
+        - element_id (if present)
+        - element_class (if present)
+        This helps generate an XPath to locate the problematic elements.
+        
         Return ONLY valid JSON:
         {
             "reading_order_matches": true/false,
@@ -212,7 +239,10 @@ class ReadingOrderAnalyzer:
                     "description": "Description of mismatch",
                     "visual_order": "What users see first",
                     "dom_order": "What screen readers read first",
-                    "impact": "How this affects users"
+                    "impact": "How this affects users",
+                    "element_tag": "actual HTML tag if identifiable",
+                    "element_class": "class attribute if present",
+                    "element_id": "id attribute if present"
                 }
             ],
             "uses_layout_table": true/false,
@@ -249,6 +279,8 @@ class ModalAnalyzer:
         """
         prompt = """Analyze any modal dialogs, popups, or overlays in this page.
 
+        CRITICAL REQUIREMENT: For EVERY issue you identify, you MUST provide element_tag, element_id (if exists), and element_class (if exists) to generate an XPath selector.
+
         Check for:
         1. Visible modal/dialog/popup overlays in the screenshot
         2. Proper ARIA roles (role="dialog" or role="alertdialog")
@@ -256,6 +288,12 @@ class ModalAnalyzer:
         4. Focus management indicators
         5. Close buttons or escape mechanisms
         6. Background content handling (should be inert/aria-hidden)
+        
+        IMPORTANT: For EVERY modal/dialog issue you report, you MUST provide:
+        - element_tag (the HTML tag of the modal container, e.g., 'div', 'section')
+        - element_id (if the modal element has an id attribute)
+        - element_class (if the modal element has a class attribute, e.g., 'modal', 'dialog')
+        This is REQUIRED to generate an XPath to locate the element.
         
         Return ONLY valid JSON:
         {
@@ -267,13 +305,20 @@ class ModalAnalyzer:
                     "has_accessible_name": true/false,
                     "has_close_button": true/false,
                     "appears_to_trap_focus": true/false,
-                    "background_appears_disabled": true/false
+                    "background_appears_disabled": true/false,
+                    "element_tag": "div/section/etc",
+                    "element_class": "class attribute if found",
+                    "element_id": "id attribute if found"
                 }
             ],
             "issues": [
                 {
                     "type": "missing_role/missing_label/no_close/etc",
                     "description": "Issue description",
+                    "element_tag": "actual HTML tag (e.g., 'div', 'section')",
+                    "element_class": "class attribute if present",
+                    "element_id": "id attribute if present",
+                    "element_index": 1-based position if multiple similar elements,
                     "wcag_criterion": "2.1.2/4.1.2/etc",
                     "fix": "How to fix"
                 }
@@ -314,12 +359,20 @@ class LanguageAnalyzer:
         
         prompt = f"""Analyze language usage in this web page.
 
+        CRITICAL REQUIREMENT: For EVERY issue you identify, you MUST provide element_tag, element_id (if exists), and element_class (if exists) to generate an XPath selector.
+
         The HTML tag has lang="{html_lang or 'not set'}".
         
         Tasks:
         1. Identify the primary language of the visible content
         2. Look for any content in different languages
         3. Check if language changes are properly marked
+        
+        IMPORTANT: For any language issues, identify the specific element with the problem and provide:
+        - element_tag (HTML tag of element with wrong/missing lang attribute)
+        - element_id (if present)
+        - element_class (if present)
+        This information is needed to generate an XPath to locate the element.
         
         Return ONLY valid JSON:
         {{
@@ -338,6 +391,9 @@ class LanguageAnalyzer:
                 {{
                     "type": "missing_lang/wrong_lang/unmarked_foreign",
                     "description": "Issue description",
+                    "element_tag": "HTML tag of element with issue",
+                    "element_id": "id attribute if present",
+                    "element_class": "class attribute if present",
                     "fix": "Add lang attribute"
                 }}
             ]
@@ -369,6 +425,8 @@ class AnimationAnalyzer:
         """
         prompt = """Analyze this HTML for animations, transitions, and motion.
 
+        CRITICAL REQUIREMENT: For EVERY issue you identify, you MUST provide element_tag, element_id (if exists), and element_class (if exists) to generate an XPath selector.
+
         Look for:
         1. CSS animations (@keyframes, animation property)
         2. CSS transitions
@@ -384,6 +442,12 @@ class AnimationAnalyzer:
         - Animations last longer than 5 seconds
         - Any flashing or strobing effects
         
+        IMPORTANT: For animation issues, identify the specific element or CSS rule and provide:
+        - element_tag (if it's an HTML element with animation)
+        - element_id (if present)
+        - element_class (if present, especially important for CSS animations)
+        This information helps generate an XPath to locate animated elements.
+        
         Return ONLY valid JSON:
         {
             "has_animations": true/false,
@@ -397,6 +461,9 @@ class AnimationAnalyzer:
                     "type": "infinite_animation/no_pause_control/no_reduced_motion",
                     "description": "Issue description",
                     "element": "Element or selector",
+                    "element_tag": "actual HTML tag if identifiable",
+                    "element_class": "class attribute if present",
+                    "element_id": "id attribute if present",
                     "wcag_criterion": "2.2.2/2.3.1",
                     "fix": "How to fix"
                 }
@@ -430,6 +497,8 @@ class InteractiveAnalyzer:
         """
         prompt = """Analyze interactive elements in this web page for keyboard accessibility.
 
+        CRITICAL REQUIREMENT: For EVERY issue you identify, you MUST provide element_tag, element_id (if exists), and element_class (if exists) to generate an XPath selector.
+
         Identify:
         1. Buttons, links, form inputs (should be keyboard accessible)
         2. Custom interactive elements (divs/spans with click handlers)
@@ -442,7 +511,12 @@ class InteractiveAnalyzer:
         - Missing focus indicators
         - Keyboard traps
         
-        For each issue, try to identify the specific HTML element causing the problem.
+        IMPORTANT: For EVERY issue you report, you MUST identify the specific HTML element and provide:
+        - element_tag (e.g., 'div', 'span', 'button')
+        - element_id (if the element has an id attribute)
+        - element_class (if the element has a class attribute)
+        - element_index (if there are multiple similar elements, provide 1-based position)
+        This information is REQUIRED to generate an XPath to locate the problematic element.
         
         Return ONLY valid JSON:
         {
@@ -455,22 +529,24 @@ class InteractiveAnalyzer:
                     "appears_keyboard_accessible": true/false,
                     "element_tag": "div/span/etc if found",
                     "element_class": "class attribute if found",
-                    "element_id": "id attribute if found"
+                    "element_id": "id attribute if found",
+                    "element_index": 1-based position among similar elements
                 }
             ],
             "focus_indicators_visible": true/false,
             "issues": [
                 {
                     "type": "non_semantic_button/missing_aria/no_focus_indicator",
-                    "description": "Issue description",
-                    "element_description": "What element",
-                    "element_tag": "actual tag like div, span",
-                    "element_html": "the HTML snippet if found",
-                    "element_class": "class attribute if present",
-                    "element_id": "id attribute if present",
-                    "element_text": "visible text if any",
+                    "description": "Brief issue description",
+                    "element_description": "What type of element (e.g., 'close button', 'modal dialog')",
+                    "element_tag": "actual HTML tag (e.g., 'div', 'span', 'button')",
+                    "element_html": "exact HTML snippet from the page",
+                    "element_class": "exact class attribute value",
+                    "element_id": "exact id attribute value",
+                    "element_text": "ONLY the actual visible text content inside the element (e.g., '×' for close button, 'Submit' for button), NOT a description",
+                    "element_index": 1-based position if multiple similar elements,
                     "wcag_criterion": "2.1.1/4.1.2",
-                    "fix": "Use <button> or add role='button' and tabindex='0'"
+                    "fix": "Specific fix recommendation"
                 }
             ]
         }"""

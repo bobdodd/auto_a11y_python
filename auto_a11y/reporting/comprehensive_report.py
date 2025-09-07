@@ -101,7 +101,7 @@ class ComprehensiveReportGenerator:
             'total_discovery': 0,  # Discovery items (exploration)
             'by_impact': defaultdict(int),
             'by_wcag': defaultdict(int),
-            'by_category': defaultdict(int),
+            'by_touchpoint': defaultdict(int),
             'by_type': defaultdict(int),
             'top_issues': [],
             'pages_with_most_issues': [],
@@ -172,9 +172,9 @@ class ComprehensiveReportGenerator:
                 for criterion in issue.wcag_criteria:
                     analytics['by_wcag'][criterion] += 1
             
-            # Category analysis
-            if hasattr(issue, 'category'):
-                analytics['by_category'][issue.category] += 1
+            # Touchpoint analysis
+            if hasattr(issue, 'touchpoint') and issue.touchpoint:
+                analytics['by_touchpoint'][issue.touchpoint] += 1
             
             # Track issue frequency and unique pages
             if hasattr(issue, 'id'):
@@ -188,7 +188,7 @@ class ComprehensiveReportGenerator:
                         'impact': getattr(issue, 'impact', 'unknown'),
                         'wcag_criteria': getattr(issue, 'wcag_criteria', []),
                         'help_url': getattr(issue, 'help_url', ''),
-                        'category': getattr(issue, 'category', 'general')
+                        'touchpoint': getattr(issue, 'touchpoint', 'general')
                     }
         
         # Get top issues with unique page counts
@@ -427,10 +427,50 @@ class ComprehensiveReportGenerator:
         """
     
     def _generate_issue_category_breakdown(self, analytics: Dict[str, Any]) -> str:
-        """Generate issue category breakdown"""
+        """Generate issue touchpoint breakdown"""
+        # Generate touchpoint breakdown if available
+        touchpoint_html = ""
+        if analytics.get('by_touchpoint'):
+            from auto_a11y.core.touchpoints import get_touchpoint, TouchpointID
+            
+            touchpoint_rows = []
+            for tp_id, count in sorted(analytics['by_touchpoint'].items(), key=lambda x: x[1], reverse=True):
+                try:
+                    tp_enum = TouchpointID(tp_id)
+                    touchpoint = get_touchpoint(tp_enum)
+                    if touchpoint:
+                        touchpoint_rows.append(f"""
+                        <tr>
+                            <td style="font-weight: 500;">{touchpoint.name}</td>
+                            <td>{count}</td>
+                            <td style="font-size: 0.85rem; color: #6c757d;">{touchpoint.description[:80]}...</td>
+                        </tr>
+                        """)
+                except (ValueError, KeyError):
+                    continue
+            
+            if touchpoint_rows:
+                touchpoint_html = f"""
+                <div style="margin-top: 2rem;">
+                    <h3>Distribution by Touchpoint</h3>
+                    <table class="table table-striped" style="margin-top: 1rem;">
+                        <thead>
+                            <tr>
+                                <th>Touchpoint</th>
+                                <th>Count</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {''.join(touchpoint_rows[:10])}
+                        </tbody>
+                    </table>
+                </div>
+                """
+        
         return f"""
         <section class="category-breakdown">
-            <h2>Issue Categories</h2>
+            <h2>Issue Touchpoints</h2>
             <div class="category-content">
                 <div class="chart-container">
                     <h3>All Findings by Type</h3>
@@ -485,6 +525,8 @@ class ComprehensiveReportGenerator:
                     </dd>
                 </dl>
             </div>
+            
+            {touchpoint_html}
         </section>
         """
     

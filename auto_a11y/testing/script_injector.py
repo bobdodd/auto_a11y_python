@@ -193,7 +193,7 @@ class ScriptInjector:
     
     async def run_all_tests(self, page) -> Dict[str, Dict[str, Any]]:
         """
-        Run all available tests on the page
+        Run all available tests on the page (JavaScript and Python-based)
         
         Args:
             page: Pyppeteer page object
@@ -203,6 +203,7 @@ class ScriptInjector:
         """
         results = {}
         
+        # Run JavaScript-based tests
         for test_name in self.TEST_FUNCTIONS.keys():
             try:
                 result = await self.run_test(page, test_name)
@@ -217,6 +218,36 @@ class ScriptInjector:
                     'warnings': [],
                     'passes': []
                 }
+        
+        # Run Python-based touchpoint tests
+        try:
+            from auto_a11y.testing.touchpoint_tests import TOUCHPOINT_TESTS
+            
+            for touchpoint_id, test_func in TOUCHPOINT_TESTS.items():
+                try:
+                    # Run the Python-based test
+                    logger.debug(f"Running Python touchpoint test: {touchpoint_id}")
+                    result = await test_func(page)
+                    
+                    # Override JavaScript test results if the Python version exists
+                    # This allows gradual migration from JS to Python tests
+                    if touchpoint_id in results:
+                        logger.debug(f"Replacing JS test {touchpoint_id} with Python version")
+                    
+                    results[touchpoint_id] = result
+                    
+                except Exception as e:
+                    logger.error(f"Python touchpoint test {touchpoint_id} failed: {e}")
+                    results[touchpoint_id] = {
+                        'test_name': touchpoint_id,
+                        'error': str(e),
+                        'errors': [],
+                        'warnings': [],
+                        'passes': []
+                    }
+                    
+        except ImportError as e:
+            logger.warning(f"Could not import touchpoint tests: {e}")
         
         return results
     

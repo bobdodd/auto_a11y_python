@@ -346,29 +346,188 @@
                 <i class="bi bi-x-circle"></i> Errors ({{ latest_result.violations|length }})
             </h6>
             <div class="accordion mb-4" id="violationsAccordion">
-                {% for violation in latest_result.violations %}
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="violation-heading-{{ loop.index }}">
-                        <button class="accordion-button collapsed" type="button" 
-                                data-bs-toggle="collapse" 
-                                data-bs-target="#violation-{{ loop.index }}">
-                            <span class="badge bg-danger me-2 impact-badge">{{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}</span>
-                            {% if violation.metadata.ai_detected %}
-                            <span class="badge bg-info me-2" title="Detected by AI analysis">
-                                <i class="bi bi-robot"></i> AI
-                            </span>
-                            {% endif %}
-                            {% if violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
-                                {{ violation.metadata.what }}
-                            {% else %}
-                                {{ violation.description }}
-                            {% endif %}
-                            {% if violation.xpath %}
-                                <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ violation.xpath }}</span>
-                            {% endif %}
-                        </button>
-                    </h2>
-                    <div id="violation-{{ loop.index }}" 
+                {% set viol_counter = namespace(value=0) %}
+                {% for touchpoint, touchpoint_violations in latest_result.violations|groupby('touchpoint') %}
+                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #dc3545;">
+                        <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                    </div>
+                    
+                    {% for description, description_group in touchpoint_violations|groupby('description') %}
+                        {% set group_list = description_group|list %}
+                        {% set viol_counter.value = viol_counter.value + 1 %}
+                        {% if group_list|length > 1 %}
+                            <!-- Multiple instances - create sub-accordion -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#viol-group-{{ viol_counter.value }}">
+                                        <span class="badge bg-danger me-2">{{ group_list|length }}</span>
+                                        {{ description }}
+                                    </button>
+                                </h2>
+                                <div id="viol-group-{{ viol_counter.value }}" 
+                                     class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="accordion" id="viol-group-instances-{{ viol_counter.value }}">
+                                            {% for violation in group_list %}
+                                            {% set instance_id = viol_counter.value ~ '-' ~ loop.index %}
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" 
+                                                            data-bs-toggle="collapse" 
+                                                            data-bs-target="#viol-instance-{{ instance_id }}">
+                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        {% if violation.xpath %}
+                                                        <code class="ms-2">{{ violation.xpath }}</code>
+                                                        {% endif %}
+                                                    </button>
+                                                </h2>
+                                                <div id="viol-instance-{{ instance_id }}" 
+                                                     class="accordion-collapse collapse"
+                                                     data-bs-parent="#viol-group-instances-{{ viol_counter.value }}">
+                                                    <div class="accordion-body">
+                                                        <!-- Full violation details as before -->
+                                                        {% if violation.metadata and violation.metadata.title %}
+                                                        <!-- Enhanced description available -->
+                                                        <div class="alert alert-danger mb-3">
+                                                            <h6 class="alert-heading">{{ violation.metadata.title }}</h6>
+                                                        </div>
+                                                        
+                                                        <h6 class="text-danger mb-2">About this issue:</h6>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>What the issue is:</strong>
+                                                            <p>{{ violation.metadata.what|default(violation.description) }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Why this is important:</strong>
+                                                            <p>{{ violation.metadata.why }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Who it affects:</strong>
+                                                            <p>{{ violation.metadata.who }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>How to remediate:</strong>
+                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
+                                                        </div>
+                                                        
+                                                        <h6 class="text-danger mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <div class="mb-3">
+                                                            {% if violation.metadata.wcag_full %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in violation.metadata.wcag_full %}
+                                                                <li>{{ criterion }}</li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% elif violation.wcag_criteria %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in violation.wcag_criteria %}
+                                                                <li>
+                                                                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                                                        {{ criterion }}
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% else %}
+                                                        <!-- Standard description -->
+                                                        <p><strong>Rule:</strong> {{ violation.rule_id|default(violation.id) }}</p>
+                                                        <p><strong>Help:</strong> {{ violation.help_text|default(violation.description) }}</p>
+                                                        {% if violation.failure_summary %}
+                                                        <p><strong>How to fix:</strong> {{ violation.failure_summary }}</p>
+                                                        {% endif %}
+                                                        {% endif %}
+                                                        
+                                                        <hr>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <p><strong>Touchpoint:</strong> {{ violation.touchpoint|default('General') }}</p>
+                                                                <p><strong>Impact:</strong> 
+                                                                    <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
+                                                                        {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
+                                                                    </span>
+                                                                </p>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                {% if violation.wcag_criteria %}
+                                                                <p><strong>WCAG Criteria:</strong> 
+                                                                    {% for criterion in violation.wcag_criteria %}
+                                                                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="badge bg-primary text-decoration-none">
+                                                                        {{ criterion }}
+                                                                    </a>
+                                                                    {% endfor %}
+                                                                </p>
+                                                                {% endif %}
+                                                                {% if violation.help_url %}
+                                                                <p><strong>Learn More:</strong> 
+                                                                    <a href="{{ violation.help_url }}" target="_blank">
+                                                                        Documentation <i class="bi bi-box-arrow-up-right"></i>
+                                                                    </a>
+                                                                </p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        {% if violation.selector or violation.xpath %}
+                                                        <p><strong>Location:</strong> <code>{{ violation.selector|default(violation.xpath) }}</code></p>
+                                                        {% endif %}
+                                                        
+                                                        {% if violation.html %}
+                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                                        {% endif %}
+                                                        
+                                                        {% if violation.metadata.ai_detected %}
+                                                        <div class="alert alert-info mt-3">
+                                                            <i class="bi bi-robot"></i> <strong>AI Detection Note:</strong>
+                                                            <p class="mb-0">This issue was detected through visual analysis.</p>
+                                                            {% if violation.metadata.ai_confidence %}
+                                                            <p><strong>Confidence:</strong> {{ (violation.metadata.ai_confidence * 100)|round }}%</p>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Single instance - show as before -->
+                            {% for violation in group_list %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#viol-single-{{ viol_counter.value }}">
+                                        <span class="badge bg-danger me-2 impact-badge">{{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}</span>
+                                        {% if violation.metadata.ai_detected %}
+                                        <span class="badge bg-info me-2" title="Detected by AI analysis">
+                                            <i class="bi bi-robot"></i> AI
+                                        </span>
+                                        {% endif %}
+                                        {% if violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
+                                            {{ violation.metadata.what }}
+                                        {% else %}
+                                            {{ violation.description }}
+                                        {% endif %}
+                                        {% if violation.xpath %}
+                                            <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ violation.xpath }}</span>
+                                        {% endif %}
+                                    </button>
+                                </h2>
+                                <div id="viol-single-{{ viol_counter.value }}" 
                          class="accordion-collapse collapse" 
                          data-bs-parent="#violationsAccordion">
                         <div class="accordion-body">
@@ -434,7 +593,7 @@
                             <hr>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p><strong>Category:</strong> {{ violation.category|default('General') }}</p>
+                                    <p><strong>Touchpoint:</strong> {{ violation.touchpoint|default('General') }}</p>
                                     <p><strong>Impact:</strong> 
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
                                             {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
@@ -494,6 +653,9 @@
                         </div>
                     </div>
                 </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </div>
             {% endif %}
@@ -504,31 +666,151 @@
                 <i class="bi bi-exclamation-triangle"></i> Warnings ({{ latest_result.warnings|length }})
             </h6>
             <div class="accordion mb-4" id="warningsAccordion">
-                {% for warning in latest_result.warnings %}
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="warning-heading-{{ loop.index }}">
-                        <button class="accordion-button collapsed" type="button" 
-                                data-bs-toggle="collapse" 
-                                data-bs-target="#warning-{{ loop.index }}">
-                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'warning' }} me-2 impact-badge">
-                                {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
-                            </span>
-                            {% if warning.metadata.ai_detected %}
-                            <span class="badge bg-info me-2" title="Detected by AI analysis">
-                                <i class="bi bi-robot"></i> AI
-                            </span>
-                            {% endif %}
-                            {% if warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
-                                {{ warning.metadata.what }}
-                            {% else %}
-                                {{ warning.description }}
-                            {% endif %}
-                            {% if warning.xpath %}
-                                <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ warning.xpath }}</span>
-                            {% endif %}
-                        </button>
-                    </h2>
-                    <div id="warning-{{ loop.index }}" 
+                {% set warn_counter = namespace(value=0) %}
+                {% for touchpoint, touchpoint_warnings in latest_result.warnings|groupby('touchpoint') %}
+                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #ffc107;">
+                        <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                    </div>
+                    
+                    {% for description, description_group in touchpoint_warnings|groupby('description') %}
+                        {% set group_list = description_group|list %}
+                        {% set warn_counter.value = warn_counter.value + 1 %}
+                        {% if group_list|length > 1 %}
+                            <!-- Multiple instances - create sub-accordion -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#warn-group-{{ warn_counter.value }}">
+                                        <span class="badge bg-warning text-dark me-2">{{ group_list|length }}</span>
+                                        {{ description }}
+                                    </button>
+                                </h2>
+                                <div id="warn-group-{{ warn_counter.value }}" 
+                                     class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="accordion" id="warn-instances-{{ warn_counter.value }}">
+                                            {% for warning in group_list %}
+                                            {% set warn_instance_id = warn_counter.value ~ '-' ~ loop.index %}
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" 
+                                                            data-bs-toggle="collapse" 
+                                                            data-bs-target="#warn-instance-{{ warn_instance_id }}">
+                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        {% if warning.xpath %}
+                                                        <code class="ms-2">{{ warning.xpath }}</code>
+                                                        {% endif %}
+                                                    </button>
+                                                </h2>
+                                                <div id="warn-instance-{{ warn_instance_id }}" 
+                                                     class="accordion-collapse collapse"
+                                                     data-bs-parent="#warn-instances-{{ warn_counter.value }}">
+                                                    <div class="accordion-body">
+                                                        <!-- Full warning details as before -->
+                                                        {% if warning.metadata and warning.metadata.title %}
+                                                        <!-- Enhanced description available -->
+                                                        <div class="alert alert-warning mb-3">
+                                                            <h6 class="alert-heading">{{ warning.metadata.title }}</h6>
+                                                        </div>
+                                                        
+                                                        <h6 class="text-warning mb-2">About this issue:</h6>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>What the issue is:</strong>
+                                                            <p>{{ warning.metadata.what|default(warning.description) }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Why this is important:</strong>
+                                                            <p>{{ warning.metadata.why }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Who it affects:</strong>
+                                                            <p>{{ warning.metadata.who }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>How to remediate:</strong>
+                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</div>
+                                                        </div>
+                                                        
+                                                        <h6 class="text-warning mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <div class="mb-3">
+                                                            {% if warning.metadata.wcag_full %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in warning.metadata.wcag_full %}
+                                                                <li>{{ criterion }}</li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% elif warning.wcag_criteria %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in warning.wcag_criteria %}
+                                                                <li>
+                                                                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                                                        {{ criterion }}
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% else %}
+                                                        <!-- Standard description -->
+                                                        <p><strong>Rule:</strong> {{ warning.rule_id|default(warning.id) }}</p>
+                                                        <p><strong>Help:</strong> {{ warning.help_text|default(warning.description) }}</p>
+                                                        {% if warning.failure_summary %}
+                                                        <p><strong>How to fix:</strong> {{ warning.failure_summary }}</p>
+                                                        {% endif %}
+                                                        {% endif %}
+                                                        
+                                                        <hr>
+                                                        <p><strong>Touchpoint:</strong> {{ warning.touchpoint|default('General') }}</p>
+                                                        {% if warning.xpath %}
+                                                        <p><strong>Location:</strong> <code>{{ warning.xpath }}</code></p>
+                                                        {% endif %}
+                                                        {% if warning.html %}
+                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Single instance - show as before -->
+                            {% for warning in group_list %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#warn-single-{{ warn_counter.value }}">
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'warning' }} me-2 impact-badge">
+                                            {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
+                                        </span>
+                                        {% if warning.metadata.ai_detected %}
+                                        <span class="badge bg-info me-2" title="Detected by AI analysis">
+                                            <i class="bi bi-robot"></i> AI
+                                        </span>
+                                        {% endif %}
+                                        {% if warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
+                                            {{ warning.metadata.what }}
+                                        {% else %}
+                                            {{ warning.description }}
+                                        {% endif %}
+                                        {% if warning.xpath %}
+                                            <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ warning.xpath }}</span>
+                                        {% endif %}
+                                    </button>
+                                </h2>
+                                <div id="warn-single-{{ warn_counter.value }}" 
                          class="accordion-collapse collapse" 
                          data-bs-parent="#warningsAccordion">
                         <div class="accordion-body">
@@ -584,7 +866,7 @@
                             </div>
                             
                             <hr>
-                            <p><strong>Category:</strong> {{ warning.category }}</p>
+                            <p><strong>Touchpoint:</strong> {{ warning.touchpoint }}</p>
                             {% if warning.xpath %}
                             <p><strong>Location:</strong> <code>{{ warning.xpath }}</code></p>
                             {% endif %}
@@ -596,7 +878,7 @@
                             {% endif %}
                             {% else %}
                             <!-- Standard description -->
-                            <p><strong>Category:</strong> {{ warning.category }}</p>
+                            <p><strong>Touchpoint:</strong> {{ warning.touchpoint }}</p>
                             {% if warning.help_url %}
                             <p><strong>Help:</strong> <a href="{{ warning.help_url }}" target="_blank">Learn more</a></p>
                             {% endif %}
@@ -610,6 +892,9 @@
                         </div>
                     </div>
                 </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </div>
             {% endif %}
@@ -620,12 +905,129 @@
                 <i class="bi bi-info-circle"></i> Info Notes ({{ latest_result.info|length }})
             </h6>
             <div class="accordion mb-4" id="infoAccordion">
-                {% for info in latest_result.info %}
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="info-heading-{{ loop.index }}">
-                        <button class="accordion-button collapsed" type="button" 
-                                data-bs-toggle="collapse" 
-                                data-bs-target="#info-{{ loop.index }}">
+                {% set info_counter = namespace(value=0) %}
+                {% for touchpoint, touchpoint_infos in latest_result.info|groupby('touchpoint') %}
+                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #0dcaf0;">
+                        <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                    </div>
+                    
+                    {% for description, description_group in touchpoint_infos|groupby('description') %}
+                        {% set group_list = description_group|list %}
+                        {% set info_counter.value = info_counter.value + 1 %}
+                        {% if group_list|length > 1 %}
+                            <!-- Multiple instances - create sub-accordion -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#info-group-{{ info_counter.value }}">
+                                        <span class="badge bg-info me-2">{{ group_list|length }}</span>
+                                        {{ description }}
+                                    </button>
+                                </h2>
+                                <div id="info-group-{{ info_counter.value }}" 
+                                     class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="accordion" id="info-instances-{{ info_counter.value }}">
+                                            {% for info in group_list %}
+                                            {% set info_instance_id = info_counter.value ~ '-' ~ loop.index %}
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" 
+                                                            data-bs-toggle="collapse" 
+                                                            data-bs-target="#info-instance-{{ info_instance_id }}">
+                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        {% if info.xpath %}
+                                                        <code class="ms-2">{{ info.xpath }}</code>
+                                                        {% endif %}
+                                                    </button>
+                                                </h2>
+                                                <div id="info-instance-{{ info_instance_id }}" 
+                                                     class="accordion-collapse collapse"
+                                                     data-bs-parent="#info-instances-{{ info_counter.value }}">
+                                                    <div class="accordion-body">
+                                                        <!-- Full info details -->
+                                                        {% if info.metadata and info.metadata.title %}
+                                                        <!-- Enhanced description available -->
+                                                        <div class="alert alert-info mb-3">
+                                                            <h6 class="alert-heading">{{ info.metadata.title }}</h6>
+                                                        </div>
+                                                        
+                                                        <h6 class="text-info mb-2">About this issue:</h6>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>What the issue is:</strong>
+                                                            <p>{{ info.metadata.what|default(info.description) }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Why this is important:</strong>
+                                                            <p>{{ info.metadata.why }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Who it affects:</strong>
+                                                            <p>{{ info.metadata.who }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>How to remediate:</strong>
+                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation|default(info.failure_summary) }}</div>
+                                                        </div>
+                                                        
+                                                        <h6 class="text-info mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <div class="mb-3">
+                                                            {% if info.metadata.wcag_full %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in info.metadata.wcag_full %}
+                                                                <li>{{ criterion }}</li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% elif info.wcag_criteria %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in info.wcag_criteria %}
+                                                                <li>
+                                                                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                                                        {{ criterion }}
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% else %}
+                                                        <!-- Standard description -->
+                                                        <p><strong>Touchpoint:</strong> {{ info.touchpoint|default('General') }}</p>
+                                                        <p class="text-muted">
+                                                            <i class="bi bi-info-circle"></i> This is an informational note.
+                                                        </p>
+                                                        {% endif %}
+                                                        
+                                                        {% if info.xpath %}
+                                                        <p><strong>Location:</strong> <code>{{ info.xpath }}</code></p>
+                                                        {% endif %}
+                                                        {% if info.html %}
+                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Single instance - show as before -->
+                            {% for info in group_list %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#info-single-{{ info_counter.value }}">
                             {% if info.metadata and info.metadata.what and info.metadata.what != "Accessibility issue: " + info.id.split('_')[1] %}
                                 {{ info.metadata.what }}
                             {% else %}
@@ -634,9 +1036,9 @@
                             {% if info.xpath %}
                                 <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ info.xpath }}</span>
                             {% endif %}
-                        </button>
-                    </h2>
-                    <div id="info-{{ loop.index }}" 
+                                    </button>
+                                </h2>
+                                <div id="info-single-{{ info_counter.value }}" 
                          class="accordion-collapse collapse" 
                          data-bs-parent="#infoAccordion">
                         <div class="accordion-body">
@@ -692,7 +1094,7 @@
                             </div>
                             
                             <hr>
-                            <p><strong>Category:</strong> {{ info.category }}</p>
+                            <p><strong>Touchpoint:</strong> {{ info.touchpoint }}</p>
                             {% if info.xpath %}
                             <p><strong>Location:</strong> <code>{{ info.xpath }}</code></p>
                             {% endif %}
@@ -704,7 +1106,7 @@
                             {% endif %}
                             {% else %}
                             <!-- Standard description -->
-                            <p><strong>Category:</strong> {{ info.category }}</p>
+                            <p><strong>Touchpoint:</strong> {{ info.touchpoint }}</p>
                             {% if info.help_url %}
                             <p><strong>Help:</strong> <a href="{{ info.help_url }}" target="_blank">Learn more</a></p>
                             {% endif %}
@@ -718,6 +1120,9 @@
                         </div>
                     </div>
                 </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </div>
             {% endif %}
@@ -728,12 +1133,131 @@
                 <i class="bi bi-search"></i> Discovery Items ({{ latest_result.discovery|length }})
             </h6>
             <div class="accordion mb-4" id="discoveryAccordion">
-                {% for discovery in latest_result.discovery %}
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="discovery-heading-{{ loop.index }}">
-                        <button class="accordion-button collapsed" type="button" 
-                                data-bs-toggle="collapse" 
-                                data-bs-target="#discovery-{{ loop.index }}">
+                {% set disc_counter = namespace(value=0) %}
+                {% for touchpoint, touchpoint_discoveries in latest_result.discovery|groupby('touchpoint') %}
+                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #6f42c1;">
+                        <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                    </div>
+                    
+                    {% for description, description_group in touchpoint_discoveries|groupby('description') %}
+                        {% set group_list = description_group|list %}
+                        {% set disc_counter.value = disc_counter.value + 1 %}
+                        {% if group_list|length > 1 %}
+                            <!-- Multiple instances - create sub-accordion -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#disc-group-{{ disc_counter.value }}">
+                                        <span class="badge" style="background-color: #6f42c1; color: white;">{{ group_list|length }}</span>
+                                        <span class="ms-2">{{ description }}</span>
+                                    </button>
+                                </h2>
+                                <div id="disc-group-{{ disc_counter.value }}" 
+                                     class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="accordion" id="disc-instances-{{ disc_counter.value }}">
+                                            {% for discovery in group_list %}
+                                            {% set disc_instance_id = disc_counter.value ~ '-' ~ loop.index %}
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" 
+                                                            data-bs-toggle="collapse" 
+                                                            data-bs-target="#disc-instance-{{ disc_instance_id }}">
+                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        {% if discovery.xpath %}
+                                                        <code class="ms-2">{{ discovery.xpath }}</code>
+                                                        {% endif %}
+                                                    </button>
+                                                </h2>
+                                                <div id="disc-instance-{{ disc_instance_id }}" 
+                                                     class="accordion-collapse collapse"
+                                                     data-bs-parent="#disc-instances-{{ disc_counter.value }}">
+                                                    <div class="accordion-body">
+                                                        <!-- Full discovery details -->
+                                                        {% if discovery.metadata and discovery.metadata.title %}
+                                                        <!-- Enhanced description available -->
+                                                        <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
+                                                            <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.metadata.title }}</h6>
+                                                        </div>
+                                                        
+                                                        <h6 style="color: #6f42c1;" class="mb-2">About this discovery item:</h6>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>What was found:</strong>
+                                                            <p>{{ discovery.metadata.what|default(discovery.description) }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Why manual review is needed:</strong>
+                                                            <p>{{ discovery.metadata.why }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Who could be affected:</strong>
+                                                            <p>{{ discovery.metadata.who }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>What to check manually:</strong>
+                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation|default(discovery.failure_summary) }}</div>
+                                                        </div>
+                                                        
+                                                        <h6 style="color: #6f42c1;" class="mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <div class="mb-3">
+                                                            {% if discovery.metadata.wcag_full %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in discovery.metadata.wcag_full %}
+                                                                <li>{{ criterion }}</li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% elif discovery.wcag_criteria %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in discovery.wcag_criteria %}
+                                                                <li>
+                                                                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                                                        {{ criterion }}
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% else %}
+                                                        <!-- Standard description -->
+                                                        <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
+                                                        <p class="text-muted">
+                                                            <i class="bi bi-info-circle"></i> This item requires manual inspection.
+                                                        </p>
+                                                        {% endif %}
+                                                        
+                                                        <hr>
+                                                        <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
+                                                        {% if discovery.xpath %}
+                                                        <p><strong>Location:</strong> <code>{{ discovery.xpath }}</code></p>
+                                                        {% endif %}
+                                                        {% if discovery.html %}
+                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Single instance - show as before -->
+                            {% for discovery in group_list %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#disc-single-{{ disc_counter.value }}">
                             {% if discovery.metadata and discovery.metadata.what and discovery.metadata.what != "Accessibility issue: " + discovery.id.split('_')[1] %}
                                 {{ discovery.metadata.what }}
                             {% else %}
@@ -742,9 +1266,9 @@
                             {% if discovery.xpath %}
                                 <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ discovery.xpath }}</span>
                             {% endif %}
-                        </button>
-                    </h2>
-                    <div id="discovery-{{ loop.index }}" 
+                                    </button>
+                                </h2>
+                                <div id="disc-single-{{ disc_counter.value }}" 
                          class="accordion-collapse collapse" 
                          data-bs-parent="#discoveryAccordion">
                         <div class="accordion-body">
@@ -800,7 +1324,7 @@
                             </div>
                             
                             <hr>
-                            <p><strong>Category:</strong> {{ discovery.category }}</p>
+                            <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
                             <p class="text-muted">
                                 <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
                             </p>
@@ -815,7 +1339,7 @@
                             {% endif %}
                             {% else %}
                             <!-- Standard description -->
-                            <p><strong>Category:</strong> {{ discovery.category }}</p>
+                            <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
                             <p class="text-muted">
                                 <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
                             </p>
@@ -832,6 +1356,9 @@
                         </div>
                     </div>
                 </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </div>
             {% endif %}

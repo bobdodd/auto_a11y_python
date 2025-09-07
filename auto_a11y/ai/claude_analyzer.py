@@ -165,13 +165,15 @@ class ClaudeAnalyzer:
                             vh.get('likely_element', 'div'),
                             vh.get('element_id'),
                             vh.get('element_class'),
-                            vh.get('text')  # Include text for specificity
+                            element_text=None,  # Don't use text to avoid duplicates
+                            element_index=None,
+                            use_text=False
                         )
                     
                     violation = Violation(
                         id='AI_ErrVisualHeadingNotMarked',
                         impact=ImpactLevel.HIGH,
-                        category='headings',
+                        touchpoint='headings',
                         description=f"Text '{vh.get('text', '')}' appears to be a heading but is not marked up as one",
                         failure_summary=f"Use <h{vh.get('appears_to_be_level', 2)}> tag for this heading",
                         xpath=xpath,
@@ -228,14 +230,32 @@ class ClaudeAnalyzer:
             # Add metadata keys that match template placeholders
             # For buttons/interactive elements
             metadata['element_tag'] = issue.get('element_tag') or issue.get('tag', 'div')
-            # Try multiple fields for element text, avoid 'None' string
-            element_text = (
-                issue.get('element_text') or 
-                issue.get('text') or 
-                issue.get('element_description') or 
-                issue.get('description', '')
-            )
-            metadata['element_text'] = element_text if element_text and element_text != 'None' else ''
+            
+            # Get actual element text, not the issue description
+            # element_text should be the visible text IN the element, not a description ABOUT it
+            element_text = issue.get('element_text', '')
+            
+            # Clean up element_text - remove None, null, or description-like text
+            if element_text:
+                element_text = str(element_text).strip()
+                
+                # Check if this looks like a description rather than actual element text
+                # Descriptions tend to be long and contain certain keywords
+                description_keywords = ['lacks', 'contains', 'should', 'does not', 'implementation', 
+                                      'likely', 'appears', 'missing', 'button uses', 'uses div']
+                
+                if (len(element_text) > 100 or 
+                    any(word in element_text.lower() for word in description_keywords) or
+                    element_text.lower() in ['none', 'null', 'undefined']):
+                    # This is probably a description or placeholder, not actual text
+                    # Try alternatives
+                    element_text = issue.get('text', issue.get('visual_text', ''))
+                    if not element_text or element_text.lower() in ['none', 'null', 'undefined']:
+                        element_text = ''  # No actual text found
+            else:
+                element_text = ''
+            
+            metadata['element_text'] = element_text
             
             # For headings
             metadata['visual_text'] = issue.get('visual_text', issue.get('text', ''))
@@ -257,22 +277,88 @@ class ClaudeAnalyzer:
             metadata['heading_level'] = issue.get('level', issue.get('heading_level', ''))
             metadata['next_level'] = issue.get('next_level', '')
             
-            # Generate xpath if we have element info
+            # Generate xpath - always try to generate something
             xpath = None
-            if issue.get('element_tag') or issue.get('tag'):
-                xpath = generate_xpath(
-                    issue.get('element_tag') or issue.get('tag', 'div'),
-                    issue.get('element_id'),
-                    issue.get('element_class'),
-                    issue.get('text') or issue.get('element_text') or issue.get('visual_text')
-                )
+            
+            # Get element info from various possible fields
+            element_tag = issue.get('element_tag') or issue.get('tag') or issue.get('element')
+            element_id = issue.get('element_id')
+            element_class = issue.get('element_class')
+            
+            # Clean up None/null values
+            if element_id and str(element_id).lower() in ['none', 'null', 'undefined', '']:
+                element_id = None
+            if element_class and str(element_class).lower() in ['none', 'null', 'undefined', '']:
+                element_class = None
+            if element_tag and str(element_tag).lower() in ['none', 'null', 'undefined', '']:
+                element_tag = None
+                
+            # Try to infer element type from issue type if not provided
+            if not element_tag:
+                issue_type = issue.get('type', '')
+                if 'modal' in issue_type or 'dialog' in issue_type:
+                    element_tag = 'div'  # Most modals are divs
+                elif 'button' in issue_type:
+                    element_tag = 'button'
+                elif 'link' in issue_type:
+                    element_tag = 'a'
+                elif 'heading' in issue_type:
+                    element_tag = 'h2'  # Default heading level
+                elif 'form' in issue_type or 'input' in issue_type:
+                    element_tag = 'input'
+                else:
+                    # Default to div for unknown elements
+                    element_tag = 'div'
+            
+            # Get element index if provided
+            element_index = issue.get('element_index')
+            if element_index and str(element_index).lower() in ['none', 'null', 'undefined', '']:
+                element_index = None
+            elif element_index:
+                try:
+                    element_index = int(element_index)
+                except (ValueError, TypeError):
+                    element_index = None
+            
+            # Generate XPath without text to avoid duplicates
+            # Always generate something, even if it's generic
+            xpath = generate_xpath(element_tag, element_id, element_class, 
+                                 element_text=None, element_index=element_index, use_text=False)
+            
+            # Clean up description to avoid formatting issues
+            description = issue.get('description', 'AI-detected accessibility issue')
+            if description:
+                # Remove any stray quotes or problematic characters
+                description = description.replace('""', '"').replace("''", "'")
+                # Ensure quotes are balanced
+                if description.count('"') % 2 != 0:
+                    description = description.replace('"', "'")
+            
+            # Get element descriptor
+            element = issue.get('element_tag') or issue.get('element') or issue.get('element_description', '')
+            if element and str(element).lower() in ['none', 'null', 'various']:
+                element = issue.get('element_tag', 'element')
+            
+            # Map AI analysis types directly to touchpoint IDs
+            from auto_a11y.core.touchpoints import TouchpointID
+            ai_to_touchpoint_map = {
+                'headings': TouchpointID.HEADINGS,
+                'reading_order': TouchpointID.FOCUS_MANAGEMENT,
+                'modals': TouchpointID.DIALOGS,
+                'language': TouchpointID.LANGUAGE,
+                'animations': TouchpointID.ANIMATION,
+                'interactive': TouchpointID.EVENT_HANDLING
+            }
+            
+            touchpoint_id = ai_to_touchpoint_map.get(analysis_type)
+            touchpoint_value = touchpoint_id.value if touchpoint_id else analysis_type
             
             violation = Violation(
                 id=issue_code,
                 impact=impact,
-                category=analysis_type,
-                description=issue.get('description', 'AI-detected accessibility issue'),
-                element=issue.get('element_tag') or issue.get('element') or issue.get('element_description'),
+                touchpoint=touchpoint_value,
+                description=description,
+                element=element,
                 html=issue.get('element_html') or issue.get('related_html'),
                 xpath=xpath,
                 failure_summary=issue.get('fix') or issue.get('suggested_fix'),
@@ -315,7 +401,7 @@ class ClaudeAnalyzer:
         """Count findings by type"""
         counts = {}
         for finding in findings:
-            base_type = finding.category  # Get analyzer name
+            base_type = finding.touchpoint  # Get analyzer name
             counts[base_type] = counts.get(base_type, 0) + 1
         return counts
     

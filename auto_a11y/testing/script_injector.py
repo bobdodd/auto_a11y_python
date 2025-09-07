@@ -58,8 +58,13 @@ class ScriptInjector:
         'pdf': 'pdfScrape'
     }
     
-    def __init__(self):
-        """Initialize script injector"""
+    def __init__(self, test_config=None):
+        """Initialize script injector
+        
+        Args:
+            test_config: TestConfiguration instance for enabling/disabling tests
+        """
+        self.test_config = test_config
         self.loaded_scripts = self._load_scripts()
         
     def _load_scripts(self) -> Dict[str, str]:
@@ -203,53 +208,127 @@ class ScriptInjector:
         """
         results = {}
         
-        # Run JavaScript-based tests
-        for test_name in self.TEST_FUNCTIONS.keys():
-            try:
-                result = await self.run_test(page, test_name)
-                results[test_name] = result
-                # Test completed
-            except Exception as e:
-                logger.error(f"Test {test_name} failed: {e}")
-                results[test_name] = {
-                    'test_name': test_name,
-                    'error': str(e),
-                    'errors': [],
-                    'warnings': [],
-                    'passes': []
-                }
+        # Import test config if not provided
+        if self.test_config is None:
+            from auto_a11y.config.test_config import get_test_config
+            self.test_config = get_test_config()
         
-        # Run Python-based touchpoint tests
-        try:
-            from auto_a11y.testing.touchpoint_tests import TOUCHPOINT_TESTS
-            
-            for touchpoint_id, test_func in TOUCHPOINT_TESTS.items():
-                try:
-                    # Run the Python-based test
-                    logger.debug(f"Running Python touchpoint test: {touchpoint_id}")
-                    result = await test_func(page)
+        # Check global enable
+        if not self.test_config.config.get("global", {}).get("enabled", True):
+            logger.info("All tests are disabled globally")
+            return results
+        
+        # Run JavaScript-based tests if enabled
+        if self.test_config.config.get("global", {}).get("run_javascript_tests", True):
+            for test_name in self.TEST_FUNCTIONS.keys():
+                # Map test to touchpoint
+                touchpoint = self._get_touchpoint_for_js_test(test_name)
+                
+                # Check if test is enabled
+                if self.test_config.is_test_enabled(test_name, touchpoint):
+                    try:
+                        result = await self.run_test(page, test_name)
+                        results[test_name] = result
+                        # Test completed
+                    except Exception as e:
+                        logger.error(f"Test {test_name} failed: {e}")
+                        results[test_name] = {
+                            'test_name': test_name,
+                            'error': str(e),
+                            'errors': [],
+                            'warnings': [],
+                            'passes': []
+                        }
+                else:
+                    logger.debug(f"Skipping disabled JavaScript test: {test_name}")
+        else:
+            logger.info("JavaScript tests are disabled globally")
+        
+        # Run Python-based touchpoint tests if enabled
+        if self.test_config.config.get("global", {}).get("run_python_tests", True):
+            try:
+                from auto_a11y.testing.touchpoint_tests import TOUCHPOINT_TESTS
+                from auto_a11y.config.touchpoint_tests import get_touchpoint_for_test
+                
+                for touchpoint_id, test_func in TOUCHPOINT_TESTS.items():
+                    # Check if touchpoint is enabled
+                    if self.test_config.is_touchpoint_enabled(touchpoint_id):
+                        try:
+                            # Run the Python-based test
+                            logger.debug(f"Running Python touchpoint test: {touchpoint_id}")
+                            result = await test_func(page)
+                            
+                            # Filter results based on individual test settings
+                            if 'errors' in result:
+                                filtered_errors = []
+                                for error in result['errors']:
+                                    test_id = error.get('id', '')
+                                    if self.test_config.is_test_enabled(test_id, touchpoint_id):
+                                        filtered_errors.append(error)
+                                result['errors'] = filtered_errors
+                            
+                            if 'warnings' in result:
+                                filtered_warnings = []
+                                for warning in result['warnings']:
+                                    test_id = warning.get('id', '')
+                                    if self.test_config.is_test_enabled(test_id, touchpoint_id):
+                                        filtered_warnings.append(warning)
+                                result['warnings'] = filtered_warnings
+                            
+                            # Override JavaScript test results if the Python version exists
+                            # This allows gradual migration from JS to Python tests
+                            if touchpoint_id in results:
+                                logger.debug(f"Replacing JS test {touchpoint_id} with Python version")
+                            
+                            results[touchpoint_id] = result
+                            
+                        except Exception as e:
+                            logger.error(f"Python touchpoint test {touchpoint_id} failed: {e}")
+                            results[touchpoint_id] = {
+                                'test_name': touchpoint_id,
+                                'error': str(e),
+                                'errors': [],
+                                'warnings': [],
+                                'passes': []
+                            }
+                    else:
+                        logger.debug(f"Skipping disabled touchpoint: {touchpoint_id}")
                     
-                    # Override JavaScript test results if the Python version exists
-                    # This allows gradual migration from JS to Python tests
-                    if touchpoint_id in results:
-                        logger.debug(f"Replacing JS test {touchpoint_id} with Python version")
-                    
-                    results[touchpoint_id] = result
-                    
-                except Exception as e:
-                    logger.error(f"Python touchpoint test {touchpoint_id} failed: {e}")
-                    results[touchpoint_id] = {
-                        'test_name': touchpoint_id,
-                        'error': str(e),
-                        'errors': [],
-                        'warnings': [],
-                        'passes': []
-                    }
-                    
-        except ImportError as e:
-            logger.warning(f"Could not import touchpoint tests: {e}")
+            except ImportError as e:
+                logger.warning(f"Could not import touchpoint tests: {e}")
+        else:
+            logger.info("Python tests are disabled globally")
         
         return results
+    
+    def _get_touchpoint_for_js_test(self, test_name: str) -> str:
+        """
+        Map JavaScript test name to touchpoint
+        
+        Args:
+            test_name: JavaScript test name
+            
+        Returns:
+            Touchpoint ID
+        """
+        # Map JavaScript test names to touchpoints
+        js_test_to_touchpoint = {
+            'headings': 'headings',
+            'images': 'images',
+            'forms2': 'forms',
+            'landmarks': 'landmarks',
+            'color': 'colors_contrast',
+            'focus': 'focus_management',
+            'language': 'language',
+            'pageTitle': 'semantic_structure',
+            'tabindex': 'keyboard_navigation',
+            'titleAttr': 'semantic_structure',
+            'fonts': 'typography',
+            'svg': 'images',
+            'pdf': 'documents'
+        }
+        
+        return js_test_to_touchpoint.get(test_name, 'general')
     
     def get_available_tests(self) -> List[str]:
         """

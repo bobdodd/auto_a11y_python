@@ -74,17 +74,35 @@
         </div>
     </div>
 
+    <!-- Test Progress Alert (shown during testing) -->
+    <div id="test-progress-alert" class="alert alert-info d-none" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            <div>
+                <strong>Test in Progress</strong> - The page will automatically refresh when testing completes.
+            </div>
+        </div>
+    </div>
+    
     <!-- Page Status -->
     <div class="row mb-4 g-3">
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Status</h6>
-                    <p class="mb-0">
+                    <p class="mb-0" id="page-status-container">
                         {% if page.status.value == 'discovered' %}
                             <span class="badge bg-secondary">Discovered</span>
+                        {% elif page.status.value == 'queued' %}
+                            <span class="badge bg-warning">
+                                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                                Queued
+                            </span>
                         {% elif page.status.value == 'testing' %}
-                            <span class="badge bg-info">Testing</span>
+                            <span class="badge bg-info">
+                                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                                Testing
+                            </span>
                         {% elif page.status.value == 'tested' %}
                             <span class="badge bg-success">Tested</span>
                         {% elif page.status.value == 'error' %}
@@ -1455,25 +1473,164 @@
 
 {% block extra_js %}
 <script>
+let statusPollInterval = null;
+let testInProgress = false;
+
+function updateStatusBadge(status) {
+    const container = document.getElementById('page-status-container');
+    const progressAlert = document.getElementById('test-progress-alert');
+    let badgeHtml = '';
+    
+    switch(status) {
+        case 'discovered':
+            badgeHtml = '<span class="badge bg-secondary">Discovered</span>';
+            progressAlert.classList.add('d-none');
+            break;
+        case 'queued':
+            badgeHtml = '<span class="badge bg-warning"><span class="spinner-border spinner-border-sm me-1" role="status"></span>Queued</span>';
+            progressAlert.classList.remove('d-none');
+            break;
+        case 'testing':
+            badgeHtml = '<span class="badge bg-info"><span class="spinner-border spinner-border-sm me-1" role="status"></span>Testing</span>';
+            progressAlert.classList.remove('d-none');
+            break;
+        case 'tested':
+            badgeHtml = '<span class="badge bg-success">Tested</span>';
+            progressAlert.classList.add('d-none');
+            break;
+        case 'error':
+            badgeHtml = '<span class="badge bg-danger">Error</span>';
+            progressAlert.classList.add('d-none');
+            break;
+        default:
+            badgeHtml = `<span class="badge bg-secondary">${status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
+            progressAlert.classList.add('d-none');
+    }
+    
+    container.innerHTML = badgeHtml;
+}
+
+function startStatusPolling(pageId) {
+    let previousStatus = null;
+    
+    // Poll every 2 seconds
+    statusPollInterval = setInterval(() => {
+        $.get(`/pages/${pageId}/test-status`, function(data) {
+            updateStatusBadge(data.status);
+            
+            // Check if test just completed (transitioned to tested/error)
+            if ((data.status === 'tested' || data.status === 'error') && 
+                previousStatus !== null && 
+                previousStatus !== 'tested' && 
+                previousStatus !== 'error') {
+                
+                // Test just completed - reload page to show new results
+                stopStatusPolling();
+                
+                // Show notification before reload
+                if (window.showNotification) {
+                    showNotification('Test Complete', 'Refreshing page to show results...', 'success');
+                }
+                
+                // Reload after a short delay to show the notification
+                setTimeout(() => location.reload(), 1500);
+            }
+            // Stop polling if already in final state
+            else if (data.status === 'tested' || data.status === 'error') {
+                stopStatusPolling();
+            }
+            
+            previousStatus = data.status;
+        }).fail(function() {
+            console.error('Failed to check test status');
+        });
+    }, 2000);
+}
+
+function stopStatusPolling() {
+    if (statusPollInterval) {
+        clearInterval(statusPollInterval);
+        statusPollInterval = null;
+    }
+    testInProgress = false;
+}
+
 function testPage(pageId) {
+    // Disable test button
+    const testBtn = document.querySelector('button[onclick*="testPage"]');
+    if (testBtn) {
+        testBtn.disabled = true;
+        testBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Starting Test...';
+    }
+    
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('testModal'));
     modal.show();
     
+    testInProgress = true;
+    
     // Run test
     $.post(`/pages/${pageId}/test`, function(data) {
         if (data.success) {
-            // Reload page to show results
-            location.reload();
+            // Hide modal
+            modal.hide();
+            
+            // Update status immediately
+            updateStatusBadge('queued');
+            
+            // Add to global tracking
+            const pageTitle = '{{ page.title or page.url }}';
+            if (typeof trackPageTest !== 'undefined') {
+                trackPageTest(pageId, pageTitle);
+            }
+            
+            // Start polling for status updates
+            startStatusPolling(pageId);
+            
+            // Show progress notification
+            if (window.showNotification) {
+                showNotification('Test started', 'The accessibility test is running. The page will refresh when complete.', 'info');
+            }
         } else {
             modal.hide();
             alert('Test failed: ' + (data.error || 'Unknown error'));
+            
+            // Re-enable button
+            if (testBtn) {
+                testBtn.disabled = false;
+                testBtn.innerHTML = '<i class="bi bi-play"></i> Run Test';
+            }
         }
     }).fail(function() {
         modal.hide();
         alert('Failed to start test');
+        
+        // Re-enable button
+        if (testBtn) {
+            testBtn.disabled = false;
+            testBtn.innerHTML = '<i class="bi bi-play"></i> Run Test';
+        }
     });
 }
+
+// Check if page is currently testing on load
+document.addEventListener('DOMContentLoaded', function() {
+    const pageStatus = '{{ page.status.value }}';
+    const pageId = '{{ page.id }}';
+    
+    // If page is queued or testing, start polling
+    if (pageStatus === 'queued' || pageStatus === 'testing') {
+        console.log('Page is currently being tested, starting status polling...');
+        // Show the progress alert
+        document.getElementById('test-progress-alert').classList.remove('d-none');
+        startStatusPolling(pageId);
+    }
+});
+
+// Clean up on page unload
+window.addEventListener('beforeunload', function() {
+    stopStatusPolling();
+});
 </script>
 
 <!-- Include the issue filtering script -->

@@ -63,6 +63,22 @@
         </div>
     </nav>
 
+    <!-- Global Test Status Indicator -->
+    <div id="global-test-status" class="d-none">
+        <div class="container-fluid">
+            <div class="alert alert-info alert-dismissible fade show mt-2" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                    <div>
+                        <strong>Tests Running</strong> - <span id="global-test-message">Checking status...</span>
+                        <a href="#" id="global-test-link" class="ms-2">View Details</a>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" onclick="pauseGlobalTestTracking()"></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -93,6 +109,216 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Global Test Tracking System -->
+    <script>
+    // Global test tracking system
+    const TestTracker = {
+        STORAGE_KEY: 'active_tests',
+        CHECK_INTERVAL: 5000, // Check every 5 seconds
+        pollInterval: null,
+        
+        // Add a test to track
+        addTest: function(type, id, description) {
+            const tests = this.getActiveTests();
+            tests[`${type}_${id}`] = {
+                type: type,
+                id: id,
+                description: description,
+                startTime: Date.now()
+            };
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tests));
+            this.startTracking();
+        },
+        
+        // Remove a completed test
+        removeTest: function(type, id) {
+            const tests = this.getActiveTests();
+            delete tests[`${type}_${id}`];
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tests));
+            
+            // Stop tracking if no more tests
+            if (Object.keys(tests).length === 0) {
+                this.stopTracking();
+            }
+        },
+        
+        // Get all active tests
+        getActiveTests: function() {
+            const stored = localStorage.getItem(this.STORAGE_KEY);
+            return stored ? JSON.parse(stored) : {};
+        },
+        
+        // Start tracking active tests
+        startTracking: function() {
+            // Don't start multiple trackers
+            if (this.pollInterval) return;
+            
+            // Check immediately
+            this.checkTests();
+            
+            // Then check periodically
+            this.pollInterval = setInterval(() => this.checkTests(), this.CHECK_INTERVAL);
+        },
+        
+        // Stop tracking
+        stopTracking: function() {
+            if (this.pollInterval) {
+                clearInterval(this.pollInterval);
+                this.pollInterval = null;
+            }
+            document.getElementById('global-test-status').classList.add('d-none');
+        },
+        
+        // Check status of all active tests
+        checkTests: async function() {
+            const tests = this.getActiveTests();
+            const testCount = Object.keys(tests).length;
+            
+            if (testCount === 0) {
+                this.stopTracking();
+                return;
+            }
+            
+            // Show global indicator
+            const statusDiv = document.getElementById('global-test-status');
+            statusDiv.classList.remove('d-none');
+            
+            let activeCount = 0;
+            let completedInThisCheck = [];
+            
+            // Check each test
+            for (const key in tests) {
+                const test = tests[key];
+                
+                try {
+                    let statusUrl = '';
+                    let detailUrl = '';
+                    
+                    if (test.type === 'page') {
+                        statusUrl = `/pages/${test.id}/test-status`;
+                        detailUrl = `/pages/${test.id}`;
+                    } else if (test.type === 'website') {
+                        statusUrl = `/websites/${test.id}/test-status`;
+                        detailUrl = `/websites/${test.id}`;
+                    }
+                    
+                    const response = await $.get(statusUrl);
+                    
+                    if (test.type === 'page') {
+                        // Page test - check if completed
+                        if (response.status === 'tested' || response.status === 'error') {
+                            completedInThisCheck.push(test);
+                            this.removeTest(test.type, test.id);
+                        } else {
+                            activeCount++;
+                        }
+                    } else if (test.type === 'website') {
+                        // Website test - check if all pages done
+                        if (response.all_complete) {
+                            completedInThisCheck.push(test);
+                            this.removeTest(test.type, test.id);
+                        } else {
+                            activeCount++;
+                            // Update progress message
+                            test.progress = `${response.tested_pages}/${response.total_pages} pages`;
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Failed to check status for ${test.type} ${test.id}:`, error);
+                    // Keep the test in the list but mark as unknown
+                    activeCount++;
+                }
+            }
+            
+            // Update UI
+            if (activeCount > 0) {
+                const message = document.getElementById('global-test-message');
+                const link = document.getElementById('global-test-link');
+                
+                if (activeCount === 1) {
+                    const remainingTest = Object.values(this.getActiveTests())[0];
+                    message.textContent = remainingTest.description + (remainingTest.progress ? ` - ${remainingTest.progress}` : '');
+                    
+                    if (remainingTest.type === 'page') {
+                        link.href = `/pages/${remainingTest.id}`;
+                    } else {
+                        link.href = `/websites/${remainingTest.id}`;
+                    }
+                } else {
+                    message.textContent = `${activeCount} tests running`;
+                    link.href = '/testing';
+                }
+            }
+            
+            // Show completion notification and refresh if on relevant page
+            if (completedInThisCheck.length > 0) {
+                for (const test of completedInThisCheck) {
+                    if (window.showNotification) {
+                        showNotification('Test Complete', `${test.description} has finished testing`, 'success');
+                    }
+                    
+                    // Refresh page if we're viewing the tested item
+                    const currentPath = window.location.pathname;
+                    if (currentPath.includes(`/pages/${test.id}`) || 
+                        currentPath.includes(`/websites/${test.id}`) ||
+                        (test.type === 'website' && currentPath.includes('/projects/'))) {
+                        setTimeout(() => location.reload(), 1500);
+                    }
+                }
+            }
+        },
+        
+        // Initialize on page load
+        init: function() {
+            const tests = this.getActiveTests();
+            if (Object.keys(tests).length > 0) {
+                this.startTracking();
+            }
+        }
+    };
+    
+    // Pause tracking (when user dismisses the notification)
+    function pauseGlobalTestTracking() {
+        TestTracker.stopTracking();
+        // Don't clear the tests, just stop showing the notification
+    }
+    
+    // Helper function to add a page test
+    function trackPageTest(pageId, pageName) {
+        TestTracker.addTest('page', pageId, `Testing ${pageName || 'page'}`);
+    }
+    
+    // Helper function to add a website test
+    function trackWebsiteTest(websiteId, websiteName) {
+        TestTracker.addTest('website', websiteId, `Testing ${websiteName || 'website'}`);
+    }
+    
+    // Show notification helper (if not already defined)
+    if (typeof showNotification === 'undefined') {
+        window.showNotification = function(title, message, type) {
+            // Simple notification using Bootstrap toast or alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                <strong>${title}</strong> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        };
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        TestTracker.init();
+    });
+    </script>
     
     {% block extra_js %}{% endblock %}
 </body>

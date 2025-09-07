@@ -31,7 +31,7 @@ class TestRunner:
         """
         self.db = database
         self.browser_manager = BrowserManager(browser_config)
-        self.script_injector = ScriptInjector()
+        self.script_injector = ScriptInjector()  # Will use test_config from project
         self.result_processor = ResultProcessor()
         self.screenshot_dir = Path(browser_config.get('SCREENSHOTS_DIR', 'screenshots'))
         self.screenshot_dir.mkdir(exist_ok=True, parents=True)
@@ -81,23 +81,45 @@ class TestRunner:
                 # Wait for content to be ready
                 await browser_page.waitForSelector('body', {'timeout': 5000})
                 
-                # Get WCAG compliance level from project
+                # Get project configuration including WCAG level and touchpoint settings
                 wcag_level = 'AA'  # Default to AA
+                project_config = None
+                test_config = None
+                
                 try:
                     # Get website to find project
                     website = self.db.get_website(page.website_id)
                     if website:
                         project = self.db.get_project(website.project_id)
                         if project and project.config:
-                            wcag_level = project.config.get('wcag_level', 'AA')
-                            logger.info(f"Project config: {project.config}")
+                            project_config = project.config
+                            wcag_level = project_config.get('wcag_level', 'AA')
                             logger.info(f"Using WCAG {wcag_level} compliance level for testing")
+                            
+                            # Create test configuration from project settings
+                            from auto_a11y.config.test_config import TestConfiguration
+                            test_config = TestConfiguration()
+                            
+                            # Apply touchpoint settings from project
+                            if 'touchpoints' in project_config:
+                                test_config.config['touchpoints'] = project_config['touchpoints']
+                            
+                            # Apply AI settings from project
+                            test_config.config['global']['run_ai_tests'] = project_config.get('enable_ai_testing', False)
+                            if 'ai_tests' in project_config:
+                                for test_name in ['headings', 'reading_order', 'modals', 'language', 'animations', 'interactive']:
+                                    enabled = test_name in project_config['ai_tests']
+                                    test_config.set_ai_test_enabled(test_name, enabled)
                         else:
-                            logger.info(f"No config found in project, using default AA")
+                            logger.info(f"No config found in project, using defaults")
                     else:
                         logger.warning(f"Could not find website for page {page.website_id}")
                 except Exception as e:
-                    logger.warning(f"Could not get WCAG level from project: {e}, defaulting to AA")
+                    logger.warning(f"Could not get project config: {e}, using defaults")
+                
+                # Create script injector with test configuration
+                if test_config:
+                    self.script_injector.test_config = test_config
                 
                 # Inject test scripts
                 await self.script_injector.inject_script_files(browser_page)
@@ -190,7 +212,8 @@ class TestRunner:
                         ai_results = await analyzer.analyze_page(
                             screenshot=screenshot_bytes,
                             html=page_html,
-                            analyses=ai_tests_to_run
+                            analyses=ai_tests_to_run,
+                            test_config=test_config
                         )
                         
                         ai_findings = ai_results.get('findings', [])

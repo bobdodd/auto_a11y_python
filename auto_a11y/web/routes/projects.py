@@ -42,6 +42,35 @@ def create_project():
             flash(f'Project "{name}" already exists', 'error')
             return render_template('projects/create.html')
         
+        # Get touchpoint configuration
+        from auto_a11y.config.touchpoint_tests import TOUCHPOINT_TEST_MAPPING
+        
+        touchpoints_config = {}
+        touchpoint_ids = [
+            'headings', 'images', 'forms', 'buttons', 'links', 'navigation',
+            'colors_contrast', 'keyboard_navigation', 'landmarks', 'language',
+            'tables', 'lists', 'media', 'dialogs', 'animation', 'timing',
+            'typography', 'semantic_structure', 'aria', 'focus_management',
+            'reading_order', 'event_handling', 'accessible_names'
+        ]
+        
+        for touchpoint_id in touchpoint_ids:
+            enabled = request.form.get(f'touchpoint_{touchpoint_id}') == 'on'
+            
+            # Get individual test configurations for this touchpoint
+            tests_config = {}
+            test_ids = TOUCHPOINT_TEST_MAPPING.get(touchpoint_id, [])
+            
+            for test_id in test_ids:
+                # Check if individual test checkbox exists and is checked
+                test_enabled = request.form.get(f'test_{touchpoint_id}_{test_id}') == 'on'
+                tests_config[test_id] = test_enabled
+            
+            touchpoints_config[touchpoint_id] = {
+                'enabled': enabled,
+                'tests': tests_config
+            }
+        
         # Get AI testing configuration
         enable_ai_testing = request.form.get('enable_ai_testing') == 'on'
         ai_tests = []
@@ -51,13 +80,14 @@ def create_project():
                 if request.form.get(f'ai_test_{test_name}'):
                     ai_tests.append(test_name)
         
-        # Create project with WCAG level and AI config
+        # Create project with WCAG level, touchpoints, and AI config
         project = Project(
             name=name,
             description=description,
             status=ProjectStatus.ACTIVE,
             config={
                 'wcag_level': wcag_level,
+                'touchpoints': touchpoints_config,
                 'enable_ai_testing': enable_ai_testing,
                 'ai_tests': ai_tests
             }
@@ -107,6 +137,37 @@ def edit_project(project_id):
         if not project.config:
             project.config = {}
         project.config['wcag_level'] = wcag_level
+        
+        # Update touchpoint configuration
+        from auto_a11y.config.touchpoint_tests import TOUCHPOINT_TEST_MAPPING
+        
+        touchpoints_config = {}
+        touchpoint_ids = [
+            'headings', 'images', 'forms', 'buttons', 'links', 'navigation',
+            'colors_contrast', 'keyboard_navigation', 'landmarks', 'language',
+            'tables', 'lists', 'media', 'dialogs', 'animation', 'timing',
+            'typography', 'semantic_structure', 'aria', 'focus_management',
+            'reading_order', 'event_handling', 'accessible_names'
+        ]
+        
+        for touchpoint_id in touchpoint_ids:
+            enabled = request.form.get(f'touchpoint_{touchpoint_id}') == 'on'
+            
+            # Get individual test configurations for this touchpoint
+            tests_config = {}
+            test_ids = TOUCHPOINT_TEST_MAPPING.get(touchpoint_id, [])
+            
+            for test_id in test_ids:
+                # Check if individual test checkbox exists and is checked
+                test_enabled = request.form.get(f'test_{touchpoint_id}_{test_id}') == 'on'
+                tests_config[test_id] = test_enabled
+            
+            touchpoints_config[touchpoint_id] = {
+                'enabled': enabled,
+                'tests': tests_config
+            }
+        
+        project.config['touchpoints'] = touchpoints_config
         
         # Update AI testing configuration
         enable_ai_testing = request.form.get('enable_ai_testing') == 'on'

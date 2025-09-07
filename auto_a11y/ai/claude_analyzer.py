@@ -62,7 +62,8 @@ class ClaudeAnalyzer:
         self,
         screenshot: bytes,
         html: str,
-        analyses: Optional[List[str]] = None
+        analyses: Optional[List[str]] = None,
+        test_config = None
     ) -> Dict[str, Any]:
         """
         Run AI analyses on a web page
@@ -71,12 +72,40 @@ class ClaudeAnalyzer:
             screenshot: Page screenshot bytes
             html: Page HTML content
             analyses: List of analyses to run (default: all)
+            test_config: TestConfiguration instance for enable/disable
             
         Returns:
             Combined analysis results
         """
+        # Get test configuration
+        if test_config is None:
+            from auto_a11y.config.test_config import get_test_config
+            test_config = get_test_config()
+        
+        # Check if AI tests are enabled globally
+        if not test_config.config.get("global", {}).get("run_ai_tests", True):
+            logger.info("AI tests are disabled globally")
+            return {
+                'timestamp': datetime.now().isoformat(),
+                'analyses_run': [],
+                'findings': [],
+                'raw_results': {},
+                'message': 'AI tests disabled'
+            }
+        
+        # Filter analyses based on configuration
         if analyses is None:
             analyses = ['headings', 'reading_order', 'language', 'interactive']
+        
+        # Filter based on configuration
+        enabled_analyses = []
+        for analysis in analyses:
+            if test_config.is_ai_test_enabled(analysis):
+                enabled_analyses.append(analysis)
+            else:
+                logger.debug(f"Skipping disabled AI analysis: {analysis}")
+        
+        analyses = enabled_analyses
         
         results = {
             'timestamp': datetime.now().isoformat(),

@@ -91,7 +91,7 @@
                     <tbody>
                         {% for result in recent_results %}
                         <tr>
-                            <td class="text-truncate" style="max-width: 250px;">
+                            <td>
                                 <a href="{{ url_for('pages.view_page', page_id=result.page_id) }}" 
                                    title="View page details">
                                     Page {{ result.page_id[:8] }}...

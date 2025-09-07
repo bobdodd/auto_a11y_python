@@ -212,24 +212,30 @@ textarea:focus {
     overflow-wrap: break-word;
 }
 
-/* URL column specific styling to prevent overflow */
+/* URL column specific styling - allow full URLs to be visible */
 .table td a {
     display: inline-block;
+    vertical-align: middle;
+    word-break: break-word;  /* Break long URLs at appropriate points */
+    overflow-wrap: break-word; /* Ensure URLs wrap instead of overflow */
+}
+
+/* Optional: Add a class for when you DO want to truncate */
+.table td a.truncate-url {
     max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    vertical-align: middle;
 }
 
 @media (min-width: 992px) {
-    .table td a {
+    .table td a.truncate-url {
         max-width: 400px;
     }
 }
 
 @media (min-width: 1200px) {
-    .table td a {
+    .table td a.truncate-url {
         max-width: 500px;
     }
 }

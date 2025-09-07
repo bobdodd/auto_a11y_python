@@ -205,6 +205,7 @@ def discover_pages(website_id):
 def discovery_status(website_id):
     """Check discovery job status with enhanced progress tracking"""
     from auto_a11y.core.task_runner import task_runner
+    from auto_a11y.core.website_manager import WebsiteManager
     
     job_id = request.args.get('job_id')
     
@@ -223,6 +224,10 @@ def discovery_status(website_id):
     # Get job status from task runner
     job_status = task_runner.get_task_status(job_id)
     
+    # Try to get progress from WebsiteManager's active jobs
+    website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+    active_job = website_manager.active_jobs.get(job_id)
+    
     if not job_status:
         # Job not found - it might have completed
         return jsonify({
@@ -231,8 +236,14 @@ def discovery_status(website_id):
             'message': f'Discovery completed - found {total_pages} pages'
         })
     
-    # Extract progress details
-    progress = job_status.get('progress', {})
+    # Extract progress details - prefer active job progress if available
+    if active_job and hasattr(active_job, 'progress'):
+        progress = active_job.progress
+        logger.debug(f"Using active job progress: {progress}")
+    else:
+        progress = job_status.get('progress', {})
+        logger.debug(f"No active job found for {job_id}, using task status progress: {progress}")
+    
     status = job_status.get('status', 'unknown')
     
     # Build detailed response

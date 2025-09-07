@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 class WebsiteManager:
     """Manages website operations"""
     
+    # Class-level shared storage for active jobs
+    _shared_active_jobs: Dict[str, ScrapingJob] = {}
+    
     def __init__(self, database: Database, browser_config: Dict[str, Any]):
         """
         Initialize website manager
@@ -27,7 +30,8 @@ class WebsiteManager:
         """
         self.db = database
         self.browser_config = browser_config
-        self.active_jobs: Dict[str, ScrapingJob] = {}
+        # Use the shared class-level storage
+        self.active_jobs = WebsiteManager._shared_active_jobs
     
     def add_website(
         self,

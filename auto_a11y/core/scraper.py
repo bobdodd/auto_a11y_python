@@ -487,3 +487,4 @@ class ScrapingJob:
     async def _update_progress(self, progress: dict):
         """Update job progress"""
         self.progress.update(progress)
+        logger.debug(f"Updated job progress: pages_found={self.progress.get('pages_found', 0)}, status={self.status}")

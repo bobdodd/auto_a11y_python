@@ -47,9 +47,15 @@ class BrowserManager:
                 '--no-first-run',
                 # Removed --no-zygote and --single-process as they can cause connection issues
                 '--disable-gpu',
-                f'--window-size={self.config.get("viewport_width", 1920)},{self.config.get("viewport_height", 1080)}'
+                f'--window-size={self.config.get("viewport_width", 1920)},{self.config.get("viewport_height", 1080)}',
+                # Suppress SPDY/HTTP2 warnings
+                '--log-level=3',  # Only show fatal errors
+                '--silent',
+                '--disable-logging',
+                '--disable-extensions',
+                '--disable-background-networking'
             ],
-            'dumpio': self.config.get('dumpio', True),  # Enable to see browser output for debugging
+            'dumpio': self.config.get('dumpio', False),  # Disable to reduce console noise
             'timeout': self.config.get('timeout', 60000),  # Increased to 60 seconds
             'autoClose': False  # Prevent automatic closing
         }

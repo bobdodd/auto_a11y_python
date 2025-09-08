@@ -9,16 +9,16 @@ from urllib.parse import urlparse
 
 from auto_a11y.models import Website, ScrapingConfig, Page, PageStatus
 from auto_a11y.core.database import Database
-from auto_a11y.core.scraper import ScrapingEngine, ScrapingJob
+from auto_a11y.core.scraper import ScrapingEngine
+from auto_a11y.core.scraping_job import ScrapingJob
+from auto_a11y.core.testing_job import TestingJob
+from auto_a11y.core.job_manager import JobManager, JobType
 
 logger = logging.getLogger(__name__)
 
 
 class WebsiteManager:
     """Manages website operations"""
-    
-    # Class-level shared storage for active jobs
-    _shared_active_jobs: Dict[str, ScrapingJob] = {}
     
     def __init__(self, database: Database, browser_config: Dict[str, Any]):
         """
@@ -30,26 +30,81 @@ class WebsiteManager:
         """
         self.db = database
         self.browser_config = browser_config
-        # Use the shared class-level storage
-        self.active_jobs = WebsiteManager._shared_active_jobs
+        # Initialize job manager for database-backed job tracking
+        self.job_manager = JobManager(database)
     
-    def cancel_discovery(self, job_id: str) -> bool:
+    def cancel_testing(self, job_id: str, user_id: Optional[str] = None) -> bool:
+        """
+        Cancel a testing job
+        
+        Args:
+            job_id: Job ID to cancel
+            user_id: User requesting cancellation
+            
+        Returns:
+            True if cancelled, False if not found
+        """
+        logger.info(f"WebsiteManager.cancel_testing called for job {job_id} by user {user_id}")
+        
+        # Check if job exists
+        job = self.job_manager.get_job(job_id)
+        if not job:
+            logger.error(f"Testing job {job_id} not found in database")
+            return False
+        
+        logger.info(f"Found testing job {job_id} with status: {job.get('status')}")
+        
+        # Request cancellation
+        success = self.job_manager.request_cancellation(job_id, requested_by=user_id)
+        if success:
+            logger.info(f"Successfully requested cancellation for testing job {job_id}")
+        else:
+            logger.warning(f"Could not cancel testing job {job_id} - may already be completed or cancelled")
+        return success
+    
+    def cancel_discovery(self, job_id: str, user_id: Optional[str] = None) -> bool:
         """
         Cancel a discovery job
         
         Args:
             job_id: Job ID to cancel
+            user_id: User requesting cancellation
             
         Returns:
             True if cancelled, False if not found
         """
-        job = self.active_jobs.get(job_id)
-        if job:
-            job.cancel()
-            logger.info(f"Cancelled discovery job {job_id}")
-            return True
-        logger.warning(f"Discovery job {job_id} not found in active jobs")
-        return False
+        logger.info(f"WebsiteManager.cancel_discovery called")
+        logger.info(f"  Attempting to cancel job_id: '{job_id}'")
+        logger.info(f"  Requested by user: {user_id}")
+        
+        # Log all discovery jobs in database for debugging
+        all_discovery_jobs = self.job_manager.get_active_jobs(job_type=JobType.DISCOVERY)
+        logger.info(f"  Active discovery jobs in database: {len(all_discovery_jobs)}")
+        for job in all_discovery_jobs:
+            logger.info(f"    - Job ID: '{job.get('job_id')}' Status: {job.get('status')}")
+        
+        # First check if job exists
+        job = self.job_manager.get_job(job_id)
+        if not job:
+            logger.error(f"Job '{job_id}' not found in database")
+            
+            # Try to find similar job IDs
+            all_jobs = self.job_manager.collection.find({'job_type': JobType.DISCOVERY.value}, {'job_id': 1}).limit(10)
+            logger.error(f"  Recent discovery job IDs in DB:")
+            for j in all_jobs:
+                logger.error(f"    - '{j.get('job_id')}'")
+            
+            return False
+        
+        logger.info(f"Found job {job_id} with status: {job.get('status')}")
+        
+        # Request cancellation
+        success = self.job_manager.request_cancellation(job_id, requested_by=user_id)
+        if success:
+            logger.info(f"Successfully requested cancellation for job {job_id}")
+        else:
+            logger.warning(f"Could not cancel job {job_id} - may already be completed or cancelled")
+        return success
     
     def add_website(
         self,
@@ -183,18 +238,20 @@ class WebsiteManager:
     async def discover_pages(
         self,
         website_id: str,
-        progress_callback: Optional[callable] = None,
         max_pages: Optional[int] = None,
         job_id: Optional[str] = None,
-        task_runner: Optional[object] = None
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None
     ) -> ScrapingJob:
         """
         Start page discovery for website
         
         Args:
             website_id: Website ID
-            progress_callback: Optional progress callback
             max_pages: Optional maximum number of pages to discover
+            job_id: Optional job ID
+            user_id: User initiating discovery
+            session_id: Session ID for tracking
             
         Returns:
             Scraping job
@@ -209,44 +266,108 @@ class WebsiteManager:
         else:
             logger.info(f"Using default max_pages: {website.scraping_config.max_pages}")
         
-        # Create job with max_pages override
+        # Create job with database backing
         if not job_id:
             job_id = f"discovery_{website_id}_{datetime.now().timestamp()}"
-        job = ScrapingJob(website_id, job_id, max_pages=max_pages, task_runner=task_runner)
         
-        # Store job in shared storage
-        self.active_jobs[job_id] = job
-        logger.info(f"Stored job {job_id} in active_jobs. Total active jobs: {len(self.active_jobs)}")
+        logger.info(f"Creating ScrapingJob with job_id: {job_id}")
         
-        # Run discovery directly instead of creating a task
-        # This ensures it completes within the event loop
-        await self._run_discovery(job)
+        try:
+            job = ScrapingJob(
+                job_manager=self.job_manager,
+                website_id=website_id,
+                job_id=job_id,
+                max_pages=max_pages,
+                user_id=user_id,
+                session_id=session_id
+            )
+            logger.info(f"ScrapingJob created successfully: {job_id}")
+        except Exception as e:
+            logger.error(f"Failed to create ScrapingJob: {e}")
+            raise
+        
+        # Run discovery
+        logger.info(f"Starting job.run for {job_id}")
+        await job.run(self.db, self.browser_config)
+        logger.info(f"job.run completed for {job_id}")
         
         logger.info(f"Completed discovery job {job_id} for website {website_id}")
         return job
     
-    async def _run_discovery(self, job: ScrapingJob):
+    # _run_discovery method removed - now handled by ScrapingJob.run()
+    
+    async def test_website(
+        self,
+        website_id: str,
+        page_ids: Optional[List[str]] = None,
+        job_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        test_all: bool = False,
+        take_screenshot: bool = True,
+        run_ai_analysis: Optional[bool] = None,
+        ai_api_key: Optional[str] = None
+    ) -> TestingJob:
         """
-        Run discovery job
+        Start testing for website pages
         
         Args:
-            job: Scraping job
+            website_id: Website ID
+            page_ids: Specific page IDs to test (if not test_all)
+            job_id: Optional job ID
+            user_id: User initiating testing
+            session_id: Session ID for tracking
+            test_all: Whether to test all pages
+            take_screenshot: Whether to take screenshots
+            run_ai_analysis: Whether to run AI analysis
+            ai_api_key: API key for AI analysis
+            
+        Returns:
+            Testing job
         """
+        website = self.get_website(website_id)
+        if not website:
+            raise ValueError(f"Website {website_id} not found")
+        
+        # Create job with database backing
+        if not job_id:
+            import uuid
+            job_id = f"testing_{website_id}_{uuid.uuid4().hex[:8]}"
+        
+        logger.info(f"Creating TestingJob with job_id: {job_id}")
+        
         try:
-            logger.info(f"Starting job.run for job_id: {job.job_id}")
-            await job.run(self.db, self.browser_config)
-            logger.info(f"Completed job.run for job_id: {job.job_id}")
-        finally:
-            # Remove from active jobs when complete
-            if job.job_id in self.active_jobs:
-                logger.info(f"Removing job {job.job_id} from active_jobs")
-                del self.active_jobs[job.job_id]
-            else:
-                logger.warning(f"Job {job.job_id} not found in active_jobs during cleanup")
+            job = TestingJob(
+                job_manager=self.job_manager,
+                website_id=website_id,
+                job_id=job_id,
+                page_ids=page_ids,
+                user_id=user_id,
+                session_id=session_id,
+                test_all=test_all
+            )
+            logger.info(f"TestingJob created successfully: {job_id}")
+        except Exception as e:
+            logger.error(f"Failed to create TestingJob: {e}")
+            raise
+        
+        # Run testing
+        logger.info(f"Starting testing job.run for {job_id}")
+        await job.run(
+            self.db,
+            self.browser_config,
+            take_screenshot=take_screenshot,
+            run_ai_analysis=run_ai_analysis,
+            ai_api_key=ai_api_key
+        )
+        logger.info(f"Testing job.run completed for {job_id}")
+        
+        logger.info(f"Completed testing job {job_id} for website {website_id}")
+        return job
     
     def get_job_status(self, job_id: str) -> Optional[Dict[str, Any]]:
         """
-        Get job status
+        Get job status from database
         
         Args:
             job_id: Job ID
@@ -254,14 +375,18 @@ class WebsiteManager:
         Returns:
             Job status or None
         """
-        job = self.active_jobs.get(job_id)
+        job = self.job_manager.get_job(job_id)
         if not job:
             return None
         
         return {
-            'job_id': job.job_id,
-            'status': job.status,
-            'progress': job.progress
+            'job_id': job['job_id'],
+            'status': job['status'],
+            'progress': job.get('progress', {}),
+            'error': job.get('error'),
+            'created_at': job.get('created_at'),
+            'started_at': job.get('started_at'),
+            'completed_at': job.get('completed_at')
         }
     
     def add_page_manually(

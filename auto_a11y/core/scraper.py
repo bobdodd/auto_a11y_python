@@ -19,6 +19,7 @@ from auto_a11y.models.page import Page, PageStatus
 from auto_a11y.models.website import Website
 from auto_a11y.core.database import Database
 from auto_a11y.core.browser_manager import BrowserManager
+# Note: ScrapingJob class has been moved to scraping_job.py for database-backed implementation
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +121,11 @@ class ScrapingEngine:
                 
                 logger.info(f"Processing depth {depth} with {len(current_batch)} URLs, discovered so far: {len(discovered_pages)}")
                 
-                for url in current_batch:
+                for i, url in enumerate(current_batch):
+                    # Add small delay every 5 URLs to allow cancellation to be processed
+                    if i > 0 and i % 5 == 0:
+                        await asyncio.sleep(0.1)
+                    
                     # Check for cancellation
                     if job and job.is_cancelled():
                         logger.info(f"Discovery cancelled during URL processing for website {website.id}")
@@ -168,12 +173,14 @@ class ScrapingEngine:
                             continue
                     
                     # Discover page
+                    logger.info(f"Starting discovery of page {len(discovered_pages) + 1}: {url}")
                     page = await self._discover_page(
                         url=url,
                         website=website,
                         depth=depth,
                         base_domain=base_domain
                     )
+                    logger.info(f"Completed discovery of {url}, status: {page.status if page else 'None'}")
                     
                     if page:
                         discovered_pages.append(page)
@@ -191,8 +198,12 @@ class ScrapingEngine:
                                 'queue_size': len(self.queued_urls),
                                 'current_url': url
                             }
-                            logger.info(f"Calling progress_callback with: pages_found={progress_data['pages_found']}, queue_size={progress_data['queue_size']}")
-                            await progress_callback(progress_data)
+                            logger.info(f"Starting progress update for page {len(discovered_pages)}")
+                            try:
+                                await progress_callback(progress_data)
+                                logger.info(f"Progress update completed for page {len(discovered_pages)}")
+                            except Exception as e:
+                                logger.error(f"Progress callback failed: {e}")
                         else:
                             logger.warning("No progress_callback provided to ScrapingEngine")
                     else:
@@ -408,8 +419,19 @@ class ScrapingEngine:
             
             # Extract links if not at max depth
             if depth < website.scraping_config.max_depth:
-                links = await self._extract_links(page, url, website, base_domain)
-                self.queued_urls.update(links)
+                try:
+                    links = await self._extract_links(page, url, website, base_domain)
+                    self.queued_urls.update(links)
+                except Exception as e:
+                    logger.warning(f"Failed to extract links from {url}: {e}")
+                    # Continue without links rather than failing the whole page
+            
+            # Close the page now that we're done with it
+            try:
+                await page.close()
+                page = None  # Mark as closed
+            except Exception as e:
+                logger.warning(f"Error closing page after successful discovery: {e}")
             
             # Create page object
             page_obj = Page(
@@ -449,14 +471,12 @@ class ScrapingEngine:
                 error_reason=f"Discovery error: {str(e)[:200]}"
             )
         finally:
-            # Close the page
+            # Close the page if it's still open (only happens on error paths)
             if page:
                 try:
                     await page.close()
                 except Exception as e:
                     logger.warning(f"Error closing page: {e}")
-        
-        return None
     
     async def _extract_links(
         self,
@@ -620,114 +640,4 @@ class ScrapingEngine:
             return True
 
 
-class ScrapingJob:
-    """Represents a scraping job"""
-    
-    def __init__(self, website_id: str, job_id: str, max_pages: Optional[int] = None, task_runner: Optional[object] = None):
-        """
-        Initialize scraping job
-        
-        Args:
-            website_id: Website ID
-            job_id: Unique job ID
-            max_pages: Optional override for max pages to discover
-            task_runner: Optional task runner for checking cancellation
-        """
-        self.website_id = website_id
-        self.job_id = job_id
-        self.max_pages = max_pages  # Store the override
-        self.task_runner = task_runner  # Store task runner reference
-        self.status = 'pending'
-        self.cancelled = False  # Add cancellation flag
-        self.progress = {
-            'pages_found': 0,
-            'current_depth': 0,
-            'queue_size': 0,
-            'current_url': None,
-            'started_at': None,
-            'completed_at': None,
-            'error': None
-        }
-    
-    def cancel(self):
-        """Cancel the scraping job"""
-        self.cancelled = True
-        self.status = 'cancelled'
-        logger.info(f"Scraping job {self.job_id} marked for cancellation")
-    
-    def is_cancelled(self) -> bool:
-        """Check if job is cancelled, checking both local flag and task runner"""
-        # Check local cancellation flag
-        if self.cancelled:
-            return True
-        
-        # Also check if the task has been cancelled in the task runner
-        if self.task_runner and self.job_id:
-            task = self.task_runner.tasks.get(self.job_id)
-            if task and (task.status == 'cancelled' or getattr(task, '_cancelled', False)):
-                self.cancelled = True
-                return True
-        
-        return False
-    
-    async def run(self, database: Database, browser_config: Dict[str, Any]):
-        """
-        Run the scraping job
-        
-        Args:
-            database: Database connection
-            browser_config: Browser configuration
-        """
-        self.status = 'running'
-        self.progress['started_at'] = datetime.now()
-        
-        try:
-            # Get website
-            website = database.get_website(self.website_id)
-            if not website:
-                raise ValueError(f"Website {self.website_id} not found")
-            
-            # Apply max_pages override if provided
-            if self.max_pages is not None and self.max_pages > 0:
-                logger.info(f"Applying max_pages override: {self.max_pages} (was {website.scraping_config.max_pages})")
-                website.scraping_config.max_pages = self.max_pages
-            
-            # Create scraper
-            scraper = ScrapingEngine(database, browser_config)
-            
-            # Run discovery with progress callback and pass job for cancellation checking
-            pages = await scraper.discover_website(
-                website=website,
-                progress_callback=self._update_progress,
-                job=self  # Pass the job so scraper can check cancellation
-            )
-            
-            # Check if discovery was cancelled
-            if self.is_cancelled():
-                logger.info(f"Discovery job {self.job_id} was cancelled")
-                self.status = 'cancelled'
-                self.progress['error'] = 'Discovery cancelled by user'
-                self.progress['completed_at'] = datetime.now()
-                self.progress['pages_found'] = len(pages) if pages else 0
-            # Check if discovery was stopped due to browser failure
-            elif not await scraper.browser_manager.is_running():
-                logger.error(f"Discovery job {self.job_id} stopped due to browser failure")
-                self.status = 'failed'
-                self.progress['error'] = 'Browser stopped unexpectedly during discovery'
-                self.progress['completed_at'] = datetime.now()
-                self.progress['pages_found'] = len(pages) if pages else 0
-            else:
-                self.status = 'completed'
-                self.progress['completed_at'] = datetime.now()
-                self.progress['pages_found'] = len(pages)
-            
-        except Exception as e:
-            logger.error(f"Scraping job {self.job_id} failed: {e}")
-            self.status = 'failed'
-            self.progress['error'] = str(e)
-            self.progress['completed_at'] = datetime.now()
-    
-    async def _update_progress(self, progress: dict):
-        """Update job progress"""
-        self.progress.update(progress)
-        logger.info(f"ScrapingJob._update_progress called: pages_found={self.progress.get('pages_found', 0)}, queue_size={self.progress.get('queue_size', 0)}, current_url={self.progress.get('current_url', 'None')}, job_id={self.job_id}")
+# ScrapingJob class has been moved to scraping_job.py for database-backed implementation

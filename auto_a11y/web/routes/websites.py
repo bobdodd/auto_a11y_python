@@ -2,7 +2,7 @@
 Website management routes
 """
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app, session
 from auto_a11y.models import Website, ScrapingConfig, Page, PageStatus
 from datetime import datetime
 import asyncio
@@ -153,8 +153,9 @@ def discover_pages(website_id):
         website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
         logger.info(f"Created website manager for website {website_id}")
         
-        # Submit discovery task
-        task_id = f'discovery_{website_id}_{datetime.now().timestamp()}'
+        # Submit discovery task - use a more predictable job ID format
+        import uuid
+        task_id = f'discovery_{website_id}_{uuid.uuid4().hex[:8]}'
         logger.info(f"Submitting discovery task with ID: {task_id}")
         
         # Create a wrapper that handles the async execution properly
@@ -164,16 +165,22 @@ def discover_pages(website_id):
             nest_asyncio.apply()
             
             logger.info(f"Discovery wrapper starting for website {website_id}, task_id: {task_id}")
-            logger.info(f"WebsiteManager active jobs before discovery: {list(website_manager.active_jobs.keys())}")
             
-            # Pass the task_id so the job can check if it's been cancelled
-            from auto_a11y.core.task_runner import task_runner as tr
+            # Get user info from session if available
+            user_id = session.get('user_id') if session else None
+            session_id = session.get('session_id') if session else None
             
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
                 result = loop.run_until_complete(
-                    website_manager.discover_pages(website_id, max_pages=max_pages, job_id=task_id, task_runner=tr)
+                    website_manager.discover_pages(
+                        website_id, 
+                        max_pages=max_pages, 
+                        job_id=task_id,
+                        user_id=user_id,
+                        session_id=session_id
+                    )
                 )
                 logger.info(f"Discovery wrapper completed, result job_id: {result.job_id if result else 'None'}")
                 return result
@@ -212,7 +219,6 @@ def discover_pages(website_id):
 @websites_bp.route('/<website_id>/discovery-status')
 def discovery_status(website_id):
     """Check discovery job status with enhanced progress tracking"""
-    from auto_a11y.core.task_runner import task_runner
     from auto_a11y.core.website_manager import WebsiteManager
     
     job_id = request.args.get('job_id')
@@ -229,57 +235,57 @@ def discovery_status(website_id):
             'message': f'{total_pages} pages in website'
         })
     
-    # Get job status from task runner
-    job_status = task_runner.get_task_status(job_id)
-    
-    # Try to get progress from WebsiteManager's active jobs
+    # Get job status from database via WebsiteManager
     website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
-    logger.info(f"Looking for job {job_id} in active_jobs, total active jobs: {len(website_manager.active_jobs)}")
-    logger.info(f"Active job IDs: {list(website_manager.active_jobs.keys())}")
-    active_job = website_manager.active_jobs.get(job_id)
+    job_status = website_manager.get_job_status(job_id)
     
     if not job_status:
-        # Job not found - it might have completed
+        # Job not found - it might have completed or been cleaned up
         return jsonify({
             'status': 'completed',
             'pages_found': total_pages,
             'message': f'Discovery completed - found {total_pages} pages'
         })
     
-    # Extract progress details - prefer active job progress if available
-    if active_job and hasattr(active_job, 'progress'):
-        progress = active_job.progress
-        logger.info(f"Found active job {job_id}, progress: pages_found={progress.get('pages_found', 0)}, queue_size={progress.get('queue_size', 0)}")
-    else:
-        progress = job_status.get('progress', {})
-        logger.info(f"No active job found for {job_id}, using task status progress: {progress}")
-    
+    # Extract progress details from database-backed job
     status = job_status.get('status', 'unknown')
+    progress = job_status.get('progress', {})
+    
+    logger.info(f"Job {job_id} status: {status}, progress: {progress}")
+    
+    # Extract details from progress
+    details = progress.get('details', {})
     
     # Build detailed response
     response = {
         'status': status,
-        'pages_found': progress.get('pages_found', 0),
-        'current_depth': progress.get('current_depth', 0),
-        'queue_size': progress.get('queue_size', 0),
-        'current_url': progress.get('current_url'),
+        'pages_found': details.get('pages_found', 0),
+        'current_depth': details.get('current_depth', 0),
+        'queue_size': details.get('queue_size', 0),
+        'current_url': progress.get('message', ''),  # message contains current URL
         'error': job_status.get('error')
     }
     
     # Create informative message based on status
     if status == 'running':
-        pages_found = progress.get('pages_found', 0)
-        queue_size = progress.get('queue_size', 0)
-        current_url = progress.get('current_url', '')
+        pages_found = details.get('pages_found', 0)
+        queue_size = details.get('queue_size', 0)
+        current_url = progress.get('message', '')
         if current_url:
             # Don't truncate URLs - users need to see what's being processed
-            response['message'] = f'Found {pages_found} pages, {queue_size} in queue. Scanning: {current_url}'
+            response['message'] = f'Found {pages_found} pages. Scanning: {current_url}'
         else:
-            response['message'] = f'Found {pages_found} pages, {queue_size} in queue...'
+            response['message'] = f'Found {pages_found} pages...'
     elif status == 'completed':
-        response['message'] = f'Discovery completed - found {progress.get("pages_found", 0)} pages'
+        response['message'] = f'Discovery completed - found {details.get("pages_found", 0)} pages'
     elif status == 'failed':
         response['message'] = f'Discovery failed: {job_status.get("error", "Unknown error")}'
+    elif status == 'cancelled':
+        response['message'] = 'Discovery was cancelled'
+    elif status == 'cancelling':
+        response['message'] = 'Cancelling discovery...'
+    elif status == 'pending':
+        response['message'] = 'Discovery is starting...'
     else:
         response['message'] = f'Discovery {status}'
     
@@ -289,41 +295,64 @@ def discovery_status(website_id):
 @websites_bp.route('/<website_id>/cancel-discovery', methods=['POST'])
 def cancel_discovery(website_id):
     """Cancel an active discovery job"""
-    from auto_a11y.core.task_runner import task_runner
     from auto_a11y.core.website_manager import WebsiteManager
     
-    job_id = request.form.get('job_id') or request.json.get('job_id') if request.is_json else None
+    # Log all request data for debugging
+    logger.info(f"Cancel request received for website {website_id}")
+    logger.info(f"  Request method: {request.method}")
+    logger.info(f"  Request is_json: {request.is_json}")
+    logger.info(f"  Request form data: {dict(request.form)}")
+    logger.info(f"  Request json data: {request.json if request.is_json else 'N/A'}")
+    logger.info(f"  Request values: {dict(request.values)}")
+    
+    # Try multiple ways to get job_id
+    job_id = None
+    if request.form and 'job_id' in request.form:
+        job_id = request.form.get('job_id')
+        logger.info(f"Got job_id from form: {job_id}")
+    elif request.is_json and request.json and 'job_id' in request.json:
+        job_id = request.json.get('job_id')
+        logger.info(f"Got job_id from json: {job_id}")
+    elif 'job_id' in request.values:
+        job_id = request.values.get('job_id')
+        logger.info(f"Got job_id from values: {job_id}")
+    
+    logger.info(f"Final job_id extracted: {job_id}")
     
     if not job_id:
+        logger.error("No job_id provided in cancel request")
         return jsonify({'error': 'Job ID required'}), 400
     
     try:
         logger.info(f"Attempting to cancel discovery job {job_id} for website {website_id}")
         
-        # First try to cancel in the WebsiteManager (this sets the cancellation flag)
+        # Cancel using the database-backed job manager
         website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
-        logger.info(f"Active jobs in manager: {list(website_manager.active_jobs.keys())}")
-        manager_cancelled = website_manager.cancel_discovery(job_id)
-        logger.info(f"Manager cancellation result: {manager_cancelled}")
         
-        # Also try to cancel in task runner (though this may not stop running task)
-        task_cancelled = task_runner.cancel_task(job_id)
-        logger.info(f"Task runner cancellation result: {task_cancelled}")
+        # Get user info for tracking who cancelled
+        try:
+            from flask import session
+            user_id = session.get('user_id') if 'user_id' in session else None
+        except:
+            user_id = None
         
-        if manager_cancelled or task_cancelled:
-            logger.info(f"Cancelled discovery job {job_id} for website {website_id} (manager: {manager_cancelled}, task: {task_cancelled})")
+        # Request cancellation through the job manager
+        cancelled = website_manager.cancel_discovery(job_id, user_id=user_id)
+        
+        if cancelled:
+            logger.info(f"Successfully cancelled discovery job {job_id} for website {website_id}")
             return jsonify({
                 'success': True,
                 'message': 'Discovery cancelled successfully'
             })
         else:
-            logger.warning(f"Could not cancel discovery job {job_id} - not found in manager or task runner")
+            logger.warning(f"Could not cancel discovery job {job_id} - job not found or not cancellable")
             return jsonify({
                 'success': False,
                 'message': 'Job not found or already completed'
             })
     except Exception as e:
-        logger.error(f"Error cancelling discovery job: {e}")
+        logger.error(f"Error cancelling discovery job: {e}", exc_info=True)
         return jsonify({
             'success': False,
             'error': str(e),
@@ -361,9 +390,10 @@ def add_page(website_id):
 
 @websites_bp.route('/<website_id>/test-all', methods=['POST'])
 def test_all_pages(website_id):
-    """Start testing all pages in website"""
-    from auto_a11y.testing import TestRunner
+    """Start testing all pages in website using database-backed job management"""
+    from auto_a11y.core.website_manager import WebsiteManager
     from auto_a11y.core.task_runner import task_runner
+    import uuid
     
     website = current_app.db.get_website(website_id)
     if not website:
@@ -380,43 +410,175 @@ def test_all_pages(website_id):
             'message': 'No pages available for testing (some may be currently testing)'
         })
     
-    # Queue all pages for testing
-    test_runner_instance = TestRunner(current_app.db, current_app.app_config.__dict__)
-    ai_key = getattr(current_app.app_config, 'CLAUDE_API_KEY', None)
-    
-    for page in testable_pages:
-        # Update page status to queued
-        page.status = PageStatus.QUEUED
-        current_app.db.update_page(page)
+    try:
+        # Create website manager
+        website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+        logger.info(f"Created website manager for testing website {website_id}")
         
-        # Submit test task
-        job_id = task_runner.submit_task(
-            func=asyncio.run,
-            args=(test_runner_instance.test_page(
-                page,
-                take_screenshot=True,
-                run_ai_analysis=None,
-                ai_api_key=ai_key
-            ),),
-            task_id=f'test_page_{page.id}_{datetime.now().timestamp()}'
+        # Generate job ID
+        job_id = f'testing_{website_id}_{uuid.uuid4().hex[:8]}'
+        logger.info(f"Submitting testing job with ID: {job_id}")
+        
+        # Get AI configuration
+        ai_key = getattr(current_app.app_config, 'CLAUDE_API_KEY', None)
+        
+        # Create a wrapper that handles the async execution properly
+        def testing_wrapper():
+            import asyncio
+            import nest_asyncio
+            nest_asyncio.apply()
+            
+            logger.info(f"Testing wrapper starting for website {website_id}, job_id: {job_id}")
+            
+            # Get user info from session if available
+            user_id = session.get('user_id') if session else None
+            session_id = session.get('session_id') if session else None
+            
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                # Get page IDs for testing
+                page_ids = [p.id for p in testable_pages]
+                
+                result = loop.run_until_complete(
+                    website_manager.test_website(
+                        website_id=website_id,
+                        page_ids=page_ids,
+                        job_id=job_id,
+                        user_id=user_id,
+                        session_id=session_id,
+                        test_all=False,  # We're providing specific page_ids
+                        take_screenshot=True,
+                        run_ai_analysis=None,
+                        ai_api_key=ai_key
+                    )
+                )
+                logger.info(f"Testing wrapper completed, result job_id: {result.job_id if result else 'None'}")
+                return result
+            finally:
+                loop.close()
+        
+        # Submit testing task
+        submitted_id = task_runner.submit_task(
+            func=testing_wrapper,
+            args=(),
+            task_id=job_id
         )
+        
+        logger.info(f"Testing job submitted successfully with ID: {submitted_id}")
+        
+        return jsonify({
+            'success': True,
+            'message': f'Testing {len(testable_pages)} pages',
+            'job_id': submitted_id,
+            'pages_queued': len(testable_pages),
+            'status_url': url_for('websites.test_status', website_id=website_id)
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to start testing: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Failed to start testing'
+        }), 500
+
+
+@websites_bp.route('/<website_id>/cancel-testing', methods=['POST'])
+def cancel_testing(website_id):
+    """Cancel an active testing job"""
+    from auto_a11y.core.website_manager import WebsiteManager
     
-    return jsonify({
-        'success': True,
-        'message': f'Testing {len(testable_pages)} pages',
-        'job_id': f'test_{website_id}',
-        'pages_queued': len(testable_pages)
-    })
+    # Log all request data for debugging
+    logger.info(f"Cancel testing request received for website {website_id}")
+    logger.info(f"  Request form data: {dict(request.form)}")
+    logger.info(f"  Request json data: {request.json if request.is_json else 'N/A'}")
+    
+    # Get job_id from request
+    job_id = None
+    if request.form and 'job_id' in request.form:
+        job_id = request.form.get('job_id')
+    elif request.is_json and request.json and 'job_id' in request.json:
+        job_id = request.json.get('job_id')
+    
+    logger.info(f"Final job_id extracted: {job_id}")
+    
+    if not job_id:
+        logger.error("No job_id provided in cancel testing request")
+        return jsonify({'error': 'Job ID required'}), 400
+    
+    try:
+        logger.info(f"Attempting to cancel testing job {job_id} for website {website_id}")
+        
+        # Cancel using the database-backed job manager
+        website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+        
+        # Get user info for tracking who cancelled
+        user_id = session.get('user_id') if session else None
+        
+        # Request cancellation through the job manager
+        cancelled = website_manager.cancel_testing(job_id, user_id=user_id)
+        
+        if cancelled:
+            logger.info(f"Successfully cancelled testing job {job_id} for website {website_id}")
+            return jsonify({
+                'success': True,
+                'message': 'Testing cancelled successfully'
+            })
+        else:
+            logger.warning(f"Could not cancel testing job {job_id} - job not found or not cancellable")
+            return jsonify({
+                'success': False,
+                'message': 'Job not found or already completed'
+            })
+    except Exception as e:
+        logger.error(f"Error cancelling testing job: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Failed to cancel testing'
+        }), 500
 
 
 @websites_bp.route('/<website_id>/test-status')
 def test_status(website_id):
-    """Check testing status for all pages in website"""
-    # Get fresh website data from database to get updated last_tested
+    """Check testing status using database-backed job management"""
+    from auto_a11y.core.website_manager import WebsiteManager
+    from auto_a11y.core.job_manager import JobType
+    
+    # Get job_id from request args if provided
+    job_id = request.args.get('job_id')
+    
+    # Get fresh website data from database
     website = current_app.db.get_website(website_id)
     if not website:
         return jsonify({'error': 'Website not found'}), 404
     
+    # If a specific job_id is provided, get its status
+    if job_id:
+        website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+        job_status = website_manager.get_job_status(job_id)
+        
+        if job_status:
+            status = job_status.get('status', 'unknown')
+            progress = job_status.get('progress', {})
+            details = progress.get('details', {})
+            
+            return jsonify({
+                'status': status,
+                'job_id': job_id,
+                'pages_tested': details.get('pages_tested', 0),
+                'pages_passed': details.get('pages_passed', 0),
+                'pages_failed': details.get('pages_failed', 0),
+                'pages_skipped': details.get('pages_skipped', 0),
+                'total_pages': details.get('total_pages', 0),
+                'current_page': details.get('current_page', ''),
+                'message': progress.get('message', ''),
+                'error': job_status.get('error'),
+                'all_complete': status in ['completed', 'failed', 'cancelled']
+            })
+    
+    # Otherwise, get page-level status (for backward compatibility)
     pages = current_app.db.get_pages(website_id)
     
     # Count pages by status

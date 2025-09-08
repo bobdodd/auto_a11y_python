@@ -9,11 +9,13 @@ from auto_a11y.reporting.formatters import (
     CSVFormatter,
     PDFFormatter
 )
+from auto_a11y.reporting.page_structure_report import PageStructureReport
 
 __all__ = [
     'ReportGenerator',
     'HTMLFormatter', 
     'JSONFormatter',
     'CSVFormatter',
-    'PDFFormatter'
+    'PDFFormatter',
+    'PageStructureReport'
 ]

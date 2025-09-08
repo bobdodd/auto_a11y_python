@@ -1,0 +1,49 @@
+<\!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Stuck Discoveries</title>
+</head>
+<body>
+    <h1>Clear Stuck Discovery Entries</h1>
+    <p>Open the browser console to see the results.</p>
+    <button onclick="clearDiscoveries()">Clear All Discovery Entries</button>
+    <button onclick="clearAll()">Clear All Activity Tracking</button>
+    
+    <script>
+    function clearDiscoveries() {
+        const stored = localStorage.getItem('active_activities') || localStorage.getItem('active_tests');
+        if (\!stored) {
+            console.log('No activities found in localStorage');
+            return;
+        }
+        
+        const activities = JSON.parse(stored);
+        let removed = 0;
+        
+        for (const key in activities) {
+            if (activities[key].type === 'discovery') {
+                console.log('Removing discovery:', key, activities[key]);
+                delete activities[key];
+                removed++;
+            }
+        }
+        
+        if (removed > 0) {
+            localStorage.setItem('active_activities', JSON.stringify(activities));
+            console.log(`Cleared ${removed} discovery entries`);
+            alert(`Cleared ${removed} discovery entries. Refresh your Auto A11y pages.`);
+        } else {
+            console.log('No discovery entries to clear');
+            alert('No discovery entries found');
+        }
+    }
+    
+    function clearAll() {
+        localStorage.removeItem('active_activities');
+        localStorage.removeItem('active_tests');
+        console.log('Cleared all activity tracking');
+        alert('Cleared all activity tracking. Refresh your Auto A11y pages.');
+    }
+    </script>
+</body>
+</html>

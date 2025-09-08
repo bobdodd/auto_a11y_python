@@ -27,6 +27,10 @@
             <button class="btn btn-success me-2" id="discoverBtn">
                 <i class="bi bi-search"></i> Discover Pages
             </button>
+            <!-- Prominent cancel button that appears during discovery -->
+            <button class="btn btn-danger me-2" id="cancelDiscoveryBtn" style="display: none;">
+                <i class="bi bi-stop-circle-fill"></i> ABORT DISCOVERY
+            </button>
             <button class="btn btn-primary me-2" id="testAllBtn">
                 <i class="bi bi-play-fill"></i> Test All Pages
             </button>
@@ -451,6 +455,49 @@ function stopWebsiteStatusPolling() {
 }
 
 $(document).ready(function() {
+    // Check if discovery is running from localStorage
+    const activeActivities = TestTracker.getActiveTests();
+    let discoveryRunning = false;
+    let storedJobId = null;
+    
+    for (const key in activeActivities) {
+        const activity = activeActivities[key];
+        if (activity.type === 'discovery' && activity.id === '{{ website.id }}') {
+            discoveryRunning = true;
+            storedJobId = activity.job_id;  // Get the stored job ID
+            console.log('Found active discovery on page load for website {{ website.id }} with job_id:', storedJobId);
+            break;
+        }
+    }
+    
+    if (discoveryRunning && storedJobId) {
+        console.log('Discovery is running, restoring job_id and showing abort button...');
+        discoveryJobId = storedJobId;  // Restore the job ID
+        
+        // Check discovery status with the job ID
+        $.get(`{{ url_for('websites.discovery_status', website_id=website.id) }}?job_id=${storedJobId}`, function(data) {
+            if (data.status === 'running') {
+                // Start polling with the restored job ID
+                startDiscoveryPolling();
+            } else {
+                // Discovery is not running (completed, failed, or stale)
+                console.log('Discovery not running anymore, cleaning up. Status:', data.status);
+                TestTracker.removeTest('discovery', '{{ website.id }}');
+                
+                // If we just learned it completed, show a message
+                if (data.status === 'completed') {
+                    if (window.showNotification) {
+                        showNotification('Discovery Complete', 'The discovery process has finished.', 'info');
+                    }
+                }
+            }
+        }).fail(function() {
+            // If the status check fails, assume discovery is dead and clean up
+            console.log('Failed to check discovery status, cleaning up stale entry');
+            TestTracker.removeTest('discovery', '{{ website.id }}');
+        });
+    }
+    
     // Check if any pages are currently testing on page load
     let hasTestingPages = false;
     document.querySelectorAll('.page-status .badge').forEach(badge => {
@@ -464,6 +511,13 @@ $(document).ready(function() {
         console.log('Found pages in testing/queued state, starting polling...');
         startWebsiteStatusPolling();
     }
+    
+    // Wire up the cancel discovery button
+    $('#cancelDiscoveryBtn').click(function() {
+        if (confirm('Are you sure you want to abort the discovery process?')) {
+            cancelDiscovery();
+        }
+    });
     
     // Show discovery modal when discover button clicked
     $('#discoverBtn').click(function() {
@@ -497,6 +551,9 @@ $(document).ready(function() {
         
         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Starting discovery...');
         
+        // Show the cancel button
+        $('#cancelDiscoveryBtn').show();
+        
         $.post("{{ url_for('websites.discover_pages', website_id=website.id) }}", requestData, function(data) {
             if (data.success) {
                 discoveryJobId = data.job_id;
@@ -507,7 +564,17 @@ $(document).ready(function() {
                     if (data.max_pages) {
                         description += ` (max ${data.max_pages} pages)`;
                     }
-                    TestTracker.addTest('discovery', '{{ website.id }}', description);
+                    // Store with website ID but also save job_id in the data
+                    const tests = TestTracker.getActiveTests();
+                    tests['discovery_{{ website.id }}'] = {
+                        type: 'discovery',
+                        id: '{{ website.id }}',
+                        job_id: data.job_id,  // Store the actual job ID
+                        description: description,
+                        startTime: Date.now()
+                    };
+                    localStorage.setItem(TestTracker.STORAGE_KEY, JSON.stringify(tests));
+                    TestTracker.startTracking();
                 }
                 
                 if (window.showNotification) {
@@ -520,10 +587,12 @@ $(document).ready(function() {
                 startDiscoveryPolling();
             } else {
                 btn.prop('disabled', false).html('<i class="bi bi-search"></i> Discover Pages');
+                $('#cancelDiscoveryBtn').hide();
                 alert(data.message || 'Failed to start discovery');
             }
         }).fail(function() {
             btn.prop('disabled', false).html('<i class="bi bi-search"></i> Discover Pages');
+            $('#cancelDiscoveryBtn').hide();
             alert('Failed to start page discovery');
         });
     });
@@ -635,6 +704,10 @@ function cancelDiscovery() {
     }
     
     const btn = $('#discoverBtn');
+    const cancelBtn = $('#cancelDiscoveryBtn');
+    
+    // Disable cancel button and update discover button
+    cancelBtn.prop('disabled', true);
     btn.html('<span class="spinner-border spinner-border-sm"></span> Cancelling...');
     
     $.post(`{{ url_for('websites.cancel_discovery', website_id=website.id) }}`, 
@@ -642,11 +715,14 @@ function cancelDiscovery() {
         function(data) {
             if (data.success) {
                 stopDiscoveryPolling();
+                
+                // Hide cancel button and reset discover button
+                cancelBtn.hide().prop('disabled', false);
                 btn.prop('disabled', false).html('<i class="bi bi-search"></i> Discover Pages');
                 
                 // Remove from global tracking
                 if (typeof TestTracker !== 'undefined') {
-                    TestTracker.removeTest('discovery_{{ website.id }}');
+                    TestTracker.removeTest('discovery', '{{ website.id }}');
                 }
                 
                 if (window.showNotification) {
@@ -655,10 +731,16 @@ function cancelDiscovery() {
                     alert(data.message);
                 }
             } else {
+                // Re-enable cancel button on failure
+                cancelBtn.prop('disabled', false);
+                btn.html('<span class="spinner-border spinner-border-sm"></span> Discovery Running...');
                 alert('Failed to cancel discovery: ' + (data.message || 'Unknown error'));
             }
         }
     ).fail(function() {
+        // Re-enable cancel button on failure
+        cancelBtn.prop('disabled', false);
+        btn.html('<span class="spinner-border spinner-border-sm"></span> Discovery Running...');
         alert('Failed to cancel discovery');
     });
 }
@@ -667,18 +749,14 @@ function startDiscoveryPolling() {
     if (discoveryStatusInterval) return;
     
     const btn = $('#discoverBtn');
+    const cancelBtn = $('#cancelDiscoveryBtn');
     
-    // Change button to show cancel option
-    btn.prop('disabled', false)
-       .removeClass('btn-success')
-       .addClass('btn-danger')
-       .html('<i class="bi bi-x-circle"></i> Cancel Discovery')
-       .off('click')
-       .on('click', function() {
-           if (confirm('Cancel the discovery process?')) {
-               cancelDiscovery();
-           }
-       });
+    // Show the prominent cancel button
+    cancelBtn.show();
+    
+    // Change discover button to show it's running
+    btn.prop('disabled', true)
+       .html('<span class="spinner-border spinner-border-sm"></span> Discovery Running...');
     
     discoveryStatusInterval = setInterval(() => {
         const url = discoveryJobId 
@@ -689,7 +767,7 @@ function startDiscoveryPolling() {
             console.log('Discovery status:', data);
             
             if (data.status === 'running') {
-                // Update button with progress
+                // Update discover button with progress
                 const message = data.message || `Found ${data.pages_found} pages...`;
                 btn.html(`<span class="spinner-border spinner-border-sm"></span> ${message}`);
                 
@@ -701,19 +779,15 @@ function startDiscoveryPolling() {
             } else if (data.status === 'completed') {
                 stopDiscoveryPolling();
                 
-                // Update button
+                // Update buttons
                 btn.prop('disabled', false)
                    .removeClass('btn-danger')
                    .addClass('btn-success')
-                   .html('<i class="bi bi-check-circle"></i> Discovery Complete')
-                   .off('click')
-                   .on('click', function() {
-                       $('#discoveryModal').modal('show');
-                   });
+                   .html('<i class="bi bi-check-circle"></i> Discovery Complete');
                 
                 // Remove from global tracking if available
                 if (typeof TestTracker !== 'undefined') {
-                    TestTracker.removeTest('discovery_{{ website.id }}');
+                    TestTracker.removeTest('discovery', '{{ website.id }}');
                 }
                 
                 // Show completion notification
@@ -726,19 +800,15 @@ function startDiscoveryPolling() {
             } else if (data.status === 'failed') {
                 stopDiscoveryPolling();
                 
-                // Update button
+                // Update buttons
                 btn.prop('disabled', false)
                    .removeClass('btn-danger')
                    .addClass('btn-warning')
-                   .html('<i class="bi bi-x-circle"></i> Discovery Failed')
-                   .off('click')
-                   .on('click', function() {
-                       $('#discoveryModal').modal('show');
-                   });
+                   .html('<i class="bi bi-x-circle"></i> Discovery Failed');
                 
                 // Remove from global tracking
                 if (typeof TestTracker !== 'undefined') {
-                    TestTracker.removeTest('discovery_{{ website.id }}');
+                    TestTracker.removeTest('discovery', '{{ website.id }}');
                 }
                 
                 // Show error
@@ -763,6 +833,18 @@ function stopDiscoveryPolling() {
         discoveryStatusInterval = null;
     }
     discoveryJobId = null;
+    
+    // Hide the cancel button
+    $('#cancelDiscoveryBtn').hide();
+    
+    // Reset discover button to its original state after a short delay
+    setTimeout(() => {
+        $('#discoverBtn')
+            .prop('disabled', false)
+            .removeClass('btn-danger btn-warning')
+            .addClass('btn-success')
+            .html('<i class="bi bi-search"></i> Discover Pages');
+    }, 3000);
 }
 
 // Clean up on page unload

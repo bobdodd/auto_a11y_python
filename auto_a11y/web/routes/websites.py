@@ -163,12 +163,17 @@ def discover_pages(website_id):
             import nest_asyncio
             nest_asyncio.apply()
             
+            logger.info(f"Discovery wrapper starting for website {website_id}, task_id: {task_id}")
+            logger.info(f"WebsiteManager active jobs before discovery: {list(website_manager.active_jobs.keys())}")
+            
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
-                return loop.run_until_complete(
-                    website_manager.discover_pages(website_id, max_pages=max_pages)
+                result = loop.run_until_complete(
+                    website_manager.discover_pages(website_id, max_pages=max_pages, job_id=task_id)
                 )
+                logger.info(f"Discovery wrapper completed, result job_id: {result.job_id if result else 'None'}")
+                return result
             finally:
                 loop.close()
         
@@ -226,6 +231,8 @@ def discovery_status(website_id):
     
     # Try to get progress from WebsiteManager's active jobs
     website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+    logger.info(f"Looking for job {job_id} in active_jobs, total active jobs: {len(website_manager.active_jobs)}")
+    logger.info(f"Active job IDs: {list(website_manager.active_jobs.keys())}")
     active_job = website_manager.active_jobs.get(job_id)
     
     if not job_status:
@@ -239,10 +246,10 @@ def discovery_status(website_id):
     # Extract progress details - prefer active job progress if available
     if active_job and hasattr(active_job, 'progress'):
         progress = active_job.progress
-        logger.debug(f"Using active job progress: {progress}")
+        logger.info(f"Found active job {job_id}, progress: pages_found={progress.get('pages_found', 0)}, queue_size={progress.get('queue_size', 0)}")
     else:
         progress = job_status.get('progress', {})
-        logger.debug(f"No active job found for {job_id}, using task status progress: {progress}")
+        logger.info(f"No active job found for {job_id}, using task status progress: {progress}")
     
     status = job_status.get('status', 'unknown')
     
@@ -262,9 +269,8 @@ def discovery_status(website_id):
         queue_size = progress.get('queue_size', 0)
         current_url = progress.get('current_url', '')
         if current_url:
-            # Truncate URL for display
-            display_url = current_url if len(current_url) <= 50 else current_url[:47] + '...'
-            response['message'] = f'Found {pages_found} pages, {queue_size} in queue. Scanning: {display_url}'
+            # Don't truncate URLs - users need to see what's being processed
+            response['message'] = f'Found {pages_found} pages, {queue_size} in queue. Scanning: {current_url}'
         else:
             response['message'] = f'Found {pages_found} pages, {queue_size} in queue...'
     elif status == 'completed':

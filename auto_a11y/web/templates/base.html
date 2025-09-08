@@ -112,13 +112,14 @@
     
     <!-- Global Test Tracking System -->
     <script>
-    // Global test tracking system
+    // Global activity tracking system (tests and discoveries)
     const TestTracker = {
-        STORAGE_KEY: 'active_tests',
+        STORAGE_KEY: 'active_activities',  // Renamed from 'active_tests' for clarity
+        LEGACY_KEY: 'active_tests',  // For migration
         CHECK_INTERVAL: 5000, // Check every 5 seconds
         pollInterval: null,
         
-        // Add a test to track
+        // Add an activity (test or discovery) to track
         addTest: function(type, id, description) {
             const tests = this.getActiveTests();
             tests[`${type}_${id}`] = {
@@ -131,22 +132,61 @@
             this.startTracking();
         },
         
-        // Remove a completed test
+        // Remove a completed activity
         removeTest: function(type, id) {
             const tests = this.getActiveTests();
             delete tests[`${type}_${id}`];
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tests));
             
-            // Stop tracking if no more tests
+            // Stop tracking if no more activities
             if (Object.keys(tests).length === 0) {
                 this.stopTracking();
             }
         },
         
-        // Get all active tests
+        // Get all active tests/discoveries
         getActiveTests: function() {
+            // Migrate from old key if it exists
+            const legacyData = localStorage.getItem(this.LEGACY_KEY);
+            if (legacyData) {
+                localStorage.setItem(this.STORAGE_KEY, legacyData);
+                localStorage.removeItem(this.LEGACY_KEY);
+                console.log('Migrated from active_tests to active_activities');
+            }
+            
             const stored = localStorage.getItem(this.STORAGE_KEY);
-            return stored ? JSON.parse(stored) : {};
+            const tests = stored ? JSON.parse(stored) : {};
+            
+            // Clean up stale entries (older than 10 minutes for discovery, 30 minutes for tests)
+            const now = Date.now();
+            const tenMinutesAgo = now - (10 * 60 * 1000);
+            const thirtyMinutesAgo = now - (30 * 60 * 1000);
+            let hasStale = false;
+            
+            for (const key in tests) {
+                const test = tests[key];
+                if (test.startTime) {
+                    // Discovery jobs should complete within 10 minutes
+                    if (test.type === 'discovery' && test.startTime < tenMinutesAgo) {
+                        console.log(`Removing stale discovery: ${key}`);
+                        delete tests[key];
+                        hasStale = true;
+                    }
+                    // Test jobs can take longer, give them 30 minutes
+                    else if (test.type !== 'discovery' && test.startTime < thirtyMinutesAgo) {
+                        console.log(`Removing stale test: ${key}`);
+                        delete tests[key];
+                        hasStale = true;
+                    }
+                }
+            }
+            
+            // Save cleaned up list if we removed any stale entries
+            if (hasStale) {
+                localStorage.setItem(this.STORAGE_KEY, JSON.stringify(tests));
+            }
+            
+            return tests;
         },
         
         // Start tracking active tests
@@ -170,7 +210,7 @@
             document.getElementById('global-test-status').classList.add('d-none');
         },
         
-        // Check status of all active tests
+        // Check status of all active activities
         checkTests: async function() {
             const tests = this.getActiveTests();
             const testCount = Object.keys(tests).length;
@@ -348,8 +388,41 @@
     
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
+        // Clean up on page load - remove anything older than 10 minutes for discovery
+        TestTracker.getActiveTests();  // This triggers cleanup
         TestTracker.init();
     });
+    
+    // Add manual clear function to window for debugging
+    window.clearTestTracker = function() {
+        localStorage.removeItem('active_activities');
+        localStorage.removeItem('active_tests');  // Also clear legacy key
+        TestTracker.stopTracking();
+        const tracker = document.getElementById('global-test-tracker');
+        if (tracker) {
+            tracker.style.display = 'none';
+        }
+        console.log('Activity tracker cleared');
+    };
+    
+    // Add function to clear specific types
+    window.clearDiscoveries = function() {
+        const tests = TestTracker.getActiveTests();
+        let removed = 0;
+        for (const key in tests) {
+            if (tests[key].type === 'discovery') {
+                delete tests[key];
+                removed++;
+            }
+        }
+        if (removed > 0) {
+            localStorage.setItem('active_activities', JSON.stringify(tests));
+            console.log(`Cleared ${removed} discovery entries`);
+            location.reload();
+        } else {
+            console.log('No discovery entries to clear');
+        }
+    };
     </script>
     
     {% block extra_js %}{% endblock %}

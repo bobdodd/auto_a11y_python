@@ -166,7 +166,8 @@ class WebsiteManager:
         self,
         website_id: str,
         progress_callback: Optional[callable] = None,
-        max_pages: Optional[int] = None
+        max_pages: Optional[int] = None,
+        job_id: Optional[str] = None
     ) -> ScrapingJob:
         """
         Start page discovery for website
@@ -190,11 +191,13 @@ class WebsiteManager:
             logger.info(f"Using default max_pages: {website.scraping_config.max_pages}")
         
         # Create job with max_pages override
-        job_id = f"discovery_{website_id}_{datetime.now().timestamp()}"
+        if not job_id:
+            job_id = f"discovery_{website_id}_{datetime.now().timestamp()}"
         job = ScrapingJob(website_id, job_id, max_pages=max_pages)
         
-        # Store job
+        # Store job in shared storage
         self.active_jobs[job_id] = job
+        logger.info(f"Stored job {job_id} in active_jobs. Total active jobs: {len(self.active_jobs)}")
         
         # Run discovery directly instead of creating a task
         # This ensures it completes within the event loop
@@ -211,11 +214,16 @@ class WebsiteManager:
             job: Scraping job
         """
         try:
+            logger.info(f"Starting job.run for job_id: {job.job_id}")
             await job.run(self.db, self.browser_config)
+            logger.info(f"Completed job.run for job_id: {job.job_id}")
         finally:
             # Remove from active jobs when complete
             if job.job_id in self.active_jobs:
+                logger.info(f"Removing job {job.job_id} from active_jobs")
                 del self.active_jobs[job.job_id]
+            else:
+                logger.warning(f"Job {job.job_id} not found in active_jobs during cleanup")
     
     def get_job_status(self, job_id: str) -> Optional[Dict[str, Any]]:
         """

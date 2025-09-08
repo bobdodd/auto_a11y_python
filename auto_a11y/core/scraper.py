@@ -105,7 +105,7 @@ class ScrapingEngine:
             
             while self.queued_urls and depth <= website.scraping_config.max_depth and not max_pages_reached:
                 # Check for cancellation
-                if job and job.cancelled:
+                if job and job.is_cancelled():
                     logger.info(f"Discovery cancelled by user for website {website.id}")
                     break
                     
@@ -122,7 +122,7 @@ class ScrapingEngine:
                 
                 for url in current_batch:
                     # Check for cancellation
-                    if job and job.cancelled:
+                    if job and job.is_cancelled():
                         logger.info(f"Discovery cancelled during URL processing for website {website.id}")
                         max_pages_reached = True  # Use this flag to exit both loops
                         break
@@ -623,7 +623,7 @@ class ScrapingEngine:
 class ScrapingJob:
     """Represents a scraping job"""
     
-    def __init__(self, website_id: str, job_id: str, max_pages: Optional[int] = None):
+    def __init__(self, website_id: str, job_id: str, max_pages: Optional[int] = None, task_runner: Optional[object] = None):
         """
         Initialize scraping job
         
@@ -631,10 +631,12 @@ class ScrapingJob:
             website_id: Website ID
             job_id: Unique job ID
             max_pages: Optional override for max pages to discover
+            task_runner: Optional task runner for checking cancellation
         """
         self.website_id = website_id
         self.job_id = job_id
         self.max_pages = max_pages  # Store the override
+        self.task_runner = task_runner  # Store task runner reference
         self.status = 'pending'
         self.cancelled = False  # Add cancellation flag
         self.progress = {
@@ -652,6 +654,21 @@ class ScrapingJob:
         self.cancelled = True
         self.status = 'cancelled'
         logger.info(f"Scraping job {self.job_id} marked for cancellation")
+    
+    def is_cancelled(self) -> bool:
+        """Check if job is cancelled, checking both local flag and task runner"""
+        # Check local cancellation flag
+        if self.cancelled:
+            return True
+        
+        # Also check if the task has been cancelled in the task runner
+        if self.task_runner and self.job_id:
+            task = self.task_runner.tasks.get(self.job_id)
+            if task and (task.status == 'cancelled' or getattr(task, '_cancelled', False)):
+                self.cancelled = True
+                return True
+        
+        return False
     
     async def run(self, database: Database, browser_config: Dict[str, Any]):
         """
@@ -685,8 +702,15 @@ class ScrapingJob:
                 job=self  # Pass the job so scraper can check cancellation
             )
             
+            # Check if discovery was cancelled
+            if self.is_cancelled():
+                logger.info(f"Discovery job {self.job_id} was cancelled")
+                self.status = 'cancelled'
+                self.progress['error'] = 'Discovery cancelled by user'
+                self.progress['completed_at'] = datetime.now()
+                self.progress['pages_found'] = len(pages) if pages else 0
             # Check if discovery was stopped due to browser failure
-            if not await scraper.browser_manager.is_running():
+            elif not await scraper.browser_manager.is_running():
                 logger.error(f"Discovery job {self.job_id} stopped due to browser failure")
                 self.status = 'failed'
                 self.progress['error'] = 'Browser stopped unexpectedly during discovery'

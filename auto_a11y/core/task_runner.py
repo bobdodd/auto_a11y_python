@@ -220,6 +220,7 @@ class Task:
         self._cancelled = True
         self.status = 'cancelled'
         self.completed_at = datetime.now()
+        logger.info(f"Task {self.task_id} marked as cancelled")
 
 
 # Global task runner instance

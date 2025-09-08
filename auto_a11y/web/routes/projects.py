@@ -282,3 +282,113 @@ def add_website(project_id):
         # Regular form submission - redirect directly
         flash(f'Website "{name or url}" added successfully', 'success')
         return redirect(url_for('websites.view_website', website_id=website_id))
+
+
+@projects_bp.route('/<project_id>/test-all', methods=['POST'])
+def test_project(project_id):
+    """Test all websites in a project"""
+    import asyncio
+    from auto_a11y.core.website_manager import WebsiteManager
+    
+    project = current_app.db.get_project(project_id)
+    if not project:
+        flash('Project not found', 'error')
+        return redirect(url_for('projects.list_projects'))
+    
+    # Get test parameters
+    take_screenshot = request.form.get('take_screenshot', 'true') == 'true'
+    run_ai = request.form.get('run_ai', 'false') == 'true'
+    test_all = request.form.get('test_all', 'true') == 'true'
+    
+    try:
+        # Initialize website manager
+        manager = WebsiteManager(current_app.db, current_app.browser_config)
+        
+        # Generate unique job ID
+        import uuid
+        job_id = f"proj_{project_id}_{uuid.uuid4().hex[:8]}"
+        
+        # Run project-level testing
+        # Try to get the running loop, or create a new one
+        try:
+            loop = asyncio.get_running_loop()
+            logger.info("Using existing event loop for project testing")
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            logger.info("Created new event loop for project testing")
+        
+        try:
+            jobs = loop.run_until_complete(manager.test_project(
+                project_id=project_id,
+                job_id=job_id,
+                test_all=test_all,
+                take_screenshot=take_screenshot,
+                run_ai_analysis=run_ai
+            ))
+        finally:
+            # Don't close the loop immediately if it's running
+            try:
+                if not loop.is_running():
+                    loop.close()
+                    logger.info("Closed project testing event loop")
+            except:
+                pass
+        
+        if jobs:
+            flash(f'Started testing {len(jobs)} websites in project "{project.name}"', 'success')
+        else:
+            flash('No websites found to test in this project', 'warning')
+        
+    except Exception as e:
+        logger.error(f"Failed to start project testing: {e}")
+        flash(f'Failed to start testing: {str(e)}', 'error')
+    
+    return redirect(url_for('projects.view_project', project_id=project_id))
+
+
+@projects_bp.route('/<project_id>/report', methods=['GET', 'POST'])
+def generate_project_report(project_id):
+    """Generate accessibility report for entire project"""
+    from auto_a11y.reporting.project_report import ProjectReport
+    from flask import send_file
+    from pathlib import Path
+    
+    project = current_app.db.get_project(project_id)
+    if not project:
+        flash('Project not found', 'error')
+        return redirect(url_for('projects.list_projects'))
+    
+    format = request.args.get('format', 'html')
+    
+    try:
+        # Get all websites and pages for the project
+        websites = current_app.db.get_websites(project_id)
+        pages_by_website = {}
+        
+        for website in websites:
+            pages = current_app.db.get_pages(website.id)
+            pages_by_website[website.id] = pages
+        
+        # Generate report
+        report = ProjectReport(current_app.db, project, websites, pages_by_website)
+        report.generate()
+        
+        # Save and return report
+        report_path = report.save(format)
+        report_path = Path(report_path)
+        
+        return send_file(
+            report_path,
+            as_attachment=True,
+            download_name=report_path.name,
+            mimetype={
+                'html': 'text/html',
+                'json': 'application/json'
+            }.get(format, 'application/octet-stream')
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to generate project report: {e}")
+        flash(f'Failed to generate report: {str(e)}', 'error')
+        return redirect(url_for('projects.view_project', project_id=project_id))

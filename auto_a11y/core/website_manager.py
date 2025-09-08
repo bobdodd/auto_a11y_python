@@ -365,6 +365,98 @@ class WebsiteManager:
         logger.info(f"Completed testing job {job_id} for website {website_id}")
         return job
     
+    async def test_project(
+        self,
+        project_id: str,
+        job_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        test_all: bool = True,
+        take_screenshot: bool = True,
+        run_ai_analysis: Optional[bool] = None,
+        ai_api_key: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Test all websites in a project
+        
+        Args:
+            project_id: Project ID to test
+            job_id: Optional job ID prefix
+            user_id: User who initiated the test
+            session_id: Session ID for tracking
+            test_all: Test all pages or just untested ones
+            take_screenshot: Whether to take screenshots
+            run_ai_analysis: Whether to run AI analysis
+            ai_api_key: OpenAI API key for AI analysis
+            
+        Returns:
+            List of job results for each website
+        """
+        logger.info(f"Starting project-level testing for project {project_id}")
+        
+        # Get project and its websites
+        project = self.db.get_project(project_id)
+        if not project:
+            raise ValueError(f"Project {project_id} not found")
+        
+        websites = self.db.get_websites(project_id)
+        if not websites:
+            logger.warning(f"No websites found for project {project_id}")
+            return []
+        
+        # Create jobs for each website
+        jobs = []
+        for i, website in enumerate(websites):
+            website_job_id = f"{job_id or 'proj-test'}_{i}_{website.id}" if job_id else None
+            
+            try:
+                logger.info(f"Starting test for website {website.name} ({website.url})")
+                
+                # Get pages to test
+                if test_all:
+                    pages = self.db.get_pages(website.id)
+                else:
+                    pages = self.db.get_untested_pages(website.id)
+                
+                if not pages:
+                    logger.info(f"No pages to test for website {website.id}")
+                    continue
+                
+                page_ids = [p.id for p in pages]
+                
+                # Start async test for this website
+                job = await self.test_website(
+                    website_id=website.id,
+                    page_ids=page_ids,
+                    job_id=website_job_id,
+                    user_id=user_id,
+                    session_id=session_id,
+                    test_all=test_all,
+                    take_screenshot=take_screenshot,
+                    run_ai_analysis=run_ai_analysis,
+                    ai_api_key=ai_api_key
+                )
+                
+                jobs.append({
+                    'website_id': website.id,
+                    'website_name': website.name,
+                    'website_url': website.url,
+                    'job_id': job.job_id,
+                    'pages_tested': len(page_ids)
+                })
+                
+            except Exception as e:
+                logger.error(f"Failed to test website {website.id}: {e}")
+                jobs.append({
+                    'website_id': website.id,
+                    'website_name': website.name,
+                    'website_url': website.url,
+                    'error': str(e)
+                })
+        
+        logger.info(f"Completed project testing for {project_id} with {len(jobs)} website jobs")
+        return jobs
+    
     def get_job_status(self, job_id: str) -> Optional[Dict[str, Any]]:
         """
         Get job status from database

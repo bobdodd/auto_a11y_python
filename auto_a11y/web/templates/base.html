@@ -242,9 +242,28 @@
                         statusUrl = `/websites/${test.id}/test-status`;
                         detailUrl = `/websites/${test.id}`;
                     } else if (test.type === 'discovery') {
-                        // Discovery is tracked separately, don't check status here
-                        // It will be removed by the discovery polling in the page
-                        activeCount++;
+                        // Check if discovery is still running
+                        // If we have a job_id, check its status
+                        if (test.job_id) {
+                            try {
+                                const discoveryStatus = await $.get(`/websites/${test.id}/discovery-status?job_id=${test.job_id}`);
+                                if (discoveryStatus.status === 'running') {
+                                    activeCount++;
+                                } else {
+                                    // Discovery is no longer running, remove it
+                                    console.log(`Removing stale discovery for website ${test.id}, status: ${discoveryStatus.status}`);
+                                    this.removeTest(test.type, test.id);
+                                }
+                            } catch (error) {
+                                // If we can't check status, assume it's stale and remove it
+                                console.log(`Removing stale discovery for website ${test.id}, error checking status`);
+                                this.removeTest(test.type, test.id);
+                            }
+                        } else {
+                            // No job_id, this is a stale entry
+                            console.log(`Removing discovery without job_id for website ${test.id}`);
+                            this.removeTest(test.type, test.id);
+                        }
                         continue;
                     }
                     

@@ -38,6 +38,26 @@
             <button class="btn btn-warning me-2" id="cancelTestingBtn" style="display: none;">
                 <i class="bi bi-stop-circle"></i> Cancel Testing
             </button>
+            <div class="btn-group me-2">
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi bi-file-earmark-text"></i> Reports
+                </button>
+                <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">Site Structure</h6></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('html')">
+                        <i class="bi bi-filetype-html"></i> HTML</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('json')">
+                        <i class="bi bi-filetype-json"></i> JSON</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('csv')">
+                        <i class="bi bi-filetype-csv"></i> CSV</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header">Accessibility Report</h6></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('html')">
+                        <i class="bi bi-filetype-html"></i> HTML</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('xlsx')">
+                        <i class="bi bi-filetype-xlsx"></i> Excel</a></li>
+                </ul>
+            </div>
             <a href="{{ url_for('websites.edit_website', website_id=website.id) }}" class="btn btn-outline-primary">
                 <i class="bi bi-pencil"></i> Edit
             </a>
@@ -1042,6 +1062,49 @@ function cancelTesting() {
         console.error('Cancel testing failed:', status, error);
         alert('Failed to cancel testing');
     });
+}
+
+// Report generation functions
+function generateSiteStructureReport(format) {
+    // Create a form to submit the report request
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `{{ url_for('reports.generate_page_structure_report', website_id=website.id) }}`;
+    
+    const formatInput = document.createElement('input');
+    formatInput.type = 'hidden';
+    formatInput.name = 'format';
+    formatInput.value = format;
+    form.appendChild(formatInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+    
+    if (window.showNotification) {
+        showNotification('Report Generation', `Generating site structure report in ${format.toUpperCase()} format...`, 'info');
+    }
+}
+
+function generateAccessibilityReport(format) {
+    // Create a form to submit the report request
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `{{ url_for('reports.generate_website_report', website_id=website.id) }}`;
+    
+    const formatInput = document.createElement('input');
+    formatInput.type = 'hidden';
+    formatInput.name = 'format';
+    formatInput.value = format;
+    form.appendChild(formatInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+    
+    if (window.showNotification) {
+        showNotification('Report Generation', `Generating accessibility report in ${format.toUpperCase()} format...`, 'info');
+    }
 }
 
 // Clean up on page unload

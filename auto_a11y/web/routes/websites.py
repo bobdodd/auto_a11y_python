@@ -12,6 +12,27 @@ logger = logging.getLogger(__name__)
 websites_bp = Blueprint('websites', __name__)
 
 
+@websites_bp.route('/api/list')
+def api_list_websites():
+    """API endpoint to list all websites"""
+    try:
+        websites = current_app.db.get_all_websites()
+        return jsonify({
+            'success': True,
+            'websites': [
+                {
+                    'id': w.id,
+                    'name': w.name,
+                    'url': w.url,
+                    'project_id': w.project_id
+                } for w in websites
+            ]
+        })
+    except Exception as e:
+        logger.error(f"Error listing websites: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 @websites_bp.route('/<website_id>')
 def view_website(website_id):
     """View website details"""

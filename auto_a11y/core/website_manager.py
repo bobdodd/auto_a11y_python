@@ -33,6 +33,24 @@ class WebsiteManager:
         # Use the shared class-level storage
         self.active_jobs = WebsiteManager._shared_active_jobs
     
+    def cancel_discovery(self, job_id: str) -> bool:
+        """
+        Cancel a discovery job
+        
+        Args:
+            job_id: Job ID to cancel
+            
+        Returns:
+            True if cancelled, False if not found
+        """
+        job = self.active_jobs.get(job_id)
+        if job:
+            job.cancel()
+            logger.info(f"Cancelled discovery job {job_id}")
+            return True
+        logger.warning(f"Discovery job {job_id} not found in active jobs")
+        return False
+    
     def add_website(
         self,
         project_id: str,

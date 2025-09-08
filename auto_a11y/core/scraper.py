@@ -43,7 +43,8 @@ class ScrapingEngine:
     async def discover_website(
         self,
         website: Website,
-        progress_callback: Optional[callable] = None
+        progress_callback: Optional[callable] = None,
+        job: Optional['ScrapingJob'] = None
     ) -> List[Page]:
         """
         Discover all pages in a website
@@ -103,6 +104,11 @@ class ScrapingEngine:
             logger.info(f"Starting discovery with max_pages={website.scraping_config.max_pages}, max_depth={website.scraping_config.max_depth}")
             
             while self.queued_urls and depth <= website.scraping_config.max_depth and not max_pages_reached:
+                # Check for cancellation
+                if job and job.cancelled:
+                    logger.info(f"Discovery cancelled by user for website {website.id}")
+                    break
+                    
                 # Check if discovery has been running too long
                 elapsed_time = (datetime.now() - start_time).total_seconds()
                 if elapsed_time > max_discovery_time:
@@ -115,6 +121,12 @@ class ScrapingEngine:
                 logger.info(f"Processing depth {depth} with {len(current_batch)} URLs, discovered so far: {len(discovered_pages)}")
                 
                 for url in current_batch:
+                    # Check for cancellation
+                    if job and job.cancelled:
+                        logger.info(f"Discovery cancelled during URL processing for website {website.id}")
+                        max_pages_reached = True  # Use this flag to exit both loops
+                        break
+                    
                     # Check if browser is still running before each page
                     if not await self.browser_manager.is_running():
                         logger.error("Browser stopped during discovery, aborting")
@@ -624,6 +636,7 @@ class ScrapingJob:
         self.job_id = job_id
         self.max_pages = max_pages  # Store the override
         self.status = 'pending'
+        self.cancelled = False  # Add cancellation flag
         self.progress = {
             'pages_found': 0,
             'current_depth': 0,
@@ -633,6 +646,12 @@ class ScrapingJob:
             'completed_at': None,
             'error': None
         }
+    
+    def cancel(self):
+        """Cancel the scraping job"""
+        self.cancelled = True
+        self.status = 'cancelled'
+        logger.info(f"Scraping job {self.job_id} marked for cancellation")
     
     async def run(self, database: Database, browser_config: Dict[str, Any]):
         """
@@ -659,10 +678,11 @@ class ScrapingJob:
             # Create scraper
             scraper = ScrapingEngine(database, browser_config)
             
-            # Run discovery with progress callback
+            # Run discovery with progress callback and pass job for cancellation checking
             pages = await scraper.discover_website(
                 website=website,
-                progress_callback=self._update_progress
+                progress_callback=self._update_progress,
+                job=self  # Pass the job so scraper can check cancellation
             )
             
             # Check if discovery was stopped due to browser failure

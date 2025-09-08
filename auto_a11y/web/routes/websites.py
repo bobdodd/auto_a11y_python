@@ -287,6 +287,7 @@ def discovery_status(website_id):
 def cancel_discovery(website_id):
     """Cancel an active discovery job"""
     from auto_a11y.core.task_runner import task_runner
+    from auto_a11y.core.website_manager import WebsiteManager
     
     job_id = request.form.get('job_id') or request.json.get('job_id') if request.is_json else None
     
@@ -294,16 +295,21 @@ def cancel_discovery(website_id):
         return jsonify({'error': 'Job ID required'}), 400
     
     try:
-        # Cancel the job in task runner
-        cancelled = task_runner.cancel_task(job_id)
+        # First try to cancel in the WebsiteManager (this sets the cancellation flag)
+        website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+        manager_cancelled = website_manager.cancel_discovery(job_id)
         
-        if cancelled:
-            logger.info(f"Cancelled discovery job {job_id} for website {website_id}")
+        # Also try to cancel in task runner (though this may not stop running task)
+        task_cancelled = task_runner.cancel_task(job_id)
+        
+        if manager_cancelled or task_cancelled:
+            logger.info(f"Cancelled discovery job {job_id} for website {website_id} (manager: {manager_cancelled}, task: {task_cancelled})")
             return jsonify({
                 'success': True,
                 'message': 'Discovery cancelled successfully'
             })
         else:
+            logger.warning(f"Could not cancel discovery job {job_id} - not found in manager or task runner")
             return jsonify({
                 'success': False,
                 'message': 'Job not found or already completed'

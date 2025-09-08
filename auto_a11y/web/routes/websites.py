@@ -166,11 +166,14 @@ def discover_pages(website_id):
             logger.info(f"Discovery wrapper starting for website {website_id}, task_id: {task_id}")
             logger.info(f"WebsiteManager active jobs before discovery: {list(website_manager.active_jobs.keys())}")
             
+            # Pass the task_id so the job can check if it's been cancelled
+            from auto_a11y.core.task_runner import task_runner as tr
+            
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
                 result = loop.run_until_complete(
-                    website_manager.discover_pages(website_id, max_pages=max_pages, job_id=task_id)
+                    website_manager.discover_pages(website_id, max_pages=max_pages, job_id=task_id, task_runner=tr)
                 )
                 logger.info(f"Discovery wrapper completed, result job_id: {result.job_id if result else 'None'}")
                 return result
@@ -295,12 +298,17 @@ def cancel_discovery(website_id):
         return jsonify({'error': 'Job ID required'}), 400
     
     try:
+        logger.info(f"Attempting to cancel discovery job {job_id} for website {website_id}")
+        
         # First try to cancel in the WebsiteManager (this sets the cancellation flag)
         website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+        logger.info(f"Active jobs in manager: {list(website_manager.active_jobs.keys())}")
         manager_cancelled = website_manager.cancel_discovery(job_id)
+        logger.info(f"Manager cancellation result: {manager_cancelled}")
         
         # Also try to cancel in task runner (though this may not stop running task)
         task_cancelled = task_runner.cancel_task(job_id)
+        logger.info(f"Task runner cancellation result: {task_cancelled}")
         
         if manager_cancelled or task_cancelled:
             logger.info(f"Cancelled discovery job {job_id} for website {website_id} (manager: {manager_cancelled}, task: {task_cancelled})")

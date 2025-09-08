@@ -185,7 +185,8 @@ class WebsiteManager:
         website_id: str,
         progress_callback: Optional[callable] = None,
         max_pages: Optional[int] = None,
-        job_id: Optional[str] = None
+        job_id: Optional[str] = None,
+        task_runner: Optional[object] = None
     ) -> ScrapingJob:
         """
         Start page discovery for website
@@ -211,7 +212,7 @@ class WebsiteManager:
         # Create job with max_pages override
         if not job_id:
             job_id = f"discovery_{website_id}_{datetime.now().timestamp()}"
-        job = ScrapingJob(website_id, job_id, max_pages=max_pages)
+        job = ScrapingJob(website_id, job_id, max_pages=max_pages, task_runner=task_runner)
         
         # Store job in shared storage
         self.active_jobs[job_id] = job

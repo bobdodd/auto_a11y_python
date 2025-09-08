@@ -31,7 +31,7 @@ class Config:
     SECRET_KEY: str = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
     DEBUG: bool = os.getenv('DEBUG', 'True').lower() == 'true'
     HOST: str = os.getenv('HOST', '127.0.0.1')
-    PORT: int = int(os.getenv('PORT', 5000))
+    PORT: int = int(os.getenv('PORT', 5001))  # Changed from 5000 to avoid macOS AirPlay Receiver conflict
     
     # Database
     MONGODB_URI: str = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/')

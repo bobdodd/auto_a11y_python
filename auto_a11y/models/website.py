@@ -4,7 +4,7 @@ Website model for managing sites within projects
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from bson import ObjectId
 
 
@@ -51,6 +51,7 @@ class Website:
     last_tested: Optional[datetime] = None
     page_count: int = 0
     scraping_config: ScrapingConfig = field(default_factory=ScrapingConfig)
+    discovery_history: List[Dict[str, Any]] = field(default_factory=list)  # Track all discovery attempts
     _id: Optional[ObjectId] = None
     
     @property
@@ -91,5 +92,6 @@ class Website:
             last_tested=data.get('last_tested'),
             page_count=data.get('page_count', 0),
             scraping_config=ScrapingConfig.from_dict(data.get('scraping_config', {})),
+            discovery_history=data.get('discovery_history', []),
             _id=data.get('_id')
         )

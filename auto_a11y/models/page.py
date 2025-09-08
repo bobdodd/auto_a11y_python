@@ -17,6 +17,7 @@ class PageStatus(Enum):
     TESTED = "tested"
     ERROR = "error"
     SKIPPED = "skipped"
+    DISCOVERY_FAILED = "discovery_failed"  # Failed during discovery (timeout, redirect, etc)
 
 
 @dataclass
@@ -38,6 +39,7 @@ class Page:
     test_duration_ms: Optional[int] = None
     priority: str = "normal"  # high, normal, low
     depth: int = 0  # Crawl depth from start page
+    error_reason: Optional[str] = None  # Reason for discovery/test failure
     _id: Optional[ObjectId] = None
     
     @property
@@ -72,7 +74,8 @@ class Page:
             'pass_count': self.pass_count,
             'test_duration_ms': self.test_duration_ms,
             'priority': self.priority,
-            'depth': self.depth
+            'depth': self.depth,
+            'error_reason': self.error_reason
         }
         if self._id:
             data['_id'] = self._id
@@ -97,5 +100,6 @@ class Page:
             test_duration_ms=data.get('test_duration_ms'),
             priority=data.get('priority', 'normal'),
             depth=data.get('depth', 0),
+            error_reason=data.get('error_reason'),
             _id=data.get('_id')
         )

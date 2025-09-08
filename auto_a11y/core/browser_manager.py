@@ -341,15 +341,21 @@ class BrowserManager:
             # Check if the browser process is still alive
             if hasattr(self.browser, 'process') and self.browser.process:
                 if self.browser.process.returncode is not None:
+                    logger.warning("Browser process has terminated")
+                    self.browser = None  # Clear dead reference
                     return False
             # Try to verify connection is still alive
             try:
                 # Get browser version to check connection
                 await self.browser.version()
                 return True
-            except:
+            except Exception as e:
+                logger.warning(f"Browser connection lost: {e}")
+                self.browser = None  # Clear dead reference
                 return False
-        except:
+        except Exception as e:
+            logger.error(f"Error checking browser status: {e}")
+            self.browser = None  # Clear on any error
             return False
 
 

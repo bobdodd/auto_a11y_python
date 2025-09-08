@@ -15,7 +15,8 @@ from pyppeteer import launch
 from pyppeteer.errors import TimeoutError, PageError, NetworkError
 from bs4 import BeautifulSoup
 
-from auto_a11y.models import Page, PageStatus, Website
+from auto_a11y.models.page import Page, PageStatus
+from auto_a11y.models.website import Website
 from auto_a11y.core.database import Database
 from auto_a11y.core.browser_manager import BrowserManager
 
@@ -56,6 +57,14 @@ class ScrapingEngine:
         """
         logger.info(f"Starting discovery for website: {website.url}")
         
+        # Record discovery attempt in history
+        discovery_record = {
+            'started_at': datetime.now(),
+            'max_pages': website.scraping_config.max_pages,
+            'max_depth': website.scraping_config.max_depth,
+            'status': 'running'
+        }
+        
         # Reset discovery state
         self.discovered_urls.clear()
         self.queued_urls.clear()
@@ -87,9 +96,18 @@ class ScrapingEngine:
         try:
             depth = 0
             max_pages_reached = False
+            start_time = datetime.now()
+            max_discovery_time = 1800  # 30 minutes max
+            consecutive_failures = 0  # Track consecutive failures
+            max_consecutive_failures = 3  # Restart browser after 3 consecutive failures
             logger.info(f"Starting discovery with max_pages={website.scraping_config.max_pages}, max_depth={website.scraping_config.max_depth}")
             
             while self.queued_urls and depth <= website.scraping_config.max_depth and not max_pages_reached:
+                # Check if discovery has been running too long
+                elapsed_time = (datetime.now() - start_time).total_seconds()
+                if elapsed_time > max_discovery_time:
+                    logger.warning(f"Discovery timeout reached after {elapsed_time:.0f} seconds")
+                    break
                 # Get URLs at current depth
                 current_batch = list(self.queued_urls)
                 self.queued_urls.clear()
@@ -97,6 +115,12 @@ class ScrapingEngine:
                 logger.info(f"Processing depth {depth} with {len(current_batch)} URLs, discovered so far: {len(discovered_pages)}")
                 
                 for url in current_batch:
+                    # Check if browser is still running before each page
+                    if not await self.browser_manager.is_running():
+                        logger.error("Browser stopped during discovery, aborting")
+                        max_pages_reached = True  # Use this flag to exit both loops
+                        break
+                    
                     # Check if we've hit page limit
                     if len(discovered_pages) >= website.scraping_config.max_pages:
                         logger.warning(f"Reached max pages limit: {website.scraping_config.max_pages} (discovered: {len(discovered_pages)})")
@@ -105,6 +129,24 @@ class ScrapingEngine:
                     
                     # Skip if already discovered
                     if url in self.discovered_urls:
+                        continue
+                    
+                    # Pre-filter URLs that are known to cause problems
+                    # These often redirect to external sites or cause timeouts
+                    if '?share=' in url or '&share=' in url or '?nb=' in url or '&nb=' in url:
+                        logger.info(f"Skipping URL with problematic parameters: {url}")
+                        # Still record it as a failed page so user knows it was skipped
+                        failed_page = Page(
+                            website_id=website.id,
+                            url=url,
+                            title="Skipped: Share/social link",
+                            discovered_from=website.url if depth == 0 else None,
+                            depth=depth,
+                            status=PageStatus.DISCOVERY_FAILED,
+                            error_reason="Skipped: URL contains share/social parameters that typically redirect externally"
+                        )
+                        discovered_pages.append(failed_page)
+                        self.discovered_urls.add(url)
                         continue
                     
                     # Check robots.txt
@@ -124,15 +166,47 @@ class ScrapingEngine:
                     if page:
                         discovered_pages.append(page)
                         self.discovered_urls.add(url)
+                        # Reset failure counter on success
+                        if page.status != PageStatus.DISCOVERY_FAILED:
+                            consecutive_failures = 0
+                    # Note: Failed pages are already added to discovered_pages in _discover_page
                         
                         # Update progress
                         if progress_callback:
-                            await progress_callback({
+                            progress_data = {
                                 'pages_found': len(discovered_pages),
                                 'current_depth': depth,
                                 'queue_size': len(self.queued_urls),
                                 'current_url': url
-                            })
+                            }
+                            logger.info(f"Calling progress_callback with: pages_found={progress_data['pages_found']}, queue_size={progress_data['queue_size']}")
+                            await progress_callback(progress_data)
+                        else:
+                            logger.warning("No progress_callback provided to ScrapingEngine")
+                    else:
+                        # Page discovery failed
+                        consecutive_failures += 1
+                        logger.warning(f"Page discovery failed, consecutive failures: {consecutive_failures}")
+                        
+                        # If too many consecutive failures, try restarting browser
+                        if consecutive_failures >= max_consecutive_failures:
+                            logger.warning(f"Too many consecutive failures ({consecutive_failures}), attempting browser restart")
+                            try:
+                                await self.browser_manager.stop()
+                                await asyncio.sleep(2)  # Brief pause
+                                await self.browser_manager.start()
+                                logger.info("Browser restarted successfully")
+                                consecutive_failures = 0  # Reset counter
+                            except Exception as e:
+                                logger.error(f"Failed to restart browser: {e}")
+                                max_pages_reached = True
+                                break
+                        
+                        # Check if browser is still running
+                        if not await self.browser_manager.is_running():
+                            logger.error("Browser failed during page discovery, stopping")
+                            max_pages_reached = True
+                            break
                     
                     # Respect rate limiting
                     await asyncio.sleep(website.scraping_config.request_delay)
@@ -140,16 +214,48 @@ class ScrapingEngine:
                 depth += 1
             
             # Save discovered pages to database
+            saved_count = 0
             if discovered_pages:
                 saved_count = self.db.bulk_create_pages(discovered_pages)
                 logger.info(f"Saved {saved_count} new pages to database")
-                
-                # Update website last_scraped
-                website.last_scraped = datetime.now()
-                self.db.update_website(website)
+            
+            # Update discovery record with results
+            discovery_record['completed_at'] = datetime.now()
+            discovery_record['status'] = 'completed'
+            discovery_record['pages_discovered'] = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
+            discovery_record['pages_failed'] = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
+            discovery_record['total_pages'] = len(discovered_pages)
+            
+            # Update website with history
+            website.last_scraped = datetime.now()
+            if not hasattr(website, 'discovery_history'):
+                website.discovery_history = []
+            website.discovery_history.append(discovery_record)
+            self.db.update_website(website)
             
         except Exception as e:
             logger.error(f"Error during discovery: {e}", exc_info=True)
+            
+            # Update discovery record with error
+            discovery_record['completed_at'] = datetime.now()
+            discovery_record['status'] = 'failed'
+            discovery_record['error'] = str(e)[:500]
+            discovery_record['pages_discovered'] = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
+            discovery_record['pages_failed'] = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
+            discovery_record['total_pages'] = len(discovered_pages)
+            
+            # Save what we got so far
+            if discovered_pages:
+                saved_count = self.db.bulk_create_pages(discovered_pages)
+                logger.info(f"Saved {saved_count} pages before error")
+            
+            # Update website with history
+            if not hasattr(website, 'discovery_history'):
+                website.discovery_history = []
+            website.discovery_history.append(discovery_record)
+            website.last_scraped = datetime.now()
+            self.db.update_website(website)
+            
             if progress_callback:
                 await progress_callback({
                     'status': 'failed',
@@ -187,14 +293,31 @@ class ScrapingEngine:
         # Check if browser is still running
         if not await self.browser_manager.is_running():
             logger.error("Browser is not running, cannot discover page")
-            return None
+            # Return a failed page record
+            return Page(
+                website_id=website.id,
+                url=url,
+                title="Failed: Browser crashed",
+                discovered_from=website.url if depth == 0 else None,
+                depth=depth,
+                status=PageStatus.DISCOVERY_FAILED,
+                error_reason="Browser not running"
+            )
             
         page = None
         try:
             # Check browser connection before creating page
             if not self.browser_manager.browser:
                 logger.error("Browser instance is None")
-                return None
+                return Page(
+                    website_id=website.id,
+                    url=url,
+                    title="Failed: Browser error",
+                    discovered_from=website.url if depth == 0 else None,
+                    depth=depth,
+                    status=PageStatus.DISCOVERY_FAILED,
+                    error_reason="Browser instance unavailable"
+                )
                 
             # Create a new page
             page = await self.browser_manager.browser.newPage()
@@ -205,20 +328,68 @@ class ScrapingEngine:
                 'height': self.browser_manager.config.get('viewport_height', 1080)
             })
             
-            # Set navigation timeout
-            page.setDefaultNavigationTimeout(60000)
+            # Set navigation timeout - shorter to avoid hanging on problematic pages
+            page.setDefaultNavigationTimeout(20000)  # 20 seconds, same as goto timeout
             
-            # Navigate to URL with longer timeout and less strict wait condition
-            response = await self.browser_manager.goto(
-                page=page,
-                url=url,
-                wait_until='load',  # Less strict than networkidle2
-                timeout=60000  # 60 seconds timeout
-            )
-            
-            if not response:
-                logger.warning(f"Failed to load page: {url}")
-                return None
+            # Navigate to URL with shorter timeout and less strict wait condition
+            try:
+                response = await self.browser_manager.goto(
+                    page=page,
+                    url=url,
+                    wait_until='domcontentloaded',  # Just wait for DOM, not all resources
+                    timeout=15000  # 15 seconds timeout per page - shorter to fail faster
+                )
+                
+                if not response:
+                    logger.warning(f"Failed to load page: {url}")
+                    return None
+                
+                # Check if we were redirected to an external domain
+                final_url = page.url
+                if final_url and final_url != url:
+                    final_parsed = urlparse(final_url)
+                    final_domain = final_parsed.netloc
+                    
+                    # Log all redirects for debugging
+                    logger.info(f"Page redirected: {url} -> {final_url}")
+                    
+                    if final_domain and final_domain != base_domain:
+                        # Check if it's a subdomain of our base domain
+                        if not final_domain.endswith(f'.{base_domain}'):
+                            logger.warning(f"SKIPPING: Redirected to external domain {final_domain} from {url}")
+                            # Create a failed page record
+                            failed_page = Page(
+                                website_id=website.id,
+                                url=url,
+                                title=f"Failed: External redirect",
+                                discovered_from=website.url if depth == 0 else None,
+                                depth=depth,
+                                status=PageStatus.DISCOVERY_FAILED,
+                                error_reason=f"Redirected to external domain: {final_domain}"
+                            )
+                            return failed_page
+                        else:
+                            logger.debug(f"Redirect to subdomain accepted: {final_domain}")
+                            
+            except Exception as e:
+                logger.warning(f"Navigation failed for {url}: {e}")
+                # IMPORTANT: Close the page to prevent browser hanging
+                if page:
+                    try:
+                        await page.close()
+                    except:
+                        pass
+                # Create a failed page record
+                failed_page = Page(
+                    website_id=website.id,
+                    url=url,
+                    title="Failed: Navigation error",
+                    discovered_from=website.url if depth == 0 else None,
+                    depth=depth,
+                    status=PageStatus.DISCOVERY_FAILED,
+                    error_reason=f"Navigation failed: {str(e)[:200]}"
+                )
+                return failed_page
             
             # Get page title
             title = await self.browser_manager.get_page_title(page)
@@ -243,8 +414,28 @@ class ScrapingEngine:
                 
         except TimeoutError:
             logger.warning(f"Timeout loading page: {url}")
+            # Create a failed page record for timeout
+            return Page(
+                website_id=website.id,
+                url=url,
+                title="Failed: Timeout",
+                discovered_from=website.url if depth == 0 else None,
+                depth=depth,
+                status=PageStatus.DISCOVERY_FAILED,
+                error_reason="Page load timeout (20 seconds)"
+            )
         except Exception as e:
             logger.error(f"Error discovering page {url}: {e}", exc_info=True)
+            # Create a failed page record for other errors
+            return Page(
+                website_id=website.id,
+                url=url,
+                title="Failed: Error",
+                discovered_from=website.url if depth == 0 else None,
+                depth=depth,
+                status=PageStatus.DISCOVERY_FAILED,
+                error_reason=f"Discovery error: {str(e)[:200]}"
+            )
         finally:
             # Close the page
             if page:
@@ -474,9 +665,17 @@ class ScrapingJob:
                 progress_callback=self._update_progress
             )
             
-            self.status = 'completed'
-            self.progress['completed_at'] = datetime.now()
-            self.progress['pages_found'] = len(pages)
+            # Check if discovery was stopped due to browser failure
+            if not await scraper.browser_manager.is_running():
+                logger.error(f"Discovery job {self.job_id} stopped due to browser failure")
+                self.status = 'failed'
+                self.progress['error'] = 'Browser stopped unexpectedly during discovery'
+                self.progress['completed_at'] = datetime.now()
+                self.progress['pages_found'] = len(pages) if pages else 0
+            else:
+                self.status = 'completed'
+                self.progress['completed_at'] = datetime.now()
+                self.progress['pages_found'] = len(pages)
             
         except Exception as e:
             logger.error(f"Scraping job {self.job_id} failed: {e}")
@@ -487,4 +686,4 @@ class ScrapingJob:
     async def _update_progress(self, progress: dict):
         """Update job progress"""
         self.progress.update(progress)
-        logger.debug(f"Updated job progress: pages_found={self.progress.get('pages_found', 0)}, status={self.status}")
+        logger.info(f"ScrapingJob._update_progress called: pages_found={self.progress.get('pages_found', 0)}, queue_size={self.progress.get('queue_size', 0)}, current_url={self.progress.get('current_url', 'None')}, job_id={self.job_id}")

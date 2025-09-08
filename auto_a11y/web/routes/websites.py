@@ -191,8 +191,15 @@ def discover_pages(website_id):
             user_id = session.get('user_id') if session else None
             session_id = session.get('session_id') if session else None
             
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
+            # Try to get the running loop, or create a new one
+            try:
+                loop = asyncio.get_running_loop()
+                logger.info("Using existing event loop for discovery")
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                logger.info("Created new event loop for discovery")
+            
             try:
                 result = loop.run_until_complete(
                     website_manager.discover_pages(
@@ -205,8 +212,17 @@ def discover_pages(website_id):
                 )
                 logger.info(f"Discovery wrapper completed, result job_id: {result.job_id if result else 'None'}")
                 return result
+            except Exception as e:
+                logger.error(f"Error in discovery wrapper: {e}")
+                raise
             finally:
-                loop.close()
+                # Don't close the loop immediately - let it complete tasks
+                try:
+                    if not loop.is_running():
+                        loop.close()
+                        logger.info("Closed discovery event loop")
+                except:
+                    pass
         
         submitted_id = task_runner.submit_task(
             func=discovery_wrapper,
@@ -455,8 +471,15 @@ def test_all_pages(website_id):
             user_id = session.get('user_id') if session else None
             session_id = session.get('session_id') if session else None
             
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
+            # Try to get the running loop, or create a new one
+            try:
+                loop = asyncio.get_running_loop()
+                logger.info("Using existing event loop")
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                logger.info("Created new event loop")
+            
             try:
                 # Get page IDs for testing
                 page_ids = [p.id for p in testable_pages]
@@ -476,8 +499,18 @@ def test_all_pages(website_id):
                 )
                 logger.info(f"Testing wrapper completed, result job_id: {result.job_id if result else 'None'}")
                 return result
+            except Exception as e:
+                logger.error(f"Error in testing wrapper: {e}")
+                raise
             finally:
-                loop.close()
+                # Don't close the loop immediately - let it complete tasks
+                # Only close if we created a new loop
+                try:
+                    if not loop.is_running():
+                        loop.close()
+                        logger.info("Closed event loop")
+                except:
+                    pass
         
         # Submit testing task
         submitted_id = task_runner.submit_task(

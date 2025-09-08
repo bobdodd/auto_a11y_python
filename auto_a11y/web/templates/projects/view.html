@@ -16,12 +16,20 @@
             <p class="text-muted">{{ project.description or 'No description' }}</p>
         </div>
         <div>
-            <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-pencil"></i> Edit
-            </a>
-            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                <i class="bi bi-trash"></i> Delete
-            </button>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-success" onclick="testAllWebsites()">
+                    <i class="bi bi-play-fill"></i> Test All Websites
+                </button>
+                <a href="{{ url_for('projects.generate_project_report', project_id=project.id) }}" class="btn btn-info">
+                    <i class="bi bi-file-earmark-text"></i> Project Report
+                </a>
+                <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" class="btn btn-outline-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+            </div>
         </div>
     </div>
 
@@ -184,6 +192,55 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-search"></i> Start Discovery
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Test All Websites Modal -->
+<div class="modal fade" id="testAllModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Test All Websites in Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="testAllForm" method="POST" action="{{ url_for('projects.test_project', project_id=project.id) }}">
+                <div class="modal-body">
+                    <p>This will test all websites in the project "{{ project.name }}".</p>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        <strong>{{ websites|length }} website(s)</strong> will be tested across multiple base URLs.
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="testAllPages" name="test_all" value="true" checked>
+                        <label class="form-check-label" for="testAllPages">
+                            Test all pages (unchecked = only untested pages)
+                        </label>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="takeScreenshots" name="take_screenshot" value="true" checked>
+                        <label class="form-check-label" for="takeScreenshots">
+                            Take screenshots of issues
+                        </label>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="runAI" name="run_ai" value="true">
+                        <label class="form-check-label" for="runAI">
+                            Run AI analysis (requires OpenAI API key)
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-play-fill"></i> Start Testing All Websites
                     </button>
                 </div>
             </form>
@@ -497,6 +554,12 @@ function stopDiscoveryPolling(websiteId) {
         delete discoveryPollingIntervals[websiteId];
         delete discoveryJobs[websiteId];
     }
+}
+
+function testAllWebsites() {
+    // Open modal for project-level testing options
+    const modal = new bootstrap.Modal(document.getElementById('testAllModal'));
+    modal.show();
 }
 
 function testWebsite(websiteId) {

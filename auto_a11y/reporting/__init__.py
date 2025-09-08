@@ -10,6 +10,7 @@ from auto_a11y.reporting.formatters import (
     PDFFormatter
 )
 from auto_a11y.reporting.page_structure_report import PageStructureReport
+from auto_a11y.reporting.project_report import ProjectReport
 
 __all__ = [
     'ReportGenerator',
@@ -17,5 +18,6 @@ __all__ = [
     'JSONFormatter',
     'CSVFormatter',
     'PDFFormatter',
-    'PageStructureReport'
+    'PageStructureReport',
+    'ProjectReport'
 ]

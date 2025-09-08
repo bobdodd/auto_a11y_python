@@ -34,6 +34,10 @@
             <button class="btn btn-primary me-2" id="testAllBtn">
                 <i class="bi bi-play-fill"></i> Test All Pages
             </button>
+            <!-- Cancel testing button that appears during testing -->
+            <button class="btn btn-warning me-2" id="cancelTestingBtn" style="display: none;">
+                <i class="bi bi-stop-circle"></i> Cancel Testing
+            </button>
             <a href="{{ url_for('websites.edit_website', website_id=website.id) }}" class="btn btn-outline-primary">
                 <i class="bi bi-pencil"></i> Edit
             </a>
@@ -334,6 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let websiteStatusInterval = null;
 let testingInProgress = false;
+let testingJobId = null;
 let discoveryStatusInterval = null;
 let discoveryJobId = null;
 
@@ -601,15 +606,31 @@ $(document).ready(function() {
         if (!confirm('Test all pages? This may take some time.')) return;
         
         const btn = $(this);
+        const cancelBtn = $('#cancelTestingBtn');
+        
         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Starting...');
         
         $.post("{{ url_for('websites.test_all_pages', website_id=website.id) }}", function(data) {
             console.log('Test all response:', data);
             
             if (data.success) {
+                testingJobId = data.job_id;
+                
+                // Show cancel button
+                cancelBtn.show();
+                
                 // Add to global tracking if available
-                if (typeof trackWebsiteTest !== 'undefined') {
-                    trackWebsiteTest('{{ website.id }}', '{{ website.display_name }}');
+                if (typeof TestTracker !== 'undefined') {
+                    const tests = TestTracker.getActiveTests();
+                    tests['testing_{{ website.id }}'] = {
+                        type: 'testing',
+                        id: '{{ website.id }}',
+                        job_id: data.job_id,
+                        description: `Testing ${data.pages_queued} pages for {{ website.display_name }}`,
+                        startTime: Date.now()
+                    };
+                    localStorage.setItem(TestTracker.STORAGE_KEY, JSON.stringify(tests));
+                    TestTracker.startTracking();
                 }
                 
                 if (window.showNotification) {
@@ -622,16 +643,9 @@ $(document).ready(function() {
                 btn.html(`<span class="spinner-border spinner-border-sm"></span> Testing: 0/${data.pages_queued}`);
                 
                 // Start polling for status immediately
-                console.log('Starting status polling...');
-                startWebsiteStatusPolling();
+                console.log('Starting testing status polling with job_id:', testingJobId);
+                startTestingStatusPolling();
                 
-                // Also trigger an immediate page refresh for the table to show queued status
-                setTimeout(() => {
-                    document.querySelectorAll('.page-status').forEach(cell => {
-                        const pageId = cell.getAttribute('data-page-id');
-                        updatePageStatus(pageId, 'queued');
-                    });
-                }, 500);
             } else {
                 alert(data.message || 'Failed to queue tests');
                 btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> Test All Pages');
@@ -641,6 +655,13 @@ $(document).ready(function() {
             alert('Failed to start testing');
             btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> Test All Pages');
         });
+    });
+    
+    // Wire up the cancel testing button
+    $('#cancelTestingBtn').click(function() {
+        if (confirm('Are you sure you want to cancel the testing process?')) {
+            cancelTesting();
+        }
     });
     
     $('#addPageForm').submit(function(e) {
@@ -737,11 +758,27 @@ function cancelDiscovery() {
                 alert('Failed to cancel discovery: ' + (data.message || 'Unknown error'));
             }
         }
-    ).fail(function() {
+    ).fail(function(xhr, status, error) {
         // Re-enable cancel button on failure
         cancelBtn.prop('disabled', false);
         btn.html('<span class="spinner-border spinner-border-sm"></span> Discovery Running...');
-        alert('Failed to cancel discovery');
+        console.error('Cancel discovery failed:', status, error);
+        console.error('Response:', xhr.responseText);
+        
+        // Try to parse error message
+        let errorMsg = 'Failed to cancel discovery';
+        try {
+            const response = JSON.parse(xhr.responseText);
+            if (response.error) {
+                errorMsg += ': ' + response.error;
+            }
+        } catch(e) {
+            // If not JSON, show the raw error
+            if (xhr.responseText) {
+                errorMsg += ': ' + xhr.responseText.substring(0, 200);
+            }
+        }
+        alert(errorMsg);
     });
 }
 
@@ -847,9 +884,170 @@ function stopDiscoveryPolling() {
     }, 3000);
 }
 
+function startTestingStatusPolling() {
+    if (websiteStatusInterval) return;
+    
+    const btn = $('#testAllBtn');
+    const cancelBtn = $('#cancelTestingBtn');
+    
+    testingInProgress = true;
+    
+    websiteStatusInterval = setInterval(() => {
+        const url = testingJobId 
+            ? `{{ url_for('websites.test_status', website_id=website.id) }}?job_id=${testingJobId}`
+            : `{{ url_for('websites.test_status', website_id=website.id) }}`;
+            
+        $.get(url, function(data) {
+            console.log('Testing status:', data);
+            
+            if (data.status === 'running') {
+                // Update button with progress
+                const tested = data.pages_tested || 0;
+                const total = data.total_pages || 0;
+                btn.html(`<span class="spinner-border spinner-border-sm"></span> Testing: ${tested}/${total}`);
+                
+                // Update current page if available
+                if (data.current_page) {
+                    btn.attr('title', `Currently testing: ${data.current_page}`);
+                }
+            } else if (data.status === 'completed') {
+                stopTestingStatusPolling();
+                
+                // Update button
+                btn.prop('disabled', false)
+                   .html('<i class="bi bi-check-circle"></i> Testing Complete');
+                
+                // Remove from global tracking
+                if (typeof TestTracker !== 'undefined') {
+                    TestTracker.removeTest('testing', '{{ website.id }}');
+                }
+                
+                // Show completion notification
+                if (window.showNotification) {
+                    const message = `Tested ${data.pages_tested} pages: ${data.pages_passed} passed, ${data.pages_failed} failed`;
+                    showNotification('Testing Complete', message, 'success');
+                }
+                
+                // Refresh page to show results
+                setTimeout(() => location.reload(), 2000);
+            } else if (data.status === 'cancelled') {
+                stopTestingStatusPolling();
+                
+                // Update button
+                btn.prop('disabled', false)
+                   .html('<i class="bi bi-x-circle"></i> Testing Cancelled');
+                
+                // Remove from global tracking
+                if (typeof TestTracker !== 'undefined') {
+                    TestTracker.removeTest('testing', '{{ website.id }}');
+                }
+                
+                // Show cancellation notification
+                if (window.showNotification) {
+                    showNotification('Testing Cancelled', data.message || 'Testing was cancelled', 'warning');
+                }
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    btn.html('<i class="bi bi-play-fill"></i> Test All Pages');
+                }, 3000);
+            } else if (data.status === 'failed') {
+                stopTestingStatusPolling();
+                
+                // Update button
+                btn.prop('disabled', false)
+                   .html('<i class="bi bi-x-circle"></i> Testing Failed');
+                
+                // Remove from global tracking
+                if (typeof TestTracker !== 'undefined') {
+                    TestTracker.removeTest('testing', '{{ website.id }}');
+                }
+                
+                // Show error
+                alert('Testing failed: ' + (data.error || 'Unknown error'));
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    btn.html('<i class="bi bi-play-fill"></i> Test All Pages');
+                }, 3000);
+            }
+        }).fail(function() {
+            console.error('Failed to check testing status');
+        });
+    }, 2000); // Poll every 2 seconds
+}
+
+function stopTestingStatusPolling() {
+    if (websiteStatusInterval) {
+        clearInterval(websiteStatusInterval);
+        websiteStatusInterval = null;
+    }
+    testingInProgress = false;
+    testingJobId = null;
+    
+    // Hide the cancel button
+    $('#cancelTestingBtn').hide();
+    
+    // Re-enable test button
+    const testBtn = $('#testAllBtn');
+    if (testBtn) {
+        testBtn.prop('disabled', false).removeAttr('title');
+    }
+}
+
+function cancelTesting() {
+    if (!testingJobId) {
+        alert('No testing job to cancel');
+        return;
+    }
+    
+    const btn = $('#testAllBtn');
+    const cancelBtn = $('#cancelTestingBtn');
+    
+    // Disable cancel button and update test button
+    cancelBtn.prop('disabled', true);
+    btn.html('<span class="spinner-border spinner-border-sm"></span> Cancelling...');
+    
+    $.post(`{{ url_for('websites.cancel_testing', website_id=website.id) }}`, 
+        { job_id: testingJobId }, 
+        function(data) {
+            if (data.success) {
+                stopTestingStatusPolling();
+                
+                // Hide cancel button and reset test button
+                cancelBtn.hide().prop('disabled', false);
+                btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> Test All Pages');
+                
+                // Remove from global tracking
+                if (typeof TestTracker !== 'undefined') {
+                    TestTracker.removeTest('testing', '{{ website.id }}');
+                }
+                
+                if (window.showNotification) {
+                    showNotification('Testing Cancelled', data.message, 'warning');
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                // Re-enable cancel button on failure
+                cancelBtn.prop('disabled', false);
+                btn.html('<span class="spinner-border spinner-border-sm"></span> Testing...');
+                alert('Failed to cancel testing: ' + (data.message || 'Unknown error'));
+            }
+        }
+    ).fail(function(xhr, status, error) {
+        // Re-enable cancel button on failure
+        cancelBtn.prop('disabled', false);
+        btn.html('<span class="spinner-border spinner-border-sm"></span> Testing...');
+        console.error('Cancel testing failed:', status, error);
+        alert('Failed to cancel testing');
+    });
+}
+
 // Clean up on page unload
 window.addEventListener('beforeunload', function() {
     stopWebsiteStatusPolling();
+    stopTestingStatusPolling();
     stopDiscoveryPolling();
 });
 </script>

@@ -6,7 +6,9 @@ from .database import Database
 from .browser_manager import BrowserManager
 from .project_manager import ProjectManager
 from .website_manager import WebsiteManager
-from .scraper import ScrapingEngine, ScrapingJob
+from .scraper import ScrapingEngine
+from .scraping_job import ScrapingJob
+from .job_manager import JobManager
 
 __all__ = [
     'Database',
@@ -14,5 +16,6 @@ __all__ = [
     'ProjectManager',
     'WebsiteManager',
     'ScrapingEngine',
-    'ScrapingJob'
+    'ScrapingJob',
+    'JobManager'
 ]

@@ -38,6 +38,9 @@
             <button class="btn btn-warning me-2" id="cancelTestingBtn" style="display: none;">
                 <i class="bi bi-stop-circle"></i> Cancel Testing
             </button>
+            <a href="{{ url_for('websites.view_documents', website_id=website.id) }}" class="btn btn-outline-info me-2">
+                <i class="bi bi-file-earmark"></i> Documents
+            </a>
             <div class="btn-group me-2">
                 <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="bi bi-file-earmark-text"></i> Reports

@@ -284,6 +284,67 @@ def test_status(page_id):
     })
 
 
+@pages_bp.route('/<page_id>/cancel-test', methods=['POST'])
+def cancel_test(page_id):
+    """Cancel a queued or running page test"""
+    from auto_a11y.core.task_runner import task_runner
+    
+    page = current_app.db.get_page(page_id)
+    if not page:
+        return jsonify({'error': 'Page not found'}), 404
+    
+    # Check if page is actually queued or testing
+    if page.status not in [PageStatus.QUEUED, PageStatus.TESTING]:
+        return jsonify({
+            'success': False,
+            'message': f'Page is not being tested (status: {page.status.value})'
+        })
+    
+    # Try to cancel the task
+    job_id = request.form.get('job_id')
+    
+    # Look for task by pattern if no job_id provided
+    if not job_id:
+        # Look for any active task for this page
+        task_pattern = f'test_page_{page_id}_'
+        active_tasks = task_runner.get_active_tasks()
+        
+        for task_id in active_tasks:
+            if task_id.startswith(task_pattern):
+                job_id = task_id
+                break
+    
+    cancelled = False
+    if job_id:
+        try:
+            cancelled = task_runner.cancel_task(job_id)
+            logger.info(f"Task cancellation attempt for {job_id}: {cancelled}")
+        except Exception as e:
+            logger.error(f"Error cancelling task {job_id}: {e}")
+    
+    # Update page status back to discovered/tested based on history
+    if cancelled or page.status == PageStatus.QUEUED:
+        # Check if page has been tested before
+        test_history = current_app.db.get_test_results(page_id=page_id, limit=1)
+        if test_history:
+            page.status = PageStatus.TESTED
+        else:
+            page.status = PageStatus.DISCOVERED
+        
+        current_app.db.update_page(page)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Test cancelled successfully',
+            'new_status': page.status.value
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': 'Could not cancel test - it may have already started'
+        })
+
+
 @pages_bp.route('/<page_id>/delete', methods=['POST'])
 def delete_page(page_id):
     """Delete page"""

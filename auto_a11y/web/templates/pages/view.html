@@ -64,10 +64,16 @@
                 </a>
             </p>
         </div>
-        <div>
-            <button class="btn btn-primary" onclick="testPage('{{ page.id }}')">
+        <div id="page-actions">
+            {% if page.status.value in ['queued', 'testing'] %}
+            <button class="btn btn-danger" onclick="cancelPageTest('{{ page.id }}')" id="cancel-test-btn">
+                <i class="bi bi-x-circle"></i> Cancel Test
+            </button>
+            {% else %}
+            <button class="btn btn-primary" onclick="testPage('{{ page.id }}')" id="run-test-btn">
                 <i class="bi bi-play"></i> Run Test
             </button>
+            {% endif %}
             <a href="{{ url_for('pages.edit_page', page_id=page.id) }}" class="btn btn-outline-primary">
                 <i class="bi bi-pencil"></i> Edit
             </a>
@@ -1701,9 +1707,87 @@ function stopStatusPolling() {
     testInProgress = false;
 }
 
+function updateActionButtons(mode) {
+    const actionsDiv = document.getElementById('page-actions');
+    if (!actionsDiv) return;
+    
+    const editBtn = actionsDiv.querySelector('a[href*="edit"]');
+    
+    if (mode === 'cancel') {
+        // Replace with cancel button
+        actionsDiv.innerHTML = `
+            <button class="btn btn-danger" onclick="cancelPageTest('{{ page.id }}')" id="cancel-test-btn">
+                <i class="bi bi-x-circle"></i> Cancel Test
+            </button>
+            ${editBtn ? editBtn.outerHTML : ''}
+        `;
+    } else if (mode === 'run') {
+        // Replace with run test button
+        actionsDiv.innerHTML = `
+            <button class="btn btn-primary" onclick="testPage('{{ page.id }}')" id="run-test-btn">
+                <i class="bi bi-play"></i> Run Test
+            </button>
+            ${editBtn ? editBtn.outerHTML : ''}
+        `;
+    }
+}
+
+function cancelPageTest(pageId) {
+    const cancelBtn = document.getElementById('cancel-test-btn');
+    if (cancelBtn) {
+        cancelBtn.disabled = true;
+        cancelBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Cancelling...';
+    }
+    
+    const postData = {};
+    if (window.currentTestJobId) {
+        postData.job_id = window.currentTestJobId;
+    }
+    
+    $.post(`/pages/${pageId}/cancel-test`, postData, function(data) {
+        if (data.success) {
+            // Stop polling
+            stopStatusPolling();
+            
+            // Update status badge
+            updateStatusBadge(data.new_status || 'discovered');
+            
+            // Replace Cancel button with Run Test button
+            updateActionButtons('run');
+            
+            // Clear job ID
+            window.currentTestJobId = null;
+            
+            // Remove from global tracking if available
+            if (typeof TestTracker !== 'undefined') {
+                TestTracker.removeTest(`test_page_${pageId}`);
+            }
+            
+            // Show notification
+            if (window.showNotification) {
+                showNotification('Test Cancelled', 'The page test has been cancelled.', 'warning');
+            }
+        } else {
+            alert('Failed to cancel test: ' + (data.message || 'Unknown error'));
+            
+            // Re-enable button
+            if (cancelBtn) {
+                cancelBtn.disabled = false;
+                cancelBtn.innerHTML = '<i class="bi bi-x-circle"></i> Cancel Test';
+            }
+        }
+    }).fail(function() {
+        alert('Failed to cancel test');
+        if (cancelBtn) {
+            cancelBtn.disabled = false;
+            cancelBtn.innerHTML = '<i class="bi bi-x-circle"></i> Cancel Test';
+        }
+    });
+}
+
 function testPage(pageId) {
     // Disable test button
-    const testBtn = document.querySelector('button[onclick*="testPage"]');
+    const testBtn = document.getElementById('run-test-btn');
     if (testBtn) {
         testBtn.disabled = true;
         testBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Starting Test...';
@@ -1718,11 +1802,17 @@ function testPage(pageId) {
     // Run test
     $.post(`/pages/${pageId}/test`, function(data) {
         if (data.success) {
+            // Store job ID for potential cancellation
+            window.currentTestJobId = data.job_id;
+            
             // Hide modal
             modal.hide();
             
             // Update status immediately
             updateStatusBadge('queued');
+            
+            // Replace Run Test button with Cancel button
+            updateActionButtons('cancel');
             
             // Add to global tracking
             const pageTitle = '{{ page.title or page.url }}';

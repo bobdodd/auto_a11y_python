@@ -264,9 +264,15 @@
                                    class="btn btn-sm btn-primary">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <button class="btn btn-sm btn-success" onclick="testPage('{{ page.id }}')">
+                                {% if page.status.value in ['queued', 'testing'] %}
+                                <button class="btn btn-sm btn-danger page-test-btn" data-page-id="{{ page.id }}" onclick="cancelPageTest('{{ page.id }}')">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                                {% else %}
+                                <button class="btn btn-sm btn-success page-test-btn" data-page-id="{{ page.id }}" onclick="testPage('{{ page.id }}')">
                                     <i class="bi bi-play"></i>
                                 </button>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
@@ -708,6 +714,12 @@ function testPage(pageId) {
     
     $.post(`/pages/${pageId}/test`, function(data) {
         if (data.success) {
+            // Store job ID for potential cancellation
+            if (!window.pageTestJobs) {
+                window.pageTestJobs = {};
+            }
+            window.pageTestJobs[pageId] = data.job_id;
+            
             // Add to global tracking if available
             if (typeof trackPageTest !== 'undefined') {
                 trackPageTest(pageId, 'Page');
@@ -715,6 +727,13 @@ function testPage(pageId) {
             
             // Update status immediately
             updatePageStatus(pageId, 'queued');
+            
+            // Change button to cancel
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-danger');
+            btn.onclick = function() { cancelPageTest(pageId); };
+            btn.innerHTML = '<i class="bi bi-x-circle"></i>';
+            btn.disabled = false;
             
             if (window.showNotification) {
                 showNotification('Test Started', 'Page queued for testing', 'info');
@@ -724,8 +743,6 @@ function testPage(pageId) {
             if (!websiteStatusInterval) {
                 startWebsiteStatusPolling();
             }
-            
-            btn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
         } else {
             btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-play"></i>';
@@ -735,6 +752,61 @@ function testPage(pageId) {
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-play"></i>';
         alert('Failed to start test');
+    });
+}
+
+function cancelPageTest(pageId) {
+    const btn = event.target ? event.target.closest('button') : document.querySelector(`button[data-page-id="${pageId}"]`);
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    }
+    
+    const postData = {};
+    if (window.pageTestJobs && window.pageTestJobs[pageId]) {
+        postData.job_id = window.pageTestJobs[pageId];
+    }
+    
+    $.post(`/pages/${pageId}/cancel-test`, postData, function(data) {
+        if (data.success) {
+            // Update status
+            updatePageStatus(pageId, data.new_status || 'discovered');
+            
+            // Change button back to test
+            if (btn) {
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-success');
+                btn.onclick = function() { testPage(pageId); };
+                btn.innerHTML = '<i class="bi bi-play"></i>';
+                btn.disabled = false;
+            }
+            
+            // Clear job ID
+            if (window.pageTestJobs) {
+                delete window.pageTestJobs[pageId];
+            }
+            
+            // Remove from global tracking if available
+            if (typeof TestTracker !== 'undefined') {
+                TestTracker.removeTest(`test_page_${pageId}`);
+            }
+            
+            if (window.showNotification) {
+                showNotification('Test Cancelled', 'Page test has been cancelled', 'warning');
+            }
+        } else {
+            alert('Failed to cancel test: ' + (data.message || 'Unknown error'));
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-x-circle"></i>';
+            }
+        }
+    }).fail(function() {
+        alert('Failed to cancel test');
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-x-circle"></i>';
+        }
     });
 }
 

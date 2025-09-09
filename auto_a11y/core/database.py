@@ -37,6 +37,7 @@ class Database:
         self.websites: Collection = self.db.websites
         self.pages: Collection = self.db.pages
         self.test_results: Collection = self.db.test_results
+        self.document_references: Collection = self.db.document_references
         
         # Create indexes
         self._create_indexes()
@@ -62,6 +63,11 @@ class Database:
         # Test results
         self.test_results.create_index("page_id")
         self.test_results.create_index("test_date")
+        
+        # Document references
+        self.document_references.create_index("website_id")
+        self.document_references.create_index("document_url")
+        self.document_references.create_index([("website_id", 1), ("document_url", 1)])
     
     def test_connection(self) -> bool:
         """Test database connection"""
@@ -395,3 +401,65 @@ class Database:
             "total_warnings": total_warnings,
             "test_coverage": (tested_pages / total_pages * 100) if total_pages > 0 else 0
         }
+    
+    # Document Reference methods
+    def add_document_reference(self, doc_ref: 'DocumentReference') -> str:
+        """Add or update a document reference"""
+        from auto_a11y.models import DocumentReference
+        
+        # Check if this document already exists for this website
+        existing = self.document_references.find_one({
+            'website_id': doc_ref.website_id,
+            'document_url': doc_ref.document_url
+        })
+        
+        if existing:
+            # Update existing reference
+            self.document_references.update_one(
+                {'_id': existing['_id']},
+                {
+                    '$set': {
+                        'last_seen': doc_ref.last_seen,
+                        'via_redirect': doc_ref.via_redirect or existing.get('via_redirect', False)
+                    },
+                    '$inc': {'seen_count': 1},
+                    '$addToSet': {'referring_pages': doc_ref.referring_page_url}
+                }
+            )
+            return str(existing['_id'])
+        else:
+            # Add new reference
+            doc_data = doc_ref.to_dict()
+            doc_data['referring_pages'] = [doc_ref.referring_page_url]
+            result = self.document_references.insert_one(doc_data)
+            return str(result.inserted_id)
+    
+    def get_document_references(self, website_id: str, internal_only: bool = None) -> List['DocumentReference']:
+        """Get document references for a website"""
+        from auto_a11y.models import DocumentReference
+        
+        query = {'website_id': website_id}
+        if internal_only is not None:
+            query['is_internal'] = internal_only
+        
+        docs = self.document_references.find(query)
+        return [DocumentReference.from_dict(doc) for doc in docs]
+    
+    def get_all_document_references(self, project_id: str = None) -> List['DocumentReference']:
+        """Get all document references, optionally filtered by project"""
+        from auto_a11y.models import DocumentReference
+        
+        if project_id:
+            # Get all websites for the project first
+            websites = self.get_websites(project_id)
+            website_ids = [w.id for w in websites]
+            docs = self.document_references.find({'website_id': {'$in': website_ids}})
+        else:
+            docs = self.document_references.find({})
+        
+        return [DocumentReference.from_dict(doc) for doc in docs]
+    
+    def delete_document_references(self, website_id: str) -> bool:
+        """Delete all document references for a website"""
+        result = self.document_references.delete_many({'website_id': website_id})
+        return result.deleted_count > 0

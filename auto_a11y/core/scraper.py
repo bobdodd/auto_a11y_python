@@ -498,18 +498,24 @@ class ScrapingEngine:
             Set of valid URLs to crawl
         """
         try:
-            # Extract all links using JavaScript
-            links = await page.evaluate('''
+            # Extract all links with their text using JavaScript
+            links_with_text = await page.evaluate('''
                 () => {
                     const anchors = document.querySelectorAll('a[href]');
-                    return Array.from(anchors).map(a => a.href);
+                    return Array.from(anchors).map(a => ({
+                        href: a.href,
+                        text: a.textContent.trim()
+                    }));
                 }
             ''')
             
             # Filter and normalize links
             valid_links = set()
+            document_refs = []  # Collect document references
             
-            for link in links:
+            for link_data in links_with_text:
+                link = link_data['href']
+                link_text = link_data.get('text', '')
                 # Skip empty or invalid links
                 if not link or link.startswith('#') or link.startswith('javascript:'):
                     continue
@@ -538,9 +544,48 @@ class ScrapingEngine:
                 # Apply path filters
                 path = parsed.path
                 
-                # Skip common non-HTML resources
-                if path.endswith(('.pdf', '.jpg', '.jpeg', '.png', '.gif', 
-                                 '.zip', '.exe', '.dmg', '.mp4', '.mp3')):
+                # Check for document files
+                document_extensions = {
+                    '.pdf': 'application/pdf',
+                    '.doc': 'application/msword',
+                    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    '.xls': 'application/vnd.ms-excel',
+                    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.document',
+                    '.ppt': 'application/vnd.ms-powerpoint',
+                    '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.document',
+                    '.rtf': 'application/rtf',
+                    '.txt': 'text/plain',
+                    '.csv': 'text/csv',
+                    '.zip': 'application/zip',
+                    '.rar': 'application/zip',
+                    '.7z': 'application/zip'
+                }
+                
+                # Check if this is a document
+                file_ext = None
+                for ext in document_extensions:
+                    if path.lower().endswith(ext):
+                        file_ext = ext
+                        break
+                
+                if file_ext:
+                    # This is a document, capture it
+                    is_internal = parsed.netloc == base_domain or (
+                        website.scraping_config.include_subdomains and 
+                        parsed.netloc.endswith(f'.{base_domain}')
+                    )
+                    
+                    document_refs.append({
+                        'url': normalized,
+                        'mime_type': document_extensions[file_ext],
+                        'is_internal': is_internal,
+                        'link_text': link_text,
+                        'file_extension': file_ext
+                    })
+                    continue  # Don't add to crawl queue
+                
+                # Skip common non-HTML resources (images, videos, etc.)
+                if path.endswith(('.jpg', '.jpeg', '.png', '.gif', '.exe', '.dmg', '.mp4', '.mp3')):
                     continue
                 
                 # Check excluded paths
@@ -555,12 +600,46 @@ class ScrapingEngine:
                 
                 valid_links.add(normalized)
             
-            logger.debug(f"Extracted {len(valid_links)} valid links from {current_url}")
+            logger.debug(f"Extracted {len(valid_links)} valid links and {len(document_refs)} documents from {current_url}")
+            
+            # Save document references to database
+            if document_refs:
+                await self._save_document_references(document_refs, website.id, current_url)
+            
             return valid_links
             
         except Exception as e:
             logger.error(f"Error extracting links from {current_url}: {e}")
             return set()
+    
+    async def _save_document_references(self, document_refs: list, website_id: str, referring_page_url: str):
+        """
+        Save document references to database
+        
+        Args:
+            document_refs: List of document reference data
+            website_id: Website ID
+            referring_page_url: URL of the page containing the links
+        """
+        from auto_a11y.models import DocumentReference
+        
+        for doc_data in document_refs:
+            try:
+                doc_ref = DocumentReference(
+                    website_id=website_id,
+                    document_url=doc_data['url'],
+                    referring_page_url=referring_page_url,
+                    mime_type=doc_data['mime_type'],
+                    is_internal=doc_data['is_internal'],
+                    link_text=doc_data.get('link_text'),
+                    file_extension=doc_data.get('file_extension'),
+                    via_redirect=False  # Direct link, not via redirect
+                )
+                
+                self.db.add_document_reference(doc_ref)
+                logger.debug(f"Saved document reference: {doc_data['url']} ({'internal' if doc_data['is_internal'] else 'external'})")
+            except Exception as e:
+                logger.error(f"Error saving document reference {doc_data['url']}: {e}")
     
     def _normalize_url(self, url: str, base_url: Optional[str] = None) -> Optional[str]:
         """

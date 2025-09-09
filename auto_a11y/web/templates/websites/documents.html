@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Documents - {{ website.name }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Documents</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">Electronic Documents</h1>
+            <p class="text-muted">Documents found during website discovery</p>
+        </div>
+        <div>
+            <span class="badge bg-primary me-2">Total: {{ total_docs }}</span>
+            <span class="badge bg-success me-2">Internal: {{ internal_docs|length }}</span>
+            <span class="badge bg-warning">External: {{ external_docs|length }}</span>
+        </div>
+    </div>
+
+    <!-- Internal Documents -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-house-door"></i> Internal Documents
+                <span class="badge bg-secondary ms-2">{{ internal_docs|length }}</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if internal_docs %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Document URL</th>
+                            <th>Type</th>
+                            <th>Link Text</th>
+                            <th>Found On Page</th>
+                            <th>First Seen</th>
+                            <th>References</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in internal_docs %}
+                        <tr>
+                            <td>
+                                <a href="{{ doc.document_url }}" target="_blank" class="text-break">
+                                    {{ doc.document_url|truncate(60, True) }}
+                                    <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ doc.document_type_display }}</span>
+                            </td>
+                            <td>
+                                {{ doc.link_text|truncate(40, True) if doc.link_text else '-' }}
+                            </td>
+                            <td>
+                                <a href="{{ doc.referring_page_url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;">
+                                    {{ doc.referring_page_url }}
+                                </a>
+                            </td>
+                            <td>
+                                {{ doc.discovered_at.strftime('%Y-%m-%d') if doc.discovered_at else '-' }}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ doc.seen_count }}</span>
+                            </td>
+                            <td>
+                                <a href="{{ doc.document_url }}" download class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No internal documents found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- External Documents -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-globe"></i> External Documents
+                <span class="badge bg-secondary ms-2">{{ external_docs|length }}</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if external_docs %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Document URL</th>
+                            <th>Type</th>
+                            <th>Link Text</th>
+                            <th>Found On Page</th>
+                            <th>First Seen</th>
+                            <th>References</th>
+                            <th>Via Redirect</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in external_docs %}
+                        <tr>
+                            <td>
+                                <a href="{{ doc.document_url }}" target="_blank" class="text-break">
+                                    {{ doc.document_url|truncate(60, True) }}
+                                    <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ doc.document_type_display }}</span>
+                            </td>
+                            <td>
+                                {{ doc.link_text|truncate(40, True) if doc.link_text else '-' }}
+                            </td>
+                            <td>
+                                <a href="{{ doc.referring_page_url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;">
+                                    {{ doc.referring_page_url }}
+                                </a>
+                            </td>
+                            <td>
+                                {{ doc.discovered_at.strftime('%Y-%m-%d') if doc.discovered_at else '-' }}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ doc.seen_count }}</span>
+                            </td>
+                            <td>
+                                {% if doc.via_redirect %}
+                                <span class="badge bg-warning" title="Found through address rewriting/redirect">
+                                    <i class="bi bi-arrow-right-circle"></i> Yes
+                                </span>
+                                {% else %}
+                                <span class="text-muted">No</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No external documents found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Document Type Summary</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% set doc_types = {} %}
+                {% for doc in internal_docs + external_docs %}
+                    {% if doc.document_type_display in doc_types %}
+                        {% set _ = doc_types.update({doc.document_type_display: doc_types[doc.document_type_display] + 1}) %}
+                    {% else %}
+                        {% set _ = doc_types.update({doc.document_type_display: 1}) %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% for doc_type, count in doc_types.items() %}
+                <div class="col-md-3 mb-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ doc_type }}:</span>
+                        <span class="badge bg-primary">{{ count }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+});
+</script>
+{% endblock %}

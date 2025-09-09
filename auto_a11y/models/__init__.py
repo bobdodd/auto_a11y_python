@@ -6,10 +6,12 @@ from .project import Project, ProjectStatus
 from .website import Website, ScrapingConfig
 from .page import Page, PageStatus
 from .test_result import TestResult, Violation, AIFinding, ImpactLevel
+from .document_reference import DocumentReference, DocumentType
 
 __all__ = [
     'Project', 'ProjectStatus',
     'Website', 'ScrapingConfig',
     'Page', 'PageStatus',
-    'TestResult', 'Violation', 'AIFinding', 'ImpactLevel'
+    'TestResult', 'Violation', 'AIFinding', 'ImpactLevel',
+    'DocumentReference', 'DocumentType'
 ]

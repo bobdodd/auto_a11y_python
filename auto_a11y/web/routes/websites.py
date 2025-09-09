@@ -594,6 +594,31 @@ def cancel_testing(website_id):
         }), 500
 
 
+@websites_bp.route('/<website_id>/documents')
+def view_documents(website_id):
+    """View document references for a website"""
+    website = current_app.db.get_website(website_id)
+    if not website:
+        flash('Website not found', 'error')
+        return redirect(url_for('projects.list_projects'))
+    
+    project = current_app.db.get_project(website.project_id)
+    
+    # Get document references
+    documents = current_app.db.get_document_references(website_id)
+    
+    # Separate internal and external
+    internal_docs = [d for d in documents if d.is_internal]
+    external_docs = [d for d in documents if not d.is_internal]
+    
+    return render_template('websites/documents.html',
+                         website=website,
+                         project=project,
+                         internal_docs=internal_docs,
+                         external_docs=external_docs,
+                         total_docs=len(documents))
+
+
 @websites_bp.route('/<website_id>/test-status')
 def test_status(website_id):
     """Check testing status using database-backed job management"""

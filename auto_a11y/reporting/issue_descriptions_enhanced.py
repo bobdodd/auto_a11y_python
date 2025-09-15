@@ -37,7 +37,18 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         error_type = issue_code  # Use full code for AI issues
         category = 'AI'
     elif '_' in issue_code:
-        category, error_type = issue_code.split('_', 1)
+        # Find the actual error code (starts with Err, Warn, Info, Disco, or AI)
+        parts = issue_code.split('_')
+        error_type = issue_code  # Default to full code
+        category = 'unknown'
+        
+        for i, part in enumerate(parts):
+            if part.startswith(('Err', 'Warn', 'Info', 'Disco')):
+                # Found the error code, join from here to end
+                error_type = '_'.join(parts[i:])
+                # Everything before is the category
+                category = '_'.join(parts[:i]) if i > 0 else 'unknown'
+                break
     else:
         category = 'unknown'
         error_type = issue_code

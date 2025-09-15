@@ -518,10 +518,12 @@ class PageStructureReport:
                 html += '<span class="badge bg-secondary stats-badge">Not tested</span>'
             
             if node.stats['pages_with_issues'] > 0:
-                html += f'<span class="badge bg-danger stats-badge">{node.stats["pages_with_issues"]} issues</span>'
+                # Clarify this is counting pages, not issue types
+                page_text = "page" if node.stats["pages_with_issues"] == 1 else "pages"
+                html += f'<span class="badge bg-danger stats-badge">{node.stats["pages_with_issues"]} {page_text} with issues</span>'
             
             if node.stats['total_violations'] > 0:
-                html += f'<span class="text-danger ms-2">({node.stats["total_violations"]} violations)</span>'
+                html += f'<span class="text-danger ms-2">({node.stats["total_violations"]} total violations)</span>'
             
             html += '</span>'
         

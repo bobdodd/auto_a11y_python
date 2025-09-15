@@ -533,6 +533,10 @@
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#viol-group-{{ viol_counter.value }}">
                                         <span class="badge bg-danger me-2">{{ group_list|length }}</span>
+                                        {% set first_violation = group_list[0] %}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact.value|lower if first_violation.impact.value else first_violation.impact|lower] or 'secondary' }} me-2 impact-badge">
+                                            {{ first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper }}
+                                        </span>
                                         {{ description }}
                                     </button>
                                 </h2>
@@ -853,6 +857,10 @@
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#warn-group-{{ warn_counter.value }}">
                                         <span class="badge bg-warning text-dark me-2">{{ group_list|length }}</span>
+                                        {% set first_warning = group_list[0] %}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact.value|lower if first_warning.impact.value else first_warning.impact|lower] or 'secondary' }} me-2 impact-badge">
+                                            {{ first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper }}
+                                        </span>
                                         {{ description }}
                                     </button>
                                 </h2>
@@ -1092,6 +1100,12 @@
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#info-group-{{ info_counter.value }}">
                                         <span class="badge bg-info me-2">{{ group_list|length }}</span>
+                                        {% set first_info = group_list[0] %}
+                                        {% if first_info.impact %}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_info.impact.value|lower if first_info.impact.value else first_info.impact|lower] or 'info' }} me-2 impact-badge">
+                                            {{ first_info.impact.value|upper if first_info.impact.value else first_info.impact|upper }}
+                                        </span>
+                                        {% endif %}
                                         {{ description }}
                                     </button>
                                 </h2>
@@ -1319,8 +1333,14 @@
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#disc-group-{{ disc_counter.value }}">
-                                        <span class="badge" style="background-color: #6f42c1; color: white;">{{ group_list|length }}</span>
-                                        <span class="ms-2">{{ description }}</span>
+                                        <span class="badge me-2" style="background-color: #6f42c1; color: white;">{{ group_list|length }}</span>
+                                        {% set first_discovery = group_list[0] %}
+                                        {% if first_discovery.impact %}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_discovery.impact.value|lower if first_discovery.impact.value else first_discovery.impact|lower] or 'secondary' }} me-2 impact-badge">
+                                            {{ first_discovery.impact.value|upper if first_discovery.impact.value else first_discovery.impact|upper }}
+                                        </span>
+                                        {% endif %}
+                                        {{ description }}
                                     </button>
                                 </h2>
                                 <div id="disc-group-{{ disc_counter.value }}" 

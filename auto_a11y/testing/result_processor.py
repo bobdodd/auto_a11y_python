@@ -157,14 +157,27 @@ class ResultProcessor:
                     # Store check information
                     if 'checks' in test_result:
                         for check in test_result['checks']:
-                            # Map test name to touchpoint display name
-                            touchpoint_id = TouchpointMapper.get_touchpoint_for_category(test_name)
-                            if touchpoint_id:
+                            # Map test name to touchpoint display name based on JS test file
+                            from auto_a11y.core.touchpoints import get_touchpoints_for_js_test
+                            
+                            # Try to find touchpoint for this JS test file
+                            test_file = f"{test_name}.js"
+                            touchpoint_ids = get_touchpoints_for_js_test(test_file)
+                            
+                            if touchpoint_ids:
+                                # Use the first touchpoint (most tests map to one touchpoint)
                                 from auto_a11y.core.touchpoints import get_touchpoint
-                                touchpoint = get_touchpoint(touchpoint_id)
+                                touchpoint = get_touchpoint(touchpoint_ids[0])
                                 check['test_name'] = touchpoint.name if touchpoint else test_name.title()
                             else:
-                                check['test_name'] = test_name.title()
+                                # Fallback to category mapping for backward compatibility
+                                touchpoint_id = TouchpointMapper.get_touchpoint_for_category(test_name)
+                                if touchpoint_id:
+                                    from auto_a11y.core.touchpoints import get_touchpoint
+                                    touchpoint = get_touchpoint(touchpoint_id)
+                                    check['test_name'] = touchpoint.name if touchpoint else test_name.title()
+                                else:
+                                    check['test_name'] = test_name.title()
                             checks.append(check)
             
             # Process errors and warnings (works with both old and new structure)

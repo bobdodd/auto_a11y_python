@@ -302,7 +302,7 @@ def test_project(project_id):
     
     try:
         # Initialize website manager
-        manager = WebsiteManager(current_app.db, current_app.browser_config)
+        manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
         
         # Generate unique job ID
         import uuid

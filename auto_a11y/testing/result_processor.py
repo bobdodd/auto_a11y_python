@@ -157,27 +157,9 @@ class ResultProcessor:
                     # Store check information
                     if 'checks' in test_result:
                         for check in test_result['checks']:
-                            # Map test name to touchpoint display name based on JS test file
-                            from auto_a11y.core.touchpoints import get_touchpoints_for_js_test
-                            
-                            # Try to find touchpoint for this JS test file
-                            test_file = f"{test_name}.js"
-                            touchpoint_ids = get_touchpoints_for_js_test(test_file)
-                            
-                            if touchpoint_ids:
-                                # Use the first touchpoint (most tests map to one touchpoint)
-                                from auto_a11y.core.touchpoints import get_touchpoint
-                                touchpoint = get_touchpoint(touchpoint_ids[0])
-                                check['test_name'] = touchpoint.name if touchpoint else test_name.title()
-                            else:
-                                # Fallback to category mapping for backward compatibility
-                                touchpoint_id = TouchpointMapper.get_touchpoint_for_category(test_name)
-                                if touchpoint_id:
-                                    from auto_a11y.core.touchpoints import get_touchpoint
-                                    touchpoint = get_touchpoint(touchpoint_id)
-                                    check['test_name'] = touchpoint.name if touchpoint else test_name.title()
-                                else:
-                                    check['test_name'] = test_name.title()
+                            # Map individual checks to correct touchpoints based on what they test
+                            check_touchpoint = self._get_touchpoint_for_check(check, test_name)
+                            check['test_name'] = check_touchpoint
                             checks.append(check)
             
             # Process errors and warnings (works with both old and new structure)
@@ -754,3 +736,91 @@ class ResultProcessor:
             return 'D'
         else:
             return 'F'
+    
+    def _get_touchpoint_for_check(self, check: dict, test_name: str) -> str:
+        """
+        Map individual check to correct touchpoint based on what it tests.
+        
+        Args:
+            check: Check dictionary with description and other fields
+            test_name: Name of the test that generated this check
+            
+        Returns:
+            Touchpoint display name for this check
+        """
+        from auto_a11y.core.touchpoints import TouchpointID, get_touchpoint
+        
+        # Map check descriptions to touchpoints
+        check_description_mapping = {
+            # Forms and Labels
+            'All form inputs have labels': TouchpointID.FORMS,
+            'Form input labeling': TouchpointID.FORMS,
+            'Forms have descriptive labels': TouchpointID.FORMS,
+            'Labels are properly associated and clear': TouchpointID.FORMS,
+            
+            # Navigation and Landmarks
+            'Current page indicators': TouchpointID.LANDMARKS,
+            'Navigation accessibility': TouchpointID.LANDMARKS,
+            
+            # Focus Management  
+            'Focus indicators': TouchpointID.FOCUS_MANAGEMENT,
+            'Interactive elements have visible focus indicators': TouchpointID.FOCUS_MANAGEMENT,
+            
+            # Headings
+            'Heading hierarchy': TouchpointID.HEADINGS,
+            'H1 presence and uniqueness': TouchpointID.HEADINGS,
+            'Headings follow proper hierarchy': TouchpointID.HEADINGS,
+            'Headings have content': TouchpointID.HEADINGS,
+            
+            # Color and Contrast
+            'Text contrast ratio': TouchpointID.COLOR_CONTRAST,
+            'Text has sufficient color contrast': TouchpointID.COLOR_CONTRAST,
+            'Avoid inline color styles': TouchpointID.COLOR_USE,
+            
+            # Accessible Names
+            'Elements with required accessible names': TouchpointID.ACCESSIBLE_NAMES,
+            'Interactive elements accessibility': TouchpointID.ACCESSIBLE_NAMES,
+            'Link distinction': TouchpointID.ACCESSIBLE_NAMES,
+            
+            # Tab Order
+            'Tab order violations': TouchpointID.TABINDEX,
+            
+            # Page Title
+            'Page has descriptive title': TouchpointID.TITLE_ATTRIBUTES,
+            
+            # Lists
+            'List structure integrity': TouchpointID.LISTS,
+            
+            # Images
+            'Alternative text presence': TouchpointID.IMAGES,
+            
+            # Fonts
+            'Text size accessibility': TouchpointID.FONTS,
+        }
+        
+        # Get check description
+        description = check.get('description', '')
+        
+        # Try to find exact match for description
+        for desc_pattern, touchpoint_id in check_description_mapping.items():
+            if description == desc_pattern:
+                touchpoint = get_touchpoint(touchpoint_id)
+                return touchpoint.name if touchpoint else description
+        
+        # If no exact match, fall back to test file mapping
+        from auto_a11y.core.touchpoints import get_touchpoints_for_js_test, TouchpointMapper
+        
+        test_file = f"{test_name}.js"
+        touchpoint_ids = get_touchpoints_for_js_test(test_file)
+        
+        if touchpoint_ids:
+            touchpoint = get_touchpoint(touchpoint_ids[0])
+            return touchpoint.name if touchpoint else test_name.title()
+        else:
+            # Final fallback to category mapping
+            touchpoint_id = TouchpointMapper.get_touchpoint_for_category(test_name)
+            if touchpoint_id:
+                touchpoint = get_touchpoint(touchpoint_id)
+                return touchpoint.name if touchpoint else test_name.title()
+            else:
+                return test_name.title()

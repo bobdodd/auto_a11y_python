@@ -204,7 +204,8 @@ class ResultProcessor:
             if 'passes' in test_result and test_result['passes']:
                 passes.extend(test_result['passes'])
         
-        # Process AI findings and add them to checks
+        # NOTE: We'll replace the checks list with a touchpoint summary later
+        # Process AI findings
         if ai_findings:
             # Group AI findings by analysis type
             ai_checks_by_type = {}
@@ -332,16 +333,17 @@ class ResultProcessor:
         sorted_discovery = sorted(discovery, key=lambda x: (x.touchpoint, x.id))
         
         # Create touchpoint summary for Test Check Details
-        # This aggregates all issues by touchpoint to create a summary
+        # This aggregates all issues by touchpoint to create a summary that matches Latest Test Results
         touchpoint_summary = {}
         all_issues = violations + warnings + info + discovery
         
+        # Count issues by touchpoint
         for issue in all_issues:
             touchpoint = issue.touchpoint
             if touchpoint not in touchpoint_summary:
                 touchpoint_summary[touchpoint] = {
                     'test_name': touchpoint.replace('_', ' ').title(),
-                    'description': f'{touchpoint.replace("_", " ").title()} checks',
+                    'description': f'Accessibility checks for {touchpoint.replace("_", " ").lower()}',
                     'wcag': set(),
                     'total': 0,
                     'passed': 0,
@@ -361,8 +363,10 @@ class ResultProcessor:
                 touchpoint_summary[touchpoint]['failed'] += 1
             elif issue in info:
                 touchpoint_summary[touchpoint]['info'] += 1
+                # Info items don't count as failures
             elif issue in discovery:
                 touchpoint_summary[touchpoint]['discovery'] += 1
+                # Discovery items don't count as failures
             
             touchpoint_summary[touchpoint]['total'] += 1
             
@@ -371,20 +375,21 @@ class ResultProcessor:
                 for criterion in issue.wcag_criteria:
                     touchpoint_summary[touchpoint]['wcag'].add(criterion)
         
-        # Convert touchpoint summary to list of checks for display
-        summary_checks = []
+        # Replace the checks list with our touchpoint summary
+        # This ensures Test Check Details shows a summary of Latest Test Results
+        checks = []  # Clear any previous checks
         for touchpoint_data in touchpoint_summary.values():
             # Convert WCAG set to sorted list
             touchpoint_data['wcag'] = sorted(list(touchpoint_data['wcag']))
             
-            # Calculate passed count (for summary, we'll consider only violations and warnings as failures)
-            # Items that don't have issues are considered passed
-            touchpoint_data['passed'] = max(0, touchpoint_data['total'] - touchpoint_data['violations'] - touchpoint_data['warnings'])
+            # For the summary, total = number of issues found
+            # failed = violations + warnings
+            # passed = 0 (we're showing issues, not elements tested)
             
-            summary_checks.append(touchpoint_data)
+            checks.append(touchpoint_data)
         
-        # Sort summary checks by touchpoint name
-        sorted_checks = sorted(summary_checks, key=lambda x: x.get('test_name', ''))
+        # Sort checks by touchpoint name
+        sorted_checks = sorted(checks, key=lambda x: x.get('test_name', ''))
         
         # Create test result
         test_result = TestResult(

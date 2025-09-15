@@ -5,6 +5,7 @@ Contains enriched descriptions for all accessibility issues
 """
 
 from typing import Dict, List, Any
+from .issue_descriptions_enhanced import get_detailed_issue_description
 
 
 class IssueCatalog:
@@ -1873,6 +1874,33 @@ class IssueCatalog:
         Returns:
             Dictionary with issue details or default if not found
         """
+        # First try to get enhanced description
+        try:
+            enhanced = get_detailed_issue_description(issue_id)
+            if enhanced and enhanced.get('title') != f"Issue {issue_id} needs documentation":
+                # Convert enhanced format to catalog format
+                return {
+                    "id": issue_id,
+                    "type": "Error" if "Err" in issue_id else "Warning" if "Warn" in issue_id else "Info",
+                    "impact": enhanced.get('impact', 'Medium'),
+                    "wcag": enhanced.get('wcag', []),
+                    "wcag_full": ", ".join(enhanced.get('wcag', [])) if enhanced.get('wcag') else "",
+                    "category": "unknown",  # Enhanced descriptions don't have categories
+                    "description": enhanced.get('what', enhanced.get('title', '')),
+                    "why_it_matters": enhanced.get('why', ''),
+                    "who_it_affects": enhanced.get('who', ''),
+                    "how_to_fix": enhanced.get('remediation', enhanced.get('how', '')),
+                    # Include enhanced metadata for template use
+                    "title": enhanced.get('title', ''),
+                    "what": enhanced.get('what', ''),
+                    "why": enhanced.get('why', ''),
+                    "who": enhanced.get('who', ''),
+                    "full_remediation": enhanced.get('remediation', '')
+                }
+        except Exception:
+            pass  # Fall through to original catalog
+        
+        # Fall back to original ISSUES dictionary
         return cls.ISSUES.get(issue_id, cls._get_default_issue(issue_id))
     
     @classmethod

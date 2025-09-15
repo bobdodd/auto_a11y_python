@@ -24,13 +24,20 @@ def enrich_test_result_with_catalog(test_result):
                 violation.metadata = {}
             
             # Extract the error code from the violation ID
-            # IDs are in format: testname_ErrorCode, we need just ErrorCode
+            # IDs can be in formats like:
+            # - testname_ErrorCode (e.g., headings_ErrEmptyHeading)
+            # - testname_subtest_ErrorCode (e.g., more_links_ErrInvalidGenericLinkName)
             issue_id = violation.id if hasattr(violation, 'id') else ''
+            
+            # Find the actual error code (starts with Err, Warn, Info, or Disco)
+            error_code = issue_id
             if '_' in issue_id:
-                # Extract the error code after the test name prefix
-                error_code = issue_id.split('_', 1)[1]
-            else:
-                error_code = issue_id
+                parts = issue_id.split('_')
+                for i, part in enumerate(parts):
+                    if part.startswith(('Err', 'Warn', 'Info', 'Disco', 'AI')):
+                        # Found the error code, join from here to end
+                        error_code = '_'.join(parts[i:])
+                        break
             
             # Skip if already has enhanced metadata with 'what' field
             # This preserves the metadata replacement done in result_processor.py

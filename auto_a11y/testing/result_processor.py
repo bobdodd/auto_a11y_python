@@ -157,9 +157,8 @@ class ResultProcessor:
                     # Store check information
                     if 'checks' in test_result:
                         for check in test_result['checks']:
-                            # Map individual checks to correct touchpoints based on what they test
-                            check_touchpoint = self._get_touchpoint_for_check(check, test_name)
-                            check['test_name'] = check_touchpoint
+                            # Keep original check data for now (will be replaced by summary later)
+                            check['test_name'] = test_name.title()
                             checks.append(check)
             
             # Process errors and warnings (works with both old and new structure)
@@ -326,14 +325,66 @@ class ResultProcessor:
                     total_passed_checks += 1
                     total_applicable_checks += 1
         
-        # Sort checks by test name first, then by description
-        sorted_checks = sorted(checks, key=lambda x: (x.get('test_name', ''), x.get('description', '')))
-        
         # Sort all issue lists by touchpoint first, then by ID/title
         sorted_violations = sorted(violations, key=lambda x: (x.touchpoint, x.id))
         sorted_warnings = sorted(warnings, key=lambda x: (x.touchpoint, x.id))
         sorted_info = sorted(info, key=lambda x: (x.touchpoint, x.id))
         sorted_discovery = sorted(discovery, key=lambda x: (x.touchpoint, x.id))
+        
+        # Create touchpoint summary for Test Check Details
+        # This aggregates all issues by touchpoint to create a summary
+        touchpoint_summary = {}
+        all_issues = violations + warnings + info + discovery
+        
+        for issue in all_issues:
+            touchpoint = issue.touchpoint
+            if touchpoint not in touchpoint_summary:
+                touchpoint_summary[touchpoint] = {
+                    'test_name': touchpoint.replace('_', ' ').title(),
+                    'description': f'{touchpoint.replace("_", " ").title()} checks',
+                    'wcag': set(),
+                    'total': 0,
+                    'passed': 0,
+                    'failed': 0,
+                    'violations': 0,
+                    'warnings': 0,
+                    'info': 0,
+                    'discovery': 0
+                }
+            
+            # Count issue types
+            if issue in violations:
+                touchpoint_summary[touchpoint]['violations'] += 1
+                touchpoint_summary[touchpoint]['failed'] += 1
+            elif issue in warnings:
+                touchpoint_summary[touchpoint]['warnings'] += 1
+                touchpoint_summary[touchpoint]['failed'] += 1
+            elif issue in info:
+                touchpoint_summary[touchpoint]['info'] += 1
+            elif issue in discovery:
+                touchpoint_summary[touchpoint]['discovery'] += 1
+            
+            touchpoint_summary[touchpoint]['total'] += 1
+            
+            # Collect WCAG criteria
+            if hasattr(issue, 'wcag_criteria') and issue.wcag_criteria:
+                for criterion in issue.wcag_criteria:
+                    touchpoint_summary[touchpoint]['wcag'].add(criterion)
+        
+        # Convert touchpoint summary to list of checks for display
+        summary_checks = []
+        for touchpoint_data in touchpoint_summary.values():
+            # Convert WCAG set to sorted list
+            touchpoint_data['wcag'] = sorted(list(touchpoint_data['wcag']))
+            
+            # Calculate passed count (for summary, we'll consider only violations and warnings as failures)
+            # Items that don't have issues are considered passed
+            touchpoint_data['passed'] = max(0, touchpoint_data['total'] - touchpoint_data['violations'] - touchpoint_data['warnings'])
+            
+            summary_checks.append(touchpoint_data)
+        
+        # Sort summary checks by touchpoint name
+        sorted_checks = sorted(summary_checks, key=lambda x: x.get('test_name', ''))
         
         # Create test result
         test_result = TestResult(
@@ -737,90 +788,3 @@ class ResultProcessor:
         else:
             return 'F'
     
-    def _get_touchpoint_for_check(self, check: dict, test_name: str) -> str:
-        """
-        Map individual check to correct touchpoint based on what it tests.
-        
-        Args:
-            check: Check dictionary with description and other fields
-            test_name: Name of the test that generated this check
-            
-        Returns:
-            Touchpoint display name for this check
-        """
-        from auto_a11y.core.touchpoints import TouchpointID, get_touchpoint
-        
-        # Map check descriptions to touchpoints
-        check_description_mapping = {
-            # Forms and Labels
-            'All form inputs have labels': TouchpointID.FORMS,
-            'Form input labeling': TouchpointID.FORMS,
-            'Forms have descriptive labels': TouchpointID.FORMS,
-            'Labels are properly associated and clear': TouchpointID.FORMS,
-            
-            # Navigation and Landmarks
-            'Current page indicators': TouchpointID.LANDMARKS,
-            'Navigation accessibility': TouchpointID.LANDMARKS,
-            
-            # Focus Management  
-            'Focus indicators': TouchpointID.FOCUS_MANAGEMENT,
-            'Interactive elements have visible focus indicators': TouchpointID.FOCUS_MANAGEMENT,
-            
-            # Headings
-            'Heading hierarchy': TouchpointID.HEADINGS,
-            'H1 presence and uniqueness': TouchpointID.HEADINGS,
-            'Headings follow proper hierarchy': TouchpointID.HEADINGS,
-            'Headings have content': TouchpointID.HEADINGS,
-            
-            # Color and Contrast
-            'Text contrast ratio': TouchpointID.COLOR_CONTRAST,
-            'Text has sufficient color contrast': TouchpointID.COLOR_CONTRAST,
-            'Avoid inline color styles': TouchpointID.COLOR_USE,
-            
-            # Accessible Names
-            'Elements with required accessible names': TouchpointID.ACCESSIBLE_NAMES,
-            'Interactive elements accessibility': TouchpointID.ACCESSIBLE_NAMES,
-            'Link distinction': TouchpointID.ACCESSIBLE_NAMES,
-            
-            # Tab Order
-            'Tab order violations': TouchpointID.TABINDEX,
-            
-            # Page Title
-            'Page has descriptive title': TouchpointID.TITLE_ATTRIBUTES,
-            
-            # Lists
-            'List structure integrity': TouchpointID.LISTS,
-            
-            # Images
-            'Alternative text presence': TouchpointID.IMAGES,
-            
-            # Fonts
-            'Text size accessibility': TouchpointID.FONTS,
-        }
-        
-        # Get check description
-        description = check.get('description', '')
-        
-        # Try to find exact match for description
-        for desc_pattern, touchpoint_id in check_description_mapping.items():
-            if description == desc_pattern:
-                touchpoint = get_touchpoint(touchpoint_id)
-                return touchpoint.name if touchpoint else description
-        
-        # If no exact match, fall back to test file mapping
-        from auto_a11y.core.touchpoints import get_touchpoints_for_js_test, TouchpointMapper
-        
-        test_file = f"{test_name}.js"
-        touchpoint_ids = get_touchpoints_for_js_test(test_file)
-        
-        if touchpoint_ids:
-            touchpoint = get_touchpoint(touchpoint_ids[0])
-            return touchpoint.name if touchpoint else test_name.title()
-        else:
-            # Final fallback to category mapping
-            touchpoint_id = TouchpointMapper.get_touchpoint_for_category(test_name)
-            if touchpoint_id:
-                touchpoint = get_touchpoint(touchpoint_id)
-                return touchpoint.name if touchpoint else test_name.title()
-            else:
-                return test_name.title()

@@ -303,6 +303,17 @@ class TouchpointMapper:
         'pdf': TouchpointID.ELECTRONIC_DOCUMENTS,
         'font': TouchpointID.FONTS,
         'fonts': TouchpointID.FONTS,
+        'javascript': TouchpointID.EVENT_HANDLING,
+        'style': TouchpointID.COLOR_USE,
+        'navigation': TouchpointID.LANDMARKS,
+        'modal': TouchpointID.DIALOGS,
+        'dialog': TouchpointID.DIALOGS,
+        'animation': TouchpointID.ANIMATION,
+        'timer': TouchpointID.TIMERS,
+        'video': TouchpointID.VIDEOS,
+        'table': TouchpointID.TABLES,
+        'list': TouchpointID.LISTS,
+        'map': TouchpointID.MAPS,
         'other': TouchpointID.ACCESSIBLE_NAMES,  # Default fallback
     }
     
@@ -314,65 +325,194 @@ class TouchpointMapper:
         'ErrH1Missing': TouchpointID.HEADINGS,
         'ErrMultipleH1': TouchpointID.HEADINGS,
         'ErrSkippedHeadingLevel': TouchpointID.HEADINGS,
+        'ErrNoH1': TouchpointID.HEADINGS,
+        'ErrIncorrectHeadingLevel': TouchpointID.HEADINGS,
+        'ErrModalMissingHeading': TouchpointID.DIALOGS,  # Modal-specific heading issue
         'WarnHeadingInsideDisplayNone': TouchpointID.HEADINGS,
         'WarnHeadingOver60CharsLong': TouchpointID.HEADINGS,
+        'WarnVisualHierarchy': TouchpointID.HEADINGS,
+        'InfoHeadingNearLengthLimit': TouchpointID.HEADINGS,
+        'DiscoHeadingWithID': TouchpointID.HEADINGS,
         
         # Image errors  
         'ErrNoAlt': TouchpointID.IMAGES,
-        'ErrAltMissing': TouchpointID.IMAGES,
-        'ErrAltEmpty': TouchpointID.IMAGES,
-        'ErrEmptyAlt': TouchpointID.IMAGES,
+        'ErrImageWithNoAlt': TouchpointID.IMAGES,
+        'ErrImageWithEmptyAlt': TouchpointID.IMAGES,
         'ErrAltTooLong': TouchpointID.IMAGES,
-        'ErrAltLong': TouchpointID.IMAGES,
-        'ErrAltRedundant': TouchpointID.IMAGES,
         'ErrRedundantAlt': TouchpointID.IMAGES,
+        'ErrImageAltContainsHTML': TouchpointID.IMAGES,
+        'ErrImageWithImgFileExtensionAlt': TouchpointID.IMAGES,
+        'ErrImageWithURLAsAlt': TouchpointID.IMAGES,
+        'ErrAltOnElementThatDoesntTakeIt': TouchpointID.IMAGES,
+        'ErrSVGNoAccessibleName': TouchpointID.IMAGES,
+        'WarnSVGNoRole': TouchpointID.IMAGES,
+        'WarnSvgPositiveTabindex': TouchpointID.IMAGES,
+        'DiscoFoundInlineSvg': TouchpointID.IMAGES,
+        'DiscoFoundSvgImage': TouchpointID.IMAGES,
         
         # Form errors
         'ErrNoLabel': TouchpointID.FORMS,
-        'ErrLabelMissing': TouchpointID.FORMS,
-        'ErrLabelEmpty': TouchpointID.FORMS,
         'ErrEmptyLabel': TouchpointID.FORMS,
-        'ErrFieldsetMissing': TouchpointID.FORMS,
-        'ErrNoFieldset': TouchpointID.FORMS,
-        'ErrRequiredMissing': TouchpointID.FORMS,
-        'ErrMissingRequired': TouchpointID.FORMS,
         'ErrPlaceholderAsLabel': TouchpointID.FORMS,
+        'ErrUnlabelledField': TouchpointID.FORMS,
+        'ErrButtonEmpty': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need accessible names
+        'ErrButtonNoText': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need text for accessibility
+        'ErrMissingCloseButton': TouchpointID.DIALOGS,  # Close button is for dialogs
+        'WarnButtonTextInsufficient': TouchpointID.ACCESSIBLE_NAMES,  # Button text quality is about naming
+        'WarnMissingRequiredIndication': TouchpointID.FORMS,
+        'WarnNoFieldset': TouchpointID.FORMS,
+        'WarnNoLegend': TouchpointID.FORMS,
+        'WarnUnlabelledForm': TouchpointID.FORMS,
+        'WarnUnlabelledRegion': TouchpointID.LANDMARKS,  # Regions are landmarks
+        'WarnMissingAriaLabelledby': TouchpointID.FORMS,
+        'DiscoFormOnPage': TouchpointID.FORMS,
+        'forms_DiscoNoSubmitButton': TouchpointID.FORMS,
+        'forms_DiscoPlaceholderAsLabel': TouchpointID.FORMS,
         
         # Color/contrast errors
         'ErrInsufficientContrast': TouchpointID.COLOR_CONTRAST,
-        'ErrContrastLow': TouchpointID.COLOR_CONTRAST,
-        'ErrLinkContrast': TouchpointID.COLOR_CONTRAST,
-        'ErrColorOnly': TouchpointID.COLOR_USE,
+        'ErrSmallText': TouchpointID.COLOR_CONTRAST,
+        'InfoNoColorSchemeSupport': TouchpointID.COLOR_CONTRAST,
+        'InfoNoContrastSupport': TouchpointID.COLOR_CONTRAST,
+        'WarnColorOnlyLink': TouchpointID.COLOR_USE,
         
         # Focus errors
         'ErrNoFocusIndicator': TouchpointID.FOCUS_MANAGEMENT,
-        'ErrFocusMissing': TouchpointID.FOCUS_MANAGEMENT,
-        'ErrTabindexPositive': TouchpointID.TABINDEX,
-        'ErrInvalidTabindex': TouchpointID.TABINDEX,
+        'ErrContentObscuring': TouchpointID.FOCUS_MANAGEMENT,
+        'ErrNoOutlineOffsetDefined': TouchpointID.FOCUS_MANAGEMENT,
+        'ErrOutlineIsNoneOnInteractiveElement': TouchpointID.FOCUS_MANAGEMENT,
+        'WarnZeroOutlineOffset': TouchpointID.FOCUS_MANAGEMENT,
         
-        # Link errors
-        'ErrLinkAmbiguous': TouchpointID.READ_MORE_LINKS,
-        'ErrLinkEmpty': TouchpointID.ACCESSIBLE_NAMES,
+        # Tabindex errors
+        'ErrPositiveTabindex': TouchpointID.TABINDEX,
+        'ErrTabOrderViolation': TouchpointID.TABINDEX,
+        'ErrMissingTabindex': TouchpointID.TABINDEX,
+        'ErrNonInteractiveZeroTabindex': TouchpointID.TABINDEX,
+        'WarnHighTabindex': TouchpointID.TABINDEX,
+        'WarnNegativeTabindex': TouchpointID.TABINDEX,
+        'WarnMissingNegativeTabindex': TouchpointID.TABINDEX,
+        
+        # Accessible name errors
+        'ErrMissingAccessibleName': TouchpointID.ACCESSIBLE_NAMES,
+        'WarnGenericAccessibleName': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrInvalidGenericLinkName': TouchpointID.ACCESSIBLE_NAMES,
+        'WarnGenericLinkNoImprovement': TouchpointID.ACCESSIBLE_NAMES,
         
         # Language errors
-        'ErrNoPageLanguage': TouchpointID.LANGUAGE,
-        'ErrLangMissing': TouchpointID.LANGUAGE,
-        'ErrLangInvalid': TouchpointID.LANGUAGE,
-        'ErrInvalidLanguageCode': TouchpointID.LANGUAGE,
+        'ErrNoDocumentLanguage': TouchpointID.LANGUAGE,
+        'ErrIncorrectlyFormattedPrimaryLang': TouchpointID.LANGUAGE,
+        'ErrHreflangNotOnLink': TouchpointID.LANGUAGE,
+        'ErrHreflangAttrEmpty': TouchpointID.LANGUAGE,
         
         # Page/Title errors
         'ErrNoPageTitle': TouchpointID.TITLE_ATTRIBUTES,
         'ErrEmptyPageTitle': TouchpointID.TITLE_ATTRIBUTES,
+        'ErrMultiplePageTitles': TouchpointID.TITLE_ATTRIBUTES,
+        'WarnPageTitleTooShort': TouchpointID.TITLE_ATTRIBUTES,
+        'WarnPageTitleTooLong': TouchpointID.TITLE_ATTRIBUTES,
+        'ErrImproperTitleAttribute': TouchpointID.TITLE_ATTRIBUTES,
         
         # Landmark errors
-        'ErrNoMainLandmark': TouchpointID.LANDMARKS,
-        'ErrMultipleBanners': TouchpointID.LANDMARKS,
-        'ErrMultipleContentinfo': TouchpointID.LANDMARKS,
+        'ErrMissingMainLandmark': TouchpointID.LANDMARKS,
+        'ErrDuplicateLandmarkWithoutName': TouchpointID.LANDMARKS,
+        'WarnMissingBannerLandmark': TouchpointID.LANDMARKS,
+        'WarnMissingContentinfoLandmark': TouchpointID.LANDMARKS,
+        'WarnContentOutsideLandmarks': TouchpointID.LANDMARKS,
         
         # Document errors
-        'ErrPDFMissing': TouchpointID.ELECTRONIC_DOCUMENTS,
+        'DiscoPDFLinksFound': TouchpointID.ELECTRONIC_DOCUMENTS,
+        'WarnGenericDocumentLinkText': TouchpointID.ELECTRONIC_DOCUMENTS,
+        'ErrMissingDocumentType': TouchpointID.ELECTRONIC_DOCUMENTS,
+        'WarnMissingDocumentMetadata': TouchpointID.ELECTRONIC_DOCUMENTS,
         
-        # Add more mappings as needed
+        # Modal/Dialog errors
+        'ErrModalMissingClose': TouchpointID.DIALOGS,
+        'ErrModalWithoutEscape': TouchpointID.DIALOGS,
+        'WarnMissingAriaModal': TouchpointID.DIALOGS,
+        'WarnModalMissingAriaLabelledby': TouchpointID.DIALOGS,
+        'WarnModalMissingAriaModal': TouchpointID.DIALOGS,
+        'WarnModalNoFocusableElements': TouchpointID.DIALOGS,
+        
+        # Animation/Timer errors
+        'ErrAutoStartTimers': TouchpointID.TIMERS,
+        'ErrTimersWithoutControls': TouchpointID.TIMERS,
+        'WarnFastInterval': TouchpointID.TIMERS,
+        'ErrInfiniteAnimation': TouchpointID.ANIMATION,
+        'ErrNoReducedMotionSupport': TouchpointID.ANIMATION,
+        'WarnLongAnimation': TouchpointID.ANIMATION,
+        
+        # Event handling errors
+        'ErrMouseOnlyHandler': TouchpointID.EVENT_HANDLING,
+        
+        # Font errors
+        'DiscoFontFound': TouchpointID.FONTS,
+        'WarnItalicText': TouchpointID.FONTS,
+        'WarnJustifiedText': TouchpointID.FONTS,
+        'WarnRightAlignedText': TouchpointID.FONTS,
+        'WarnSmallLineHeight': TouchpointID.FONTS,
+        
+        # Table errors
+        'ErrHeaderMissingScope': TouchpointID.TABLES,
+        'ErrTableMissingCaption': TouchpointID.TABLES,
+        'ErrTableNoColumnHeaders': TouchpointID.TABLES,
+        'WarnTableMissingThead': TouchpointID.TABLES,
+        
+        # List errors
+        'ErrEmptyList': TouchpointID.LISTS,
+        'ErrFakeListImplementation': TouchpointID.LISTS,
+        'WarnCustomBulletStyling': TouchpointID.LISTS,
+        'WarnDeepListNesting': TouchpointID.LISTS,
+        
+        # Map errors
+        'ErrMapMissingTitle': TouchpointID.MAPS,
+        'ErrDivMapMissingAttributes': TouchpointID.MAPS,
+        
+        # Video/Media errors
+        'ErrVideoIframeMissingTitle': TouchpointID.VIDEOS,
+        'ErrNativeVideoMissingControls': TouchpointID.VIDEOS,
+        'WarnVideoAutoplay': TouchpointID.VIDEOS,
+        
+        # Navigation/Menu errors 
+        'ErrNavMissingAccessibleName': TouchpointID.ACCESSIBLE_NAMES,  # Nav needs accessible name
+        'ErrDuplicateNavNames': TouchpointID.LANDMARKS,  # This is about duplicate landmark names
+        'ErrInappropriateMenuRole': TouchpointID.ACCESSIBLE_NAMES,  # Role issues are accessibility naming
+        'WarnNoCurrentPageIndicator': TouchpointID.LANDMARKS,  # Current page indicator is navigation structure
+        
+        # Link-specific errors
+        'WarnAnchorTargetTabindex': TouchpointID.TABINDEX,  # This is about tabindex, not names
+        'WarnGenericDocumentLinkText': TouchpointID.ELECTRONIC_DOCUMENTS,  # This is about document links
+        'ErrEmptyLink': TouchpointID.ACCESSIBLE_NAMES,  # Links need accessible text
+        'WarnAmbiguousLinkText': TouchpointID.READ_MORE_LINKS,  # Ambiguous link text issue
+        
+        # ARIA errors (map to appropriate touchpoints based on context)
+        'AI_ErrMissingInteractiveRole': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrMapAriaHidden': TouchpointID.MAPS,  # This is specifically about maps
+        'AI_ErrAccordionWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,  # These need ARIA roles for accessibility
+        'AI_ErrCarouselWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        'AI_ErrDropdownWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        
+        # AI-detected content order/reading issues
+        'AI_InfoContentOrder': TouchpointID.HEADINGS,
+        'AI_WarnPossibleReadingOrderIssue': TouchpointID.HEADINGS,
+        
+        # Style/JavaScript discovery items (these are just discoveries, not specific issues)
+        'DiscoFoundJS': TouchpointID.EVENT_HANDLING,
+        'DiscoStyleAttrOnElements': TouchpointID.COLOR_USE,  # Could affect color/contrast
+        'DiscoStyleElementOnPage': TouchpointID.COLOR_USE,  # Could affect color/contrast
+        
+        # Additional mappings for completeness
+        'ErrMissingRole': TouchpointID.ACCESSIBLE_NAMES,  # Missing ARIA role
+        'ErrInvalidRole': TouchpointID.ACCESSIBLE_NAMES,  # Invalid ARIA role
+        'WarnRedundantRole': TouchpointID.ACCESSIBLE_NAMES,  # Redundant ARIA role
+        'ErrAriaHidden': TouchpointID.ACCESSIBLE_NAMES,  # Inappropriate aria-hidden usage
+        'WarnPresentationalRole': TouchpointID.ACCESSIBLE_NAMES,  # Role=presentation issues
+        'ErrSkipLinkMissing': TouchpointID.LANDMARKS,  # Skip navigation link missing
+        'WarnSkipLinkHidden': TouchpointID.LANDMARKS,  # Skip link not visible
+        'ErrEmptyParagraph': TouchpointID.HEADINGS,  # Empty content structure
+        'WarnLongParagraph': TouchpointID.HEADINGS,  # Content structure issues
+        'ErrBrokenSkipLink': TouchpointID.LANDMARKS,  # Skip link doesn't work
+        'InfoInteractiveElement': TouchpointID.EVENT_HANDLING,  # Interactive element discovered
+        'DiscoScriptElement': TouchpointID.EVENT_HANDLING,  # Script element found
     }
     
     # AI finding types to touchpoints

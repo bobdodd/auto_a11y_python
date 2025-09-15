@@ -568,7 +568,7 @@ How to fix: Add aria-label or aria-labelledby to the dialog element
 
 ---
 
-ID:  DiscoFormOnPage
+XID:  DiscoFormOnPage
 Type: Discovery
 Impact: N/A
 WCAG: N/A
@@ -577,21 +577,6 @@ Description: Form detected on page - needs manual testing
 Why it matters: Forms need comprehensive accessibility testing
 Who it affects: All users with disabilities
 How to fix: Manually test form with keyboard and screen reader
-```
-
-```
-
----
-
-ID:  DiscoFormPage
-Type: Discovery
-Impact: N/A
-WCAG: N/A
-Category: forms
-Description: Page contains forms - needs comprehensive accessibility review
-Why it matters: Forms are critical interaction points requiring thorough testing
-Who it affects: All users with disabilities
-How to fix: Manually test all forms with keyboard and screen reader
 ```
 
 ```
@@ -799,6 +784,7 @@ ID: ErrEmptyLabel
 Type: Error
 Impact: High
 WCAG: 1.3.1 Info and Relationships (Level A), 3.3.2 Labels or Instructions (Level A)
+Category: forms
 Description: Label element exists but contains no text
 Why it matters: Empty labels provide no information about the associated form control, making forms impossible to complete correctly.
 Who it affects: Screen reader users who cannot identify form fields, users with cognitive disabilities who need clear labels.
@@ -900,7 +886,7 @@ ID:  ErrFormAriaLabelledByReferenceDoesNotExist
 Type: Error
 Impact: High
 WCAG: 1.3.1, 4.1.2
-Category: landmarks
+Category: forms
 Description: Form aria-labelledby references non-existent element
 Why it matters: Broken reference provides no accessible name
 Who it affects: Screen reader users
@@ -975,7 +961,7 @@ ID:  ErrFormUsesAriaLabelInsteadOfVisibleElement
 Type: Error
 Impact: Medium
 WCAG: 2.5.3, 3.3.2
-Category: landmarks
+Category: forms
 Description: Form uses aria-label instead of visible heading or label
 Why it matters: Visible labels benefit all users
 Who it affects: All users, especially those with cognitive disabilities
@@ -990,7 +976,7 @@ ID:  ErrFormUsesTitleAttribute
 Type: Error
 Impact: Medium
 WCAG: 4.1.2
-Category: landmarks
+Category: forms
 Description: Form uses title attribute for labeling
 Why it matters: Title attributes are not reliably accessible
 Who it affects: Screen reader users, mobile users
@@ -1035,7 +1021,7 @@ ID:  ErrLabelMismatchOfAccessibleNameAndLabelText
 Type: Error
 Impact: Medium
 WCAG: 2.5.3
-Category: aria
+Category: forms
 Description: Accessible name doesn't match visible label
 Why it matters: Confusing for voice control users
 Who it affects: Voice control users
@@ -1085,6 +1071,7 @@ ID: ErrNoLabel
 Type: Error
 Impact: High
 WCAG: 1.3.1 Info and Relationships (Level A), 3.3.2 Labels or Instructions (Level A)
+Category: forms
 Description: Form input has no associated label
 Why it matters: Without labels, users don't know what information to enter in form fields.
 Who it affects: Screen reader users who cannot identify form fields, users with cognitive disabilities.
@@ -1112,6 +1099,7 @@ ID: ErrPlaceholderAsLabel
 Type: Error
 Impact: High
 WCAG: 3.3.2 Labels or Instructions (Level A)
+Category: forms
 Description: Placeholder attribute used as the only label for form field
 Why it matters: Placeholder text disappears when users start typing, leaving no persistent label for reference.
 Who it affects: Users with cognitive disabilities, users who need to review form data, screen reader users.
@@ -1138,7 +1126,7 @@ ID:  ErrTitleAsOnlyLabel
 Type: Error
 Impact: High
 WCAG: 1.1.1 Non-text Content (Level A), 1.3.1 Info and Relationships (Level A), 4.1.2 Name, Role, Value (Level A)
-Category: title
+Category: forms
 Description: Form element is using title attribute as its only accessible label, which is insufficient for accessibility
 Why it matters: When title is the only labeling mechanism for a form field, many users cannot determine what information to enter. Title attributes are not announced by screen readers when navigating forms in normal mode, don't appear on mobile devices, cannot be accessed by keyboard users, and disappear too quickly for many users to read. This makes the form field essentially unlabeled for a large portion of users, preventing them from completing forms successfully.
 Who it affects: Screen reader users who won't hear the field's purpose when navigating the form, mobile users who cannot see title tooltips at all, keyboard users who cannot hover to see the tooltip, users with motor disabilities who struggle with precise hovering, users with cognitive disabilities who need persistent labels as memory aids, and voice control users who cannot reference fields without visible labels
@@ -1263,7 +1251,7 @@ ID:  WarnFormHasNoLabelSoIsNotLandmark
 Type: Warning
 Impact: Medium
 WCAG: 1.3.1
-Category: landmarks
+Category: forms
 Description: Form element lacks label so is not exposed as landmark
 Why it matters: Forms without accessible names are not landmarks
 Who it affects: Screen reader users navigating by landmarks
@@ -1278,7 +1266,7 @@ ID:  WarnFormLandmarkAccessibleNameUsesForm
 Type: Warning
 Impact: Low
 WCAG: 2.4.6
-Category: landmarks
+Category: forms
 Description: Form landmark uses generic term "form" in label
 Why it matters: Generic labels don't describe purpose
 Who it affects: Screen reader users
@@ -1294,6 +1282,7 @@ ID: WarnMissingAriaLabelledby
 Type: Warning
 Impact: Low
 WCAG: 1.3.1 Info and Relationships (Level A)
+Category: forms
 Description: Form field could benefit from aria-labelledby for complex labeling
 Why it matters: Complex forms may need multiple labels or descriptions for clarity.
 Who it affects: Screen reader users needing additional context.
@@ -1476,11 +1465,11 @@ How to fix: Add aria-label or aria-labelledby to region landmarks.
 ID:  forms_DiscoNoSubmitButton
 Type: Discovery
 Impact: N/A
-WCAG: 3.3.2
+WCAG: N/A
 Category: forms
-Description: Form may lack clear submit button
+Description: Form lacks submit button
 Why it matters: Users may not know how to submit the form
-Who it affects: Users with cognitive disabilities, keyboard users
+Who it affects: Everyone
 How to fix: Ensure form has clear submit mechanism
 ```
 
@@ -1490,13 +1479,13 @@ How to fix: Ensure form has clear submit mechanism
 
 ID:  forms_DiscoPlaceholderAsLabel
 Type: Discovery
-Impact: N/A
-WCAG: 3.3.2
+Impact: Medium
+WCAG: N/A
 Category: forms
-Description: Placeholder may be used instead of label
+Description: Placeholders cannot be labels as they do not always appear
 Why it matters: Placeholder text disappears when typing
 Who it affects: Users with memory/cognitive issues, screen reader users
-How to fix: Use proper labels, placeholder for examples only
+How to fix: Use proper labels, at most placeholder for examples only
 ```
 
 ### 2.6 Additional Form Issues
@@ -2019,11 +2008,11 @@ How to fix: Use appropriate HTML heading tags (h1-h6) for text that serves as he
 ID: DiscoHeadingWithID
 Type: Discovery
 Impact: N/A
-WCAG: 1.3.1 Info and Relationships (Level A)
+WCAG: N/A
 Description: Heading element has an ID attribute that may be used for in-page navigation
 Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
 Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
-How to fix: Verify the heading ID is referenced by navigation links, ensure the ID is descriptive and stable, check that the heading text provides clear navigation context.
+How to fix: Ensure that the ID attribute is referenced and its use is valid.
 
 ---
 
@@ -2315,12 +2304,12 @@ How to fix: Replace generic titles with descriptive ones that explain the iframe
 ID:  DiscoFoundInlineSvg
 Type: Discovery
 Impact: N/A
-WCAG: 1.1.1 Non-text Content (Level A)
+WCAG: N/A
 Category: svg
 Description: Inline SVG element detected that requires manual review to determine appropriate accessibility implementation based on its purpose and complexity
 Why it matters: SVG elements serve diverse purposes from simple icons to complex interactive visualizations, each requiring different accessibility approaches. A decorative border needs different treatment than a data chart, which differs from an interactive map or scientific simulation. Automated tools cannot determine SVG purpose, whether it's decorative or informative, static or interactive, or if existing accessibility features adequately support user needs.
-Who it affects: Blind and low vision users using screen readers who need text alternatives for graphics or keyboard access to interactive elements, users with motor disabilities who require keyboard navigation for interactive SVG controls, users with cognitive disabilities who benefit from clear labeling and predictable interaction patterns, and users of various assistive technologies that may interpret SVG content differently
-How to fix: Evaluate the SVG's purpose and complexity - for simple images add <title> with aria-labelledby or role="img" with aria-label, for decorative graphics use aria-hidden="true", for data visualizations provide <title> and <desc> plus consider adjacent detailed text alternatives, for interactive content ensure all controls are keyboard accessible with proper ARIA labels and focus management, for complex simulations provide instructions and state changes announcements, and test with screen readers to verify the experience matches visual functionality
+Who it affects: Blind and low vision users using screen readers who need text alternatives for graphics or keyboard access to interactive elements, users with motor disabilities who require keyboard navigation for interactive SVG controls, users with cognitive disabilities who benefit from clear labeling and predictable interaction patterns.
+How to fix: Evaluate the SVG's purpose and complexity - for simple images ensure there is a role="img", use <title> for alt text with aria-labelledby on the SVG referencing an ID on the <title> (a workaround for some browsers), for decorative graphics use aria-hidden="true", for data visualizations provide <title> and <desc> plus consider adjacent detailed text alternatives, for interactive content ensure all controls are keyboard accessible with proper ARIA labels and focus management, for complex simulations provide instructions and state change announcements, and test with screen readers to verify the experience matches visual functionality.
 ```
 
 ### 1.6 SVG Image Found
@@ -2336,7 +2325,7 @@ WCAG: 1.1.1 Non-text Content (Level A)
 Category: Images
 Description: SVG element with role="img" detected that requires manual review to verify appropriate text alternatives are provided
 Why it matters: SVG elements with role="img" are explicitly marked as images and treated as a single graphic by assistive technologies, requiring appropriate text alternatives. While the role="img" indicates developer awareness of accessibility needs, manual review is needed to verify that any aria-label, aria-labelledby, or internal <title> elements adequately describe the image's content or function, and that the description is appropriate for the SVG's context and purpose.
-Who it affects: Blind and low vision users using screen readers who depend on text alternatives to understand image content, users with cognitive disabilities who benefit from clear, concise descriptions of visual information, keyboard users who may encounter the SVG in their navigation flow, and users of assistive technologies that treat role="img" SVGs as atomic image elements
+Who it affects: Blind and low vision users using screen readers who depend on text alternatives to understand image content.
 How to fix: Verify the SVG with role="img" has appropriate accessible names through aria-label or aria-labelledby attributes, ensure any <title> or <desc> elements inside the SVG are properly referenced if used for labeling, confirm decorative SVGs are hidden with aria-hidden="true" rather than given role="img", check that the text alternative accurately describes the SVG's meaning in context, and test with screen readers to ensure the image is announced with meaningful information
 ```
 
@@ -3515,12 +3504,12 @@ How to fix: Add link text, aria-label, or aria-labelledby attribute
 ID:  DiscoPDFLinksFound
 Type: Discovery
 Impact: N/A
-WCAG: 1.1.1, 1.3.1, 2.1.1, 2.4.1
+WCAG: N/A
 Category: pdf
 Description: Links to PDF documents detected on page
 Why it matters: PDF documents often have accessibility issues and may not be accessible to all users
-Who it affects: Screen reader users, users with disabilities who have difficulty with PDF formats
-How to fix: Ensure PDFs are accessible (tagged, structured, with text content) or provide HTML alternatives
+Who it affects: Screen reader users who have higher cognitive load when reading PDFs
+How to fix: Ensure PDFs are accessible (tagged, structured, with text content) or provide HTML alternatives. Ensure that the user knows the link is to a PDF. Ensure the attribute hreflang is provided if the PDF is in a different language to that of the current page.
 ```
 
 ---
@@ -4139,9 +4128,9 @@ Impact: N/A
 WCAG: N/A
 Category: fonts
 Description: Font '{found}' detected in use on the page for accessibility review
-Why it matters: Tracking font usage helps identify typography choices that may affect readability. Font '{found}' has been detected on this page. While not inherently an accessibility issue, certain fonts can be harder to read for users with dyslexia, low vision, or reading disabilities. This discovery item documents which fonts are in use so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.
-Who it affects: This information helps accessibility auditors and developers understand the typography landscape of the page, particularly relevant for users with dyslexia who benefit from clear sans-serif fonts, users with low vision who need good character distinction, and users with reading disabilities who benefit from consistent, readable typefaces
-How to fix: No action required - this is informational only. The font '{found}' is currently in use. For accessibility best practices, consider using fonts with clear character distinction (avoiding ambiguous characters like I/l/1), adequate spacing between letters, and good readability at various sizes. Popular accessible fonts include Arial, Verdana, Tahoma, and specialized dyslexia-friendly fonts like OpenDyslexic. Document your font choices and test readability with actual users when possible.
+Why it matters: Tracking font usage helps identify typography choices that may affect readability. This discovery item documents which fonts are in use so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.
+Who it affects: Users with dyslexia and dyscalculia who benefit from clear readable fonts.
+How to fix: Consider current advice on what is considered an accessible font.
 ```
 
 ---

@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Discovery History - {{ website.name }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Discovery History</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">Discovery History</h1>
+            <p class="text-muted">All discovery runs for {{ website.name }}</p>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="startDiscovery()">
+                <i class="bi bi-arrow-clockwise"></i> Start New Discovery
+            </button>
+        </div>
+    </div>
+
+    <!-- Discovery Runs Table -->
+    <div class="card">
+        <div class="card-body">
+            {% if discovery_runs %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Started</th>
+                            <th>Status</th>
+                            <th>Pages Found</th>
+                            <th>Failed</th>
+                            <th>Changes</th>
+                            <th>Duration</th>
+                            <th>Triggered By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for run in discovery_runs %}
+                        <tr class="{% if run.is_latest %}table-info{% endif %}">
+                            <td>
+                                {{ run.started_at.strftime('%Y-%m-%d %H:%M') }}
+                                {% if run.is_latest %}
+                                <span class="badge bg-primary ms-2">Latest</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if run.status.value == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                                {% elif run.status.value == 'running' %}
+                                <span class="badge bg-warning">Running</span>
+                                {% elif run.status.value == 'failed' %}
+                                <span class="badge bg-danger">Failed</span>
+                                {% elif run.status.value == 'cancelled' %}
+                                <span class="badge bg-secondary">Cancelled</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ run.status.value }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ run.pages_discovered }}</td>
+                            <td>
+                                {% if run.pages_failed > 0 %}
+                                <span class="text-danger">{{ run.pages_failed }}</span>
+                                {% else %}
+                                0
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if run.pages_added > 0 or run.pages_removed > 0 %}
+                                    <span class="text-success">+{{ run.pages_added }}</span> /
+                                    <span class="text-danger">-{{ run.pages_removed }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ run.duration_display }}</td>
+                            <td>{{ run.triggered_by or 'Manual' }}</td>
+                            <td>
+                                <a href="{{ url_for('websites.view_discovery_run', website_id=website.id, discovery_run_id=run.id) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                {% if not run.is_latest and run.status.value == 'completed' %}
+                                <button class="btn btn-sm btn-outline-info" 
+                                        onclick="compareWithLatest('{{ run.id }}')">
+                                    <i class="bi bi-arrow-left-right"></i> Compare
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> No discovery runs found. Click "Start New Discovery" to begin.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Statistics Summary -->
+    {% if discovery_runs %}
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Runs</h5>
+                    <p class="h2">{{ discovery_runs|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Successful</h5>
+                    <p class="h2 text-success">{{ discovery_runs|selectattr('status.value', 'equalto', 'completed')|list|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Failed</h5>
+                    <p class="h2 text-danger">{{ discovery_runs|selectattr('status.value', 'equalto', 'failed')|list|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Average Duration</h5>
+                    {% set completed_runs = discovery_runs|selectattr('duration_seconds')|list %}
+                    {% if completed_runs %}
+                    {% set avg_duration = (completed_runs|map(attribute='duration_seconds')|sum) / completed_runs|length %}
+                    <p class="h2">{{ (avg_duration / 60)|round(1) }}m</p>
+                    {% else %}
+                    <p class="h2">-</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function startDiscovery() {
+    if (confirm('Start a new discovery run for this website?')) {
+        fetch(`/websites/{{ website.id }}/discover`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})  // Send empty JSON body
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Discovery started successfully');
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error starting discovery:', error);
+            alert('Error starting discovery: ' + error.message);
+        });
+    }
+}
+
+function compareWithLatest(runId) {
+    // Navigate to comparison view
+    window.location.href = `{{ url_for('websites.view_discovery_run', website_id=website.id, discovery_run_id='') }}${runId}?compare=true`;
+}
+</script>
+{% endblock %}

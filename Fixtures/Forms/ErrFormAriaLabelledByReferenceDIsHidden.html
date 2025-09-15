@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form aria-labelledby References Hidden Element Test Fixture</title>
+    <style>
+        .hidden { display: none; }
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        .invisible { visibility: hidden; }
+        .zero-opacity { opacity: 0; }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+        .error { background-color: #ffe6e6; }
+        .warning { background-color: #fff3cd; }
+        .pass { background-color: #e6ffe6; }
+    </style>
+</head>
+<body>
+    <h1>Form aria-labelledby Hidden Element Reference Test Fixture</h1>
+    
+    <!-- ERROR CASES - These should trigger the accessibility error -->
+    
+    <div class="test-section error">
+        <h2>❌ ERROR: Form with aria-labelledby referencing display:none element</h2>
+        <div id="hidden-label-1" class="hidden">User Registration Form</div>
+        <form aria-labelledby="hidden-label-1">
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Form with aria-labelledby referencing visibility:hidden element</h2>
+        <div id="invisible-label-1" class="invisible">Login Form</div>
+        <form aria-labelledby="invisible-label-1">
+            <input type="email" name="email" placeholder="Email">
+            <input type="password" name="password" placeholder="Password">
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Form with aria-labelledby referencing hidden attribute element</h2>
+        <div id="hidden-attr-label-1" hidden>Contact Form</div>
+        <form aria-labelledby="hidden-attr-label-1">
+            <input type="text" name="name" placeholder="Your Name">
+            <input type="email" name="contact-email" placeholder="Your Email">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Form with aria-labelledby referencing multiple IDs including hidden ones</h2>
+        <div id="visible-part">Order</div>
+        <div id="hidden-part" class="hidden">Checkout Form</div>
+        <form aria-labelledby="visible-part hidden-part">
+            <input type="text" name="product" placeholder="Product">
+            <input type="number" name="quantity" placeholder="Quantity">
+            <button type="submit">Add to Cart</button>
+        </form>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Nested form with aria-labelledby referencing parent's hidden element</h2>
+        <div>
+            <div id="nested-hidden-label" style="display: none;">Nested Form Label</div>
+            <div>
+                <form aria-labelledby="nested-hidden-label">
+                    <input type="search" name="query" placeholder="Search">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDGE CASES -->
+
+    <div class="test-section warning">
+        <h2>⚠️  EDGE CASE: Form with aria-labelledby referencing opacity:0 element</h2>
+        <div id="zero-opacity-label" class="zero-opacity">Survey Form</div>
+        <form aria-labelledby="zero-opacity-label">
+            <input type="text" name="feedback" placeholder="Your feedback">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="test-section warning">
+        <h2>⚠️  EDGE CASE: Form with aria-labelledby referencing non-existent ID</h2>
+        <form aria-labelledby="non-existent-id">
+            <input type="text" name="data" placeholder="Enter data">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- PASSING CASES - These should NOT trigger the error -->
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Form with aria-labelledby referencing visible element</h2>
+        <div id="visible-label-1">Newsletter Subscription</div>
+        <form aria-labelledby="visible-label-1">
+            <input type="email" name="newsletter-email" placeholder="Your email">
+            <button type="submit">Subscribe</button>
+        </form>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Form with aria-labelledby referencing visually-hidden element (screen reader accessible)</h2>
+        <div id="sr-only-label" class="visually-hidden">Accessible Form Label</div>
+        <form aria-labelledby="sr-only-label">
+            <input type="text" name="accessible-input" placeholder="Accessible input">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Form with proper aria-label (no aria-labelledby)</h2>
+        <form aria-label="Settings Form">
+            <input type="text" name="setting" placeholder="Setting value">
+            <button type="submit">Save Settings</button>
+        </form>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Form with aria-labelledby referencing multiple visible elements</h2>
+        <h3 id="form-title">Payment</h3>
+        <p id="form-description">Enter your payment details below</p>
+        <form aria-labelledby="form-title form-description">
+            <input type="text" name="card-number" placeholder="Card Number">
+            <input type="text" name="cvv" placeholder="CVV">
+            <button type="submit">Pay</button>
+        </form>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Form without aria-labelledby (should not trigger this specific error)</h2>
+        <form>
+            <label for="simple-input">Simple Input:</label>
+            <input type="text" id="simple-input" name="simple">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Additional test cases for thorough coverage -->
+    
+    <div class="test-section error">
+        <h2>❌ ERROR: Form with aria-labelledby referencing element with CSS hiding</h2>
+        <style>
+            #css-hidden-label { 
+                position: absolute; 
+                left: -9999px; 
+                top: -9999px; 
+                display: none; 
+            }
+        </style>
+        <div id="css-hidden-label">CSS Hidden Form Label</div>
+        <form aria-labelledby="css-hidden-label">
+            <input type="text" name="css-test" placeholder="CSS test input">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        // Dynamic test case - hiding element after page load
+        setTimeout(() => {
+            const dynamicLabel = document.getElementById('dynamic-label');
+            if (dynamicLabel) {
+                dynamicLabel.style.display = 'none';
+            }
+        }, 100);
+    </script>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Form with aria-labelledby referencing dynamically hidden element</h2>
+        <div id="dynamic-label">Dynamic Label (will be hidden by JavaScript)</div>
+        <form aria-labelledby="dynamic-label">
+            <input type="text" name="dynamic-test" placeholder="Dynamic test input">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+</body>
+</html>

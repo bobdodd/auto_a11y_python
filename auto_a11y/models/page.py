@@ -29,6 +29,7 @@ class Page:
     title: Optional[str] = None
     discovered_at: datetime = field(default_factory=datetime.now)
     discovered_from: Optional[str] = None  # URL that linked to this page
+    discovery_run_id: Optional[str] = None  # ID of the discovery run that found this page
     last_tested: Optional[datetime] = None
     status: PageStatus = PageStatus.DISCOVERED
     violation_count: int = 0
@@ -40,6 +41,7 @@ class Page:
     priority: str = "normal"  # high, normal, low
     depth: int = 0  # Crawl depth from start page
     error_reason: Optional[str] = None  # Reason for discovery/test failure
+    is_in_latest_discovery: bool = True  # Is this page in the most recent discovery?
     _id: Optional[ObjectId] = None
     
     @property
@@ -65,6 +67,7 @@ class Page:
             'title': self.title,
             'discovered_at': self.discovered_at,
             'discovered_from': self.discovered_from,
+            'discovery_run_id': self.discovery_run_id,
             'last_tested': self.last_tested,
             'status': self.status.value,
             'violation_count': self.violation_count,
@@ -75,7 +78,8 @@ class Page:
             'test_duration_ms': self.test_duration_ms,
             'priority': self.priority,
             'depth': self.depth,
-            'error_reason': self.error_reason
+            'error_reason': self.error_reason,
+            'is_in_latest_discovery': self.is_in_latest_discovery
         }
         if self._id:
             data['_id'] = self._id
@@ -90,6 +94,7 @@ class Page:
             title=data.get('title'),
             discovered_at=data.get('discovered_at', datetime.now()),
             discovered_from=data.get('discovered_from'),
+            discovery_run_id=data.get('discovery_run_id'),
             last_tested=data.get('last_tested'),
             status=PageStatus(data.get('status', 'discovered')),
             violation_count=data.get('violation_count', 0),
@@ -101,5 +106,6 @@ class Page:
             priority=data.get('priority', 'normal'),
             depth=data.get('depth', 0),
             error_reason=data.get('error_reason'),
+            is_in_latest_discovery=data.get('is_in_latest_discovery', True),
             _id=data.get('_id')
         )

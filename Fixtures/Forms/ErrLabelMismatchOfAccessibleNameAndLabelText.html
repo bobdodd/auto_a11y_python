@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Label Mismatch Test Fixture - WCAG 2.5.3</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 30px 0; border: 1px solid #ccc; padding: 20px; }
+        .test-section h2 { margin-top: 0; color: #333; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { padding: 8px; margin: 5px 0; }
+        .error { background-color: #ffe6e6; }
+        .correct { background-color: #e6ffe6; }
+    </style>
+</head>
+<body>
+    <h1>Accessible Name vs Visible Label Mismatch Test Cases</h1>
+    
+    <!-- Test Case 1: aria-label doesn't match visible label -->
+    <div class="test-section error">
+        <h2>❌ Test 1: aria-label mismatch</h2>
+        <div class="form-group">
+            <label for="email1">Email Address</label>
+            <input type="email" id="email1" aria-label="Enter your work email here" />
+        </div>
+        <p><strong>Issue:</strong> Visible label says "Email Address" but aria-label says "Enter your work email here"</p>
+    </div>
+
+    <!-- Test Case 2: aria-labelledby pointing to different text -->
+    <div class="test-section error">
+        <h2>❌ Test 2: aria-labelledby mismatch</h2>
+        <div class="form-group">
+            <label id="phone-label">Phone Number</label>
+            <span id="phone-description" style="display: none;">Contact telephone</span>
+            <input type="tel" aria-labelledby="phone-description" />
+        </div>
+        <p><strong>Issue:</strong> Visible label says "Phone Number" but aria-labelledby references hidden text "Contact telephone"</p>
+    </div>
+
+    <!-- Test Case 3: Button with mismatched accessible name -->
+    <div class="test-section error">
+        <h2>❌ Test 3: Button text vs aria-label mismatch</h2>
+        <div class="form-group">
+            <button aria-label="Submit registration form">Send Message</button>
+        </div>
+        <p><strong>Issue:</strong> Button shows "Send Message" but aria-label says "Submit registration form"</p>
+    </div>
+
+    <!-- Test Case 4: Link with mismatched accessible name -->
+    <div class="test-section error">
+        <h2>❌ Test 4: Link text vs aria-label mismatch</h2>
+        <div class="form-group">
+            <a href="#" aria-label="Navigate to contact page">Learn More</a>
+        </div>
+        <p><strong>Issue:</strong> Link shows "Learn More" but aria-label says "Navigate to contact page"</p>
+    </div>
+
+    <!-- Test Case 5: Select with mismatched label -->
+    <div class="test-section error">
+        <h2>❌ Test 5: Select label mismatch</h2>
+        <div class="form-group">
+            <label for="country">Country</label>
+            <select id="country" aria-label="Choose your nation">
+                <option value="">Select an option</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+            </select>
+        </div>
+        <p><strong>Issue:</strong> Label says "Country" but aria-label says "Choose your nation"</p>
+    </div>
+
+    <!-- Test Case 6: Complex mismatch with multiple labels -->
+    <div class="test-section error">
+        <h2>❌ Test 6: Complex labeling mismatch</h2>
+        <div class="form-group">
+            <label for="password1">Password</label>
+            <input type="password" id="password1" aria-label="Secret access code" aria-describedby="pwd-help" />
+            <div id="pwd-help">Must be at least 8 characters</div>
+        </div>
+        <p><strong>Issue:</strong> Label says "Password" but aria-label says "Secret access code"</p>
+    </div>
+
+    <!-- Test Case 7: Input group with mismatched accessible name -->
+    <div class="test-section error">
+        <h2>❌ Test 7: Input group mismatch</h2>
+        <div class="form-group">
+            <fieldset>
+                <legend>Preferred Contact Method</legend>
+                <input type="radio" id="contact-email" name="contact" value="email" aria-label="Electronic mail">
+                <label for="contact-email">Email</label>
+                <input type="radio" id="contact-phone" name="contact" value="phone" aria-label="Telephone call">
+                <label for="contact-phone">Phone</label>
+            </fieldset>
+        </div>
+        <p><strong>Issue:</strong> Radio buttons have aria-labels that don't match their visible labels</p>
+    </div>
+
+    <!-- Test Case 8: Textarea with mismatch -->
+    <div class="test-section error">
+        <h2>❌ Test 8: Textarea label mismatch</h2>
+        <div class="form-group">
+            <label for="comments">Comments</label>
+            <textarea id="comments" aria-label="Additional feedback and suggestions"></textarea>
+        </div>
+        <p><strong>Issue:</strong> Label says "Comments" but aria-label says "Additional feedback and suggestions"</p>
+    </div>
+
+    <!-- Correct Examples for Comparison -->
+    <div class="test-section correct">
+        <h2>✅ Correct Examples</h2>
+        
+        <div class="form-group">
+            <label for="email-correct">Email Address</label>
+            <input type="email" id="email-correct" />
+            <p><strong>Correct:</strong> No conflicting aria-label, uses associated label</p>
+        </div>
+
+        <div class="form-group">
+            <label for="name-correct">Full Name</label>
+            <input type="text" id="name-correct" aria-label="Full Name" />
+            <p><strong>Correct:</strong> aria-label matches visible label exactly</p>
+        </div>
+
+        <div class="form-group">
+            <button>Submit Form</button>
+            <p><strong>Correct:</strong> No conflicting aria-label, uses button text</p>
+        </div>
+
+        <div class="form-group">
+            <button aria-label="Submit Form">Submit Form</button>
+            <p><strong>Correct:</strong> aria-label matches button text exactly</p>
+        </div>
+    </div>
+
+    <!-- Edge Cases -->
+    <div class="test-section error">
+        <h2>❌ Edge Case: Partial match but different meaning</h2>
+        <div class="form-group">
+            <label for="search">Search</label>
+            <input type="search" id="search" aria-label="Search products" />
+        </div>
+        <p><strong>Issue:</strong> While "Search" is contained in "Search products", the accessible name adds context that voice users won't expect</p>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Edge Case: Case sensitivity mismatch</h2>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" aria-label="username" />
+        </div>
+        <p><strong>Issue:</strong> Different capitalization can cause voice control issues</p>
+    </div>
+
+</body>
+</html>

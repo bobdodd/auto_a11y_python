@@ -1,0 +1,112 @@
+ID:  DiscoFormOnPage
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Category: forms
+Description: Form detected on page - needs manual testing
+Why it matters: Forms need comprehensive accessibility testing
+Who it affects: All users with disabilities
+How to fix: Manually test form with keyboard and screen reader
+
+
+ID:  forms_DiscoNoSubmitButton
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Category: forms
+Description: Form lacks submit button
+Why it matters: Users may not know how to submit the form
+Who it affects: Everyone
+How to fix: Ensure form has clear submit mechanism
+
+ID:  forms_DiscoPlaceholderAsLabel
+Type: Discovery
+Impact: Medium
+WCAG: N/A
+Category: forms
+Description: Placeholders cannot be labels as they do not always appear
+Why it matters: Placeholder text disappears when typing
+Who it affects: Users with memory/cognitive issues, screen reader users
+How to fix: Use proper labels, at most placeholder for examples only
+
+ID:  DiscoFoundJS
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Category: javascript
+Description: JavaScript detected on page
+Why it matters: Functionality should work without JavaScript
+Who it affects: Users with JavaScript disabled
+How to fix: Ensure progressive enhancement
+
+ID:  DiscoStyleAttrOnElements
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Category: style
+Description: Inline styles detected
+Why it matters: May affect responsive design and user customization
+Who it affects: Users with custom stylesheets
+How to fix: Consider moving to CSS classes
+
+ID:  DiscoStyleElementOnPage
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Category: style
+Description: Style element found in page
+Why it matters: Embedded styles harder to override
+Who it affects: Users needing custom styles
+How to fix: Consider external stylesheets
+
+ID: DiscoHeadingWithID
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Description: Heading element has an ID attribute that may be used for in-page navigation
+Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
+Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
+How to fix: Ensure that the ID attribute is referenced and its use is valid.
+
+
+ID:  DiscoFoundInlineSvg
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Category: svg
+Description: Inline SVG element detected that requires manual review to determine appropriate accessibility implementation based on its purpose and complexity
+Why it matters: SVG elements serve diverse purposes from simple icons to complex interactive visualizations, each requiring different accessibility approaches. A decorative border needs different treatment than a data chart, which differs from an interactive map or scientific simulation. Automated tools cannot determine SVG purpose, whether it's decorative or informative, static or interactive, or if existing accessibility features adequately support user needs.
+Who it affects: Blind and low vision users using screen readers who need text alternatives for graphics or keyboard access to interactive elements, users with motor disabilities who require keyboard navigation for interactive SVG controls, users with cognitive disabilities who benefit from clear labeling and predictable interaction patterns.
+How to fix: Evaluate the SVG's purpose and complexity - for simple images ensure there is a role="img", use <title> for alt text with aria-labelledby on the SVG referencing an ID on the <title> (a workaround for some browsers), for decorative graphics use aria-hidden="true", for data visualizations provide <title> and <desc> plus consider adjacent detailed text alternatives, for interactive content ensure all controls are keyboard accessible with proper ARIA labels and focus management, for complex simulations provide instructions and state change announcements, and test with screen readers to verify the experience matches visual functionality.
+
+
+ID:  DiscoFoundSvgImage
+Type: Discovery
+Impact: N/A
+WCAG: 1.1.1 Non-text Content (Level A)
+Category: Images
+Description: SVG element with role="img" detected that requires manual review to verify appropriate text alternatives are provided
+Why it matters: SVG elements with role="img" are explicitly marked as images and treated as a single graphic by assistive technologies, requiring appropriate text alternatives. While the role="img" indicates developer awareness of accessibility needs, manual review is needed to verify that any aria-label, aria-labelledby, or internal <title> elements adequately describe the image's content or function, and that the description is appropriate for the SVG's context and purpose.
+Who it affects: Blind and low vision users using screen readers who depend on text alternatives to understand image content.
+How to fix: Verify the SVG with role="img" has appropriate accessible names through aria-label or aria-labelledby attributes, ensure any <title> or <desc> elements inside the SVG are properly referenced if used for labeling, confirm decorative SVGs are hidden with aria-hidden="true" rather than given role="img", check that the text alternative accurately describes the SVG's meaning in context, and test with screen readers to ensure the image is announced with meaningful information
+
+ID:  DiscoPDFLinksFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Category: pdf
+Description: Links to PDF documents detected on page
+Why it matters: PDF documents often have accessibility issues and may not be accessible to all users
+Who it affects: Screen reader users who have higher cognitive load when reading PDFs
+How to fix: Ensure PDFs are accessible (tagged, structured, with text content) or provide HTML alternatives. Ensure that the user knows the link is to a PDF. Ensure the attribute hreflang is provided if the PDF is in a different language to that of the current page and that the language of the PDF is indicated in the link text.
+
+ID:  DiscoFontFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Category: fonts
+Description: Font '{found}' detected in use on the page for accessibility review
+Why it matters: Tracking font usage helps identify typography choices that may affect readability. This discovery item documents which fonts are in use so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.
+Who it affects: Users with dyslexia and dyscalculia who benefit from clear readable fonts.
+How to fix: Consider current advice on what is considered an accessible font.
+

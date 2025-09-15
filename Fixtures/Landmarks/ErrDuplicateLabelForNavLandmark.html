@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Landmark Label Test Fixture</title>
+</head>
+<body>
+    <!-- Test Case 1: Multiple nav elements with identical aria-label (ERROR) -->
+    <nav aria-label="Site navigation">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Main Content</h1>
+        <p>This is the main content area of the page.</p>
+    </main>
+
+    <!-- Test Case 2: Another nav with same aria-label (ERROR) -->
+    <nav aria-label="Site navigation">
+        <ul>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#support">Support</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+    </nav>
+
+    <!-- Test Case 3: Nav with role and same aria-label (ERROR) -->
+    <div role="navigation" aria-label="Site navigation">
+        <ul>
+            <li><a href="#privacy">Privacy Policy</a></li>
+            <li><a href="#terms">Terms of Service</a></li>
+        </ul>
+    </div>
+
+    <!-- Test Case 4: Multiple navs with identical aria-labelledby (ERROR) -->
+    <h2 id="nav-heading">Navigation Menu</h2>
+    <nav aria-labelledby="nav-heading">
+        <ul>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#solutions">Solutions</a></li>
+        </ul>
+    </nav>
+
+    <nav aria-labelledby="nav-heading">
+        <ul>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#news">News</a></li>
+        </ul>
+    </nav>
+
+    <!-- Test Case 5: Nav without explicit label (uses default "navigation") -->
+    <nav>
+        <ul>
+            <li><a href="#careers">Careers</a></li>
+            <li><a href="#investors">Investors</a></li>
+        </ul>
+    </nav>
+
+    <!-- Test Case 6: Another unlabeled nav (creates duplicate default labels) -->
+    <nav>
+        <ul>
+            <li><a href="#legal">Legal</a></li>
+            <li><a href="#accessibility">Accessibility</a></li>
+        </ul>
+    </nav>
+
+    <!-- CORRECT EXAMPLES (should not trigger errors) -->
+    
+    <!-- Unique aria-labels -->
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="#category1">Category 1</a></li>
+            <li><a href="#category2">Category 2</a></li>
+        </ul>
+    </nav>
+
+    <nav aria-label="Footer navigation">
+        <ul>
+            <li><a href="#sitemap">Sitemap</a></li>
+            <li><a href="#help">Help</a></li>
+        </ul>
+    </nav>
+
+    <!-- Unique aria-labelledby references -->
+    <h3 id="sidebar-nav-heading">Sidebar Navigation</h3>
+    <nav aria-labelledby="sidebar-nav-heading">
+        <ul>
+            <li><a href="#section1">Section 1</a></li>
+            <li><a href="#section2">Section 2</a></li>
+        </ul>
+    </nav>
+
+    <h4 id="utility-nav-heading">Utility Links</h4>
+    <nav aria-labelledby="utility-nav-heading">
+        <ul>
+            <li><a href="#search">Search</a></li>
+            <li><a href="#account">Account</a></li>
+        </ul>
+    </nav>
+
+    <!-- Mixed labeling methods (both unique) -->
+    <nav aria-label="Social media navigation">
+        <ul>
+            <li><a href="#facebook">Facebook</a></li>
+            <li><a href="#twitter">Twitter</a></li>
+        </ul>
+    </nav>
+
+    <h5 id="breadcrumb-heading">Breadcrumb</h5>
+    <nav aria-labelledby="breadcrumb-heading">
+        <ol>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#category">Category</a></li>
+            <li aria-current="page">Current Page</li>
+        </ol>
+    </nav>
+</body>
+</html>

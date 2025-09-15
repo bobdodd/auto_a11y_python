@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Landmark Conflicting Labels Test Fixture</title>
+</head>
+<body>
+    <!-- Test Case 1: Main landmark with both aria-label and aria-labelledby (ERROR) -->
+    <main aria-label="Primary content area" aria-labelledby="main-heading">
+        <h1 id="main-heading">Welcome to Our Website</h1>
+        <p>This main landmark has both aria-label and aria-labelledby attributes, which creates conflicting labeling methods.</p>
+    </main>
+
+    <!-- Test Case 2: Another main with conflicting labels (ERROR) -->
+    <main aria-label="Dashboard content" aria-labelledby="dashboard-title secondary-title">
+        <h2 id="dashboard-title">User Dashboard</h2>
+        <h3 id="secondary-title">Personal Information</h3>
+        <p>This main also demonstrates the error with multiple elements referenced in aria-labelledby.</p>
+    </main>
+
+    <!-- Test Case 3: Main with only aria-label (CORRECT) -->
+    <main aria-label="Article content">
+        <h2>News Article</h2>
+        <p>This main landmark uses only aria-label, which is correct.</p>
+    </main>
+
+    <!-- Test Case 4: Main with only aria-labelledby (CORRECT) -->
+    <main aria-labelledby="products-heading">
+        <h2 id="products-heading">Product Catalog</h2>
+        <p>This main landmark uses only aria-labelledby, which is also correct.</p>
+    </main>
+
+    <!-- Test Case 5: Main with no labeling attributes (ACCEPTABLE) -->
+    <main>
+        <h2>Contact Information</h2>
+        <p>This main landmark has no labeling attributes, which is acceptable when there's only one main landmark.</p>
+    </main>
+
+    <!-- Test Case 6: Main with both attributes but empty values (ERROR) -->
+    <main aria-label="" aria-labelledby="">
+        <h2>Footer Content</h2>
+        <p>This main has both attributes present but with empty values, still triggering the error.</p>
+    </main>
+
+    <!-- Test Case 7: Main with aria-label and aria-labelledby referencing non-existent element (ERROR) -->
+    <main aria-label="Search results" aria-labelledby="non-existent-id">
+        <h2>Search Results</h2>
+        <p>This main has both attributes, with aria-labelledby referencing a non-existent element.</p>
+    </main>
+</body>
+</html>

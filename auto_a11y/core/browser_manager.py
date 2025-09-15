@@ -352,9 +352,14 @@ class BrowserManager:
                     return False
             # Try to verify connection is still alive
             try:
-                # Get browser version to check connection
-                await self.browser.version()
+                # Get browser version to check connection with timeout
+                version_task = self.browser.version()
+                await asyncio.wait_for(version_task, timeout=2.0)
                 return True
+            except asyncio.TimeoutError:
+                logger.warning("Browser connection check timed out")
+                self.browser = None  # Clear dead reference
+                return False
             except Exception as e:
                 logger.warning(f"Browser connection lost: {e}")
                 self.browser = None  # Clear dead reference
@@ -363,6 +368,12 @@ class BrowserManager:
             logger.error(f"Error checking browser status: {e}")
             self.browser = None  # Clear on any error
             return False
+    
+    async def ensure_running(self):
+        """Ensure browser is running, restart if needed"""
+        if not await self.is_running():
+            logger.info("Browser not running, restarting...")
+            await self.start()
 
 
 class BrowserPool:

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel ARIA Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        
+        .test-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .carousel {
+            position: relative;
+            width: 500px;
+            height: 300px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.3s ease;
+            width: 300%;
+        }
+        
+        .carousel-slide {
+            min-width: 100%;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .slide-1 { background: #ff6b6b; }
+        .slide-2 { background: #4ecdc4; }
+        .slide-3 { background: #45b7d1; }
+        
+        .carousel-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .carousel-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        
+        .carousel-btn:hover {
+            background: #555;
+        }
+        
+        .carousel-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .carousel-indicators {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .indicator.active {
+            background: #333;
+        }
+        
+        /* Accessible carousel styles */
+        .accessible-carousel {
+            border: 2px solid #4CAF50;
+        }
+        
+        .error {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        
+        .success {
+            color: #388e3c;
+            font-weight: bold;
+        }
+        
+        .hidden {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <h1>Carousel ARIA Test Fixture - AI_ErrCarouselWithoutARIA</h1>
+    <p><strong>Purpose:</strong> Test automated accessibility checker for carousel ARIA compliance</p>
+
+    <!-- TEST 1: Non-compliant carousel - Should trigger AI_ErrCarouselWithoutARIA -->
+    <div class="test-section">
+        <h2 class="error">❌ Test 1: Basic Carousel Without ARIA (Should Fail)</h2>
+        <p>This carousel lacks all ARIA attributes and proper semantic markup.</p>
+        
+        <div class="carousel" id="basic-carousel">
+            <div class="carousel-track" id="track1">
+                <div class="carousel-slide slide-1">Product Carousel Slide 1</div>
+                <div class="carousel-slide slide-2">Product Carousel Slide 2</div>
+                <div class="carousel-slide slide-3">Product Carousel Slide 3</div>
+            </div>
+        </div>
+        
+        <div class="carousel-controls">
+            <button class="carousel-btn" onclick="previousSlide('track1')">Previous</button>
+            <div class="carousel-indicators">
+                <button class="indicator active" onclick="goToSlide('track1', 0)"></button>
+                <button class="indicator" onclick="goToSlide('track1', 1)"></button>
+                <button class="indicator" onclick="goToSlide('track1', 2)"></button>
+            </div>
+            <button class="carousel-btn" onclick="nextSlide('track1')">Next</button>
+        </div>
+    </div>
+
+    <!-- TEST 2: Carousel with partial ARIA - Should still trigger error -->
+    <div class="test-section">
+        <h2 class="error">❌ Test 2: Carousel with Incomplete ARIA (Should Fail)</h2>
+        <p>This carousel has some ARIA attributes but is missing critical ones.</p>
+        
+        <div class="carousel" role="region" id="partial-carousel">
+            <div class="carousel-track" id="track2">
+                <div class="carousel-slide slide-1">News Carousel Item 1</div>
+                <div class="carousel-slide slide-2">News Carousel Item 2</div>
+                <div class="carousel-slide slide-3">News Carousel Item 3</div>
+            </div>
+        </div>
+        
+        <div class="carousel-controls">
+            <button class="carousel-btn" onclick="previousSlide('track2')">Prev</button>
+            <button class="carousel-btn" onclick="nextSlide('track2')">Next</button>
+        </div>
+    </div>
+
+    <!-- TEST 3: Auto-rotating carousel without proper ARIA - Should trigger error -->
+    <div class="test-section">
+        <h2 class="error">❌ Test 3: Auto-rotating Carousel Without ARIA (Should Fail)</h2>
+        <p>This auto-rotating carousel lacks aria-live and proper controls.</p>
+        
+        <div class="carousel" id="auto-carousel">
+            <div class="carousel-track" id="track3">
+                <div class="carousel-slide slide-1">Featured Content Slide 1</div>
+                <div class="carousel-slide slide-2">Featured Content Slide 2</div>
+                <div class="carousel-slide slide-3">Featured Content Slide 3</div>
+            </div>
+        </div>
+        
+        <button onclick="toggleAutoplay('track3')">Toggle Autoplay</button>
+    </div>
+
+    <!-- TEST 4: Image carousel without ARIA - Should trigger error -->
+    <div class="test-section">
+        <h2 class="error">❌ Test 4: Image Gallery Carousel Without ARIA (Should Fail)</h2>
+        <p>Image carousel with no accessibility markup.</p>
+        
+        <div class="carousel" id="image-carousel">
+            <div class="carousel-track" id="track4">
+                <div class="carousel-slide slide-1">Image Gallery Photo 1</div>
+                <div class="carousel-slide slide-2">Image Gallery Photo 2</div>
+                <div class="carousel-slide slide-3">Image Gallery Photo 3</div>
+            </div>
+        </div>
+        
+        <div class="carousel-controls">
+            <span onclick="previousSlide('track4')">◀</span>
+            <span onclick="nextSlide('track4')">▶</span>
+        </div>
+    </div>
+
+    <!-- TEST 5: Properly implemented accessible carousel - Should NOT trigger error -->
+    <div class="test-section">
+        <h2 class="success">✅ Test 5: Fully Accessible Carousel (Should Pass)</h2>
+        <p>This carousel includes all proper ARIA attributes and controls.</p>
+        
+        <div class="carousel accessible-carousel" 
+             role="region" 
+             aria-label="Featured testimonials carousel"
+             id="accessible-carousel">
+            <div class="carousel-track" 
+                 id="track5" 
+                 aria-live="polite" 
+                 aria-atomic="false">
+                <div class="carousel-slide slide-1" 
+                     role="group" 
+                     aria-roledescription="slide" 
+                     aria-label="1 of 3">
+                    Testimonial Carousel Slide 1
+                </div>
+                <div class="carousel-slide slide-2" 
+                     role="group" 
+                     aria-roledescription="slide" 
+                     aria-label="2 of 3">
+                    Testimonial Carousel Slide 2
+                </div>
+                <div class="carousel-slide slide-3" 
+                     role="group" 
+                     aria-roledescription="slide" 
+                     aria-label="3 of 3">
+                    Testimonial Carousel Slide 3
+                </div>
+            </div>
+        </div>
+        
+        <div class="carousel-controls">
+            <button class="carousel-btn" 
+                    onclick="previousSlide('track5')" 
+                    aria-label="Previous testimonial"
+                    aria-controls="track5">
+                Previous
+            </button>
+            <div class="carousel-indicators" role="tablist" aria-label="Testimonial selection">
+                <button class="indicator active" 
+                        role="tab" 
+                        aria-selected="true"
+                        aria-label="Testimonial 1"
+                        onclick="goToSlide('track5', 0)"></button>
+                <button class="indicator" 
+                        role="tab" 
+                        aria-selected="false"
+                        aria-label="Testimonial 2"
+                        onclick="goToSlide('track5', 1)"></button>
+                <button class="indicator" 
+                        role="tab" 
+                        aria-selected="false"
+                        aria-label="Testimonial 3"
+                        onclick="goToSlide('track5', 2)"></button>
+            </div>
+            <button class="carousel-btn" 
+                    onclick="nextSlide('track5')" 
+                    aria-label="Next testimonial"
+                    aria-controls="track5">
+                Next
+            </button>
+        </div>
+        
+        <button onclick="toggleAutoplay('track5')" 
+                aria-label="Toggle automatic slideshow">
+            Pause/Play Slideshow
+        </button>
+    </div>
+
+    <!-- TEST 6: Slider that might be confused for carousel - Should trigger error if detected as carousel -->
+    <div class="test-section">
+        <h2 class="error">❌ Test 6: Value Slider Misidentified as Carousel (Edge Case)</h2>
+        <p>This is actually a value slider but might be detected as a carousel.</p>
+        
+        <div class="carousel" id="slider-carousel">
+            <div class="carousel-track" id="track6">
+                <div class="carousel-slide slide-1">Price Range Slider $0-100</div>
+                <div class="carousel-slide slide-2">Price Range Slider $100-500</div>
+                <div class="carousel-slide slide-3">Price Range Slider $500+</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlides = {
+            'track1': 0,
+            'track2': 0,
+            'track3': 0,
+            'track4': 0,
+            'track5': 0,
+            'track6': 0
+        };
+        
+        let autoplayIntervals = {};
+
+        function updateCarousel(trackId) {
+            const track = document.getElementById(trackId);
+            const slideIndex = currentSlides[trackId];
+            track.style.transform = `translateX(-${slideIndex * (100 / 3)}%)`;
+            
+            // Update indicators if they exist
+            const carousel = track.closest('.test-section');
+            const indicators = carousel.querySelectorAll('.indicator');
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === slideIndex);
+                if (indicator.hasAttribute('aria-selected')) {
+                    indicator.setAttribute('aria-selected', index === slideIndex);
+                }
+            });
+        }
+
+        function nextSlide(trackId) {
+            currentSlides[trackId] = (currentSlides[trackId] + 1) % 3;
+            updateCarousel(trackId);
+        }
+
+        function previousSlide(trackId) {
+            currentSlides[trackId] = (currentSlides[trackId] - 1 + 3) % 3;
+            updateCarousel(trackId);
+        }
+
+        function goToSlide(trackId, slideIndex) {
+            currentSlides[trackId] = slideIndex;
+            updateCarousel(trackId);
+        }
+
+        function toggleAutoplay(trackId) {
+            if (autoplayIntervals[trackId]) {
+                clearInterval(autoplayIntervals[trackId]);
+                autoplayIntervals[trackId] = null;
+            } else {
+                autoplayIntervals[trackId] = setInterval(() => {
+                    nextSlide(trackId);
+                }, 3000);
+            }
+        }
+
+        // Auto-start autoplay for track3
+        document.addEventListener('DOMContentLoaded', () => {
+            toggleAutoplay('track3');
+        });
+    </script>
+</body>
+</html>

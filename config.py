@@ -40,7 +40,7 @@ class Config:
     # Claude AI
     CLAUDE_API_KEY: str = os.getenv('CLAUDE_API_KEY', '')
     CLAUDE_MODEL: str = os.getenv('CLAUDE_MODEL', 'claude-opus-4-1-20250805')
-    CLAUDE_MAX_TOKENS: int = int(os.getenv('CLAUDE_MAX_TOKENS', 4096))
+    CLAUDE_MAX_TOKENS: int = int(os.getenv('CLAUDE_MAX_TOKENS', 8192))
     CLAUDE_TEMPERATURE: float = float(os.getenv('CLAUDE_TEMPERATURE', 0.5))
     
     # Pyppeteer
@@ -50,8 +50,8 @@ class Config:
     BROWSER_VIEWPORT_HEIGHT: int = int(os.getenv('BROWSER_VIEWPORT_HEIGHT', 1080))
     
     # Scraping
-    MAX_PAGES_PER_SITE: int = int(os.getenv('MAX_PAGES_PER_SITE', 500))
-    MAX_CRAWL_DEPTH: int = int(os.getenv('MAX_CRAWL_DEPTH', 3))
+    MAX_PAGES_PER_SITE: int = int(os.getenv('MAX_PAGES_PER_SITE', 50000))
+    MAX_CRAWL_DEPTH: int = int(os.getenv('MAX_CRAWL_DEPTH', 10))
     REQUEST_DELAY: float = float(os.getenv('REQUEST_DELAY', 1.0))
     USER_AGENT: str = os.getenv('USER_AGENT', 'Auto-A11y/1.0 Accessibility Scanner')
     RESPECT_ROBOTS_TXT: bool = os.getenv('RESPECT_ROBOTS_TXT', 'True').lower() == 'true'

@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">
+                <i class="bi bi-gear"></i> Settings
+            </h1>
+        </div>
+    </div>
+
+    <!-- Testing Configuration -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-sliders"></i> Testing Configuration</h5>
+                </div>
+                <div class="card-body">
+                    <form id="testing-config-form">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="parallel_tests" class="form-label">Parallel Tests</label>
+                                <input type="number" class="form-control" id="parallel_tests" 
+                                       value="{{ config.parallel_tests }}" min="1" max="10">
+                                <small class="text-muted">Number of tests to run in parallel</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="test_timeout" class="form-label">Test Timeout (seconds)</label>
+                                <input type="number" class="form-control" id="test_timeout" 
+                                       value="{{ config.test_timeout }}" min="10" max="300">
+                                <small class="text-muted">Maximum time per page test</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="run_ai_analysis" 
+                                           {% if config.run_ai_analysis %}checked{% endif %}>
+                                    <label class="form-check-label" for="run_ai_analysis">
+                                        Enable AI Analysis
+                                    </label>
+                                </div>
+                                <small class="text-muted">Use Claude AI for visual accessibility analysis</small>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="browser_headless" 
+                                           {% if config.browser_headless %}checked{% endif %}>
+                                    <label class="form-check-label" for="browser_headless">
+                                        Headless Browser
+                                    </label>
+                                </div>
+                                <small class="text-muted">Run browser in headless mode</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="viewport_width" class="form-label">Viewport Width</label>
+                                <input type="number" class="form-control" id="viewport_width" 
+                                       value="{{ config.viewport_width }}" min="320" max="3840">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="viewport_height" class="form-label">Viewport Height</label>
+                                <input type="number" class="form-control" id="viewport_height" 
+                                       value="{{ config.viewport_height }}" min="480" max="2160">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Save Configuration
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Maintenance -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5><i class="bi bi-wrench"></i> System Maintenance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle"></i> <strong>Warning:</strong> These actions cannot be undone.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Clear Outstanding Jobs</h6>
+                        <p class="text-muted small">Reset all running and pending scrapes and tests. Use this if the system appears stuck.</p>
+                        <button class="btn btn-danger" onclick="clearAllJobs()">
+                            <i class="bi bi-trash"></i> Clear All Jobs
+                        </button>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Clear Stale Jobs</h6>
+                        <p class="text-muted small">Remove jobs that have been running for more than 24 hours.</p>
+                        <button class="btn btn-warning" onclick="clearStaleJobs()">
+                            <i class="bi bi-clock-history"></i> Clear Stale Jobs
+                        </button>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Clean Page Data</h6>
+                        <p class="text-muted small">Reset violation counts for pages that haven't been tested yet. Fixes data inconsistencies.</p>
+                        <button class="btn btn-info" onclick="cleanupPageCounts()">
+                            <i class="bi bi-arrow-clockwise"></i> Clean Page Data
+                        </button>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <h6>System Status</h6>
+                        <div id="job-stats" class="small">
+                            <div class="spinner-border spinner-border-sm" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            Loading job statistics...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for confirmation -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Load job statistics on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadJobStats();
+    // Refresh stats every 30 seconds
+    setInterval(loadJobStats, 30000);
+});
+
+// Load job statistics
+function loadJobStats() {
+    fetch('/api/v1/jobs/stats')
+        .then(response => response.json())
+        .then(data => {
+            const statsDiv = document.getElementById('job-stats');
+            statsDiv.innerHTML = `
+                <div class="mb-1"><strong>Running:</strong> ${data.running || 0} jobs</div>
+                <div class="mb-1"><strong>Pending:</strong> ${data.pending || 0} jobs</div>
+                <div class="mb-1"><strong>Cancelling:</strong> ${data.cancelling || 0} jobs</div>
+                <div class="mb-1"><strong>Completed (24h):</strong> ${data.completed_24h || 0} jobs</div>
+                <div class="mb-1"><strong>Failed (24h):</strong> ${data.failed_24h || 0} jobs</div>
+            `;
+        })
+        .catch(error => {
+            console.error('Error loading job stats:', error);
+            document.getElementById('job-stats').innerHTML = 
+                '<div class="text-danger">Failed to load statistics</div>';
+        });
+}
+
+// Clear all jobs
+function clearAllJobs() {
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    document.getElementById('confirmMessage').textContent = 
+        'This will clear ALL running and pending jobs. This action cannot be undone. Are you sure?';
+    
+    const confirmBtn = document.getElementById('confirmButton');
+    confirmBtn.onclick = function() {
+        modal.hide();
+        
+        fetch('/api/v1/jobs/clear-all', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('success', `Successfully cleared ${data.cleared_count} jobs`);
+                loadJobStats();
+            } else {
+                showAlert('danger', data.error || 'Failed to clear jobs');
+            }
+        })
+        .catch(error => {
+            console.error('Error clearing jobs:', error);
+            showAlert('danger', 'An error occurred while clearing jobs');
+        });
+    };
+    
+    modal.show();
+}
+
+// Clear stale jobs
+function clearStaleJobs() {
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    document.getElementById('confirmMessage').textContent = 
+        'This will clear all jobs that have been running for more than 24 hours. Are you sure?';
+    
+    const confirmBtn = document.getElementById('confirmButton');
+    confirmBtn.onclick = function() {
+        modal.hide();
+        
+        fetch('/api/v1/jobs/clear-stale', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('success', `Successfully cleared ${data.cleared_count} stale jobs`);
+                loadJobStats();
+            } else {
+                showAlert('danger', data.error || 'Failed to clear stale jobs');
+            }
+        })
+        .catch(error => {
+            console.error('Error clearing stale jobs:', error);
+            showAlert('danger', 'An error occurred while clearing stale jobs');
+        });
+    };
+    
+    modal.show();
+}
+
+// Save configuration
+document.getElementById('testing-config-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const config = {
+        parallel_tests: parseInt(document.getElementById('parallel_tests').value),
+        test_timeout: parseInt(document.getElementById('test_timeout').value),
+        run_ai_analysis: document.getElementById('run_ai_analysis').checked,
+        browser_headless: document.getElementById('browser_headless').checked,
+        viewport_width: parseInt(document.getElementById('viewport_width').value),
+        viewport_height: parseInt(document.getElementById('viewport_height').value)
+    };
+    
+    fetch('/testing/configure', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(config)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('success', 'Configuration saved successfully');
+        } else {
+            showAlert('danger', data.error || 'Failed to save configuration');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving configuration:', error);
+        showAlert('danger', 'An error occurred while saving configuration');
+    });
+});
+
+// Clean up page counts
+function cleanupPageCounts() {
+    if (!confirm('This will reset violation counts for all pages that haven\'t been tested yet. Continue?')) {
+        return;
+    }
+    
+    fetch('/api/v1/jobs/cleanup-page-counts', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('success', `Successfully cleaned ${data.pages_cleaned} pages`);
+        } else {
+            showAlert('danger', data.error || 'Failed to clean page data');
+        }
+    })
+    .catch(error => {
+        console.error('Error cleaning page counts:', error);
+        showAlert('danger', 'An error occurred while cleaning page data');
+    });
+}
+
+// Show alert message
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.setAttribute('role', 'alert');
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const container = document.querySelector('.container');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

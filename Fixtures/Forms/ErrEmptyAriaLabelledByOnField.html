@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Empty aria-labelledby on Form Fields</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        .error {
+            border-color: #d32f2f;
+            background-color: #ffebee;
+        }
+        .pass {
+            border-color: #388e3c;
+            background-color: #e8f5e8;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            max-width: 300px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .hidden {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Fixture: ErrEmptyAriaLabelledByOnField</h1>
+    <p>This fixture tests detection of form fields with empty aria-labelledby attributes.</p>
+
+    <!-- ERROR CASES: Empty aria-labelledby attributes -->
+    <div class="test-section error">
+        <h2>❌ Error Cases - Empty aria-labelledby</h2>
+        
+        <div class="form-group">
+            <h3>Text Input with Empty aria-labelledby</h3>
+            <input type="text" aria-labelledby="" placeholder="This should trigger error">
+        </div>
+
+        <div class="form-group">
+            <h3>Email Input with Empty aria-labelledby</h3>
+            <input type="email" aria-labelledby=" " placeholder="Empty with whitespace">
+        </div>
+
+        <div class="form-group">
+            <h3>Password Input with Empty aria-labelledby</h3>
+            <input type="password" aria-labelledby="">
+        </div>
+
+        <div class="form-group">
+            <h3>Select with Empty aria-labelledby</h3>
+            <select aria-labelledby="">
+                <option value="">Choose an option</option>
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <h3>Textarea with Empty aria-labelledby</h3>
+            <textarea aria-labelledby="" placeholder="Enter description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <h3>Checkbox with Empty aria-labelledby</h3>
+            <input type="checkbox" aria-labelledby="">
+        </div>
+
+        <div class="form-group">
+            <h3>Radio Button with Empty aria-labelledby</h3>
+            <input type="radio" name="empty-radio" aria-labelledby="">
+        </div>
+
+        <div class="form-group">
+            <h3>Number Input with Empty aria-labelledby</h3>
+            <input type="number" aria-labelledby="" min="0" max="100">
+        </div>
+
+        <div class="form-group">
+            <h3>Range Input with Empty aria-labelledby</h3>
+            <input type="range" aria-labelledby="" min="0" max="100" value="50">
+        </div>
+
+        <div class="form-group">
+            <h3>Date Input with Empty aria-labelledby</h3>
+            <input type="date" aria-labelledby="">
+        </div>
+    </div>
+
+    <!-- PASSING CASES: Properly labeled fields -->
+    <div class="test-section pass">
+        <h2>✅ Passing Cases - Proper Labeling</h2>
+        
+        <div class="form-group">
+            <h3>Text Input with Valid aria-labelledby</h3>
+            <label id="name-label">Full Name</label>
+            <input type="text" aria-labelledby="name-label">
+        </div>
+
+        <div class="form-group">
+            <h3>Email Input with Multiple Valid IDs</h3>
+            <label id="email-label">Email Address</label>
+            <span id="email-help">We'll never share your email</span>
+            <input type="email" aria-labelledby="email-label email-help">
+        </div>
+
+        <div class="form-group">
+            <h3>Select with Regular Label</h3>
+            <label for="country">Country</label>
+            <select id="country">
+                <option value="">Select country</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <h3>Textarea with aria-label</h3>
+            <textarea aria-label="Additional comments"></textarea>
+        </div>
+
+        <div class="form-group">
+            <h3>Checkbox with Associated Label</h3>
+            <input type="checkbox" id="terms">
+            <label for="terms">I agree to the terms and conditions</label>
+        </div>
+
+        <div class="form-group">
+            <h3>Field with No aria-labelledby (uses other labeling)</h3>
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone">
+        </div>
+    </div>
+
+    <!-- EDGE CASES -->
+    <div class="test-section error">
+        <h2>⚠️ Edge Cases - Should Also Trigger Errors</h2>
+        
+        <div class="form-group">
+            <h3>aria-labelledby with Non-existent ID</h3>
+            <input type="text" aria-labelledby="non-existent-id">
+            <p>Note: This references an ID that doesn't exist in the DOM</p>
+        </div>
+
+        <div class="form-group">
+            <h3>aria-labelledby Referencing Hidden Element</h3>
+            <span id="hidden-label" class="hidden">Hidden Label</span>
+            <input type="text" aria-labelledby="hidden-label">
+        </div>
+
+        <div class="form-group">
+            <h3>Multiple Inputs with Same Empty aria-labelledby</h3>
+            <input type="text" aria-labelledby="" placeholder="First field">
+            <input type="text" aria-labelledby="" placeholder="Second field">
+        </div>
+
+        <div class="form-group">
+            <h3>Form Control with Only Empty aria-labelledby</h3>
+            <input type="search" aria-labelledby=" 	 " placeholder="Search with tabs/spaces">
+        </div>
+    </div>
+
+    <!-- FORM CONTEXT -->
+    <div class="test-section error">
+        <h2>📝 Complete Form with Mixed Cases</h2>
+        <form>
+            <fieldset>
+                <legend>User Registration</legend>
+                
+                <!-- These should trigger errors -->
+                <div class="form-group">
+                    <input type="text" aria-labelledby="" placeholder="Username (empty aria-labelledby)">
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" aria-labelledby=" " placeholder="Email (whitespace aria-labelledby)">
+                </div>
+                
+                <!-- These should pass -->
+                <div class="form-group">
+                    <label id="pwd-label">Password</label>
+                    <input type="password" aria-labelledby="pwd-label">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-pwd">Confirm Password</label>
+                    <input type="password" id="confirm-pwd">
+                </div>
+                
+                <button type="submit">Register</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Test Summary</h2>
+        <p><strong>Expected Results:</strong></p>
+        <ul>
+            <li>All form fields in "Error Cases" section should trigger ErrEmptyAriaLabelledByOnField</li>
+            <li>All form fields in "Passing Cases" section should NOT trigger the error</li>
+            <li>Edge cases should also trigger errors (empty string, whitespace-only, non-existent IDs)</li>
+            <li>Total expected errors: ~15+ form fields with empty aria-labelledby attributes</li>
+        </ul>
+        <p><strong>Test Coverage:</strong> Text inputs, email, password, select, textarea, checkbox, radio, number, range, date, search</p>
+    </div>
+</body>
+</html>

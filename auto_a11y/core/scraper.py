@@ -10,6 +10,7 @@ from urllib.robotparser import RobotFileParser
 from pathlib import Path
 from datetime import datetime
 import re
+from io import BytesIO
 
 from pyppeteer import launch
 from pyppeteer.errors import TimeoutError, PageError, NetworkError
@@ -17,6 +18,7 @@ from bs4 import BeautifulSoup
 
 from auto_a11y.models.page import Page, PageStatus
 from auto_a11y.models.website import Website
+from auto_a11y.models.discovery_run import DiscoveryRun, DiscoveryStatus
 from auto_a11y.core.database import Database
 from auto_a11y.core.browser_manager import BrowserManager
 # Note: ScrapingJob class has been moved to scraping_job.py for database-backed implementation
@@ -59,13 +61,26 @@ class ScrapingEngine:
         """
         logger.info(f"Starting discovery for website: {website.url}")
         
-        # Record discovery attempt in history
-        discovery_record = {
-            'started_at': datetime.now(),
-            'max_pages': website.scraping_config.max_pages,
-            'max_depth': website.scraping_config.max_depth,
-            'status': 'running'
-        }
+        # Create a new discovery run
+        discovery_run = DiscoveryRun(
+            website_id=website.id,
+            started_at=datetime.now(),
+            status=DiscoveryStatus.RUNNING,
+            max_pages=website.scraping_config.max_pages,
+            max_depth=website.scraping_config.max_depth,
+            follow_external=website.scraping_config.follow_external,
+            respect_robots=website.scraping_config.respect_robots,
+            triggered_by=job.user_id if job and hasattr(job, 'user_id') else 'manual',
+            job_id=job.job_id if job and hasattr(job, 'job_id') else None
+        )
+        discovery_run_id = self.db.create_discovery_run(discovery_run)
+        logger.info(f"Created discovery run {discovery_run_id} for website {website.id}")
+        
+        # Get the previous latest run for comparison
+        previous_run = None
+        previous_runs = self.db.get_discovery_runs(website.id)
+        if len(previous_runs) > 1:  # More than just the current run
+            previous_run = previous_runs[1]  # Second item is the previous latest
         
         # Reset discovery state
         self.discovered_urls.clear()
@@ -73,7 +88,9 @@ class ScrapingEngine:
         
         # Parse base URL
         base_url = self._normalize_url(website.url)
-        base_domain = urlparse(base_url).netloc
+        parsed_base = urlparse(base_url)
+        base_domain = parsed_base.netloc
+        base_path = parsed_base.path.rstrip('/')  # Base path without trailing slash
         
         # Initialize queue with starting URL
         self.queued_urls.add(base_url)
@@ -99,9 +116,13 @@ class ScrapingEngine:
             depth = 0
             max_pages_reached = False
             start_time = datetime.now()
-            max_discovery_time = 1800  # 30 minutes max
+            max_discovery_time = 7200  # 2 hours max (increased from 30 minutes)
             consecutive_failures = 0  # Track consecutive failures
-            max_consecutive_failures = 3  # Restart browser after 3 consecutive failures
+            max_consecutive_failures = 10  # Restart browser after 10 consecutive failures
+            total_failures = 0  # Track total failures
+            max_total_failures = 50  # Stop if too many total failures
+            pages_since_restart = 0  # Track pages processed since last browser restart
+            max_pages_per_session = 500  # Restart browser periodically to prevent memory issues
             logger.info(f"Starting discovery with max_pages={website.scraping_config.max_pages}, max_depth={website.scraping_config.max_depth}")
             
             while self.queued_urls and depth <= website.scraping_config.max_depth and not max_pages_reached:
@@ -115,16 +136,39 @@ class ScrapingEngine:
                 if elapsed_time > max_discovery_time:
                     logger.warning(f"Discovery timeout reached after {elapsed_time:.0f} seconds")
                     break
+                    
+                # Memory management - clear discovered URLs set periodically to prevent excessive memory usage
+                if len(self.discovered_urls) > 10000:
+                    logger.info(f"Clearing discovered URLs cache (had {len(self.discovered_urls)} entries)")
+                    # Keep only the last 5000 URLs to maintain some duplicate detection
+                    recent_urls = list(self.discovered_urls)[-5000:]
+                    self.discovered_urls = set(recent_urls)
+                    
                 # Get URLs at current depth
                 current_batch = list(self.queued_urls)
                 self.queued_urls.clear()
                 
                 logger.info(f"Processing depth {depth} with {len(current_batch)} URLs, discovered so far: {len(discovered_pages)}")
+                logger.info(f"Elapsed time: {elapsed_time:.0f}s, Memory: {len(self.discovered_urls)} URLs cached")
                 
                 for i, url in enumerate(current_batch):
                     # Add small delay every 5 URLs to allow cancellation to be processed
                     if i > 0 and i % 5 == 0:
                         await asyncio.sleep(0.1)
+                    
+                    # Restart browser periodically to prevent memory issues
+                    if pages_since_restart >= max_pages_per_session:
+                        logger.info(f"Restarting browser after {pages_since_restart} pages to prevent memory issues")
+                        try:
+                            await self.browser_manager.stop()
+                            await asyncio.sleep(2)
+                            await self.browser_manager.start()
+                            pages_since_restart = 0
+                            logger.info("Browser restarted successfully (periodic restart)")
+                        except Exception as e:
+                            logger.error(f"Failed to restart browser (periodic): {e}")
+                            max_pages_reached = True
+                            break
                     
                     # Check for cancellation
                     if job and job.is_cancelled():
@@ -134,9 +178,15 @@ class ScrapingEngine:
                     
                     # Check if browser is still running before each page
                     if not await self.browser_manager.is_running():
-                        logger.error("Browser stopped during discovery, aborting")
-                        max_pages_reached = True  # Use this flag to exit both loops
-                        break
+                        logger.warning("Browser stopped during discovery, attempting restart...")
+                        try:
+                            await self.browser_manager.ensure_running()
+                            logger.info("Browser restarted successfully after connection loss")
+                            pages_since_restart = 0
+                        except Exception as e:
+                            logger.error(f"Failed to restart browser after connection loss: {e}")
+                            max_pages_reached = True  # Use this flag to exit both loops
+                            break
                     
                     # Check if we've hit page limit
                     if len(discovered_pages) >= website.scraping_config.max_pages:
@@ -150,17 +200,20 @@ class ScrapingEngine:
                     
                     # Pre-filter URLs that are known to cause problems
                     # These often redirect to external sites or cause timeouts
-                    if '?share=' in url or '&share=' in url or '?nb=' in url or '&nb=' in url:
+                    problematic_params = ['?share=', '&share=', '?nb=', '&nb=', 'utm_', 'fbclid=', 'gclid=', 
+                                        '#disqus_thread', '#comments', '?print=', '&print=', 
+                                        'javascript:', 'mailto:', 'tel:', '.pdf', '.doc', '.ppt', '.xls']
+                    if any(param in url.lower() for param in problematic_params):
                         logger.info(f"Skipping URL with problematic parameters: {url}")
                         # Still record it as a failed page so user knows it was skipped
                         failed_page = Page(
                             website_id=website.id,
                             url=url,
-                            title="Skipped: Share/social link",
+                            title="Skipped: Problematic URL",
                             discovered_from=website.url if depth == 0 else None,
                             depth=depth,
                             status=PageStatus.DISCOVERY_FAILED,
-                            error_reason="Skipped: URL contains share/social parameters that typically redirect externally"
+                            error_reason="Skipped: URL contains parameters that typically cause problems"
                         )
                         discovered_pages.append(failed_page)
                         self.discovered_urls.add(url)
@@ -173,22 +226,39 @@ class ScrapingEngine:
                             continue
                     
                     # Discover page
-                    logger.info(f"Starting discovery of page {len(discovered_pages) + 1}: {url}")
+                    logger.info(f"[Page {len(discovered_pages) + 1}/{website.scraping_config.max_pages}] Starting discovery: {url}")
                     page = await self._discover_page(
                         url=url,
                         website=website,
                         depth=depth,
-                        base_domain=base_domain
+                        base_domain=base_domain,
+                        base_path=base_path
                     )
-                    logger.info(f"Completed discovery of {url}, status: {page.status if page else 'None'}")
+                    if page:
+                        status_msg = "SUCCESS" if page.status != PageStatus.DISCOVERY_FAILED else f"FAILED: {page.error_reason[:50] if page.error_reason else 'Unknown'}"
+                        logger.info(f"[Page {len(discovered_pages)}/{website.scraping_config.max_pages}] {status_msg} - {url}")
+                    else:
+                        logger.warning(f"[Page {len(discovered_pages)}/{website.scraping_config.max_pages}] NULL RESPONSE - {url}")
                     
                     if page:
                         discovered_pages.append(page)
                         self.discovered_urls.add(url)
-                        # Reset failure counter on success
-                        if page.status != PageStatus.DISCOVERY_FAILED:
+                        pages_since_restart += 1
+                        
+                        # Track failures
+                        if page.status == PageStatus.DISCOVERY_FAILED:
+                            consecutive_failures += 1
+                            total_failures += 1
+                            logger.warning(f"Failed pages: {total_failures} total, {consecutive_failures} consecutive")
+                            
+                            # Stop if too many total failures
+                            if total_failures >= max_total_failures:
+                                logger.error(f"Too many total failures ({total_failures}), stopping discovery")
+                                max_pages_reached = True
+                                break
+                        else:
+                            # Reset consecutive counter on success
                             consecutive_failures = 0
-                    # Note: Failed pages are already added to discovered_pages in _discover_page
                         
                         # Update progress
                         if progress_callback:
@@ -218,8 +288,9 @@ class ScrapingEngine:
                                 await self.browser_manager.stop()
                                 await asyncio.sleep(2)  # Brief pause
                                 await self.browser_manager.start()
-                                logger.info("Browser restarted successfully")
+                                logger.info("Browser restarted successfully after failures")
                                 consecutive_failures = 0  # Reset counter
+                                pages_since_restart = 0  # Reset page counter
                             except Exception as e:
                                 logger.error(f"Failed to restart browser: {e}")
                                 max_pages_reached = True
@@ -236,46 +307,63 @@ class ScrapingEngine:
                 
                 depth += 1
             
-            # Save discovered pages to database
+            # Check if discovery was cancelled
+            was_cancelled = job and job.is_cancelled()
+            
+            # Log final statistics
+            successful_pages = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
+            failed_pages = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
+            logger.info(f"Discovery finished: {successful_pages} successful, {failed_pages} failed, {len(discovered_pages)} total")
+            
+            # Save discovered pages to database with discovery run tracking
             saved_count = 0
             if discovered_pages:
-                saved_count = self.db.bulk_create_pages(discovered_pages)
-                logger.info(f"Saved {saved_count} new pages to database")
+                saved_count = self.db.bulk_create_pages_with_discovery(discovered_pages, discovery_run_id)
+                logger.info(f"Saved/updated {saved_count} pages in database")
             
-            # Update discovery record with results
-            discovery_record['completed_at'] = datetime.now()
-            discovery_record['status'] = 'completed'
-            discovery_record['pages_discovered'] = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
-            discovery_record['pages_failed'] = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
-            discovery_record['total_pages'] = len(discovered_pages)
+            # Compare with previous discovery if it exists
+            if previous_run:
+                comparison = self.db.compare_discoveries(
+                    website.id,
+                    previous_run.id,
+                    discovery_run_id
+                )
+                discovery_run.pages_added = comparison['added_count']
+                discovery_run.pages_removed = comparison['removed_count']
+                discovery_run.pages_unchanged = comparison['unchanged_count']
+                logger.info(f"Discovery comparison: +{discovery_run.pages_added} added, -{discovery_run.pages_removed} removed, {discovery_run.pages_unchanged} unchanged")
             
-            # Update website with history
+            # Update discovery run with final results
+            discovery_run.completed_at = datetime.now()
+            discovery_run.status = DiscoveryStatus.CANCELLED if was_cancelled else DiscoveryStatus.COMPLETED
+            discovery_run.pages_discovered = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
+            discovery_run.pages_failed = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
+            discovery_run.documents_found = self.db.document_references.count_documents({'website_id': website.id})
+            discovery_run.duration_seconds = int((discovery_run.completed_at - discovery_run.started_at).total_seconds())
+            self.db.update_discovery_run(discovery_run)
+            
+            # Update website last scraped timestamp
             website.last_scraped = datetime.now()
-            if not hasattr(website, 'discovery_history'):
-                website.discovery_history = []
-            website.discovery_history.append(discovery_record)
             self.db.update_website(website)
             
         except Exception as e:
             logger.error(f"Error during discovery: {e}", exc_info=True)
             
-            # Update discovery record with error
-            discovery_record['completed_at'] = datetime.now()
-            discovery_record['status'] = 'failed'
-            discovery_record['error'] = str(e)[:500]
-            discovery_record['pages_discovered'] = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
-            discovery_record['pages_failed'] = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
-            discovery_record['total_pages'] = len(discovered_pages)
-            
             # Save what we got so far
             if discovered_pages:
-                saved_count = self.db.bulk_create_pages(discovered_pages)
+                saved_count = self.db.bulk_create_pages_with_discovery(discovered_pages, discovery_run_id)
                 logger.info(f"Saved {saved_count} pages before error")
             
-            # Update website with history
-            if not hasattr(website, 'discovery_history'):
-                website.discovery_history = []
-            website.discovery_history.append(discovery_record)
+            # Update discovery run with error
+            discovery_run.completed_at = datetime.now()
+            discovery_run.status = DiscoveryStatus.FAILED
+            discovery_run.error_message = str(e)[:500]
+            discovery_run.pages_discovered = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
+            discovery_run.pages_failed = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
+            discovery_run.duration_seconds = int((discovery_run.completed_at - discovery_run.started_at).total_seconds())
+            self.db.update_discovery_run(discovery_run)
+            
+            # Update website last scraped timestamp
             website.last_scraped = datetime.now()
             self.db.update_website(website)
             
@@ -298,6 +386,7 @@ class ScrapingEngine:
         website: Website,
         depth: int,
         base_domain: str,
+        base_path: str = "",
         browser_page=None
     ) -> Optional[Page]:
         """
@@ -313,19 +402,24 @@ class ScrapingEngine:
         Returns:
             Page object or None if failed
         """
-        # Check if browser is still running
+        # Check if browser is still running, restart if needed
         if not await self.browser_manager.is_running():
-            logger.error("Browser is not running, cannot discover page")
-            # Return a failed page record
-            return Page(
-                website_id=website.id,
-                url=url,
-                title="Failed: Browser crashed",
-                discovered_from=website.url if depth == 0 else None,
-                depth=depth,
-                status=PageStatus.DISCOVERY_FAILED,
-                error_reason="Browser not running"
-            )
+            logger.warning(f"Browser not running before discovering {url}, attempting restart...")
+            try:
+                await self.browser_manager.ensure_running()
+                logger.info("Browser restarted successfully")
+            except Exception as e:
+                logger.error(f"Failed to restart browser: {e}")
+                # Return a failed page record
+                return Page(
+                    website_id=website.id,
+                    url=url,
+                    title="Failed: Browser crashed",
+                    discovered_from=website.url if depth == 0 else None,
+                    depth=depth,
+                    status=PageStatus.DISCOVERY_FAILED,
+                    error_reason="Browser not running and failed to restart"
+                )
             
         page = None
         try:
@@ -342,8 +436,26 @@ class ScrapingEngine:
                     error_reason="Browser instance unavailable"
                 )
                 
-            # Create a new page
-            page = await self.browser_manager.browser.newPage()
+            # Create a new page with error handling
+            try:
+                page = await self.browser_manager.browser.newPage()
+            except Exception as e:
+                logger.error(f"Failed to create new page: {e}")
+                # Browser might be in bad state, try to restart
+                try:
+                    await self.browser_manager.ensure_running()
+                    page = await self.browser_manager.browser.newPage()
+                except Exception as e2:
+                    logger.error(f"Failed to create page even after restart: {e2}")
+                    return Page(
+                        website_id=website.id,
+                        url=url,
+                        title="Failed: Cannot create page",
+                        discovered_from=website.url if depth == 0 else None,
+                        depth=depth,
+                        status=PageStatus.DISCOVERY_FAILED,
+                        error_reason=f"Failed to create browser page: {str(e2)[:200]}"
+                    )
             
             # Set viewport
             await page.setViewport({
@@ -351,21 +463,31 @@ class ScrapingEngine:
                 'height': self.browser_manager.config.get('viewport_height', 1080)
             })
             
-            # Set navigation timeout - shorter to avoid hanging on problematic pages
-            page.setDefaultNavigationTimeout(20000)  # 20 seconds, same as goto timeout
+            # Set navigation timeout - balanced to avoid hanging but allow slow pages
+            page.setDefaultNavigationTimeout(25000)  # 25 seconds timeout
             
-            # Navigate to URL with shorter timeout and less strict wait condition
+            # Navigate to URL with proper error handling
+            response = None
             try:
                 response = await self.browser_manager.goto(
                     page=page,
                     url=url,
                     wait_until='domcontentloaded',  # Just wait for DOM, not all resources
-                    timeout=15000  # 15 seconds timeout per page - shorter to fail faster
+                    timeout=20000  # 20 seconds timeout per page
                 )
                 
                 if not response:
                     logger.warning(f"Failed to load page: {url}")
-                    return None
+                    # Return a failed page record instead of None
+                    return Page(
+                        website_id=website.id,
+                        url=url,
+                        title="Failed: No response",
+                        discovered_from=website.url if depth == 0 else None,
+                        depth=depth,
+                        status=PageStatus.DISCOVERY_FAILED,
+                        error_reason="No response from server"
+                    )
                 
                 # Check if we were redirected to an external domain
                 final_url = page.url
@@ -393,8 +515,24 @@ class ScrapingEngine:
                             return failed_page
                         else:
                             logger.debug(f"Redirect to subdomain accepted: {final_domain}")
+                    
+                    # Also check if redirected outside base path
+                    if base_path and final_domain == base_domain:
+                        final_path = final_parsed.path
+                        if not final_path.startswith(base_path + '/') and final_path != base_path:
+                            logger.warning(f"SKIPPING: Redirected outside base path from {url} to {final_url}")
+                            failed_page = Page(
+                                website_id=website.id,
+                                url=url,
+                                title=f"Failed: Redirect outside scope",
+                                discovered_from=website.url if depth == 0 else None,
+                                depth=depth,
+                                status=PageStatus.DISCOVERY_FAILED,
+                                error_reason=f"Redirected outside base path: {final_path}"
+                            )
+                            return failed_page
                             
-            except Exception as e:
+            except (TimeoutError, Exception) as e:
                 logger.warning(f"Navigation failed for {url}: {e}")
                 # IMPORTANT: Close the page to prevent browser hanging
                 if page:
@@ -402,6 +540,18 @@ class ScrapingEngine:
                         await page.close()
                     except:
                         pass
+                    page = None  # Clear reference
+                
+                # Check if browser is still alive after navigation failure
+                if not await self.browser_manager.is_running():
+                    logger.warning("Browser connection lost after navigation failure")
+                    # Try to restart browser for next page
+                    try:
+                        await self.browser_manager.ensure_running()
+                        logger.info("Browser restarted after navigation failure")
+                    except:
+                        pass  # Will be handled on next page attempt
+                
                 # Create a failed page record
                 failed_page = Page(
                     website_id=website.id,
@@ -420,7 +570,7 @@ class ScrapingEngine:
             # Extract links if not at max depth
             if depth < website.scraping_config.max_depth:
                 try:
-                    links = await self._extract_links(page, url, website, base_domain)
+                    links = await self._extract_links(page, url, website, base_domain, base_path)
                     self.queued_urls.update(links)
                 except Exception as e:
                     logger.warning(f"Failed to extract links from {url}: {e}")
@@ -448,6 +598,9 @@ class ScrapingEngine:
                 
         except TimeoutError:
             logger.warning(f"Timeout loading page: {url}")
+            # Check browser health after timeout
+            if not await self.browser_manager.is_running():
+                logger.warning("Browser died after timeout, will restart on next page")
             # Create a failed page record for timeout
             return Page(
                 website_id=website.id,
@@ -456,7 +609,7 @@ class ScrapingEngine:
                 discovered_from=website.url if depth == 0 else None,
                 depth=depth,
                 status=PageStatus.DISCOVERY_FAILED,
-                error_reason="Page load timeout (20 seconds)"
+                error_reason="Page load timeout (25 seconds)"
             )
         except Exception as e:
             logger.error(f"Error discovering page {url}: {e}", exc_info=True)
@@ -483,7 +636,8 @@ class ScrapingEngine:
         page,
         current_url: str,
         website: Website,
-        base_domain: str
+        base_domain: str,
+        base_path: str = ""
     ) -> Set[str]:
         """
         Extract and filter links from a page
@@ -539,6 +693,13 @@ class ScrapingEngine:
                         # Check subdomains if configured
                         if not (website.scraping_config.include_subdomains and 
                                parsed.netloc.endswith(f'.{base_domain}')):
+                            continue
+                    
+                    # If the base URL has a path component, ensure links stay within that path
+                    if base_path:
+                        # The link must start with the base path to be considered internal
+                        if not parsed.path.startswith(base_path + '/') and parsed.path != base_path:
+                            logger.debug(f"Skipping URL outside base path: {normalized} (base_path: {base_path})")
                             continue
                 
                 # Apply path filters
@@ -614,7 +775,7 @@ class ScrapingEngine:
     
     async def _save_document_references(self, document_refs: list, website_id: str, referring_page_url: str):
         """
-        Save document references to database
+        Save document references to database with language detection
         
         Args:
             document_refs: List of document reference data
@@ -625,6 +786,13 @@ class ScrapingEngine:
         
         for doc_data in document_refs:
             try:
+                # Detect language from link text and URL
+                language = await self._detect_document_language(
+                    doc_data['url'],
+                    doc_data.get('link_text'),
+                    doc_data.get('file_extension')
+                )
+                
                 doc_ref = DocumentReference(
                     website_id=website_id,
                     document_url=doc_data['url'],
@@ -633,13 +801,333 @@ class ScrapingEngine:
                     is_internal=doc_data['is_internal'],
                     link_text=doc_data.get('link_text'),
                     file_extension=doc_data.get('file_extension'),
+                    language=language.get('language') if language else None,
+                    language_confidence=language.get('confidence') if language else None,
                     via_redirect=False  # Direct link, not via redirect
                 )
                 
                 self.db.add_document_reference(doc_ref)
-                logger.debug(f"Saved document reference: {doc_data['url']} ({'internal' if doc_data['is_internal'] else 'external'})")
+                lang_info = f" ({language['language']})" if language else ""
+                logger.debug(f"Saved document reference: {doc_data['url']} ({'internal' if doc_data['is_internal'] else 'external'}){lang_info}")
             except Exception as e:
                 logger.error(f"Error saving document reference {doc_data['url']}: {e}")
+    
+    async def _detect_document_language(self, doc_url: str, link_text: str = None, file_extension: str = None) -> Optional[Dict[str, Any]]:
+        """
+        Detect the language of a document using multiple methods
+        
+        Args:
+            doc_url: URL of the document
+            link_text: Text of the link to the document
+            file_extension: File extension of the document
+            
+        Returns:
+            Dictionary with 'language' code and 'confidence' score, or None
+        """
+        import aiohttp
+        
+        try:
+            # Try to fetch document headers and content
+            async with aiohttp.ClientSession() as session:
+                async with session.head(doc_url, timeout=aiohttp.ClientTimeout(total=10), allow_redirects=True) as response:
+                    # 1. Check Content-Language header
+                    content_language = response.headers.get('Content-Language')
+                    if content_language:
+                        # Parse language code (e.g., "en-US" -> "en", "fr-CA" -> "fr")
+                        lang_code = content_language.split('-')[0].lower()
+                        logger.debug(f"Detected language from Content-Language header: {lang_code} for {doc_url}")
+                        return {'language': lang_code, 'confidence': 0.95}
+                    
+                    # For small documents, download and analyze content
+                    content_length = response.headers.get('Content-Length')
+                    if content_length and int(content_length) < 5 * 1024 * 1024:  # Less than 5MB
+                        # Download the document
+                        async with session.get(doc_url, timeout=aiohttp.ClientTimeout(total=15)) as content_response:
+                            content = await content_response.read()
+                            
+                            # 2. Extract metadata based on file type
+                            if file_extension in ['.pdf', 'pdf']:
+                                lang = await self._detect_pdf_language(content)
+                                if lang:
+                                    return lang
+                            elif file_extension in ['.docx', 'docx']:
+                                lang = await self._detect_docx_language(content)
+                                if lang:
+                                    return lang
+                            
+                            # 3. Analyze text content for language patterns
+                            lang = await self._detect_language_from_content(content, file_extension)
+                            if lang:
+                                return lang
+        
+        except Exception as e:
+            logger.debug(f"Error fetching document for language detection: {e}")
+        
+        # 4. Fallback: Analyze URL and link text patterns
+        return self._detect_language_from_patterns(doc_url, link_text)
+    
+    async def _detect_pdf_language(self, content: bytes) -> Optional[Dict[str, Any]]:
+        """
+        Detect language from PDF metadata and content
+        
+        Args:
+            content: PDF file content as bytes
+            
+        Returns:
+            Dictionary with language info or None
+        """
+        try:
+            import PyPDF2
+            
+            pdf_file = BytesIO(content)
+            pdf_reader = PyPDF2.PdfReader(pdf_file)
+            
+            # Check PDF metadata
+            if pdf_reader.metadata:
+                # Check for language in metadata
+                if '/Lang' in pdf_reader.metadata:
+                    lang_code = pdf_reader.metadata['/Lang']
+                    if isinstance(lang_code, str):
+                        # Parse language code (e.g., "en-US" -> "en")
+                        lang_code = lang_code.split('-')[0].lower()
+                        logger.debug(f"Detected language from PDF metadata: {lang_code}")
+                        return {'language': lang_code, 'confidence': 0.9}
+            
+            # Extract text from first few pages for analysis
+            text_sample = ""
+            max_pages = min(3, len(pdf_reader.pages))
+            for i in range(max_pages):
+                try:
+                    text_sample += pdf_reader.pages[i].extract_text()
+                    if len(text_sample) > 1000:  # Enough text for analysis
+                        break
+                except:
+                    continue
+            
+            if text_sample:
+                return self._analyze_text_language(text_sample)
+                
+        except Exception as e:
+            logger.debug(f"Error detecting PDF language: {e}")
+        
+        return None
+    
+    async def _detect_docx_language(self, content: bytes) -> Optional[Dict[str, Any]]:
+        """
+        Detect language from Word document metadata and content
+        
+        Args:
+            content: DOCX file content as bytes
+            
+        Returns:
+            Dictionary with language info or None
+        """
+        try:
+            import zipfile
+            import xml.etree.ElementTree as ET
+            
+            # DOCX files are ZIP archives
+            with zipfile.ZipFile(BytesIO(content)) as docx:
+                # Check core properties for language
+                if 'docProps/core.xml' in docx.namelist():
+                    core_xml = docx.read('docProps/core.xml')
+                    root = ET.fromstring(core_xml)
+                    
+                    # Look for dc:language element
+                    for elem in root.iter():
+                        if 'language' in elem.tag.lower():
+                            lang_code = elem.text
+                            if lang_code:
+                                lang_code = lang_code.split('-')[0].lower()
+                                logger.debug(f"Detected language from DOCX metadata: {lang_code}")
+                                return {'language': lang_code, 'confidence': 0.9}
+                
+                # Extract text for analysis
+                if 'word/document.xml' in docx.namelist():
+                    doc_xml = docx.read('word/document.xml')
+                    root = ET.fromstring(doc_xml)
+                    
+                    # Extract text from document
+                    text_sample = ""
+                    for elem in root.iter():
+                        if elem.text:
+                            text_sample += elem.text + " "
+                            if len(text_sample) > 1000:
+                                break
+                    
+                    if text_sample:
+                        return self._analyze_text_language(text_sample)
+                        
+        except Exception as e:
+            logger.debug(f"Error detecting DOCX language: {e}")
+        
+        return None
+    
+    async def _detect_language_from_content(self, content: bytes, file_extension: str = None) -> Optional[Dict[str, Any]]:
+        """
+        Detect language from document content
+        
+        Args:
+            content: Document content as bytes
+            file_extension: File extension for text extraction
+            
+        Returns:
+            Dictionary with language info or None
+        """
+        try:
+            # For text-based files, decode and analyze
+            if file_extension in ['.txt', '.csv', '.rtf', 'txt', 'csv', 'rtf']:
+                # Try different encodings
+                text = None
+                for encoding in ['utf-8', 'latin-1', 'cp1252']:
+                    try:
+                        text = content.decode(encoding)
+                        break
+                    except:
+                        continue
+                
+                if text:
+                    return self._analyze_text_language(text[:5000])  # Analyze first 5000 chars
+                    
+        except Exception as e:
+            logger.debug(f"Error detecting language from content: {e}")
+        
+        return None
+    
+    def _analyze_text_language(self, text: str) -> Optional[Dict[str, Any]]:
+        """
+        Analyze text to detect language using pattern matching
+        
+        Args:
+            text: Text to analyze
+            
+        Returns:
+            Dictionary with language info or None
+        """
+        if not text or len(text) < 50:
+            return None
+        
+        # Clean text
+        text = text.lower().strip()
+        
+        # Language-specific patterns and common words
+        language_patterns = {
+            'en': {
+                'words': ['the', 'and', 'of', 'to', 'in', 'is', 'for', 'with', 'that', 'this', 
+                         'are', 'was', 'will', 'have', 'been', 'from', 'can', 'which', 'their', 'would'],
+                'patterns': [r'\b(the|and|of|to|in)\b', r'\b(is|are|was|were)\b', r'\b(have|has|had)\b'],
+                'weight': 1.0
+            },
+            'fr': {
+                'words': ['le', 'la', 'les', 'de', 'et', 'est', 'pour', 'dans', 'avec', 'sur',
+                         'une', 'des', 'que', 'qui', 'par', 'plus', 'sont', 'être', 'avoir', 'faire'],
+                'patterns': [r'\b(le|la|les|un|une|des)\b', r'\b(de|du|des)\b', r'\b(est|sont|être)\b',
+                           r'[àâäéèêëïîôùûü]'],  # French accented characters
+                'weight': 1.2  # Slight boost for French since it's a priority
+            },
+            'es': {
+                'words': ['el', 'la', 'de', 'y', 'en', 'que', 'es', 'por', 'con', 'para',
+                         'los', 'las', 'una', 'se', 'del', 'al', 'más', 'pero', 'su', 'lo'],
+                'patterns': [r'\b(el|la|los|las)\b', r'\b(de|del)\b', r'\b(es|son|está|están)\b',
+                           r'[áéíóúñü]'],  # Spanish accented characters
+                'weight': 1.0
+            },
+            'de': {
+                'words': ['der', 'die', 'das', 'und', 'in', 'ist', 'mit', 'auf', 'für', 'von',
+                         'den', 'des', 'ein', 'eine', 'sich', 'zu', 'werden', 'haben', 'sein', 'ihr'],
+                'patterns': [r'\b(der|die|das|den|dem)\b', r'\b(ein|eine|einen)\b', r'\b(ist|sind|war|waren)\b',
+                           r'[äöüß]'],  # German special characters
+                'weight': 1.0
+            }
+        }
+        
+        scores = {}
+        
+        for lang, config in language_patterns.items():
+            score = 0
+            word_count = 0
+            
+            # Count occurrences of common words
+            for word in config['words']:
+                count = text.count(f' {word} ') + text.count(f' {word}.') + text.count(f' {word},')
+                if count > 0:
+                    word_count += count
+                    score += count * config['weight']
+            
+            # Check patterns
+            for pattern in config['patterns']:
+                matches = len(re.findall(pattern, text))
+                if matches > 0:
+                    score += matches * 0.5 * config['weight']
+            
+            # Normalize score by text length
+            scores[lang] = score / (len(text) / 100)
+        
+        # Get the language with highest score
+        if scores:
+            best_lang = max(scores, key=scores.get)
+            best_score = scores[best_lang]
+            
+            # Calculate confidence based on score differential
+            sorted_scores = sorted(scores.values(), reverse=True)
+            if len(sorted_scores) > 1:
+                confidence = min(0.85, 0.5 + (sorted_scores[0] - sorted_scores[1]) / 10)
+            else:
+                confidence = 0.7
+            
+            # Only return if score is significant
+            if best_score > 0.5:
+                logger.debug(f"Detected language from text analysis: {best_lang} (confidence: {confidence:.2f})")
+                return {'language': best_lang, 'confidence': confidence}
+        
+        return None
+    
+    def _detect_language_from_patterns(self, url: str, link_text: str = None) -> Optional[Dict[str, Any]]:
+        """
+        Detect language from URL patterns and link text as fallback
+        
+        Args:
+            url: Document URL
+            link_text: Link text
+            
+        Returns:
+            Dictionary with language info or None
+        """
+        # URL patterns that indicate language
+        url_patterns = {
+            'fr': ['/fr/', '_fr', '-fr', 'french', 'francais', 'français'],
+            'en': ['/en/', '_en', '-en', 'english', 'anglais'],
+            'es': ['/es/', '_es', '-es', 'spanish', 'espanol', 'español'],
+            'de': ['/de/', '_de', '-de', 'german', 'deutsch', 'allemand']
+        }
+        
+        url_lower = url.lower()
+        
+        for lang, patterns in url_patterns.items():
+            for pattern in patterns:
+                if pattern in url_lower:
+                    logger.debug(f"Detected language from URL pattern: {lang}")
+                    return {'language': lang, 'confidence': 0.6}
+        
+        # Check link text for language indicators
+        if link_text:
+            link_lower = link_text.lower()
+            
+            # French indicators
+            if any(word in link_lower for word in ['français', 'francais', 'french', 'version française']):
+                return {'language': 'fr', 'confidence': 0.7}
+            
+            # English indicators
+            if any(word in link_lower for word in ['english', 'anglais', 'version anglaise']):
+                return {'language': 'en', 'confidence': 0.7}
+            
+            # Analyze link text itself
+            lang_result = self._analyze_text_language(link_text)
+            if lang_result:
+                lang_result['confidence'] *= 0.7  # Lower confidence for short text
+                return lang_result
+        
+        return None
     
     def _normalize_url(self, url: str, base_url: Optional[str] = None) -> Optional[str]:
         """

@@ -43,15 +43,15 @@
                             <div class="col-md-6 mb-3">
                                 <label for="max_pages" class="form-label">Max Pages</label>
                                 <input type="number" class="form-control" id="max_pages" name="max_pages" 
-                                       value="{{ website.scraping_config.max_pages }}" min="1" max="10000">
-                                <div class="form-text">Maximum number of pages to discover</div>
+                                       value="{{ website.scraping_config.max_pages }}" min="1" max="9999999">
+                                <div class="form-text">Maximum number of pages to discover (default: unlimited)</div>
                             </div>
                             
                             <div class="col-md-6 mb-3">
                                 <label for="max_depth" class="form-label">Max Depth</label>
                                 <input type="number" class="form-control" id="max_depth" name="max_depth" 
-                                       value="{{ website.scraping_config.max_depth }}" min="1" max="10">
-                                <div class="form-text">Maximum crawl depth from start page</div>
+                                       value="{{ website.scraping_config.max_depth }}" min="1" max="50">
+                                <div class="form-text">How many clicks away from the starting page (default: 10)</div>
                             </div>
                         </div>
                         

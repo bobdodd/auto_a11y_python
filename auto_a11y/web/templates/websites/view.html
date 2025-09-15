@@ -38,6 +38,9 @@
             <button class="btn btn-warning me-2" id="cancelTestingBtn" style="display: none;">
                 <i class="bi bi-stop-circle"></i> Cancel Testing
             </button>
+            <a href="{{ url_for('websites.view_discovery_history', website_id=website.id) }}" class="btn btn-outline-info me-2">
+                <i class="bi bi-clock-history"></i> Discovery History
+            </a>
             <a href="{{ url_for('websites.view_documents', website_id=website.id) }}" class="btn btn-outline-info me-2">
                 <i class="bi bi-file-earmark"></i> Documents
             </a>
@@ -301,9 +304,9 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="maxPages" class="form-label">Maximum Pages to Discover</label>
-                        <input type="number" class="form-control" id="maxPages" min="1" max="1000"
-                               placeholder="Leave empty for no limit">
-                        <small class="text-muted">Limit the number of pages to discover (useful for large sites)</small>
+                        <input type="number" class="form-control" id="maxPages" min="1" max="9999999"
+                               placeholder="Leave empty for unlimited discovery">
+                        <small class="text-muted">Limit the number of pages to discover. Default is unlimited (up to 1 million pages).</small>
                     </div>
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle"></i> Discovery will crawl your website starting from the home page, following links to find all accessible pages.

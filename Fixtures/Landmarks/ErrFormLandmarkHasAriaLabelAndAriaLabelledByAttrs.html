@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Landmark Labeling Test Fixture</title>
+    <style>
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .pass { border-color: #28a745; background-color: #d4edda; }
+        h2 { margin-top: 0; }
+        .status { font-weight: bold; }
+        .error .status { color: #721c24; }
+        .pass .status { color: #155724; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Form Landmark Labeling Test Fixture</h1>
+        <p>Testing for conflicting aria-label and aria-labelledby attributes on form landmarks</p>
+    </header>
+
+    <main>
+        <!-- ERROR CASE 1: Form with both aria-label and aria-labelledby -->
+        <div class="test-section error">
+            <h2>❌ Error Case 1: Form with both labeling methods</h2>
+            <p class="status">Status: SHOULD FAIL - Has both aria-label and aria-labelledby</p>
+            
+            <h3 id="contact-heading">Contact Information</h3>
+            <form role="form" 
+                  aria-label="User contact form" 
+                  aria-labelledby="contact-heading">
+                <label for="name1">Name:</label>
+                <input type="text" id="name1" name="name">
+                
+                <label for="email1">Email:</label>
+                <input type="email" id="email1" name="email">
+                
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <!-- ERROR CASE 2: Implicit form landmark with conflicting labels -->
+        <div class="test-section error">
+            <h2>❌ Error Case 2: Implicit form with conflicting labels</h2>
+            <p class="status">Status: SHOULD FAIL - Implicit form with both labeling attributes</p>
+            
+            <h3 id="signup-title">Sign Up Form</h3>
+            <form aria-label="Registration form for new users" 
+                  aria-labelledby="signup-title">
+                <fieldset>
+                    <legend>Account Details</legend>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username">
+                    
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password">
+                </fieldset>
+                
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+
+        <!-- ERROR CASE 3: Multiple conflicting labels -->
+        <div class="test-section error">
+            <h2>❌ Error Case 3: Form with multiple reference IDs in aria-labelledby</h2>
+            <p class="status">Status: SHOULD FAIL - Both labeling methods present</p>
+            
+            <h3 id="feedback-main">Feedback Form</h3>
+            <p id="feedback-desc">Please share your thoughts with us</p>
+            <form role="form"
+                  aria-label="Customer feedback submission form"
+                  aria-labelledby="feedback-main feedback-desc">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject">
+                
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="4"></textarea>
+                
+                <button type="submit">Send Feedback</button>
+            </form>
+        </div>
+
+        <!-- PASS CASE 1: Form with only aria-label -->
+        <div class="test-section pass">
+            <h2>✅ Pass Case 1: Form with only aria-label</h2>
+            <p class="status">Status: SHOULD PASS - Only aria-label present</p>
+            
+            <form role="form" aria-label="Newsletter subscription form">
+                <label for="email2">Email Address:</label>
+                <input type="email" id="email2" name="email">
+                
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+
+        <!-- PASS CASE 2: Form with only aria-labelledby -->
+        <div class="test-section pass">
+            <h2>✅ Pass Case 2: Form with only aria-labelledby</h2>
+            <p class="status">Status: SHOULD PASS - Only aria-labelledby present</p>
+            
+            <h3 id="login-heading">Login Form</h3>
+            <form aria-labelledby="login-heading">
+                <label for="user">Username:</label>
+                <input type="text" id="user" name="username">
+                
+                <label for="pass">Password:</label>
+                <input type="password" id="pass" name="password">
+                
+                <button type="submit">Login</button>
+            </form>
+        </div>
+
+        <!-- PASS CASE 3: Form with no explicit labeling -->
+        <div class="test-section pass">
+            <h2>✅ Pass Case 3: Form without explicit labeling</h2>
+            <p class="status">Status: SHOULD PASS - No conflicting attributes</p>
+            
+            <form>
+                <fieldset>
+                    <legend>Search Options</legend>
+                    <label for="search">Search term:</label>
+                    <input type="text" id="search" name="q">
+                    
+                    <label for="category">Category:</label>
+                    <select id="category" name="category">
+                        <option value="">All Categories</option>
+                        <option value="news">News</option>
+                        <option value="blog">Blog</option>
+                    </select>
+                    
+                    <button type="submit">Search</button>
+                </fieldset>
+            </form>
+        </div>
+
+        <!-- PASS CASE 4: Non-form element with both attributes (should not trigger this specific error) -->
+        <div class="test-section pass">
+            <h2>✅ Pass Case 4: Non-form element with both attributes</h2>
+            <p class="status">Status: SHOULD PASS - Not a form landmark</p>
+            
+            <h3 id="nav-title">Navigation Menu</h3>
+            <nav role="navigation" 
+                 aria-label="Main site navigation" 
+                 aria-labelledby="nav-title">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+
+    <footer>
+        <p>Test fixture for ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs - WCAG 4.1.2</p>
+    </footer>
+</body>
+</html>

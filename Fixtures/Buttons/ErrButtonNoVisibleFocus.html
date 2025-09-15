@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Focus Indicator Test - ErrButtonNoVisibleFocus</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .test-section h2 {
+            color: #333;
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 10px;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        /* PROBLEMATIC BUTTONS - These should trigger ErrButtonNoVisibleFocus */
+        
+        /* Button with focus outline completely removed */
+        .no-focus-outline {
+            padding: 10px 20px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .no-focus-outline:focus {
+            outline: none; /* This removes the focus indicator */
+        }
+
+        /* Button with invisible focus (same color as background) */
+        .invisible-focus {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .invisible-focus:focus {
+            outline: 2px solid #28a745; /* Same color as background - invisible */
+        }
+
+        /* Button with extremely low contrast focus */
+        .low-contrast-focus {
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .low-contrast-focus:focus {
+            outline: 1px solid #777; /* Very low contrast - ratio ~1.1:1 */
+        }
+
+        /* Button with focus indicator too thin */
+        .thin-focus {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .thin-focus:focus {
+            outline: 0.5px solid #fff; /* Too thin - less than 2px */
+        }
+
+        /* Button relying only on color change for focus */
+        .color-only-focus {
+            padding: 10px 20px;
+            background-color: #ffc107;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .color-only-focus:focus {
+            background-color: #ffed4e; /* Only color change, no outline */
+        }
+
+        /* Custom styled button that removes default focus */
+        .custom-no-focus {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .custom-no-focus:focus {
+            outline: 0; /* Removes focus completely */
+            box-shadow: none;
+        }
+
+        /* Button with focus indicator that disappears on certain backgrounds */
+        .disappearing-focus {
+            padding: 10px 20px;
+            background-color: white;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .disappearing-focus:focus {
+            outline: 2px solid white; /* White outline on white background */
+        }
+
+        /* GOOD EXAMPLES - These should NOT trigger the error */
+        
+        .good-focus {
+            padding: 10px 20px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .good-focus:focus {
+            outline: 3px solid #ff0080; /* High contrast, thick enough */
+            outline-offset: 2px;
+        }
+
+        .good-focus-visible {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .good-focus-visible:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.3);
+        }
+
+        .instructions {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-left: 4px solid #007acc;
+            margin-bottom: 20px;
+        }
+
+        .error-description {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin-bottom: 20px;
+        }
+
+        kbd {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Button Focus Indicator Test Fixture</h1>
+    <p><strong>Test ID:</strong> ErrButtonNoVisibleFocus</p>
+    <p><strong>WCAG Guideline:</strong> 2.4.7 Focus Visible</p>
+
+    <div class="error-description">
+        <h3>What This Test Covers</h3>
+        <p>This fixture tests for buttons that lack visible focus indicators when focused. The error should be triggered when buttons have no focus indicator, invisible indicators, insufficient contrast, or rely only on color changes.</p>
+    </div>
+
+    <div class="instructions">
+        <h3>Testing Instructions</h3>
+        <p>Use <kbd>Tab</kbd> to navigate through the buttons below. Observe which buttons have clearly visible focus indicators and which do not.</p>
+        <p><strong>Expected Result:</strong> The problematic buttons should trigger ErrButtonNoVisibleFocus, while the good examples should pass.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>❌ Problematic Buttons (Should Trigger Error)</h2>
+        
+        <div class="button-grid">
+            <div>
+                <h4>No Focus Outline</h4>
+                <button class="no-focus-outline">Submit Form</button>
+                <p><small>outline: none removes focus indicator</small></p>
+            </div>
+
+            <div>
+                <h4>Invisible Focus</h4>
+                <button class="invisible-focus">Save Changes</button>
+                <p><small>Focus color matches background</small></p>
+            </div>
+
+            <div>
+                <h4>Low Contrast Focus</h4>
+                <button class="low-contrast-focus">Delete Item</button>
+                <p><small>Focus contrast ratio ~1.1:1</small></p>
+            </div>
+
+            <div>
+                <h4>Too Thin Focus</h4>
+                <button class="thin-focus">Cancel</button>
+                <p><small>Focus indicator less than 2px thick</small></p>
+            </div>
+
+            <div>
+                <h4>Color-Only Focus</h4>
+                <button class="color-only-focus">Warning</button>
+                <p><small>Only background color changes</small></p>
+            </div>
+
+            <div>
+                <h4>Custom No Focus</h4>
+                <button class="custom-no-focus">Get Started</button>
+                <p><small>Custom styling removes all focus</small></p>
+            </div>
+
+            <div>
+                <h4>Disappearing Focus</h4>
+                <button class="disappearing-focus">White Button</button>
+                <p><small>White outline on white background</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ Good Examples (Should NOT Trigger Error)</h2>
+        
+        <div class="button-grid">
+            <div>
+                <h4>High Contrast Focus</h4>
+                <button class="good-focus">Good Button</button>
+                <p><small>High contrast, proper thickness</small></p>
+            </div>
+
+            <div>
+                <h4>Focus-Visible Implementation</h4>
+                <button class="good-focus-visible">Modern Focus</button>
+                <p><small>Uses :focus-visible with good contrast</small></p>
+            </div>
+
+            <div>
+                <h4>Browser Default</h4>
+                <button>Default Button</button>
+                <p><small>Uses browser's default focus styling</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Edge Cases</h2>
+        
+        <div class="button-grid">
+            <div>
+                <h4>Disabled Button</h4>
+                <button disabled>Disabled Button</button>
+                <p><small>Should not be focusable</small></p>
+            </div>
+
+            <div>
+                <h4>Hidden Button</h4>
+                <button style="display: none;">Hidden Button</button>
+                <p><small>Should not be in tab order</small></p>
+            </div>
+
+            <div>
+                <h4>Button with tabindex="-1"</h4>
+                <button tabindex="-1" class="no-focus-outline">Not Tabbable</button>
+                <p><small>Removed from tab order but still focusable programmatically</small></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity to demonstrate focus behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('button:not([disabled])');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    console.log(`Button clicked: ${this.textContent}`);
+                });
+                
+                button.addEventListener('focus', function(e) {
+                    console.log(`Button focused: ${this.textContent}`);
+                });
+                
+                button.addEventListener('blur', function(e) {
+                    console.log(`Button blurred: ${this.textContent}`);
+                });
+            });
+            
+            // Add keyboard event logging
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    console.log(`Tab pressed, focused element: ${document.activeElement.tagName} - ${document.activeElement.textContent || 'No text'}`);
+                }
+                if (e.key === 'Enter' || e.key === ' ') {
+                    if (document.activeElement.tagName === 'BUTTON') {
+                        console.log(`${e.key} pressed on button: ${document.activeElement.textContent}`);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

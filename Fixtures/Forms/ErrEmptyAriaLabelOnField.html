@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty aria-label Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        .failing {
+            background-color: #ffe6e6;
+            border-color: #ff9999;
+        }
+        .passing {
+            background-color: #e6ffe6;
+            border-color: #99ff99;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="email"], input[type="password"], 
+        input[type="tel"], input[type="url"], textarea, select {
+            width: 200px;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Empty aria-label Test Fixture</h1>
+    <p>This fixture tests various scenarios of empty aria-label attributes on form fields.</p>
+
+    <!-- FAILING CASES - Should trigger ErrEmptyAriaLabelOnField -->
+    <div class="test-section failing">
+        <h2>❌ Failing Cases - Empty aria-label Attributes</h2>
+        
+        <div class="form-group">
+            <label>Text input with empty aria-label:</label>
+            <input type="text" aria-label="" placeholder="Enter text">
+        </div>
+
+        <div class="form-group">
+            <label>Email input with aria-label containing only spaces:</label>
+            <input type="email" aria-label="   " placeholder="Enter email">
+        </div>
+
+        <div class="form-group">
+            <label>Password input with aria-label containing only whitespace:</label>
+            <input type="password" aria-label="	
+            " placeholder="Enter password">
+        </div>
+
+        <div class="form-group">
+            <label>Select with empty aria-label:</label>
+            <select aria-label="">
+                <option value="">Choose option</option>
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Textarea with empty aria-label:</label>
+            <textarea aria-label="" placeholder="Enter description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Number input with empty aria-label:</label>
+            <input type="number" aria-label="" placeholder="Enter number" min="0" max="100">
+        </div>
+
+        <div class="form-group">
+            <label>Date input with empty aria-label:</label>
+            <input type="date" aria-label="">
+        </div>
+
+        <div class="form-group">
+            <label>Tel input with empty aria-label:</label>
+            <input type="tel" aria-label="" placeholder="Phone number">
+        </div>
+
+        <div class="form-group">
+            <label>URL input with empty aria-label:</label>
+            <input type="url" aria-label="" placeholder="Website URL">
+        </div>
+
+        <div class="form-group">
+            <label>Search input with empty aria-label:</label>
+            <input type="search" aria-label="" placeholder="Search">
+        </div>
+
+        <div class="form-group">
+            <label>Range input with empty aria-label:</label>
+            <input type="range" aria-label="" min="0" max="100" value="50">
+        </div>
+
+        <div class="form-group">
+            <label>Color input with empty aria-label:</label>
+            <input type="color" aria-label="" value="#ff0000">
+        </div>
+
+        <!-- Complex cases -->
+        <div class="form-group">
+            <label>Input with aria-labelledby but also empty aria-label:</label>
+            <span id="label1">Age</span>
+            <input type="number" aria-labelledby="label1" aria-label="">
+        </div>
+
+        <div class="form-group">
+            <label>Required field with empty aria-label:</label>
+            <input type="text" aria-label="" required placeholder="Required field">
+        </div>
+    </div>
+
+    <!-- PASSING CASES - Should NOT trigger ErrEmptyAriaLabelOnField -->
+    <div class="test-section passing">
+        <h2>✅ Passing Cases - Proper aria-label Usage</h2>
+        
+        <div class="form-group">
+            <label>Text input with proper aria-label:</label>
+            <input type="text" aria-label="Enter your full name" placeholder="Enter text">
+        </div>
+
+        <div class="form-group">
+            <label>Input with no aria-label but proper visible label:</label>
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter username">
+        </div>
+
+        <div class="form-group">
+            <label>Input with aria-labelledby (no aria-label):</label>
+            <span id="pwd-label">Password</span>
+            <input type="password" aria-labelledby="pwd-label">
+        </div>
+
+        <div class="form-group">
+            <label>Select with descriptive aria-label:</label>
+            <select aria-label="Choose your preferred language">
+                <option value="">Select language</option>
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Textarea with meaningful aria-label:</label>
+            <textarea aria-label="Provide detailed feedback about your experience"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Input with aria-describedby (no aria-label, but has visible label):</label>
+            <label for="email2">Email:</label>
+            <input type="email" id="email2" aria-describedby="email-help">
+            <div id="email-help">We'll never share your email</div>
+        </div>
+
+        <div class="form-group">
+            <label>Input with both proper aria-label and other attributes:</label>
+            <input type="text" aria-label="Search products by name or category" placeholder="Search" role="searchbox">
+        </div>
+
+        <!-- Edge cases that should pass -->
+        <div class="form-group">
+            <label>Input with no aria-label attribute at all:</label>
+            <label for="city">City:</label>
+            <input type="text" id="city" placeholder="Enter city">
+        </div>
+
+        <div class="form-group">
+            <label>Hidden input (should be ignored):</label>
+            <input type="hidden" aria-label="" name="csrf_token" value="abc123">
+        </div>
+
+        <div class="form-group">
+            <label>Input with title attribute (no aria-label):</label>
+            <input type="text" title="Enter your postal code" placeholder="Postal code">
+        </div>
+    </div>
+
+    <!-- EDGE CASES -->
+    <div class="test-section">
+        <h2>🔍 Edge Cases</h2>
+        
+        <div class="form-group">
+            <label>Disabled input with empty aria-label (may or may not fail depending on implementation):</label>
+            <input type="text" aria-label="" disabled placeholder="Disabled field">
+        </div>
+
+        <div class="form-group">
+            <label>Readonly input with empty aria-label:</label>
+            <input type="text" aria-label="" readonly value="Read only value">
+        </div>
+
+        <div class="form-group">
+            <label>Input inside fieldset with legend:</label>
+            <fieldset>
+                <legend>Personal Information</legend>
+                <input type="text" aria-label="" placeholder="First name">
+            </fieldset>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity to demonstrate the fields work
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Empty aria-label test fixture loaded');
+            console.log('Fields with empty aria-label should be flagged by accessibility checker');
+        });
+    </script>
+</body>
+</html>

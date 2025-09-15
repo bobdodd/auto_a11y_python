@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown ARIA Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .error { border-color: #e74c3c; background-color: #fdf2f2; }
+        .pass { border-color: #27ae60; background-color: #f2fdf2; }
+        
+        /* Dropdown Styling */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        
+        .dropdown-toggle {
+            background-color: #fff;
+            border: 2px solid #ccc;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            min-width: 200px;
+            text-align: left;
+        }
+        
+        .dropdown-toggle:after {
+            content: " ▼";
+            float: right;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Custom select styling */
+        .custom-select {
+            position: relative;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        
+        .select-button {
+            background: white;
+            border: 2px solid #ccc;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            min-width: 200px;
+        }
+        
+        .options-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-width: 200px;
+            display: none;
+        }
+        
+        .option {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dropdown ARIA Test Fixture - AI_ErrDropdownWithoutARIA</h1>
+    
+    <!-- ERROR CASES: These should trigger AI_ErrDropdownWithoutARIA -->
+    
+    <div class="test-section error">
+        <h2>❌ ERROR: Basic Dropdown Without ARIA</h2>
+        <p><strong>Issue:</strong> Missing aria-haspopup, aria-expanded, and proper roles</p>
+        
+        <div class="dropdown">
+            <button class="dropdown-toggle" id="basic-dropdown">
+                Choose an Option
+            </button>
+            <div class="dropdown-menu">
+                <div class="dropdown-item">Option 1</div>
+                <div class="dropdown-item">Option 2</div>
+                <div class="dropdown-item">Option 3</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Dropdown with Partial ARIA</h2>
+        <p><strong>Issue:</strong> Has aria-haspopup but missing aria-expanded and menu roles</p>
+        
+        <div class="dropdown">
+            <button class="dropdown-toggle" id="partial-dropdown" aria-haspopup="true">
+                Select Category
+            </button>
+            <div class="dropdown-menu">
+                <div class="dropdown-item">Electronics</div>
+                <div class="dropdown-item">Clothing</div>
+                <div class="dropdown-item">Books</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: DIV-based Dropdown</h2>
+        <p><strong>Issue:</strong> Using div instead of button, no ARIA attributes</p>
+        
+        <div class="dropdown">
+            <div class="dropdown-toggle" id="div-dropdown">
+                Pick a Color
+            </div>
+            <div class="dropdown-menu">
+                <div class="dropdown-item">Red</div>
+                <div class="dropdown-item">Blue</div>
+                <div class="dropdown-item">Green</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Custom Select Without ARIA</h2>
+        <p><strong>Issue:</strong> Custom select implementation without proper accessibility</p>
+        
+        <div class="custom-select">
+            <div class="select-button" id="custom-select">
+                Choose Size
+            </div>
+            <div class="options-list">
+                <div class="option">Small</div>
+                <div class="option">Medium</div>
+                <div class="option">Large</div>
+                <div class="option">Extra Large</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Navigation Dropdown</h2>
+        <p><strong>Issue:</strong> Navigation menu without proper ARIA markup</p>
+        
+        <nav>
+            <div class="dropdown">
+                <a href="#" class="dropdown-toggle" id="nav-dropdown">
+                    Products
+                </a>
+                <div class="dropdown-menu">
+                    <a href="#" class="dropdown-item">Laptops</a>
+                    <a href="#" class="dropdown-item">Phones</a>
+                    <a href="#" class="dropdown-item">Tablets</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Nested Dropdown Menu</h2>
+        <p><strong>Issue:</strong> Complex dropdown structure without ARIA</p>
+        
+        <div class="dropdown">
+            <button class="dropdown-toggle" id="nested-dropdown">
+                Account Settings
+            </button>
+            <div class="dropdown-menu">
+                <div class="dropdown-item">Profile</div>
+                <div class="dropdown-item">
+                    <span>Preferences</span>
+                    <div class="dropdown-menu" style="position: relative; display: block; box-shadow: none; border: none; margin-left: 20px;">
+                        <div class="dropdown-item">Theme</div>
+                        <div class="dropdown-item">Language</div>
+                    </div>
+                </div>
+                <div class="dropdown-item">Logout</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PASSING CASES: These should NOT trigger the error -->
+    
+    <div class="test-section pass">
+        <h2>✅ PASS: Properly Implemented Dropdown</h2>
+        <p><strong>Correct:</strong> Has all required ARIA attributes and roles</p>
+        
+        <div class="dropdown">
+            <button class="dropdown-toggle" 
+                    id="proper-dropdown"
+                    aria-haspopup="true" 
+                    aria-expanded="false"
+                    aria-controls="proper-menu">
+                Proper Dropdown
+            </button>
+            <div class="dropdown-menu" 
+                 id="proper-menu"
+                 role="menu" 
+                 aria-labelledby="proper-dropdown">
+                <div class="dropdown-item" role="menuitem">Option A</div>
+                <div class="dropdown-item" role="menuitem">Option B</div>
+                <div class="dropdown-item" role="menuitem">Option C</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Native HTML Select</h2>
+        <p><strong>Correct:</strong> Native select elements have built-in accessibility</p>
+        
+        <label for="native-select">Choose an option:</label>
+        <select id="native-select">
+            <option value="">-- Select --</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+        </select>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Combobox with Listbox</h2>
+        <p><strong>Correct:</strong> Proper combobox implementation</p>
+        
+        <label for="combo-input">Search options:</label>
+        <input type="text" 
+               id="combo-input"
+               role="combobox"
+               aria-expanded="false"
+               aria-haspopup="listbox"
+               aria-controls="combo-list"
+               autocomplete="off">
+        <ul id="combo-list" role="listbox" style="display: none;">
+            <li role="option">Apple</li>
+            <li role="option">Banana</li>
+            <li role="option">Cherry</li>
+        </ul>
+    </div>
+
+    <script>
+        // Basic dropdown functionality for demonstration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle all dropdown toggles
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle, .select-button');
+            
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const dropdown = this.parentNode;
+                    const menu = dropdown.querySelector('.dropdown-menu, .options-list');
+                    
+                    if (menu) {
+                        const isOpen = menu.classList.contains('show') || menu.style.display === 'block';
+                        
+                        // Close all other dropdowns
+                        document.querySelectorAll('.dropdown-menu, .options-list').forEach(m => {
+                            m.classList.remove('show');
+                            m.style.display = 'none';
+                        });
+                        
+                        // Toggle current dropdown
+                        if (!isOpen) {
+                            menu.classList.add('show');
+                            menu.style.display = 'block';
+                            
+                            // Update aria-expanded if it exists
+                            if (this.hasAttribute('aria-expanded')) {
+                                this.setAttribute('aria-expanded', 'true');
+                            }
+                        } else {
+                            if (this.hasAttribute('aria-expanded')) {
+                                this.setAttribute('aria-expanded', 'false');
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Handle dropdown item clicks
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('dropdown-item') || e.target.classList.contains('option')) {
+                    const dropdown = e.target.closest('.dropdown, .custom-select');
+                    const toggle = dropdown.querySelector('.dropdown-toggle, .select-button');
+                    const menu = dropdown.querySelector('.dropdown-menu, .options-list');
+                    
+                    // Update toggle text
+                    toggle.textContent = e.target.textContent;
+                    
+                    // Close menu
+                    menu.classList.remove('show');
+                    menu.style.display = 'none';
+                    
+                    // Update aria-expanded
+                    if (toggle.hasAttribute('aria-expanded')) {
+                        toggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+                
+                // Close dropdowns when clicking outside
+                if (!e.target.closest('.dropdown, .custom-select')) {
+                    document.querySelectorAll('.dropdown-menu, .options-list').forEach(menu => {
+                        menu.classList.remove('show');
+                        menu.style.display = 'none';
+                    });
+                    
+                    document.querySelectorAll('[aria-expanded]').forEach(toggle => {
+                        toggle.setAttribute('aria-expanded', 'false');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

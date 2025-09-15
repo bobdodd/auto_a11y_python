@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contentinfo Landmark Label Test Fixture</title>
+</head>
+<body>
+    <header>
+        <h1>Test Page for Contentinfo Landmark Labeling</h1>
+    </header>
+
+    <main>
+        <h2>Main Content Area</h2>
+        <p>This page tests various contentinfo landmark scenarios to validate the WarnContentInfoLandmarkHasNoLabel accessibility checker.</p>
+    </main>
+
+    <!-- Test Case 1: Single contentinfo without label (SHOULD NOT trigger warning) -->
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+        <p>Contact: info@example.com</p>
+    </footer>
+
+    <!-- Test Case 2: Multiple contentinfo landmarks without labels (SHOULD trigger warnings) -->
+    <div role="contentinfo">
+        <h3>Newsletter Footer</h3>
+        <p>Subscribe to our newsletter for updates.</p>
+        <form>
+            <input type="email" placeholder="Enter email">
+            <button type="submit">Subscribe</button>
+        </form>
+    </div>
+
+    <footer>
+        <h3>Site Footer</h3>
+        <nav>
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+            </ul>
+        </nav>
+        <p>&copy; 2024 Example Corp.</p>
+    </footer>
+
+    <!-- Test Case 3: Multiple contentinfo landmarks with proper labels (SHOULD NOT trigger warnings) -->
+    <footer aria-label="Article comments footer">
+        <h3>Comments Section Footer</h3>
+        <p>End of comments. <a href="#top">Back to top</a></p>
+    </footer>
+
+    <div role="contentinfo" aria-labelledby="social-footer-heading">
+        <h3 id="social-footer-heading">Social Media Footer</h3>
+        <ul>
+            <li><a href="#" aria-label="Facebook">FB</a></li>
+            <li><a href="#" aria-label="Twitter">TW</a></li>
+            <li><a href="#" aria-label="LinkedIn">LI</a></li>
+        </ul>
+    </div>
+
+    <!-- Test Case 4: Contentinfo with aria-describedby (SHOULD NOT trigger warning) -->
+    <footer aria-describedby="main-footer-desc">
+        <p id="main-footer-desc">Primary site footer with legal information</p>
+        <p>Legal notices and corporate information.</p>
+    </footer>
+
+    <!-- Test Case 5: Nested contentinfo (edge case) -->
+    <footer aria-label="Outer footer">
+        <div>
+            <p>Outer footer content</p>
+            <!-- This nested contentinfo without label SHOULD trigger warning -->
+            <div role="contentinfo">
+                <p>Nested footer without label</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Test Case 6: Empty contentinfo without label (SHOULD trigger warning if multiple exist) -->
+    <footer></footer>
+
+    <!-- Test Case 7: Contentinfo with only whitespace content -->
+    <div role="contentinfo" aria-label="Whitespace footer">
+        
+        
+    </div>
+</body>
+</html>

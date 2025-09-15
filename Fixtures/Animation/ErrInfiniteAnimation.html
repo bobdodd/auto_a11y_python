@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Animation Test Fixture - ErrInfiniteAnimation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        /* VIOLATION: Infinite CSS animation without controls */
+        .infinite-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* VIOLATION: Infinite pulsing animation */
+        .pulsing-button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* VIOLATION: Infinite sliding banner */
+        .sliding-banner {
+            width: 300px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            background-size: 400% 400%;
+            animation: gradientSlide 3s ease infinite;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        @keyframes gradientSlide {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* VIOLATION: Infinite bouncing text */
+        .bouncing-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #9b59b6;
+            animation: bounce 1.5s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+        
+        /* VIOLATION: Infinite rotating image */
+        .rotating-image {
+            width: 100px;
+            height: 100px;
+            background-color: #f39c12;
+            border-radius: 10px;
+            animation: rotate360 4s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        @keyframes rotate360 {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* VIOLATION: Infinite blinking text - especially problematic for seizures */
+        .blinking-text {
+            font-size: 18px;
+            color: #e74c3c;
+            animation: blink 0.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* VIOLATION: Infinite shaking animation */
+        .shaking-box {
+            width: 80px;
+            height: 80px;
+            background-color: #2ecc71;
+            animation: shake 0.8s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        
+        /* VIOLATION: Multiple simultaneous infinite animations */
+        .complex-animation {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 50%;
+            animation: 
+                spin 2s linear infinite,
+                pulse 1.5s ease-in-out infinite,
+                colorChange 3s ease infinite;
+        }
+        
+        @keyframes colorChange {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        /* VIOLATION: Infinite marquee-like text animation */
+        .scrolling-text-container {
+            width: 300px;
+            overflow: hidden;
+            background-color: #34495e;
+            color: white;
+            padding: 10px 0;
+        }
+        
+        .scrolling-text {
+            white-space: nowrap;
+            animation: scroll 8s linear infinite;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        /* GOOD EXAMPLE: Animation with controls */
+        .controlled-animation {
+            width: 80px;
+            height: 80px;
+            background-color: #3498db;
+            border-radius: 50%;
+            animation: controlled-spin 2s linear infinite;
+            animation-play-state: paused;
+        }
+        
+        .controlled-animation.playing {
+            animation-play-state: running;
+        }
+        
+        @keyframes controlled-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .controls {
+            margin-top: 10px;
+        }
+        
+        .control-button {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin-right: 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .control-button:hover {
+            background-color: #27ae60;
+        }
+        
+        /* Status indicators */
+        .violation {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .good {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Infinite Animation Test Fixture - ErrInfiniteAnimation</h1>
+    
+    <div class="warning-box">
+        <strong>⚠️ Warning:</strong> This page contains multiple infinite animations that may cause seizures, 
+        vestibular disorders, or other adverse reactions. These are intentional violations for testing purposes.
+        If you experience discomfort, please navigate away immediately.
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="violation">VIOLATION:</span> Infinite Loading Spinner</h2>
+        <p>A loading spinner that runs indefinitely without any pause or stop controls.</p>
+        <div class="infinite-spinner"></div>
+        <p><em>Impact: Can cause distraction and vestibular issues</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="violation">VIOLATION:</span> Pulsing Call-to-Action Button</h2>
+        <p>A button that pulses infinitely to grab attention, with no way to stop it.</p>
+        <button class="pulsing-button">Buy Now!</button>
+        <p><em>Impact: Can trigger seizures and cause cognitive overload</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="violation">VIOLATION:</span> Animated Background Banner</h2>
+        <p>A banner with an infinite gradient animation that cannot be paused.</p>
+        <div class="sliding-banner">Special Offer!</div>
+        <p><em>Impact: Can cause vestibular disorders and distraction</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="violation">VIOLATION:</span> Bouncing Text</h2>
+        <p>Text that bounces up and down infinitely without controls.</p>
+        <div class="bouncing-text">🎉 Congratulations! 🎉</div>
+        <p><em>Impact: Can cause motion sensitivity and focus issues</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="violation">VIOLATION:</span> Rotating Element</h2>
+        <p>An element that rotates continuously without pause controls.</p>
+        <div class="rotating-image">SALE</div>
+        <p><em>Impact: Can cause dizziness and vestibular disorders</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="violation">VIOLATION:</span> Blinking Text (High Risk)</h2>
+        <p>Text that blinks rapidly - particularly dangerous for photosensitive epilepsy.</p>
+        <div class="blinking-text">⚡ URGENT ALERT ⚡</div>
+        <p><em>Impact: <strong>HIGH SEIZURE RISK</strong> - violates photosensitive epilepsy guidelines</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="violation">VIOLATION:</span> Shaking Animation</h2>
+        <p>A box that shakes continuously without any controls.</p>
+        <div class="shaking-box">NEW</div>
+        <p><em>Impact: Can trigger vestibular disorders and cause anxiety</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="violation">VIOLATION:</span> Multiple Simultaneous Animations</h2>
+        <p>Element with multiple infinite animations running simultaneously.</p>
+        <div class="complex-animation"></div>
+        <p><em>Impact: Combines multiple accessibility issues, very problematic</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="violation">VIOLATION:</span> Infinite Scrolling Text</h2>
+        <p>Text that scrolls infinitely like a marquee with no pause option.</p>
+        <div class="scrolling-text-container">
+            <div class="scrolling-text">Breaking News: This text scrolls forever and cannot be stopped by the user...</div>
+        </div>
+        <p><em>Impact: Can cause reading difficulties and vestibular issues</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2><span class="good">GOOD EXAMPLE:</span> Animation with User Controls</h2>
+        <p>An animation that starts paused and provides user controls to play/pause.</p>
+        <div class="controlled-animation" id="controlledElement"></div>
+        <div class="controls">
+            <button class="control-button" onclick="playAnimation()">Play</button>
+            <button class="control-button" onclick="pauseAnimation()">Pause</button>
+            <button class="control-button" onclick="stopAnimation()">Stop</button>
+        </div>
+        <p><em>This respects user control and accessibility requirements</em></p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Coverage Summary</h2>
+        <p>This fixture tests for animations that:</p>
+        <ul>
+            <li>✅ Run infinitely without duration limits</li>
+            <li>✅ Lack pause, stop, or hide controls</li>
+            <li>✅ Don't respect user preferences</li>
+            <li>✅ Include high-risk blinking/flashing content</li>
+            <li>✅ Combine multiple animation types</li>
+            <li>✅ Include both CSS animations and transitions</li>
+            <li>✅ Demonstrate proper controls as contrast</li>
+        </ul>
+        
+        <h3>WCAG 2.2.2 Violations Present:</h3>
+        <ul>
+            <li><strong>No pause mechanism</strong> - Users cannot stop animations</li>
+            <li><strong>No hide mechanism</strong> - Users cannot hide animations</li>
+            <li><strong>Infinite duration</strong> - Animations never automatically stop</li>
+            <li><strong>No prefers-reduced-motion respect</strong> - Ignores user OS preferences</li>
+            <li><strong>Seizure risk content</strong> - Blinking below 3Hz threshold</li>
+        </ul>
+    </div>
+    
+    <script>
+        // JavaScript for the controlled animation example
+        function playAnimation() {
+            document.getElementById('controlledElement').classList.add('playing');
+        }
+        
+        function pauseAnimation() {
+            document.getElementById('controlledElement').classList.remove('playing');
+        }
+        
+        function stopAnimation() {
+            const element = document.getElementById('controlledElement');
+            element.classList.remove('playing');
+            // Reset animation
+            element.style.animation = 'none';
+            element.offsetHeight; // Trigger reflow
+            element.style.animation = null;
+        }
+        
+        // Demonstrate that violations don't respect prefers-reduced-motion
+        // (In a real implementation, you should check and respect this preference)
+        console.log('prefers-reduced-motion:', window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    </script>
+</body>
+</html>

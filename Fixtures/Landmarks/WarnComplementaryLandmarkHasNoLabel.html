@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complementary Landmark Label Test Fixture</title>
+</head>
+<body>
+    <header>
+        <h1>Test Page for Complementary Landmark Labels</h1>
+    </header>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>This is the main content of the page.</p>
+    </main>
+
+    <!-- Test Case 1: Complementary landmark without label (should trigger warning) -->
+    <aside>
+        <h3>Related Articles</h3>
+        <ul>
+            <li><a href="#">Article 1</a></li>
+            <li><a href="#">Article 2</a></li>
+        </ul>
+    </aside>
+
+    <!-- Test Case 2: Another complementary landmark without label (should trigger warning) -->
+    <aside>
+        <h3>Advertisement</h3>
+        <div>Ad content here</div>
+    </aside>
+
+    <!-- Test Case 3: Complementary with role but no label (should trigger warning) -->
+    <div role="complementary">
+        <h3>Newsletter Signup</h3>
+        <form>
+            <input type="email" placeholder="Enter email">
+            <button type="submit">Subscribe</button>
+        </form>
+    </div>
+
+    <!-- Test Case 4: Complementary landmark with aria-label (should NOT trigger warning) -->
+    <aside aria-label="Related products">
+        <h3>You might also like</h3>
+        <ul>
+            <li>Product 1</li>
+            <li>Product 2</li>
+        </ul>
+    </aside>
+
+    <!-- Test Case 5: Complementary landmark with aria-labelledby (should NOT trigger warning) -->
+    <aside aria-labelledby="social-heading">
+        <h3 id="social-heading">Follow Us</h3>
+        <ul>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Twitter</a></li>
+        </ul>
+    </aside>
+
+    <!-- Test Case 6: Single complementary landmark without label (edge case - some tools may not warn for single instances) -->
+    <section>
+        <h2>Page with single complementary</h2>
+        <aside>
+            <h3>Quick Links</h3>
+            <nav>
+                <ul>
+                    <li><a href="#section1">Section 1</a></li>
+                    <li><a href="#section2">Section 2</a></li>
+                </ul>
+            </nav>
+        </aside>
+    </section>
+
+    <!-- Test Case 7: Nested complementary landmarks (should trigger warning for unlabeled ones) -->
+    <aside aria-label="Sidebar content">
+        <h3>Sidebar</h3>
+        <aside>
+            <!-- This nested aside has no label and should trigger warning -->
+            <h4>Recent Comments</h4>
+            <ul>
+                <li>Comment 1</li>
+                <li>Comment 2</li>
+            </ul>
+        </aside>
+    </aside>
+
+    <footer>
+        <p>&copy; 2024 Test Site</p>
+    </footer>
+</body>
+</html>

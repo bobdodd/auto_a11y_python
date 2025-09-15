@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map aria-hidden Test Fixture - ErrMapAriaHidden</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        .error {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .pass {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        map {
+            display: block;
+            margin: 10px 0;
+        }
+        img {
+            max-width: 400px;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+        .note {
+            font-style: italic;
+            color: #666;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Map aria-hidden Test Fixture - ErrMapAriaHidden</h1>
+    <p><strong>Test Purpose:</strong> Validate detection of map elements with aria-hidden attribute that removes accessibility for assistive technologies.</p>
+
+    <!-- ERROR CASES - These should trigger ErrMapAriaHidden -->
+    
+    <div class="test-section error">
+        <h2>❌ Error Case 1: Simple map with aria-hidden="true"</h2>
+        <p class="note">This map is completely hidden from screen readers</p>
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Q2FtcHVzIE1hcDwvdGV4dD48L3N2Zz4=" alt="Campus Map" usemap="#campus-map">
+        <map name="campus-map" aria-hidden="true">
+            <area shape="rect" coords="50,50,150,100" href="#library" alt="Library Building">
+            <area shape="rect" coords="200,50,300,100" href="#cafeteria" alt="Student Cafeteria">
+            <area shape="circle" coords="325,75,25" href="#parking" alt="Parking Lot A">
+        </map>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Error Case 2: Interactive map with aria-hidden="true"</h2>
+        <p class="note">Complex interactive map hidden from assistive technologies</p>
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzg4Y2NmZiIvPjx0ZXh0IHg9IjIwMCIgeT0iNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIj5Xb3JsZCBNYXA8L3RleHQ+PHJlY3QgeD0iNTAiIHk9IjgwIiB3aWR0aD0iNjAiIGhlaWdodD0iNDAiIGZpbGw9IiM0NGFhNDQiLz48cmVjdCB4PSIxNTAiIHk9IjkwIiB3aWR0aD0iODAiIGhlaWdodD0iNTAiIGZpbGw9IiNhYTQ0NDQiLz48cmVjdCB4PSIyNzAiIHk9Ijc1IiB3aWR0aD0iNzAiIGhlaWdodD0iNDUiIGZpbGw9IiNhYTg4NDQiLz48L3N2Zz4=" alt="World Map" usemap="#world-regions">
+        <map name="world-regions" aria-hidden="true" role="img">
+            <area shape="rect" coords="50,80,110,120" href="#north-america" alt="North America" title="Click for North America info">
+            <area shape="rect" coords="150,90,230,140" href="#europe" alt="Europe" title="Click for Europe info">
+            <area shape="rect" coords="270,75,340,120" href="#asia" alt="Asia" title="Click for Asia info">
+        </map>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Error Case 3: Map with aria-hidden and additional accessibility features</h2>
+        <p class="note">Map with aria-label but still hidden - contradictory accessibility approach</p>
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZjhjYyIvPjx0ZXh0IHg9IjIwMCIgeT0iNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk9mZmljZSBGbG9vciBQbGFuPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iMTYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEycHgiPjNyZCBGbG9vcjwvdGV4dD48L3N2Zz4=" alt="Office Floor Plan - 3rd Floor" usemap="#floor-plan">
+        <map name="floor-plan" aria-hidden="true" aria-label="Interactive office floor plan with clickable rooms" role="application">
+            <area shape="rect" coords="50,60,120,120" href="#conference-room-a" alt="Conference Room A" tabindex="0">
+            <area shape="rect" coords="150,60,250,120" href="#open-workspace" alt="Open Workspace Area" tabindex="0">
+            <area shape="rect" coords="280,60,350,120" href="#break-room" alt="Employee Break Room" tabindex="0">
+        </map>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Error Case 4: Map with string value aria-hidden</h2>
+        <p class="note">Using string "true" instead of boolean - should still trigger error</p>
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2RkZmZkZCIvPjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TaG9wcGluZyBNYWxsIERpcmVjdG9yeTwvdGV4dD48L3N2Zz4=" alt="Shopping Mall Directory" usemap="#mall-directory">
+        <map name="mall-directory" aria-hidden="true">
+            <area shape="rect" coords="0,0,100,100" href="#north-wing" alt="North Wing Stores">
+            <area shape="rect" coords="100,0,200,100" href="#center-court" alt="Center Court">
+            <area shape="rect" coords="200,0,300,100" href="#south-wing" alt="South Wing Stores">
+            <area shape="rect" coords="300,0,400,100" href="#food-court" alt="Food Court">
+        </map>
+    </div>
+
+    <!-- PASSING CASES - These should NOT trigger ErrMapAriaHidden -->
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 1: Map without aria-hidden</h2>
+        <p class="note">Properly accessible map without aria-hidden attribute</p>
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VmZmVmZiIvPjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BY2Nlc3NpYmxlIENhbXB1cyBNYXA8L3RleHQ+PC9zdmc+" alt="Accessible Campus Map" usemap="#accessible-campus">
+        <map name="accessible-campus">
+            <area shape="rect" coords="50,50,150,100" href="#library-info" alt="Main Library - Open 8am-10pm">
+            <area shape="rect" coords="200,50,300,100" href="#dining-info" alt="Dining Hall - Breakfast, lunch, dinner served">
+            <area shape="circle" coords="325,75,25" href="#transport-info" alt="Bus Stop - Routes 12, 15, 23">
+        </map>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 2: Map with aria-hidden="false"</h2>
+        <p class="note">Map explicitly marked as not hidden from assistive technologies</p>
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZjhlZiIvPjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BdXRob3JpemVkIEFjY2VzcyBNYXA8L3RleHQ+PC9zdmc+" alt="Building Access Map" usemap="#building-access">
+        <map name="building-access" aria-hidden="false" aria-label="Building access points and security checkpoints">
+            <area shape="rect" coords="100,70,200,130" href="#main-entrance" alt="Main Entrance - Badge required">
+            <area shape="rect" coords="250,70,350,130" href="#employee-entrance" alt="Employee Entrance - Staff only">
+        </map>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 3: Comprehensive accessible map</h2>
+        <p class="note">Map with proper accessibility features and alternative text content</p>
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZmZlZSIvPjx0ZXh0IHg9IjIwMCIgeT0iNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNvbXByZWhlbnNpdmUgTWFwPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iMTYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEwcHgiPldpdGggRGV0YWlsZWQgSW5mb3JtYXRpb248L3RleHQ+PC9zdmc+" alt="Comprehensive Campus Map with Navigation" usemap="#comprehensive-map">
+        <map name="comprehensive-map" aria-label="Interactive campus map with detailed building information">
+            <area shape="rect" coords="50,60,140,120" href="#academic-building" alt="Academic Building - Classrooms 101-350, elevator access on floors 1-4" role="link" tabindex="0">
+            <area shape="rect" coords="160,60,260,120" href="#student-center" alt="Student Services Center - Registrar, financial aid, counseling services, wheelchair accessible" role="link" tabindex="0">
+            <area shape="rect" coords="280,60,370,120" href="#recreation" alt="Recreation Center - Gym, pool, courts, accessible parking available" role="link" tabindex="0">
+        </map>
+        <div style="margin-top: 15px;">
+            <h3>Text Alternative for Map Content:</h3>
+            <ul>
+                <li><strong>Academic Building:</strong> Located in the west section, houses classrooms 101-350 with elevator access on all floors</li>
+                <li><strong>Student Services:</strong> Central location providing registrar, financial aid, and counseling services</li>
+                <li><strong>Recreation Center:</strong> Eastern section featuring gymnasium, swimming pool, and sports courts</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 4: No map element present</h2>
+        <p class="note">Image without associated map - should not trigger the error</p>
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y5ZjlmOSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TdGF0aWMgSW1hZ2UgKE5vIE1hcCk8L3RleHQ+PC9zdmc+" alt="Static informational image without interactive elements">
+        <!-- No map element associated with this image -->
+    </div>
+
+    <!-- Hidden content for link destinations -->
+    <div style="display: none;">
+        <div id="library">Library Information</div>
+        <div id="cafeteria">Cafeteria Information</div>
+        <div id="parking">Parking Information</div>
+        <div id="north-america">North America Information</div>
+        <div id="europe">Europe Information</div>
+        <div id="asia">Asia Information</div>
+        <div id="conference-room-a">Conference Room A Details</div>
+        <div id="open-workspace">Open Workspace Details</div>
+        <div id="break-room">Break Room Details</div>
+        <div id="north-wing">North Wing Store Directory</div>
+        <div id="center-court">Center Court Information</div>
+        <div id="south-wing">South Wing Store Directory</div>
+        <div id="food-court">Food Court Information</div>
+        <div id="library-info">Library Information</div>
+        <div id="dining-info">Dining Information</div>
+        <div id="transport-info">Transportation Information</div>
+        <div id="main-entrance">Main Entrance Details</div>
+        <div id="employee-entrance">Employee Entrance Details</div>
+        <div id="academic-building">Academic Building Information</div>
+        <div id="student-center">Student Center Information</div>
+        <div id="recreation">Recreation Center Information</div>
+    </div>
+
+    <script>
+        // Add some interactivity for testing purposes
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Map aria-hidden test fixture loaded');
+            console.log('Error cases: 4 maps with aria-hidden="true" should be detected');
+            console.log('Pass cases: 3 accessible maps + 1 no-map case should not trigger errors');
+        });
+    </script>
+</body>
+</html>

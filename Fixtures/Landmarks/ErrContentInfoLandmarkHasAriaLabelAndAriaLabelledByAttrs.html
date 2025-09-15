@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contentinfo Landmark Labeling Test Fixture</title>
+</head>
+<body>
+    <!-- Test Case 1: ERROR - Contentinfo with both aria-label and aria-labelledby -->
+    <footer role="contentinfo" aria-label="Main site footer" aria-labelledby="footer-heading">
+        <h2 id="footer-heading">Site Footer</h2>
+        <p>This footer has conflicting labeling methods and should trigger an error.</p>
+        <nav>
+            <ul>
+                <li><a href="#privacy">Privacy Policy</a></li>
+                <li><a href="#terms">Terms of Service</a></li>
+            </ul>
+        </nav>
+    </footer>
+
+    <!-- Test Case 2: ERROR - Multiple contentinfo landmarks with conflicting labels -->
+    <div role="contentinfo" aria-label="Secondary footer" aria-labelledby="secondary-footer-title">
+        <h3 id="secondary-footer-title">Additional Information</h3>
+        <p>Another contentinfo landmark with both labeling attributes.</p>
+    </div>
+
+    <!-- Test Case 3: ERROR - Implicit contentinfo (footer) with both attributes -->
+    <footer aria-label="Newsletter footer" aria-labelledby="newsletter-heading">
+        <h2 id="newsletter-heading">Newsletter Signup</h2>
+        <p>Footer element with implicit contentinfo role and conflicting labels.</p>
+        <form>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+            <button type="submit">Subscribe</button>
+        </form>
+    </footer>
+
+    <!-- Test Case 4: PASS - Contentinfo with only aria-label -->
+    <footer role="contentinfo" aria-label="Company information footer">
+        <h2>Company Info</h2>
+        <p>This footer only uses aria-label and should pass validation.</p>
+        <address>
+            123 Main Street<br>
+            City, State 12345
+        </address>
+    </footer>
+
+    <!-- Test Case 5: PASS - Contentinfo with only aria-labelledby -->
+    <footer role="contentinfo" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contact Information</h2>
+        <p>This footer only uses aria-labelledby and should pass validation.</p>
+        <p>Phone: (555) 123-4567</p>
+    </footer>
+
+    <!-- Test Case 6: PASS - Contentinfo with no labeling attributes -->
+    <footer role="contentinfo">
+        <h2>Copyright Information</h2>
+        <p>© 2024 Test Company. All rights reserved.</p>
+        <p>This footer has no labeling attributes and should pass validation.</p>
+    </footer>
+
+    <!-- Test Case 7: ERROR - Edge case with empty values but both attributes present -->
+    <footer role="contentinfo" aria-label="" aria-labelledby="">
+        <h2>Empty Labels Footer</h2>
+        <p>This footer has both attributes present even though they're empty.</p>
+    </footer>
+
+    <!-- Test Case 8: ERROR - Complex scenario with valid references -->
+    <div id="complex-footer-label">Advanced Footer Section</div>
+    <footer role="contentinfo" 
+            aria-label="Comprehensive site footer with links and information" 
+            aria-labelledby="complex-footer-label">
+        <h2>Site Navigation</h2>
+        <nav aria-label="Footer navigation">
+            <ul>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div>
+            <h3>Social Media</h3>
+            <ul>
+                <li><a href="#facebook" aria-label="Follow us on Facebook">Facebook</a></li>
+                <li><a href="#twitter" aria-label="Follow us on Twitter">Twitter</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- Reference elements for testing labelledby -->
+    <div id="hidden-label" style="display: none;">Hidden Label Text</div>
+    
+    <!-- Test Case 9: ERROR - References hidden element -->
+    <footer role="contentinfo" aria-label="Visible label" aria-labelledby="hidden-label">
+        <h2>Footer with Hidden Reference</h2>
+        <p>Tests edge case where aria-labelledby references a hidden element.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 /**
  * Issue Filtering System for Accessibility Test Results
- * Provides comprehensive filtering by type, impact, WCAG criteria, category, and affected users
+ * Provides comprehensive filtering by type, impact, WCAG criteria, touchpoint, and affected users
  */
 
 class IssueFilterManager {
@@ -9,7 +9,7 @@ class IssueFilterManager {
             type: new Set(),
             impact: new Set(),
             wcag: new Set(),
-            category: new Set(),
+            touchpoint: new Set(),
             user: new Set(),
             search: ''
         };
@@ -148,10 +148,10 @@ class IssueFilterManager {
                         </select>
                     </div>
 
-                    <!-- Category Filter -->
+                    <!-- Touchpoint Filter -->
                     <div class="col-md-6 col-lg-3">
-                        <label class="form-label fw-bold small">Category</label>
-                        <select class="form-select form-select-sm" id="categoryFilter" multiple style="height: 100px;">
+                        <label class="form-label fw-bold small">Touchpoint</label>
+                        <select class="form-select form-select-sm" id="touchpointFilter" multiple style="height: 100px;">
                             <option value="">Loading...</option>
                         </select>
                     </div>
@@ -200,7 +200,7 @@ class IssueFilterManager {
     
     populateFilterOptions() {
         const wcagCriteria = new Set();
-        const categories = new Set();
+        const touchpoints = new Set();
         const typeCounts = { error: 0, warning: 0, info: 0, discovery: 0 };
         
         // Mark all issue items with data attributes for filtering
@@ -238,12 +238,19 @@ class IssueFilterManager {
                 wcagMatches.forEach(criterion => wcagCriteria.add(criterion));
             }
             
-            // Extract category
+            // Extract touchpoint
+            const touchpointMatch = item.textContent.match(/Touchpoint:\s*(\w+)/i);
+            if (touchpointMatch) {
+                const touchpoint = touchpointMatch[1].toLowerCase();
+                item.dataset.filterTouchpoint = touchpoint;
+                touchpoints.add(touchpoint);
+            }
+            // Also check for legacy category field
             const categoryMatch = item.textContent.match(/Category:\s*(\w+)/i);
-            if (categoryMatch) {
+            if (categoryMatch && !touchpointMatch) {
                 const category = categoryMatch[1].toLowerCase();
-                item.dataset.filterCategory = category;
-                categories.add(category);
+                item.dataset.filterTouchpoint = category;
+                touchpoints.add(category);
             }
             
             // Extract searchable text
@@ -277,18 +284,18 @@ class IssueFilterManager {
             }
         }
         
-        // Populate Category filter
-        const categorySelect = document.getElementById('categoryFilter');
-        if (categorySelect) {
-            categorySelect.innerHTML = '';
-            if (categories.size === 0) {
-                categorySelect.innerHTML = '<option value="">No categories found</option>';
+        // Populate Touchpoint filter
+        const touchpointSelect = document.getElementById('touchpointFilter');
+        if (touchpointSelect) {
+            touchpointSelect.innerHTML = '';
+            if (touchpoints.size === 0) {
+                touchpointSelect.innerHTML = '<option value="">No touchpoints found</option>';
             } else {
-                [...categories].sort().forEach(category => {
+                [...touchpoints].sort().forEach(touchpoint => {
                     const option = document.createElement('option');
-                    option.value = category;
-                    option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-                    categorySelect.appendChild(option);
+                    option.value = touchpoint;
+                    option.textContent = touchpoint.charAt(0).toUpperCase() + touchpoint.slice(1);
+                    touchpointSelect.appendChild(option);
                 });
             }
         }
@@ -305,8 +312,8 @@ class IssueFilterManager {
             this.updateMultiSelect('wcag', e.target);
         });
         
-        document.getElementById('categoryFilter')?.addEventListener('change', (e) => {
-            this.updateMultiSelect('category', e.target);
+        document.getElementById('touchpointFilter')?.addEventListener('change', (e) => {
+            this.updateMultiSelect('touchpoint', e.target);
         });
         
         // Quick search
@@ -398,9 +405,9 @@ class IssueFilterManager {
             if (!hasMatch) return false;
         }
         
-        // Check category filter
-        if (this.activeFilters.category.size > 0) {
-            if (!this.activeFilters.category.has(item.dataset.filterCategory)) {
+        // Check touchpoint filter
+        if (this.activeFilters.touchpoint.size > 0) {
+            if (!this.activeFilters.touchpoint.has(item.dataset.filterTouchpoint)) {
                 return false;
             }
         }
@@ -577,11 +584,11 @@ class IssueFilterManager {
         });
         
         const wcagFilter = document.getElementById('wcagFilter');
-        const categoryFilter = document.getElementById('categoryFilter');
+        const touchpointFilter = document.getElementById('touchpointFilter');
         const quickSearch = document.getElementById('quickSearch');
         
         if (wcagFilter) wcagFilter.selectedIndex = -1;
-        if (categoryFilter) categoryFilter.selectedIndex = -1;
+        if (touchpointFilter) touchpointFilter.selectedIndex = -1;
         if (quickSearch) quickSearch.value = '';
         
         this.applyFilters();

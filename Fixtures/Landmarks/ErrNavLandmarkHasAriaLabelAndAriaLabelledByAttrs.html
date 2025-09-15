@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Landmark Labeling Test Fixture</title>
+</head>
+<body>
+    <!-- Hidden heading for aria-labelledby reference -->
+    <h2 id="main-nav-heading" style="display: none;">Main Site Navigation</h2>
+    <h3 id="footer-nav-heading" style="display: none;">Footer Links</h3>
+    <h3 id="breadcrumb-heading" style="display: none;">Breadcrumb Trail</h3>
+
+    <!-- ERROR CASES: Navigation landmarks with both aria-label and aria-labelledby -->
+    
+    <!-- Test Case 1: nav element with both attributes -->
+    <nav aria-label="Primary navigation menu" aria-labelledby="main-nav-heading">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Test Case 2: div with navigation role and both attributes -->
+    <div role="navigation" aria-label="Footer navigation" aria-labelledby="footer-nav-heading">
+        <ul>
+            <li><a href="#privacy">Privacy Policy</a></li>
+            <li><a href="#terms">Terms of Service</a></li>
+            <li><a href="#help">Help</a></li>
+        </ul>
+    </div>
+
+    <!-- Test Case 3: nav with both attributes in different order -->
+    <nav aria-labelledby="breadcrumb-heading" aria-label="Breadcrumb navigation">
+        <ol>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#category">Category</a></li>
+            <li><span aria-current="page">Current Page</span></li>
+        </ol>
+    </nav>
+
+    <!-- Test Case 4: aside with navigation role and both attributes -->
+    <aside role="navigation" aria-label="Secondary menu" aria-labelledby="main-nav-heading">
+        <ul>
+            <li><a href="#news">News</a></li>
+            <li><a href="#events">Events</a></li>
+        </ul>
+    </aside>
+
+    <!-- CORRECT CASES: Navigation landmarks with only one labeling method -->
+    
+    <!-- Correct: Only aria-label -->
+    <nav aria-label="User account navigation">
+        <ul>
+            <li><a href="#profile">Profile</a></li>
+            <li><a href="#settings">Settings</a></li>
+            <li><a href="#logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Correct: Only aria-labelledby -->
+    <h3 id="social-nav-heading">Social Media Links</h3>
+    <nav aria-labelledby="social-nav-heading">
+        <ul>
+            <li><a href="#facebook">Facebook</a></li>
+            <li><a href="#twitter">Twitter</a></li>
+            <li><a href="#linkedin">LinkedIn</a></li>
+        </ul>
+    </nav>
+
+    <!-- Correct: No explicit labeling (relies on context) -->
+    <nav>
+        <ul>
+            <li><a href="#sitemap">Sitemap</a></li>
+            <li><a href="#accessibility">Accessibility</a></li>
+        </ul>
+    </nav>
+
+    <!-- Edge Case: Empty values (should still trigger error) -->
+    <nav aria-label="" aria-labelledby="">
+        <ul>
+            <li><a href="#test">Test Link</a></li>
+        </ul>
+    </nav>
+
+    <!-- Edge Case: One empty, one with value (should still trigger error) -->
+    <nav aria-label="Valid label" aria-labelledby="">
+        <ul>
+            <li><a href="#test2">Test Link 2</a></li>
+        </ul>
+    </nav>
+
+</body>
+</html>

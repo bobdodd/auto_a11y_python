@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Landmark Accessible Name Test Fixture</title>
+</head>
+<body>
+    <h1>Form Landmark Accessible Name Test Cases</h1>
+    
+    <!-- FAILING CASES - These should trigger ErrFormLandmarkAccessibleNameIsBlank -->
+    
+    <!-- Test Case 1: Form with no accessible name at all -->
+    <form>
+        <label for="email1">Email:</label>
+        <input type="email" id="email1" name="email">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 2: Form with empty aria-label -->
+    <form aria-label="">
+        <label for="username1">Username:</label>
+        <input type="text" id="username1" name="username">
+        <button type="submit">Login</button>
+    </form>
+
+    <!-- Test Case 3: Form with whitespace-only aria-label -->
+    <form aria-label="   ">
+        <label for="search1">Search:</label>
+        <input type="search" id="search1" name="q">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Test Case 4: Form with empty aria-labelledby reference -->
+    <h2 id="empty-heading"></h2>
+    <form aria-labelledby="empty-heading">
+        <label for="password1">Password:</label>
+        <input type="password" id="password1" name="password">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 5: Form with aria-labelledby pointing to whitespace-only element -->
+    <h2 id="whitespace-heading">   </h2>
+    <form aria-labelledby="whitespace-heading">
+        <label for="confirm-password1">Confirm Password:</label>
+        <input type="password" id="confirm-password1" name="confirm-password">
+        <button type="submit">Confirm</button>
+    </form>
+
+    <!-- Test Case 6: Form with aria-labelledby pointing to non-existent element -->
+    <form aria-labelledby="non-existent-id">
+        <label for="phone1">Phone:</label>
+        <input type="tel" id="phone1" name="phone">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 7: Form with both empty aria-label and empty aria-labelledby -->
+    <span id="empty-span"></span>
+    <form aria-label="" aria-labelledby="empty-span">
+        <label for="address1">Address:</label>
+        <input type="text" id="address1" name="address">
+        <button type="submit">Save</button>
+    </form>
+
+    <!-- PASSING CASES - These should NOT trigger the error -->
+    
+    <!-- Test Case 8: Form with proper aria-label -->
+    <form aria-label="User registration form">
+        <label for="email2">Email:</label>
+        <input type="email" id="email2" name="email">
+        <button type="submit">Register</button>
+    </form>
+
+    <!-- Test Case 9: Form with proper aria-labelledby -->
+    <h2 id="login-form-heading">Login Form</h2>
+    <form aria-labelledby="login-form-heading">
+        <label for="username2">Username:</label>
+        <input type="text" id="username2" name="username">
+        <label for="password2">Password:</label>
+        <input type="password" id="password2" name="password">
+        <button type="submit">Login</button>
+    </form>
+
+    <!-- Test Case 10: Form with title attribute (acceptable accessible name) -->
+    <form title="Contact us form">
+        <label for="name1">Name:</label>
+        <input type="text" id="name1" name="name">
+        <label for="message1">Message:</label>
+        <textarea id="message1" name="message"></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+
+    <!-- Test Case 11: Form with aria-labelledby pointing to multiple elements -->
+    <h2 id="payment-heading">Payment</h2>
+    <p id="payment-description">Enter your payment information</p>
+    <form aria-labelledby="payment-heading payment-description">
+        <label for="card-number">Card Number:</label>
+        <input type="text" id="card-number" name="card-number">
+        <button type="submit">Pay Now</button>
+    </form>
+
+    <!-- Test Case 12: Nested form (edge case) -->
+    <div>
+        <form>
+            <fieldset>
+                <legend></legend> <!-- Empty legend should not provide accessible name for form -->
+                <label for="nested-input">Input:</label>
+                <input type="text" id="nested-input" name="nested">
+                <button type="submit">Submit</button>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Test Case 13: Form with role="form" but no accessible name -->
+    <div role="form">
+        <label for="role-form-input">Input:</label>
+        <input type="text" id="role-form-input" name="role-input">
+        <button type="submit">Submit</button>
+    </div>
+
+    <!-- Test Case 14: Form element with accessible name containing only symbols/numbers -->
+    <form aria-label="123 !@# $%^">
+        <label for="symbol-input">Input:</label>
+        <input type="text" id="symbol-input" name="symbol">
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>

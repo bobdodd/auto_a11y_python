@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Missing Close Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .pass {
+            border-color: #4CAF50;
+            background-color: #f1f8e9;
+        }
+
+        .fail {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+
+        button {
+            background-color: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #005a87;
+        }
+
+        button:focus {
+            outline: 2px solid #0073aa;
+            outline-offset: 2px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .modal-actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background-color: #f0f0f0;
+            border-radius: 50%;
+        }
+
+        .status {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .pass .status {
+            color: #4CAF50;
+        }
+
+        .fail .status {
+            color: #f44336;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Modal Missing Close Test Fixture</h1>
+        <p>This fixture tests for modals that lack proper closing mechanisms, creating keyboard traps.</p>
+        
+        <!-- Test Case 1: Modal with NO close mechanism (FAIL) -->
+        <div class="test-section fail">
+            <div class="status">❌ FAIL: ErrModalMissingClose</div>
+            <h2>Test 1: Modal with No Close Mechanism</h2>
+            <p>This modal has no close button, no escape key handler, and prevents clicking outside to close.</p>
+            <button onclick="openTrappedModal()">Open Trapped Modal</button>
+            
+            <div id="trapped-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="trapped-title">
+                <div class="modal">
+                    <h3 id="trapped-title">Trapped Modal Dialog</h3>
+                    <p>This modal has no way to close it! Users become trapped here.</p>
+                    <p>Try pressing Escape, clicking outside, or looking for a close button - none work!</p>
+                    <div class="modal-actions">
+                        <button type="button">Submit</button>
+                        <button type="button">Save Draft</button>
+                    </div>
+                    <!-- Intentionally NO close button or mechanism -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Case 2: Modal with close button but no keyboard access (FAIL) -->
+        <div class="test-section fail">
+            <div class="status">❌ FAIL: ErrModalMissingClose</div>
+            <h2>Test 2: Modal with Inaccessible Close</h2>
+            <p>This modal has a close mechanism but it's not keyboard accessible.</p>
+            <button onclick="openInaccessibleModal()">Open Inaccessible Modal</button>
+            
+            <div id="inaccessible-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="inaccessible-title">
+                <div class="modal">
+                    <h3 id="inaccessible-title">Inaccessible Close Modal</h3>
+                    <p>This modal has a close button, but it's not accessible via keyboard!</p>
+                    <!-- Close button without proper keyboard support -->
+                    <div onclick="closeInaccessibleModal()" style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px; color: #666;" aria-hidden="true">×</div>
+                    <div class="modal-actions">
+                        <button type="button" onclick="closeInaccessibleModal()">Cancel</button>
+                        <button type="button">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Case 3: Modal with only mouse-dependent close (FAIL) -->
+        <div class="test-section fail">
+            <div class="status">❌ FAIL: ErrModalMissingClose</div>
+            <h2>Test 3: Mouse-Only Close Modal</h2>
+            <p>This modal can only be closed by clicking outside (mouse-dependent).</p>
+            <button onclick="openMouseOnlyModal()">Open Mouse-Only Modal</button>
+            
+            <div id="mouse-only-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="mouse-title" onclick="closeMouseOnlyModal()">
+                <div class="modal" onclick="event.stopPropagation()">
+                    <h3 id="mouse-title">Mouse-Only Close Modal</h3>
+                    <p>This modal can only be closed by clicking outside the modal area.</p>
+                    <p>Keyboard users have no way to close this modal!</p>
+                    <div class="modal-actions">
+                        <button type="button">Action 1</button>
+                        <button type="button">Action 2</button>
+                    </div>
+                    <!-- No keyboard-accessible close mechanism -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Case 4: Modal with proper close mechanisms (PASS) -->
+        <div class="test-section pass">
+            <div class="status">✅ PASS: Accessible Modal</div>
+            <h2>Test 4: Properly Accessible Modal</h2>
+            <p>This modal provides multiple accessible ways to close it.</p>
+            <button onclick="openAccessibleModal()">Open Accessible Modal</button>
+            
+            <div id="accessible-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="accessible-title">
+                <div class="modal">
+                    <button type="button" class="close-btn" onclick="closeAccessibleModal()" aria-label="Close dialog">×</button>
+                    <h3 id="accessible-title">Accessible Modal Dialog</h3>
+                    <p>This modal provides multiple ways to close:</p>
+                    <ul>
+                        <li>Close button (×) in top-right corner</li>
+                        <li>Escape key handler</li>
+                        <li>Cancel button</li>
+                        <li>Clicking outside the modal</li>
+                    </ul>
+                    <div class="modal-actions">
+                        <button type="button" onclick="closeAccessibleModal()">Cancel</button>
+                        <button type="button" onclick="closeAccessibleModal()">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Case 5: Modal with hidden close button (FAIL) -->
+        <div class="test-section fail">
+            <div class="status">❌ FAIL: ErrModalMissingClose</div>
+            <h2>Test 5: Modal with Hidden Close Button</h2>
+            <p>This modal has a close button but it's visually hidden and not announced to screen readers.</p>
+            <button onclick="openHiddenCloseModal()">Open Hidden Close Modal</button>
+            
+            <div id="hidden-close-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="hidden-title">
+                <div class="modal">
+                    <h3 id="hidden-title">Hidden Close Button Modal</h3>
+                    <p>This modal has a close button, but it's hidden and not accessible!</p>
+                    <!-- Hidden close button -->
+                    <button type="button" class="hidden" onclick="closeHiddenCloseModal()">Close</button>
+                    <div class="modal-actions">
+                        <button type="button">Submit</button>
+                        <button type="button">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions for testing -->
+        <div class="test-section">
+            <h2>Testing Instructions</h2>
+            <ol>
+                <li><strong>Keyboard Testing:</strong> Use Tab, Shift+Tab, Enter, and Escape keys to navigate</li>
+                <li><strong>Screen Reader Testing:</strong> Use a screen reader to verify close options are announced</li>
+                <li><strong>Focus Management:</strong> Check that focus is trapped within modals and returns properly when closed</li>
+                <li><strong>Expected Failures:</strong> Tests 1, 2, 3, and 5 should be flagged by accessibility checkers</li>
+                <li><strong>Expected Pass:</strong> Test 4 should pass accessibility validation</li>
+            </ol>
+            
+            <h3>Accessibility Checker Should Detect:</h3>
+            <ul>
+                <li>Modals without close buttons</li>
+                <li>Close mechanisms that aren't keyboard accessible</li>
+                <li>Missing Escape key handlers</li>
+                <li>Modals that rely solely on mouse interaction</li>
+                <li>Hidden or non-focusable close controls</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Store the element that opened the modal for focus management
+        let modalTrigger = null;
+
+        // Test 1: Trapped Modal (NO close mechanism)
+        function openTrappedModal() {
+            modalTrigger = document.activeElement;
+            const modal = document.getElementById('trapped-modal');
+            modal.classList.add('active');
+            // Intentionally NO escape key handler
+            // Intentionally NO click outside handler
+            // Focus trap within modal
+            trapFocus(modal);
+        }
+
+        // Test 2: Inaccessible close modal
+        function openInaccessibleModal() {
+            modalTrigger = document.activeElement;
+            const modal = document.getElementById('inaccessible-modal');
+            modal.classList.add('active');
+            trapFocus(modal);
+        }
+
+        function closeInaccessibleModal() {
+            const modal = document.getElementById('inaccessible-modal');
+            modal.classList.remove('active');
+            if (modalTrigger) {
+                modalTrigger.focus();
+            }
+        }
+
+        // Test 3: Mouse-only modal
+        function openMouseOnlyModal() {
+            modalTrigger = document.activeElement;
+            const modal = document.getElementById('mouse-only-modal');
+            modal.classList.add('active');
+            trapFocus(modal);
+        }
+
+        function closeMouseOnlyModal() {
+            const modal = document.getElementById('mouse-only-modal');
+            modal.classList.remove('active');
+            if (modalTrigger) {
+                modalTrigger.focus();
+            }
+        }
+
+        // Test 4: Accessible modal (GOOD example)
+        function openAccessibleModal() {
+            modalTrigger = document.activeElement;
+            const modal = document.getElementById('accessible-modal');
+            modal.classList.add('active');
+            
+            // Proper escape key handler
+            document.addEventListener('keydown', handleAccessibleModalEscape);
+            
+            // Click outside to close
+            modal.addEventListener('click', handleAccessibleModalBackdropClick);
+            
+            trapFocus(modal);
+            
+            // Focus the close button initially
+            const closeBtn = modal.querySelector('.close-btn');
+            if (closeBtn) {
+                closeBtn.focus();
+            }
+        }
+
+        function closeAccessibleModal() {
+            const modal = document.getElementById('accessible-modal');
+            modal.classList.remove('active');
+            
+            // Clean up event listeners
+            document.removeEventListener('keydown', handleAccessibleModalEscape);
+            modal.removeEventListener('click', handleAccessibleModalBackdropClick);
+            
+            if (modalTrigger) {
+                modalTrigger.focus();
+            }
+        }
+
+        function handleAccessibleModalEscape(e) {
+            if (e.key === 'Escape') {
+                closeAccessibleModal();
+            }
+        }
+
+        function handleAccessibleModalBackdropClick(e) {
+            if (e.target === e.currentTarget) {
+                closeAccessibleModal();
+            }
+        }
+
+        // Test 5: Hidden close button modal
+        function openHiddenCloseModal() {
+            modalTrigger = document.activeElement;
+            const modal = document.getElementById('hidden-close-modal');
+            modal.classList.add('active');
+            trapFocus(modal);
+        }
+
+        function closeHiddenCloseModal() {
+            const modal = document.getElementById('hidden-close-modal');
+            modal.classList.remove('active');
+            if (modalTrigger) {
+                modalTrigger.focus();
+            }
+        }
+
+        // Focus trap utility (simplified)
+        function trapFocus(modal) {
+            const focusableElements = modal.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            
+            if (focusableElements.length === 0) return;
+            
+            const firstFocusable = focusableElements[0];
+            const lastFocusable = focusableElements[focusableElements.length - 1];
+            
+            function handleTabKey(e) {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey) {
+                        if (document.activeElement === firstFocusable) {
+                            e.preventDefault();
+                            lastFocusable.focus();
+                        }
+                    } else {
+                        if (document.activeElement === lastFocusable) {
+                            e.preventDefault();
+                            firstFocusable.focus();
+                        }
+                    }
+                }
+            }
+            
+            modal.addEventListener('keydown', handleTabKey);
+            
+            // Focus first element
+            setTimeout(() => {
+                if (focusableElements.length > 0) {
+                    firstFocusable.focus();
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>

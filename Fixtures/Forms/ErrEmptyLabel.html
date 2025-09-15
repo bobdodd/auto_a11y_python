@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrEmptyLabel Test Fixture</title>
+</head>
+<body>
+    <h1>Empty Label Test Cases</h1>
+    
+    <!-- Test Case 1: Completely empty label -->
+    <form>
+        <h2>Case 1: Completely Empty Label</h2>
+        <label for="input1"></label>
+        <input type="text" id="input1" name="input1">
+    </form>
+
+    <!-- Test Case 2: Label with only whitespace -->
+    <form>
+        <h2>Case 2: Label with Only Whitespace</h2>
+        <label for="input2">   </label>
+        <input type="email" id="input2" name="input2">
+    </form>
+
+    <!-- Test Case 3: Label with only line breaks and spaces -->
+    <form>
+        <h2>Case 3: Label with Only Line Breaks and Spaces</h2>
+        <label for="input3">
+            
+        </label>
+        <input type="password" id="input3" name="input3">
+    </form>
+
+    <!-- Test Case 4: Label with only HTML entities for spaces -->
+    <form>
+        <h2>Case 4: Label with Only HTML Entities</h2>
+        <label for="input4">&nbsp;&nbsp;</label>
+        <input type="tel" id="input4" name="input4">
+    </form>
+
+    <!-- Test Case 5: Label with only invisible elements -->
+    <form>
+        <h2>Case 5: Label with Only Hidden Elements</h2>
+        <label for="input5"><span style="display:none;">Hidden text</span></label>
+        <input type="date" id="input5" name="input5">
+    </form>
+
+    <!-- Test Case 6: Label with only empty nested elements -->
+    <form>
+        <h2>Case 6: Label with Only Empty Nested Elements</h2>
+        <label for="input6"><span></span><div></div></label>
+        <input type="number" id="input6" name="input6">
+    </form>
+
+    <!-- Test Case 7: Multiple empty labels in same form -->
+    <form>
+        <h2>Case 7: Multiple Empty Labels</h2>
+        <label for="input7a"></label>
+        <input type="text" id="input7a" name="firstName">
+        
+        <label for="input7b">   </label>
+        <input type="text" id="input7b" name="lastName">
+        
+        <label for="input7c"><span></span></label>
+        <input type="email" id="input7c" name="email">
+    </form>
+
+    <!-- Test Case 8: Empty label for different input types -->
+    <form>
+        <h2>Case 8: Various Input Types with Empty Labels</h2>
+        
+        <label for="checkbox1"></label>
+        <input type="checkbox" id="checkbox1" name="subscribe">
+        
+        <label for="radio1"></label>
+        <input type="radio" id="radio1" name="gender" value="male">
+        
+        <label for="radio2"></label>
+        <input type="radio" id="radio2" name="gender" value="female">
+        
+        <label for="select1"></label>
+        <select id="select1" name="country">
+            <option value="">Select country</option>
+            <option value="us">United States</option>
+            <option value="ca">Canada</option>
+        </select>
+        
+        <label for="textarea1"></label>
+        <textarea id="textarea1" name="comments"></textarea>
+    </form>
+
+    <!-- Test Case 9: Empty label with CSS that might visually hide content -->
+    <form>
+        <h2>Case 9: CSS Hidden Content</h2>
+        <label for="input9">
+            <span style="font-size: 0;">Invisible text</span>
+            <span style="opacity: 0;">Transparent text</span>
+        </label>
+        <input type="text" id="input9" name="input9">
+    </form>
+
+    <!-- Test Case 10: Correct labels for comparison (should NOT trigger error) -->
+    <form>
+        <h2>Case 10: Correct Labels (Control Group)</h2>
+        <label for="input10a">First Name</label>
+        <input type="text" id="input10a" name="firstName">
+        
+        <label for="input10b">Email Address</label>
+        <input type="email" id="input10b" name="email">
+        
+        <label for="input10c">
+            <span>Phone Number</span>
+        </label>
+        <input type="tel" id="input10c" name="phone">
+    </form>
+
+    <!-- Test Case 11: Label with aria-label on input (edge case) -->
+    <form>
+        <h2>Case 11: Empty Label with aria-label on Input</h2>
+        <label for="input11"></label>
+        <input type="text" id="input11" name="input11" aria-label="User Name">
+    </form>
+
+    <!-- Test Case 12: Empty label with title attribute -->
+    <form>
+        <h2>Case 12: Empty Label with Title Attribute</h2>
+        <label for="input12" title="This is a tooltip"></label>
+        <input type="text" id="input12" name="input12">
+    </form>
+
+</body>
+</html>

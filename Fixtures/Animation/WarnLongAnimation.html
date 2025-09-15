@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnLongAnimation Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .test-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .should-warn {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+        
+        .should-pass {
+            background-color: #d1f2eb;
+            border-color: #28a745;
+        }
+        
+        /* Test 1: CSS Animation exceeding 5 seconds - SHOULD WARN */
+        .long-css-animation {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            animation: rotate-long 8s linear infinite;
+        }
+        
+        @keyframes rotate-long {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Test 2: CSS Animation with very long duration - SHOULD WARN */
+        .very-long-animation {
+            width: 50px;
+            height: 50px;
+            background-color: #ff4757;
+            animation: pulse-very-long 12s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-very-long {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+        }
+        
+        /* Test 3: Multiple long animations - SHOULD WARN */
+        .multi-long-animation {
+            width: 80px;
+            height: 80px;
+            background: #2f3542;
+            animation: 
+                slide-long 6s linear infinite,
+                color-change-long 7s ease-in-out infinite,
+                scale-long 9s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes slide-long {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(100px); }
+            100% { transform: translateX(0); }
+        }
+        
+        @keyframes color-change-long {
+            0% { background-color: #2f3542; }
+            33% { background-color: #ff4757; }
+            66% { background-color: #5352ed; }
+            100% { background-color: #2f3542; }
+        }
+        
+        @keyframes scale-long {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.8); }
+        }
+        
+        /* Test 4: Long transition on hover - SHOULD WARN */
+        .long-transition {
+            width: 120px;
+            height: 120px;
+            background-color: #3742fa;
+            transition: all 6s ease-in-out;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .long-transition:hover {
+            transform: rotate(360deg) scale(1.2);
+            background-color: #ff3838;
+        }
+        
+        /* Test 5: Short animation - SHOULD PASS */
+        .short-animation {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #26d0ce, #1a9c96);
+            border-radius: 50%;
+            animation: rotate-short 3s linear infinite;
+        }
+        
+        @keyframes rotate-short {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Test 6: Medium duration animation - SHOULD PASS */
+        .medium-animation {
+            width: 40px;
+            height: 40px;
+            background-color: #2ed573;
+            animation: bounce-medium 4s ease-in-out infinite;
+        }
+        
+        @keyframes bounce-medium {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+        
+        /* Test 7: Short transition - SHOULD PASS */
+        .short-transition {
+            width: 100px;
+            height: 100px;
+            background-color: #ffa502;
+            transition: transform 2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .short-transition:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Test 8: Animation exactly 5 seconds - EDGE CASE */
+        .five-second-animation {
+            width: 70px;
+            height: 70px;
+            background: #747d8c;
+            animation: fade-five 5s linear infinite;
+        }
+        
+        @keyframes fade-five {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Test 9: Long animation with pause controls - SHOULD PASS */
+        .controlled-long-animation {
+            width: 90px;
+            height: 90px;
+            background: #ff6348;
+            animation: spin-controlled 8s linear infinite;
+        }
+        
+        .controlled-long-animation.paused {
+            animation-play-state: paused;
+        }
+        
+        @keyframes spin-controlled {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .control-buttons {
+            margin-top: 10px;
+        }
+        
+        .control-buttons button {
+            margin-right: 10px;
+            padding: 5px 15px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .control-buttons button:hover {
+            background: #34495e;
+        }
+        
+        /* Test 10: SVG animation exceeding 5 seconds - SHOULD WARN */
+        .svg-container {
+            width: 100px;
+            height: 100px;
+        }
+        
+        /* JavaScript controlled animations */
+        .js-long-animation {
+            width: 80px;
+            height: 80px;
+            background: #e17055;
+            border-radius: 10px;
+            transition: none;
+        }
+        
+        .info-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnLongAnimation Test Fixture</h1>
+    <div class="info-box">
+        <strong>Purpose:</strong> This fixture tests detection of animations exceeding 5 seconds duration.
+        <br><strong>Expected:</strong> Animations longer than 5 seconds should trigger warnings.
+    </div>
+
+    <!-- Test cases that SHOULD WARN -->
+    <div class="test-section should-warn">
+        <h2>❌ Test 1: CSS Animation > 5 seconds (8s) - SHOULD WARN</h2>
+        <p>A CSS animation with 8-second duration should trigger a warning.</p>
+        <div class="long-css-animation"></div>
+    </div>
+
+    <div class="test-section should-warn">
+        <h2>❌ Test 2: Very Long Animation (12s) - SHOULD WARN</h2>
+        <p>A 12-second pulsing animation should trigger a warning.</p>
+        <div class="very-long-animation"></div>
+    </div>
+
+    <div class="test-section should-warn">
+        <h2>❌ Test 3: Multiple Long Animations (6s, 7s, 9s) - SHOULD WARN</h2>
+        <p>Element with multiple animations, all exceeding 5 seconds.</p>
+        <div class="multi-long-animation"></div>
+    </div>
+
+    <div class="test-section should-warn">
+        <h2>❌ Test 4: Long Transition on Hover (6s) - SHOULD WARN</h2>
+        <p>Hover over this element to trigger a 6-second transition.</p>
+        <div class="long-transition">Hover Me</div>
+    </div>
+
+    <div class="test-section should-warn">
+        <h2>❌ Test 5: SVG Animation > 5 seconds (10s) - SHOULD WARN</h2>
+        <p>SVG element with animation duration exceeding 5 seconds.</p>
+        <div class="svg-container">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="#e74c3c">
+                    <animateTransform
+                        attributeName="transform"
+                        attributeType="XML"
+                        type="rotate"
+                        from="0 50 50"
+                        to="360 50 50"
+                        dur="10s"
+                        repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+    </div>
+
+    <div class="test-section should-warn">
+        <h2>❌ Test 6: JavaScript Controlled Long Animation (7s) - SHOULD WARN</h2>
+        <p>Animation controlled by JavaScript with 7-second duration.</p>
+        <div id="js-animation" class="js-long-animation"></div>
+        <button onclick="startJSAnimation()">Start 7s Animation</button>
+    </div>
+
+    <!-- Test cases that SHOULD PASS -->
+    <div class="test-section should-pass">
+        <h2>✅ Test 7: Short Animation (3s) - SHOULD PASS</h2>
+        <p>A 3-second animation should not trigger a warning.</p>
+        <div class="short-animation"></div>
+    </div>
+
+    <div class="test-section should-pass">
+        <h2>✅ Test 8: Medium Duration Animation (4s) - SHOULD PASS</h2>
+        <p>A 4-second animation should not trigger a warning.</p>
+        <div class="medium-animation"></div>
+    </div>
+
+    <div class="test-section should-pass">
+        <h2>✅ Test 9: Short Transition (2s) - SHOULD PASS</h2>
+        <p>Hover for a 2-second transition - should not warn.</p>
+        <div class="short-transition">Hover</div>
+    </div>
+
+    <div class="test-section">
+        <h2>🤔 Test 10: Edge Case - Exactly 5 seconds - IMPLEMENTATION DEPENDENT</h2>
+        <p>Animation with exactly 5-second duration (boundary condition).</p>
+        <div class="five-second-animation"></div>
+    </div>
+
+    <div class="test-section should-pass">
+        <h2>✅ Test 11: Long Animation with User Controls (8s) - SHOULD PASS</h2>
+        <p>8-second animation with pause/play controls - should pass due to user control.</p>
+        <div id="controlled-animation" class="controlled-long-animation"></div>
+        <div class="control-buttons">
+            <button onclick="pauseAnimation()">Pause</button>
+            <button onclick="playAnimation()">Play</button>
+            <button onclick="stopAnimation()">Stop</button>
+        </div>
+    </div>
+
+    <div class="test-section should-pass">
+        <h2>✅ Test 12: Static Elements - SHOULD PASS</h2>
+        <p>Elements without animations should not trigger warnings.</p>
+        <div style="width: 100px; height: 100px; background: #95a5a6;"></div>
+    </div>
+
+    <script>
+        // JavaScript animation control for comprehensive testing
+        function startJSAnimation() {
+            const element = document.getElementById('js-animation');
+            element.style.transition = 'all 7s ease-in-out';
+            element.style.transform = 'rotate(720deg) scale(1.5)';
+            element.style.backgroundColor = '#00b894';
+            
+            setTimeout(() => {
+                element.style.transform = 'rotate(0deg) scale(1)';
+                element.style.backgroundColor = '#e17055';
+            }, 7000);
+        }
+
+        function pauseAnimation() {
+            const element = document.getElementById('controlled-animation');
+            element.classList.add('paused');
+        }
+
+        function playAnimation() {
+            const element = document.getElementById('controlled-animation');
+            element.classList.remove('paused');
+        }
+
+        function stopAnimation() {
+            const element = document.getElementById('controlled-animation');
+            element.style.animationPlayState = 'paused';
+            element.style.transform = 'rotate(0deg)';
+        }
+
+        // Additional Web Animations API test
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create a long animation using Web Animations API
+            const webAnimElement = document.createElement('div');
+            webAnimElement.style.cssText = 'width: 60px; height: 60px; background: #6c5ce7; border-radius: 50%; margin: 20px 0;';
+            
+            const testSection = document.createElement('div');
+            testSection.className = 'test-section should-warn';
+            testSection.innerHTML = '<h2>❌ Test 13: Web Animations API Long Duration (9s) - SHOULD WARN</h2><p>Animation created with Web Animations API exceeding 5 seconds.</p>';
+            testSection.appendChild(webAnimElement);
+            document.body.appendChild(testSection);
+
+            // Start the Web Animations API animation
+            webAnimElement.animate([
+                { transform: 'translateX(0px) rotate(0deg)', backgroundColor: '#6c5ce7' },
+                { transform: 'translateX(200px) rotate(180deg)', backgroundColor: '#fd79a8' },
+                { transform: 'translateX(0px) rotate(360deg)', backgroundColor: '#6c5ce7' }
+            ], {
+                duration: 9000, // 9 seconds - should warn
+                iterations: Infinity,
+                easing: 'ease-in-out'
+            });
+        });
+    </script>
+</body>
+</html>

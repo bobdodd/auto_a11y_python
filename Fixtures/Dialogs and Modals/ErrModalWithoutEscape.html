@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Escape Key Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .modal p {
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background: #005a87;
+        }
+
+        .button.secondary {
+            background: #666;
+        }
+
+        .button.secondary:hover {
+            background: #444;
+        }
+
+        .close-x {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal {
+            position: relative;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .error {
+            border-color: #d32f2f;
+            background-color: #ffebee;
+        }
+
+        .success {
+            border-color: #388e3c;
+            background-color: #e8f5e8;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <h1>Modal Escape Key Test Fixture</h1>
+    <p>This fixture tests various modal implementations for proper Escape key handling.</p>
+
+    <!-- Test Section 1: Modal WITHOUT Escape key support (ERROR case) -->
+    <div class="test-section error">
+        <h3>🚫 Test 1: Modal WITHOUT Escape Key Support (Should FAIL accessibility check)</h3>
+        <p>This modal can only be closed by clicking the close button or clicking outside. Escape key does nothing.</p>
+        <button class="button" onclick="openModal('modal1')">Open Problematic Modal</button>
+    </div>
+
+    <!-- Test Section 2: Modal WITH Escape key support (PASS case) -->
+    <div class="test-section success">
+        <h3>✅ Test 2: Modal WITH Escape Key Support (Should PASS accessibility check)</h3>
+        <p>This modal properly implements Escape key handling.</p>
+        <button class="button" onclick="openModal('modal2')">Open Accessible Modal</button>
+    </div>
+
+    <!-- Test Section 3: Complex modal without Escape (ERROR case) -->
+    <div class="test-section error">
+        <h3>🚫 Test 3: Form Modal WITHOUT Escape Key (Should FAIL accessibility check)</h3>
+        <p>A more complex modal with form elements, but no Escape key support.</p>
+        <button class="button" onclick="openModal('modal3')">Open Form Modal (No Escape)</button>
+    </div>
+
+    <!-- Test Section 4: Nested focusable elements without Escape (ERROR case) -->
+    <div class="test-section error">
+        <h3>🚫 Test 4: Modal with Multiple Focus Elements, No Escape (Should FAIL accessibility check)</h3>
+        <p>Modal with multiple buttons and links, but Escape key is ignored.</p>
+        <button class="button" onclick="openModal('modal4')">Open Multi-Element Modal (No Escape)</button>
+    </div>
+
+    <!-- Modal 1: No Escape key support -->
+    <div id="modal1" class="modal-overlay" role="dialog" aria-labelledby="modal1-title" aria-modal="true">
+        <div class="modal">
+            <button class="close-x" onclick="closeModal('modal1')" aria-label="Close">&times;</button>
+            <h2 id="modal1-title">Problematic Modal</h2>
+            <p>This modal does NOT respond to the Escape key. You must click the X button or click outside to close it.</p>
+            <p>Try pressing Escape - nothing will happen!</p>
+            <button class="button" onclick="closeModal('modal1')">Close Modal</button>
+        </div>
+    </div>
+
+    <!-- Modal 2: WITH Escape key support -->
+    <div id="modal2" class="modal-overlay" role="dialog" aria-labelledby="modal2-title" aria-modal="true">
+        <div class="modal">
+            <button class="close-x" onclick="closeModal('modal2')" aria-label="Close">&times;</button>
+            <h2 id="modal2-title">Accessible Modal</h2>
+            <p>This modal properly responds to the Escape key. Press Escape to close it!</p>
+            <button class="button" onclick="closeModal('modal2')">Close Modal</button>
+        </div>
+    </div>
+
+    <!-- Modal 3: Form modal without Escape -->
+    <div id="modal3" class="modal-overlay" role="dialog" aria-labelledby="modal3-title" aria-modal="true">
+        <div class="modal">
+            <button class="close-x" onclick="closeModal('modal3')" aria-label="Close">&times;</button>
+            <h2 id="modal3-title">Contact Form</h2>
+            <p>Fill out this form. Note: Escape key won't work here!</p>
+            
+            <form onsubmit="event.preventDefault(); alert('Form submitted!'); closeModal('modal3');">
+                <div class="form-group">
+                    <label for="name3">Name:</label>
+                    <input type="text" id="name3" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email3">Email:</label>
+                    <input type="email" id="email3" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message3">Message:</label>
+                    <textarea id="message3" name="message" required></textarea>
+                </div>
+                <button type="submit" class="button">Submit</button>
+                <button type="button" class="button secondary" onclick="closeModal('modal3')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: Multiple elements without Escape -->
+    <div id="modal4" class="modal-overlay" role="dialog" aria-labelledby="modal4-title" aria-modal="true">
+        <div class="modal">
+            <button class="close-x" onclick="closeModal('modal4')" aria-label="Close">&times;</button>
+            <h2 id="modal4-title">Action Modal</h2>
+            <p>Choose an action below. Escape key is disabled!</p>
+            
+            <div style="margin: 20px 0;">
+                <button class="button" onclick="alert('Action 1 selected!')">Action 1</button>
+                <button class="button" onclick="alert('Action 2 selected!')">Action 2</button>
+                <button class="button" onclick="alert('Action 3 selected!')">Action 3</button>
+            </div>
+            
+            <p>More options:</p>
+            <div>
+                <a href="#" onclick="event.preventDefault(); alert('Link clicked!')">Important Link</a> |
+                <a href="#" onclick="event.preventDefault(); alert('Another link!')">Another Link</a>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button class="button secondary" onclick="closeModal('modal4')">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentModal = null;
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('show');
+            currentModal = modalId;
+            
+            // Focus the first focusable element
+            const firstFocusable = modal.querySelector('button, input, textarea, a[href], [tabindex]:not([tabindex="-1"])');
+            if (firstFocusable) {
+                firstFocusable.focus();
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+            currentModal = null;
+        }
+
+        // Global keyboard event handler
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && currentModal) {
+                // Only modal2 responds to Escape - this demonstrates the error condition
+                // for the other modals
+                if (currentModal === 'modal2') {
+                    closeModal(currentModal);
+                }
+                // For modal1, modal3, and modal4, we intentionally do NOT close on Escape
+                // This creates the accessibility error that the checker should detect
+            }
+        });
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                const modalId = event.target.id;
+                closeModal(modalId);
+            }
+        });
+
+        // Focus trapping for better testing
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Tab' && currentModal) {
+                const modal = document.getElementById(currentModal);
+                const focusableElements = modal.querySelectorAll(
+                    'button, input, textarea, a[href], [tabindex]:not([tabindex="-1"])'
+                );
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                if (event.shiftKey) {
+                    if (document.activeElement === firstElement) {
+                        lastElement.focus();
+                        event.preventDefault();
+                    }
+                } else {
+                    if (document.activeElement === lastElement) {
+                        firstElement.focus();
+                        event.preventDefault();
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

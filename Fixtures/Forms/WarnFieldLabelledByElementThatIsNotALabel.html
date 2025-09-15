@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Labelled By Non-Label Element Test Fixture</title>
+</head>
+<body>
+    <h1>Test Cases for WarnFieldLabelledByElementThatIsNotALabel</h1>
+
+    <!-- Test Case 1: Input field labeled by a div -->
+    <section>
+        <h2>Test Case 1: Input labeled by div</h2>
+        <div id="username-label">Username</div>
+        <input type="text" id="username" aria-labelledby="username-label">
+    </section>
+
+    <!-- Test Case 2: Input field labeled by a span -->
+    <section>
+        <h2>Test Case 2: Input labeled by span</h2>
+        <span id="email-label">Email Address</span>
+        <input type="email" id="email" aria-labelledby="email-label">
+    </section>
+
+    <!-- Test Case 3: Input field labeled by a paragraph -->
+    <section>
+        <h2>Test Case 3: Input labeled by paragraph</h2>
+        <p id="password-label">Password (must be at least 8 characters)</p>
+        <input type="password" id="password" aria-labelledby="password-label">
+    </section>
+
+    <!-- Test Case 4: Input field labeled by a heading -->
+    <section>
+        <h2>Test Case 4: Input labeled by heading</h2>
+        <h3 id="phone-label">Phone Number</h3>
+        <input type="tel" id="phone" aria-labelledby="phone-label">
+    </section>
+
+    <!-- Test Case 5: Multiple fields labeled by the same non-label element -->
+    <section>
+        <h2>Test Case 5: Multiple fields with same non-label</h2>
+        <div id="address-label">Address Information</div>
+        <input type="text" id="street" aria-labelledby="address-label" placeholder="Street">
+        <input type="text" id="city" aria-labelledby="address-label" placeholder="City">
+    </section>
+
+    <!-- Test Case 6: Field labeled by multiple elements (some non-labels) -->
+    <section>
+        <h2>Test Case 6: Field labeled by multiple elements</h2>
+        <div id="birthdate-label">Date of Birth</div>
+        <span id="birthdate-help">(MM/DD/YYYY)</span>
+        <input type="date" id="birthdate" aria-labelledby="birthdate-label birthdate-help">
+    </section>
+
+    <!-- Test Case 7: Select element labeled by non-label -->
+    <section>
+        <h2>Test Case 7: Select labeled by div</h2>
+        <div id="country-label">Select your country</div>
+        <select id="country" aria-labelledby="country-label">
+            <option value="">Choose a country</option>
+            <option value="us">United States</option>
+            <option value="ca">Canada</option>
+            <option value="uk">United Kingdom</option>
+        </select>
+    </section>
+
+    <!-- Test Case 8: Textarea labeled by non-label -->
+    <section>
+        <h2>Test Case 8: Textarea labeled by span</h2>
+        <span id="comments-label">Additional Comments</span>
+        <textarea id="comments" aria-labelledby="comments-label" rows="4" cols="50"></textarea>
+    </section>
+
+    <!-- Test Case 9: Checkbox labeled by non-label -->
+    <section>
+        <h2>Test Case 9: Checkbox labeled by div</h2>
+        <div id="newsletter-label">Subscribe to newsletter</div>
+        <input type="checkbox" id="newsletter" aria-labelledby="newsletter-label">
+    </section>
+
+    <!-- Test Case 10: Radio buttons labeled by non-label -->
+    <section>
+        <h2>Test Case 10: Radio buttons labeled by paragraph</h2>
+        <p id="gender-label">Gender</p>
+        <input type="radio" id="male" name="gender" value="male" aria-labelledby="gender-label">
+        <span>Male</span>
+        <input type="radio" id="female" name="gender" value="female" aria-labelledby="gender-label">
+        <span>Female</span>
+    </section>
+
+    <!-- Test Case 11: Element with empty or inadequate text content -->
+    <section>
+        <h2>Test Case 11: Non-label with inadequate text</h2>
+        <div id="empty-label"></div>
+        <input type="text" id="mystery-field" aria-labelledby="empty-label">
+        
+        <span id="vague-label">Field:</span>
+        <input type="text" id="vague-field" aria-labelledby="vague-label">
+    </section>
+
+    <!-- Test Case 12: Complex form with mixed labeling approaches -->
+    <section>
+        <h2>Test Case 12: Mixed labeling approaches</h2>
+        <form>
+            <!-- Proper label (should NOT trigger warning) -->
+            <label for="proper-field">Properly Labeled Field</label>
+            <input type="text" id="proper-field">
+            
+            <!-- Non-label element (should trigger warning) -->
+            <div id="improper-label">Improperly Labeled Field</div>
+            <input type="text" id="improper-field" aria-labelledby="improper-label">
+            
+            <!-- Field with both label and aria-labelledby pointing to non-label -->
+            <label for="mixed-field">Official Label</label>
+            <div id="additional-label">Additional Description</div>
+            <input type="text" id="mixed-field" aria-labelledby="additional-label">
+        </form>
+    </section>
+
+    <!-- Test Case 13: Non-visible labeling element -->
+    <section>
+        <h2>Test Case 13: Hidden non-label element</h2>
+        <div id="hidden-label" style="display: none;">Hidden Label</div>
+        <input type="text" id="hidden-labeled-field" aria-labelledby="hidden-label">
+        
+        <span id="sr-only-label" style="position: absolute; left: -9999px;">Screen Reader Only Label</span>
+        <input type="text" id="sr-only-field" aria-labelledby="sr-only-label">
+    </section>
+
+    <!-- Test Case 14: Custom form controls -->
+    <section>
+        <h2>Test Case 14: Custom form controls</h2>
+        <div id="custom-slider-label">Volume Control</div>
+        <div role="slider" aria-labelledby="custom-slider-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0">
+            Slider
+        </div>
+        
+        <div id="custom-combobox-label">Choose or type a city</div>
+        <div role="combobox" aria-labelledby="custom-combobox-label" aria-expanded="false" tabindex="0">
+            Combobox
+        </div>
+    </section>
+</body>
+</html>

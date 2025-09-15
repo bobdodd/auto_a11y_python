@@ -4,6 +4,7 @@ RESTful API routes
 
 from flask import Blueprint, jsonify, request, current_app
 from auto_a11y.models import Project, Website, Page, ProjectStatus, PageStatus
+from auto_a11y.core.job_manager import JobManager, JobStatus
 from datetime import datetime
 import logging
 
@@ -403,3 +404,177 @@ def health_check():
         'database': db_status,
         'timestamp': datetime.now().isoformat()
     })
+
+
+# Jobs API
+
+@api_bp.route('/jobs/stats', methods=['GET'])
+def get_job_stats():
+    """Get job statistics"""
+    try:
+        job_manager = JobManager(current_app.db)
+        
+        # Get overall statistics
+        stats = job_manager.get_job_statistics(hours=24)
+        
+        return jsonify(stats)
+    except Exception as e:
+        logger.error(f"Error getting job stats: {e}")
+        return jsonify({'error': 'Failed to get job statistics'}), 500
+
+
+@api_bp.route('/jobs/clear-all', methods=['POST'])
+def clear_all_jobs():
+    """Clear all running and pending jobs - emergency reset"""
+    try:
+        job_manager = JobManager(current_app.db)
+        
+        # Clear all running jobs
+        running_result = job_manager.collection.update_many(
+            {'status': {'$in': [JobStatus.RUNNING.value, JobStatus.CANCELLING.value]}},
+            {
+                '$set': {
+                    'status': JobStatus.CANCELLED.value,
+                    'completed_at': datetime.now(),
+                    'error': 'Job cleared by administrator'
+                }
+            }
+        )
+        
+        # Clear all pending jobs
+        pending_result = job_manager.collection.update_many(
+            {'status': JobStatus.PENDING.value},
+            {
+                '$set': {
+                    'status': JobStatus.CANCELLED.value,
+                    'completed_at': datetime.now(),
+                    'error': 'Job cleared by administrator'
+                }
+            }
+        )
+        
+        # Also reset page statuses that are stuck in QUEUED or TESTING states
+        pages_result = current_app.db.pages.update_many(
+            {'status': {'$in': [PageStatus.QUEUED.value, PageStatus.TESTING.value]}},
+            {
+                '$set': {
+                    'status': PageStatus.DISCOVERED.value,
+                    'error_reason': 'Job cleared by administrator'
+                }
+            }
+        )
+        
+        total_cleared = running_result.modified_count + pending_result.modified_count
+        
+        logger.info(f"Cleared {total_cleared} jobs (running: {running_result.modified_count}, pending: {pending_result.modified_count})")
+        logger.info(f"Reset {pages_result.modified_count} pages from queued/testing to discovered status")
+        
+        return jsonify({
+            'success': True,
+            'cleared_count': total_cleared,
+            'running_cleared': running_result.modified_count,
+            'pending_cleared': pending_result.modified_count,
+            'pages_reset': pages_result.modified_count,
+            'message': f'Successfully cleared {total_cleared} jobs and reset {pages_result.modified_count} pages'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error clearing all jobs: {e}")
+        return jsonify({'error': f'Failed to clear jobs: {str(e)}'}), 500
+
+
+@api_bp.route('/jobs/clear-stale', methods=['POST'])
+def clear_stale_jobs():
+    """Clear stale jobs that have been running for too long"""
+    try:
+        job_manager = JobManager(current_app.db)
+        
+        # Clear jobs running for more than 24 hours
+        cleared_count = job_manager.cleanup_stale_jobs(stale_after_hours=24)
+        
+        # Also reset old pages stuck in QUEUED or TESTING states for more than 24 hours
+        from datetime import timedelta
+        stale_time = datetime.now() - timedelta(hours=24)
+        pages_result = current_app.db.pages.update_many(
+            {
+                'status': {'$in': [PageStatus.QUEUED.value, PageStatus.TESTING.value]},
+                '$or': [
+                    {'last_tested': {'$lt': stale_time}},
+                    {'last_tested': None, 'discovered_at': {'$lt': stale_time}}
+                ]
+            },
+            {
+                '$set': {
+                    'status': PageStatus.DISCOVERED.value,
+                    'error_reason': 'Stale job cleared by administrator'
+                }
+            }
+        )
+        
+        logger.info(f"Cleared {cleared_count} stale jobs")
+        logger.info(f"Reset {pages_result.modified_count} stale pages")
+        
+        return jsonify({
+            'success': True,
+            'cleared_count': cleared_count,
+            'pages_reset': pages_result.modified_count,
+            'message': f'Successfully cleared {cleared_count} stale jobs and reset {pages_result.modified_count} pages'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error clearing stale jobs: {e}")
+        return jsonify({'error': f'Failed to clear stale jobs: {str(e)}'}), 500
+
+
+@api_bp.route('/jobs/active', methods=['GET'])
+def get_active_jobs():
+    """Get list of active jobs"""
+    try:
+        job_manager = JobManager(current_app.db)
+        
+        # Get active jobs
+        active_jobs = list(job_manager.collection.find(
+            {'status': {'$in': [JobStatus.RUNNING.value, JobStatus.PENDING.value, JobStatus.CANCELLING.value]}},
+            {'_id': 0}  # Exclude MongoDB _id from response
+        ).sort('created_at', -1).limit(100))
+        
+        return jsonify({
+            'jobs': active_jobs,
+            'count': len(active_jobs)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting active jobs: {e}")
+        return jsonify({'error': 'Failed to get active jobs'}), 500
+
+
+@api_bp.route('/jobs/cleanup-page-counts', methods=['POST'])
+def cleanup_page_counts():
+    """Clean up violation counts for pages that haven't been tested"""
+    try:
+        # Reset violation/warning/info counts for all pages that aren't in TESTED status
+        result = current_app.db.pages.update_many(
+            {'status': {'$ne': PageStatus.TESTED.value}},
+            {
+                '$set': {
+                    'violation_count': 0,
+                    'warning_count': 0,
+                    'info_count': 0,
+                    'discovery_count': 0,
+                    'pass_count': 0,
+                    'test_duration_ms': None
+                }
+            }
+        )
+        
+        logger.info(f"Cleaned up counts for {result.modified_count} untested pages")
+        
+        return jsonify({
+            'success': True,
+            'pages_cleaned': result.modified_count,
+            'message': f'Reset counts for {result.modified_count} untested pages'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error cleaning up page counts: {e}")
+        return jsonify({'error': f'Failed to clean up page counts: {str(e)}'}), 500

@@ -295,11 +295,12 @@ class TestingJob:
                     self.set_cancelled()
                     return
                 
-                # Update progress
+                # Update progress BEFORE testing to show current page
                 self.update_progress(
                     pages_tested=pages_tested,
                     total_pages=len(testable_pages),
                     current_page=page.url,
+                    message=f"Testing page {i+1}/{len(testable_pages)}: {page.url}",
                     pages_passed=pages_passed,
                     pages_failed=pages_failed,
                     pages_skipped=pages_skipped
@@ -332,6 +333,17 @@ class TestingJob:
                     
                     pages_tested += 1
                     
+                    # Update progress AFTER testing to show correct count
+                    self.update_progress(
+                        pages_tested=pages_tested,
+                        total_pages=len(testable_pages),
+                        current_page=page.url,
+                        message=f"Completed {pages_tested}/{len(testable_pages)} pages",
+                        pages_passed=pages_passed,
+                        pages_failed=pages_failed,
+                        pages_skipped=pages_skipped
+                    )
+                    
                 except Exception as e:
                     logger.error(f"Error testing page {page.url}: {e}")
                     page.status = PageStatus.ERROR
@@ -339,6 +351,17 @@ class TestingJob:
                     database.update_page(page)
                     pages_failed += 1
                     pages_tested += 1
+                    
+                    # Update progress after error too
+                    self.update_progress(
+                        pages_tested=pages_tested,
+                        total_pages=len(testable_pages),
+                        current_page=page.url,
+                        message=f"Completed {pages_tested}/{len(testable_pages)} pages (with errors)",
+                        pages_passed=pages_passed,
+                        pages_failed=pages_failed,
+                        pages_skipped=pages_skipped
+                    )
             
             # Check final cancellation status
             if self.is_cancelled():

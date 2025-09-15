@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: aria-level without role="heading"</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 2px solid #ccc;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .error {
+            border-color: #ff4444;
+            background-color: #fff5f5;
+        }
+        .correct {
+            border-color: #44ff44;
+            background-color: #f5fff5;
+        }
+        .test-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .visual-heading {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Fixture: aria-level without role="heading"</h1>
+    <p>This fixture tests for elements that have aria-level attributes without the required role="heading".</p>
+
+    <!-- ERROR CASES: These should trigger the accessibility error -->
+    
+    <div class="test-section error">
+        <div class="test-title">❌ ERROR: Simple div with aria-level but no role</div>
+        <div aria-level="2">This div has aria-level="2" but no role="heading"</div>
+    </div>
+
+    <div class="test-section error">
+        <div class="test-title">❌ ERROR: Span with aria-level but no role</div>
+        <span aria-level="1">Important announcement with aria-level but no heading role</span>
+    </div>
+
+    <div class="test-section error">
+        <div class="test-title">❌ ERROR: Paragraph with aria-level but no role</div>
+        <p aria-level="3">This paragraph has aria-level="3" but lacks role="heading"</p>
+    </div>
+
+    <div class="test-section error">
+        <div class="test-title">❌ ERROR: Section with aria-level but different role</div>
+        <section role="banner" aria-level="2">Section with banner role and aria-level (wrong combination)</section>
+    </div>
+
+    <div class="test-section error">
+        <div class="test-title">❌ ERROR: Article with aria-level but no heading role</div>
+        <article aria-level="4">Article element with aria-level but no role="heading"</article>
+    </div>
+
+    <div class="test-section error">
+        <div class="test-title">❌ ERROR: Button with aria-level (invalid combination)</div>
+        <button aria-level="1">Button with aria-level (buttons can't be headings)</button>
+    </div>
+
+    <div class="test-section error">
+        <div class="test-title">❌ ERROR: List item with aria-level but no heading role</div>
+        <ul>
+            <li aria-level="2">List item with aria-level but no role="heading"</li>
+        </ul>
+    </div>
+
+    <!-- CORRECT IMPLEMENTATIONS: These should NOT trigger the error -->
+    
+    <div class="test-section correct">
+        <div class="test-title">✅ CORRECT: Native heading elements (no role needed)</div>
+        <h1>Native H1 heading</h1>
+        <h2>Native H2 heading</h2>
+        <h3>Native H3 heading</h3>
+    </div>
+
+    <div class="test-section correct">
+        <div class="test-title">✅ CORRECT: Elements with both aria-level and role="heading"</div>
+        <div role="heading" aria-level="1">Div with proper heading role and aria-level</div>
+        <span role="heading" aria-level="2">Span with proper heading role and aria-level</span>
+        <p role="heading" aria-level="3">Paragraph with proper heading role and aria-level</p>
+    </div>
+
+    <div class="test-section correct">
+        <div class="test-title">✅ CORRECT: Elements with aria-level on native headings</div>
+        <h1 aria-level="1">H1 with explicit aria-level (redundant but valid)</h1>
+        <h2 aria-level="3">H2 with different aria-level (overriding semantic level)</h2>
+    </div>
+
+    <div class="test-section correct">
+        <div class="test-title">✅ CORRECT: Elements without aria-level</div>
+        <div>Regular div without aria-level</div>
+        <p>Regular paragraph without aria-level</p>
+        <section role="banner">Section with banner role (no aria-level)</section>
+    </div>
+
+    <div class="test-section correct">
+        <div class="test-title">✅ CORRECT: Complex nested structure with proper heading roles</div>
+        <article>
+            <div role="heading" aria-level="1">Article Title</div>
+            <section>
+                <span role="heading" aria-level="2">Section Heading</span>
+                <div role="heading" aria-level="3">Subsection</div>
+            </section>
+        </article>
+    </div>
+
+    <!-- EDGE CASES -->
+    
+    <div class="test-section error">
+        <div class="test-title">❌ EDGE CASE: Empty aria-level value</div>
+        <div aria-level="">Div with empty aria-level value</div>
+    </div>
+
+    <div class="test-section error">
+        <div class="test-title">❌ EDGE CASE: Invalid aria-level value</div>
+        <div aria-level="invalid">Div with invalid aria-level value</div>
+    </div>
+
+    <div class="test-section error">
+        <div class="test-title">❌ EDGE CASE: aria-level with zero</div>
+        <div aria-level="0">Div with aria-level="0"</div>
+    </div>
+
+    <div class="test-section error">
+        <div class="test-title">❌ EDGE CASE: aria-level with negative number</div>
+        <div aria-level="-1">Div with aria-level="-1"</div>
+    </div>
+
+    <div class="test-section correct">
+        <div class="test-title">✅ EDGE CASE: High aria-level number with proper role</div>
+        <div role="heading" aria-level="7">Heading with level 7 (beyond h1-h6)</div>
+    </div>
+
+    <script>
+        // Add some dynamic content for testing JavaScript-generated elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create an error case dynamically
+            const dynamicErrorContainer = document.createElement('div');
+            dynamicErrorContainer.className = 'test-section error';
+            dynamicErrorContainer.innerHTML = `
+                <div class="test-title">❌ DYNAMIC ERROR: JavaScript-generated element</div>
+                <div id="dynamic-error">This will get aria-level added via JavaScript</div>
+            `;
+            document.body.appendChild(dynamicErrorContainer);
+            
+            // Add aria-level without role (should trigger error)
+            document.getElementById('dynamic-error').setAttribute('aria-level', '2');
+            
+            // Create a correct case dynamically
+            const dynamicCorrectContainer = document.createElement('div');
+            dynamicCorrectContainer.className = 'test-section correct';
+            dynamicCorrectContainer.innerHTML = `
+                <div class="test-title">✅ DYNAMIC CORRECT: JavaScript-generated element with proper role</div>
+                <div id="dynamic-correct">This will get both role and aria-level added via JavaScript</div>
+            `;
+            document.body.appendChild(dynamicCorrectContainer);
+            
+            // Add both role and aria-level (should NOT trigger error)
+            const correctElement = document.getElementById('dynamic-correct');
+            correctElement.setAttribute('role', 'heading');
+            correctElement.setAttribute('aria-level', '3');
+        });
+    </script>
+</body>
+</html>

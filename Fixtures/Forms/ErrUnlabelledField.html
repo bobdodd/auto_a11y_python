@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlabelled Form Fields Test Fixture</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-section { margin: 30px 0; padding: 20px; border: 1px solid #ccc; }
+        .form-section h2 { margin-top: 0; color: #333; }
+        .field-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { padding: 8px; margin: 5px 0; }
+        .error { border: 2px solid red; }
+        .good { border: 2px solid green; }
+        .custom-widget { border: 1px solid #999; padding: 8px; background: white; }
+        .hidden { position: absolute; left: -10000px; }
+    </style>
+</head>
+<body>
+    <h1>Test Fixture: ErrUnlabelledField - Form Input Elements Lacking Accessible Names</h1>
+    
+    <!-- Section 1: Basic unlabelled inputs (ERRORS) -->
+    <div class="form-section">
+        <h2>❌ Section 1: Basic Unlabelled Inputs (Should Trigger Errors)</h2>
+        
+        <div class="field-group">
+            <input type="text" class="error" placeholder="Enter your name">
+            <!-- ERROR: Only placeholder text, no accessible name -->
+        </div>
+        
+        <div class="field-group">
+            <input type="email" class="error">
+            <!-- ERROR: No labeling method at all -->
+        </div>
+        
+        <div class="field-group">
+            <input type="password" class="error" placeholder="Password">
+            <!-- ERROR: Only placeholder (disappears on input) -->
+        </div>
+        
+        <div class="field-group">
+            <select class="error">
+                <option value="">Choose country</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+            </select>
+            <!-- ERROR: Select with no accessible name -->
+        </div>
+        
+        <div class="field-group">
+            <textarea class="error" placeholder="Comments"></textarea>
+            <!-- ERROR: Textarea with only placeholder -->
+        </div>
+    </div>
+
+    <!-- Section 2: Improper labeling attempts (ERRORS) -->
+    <div class="form-section">
+        <h2>❌ Section 2: Improper Labeling Attempts (Should Trigger Errors)</h2>
+        
+        <div class="field-group">
+            <span>Phone Number</span>
+            <input type="tel" class="error">
+            <!-- ERROR: Adjacent text not programmatically associated -->
+        </div>
+        
+        <div class="field-group">
+            <label>First Name</label>
+            <input type="text" class="error">
+            <!-- ERROR: Label without for attribute, input without id -->
+        </div>
+        
+        <div class="field-group">
+            <label for="wrong-id">Last Name</label>
+            <input type="text" id="lastname" class="error">
+            <!-- ERROR: for attribute doesn't match input id -->
+        </div>
+        
+        <div class="field-group">
+            <input type="checkbox" class="error">
+            <span>I agree to terms</span>
+            <!-- ERROR: Checkbox with adjacent text but no association -->
+        </div>
+        
+        <div class="field-group">
+            <input type="radio" name="gender" value="male" class="error">
+            <span>Male</span>
+            <input type="radio" name="gender" value="female" class="error">
+            <span>Female</span>
+            <!-- ERROR: Radio buttons without labels -->
+        </div>
+    </div>
+
+    <!-- Section 3: Custom widgets without labels (ERRORS) -->
+    <div class="form-section">
+        <h2>❌ Section 3: Custom Widgets Without Labels (Should Trigger Errors)</h2>
+        
+        <div class="field-group">
+            <div class="custom-widget error" contenteditable="true">
+                Click to edit
+            </div>
+            <!-- ERROR: Custom editable widget without accessible name -->
+        </div>
+        
+        <div class="field-group">
+            <div class="custom-widget error" role="textbox" contenteditable="true">
+                Rich text editor
+            </div>
+            <!-- ERROR: Custom textbox role without accessible name -->
+        </div>
+        
+        <div class="field-group">
+            <div class="custom-widget error" role="combobox" aria-expanded="false">
+                Select option...
+            </div>
+            <!-- ERROR: Custom combobox without accessible name -->
+        </div>
+    </div>
+
+    <!-- Section 4: Broken aria-labelledby references (ERRORS) -->
+    <div class="form-section">
+        <h2>❌ Section 4: Broken aria-labelledby References (Should Trigger Errors)</h2>
+        
+        <div class="field-group">
+            <span id="address-label">Street Address</span>
+            <input type="text" aria-labelledby="nonexistent-id" class="error">
+            <!-- ERROR: aria-labelledby references non-existent element -->
+        </div>
+        
+        <div class="field-group">
+            <span id="city-label" class="hidden">City</span>
+            <input type="text" aria-labelledby="city-label" class="error">
+            <!-- ERROR: Referenced element is hidden/not visible -->
+        </div>
+    </div>
+
+    <!-- Section 5: Properly labeled fields (GOOD EXAMPLES) -->
+    <div class="form-section">
+        <h2>✅ Section 5: Properly Labeled Fields (Should NOT Trigger Errors)</h2>
+        
+        <div class="field-group">
+            <label for="full-name">Full Name (required)</label>
+            <input type="text" id="full-name" class="good" required>
+            <!-- GOOD: Explicit label with for/id association -->
+        </div>
+        
+        <div class="field-group">
+            <input type="email" aria-label="Email address" class="good">
+            <!-- GOOD: aria-label provides accessible name -->
+        </div>
+        
+        <div class="field-group">
+            <span id="phone-desc">Phone Number</span>
+            <input type="tel" aria-labelledby="phone-desc" class="good">
+            <!-- GOOD: aria-labelledby references visible text -->
+        </div>
+        
+        <div class="field-group">
+            <label class="good">
+                <input type="checkbox">
+                I subscribe to newsletter
+            </label>
+            <!-- GOOD: Implicit label wrapping -->
+        </div>
+        
+        <div class="field-group">
+            <fieldset>
+                <legend>Preferred Contact Method</legend>
+                <label class="good">
+                    <input type="radio" name="contact" value="email">
+                    Email
+                </label>
+                <label class="good">
+                    <input type="radio" name="contact" value="phone">
+                    Phone
+                </label>
+            </fieldset>
+            <!-- GOOD: Radio group with legend and individual labels -->
+        </div>
+        
+        <div class="field-group">
+            <label for="message">Message</label>
+            <textarea id="message" aria-describedby="msg-help" class="good"></textarea>
+            <div id="msg-help">Maximum 500 characters</div>
+            <!-- GOOD: Label + aria-describedby for additional info -->
+        </div>
+        
+        <div class="field-group">
+            <div id="custom-label">Custom Date Picker</div>
+            <div class="custom-widget good" role="textbox" aria-labelledby="custom-label" contenteditable="true">
+                mm/dd/yyyy
+            </div>
+            <!-- GOOD: Custom widget with proper aria-labelledby -->
+        </div>
+    </div>
+
+    <!-- Section 6: Edge cases and complex scenarios -->
+    <div class="form-section">
+        <h2>🔍 Section 6: Edge Cases and Complex Scenarios</h2>
+        
+        <div class="field-group">
+            <input type="hidden" name="csrf_token" value="abc123">
+            <!-- GOOD: Hidden inputs typically don't need labels -->
+        </div>
+        
+        <div class="field-group">
+            <input type="submit" value="Submit Form" class="good">
+            <!-- GOOD: Submit buttons have accessible name from value -->
+        </div>
+        
+        <div class="field-group">
+            <button type="button" class="error">
+            </button>
+            <!-- ERROR: Button without accessible name -->
+        </div>
+        
+        <div class="field-group">
+            <input type="text" title="Search query" class="error">
+            <!-- ERROR: title attribute alone insufficient for accessible name -->
+        </div>
+        
+        <div class="field-group">
+            <label for="multi-ref">Primary Label</label>
+            <span id="secondary-ref">Additional Info</span>
+            <input type="text" id="multi-ref" aria-labelledby="multi-ref secondary-ref" class="good">
+            <!-- GOOD: Multiple references in aria-labelledby -->
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity to test dynamic scenarios
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate a dynamically added unlabeled field
+            const dynamicSection = document.createElement('div');
+            dynamicSection.className = 'form-section';
+            dynamicSection.innerHTML = `
+                <h2>⚡ Section 7: Dynamically Added Unlabeled Field (Should Trigger Error)</h2>
+                <div class="field-group">
+                    <input type="text" class="error" placeholder="Dynamic field">
+                    <!-- ERROR: Dynamically added field without proper labeling -->
+                </div>
+            `;
+            document.body.appendChild(dynamicSection);
+        });
+    </script>
+</body>
+</html>

@@ -73,8 +73,8 @@ def edit_website(website_id):
         website.url = request.form.get('url', website.url)
         
         # Update scraping config
-        website.scraping_config.max_pages = int(request.form.get('max_pages', 500))
-        website.scraping_config.max_depth = int(request.form.get('max_depth', 3))
+        website.scraping_config.max_pages = int(request.form.get('max_pages', 999999))
+        website.scraping_config.max_depth = int(request.form.get('max_depth', 10))
         website.scraping_config.follow_external = request.form.get('follow_external') == 'on'
         website.scraping_config.include_subdomains = request.form.get('include_subdomains') == 'on'
         website.scraping_config.respect_robots = request.form.get('respect_robots') == 'on'
@@ -689,3 +689,72 @@ def test_status(website_id):
         'last_tested': last_tested,
         'message': f'Testing: {tested_pages}/{total_pages} complete'
     })
+
+
+@websites_bp.route('/<website_id>/discovery-history')
+def view_discovery_history(website_id):
+    """View discovery history for a website"""
+    website = current_app.db.get_website(website_id)
+    if not website:
+        flash('Website not found', 'error')
+        return redirect(url_for('projects.list_projects'))
+    
+    project = current_app.db.get_project(website.project_id)
+    
+    # Get all discovery runs for this website
+    discovery_runs = current_app.db.get_discovery_runs(website_id)
+    
+    return render_template('websites/discovery_history.html',
+                         website=website,
+                         project=project,
+                         discovery_runs=discovery_runs)
+
+
+@websites_bp.route('/<website_id>/discovery/<discovery_run_id>')
+def view_discovery_run(website_id, discovery_run_id):
+    """View details of a specific discovery run"""
+    website = current_app.db.get_website(website_id)
+    if not website:
+        flash('Website not found', 'error')
+        return redirect(url_for('projects.list_projects'))
+    
+    project = current_app.db.get_project(website.project_id)
+    
+    # Get the discovery run
+    discovery_run = current_app.db.get_discovery_run(discovery_run_id)
+    if not discovery_run:
+        flash('Discovery run not found', 'error')
+        return redirect(url_for('websites.view_discovery_history', website_id=website_id))
+    
+    # Get pages from this discovery run
+    pages = current_app.db.pages.find({
+        'website_id': website_id,
+        'discovery_run_id': discovery_run_id
+    })
+    pages_list = list(pages)
+    
+    # If there's a previous run, get comparison data
+    comparison = None
+    discovery_runs = current_app.db.get_discovery_runs(website_id)
+    
+    # Find the previous run (the one right after this one in the list, since list is sorted descending)
+    previous_run = None
+    for i, run in enumerate(discovery_runs):
+        if run.id == discovery_run_id and i < len(discovery_runs) - 1:
+            previous_run = discovery_runs[i + 1]
+            break
+    
+    if previous_run:
+        comparison = current_app.db.compare_discoveries(
+            website_id,
+            previous_run.id,
+            discovery_run_id
+        )
+    
+    return render_template('websites/discovery_run.html',
+                         website=website,
+                         project=project,
+                         discovery_run=discovery_run,
+                         pages=pages_list,
+                         comparison=comparison,
+                         previous_run=previous_run)

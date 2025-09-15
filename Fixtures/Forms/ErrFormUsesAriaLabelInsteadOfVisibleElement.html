@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Label Testing Fixture - ErrFormUsesAriaLabelInsteadOfVisibleElement</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .form-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .error-case {
+            background-color: #ffebee;
+            border-color: #e57373;
+        }
+        
+        .good-case {
+            background-color: #e8f5e8;
+            border-color: #81c784;
+        }
+        
+        .section-title {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            max-width: 300px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .hidden {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        
+        fieldset {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        legend {
+            padding: 0 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Form Label Testing Fixture</h1>
+        <p>This fixture tests various scenarios for forms that use aria-label instead of visible labels/headings.</p>
+
+        <!-- ERROR CASES: Forms using aria-label instead of visible elements -->
+        
+        <!-- Case 1: Form with only aria-label (no visible heading) -->
+        <div class="form-section error-case">
+            <p class="section-title">❌ ERROR: Form with only aria-label</p>
+            <form aria-label="Contact Information Form">
+                <div class="form-group">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea name="message" placeholder="Your Message" rows="4"></textarea>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <!-- Case 2: Individual inputs with aria-label instead of visible labels -->
+        <div class="form-section error-case">
+            <p class="section-title">❌ ERROR: Inputs with aria-label instead of visible labels</p>
+            <form>
+                <h3>User Registration</h3>
+                <div class="form-group">
+                    <input type="text" name="username" aria-label="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" aria-label="Enter your password" required>
+                </div>
+                <div class="form-group">
+                    <select name="country" aria-label="Select your country">
+                        <option value="">Choose country</option>
+                        <option value="us">United States</option>
+                        <option value="ca">Canada</option>
+                        <option value="uk">United Kingdom</option>
+                    </select>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+
+        <!-- Case 3: Fieldset with aria-label instead of visible legend -->
+        <div class="form-section error-case">
+            <p class="section-title">❌ ERROR: Fieldset with aria-label instead of visible legend</p>
+            <form>
+                <fieldset aria-label="Payment Information">
+                    <div class="form-group">
+                        <input type="text" name="cardnumber" placeholder="Card Number" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="expiry" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="cvv" placeholder="CVV" required>
+                    </div>
+                </fieldset>
+                <button type="submit">Process Payment</button>
+            </form>
+        </div>
+
+        <!-- Case 4: Mixed - some visible labels, some aria-label only -->
+        <div class="form-section error-case">
+            <p class="section-title">❌ ERROR: Mixed labeling approaches</p>
+            <form>
+                <h3>Survey Form</h3>
+                <div class="form-group">
+                    <label for="fullname">Full Name:</label>
+                    <input type="text" id="fullname" name="fullname" required>
+                </div>
+                <div class="form-group">
+                    <!-- This input has no visible label, only aria-label -->
+                    <input type="tel" name="phone" aria-label="Phone Number" placeholder="Phone Number">
+                </div>
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" min="13" max="120">
+                </div>
+                <button type="submit">Submit Survey</button>
+            </form>
+        </div>
+
+        <!-- Case 5: Form section with aria-label instead of visible heading -->
+        <div class="form-section error-case">
+            <p class="section-title">❌ ERROR: Form section with aria-label instead of visible heading</p>
+            <div aria-label="Shipping Address">
+                <div class="form-group">
+                    <input type="text" name="street" placeholder="Street Address">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="city" placeholder="City">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="zipcode" placeholder="ZIP Code">
+                </div>
+            </div>
+        </div>
+
+        <!-- GOOD CASES: Proper use of visible labels and headings -->
+        
+        <!-- Case 1: Form with visible heading and aria-labelledby -->
+        <div class="form-section good-case">
+            <p class="section-title">✅ GOOD: Form with visible heading and aria-labelledby</p>
+            <h3 id="contact-heading">Contact Information Form</h3>
+            <form aria-labelledby="contact-heading">
+                <div class="form-group">
+                    <label for="contact-name">Your Name:</label>
+                    <input type="text" id="contact-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">Your Email:</label>
+                    <input type="email" id="contact-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-message">Your Message:</label>
+                    <textarea id="contact-message" name="message" rows="4"></textarea>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <!-- Case 2: Fieldset with visible legend -->
+        <div class="form-section good-case">
+            <p class="section-title">✅ GOOD: Fieldset with visible legend</p>
+            <form>
+                <fieldset>
+                    <legend>Payment Information</legend>
+                    <div class="form-group">
+                        <label for="card-number">Card Number:</label>
+                        <input type="text" id="card-number" name="cardnumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expiry-date">Expiry Date:</label>
+                        <input type="text" id="expiry-date" name="expiry" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv-code">CVV:</label>
+                        <input type="text" id="cvv-code" name="cvv" required>
+                    </div>
+                </fieldset>
+                <button type="submit">Process Payment</button>
+            </form>
+        </div>
+
+        <!-- Case 3: All inputs with visible labels -->
+        <div class="form-section good-case">
+            <p class="section-title">✅ GOOD: All inputs with visible labels</p>
+            <form>
+                <h3>User Registration</h3>
+                <div class="form-group">
+                    <label for="reg-username">Username:</label>
+                    <input type="text" id="reg-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password:</label>
+                    <input type="password" id="reg-password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-country">Country:</label>
+                    <select id="reg-country" name="country">
+                        <option value="">Choose country</option>
+                        <option value="us">United States</option>
+                        <option value="ca">Canada</option>
+                        <option value="uk">United Kingdom</option>
+                    </select>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+
+        <!-- Edge case: Form with both visible heading and aria-label (should prefer visible) -->
+        <div class="form-section error-case">
+            <p class="section-title">⚠️ EDGE CASE: Form with both visible heading and aria-label</p>
+            <h3>Newsletter Subscription</h3>
+            <form aria-label="Email Newsletter Sign-up Form">
+                <div class="form-group">
+                    <label for="newsletter-email">Email Address:</label>
+                    <input type="email" id="newsletter-email" name="email" required>
+                </div>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>

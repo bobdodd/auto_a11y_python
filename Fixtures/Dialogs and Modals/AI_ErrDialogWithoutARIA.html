@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrDialogWithoutARIA Test Fixture</title>
+    <style>
+        /* Basic modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .modal.show {
+            display: block;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .dialog-box {
+            border: 2px solid #ccc;
+            padding: 15px;
+            margin: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            display: none;
+        }
+        
+        .popup.visible {
+            display: block;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .overlay.active {
+            display: flex;
+        }
+        
+        .alert-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        button {
+            margin: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        
+        .close-btn {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dialog/Modal ARIA Testing Fixture</h1>
+    <p>This page contains various dialog-like elements that should trigger AI_ErrDialogWithoutARIA errors.</p>
+    
+    <button onclick="showModal()">Open Modal Dialog</button>
+    <button onclick="showAlert()">Show Alert Dialog</button>
+    <button onclick="showConfirm()">Show Confirmation</button>
+    <button onclick="showPopup()">Show Popup</button>
+    <button onclick="showOverlay()">Show Overlay</button>
+
+    <!-- Test Case 1: Basic modal without ARIA -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="hideModal()">&times;</button>
+            <h2>Save Changes</h2>
+            <p>Do you want to save your changes before closing?</p>
+            <button onclick="saveAndClose()">Save</button>
+            <button onclick="discardAndClose()">Don't Save</button>
+            <button onclick="hideModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Test Case 2: Alert dialog without proper ARIA -->
+    <div id="alertDialog" class="dialog-box" style="display: none;">
+        <h3>Error Occurred</h3>
+        <p>An unexpected error has occurred. Please try again.</p>
+        <button onclick="closeAlert()">OK</button>
+    </div>
+
+    <!-- Test Case 3: Confirmation dialog without ARIA -->
+    <div id="confirmDialog" class="dialog-box" style="display: none;">
+        <h3>Delete Item</h3>
+        <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+        <button onclick="confirmDelete()">Delete</button>
+        <button onclick="cancelDelete()">Cancel</button>
+    </div>
+
+    <!-- Test Case 4: Popup notification without ARIA -->
+    <div id="popup" class="popup">
+        <button class="close-btn" onclick="hidePopup()">&times;</button>
+        <h4>New Message</h4>
+        <p>You have received a new message from John Doe.</p>
+        <button onclick="viewMessage()">View</button>
+        <button onclick="dismissMessage()">Dismiss</button>
+    </div>
+
+    <!-- Test Case 5: Overlay dialog without ARIA -->
+    <div id="overlay" class="overlay">
+        <div class="modal-content">
+            <h2>Welcome!</h2>
+            <p>Welcome to our application. Please complete your profile setup.</p>
+            <button onclick="startSetup()">Get Started</button>
+            <button onclick="skipSetup()">Skip for Now</button>
+        </div>
+    </div>
+
+    <!-- Test Case 6: Custom alert box -->
+    <div id="customAlert" class="alert-box" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001;">
+        <strong>Warning!</strong> Your session will expire in 5 minutes.
+        <button onclick="extendSession()" style="margin-left: 10px;">Extend Session</button>
+        <button onclick="closeCustomAlert()" style="margin-left: 5px;">Close</button>
+    </div>
+
+    <!-- Test Case 7: Settings dialog -->
+    <div id="settingsDialog" style="display: none; position: fixed; top: 10%; left: 10%; right: 10%; bottom: 10%; background: white; border: 2px solid #333; padding: 20px; z-index: 1002;">
+        <h2>Settings</h2>
+        <form>
+            <label>
+                <input type="checkbox"> Enable notifications
+            </label><br><br>
+            <label>
+                Theme: 
+                <select>
+                    <option>Light</option>
+                    <option>Dark</option>
+                </select>
+            </label><br><br>
+            <button type="button" onclick="saveSettings()">Save</button>
+            <button type="button" onclick="closeSettings()">Cancel</button>
+        </form>
+    </div>
+
+    <!-- Test Case 8: Toast/snackbar that acts like a dialog -->
+    <div id="toast" style="display: none; position: fixed; bottom: 20px; left: 20px; background: #333; color: white; padding: 15px; border-radius: 4px; z-index: 1003;">
+        <div>Action completed successfully!</div>
+        <button onclick="undoAction()" style="background: none; border: 1px solid white; color: white; margin-left: 10px;">Undo</button>
+        <button onclick="closeToast()" style="background: none; border: none; color: white; margin-left: 5px;">&times;</button>
+    </div>
+
+    <script>
+        // Modal functions
+        function showModal() {
+            document.getElementById('modal1').classList.add('show');
+        }
+        
+        function hideModal() {
+            document.getElementById('modal1').classList.remove('show');
+        }
+        
+        function saveAndClose() {
+            alert('Changes saved!');
+            hideModal();
+        }
+        
+        function discardAndClose() {
+            hideModal();
+        }
+        
+        // Alert dialog functions
+        function showAlert() {
+            document.getElementById('alertDialog').style.display = 'block';
+        }
+        
+        function closeAlert() {
+            document.getElementById('alertDialog').style.display = 'none';
+        }
+        
+        // Confirmation dialog functions
+        function showConfirm() {
+            document.getElementById('confirmDialog').style.display = 'block';
+        }
+        
+        function confirmDelete() {
+            alert('Item deleted!');
+            cancelDelete();
+        }
+        
+        function cancelDelete() {
+            document.getElementById('confirmDialog').style.display = 'none';
+        }
+        
+        // Popup functions
+        function showPopup() {
+            document.getElementById('popup').classList.add('visible');
+        }
+        
+        function hidePopup() {
+            document.getElementById('popup').classList.remove('visible');
+        }
+        
+        function viewMessage() {
+            alert('Viewing message...');
+            hidePopup();
+        }
+        
+        function dismissMessage() {
+            hidePopup();
+        }
+        
+        // Overlay functions
+        function showOverlay() {
+            document.getElementById('overlay').classList.add('active');
+        }
+        
+        function startSetup() {
+            alert('Starting setup...');
+            document.getElementById('overlay').classList.remove('active');
+        }
+        
+        function skipSetup() {
+            document.getElementById('overlay').classList.remove('active');
+        }
+        
+        // Custom alert functions
+        function showCustomAlert() {
+            document.getElementById('customAlert').style.display = 'block';
+        }
+        
+        function extendSession() {
+            alert('Session extended!');
+            closeCustomAlert();
+        }
+        
+        function closeCustomAlert() {
+            document.getElementById('customAlert').style.display = 'none';
+        }
+        
+        // Settings dialog functions
+        function showSettings() {
+            document.getElementById('settingsDialog').style.display = 'block';
+        }
+        
+        function saveSettings() {
+            alert('Settings saved!');
+            closeSettings();
+        }
+        
+        function closeSettings() {
+            document.getElementById('settingsDialog').style.display = 'none';
+        }
+        
+        // Toast functions
+        function showToast() {
+            document.getElementById('toast').style.display = 'block';
+        }
+        
+        function undoAction() {
+            alert('Action undone!');
+            closeToast();
+        }
+        
+        function closeToast() {
+            document.getElementById('toast').style.display = 'none';
+        }
+        
+        // Auto-trigger some dialogs for testing
+        setTimeout(() => {
+            showCustomAlert();
+        }, 2000);
+        
+        setTimeout(() => {
+            showToast();
+        }, 4000);
+    </script>
+</body>
+</html>

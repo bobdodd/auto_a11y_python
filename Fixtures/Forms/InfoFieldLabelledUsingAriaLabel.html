@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoFieldLabelledUsingAriaLabel Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .form-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .field-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .inline-field {
+            display: inline-block;
+            width: auto;
+            margin-right: 10px;
+        }
+        .description {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .icon-field {
+            position: relative;
+            display: inline-block;
+        }
+        .search-icon::before {
+            content: "🔍";
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .search-input {
+            padding-left: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>InfoFieldLabelledUsingAriaLabel Test Fixture</h1>
+    <p><strong>Purpose:</strong> This fixture tests various scenarios where form fields use aria-label for labeling, which should trigger the InfoFieldLabelledUsingAriaLabel accessibility check.</p>
+
+    <form>
+        <!-- Section 1: Basic aria-label usage (should trigger the info) -->
+        <div class="form-section">
+            <h3>Basic aria-label Examples</h3>
+            <p class="description">Fields using aria-label without visible labels</p>
+            
+            <div class="field-group">
+                <input type="text" aria-label="Full Name" placeholder="Enter your full name">
+            </div>
+            
+            <div class="field-group">
+                <input type="email" aria-label="Email Address" placeholder="your@email.com">
+            </div>
+            
+            <div class="field-group">
+                <textarea aria-label="Comments and Feedback" placeholder="Tell us what you think..."></textarea>
+            </div>
+        </div>
+
+        <!-- Section 2: Search and filter fields (common aria-label usage) -->
+        <div class="form-section">
+            <h3>Search and Filter Fields</h3>
+            <p class="description">Common scenarios where aria-label is used instead of visible labels</p>
+            
+            <div class="field-group">
+                <div class="icon-field">
+                    <input type="text" class="search-input" aria-label="Search Products" placeholder="Search...">
+                </div>
+            </div>
+            
+            <div class="field-group">
+                <select aria-label="Filter by Category">
+                    <option value="">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="books">Books</option>
+                </select>
+            </div>
+            
+            <div class="field-group">
+                <input type="text" aria-label="Filter Results" placeholder="Filter...">
+            </div>
+        </div>
+
+        <!-- Section 3: Inline form fields -->
+        <div class="form-section">
+            <h3>Inline Form Fields</h3>
+            <p class="description">Fields in compact layouts using aria-label</p>
+            
+            <div class="field-group">
+                <input type="text" class="inline-field" aria-label="First Name" placeholder="First">
+                <input type="text" class="inline-field" aria-label="Last Name" placeholder="Last">
+            </div>
+            
+            <div class="field-group">
+                Phone: 
+                <input type="tel" class="inline-field" aria-label="Area Code" placeholder="XXX" maxlength="3" style="width: 60px;">
+                <input type="tel" class="inline-field" aria-label="Phone Number" placeholder="XXX-XXXX" maxlength="8" style="width: 100px;">
+            </div>
+        </div>
+
+        <!-- Section 4: Dynamic or contextual fields -->
+        <div class="form-section">
+            <h3>Dynamic and Contextual Fields</h3>
+            <p class="description">Fields where context makes aria-label seem appropriate</p>
+            
+            <div class="field-group">
+                <input type="text" aria-label="Quick Add Item" placeholder="Add item...">
+            </div>
+            
+            <div class="field-group">
+                <input type="text" aria-label="Promo Code" placeholder="Enter promo code">
+            </div>
+            
+            <div class="field-group">
+                <textarea aria-label="Additional Notes" placeholder="Any additional notes or special instructions..."></textarea>
+            </div>
+        </div>
+
+        <!-- Section 5: Fields with aria-label and other labeling methods (mixed scenarios) -->
+        <div class="form-section">
+            <h3>Mixed Labeling Scenarios</h3>
+            <p class="description">Testing edge cases with multiple labeling approaches</p>
+            
+            <div class="field-group">
+                <!-- This should still trigger since aria-label is present, even with placeholder -->
+                <input type="text" aria-label="Username" placeholder="Choose a username" title="Username for your account">
+            </div>
+            
+            <div class="field-group">
+                <!-- This should trigger - aria-label overrides the visible label -->
+                <label for="password-field">Password:</label>
+                <input type="password" id="password-field" aria-label="Account Password" placeholder="Enter secure password">
+            </div>
+            
+            <div class="field-group">
+                <!-- Fields with just aria-label and aria-describedby -->
+                <input type="text" aria-label="Credit Card Number" aria-describedby="cc-help" placeholder="1234 5678 9012 3456">
+                <div id="cc-help" style="font-size: 0.9em; color: #666;">16-digit number on the front of your card</div>
+            </div>
+        </div>
+
+        <!-- Section 6: Complex form controls -->
+        <div class="form-section">
+            <h3>Complex Form Controls</h3>
+            <p class="description">More complex scenarios using aria-label</p>
+            
+            <div class="field-group">
+                <select aria-label="Country Selection" multiple size="4">
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="au">Australia</option>
+                </select>
+            </div>
+            
+            <div class="field-group">
+                <input type="range" aria-label="Price Range" min="0" max="1000" value="500">
+                <output>$500</output>
+            </div>
+            
+            <div class="field-group">
+                <input type="color" aria-label="Theme Color Picker" value="#ff0000">
+            </div>
+        </div>
+
+        <!-- Section 7: Good examples for comparison (should NOT trigger) -->
+        <div class="form-section">
+            <h3>Properly Labeled Fields (Should NOT Trigger)</h3>
+            <p class="description">Examples of proper labeling that should not trigger the info message</p>
+            
+            <div class="field-group">
+                <label for="proper-name">Full Name:</label>
+                <input type="text" id="proper-name" name="proper-name">
+            </div>
+            
+            <div class="field-group">
+                <label for="proper-email">Email Address:</label>
+                <input type="email" id="proper-email" name="proper-email">
+            </div>
+            
+            <div class="field-group">
+                <fieldset>
+                    <legend>Preferred Contact Method:</legend>
+                    <input type="radio" id="contact-email" name="contact" value="email">
+                    <label for="contact-email">Email</label>
+                    <input type="radio" id="contact-phone" name="contact" value="phone">
+                    <label for="contact-phone">Phone</label>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <button type="submit">Submit Form</button>
+        </div>
+    </form>
+
+    <hr>
+    
+    <h2>Test Coverage Summary</h2>
+    <p>This fixture includes the following test scenarios for InfoFieldLabelledUsingAriaLabel:</p>
+    <ul>
+        <li><strong>Basic aria-label usage:</strong> Text inputs, email inputs, and textareas with only aria-label</li>
+        <li><strong>Search and filter fields:</strong> Common UI patterns that often use aria-label</li>
+        <li><strong>Inline form fields:</strong> Compact layouts where visible labels might be omitted</li>
+        <li><strong>Dynamic fields:</strong> Context-dependent fields using aria-label</li>
+        <li><strong>Mixed labeling:</strong> Fields with aria-label combined with other labeling methods</li>
+        <li><strong>Complex controls:</strong> Multi-select, range, and color inputs with aria-label</li>
+        <li><strong>Proper labeling:</strong> Counter-examples that should NOT trigger the info message</li>
+    </ul>
+    
+    <p><strong>Expected Results:</strong> The accessibility checker should identify all fields in sections 1-6 that use aria-label and report them with the InfoFieldLabelledUsingAriaLabel message, while properly labeled fields in section 7 should not trigger this info message.</p>
+</body>
+</html>

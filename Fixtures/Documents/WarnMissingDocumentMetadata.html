@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Link Metadata Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.2em;
+        }
+        .good {
+            background-color: #f0f8f0;
+            border-color: #4caf50;
+        }
+        .bad {
+            background-color: #fdf2f2;
+            border-color: #f44336;
+        }
+        .file-info {
+            color: #666;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .document-card {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Document Link Metadata Test Fixture</h1>
+    <p>This fixture tests for missing document metadata warnings (WarnMissingDocumentMetadata). It includes various scenarios of document links with and without proper metadata.</p>
+
+    <!-- BAD EXAMPLES - Should trigger warnings -->
+    <div class="test-section bad">
+        <h2>❌ Links Missing Document Metadata (Should Trigger Warnings)</h2>
+        
+        <h3>Basic document links without any metadata</h3>
+        <ul>
+            <li><a href="report.pdf">Annual Report</a></li>
+            <li><a href="budget.xlsx">Budget Spreadsheet</a></li>
+            <li><a href="presentation.pptx">Marketing Presentation</a></li>
+            <li><a href="handbook.doc">Employee Handbook</a></li>
+            <li><a href="data.zip">Archive File</a></li>
+        </ul>
+
+        <h3>Links with extension visible but no size information</h3>
+        <ul>
+            <li><a href="financial-report.pdf">financial-report.pdf</a></li>
+            <li><a href="sales-data.xlsx">sales-data.xlsx</a></li>
+            <li><a href="company-photos.zip">company-photos.zip</a></li>
+        </ul>
+
+        <h3>Generic link text</h3>
+        <ul>
+            <li><a href="document1.pdf">Click here</a></li>
+            <li><a href="form.docx">Download</a></li>
+            <li><a href="slides.pptx">View file</a></li>
+            <li><a href="archive.zip">Get it here</a></li>
+        </ul>
+
+        <h3>Image and media files without metadata</h3>
+        <ul>
+            <li><a href="photo.jpg">Company Photo</a></li>
+            <li><a href="video.mp4">Training Video</a></li>
+            <li><a href="audio.mp3">Podcast Episode</a></li>
+            <li><a href="diagram.svg">System Diagram</a></li>
+        </ul>
+    </div>
+
+    <!-- GOOD EXAMPLES - Should not trigger warnings -->
+    <div class="test-section good">
+        <h2>✅ Links with Proper Document Metadata (Should Not Trigger Warnings)</h2>
+        
+        <h3>Complete metadata in link text</h3>
+        <ul>
+            <li><a href="report.pdf">Annual Report (PDF, 2.5 MB)</a></li>
+            <li><a href="budget.xlsx">Budget Spreadsheet (Excel, 450 KB)</a></li>
+            <li><a href="presentation.pptx">Marketing Presentation (PowerPoint, 12 MB)</a></li>
+            <li><a href="handbook.doc">Employee Handbook (Word, 1.2 MB)</a></li>
+            <li><a href="data.zip">Archive File (ZIP, 25 MB)</a></li>
+        </ul>
+
+        <h3>Metadata in adjacent text</h3>
+        <ul>
+            <li><a href="quarterly-report.pdf">Quarterly Financial Report</a> <span class="file-info">(PDF, 3.1 MB)</span></li>
+            <li><a href="inventory.xlsx">Inventory List</a> <span class="file-info">(Excel spreadsheet, 890 KB)</span></li>
+            <li><a href="photos.zip">Event Photos</a> <span class="file-info">(ZIP archive, 45 MB)</span></li>
+        </ul>
+
+        <h3>Descriptive text with file information</h3>
+        <div class="document-grid">
+            <div class="document-card">
+                <h4><a href="manual.pdf">User Manual</a></h4>
+                <p>Complete installation and setup guide</p>
+                <small>PDF document, 5.2 MB</small>
+            </div>
+            <div class="document-card">
+                <h4><a href="template.docx">Contract Template</a></h4>
+                <p>Standard service agreement template</p>
+                <small>Word document, 125 KB</small>
+            </div>
+            <div class="document-card">
+                <h4><a href="backup.zip">Data Backup</a></h4>
+                <p>Complete system backup files</p>
+                <small>ZIP archive, 250 MB</small>
+            </div>
+        </div>
+
+        <h3>Links with title attributes containing metadata</h3>
+        <ul>
+            <li><a href="policy.pdf" title="Privacy Policy - PDF document, 800 KB">Privacy Policy</a></li>
+            <li><a href="catalog.xlsx" title="Product Catalog - Excel spreadsheet, 2.1 MB">Product Catalog</a></li>
+            <li><a href="training.pptx" title="Training Materials - PowerPoint presentation, 15 MB">Training Materials</a></li>
+        </ul>
+
+        <h3>Media files with proper metadata</h3>
+        <ul>
+            <li><a href="intro-video.mp4">Company Introduction Video (MP4, 45 MB, 5 minutes)</a></li>
+            <li><a href="logo.png">High-resolution Logo (PNG, 2.3 MB)</a></li>
+            <li><a href="podcast.mp3">Monthly Podcast Episode (MP3, 25 MB, 30 minutes)</a></li>
+        </ul>
+    </div>
+
+    <!-- EDGE CASES -->
+    <div class="test-section">
+        <h2>🔍 Edge Cases and Special Scenarios</h2>
+        
+        <h3>Regular web page links (should not require metadata)</h3>
+        <ul>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact.html">Contact Page</a></li>
+            <li><a href="https://example.com">External Website</a></li>
+        </ul>
+
+        <h3>External document links without metadata</h3>
+        <ul>
+            <li><a href="https://example.com/remote-file.pdf">Remote PDF File</a></li>
+            <li><a href="http://other-site.com/document.docx">External Document</a></li>
+        </ul>
+
+        <h3>Ambiguous cases</h3>
+        <ul>
+            <li><a href="file-without-extension">File Without Extension</a></li>
+            <li><a href="document.pdf?version=2&format=print">PDF with Query Parameters</a></li>
+            <li><a href="#anchor-link">Internal Page Anchor</a></li>
+            <li><a href="mailto:user@example.com?subject=Document&attachment=file.pdf">Email with Attachment</a></li>
+        </ul>
+
+        <h3>Partial metadata (might need additional info)</h3>
+        <ul>
+            <li><a href="report.pdf">Annual Report (PDF)</a> <!-- Missing size --></li>
+            <li><a href="data.xlsx">Spreadsheet (2.5 MB)</a> <!-- Missing file type clarification --></li>
+            <li><a href="archive.zip">Large file</a> <!-- Vague size description --></li>
+        </ul>
+    </div>
+
+    <!-- Test anchor for internal linking -->
+    <div id="anchor-link">
+        <h3>Anchor Target</h3>
+        <p>This is the target of the internal anchor link above.</p>
+    </div>
+
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666;">
+        <p><strong>Testing Notes:</strong></p>
+        <ul>
+            <li>Links in the "Bad" section should trigger WarnMissingDocumentMetadata warnings</li>
+            <li>Links in the "Good" section should pass accessibility checks</li>
+            <li>Edge cases may require different handling depending on the accessibility checker's rules</li>
+            <li>File extensions tested: PDF, DOC/DOCX, XLS/XLSX, PPT/PPTX, ZIP, JPG, PNG, MP4, MP3, SVG</li>
+        </ul>
+    </footer>
+</body>
+</html>

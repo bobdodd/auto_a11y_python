@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Labeling Test Fixture - ErrFieldLabelledUsinAriaLabel</title>
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .error-case {
+            background-color: #ffe6e6;
+            border-color: #ff9999;
+        }
+        .correct-case {
+            background-color: #e6ffe6;
+            border-color: #99ff99;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            padding: 5px;
+            border: 1px solid #999;
+            border-radius: 3px;
+        }
+        .inline-label {
+            display: inline;
+            margin-left: 5px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Field Labeling Accessibility Test Fixture</h1>
+        <p>This fixture tests for proper field labeling techniques vs. aria-label only approaches.</p>
+    </header>
+
+    <main>
+        <!-- ERROR CASES: Fields using only aria-label (should trigger ErrFieldLabelledUsinAriaLabel) -->
+        <section class="test-section error-case">
+            <h3>❌ ERROR CASES - Fields with aria-label only (No visible labels)</h3>
+            
+            <div class="form-group">
+                <input type="text" aria-label="First Name" placeholder="Enter first name">
+            </div>
+            
+            <div class="form-group">
+                <input type="email" aria-label="Email Address" placeholder="user@example.com">
+            </div>
+            
+            <div class="form-group">
+                <input type="password" aria-label="Password">
+            </div>
+            
+            <div class="form-group">
+                <select aria-label="Country Selection">
+                    <option value="">Choose country</option>
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                    <option value="uk">United Kingdom</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <textarea aria-label="Comments or feedback" placeholder="Enter your comments"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <input type="checkbox" id="terms-aria" aria-label="I agree to the terms and conditions">
+            </div>
+            
+            <div class="form-group">
+                <input type="radio" name="contact-method-aria" value="email" aria-label="Contact me by email">
+                <input type="radio" name="contact-method-aria" value="phone" aria-label="Contact me by phone">
+            </div>
+            
+            <div class="form-group">
+                <input type="date" aria-label="Birth Date">
+            </div>
+            
+            <div class="form-group">
+                <input type="number" aria-label="Age" min="18" max="120">
+            </div>
+        </section>
+
+        <!-- CORRECT CASES: Fields with visible labels -->
+        <section class="test-section correct-case">
+            <h3>✅ CORRECT CASES - Fields with visible labels</h3>
+            
+            <div class="form-group">
+                <label for="first-name">First Name</label>
+                <input type="text" id="first-name" name="first-name">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+            </div>
+            
+            <div class="form-group">
+                <label for="country">Country</label>
+                <select id="country" name="country">
+                    <option value="">Choose country</option>
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                    <option value="uk">United Kingdom</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="comments">Comments</label>
+                <textarea id="comments" name="comments"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <input type="checkbox" id="terms" name="terms">
+                <label for="terms" class="inline-label">I agree to the terms and conditions</label>
+            </div>
+            
+            <fieldset>
+                <legend>Preferred contact method</legend>
+                <div>
+                    <input type="radio" id="contact-email" name="contact-method" value="email">
+                    <label for="contact-email" class="inline-label">Email</label>
+                </div>
+                <div>
+                    <input type="radio" id="contact-phone" name="contact-method" value="phone">
+                    <label for="contact-phone" class="inline-label">Phone</label>
+                </div>
+            </fieldset>
+            
+            <div class="form-group">
+                <label for="birth-date">Birth Date</label>
+                <input type="date" id="birth-date" name="birth-date">
+            </div>
+            
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" min="18" max="120">
+            </div>
+        </section>
+
+        <!-- EDGE CASES: Mixed scenarios -->
+        <section class="test-section error-case">
+            <h3>⚠️ EDGE CASES - Mixed scenarios (some should trigger errors)</h3>
+            
+            <div class="form-group">
+                <!-- This should trigger error: aria-label without visible label -->
+                <input type="search" aria-label="Search products" placeholder="Search...">
+            </div>
+            
+            <div class="form-group">
+                <!-- This is acceptable: visible label with additional aria-label for context -->
+                <label for="phone-number">Phone Number</label>
+                <input type="tel" id="phone-number" name="phone-number" aria-label="Phone number including area code">
+            </div>
+            
+            <div class="form-group">
+                <!-- This should trigger error: only aria-labelledby pointing to hidden text -->
+                <span id="hidden-label" style="display: none;">Social Security Number</span>
+                <input type="text" aria-labelledby="hidden-label">
+            </div>
+            
+            <div class="form-group">
+                <!-- This is correct: aria-labelledby pointing to visible text -->
+                <h4 id="address-heading">Billing Address</h4>
+                <input type="text" aria-labelledby="address-heading" placeholder="Street address">
+            </div>
+            
+            <div class="form-group">
+                <!-- This should trigger error: aria-label on button instead of visible text -->
+                <button type="submit" aria-label="Submit registration form"></button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p><strong>Testing Notes:</strong></p>
+        <ul>
+            <li>ERROR CASES should trigger ErrFieldLabelledUsinAriaLabel</li>
+            <li>CORRECT CASES should pass accessibility checks</li>
+            <li>EDGE CASES test boundary conditions and mixed scenarios</li>
+            <li>Focus on WCAG 3.3.2 - Labels or Instructions requirement</li>
+        </ul>
+    </footer>
+</body>
+</html>

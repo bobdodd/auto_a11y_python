@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Duplicate Search Landmark Labels</title>
+</head>
+<body>
+    <h1>Test Fixture: ErrDuplicateLabelForSearchLandmark</h1>
+    
+    <!-- Header with main site search -->
+    <header>
+        <h2>Site Header</h2>
+        <!-- VIOLATION: First search landmark with generic label -->
+        <div role="search" aria-label="Search">
+            <label for="main-search">Main Site Search:</label>
+            <input type="search" id="main-search" name="main-search" placeholder="Search the entire site">
+            <button type="submit">Search</button>
+        </div>
+    </header>
+
+    <main>
+        <h2>Main Content Area</h2>
+        
+        <!-- Product catalog section -->
+        <section>
+            <h3>Product Catalog</h3>
+            <!-- VIOLATION: Second search landmark with same generic label -->
+            <form role="search" aria-label="Search">
+                <label for="product-search">Product Search:</label>
+                <input type="search" id="product-search" name="product-search" placeholder="Find products">
+                <button type="submit">Find Products</button>
+            </form>
+        </section>
+
+        <!-- Blog section -->
+        <section>
+            <h3>Blog Articles</h3>
+            <!-- VIOLATION: Third search landmark with same generic label -->
+            <div role="search" aria-label="Search">
+                <label for="blog-search">Blog Search:</label>
+                <input type="search" id="blog-search" name="blog-search" placeholder="Search articles">
+                <button type="submit">Search Articles</button>
+            </div>
+        </section>
+
+        <!-- Knowledge base section -->
+        <section>
+            <h3>Help & Documentation</h3>
+            <!-- VIOLATION: Fourth search landmark with same generic label -->
+            <search aria-label="Search">
+                <label for="help-search">Help Search:</label>
+                <input type="search" id="help-search" name="help-search" placeholder="Search documentation">
+                <button type="submit">Search Help</button>
+            </search>
+        </section>
+    </main>
+
+    <aside>
+        <h2>Sidebar</h2>
+        <!-- VIOLATION: Fifth search landmark with same generic label -->
+        <form role="search" aria-label="Search">
+            <label for="quick-search">Quick Search:</label>
+            <input type="search" id="quick-search" name="quick-search" placeholder="Quick search">
+            <button type="submit">Go</button>
+        </form>
+    </aside>
+
+    <footer>
+        <h2>Site Footer</h2>
+        <!-- VIOLATION: Sixth search landmark with same generic label -->
+        <div role="search" aria-label="Search">
+            <label for="footer-search">Footer Search:</label>
+            <input type="search" id="footer-search" name="footer-search" placeholder="Search from footer">
+            <button type="submit">Search</button>
+        </div>
+    </footer>
+
+    <!-- Additional examples of the violation -->
+    
+    <!-- Modal dialog with search (hidden by default) -->
+    <div role="dialog" aria-labelledby="search-modal-title" style="display: none;">
+        <h3 id="search-modal-title">Advanced Search</h3>
+        <!-- VIOLATION: Another search landmark with same generic label -->
+        <form role="search" aria-label="Search">
+            <label for="modal-search">Advanced Search:</label>
+            <input type="search" id="modal-search" name="modal-search" placeholder="Advanced search options">
+            <button type="submit">Advanced Search</button>
+        </form>
+    </div>
+
+    <!-- CORRECT EXAMPLES (for contrast) -->
+    <section style="border: 2px solid green; padding: 10px; margin-top: 20px;">
+        <h2 style="color: green;">✓ CORRECT Examples (for contrast)</h2>
+        
+        <!-- Properly labeled search landmarks -->
+        <div role="search" aria-label="Site-wide search">
+            <label for="correct-main">Site Search:</label>
+            <input type="search" id="correct-main" placeholder="Search entire website">
+            <button type="submit">Search</button>
+        </div>
+
+        <form role="search" aria-label="Product catalog search">
+            <label for="correct-products">Product Search:</label>
+            <input type="search" id="correct-products" placeholder="Find products">
+            <button type="submit">Find</button>
+        </form>
+
+        <search aria-label="Blog and article search">
+            <label for="correct-blog">Blog Search:</label>
+            <input type="search" id="correct-blog" placeholder="Search blog posts">
+            <button type="submit">Search</button>
+        </search>
+    </section>
+
+    <!-- Test variations -->
+    <section style="border: 2px solid red; padding: 10px; margin-top: 10px;">
+        <h2 style="color: red;">Additional Violation Patterns</h2>
+        
+        <!-- Using aria-labelledby with same text -->
+        <h4 id="search-heading-1">Search</h4>
+        <form role="search" aria-labelledby="search-heading-1">
+            <input type="search" placeholder="Search by heading reference 1">
+            <button type="submit">Search</button>
+        </form>
+
+        <h4 id="search-heading-2">Search</h4>
+        <div role="search" aria-labelledby="search-heading-2">
+            <input type="search" placeholder="Search by heading reference 2">
+            <button type="submit">Search</button>
+        </div>
+
+        <!-- Missing labels (empty aria-label) -->
+        <form role="search" aria-label="">
+            <input type="search" placeholder="Empty aria-label 1">
+            <button type="submit">Search</button>
+        </form>
+
+        <div role="search" aria-label="">
+            <input type="search" placeholder="Empty aria-label 2">
+            <button type="submit">Search</button>
+        </div>
+
+        <!-- Whitespace-only labels -->
+        <search aria-label="   ">
+            <input type="search" placeholder="Whitespace-only label 1">
+            <button type="submit">Search</button>
+        </search>
+
+        <form role="search" aria-label="   ">
+            <input type="search" placeholder="Whitespace-only label 2">
+            <button type="submit">Search</button>
+        </form>
+    </section>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Region Landmark Labeling Test Fixture</title>
+</head>
+<body>
+    <h1>Test Fixture: Region Landmark with Conflicting Label Attributes</h1>
+
+    <!-- ERROR CASES: These should trigger the accessibility error -->
+    
+    <!-- Case 1: Basic region with both aria-label and aria-labelledby -->
+    <div role="region" aria-label="Main Content Area" aria-labelledby="heading1">
+        <h2 id="heading1">Primary Content Section</h2>
+        <p>This region has both aria-label and aria-labelledby attributes, which creates conflicting labeling methods.</p>
+    </div>
+
+    <!-- Case 2: HTML5 section element with both attributes -->
+    <section aria-label="User Dashboard" aria-labelledby="dashboard-title">
+        <h2 id="dashboard-title">Dashboard Overview</h2>
+        <p>This section element implicitly has region role and conflicts with dual labeling.</p>
+    </section>
+
+    <!-- Case 3: Article element with both attributes -->
+    <article aria-label="News Article" aria-labelledby="article-headline">
+        <h2 id="article-headline">Breaking News Story</h2>
+        <p>Article elements are also region landmarks and shouldn't have conflicting labels.</p>
+    </article>
+
+    <!-- Case 4: Aside element with both attributes -->
+    <aside aria-label="Related Links" aria-labelledby="sidebar-title">
+        <h3 id="sidebar-title">Quick Links</h3>
+        <ul>
+            <li><a href="#link1">Link 1</a></li>
+            <li><a href="#link2">Link 2</a></li>
+        </ul>
+    </aside>
+
+    <!-- Case 5: Region with empty aria-labelledby (still conflicts) -->
+    <div role="region" aria-label="Footer Content" aria-labelledby="">
+        <p>Even with empty aria-labelledby, both attributes are present.</p>
+    </div>
+
+    <!-- Case 6: Multiple IDs in aria-labelledby with aria-label -->
+    <div role="region" aria-label="Complex Section" aria-labelledby="title1 title2">
+        <h2 id="title1">Main Title</h2>
+        <h3 id="title2">Subtitle</h3>
+        <p>This region references multiple elements but also has aria-label.</p>
+    </div>
+
+    <!-- CORRECT CASES: These should NOT trigger errors -->
+
+    <!-- Good: Only aria-label -->
+    <div role="region" aria-label="Sidebar Navigation">
+        <h3>Navigation Menu</h3>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Good: Only aria-labelledby -->
+    <section aria-labelledby="products-heading">
+        <h2 id="products-heading">Our Products</h2>
+        <p>This section is properly labeled using only aria-labelledby.</p>
+    </section>
+
+    <!-- Good: No labeling attributes (relies on content) -->
+    <article>
+        <h2>Unlabeled Article</h2>
+        <p>This article has no explicit labeling and relies on its content structure.</p>
+    </article>
+
+    <!-- Good: Region with descriptive content, no labels needed -->
+    <div role="region">
+        <h2>Contact Information</h2>
+        <p>Phone: (555) 123-4567</p>
+        <p>Email: contact@example.com</p>
+    </div>
+
+    <!-- EDGE CASES for comprehensive testing -->
+
+    <!-- Edge case: Both attributes with same text content -->
+    <div role="region" aria-label="Duplicate Label" aria-labelledby="duplicate-id">
+        <h2 id="duplicate-id">Duplicate Label</h2>
+        <p>Both labeling methods point to the same text, but still conflicts.</p>
+    </div>
+
+    <!-- Edge case: aria-labelledby pointing to non-existent element -->
+    <section aria-label="Missing Reference" aria-labelledby="non-existent-id">
+        <h2>Content with Invalid Reference</h2>
+        <p>The aria-labelledby points to an element that doesn't exist.</p>
+    </section>
+
+    <!-- Edge case: Nested regions with conflicting labels -->
+    <div role="region" aria-label="Outer Region" aria-labelledby="outer-title">
+        <h2 id="outer-title">Outer Container</h2>
+        <div role="region" aria-label="Inner Region" aria-labelledby="inner-title">
+            <h3 id="inner-title">Inner Container</h3>
+            <p>Testing nested regions with labeling conflicts.</p>
+        </div>
+    </div>
+
+    <!-- Additional elements referenced by aria-labelledby -->
+    <div id="hidden-label" style="display: none;">Hidden Label Text</div>
+    <span id="visible-label">Visible Label Text</span>
+
+    <!-- Region using hidden label -->
+    <div role="region" aria-label="Explicit Label" aria-labelledby="hidden-label">
+        <p>This region conflicts by using both visible aria-label and hidden aria-labelledby reference.</p>
+    </div>
+
+</body>
+</html>

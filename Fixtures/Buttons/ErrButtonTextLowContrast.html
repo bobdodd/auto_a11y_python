@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Text Low Contrast Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        /* FAILING CASES - Insufficient Contrast */
+        
+        /* Very low contrast - white text on light gray */
+        .btn-fail-1 {
+            background-color: #e0e0e0;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Light gray text on white background */
+        .btn-fail-2 {
+            background-color: #ffffff;
+            color: #cccccc;
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Yellow text on white background */
+        .btn-fail-3 {
+            background-color: #ffffff;
+            color: #ffff00;
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Light blue text on white background */
+        .btn-fail-4 {
+            background-color: #ffffff;
+            color: #87ceeb;
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Orange text on yellow background */
+        .btn-fail-5 {
+            background-color: #ffff00;
+            color: #ffa500;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Light gray text on medium gray background */
+        .btn-fail-6 {
+            background-color: #999999;
+            color: #bbbbbb;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Red text on pink background */
+        .btn-fail-7 {
+            background-color: #ffb6c1;
+            color: #ff0000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Green text on light green background */
+        .btn-fail-8 {
+            background-color: #90ee90;
+            color: #008000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* State-based failures */
+        .btn-fail-hover {
+            background-color: #0066cc;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .btn-fail-hover:hover {
+            background-color: #87ceeb; /* Light blue - fails contrast with white text */
+            color: #ffffff;
+        }
+        
+        .btn-fail-focus {
+            background-color: #333333;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .btn-fail-focus:focus {
+            background-color: #cccccc; /* Light gray - fails contrast with white text */
+            color: #ffffff;
+            outline: none;
+        }
+        
+        /* Large text that still fails AA contrast but passes large text threshold */
+        .btn-fail-large {
+            background-color: #ffffff;
+            color: #757575; /* ~2.8:1 ratio - fails AA but might pass large text AA */
+            padding: 15px 30px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        /* PASSING CASES - Sufficient Contrast */
+        
+        .btn-pass-1 {
+            background-color: #0066cc;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn-pass-2 {
+            background-color: #ffffff;
+            color: #333333;
+            padding: 10px 20px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn-pass-3 {
+            background-color: #28a745;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Edge case - just barely passing */
+        .btn-edge-case {
+            background-color: #ffffff;
+            color: #767676; /* Approximately 4.5:1 ratio */
+            padding: 10px 20px;
+            border: 1px solid #767676;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Custom styled buttons that might be harder to detect */
+        .btn-gradient-fail {
+            background: linear-gradient(135deg, #ffcccc, #ffffff);
+            color: #ff9999;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn-transparent-fail {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: rgba(200, 200, 200, 0.9);
+            padding: 10px 20px;
+            border: 1px solid rgba(220, 220, 220, 0.5);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Dark theme with failing contrast */
+        .dark-section {
+            background-color: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .btn-dark-fail {
+            background-color: #404040;
+            color: #606060;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Disabled state with poor contrast */
+        .btn-disabled-fail {
+            background-color: #f0f0f0;
+            color: #d0d0d0;
+            padding: 10px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: not-allowed;
+            font-size: 16px;
+        }
+        
+        .contrast-info {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Button Text Low Contrast Test Fixture</h1>
+    <p>This fixture contains various button examples to test the ErrButtonTextLowContrast accessibility check. Buttons are categorized by their contrast compliance status.</p>
+    
+    <div class="test-section">
+        <h2>❌ Failing Cases - Insufficient Contrast (Should trigger ErrButtonTextLowContrast)</h2>
+        
+        <h3>Basic Contrast Failures</h3>
+        <div class="button-container">
+            <div>
+                <button class="btn-fail-1">White on Light Gray</button>
+                <div class="contrast-info">~1.3:1 contrast ratio</div>
+            </div>
+            <div>
+                <button class="btn-fail-2">Light Gray on White</button>
+                <div class="contrast-info">~2.0:1 contrast ratio</div>
+            </div>
+            <div>
+                <button class="btn-fail-3">Yellow on White</button>
+                <div class="contrast-info">~1.1:1 contrast ratio</div>
+            </div>
+            <div>
+                <button class="btn-fail-4">Light Blue on White</button>
+                <div class="contrast-info">~2.7:1 contrast ratio</div>
+            </div>
+        </div>
+        
+        <h3>Color Combination Failures</h3>
+        <div class="button-container">
+            <div>
+                <button class="btn-fail-5">Orange on Yellow</button>
+                <div class="contrast-info">~1.6:1 contrast ratio</div>
+            </div>
+            <div>
+                <button class="btn-fail-6">Light Gray on Gray</button>
+                <div class="contrast-info">~1.8:1 contrast ratio</div>
+            </div>
+            <div>
+                <button class="btn-fail-7">Red on Pink</button>
+                <div class="contrast-info">~2.3:1 contrast ratio</div>
+            </div>
+            <div>
+                <button class="btn-fail-8">Green on Light Green</button>
+                <div class="contrast-info">~2.1:1 contrast ratio</div>
+            </div>
+        </div>
+        
+        <h3>Interactive State Failures</h3>
+        <div class="button-container">
+            <div>
+                <button class="btn-fail-hover">Hover to Reveal Low Contrast</button>
+                <div class="contrast-info">Good default, poor hover state</div>
+            </div>
+            <div>
+                <button class="btn-fail-focus">Focus to Reveal Low Contrast</button>
+                <div class="contrast-info">Good default, poor focus state</div>
+            </div>
+        </div>
+        
+        <h3>Complex Styling Failures</h3>
+        <div class="button-container">
+            <div>
+                <button class="btn-gradient-fail">Gradient Background</button>
+                <div class="contrast-info">Gradient with poor text contrast</div>
+            </div>
+            <div>
+                <button class="btn-transparent-fail">Semi-transparent</button>
+                <div class="contrast-info">Transparent elements with poor contrast</div>
+            </div>
+            <div>
+                <button class="btn-fail-large">Large Text Low Contrast</button>
+                <div class="contrast-info">18pt bold, ~2.8:1 ratio</div>
+            </div>
+        </div>
+        
+        <div class="dark-section">
+            <h3 style="color: white;">Dark Theme Failures</h3>
+            <div class="button-container">
+                <div>
+                    <button class="btn-dark-fail">Dark Gray on Darker Gray</button>
+                    <div class="contrast-info" style="color: #ccc;">~1.5:1 contrast ratio</div>
+                </div>
+            </div>
+        </div>
+        
+        <h3>Disabled State Failures</h3>
+        <div class="button-container">
+            <div>
+                <button class="btn-disabled-fail" disabled>Disabled Button</button>
+                <div class="contrast-info">Poor contrast in disabled state</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>✅ Passing Cases - Sufficient Contrast (Should NOT trigger ErrButtonTextLowContrast)</h2>
+        
+        <div class="button-container">
+            <div>
+                <button class="btn-pass-1">White on Blue</button>
+                <div class="contrast-info">~7.7:1 contrast ratio</div>
+            </div>
+            <div>
+                <button class="btn-pass-2">Dark Gray on White</button>
+                <div class="contrast-info">~12.6:1 contrast ratio</div>
+            </div>
+            <div>
+                <button class="btn-pass-3">White on Green</button>
+                <div class="contrast-info">~5.4:1 contrast ratio</div>
+            </div>
+            <div>
+                <button class="btn-edge-case">Edge Case - Just Passing</button>
+                <div class="contrast-info">~4.5:1 contrast ratio</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Instructions</h2>
+        <ul>
+            <li>Run accessibility checker on this page</li>
+            <li>Should detect multiple instances of ErrButtonTextLowContrast</li>
+            <li>All buttons in the "Failing Cases" section should trigger the error</li>
+            <li>No buttons in the "Passing Cases" section should trigger the error</li>
+            <li>Test interactive states by hovering and focusing on the state-specific test buttons</li>
+            <li>Verify that the checker properly calculates contrast ratios for complex styling (gradients, transparency)</li>
+            <li>Check that large text thresholds are properly applied</li>
+        </ul>
+    </div>
+</body>
+</html>

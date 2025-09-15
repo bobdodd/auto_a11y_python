@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Dialog aria-modal Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .modal-content {
+            margin: 15px 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .test-section h3 {
+            margin-top: 0;
+            color: #666;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+        }
+
+        .good {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .page-content {
+            max-width: 800px;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-content">
+        <h1>Modal Dialog aria-modal Test Fixture</h1>
+        <p>This fixture tests various modal dialog implementations to identify missing aria-modal attributes.</p>
+
+        <!-- Test Section 1: Modal WITHOUT aria-modal (Should trigger warning) -->
+        <div class="test-section warning">
+            <h3>❌ Test 1: Modal Missing aria-modal (Should Warn)</h3>
+            <p>This modal has role="dialog" but is missing aria-modal="true"</p>
+            <button id="open-modal-1" class="btn-primary">Open Modal Without aria-modal</button>
+        </div>
+
+        <!-- Test Section 2: Modal WITH aria-modal (Should pass) -->
+        <div class="test-section good">
+            <h3>✅ Test 2: Modal With aria-modal (Should Pass)</h3>
+            <p>This modal correctly includes aria-modal="true"</p>
+            <button id="open-modal-2" class="btn-primary">Open Modal With aria-modal</button>
+        </div>
+
+        <!-- Test Section 3: Dialog with aria-modal="false" (Should warn) -->
+        <div class="test-section warning">
+            <h3>❌ Test 3: Modal With aria-modal="false" (Should Warn)</h3>
+            <p>This modal has aria-modal set to "false" which is incorrect for modal dialogs</p>
+            <button id="open-modal-3" class="btn-primary">Open Modal With aria-modal="false"</button>
+        </div>
+
+        <!-- Test Section 4: Multiple modals with mixed implementations -->
+        <div class="test-section warning">
+            <h3>❌ Test 4: Nested Modal Without aria-modal (Should Warn)</h3>
+            <p>This tests a modal that opens another modal, both missing aria-modal</p>
+            <button id="open-modal-4" class="btn-primary">Open Nested Modals</button>
+        </div>
+
+        <!-- Test Section 5: Non-modal dialog (Should not warn) -->
+        <div class="test-section good">
+            <h3>✅ Test 5: Non-Modal Dialog (Should Not Warn)</h3>
+            <p>This is a non-modal dialog that doesn't block interaction with the page</p>
+            <button id="open-dialog-5" class="btn-secondary">Open Non-Modal Dialog</button>
+        </div>
+    </div>
+
+    <!-- Modal 1: Missing aria-modal -->
+    <div id="modal-1" class="modal-overlay">
+        <div class="modal" role="dialog" aria-labelledby="modal-1-title" aria-describedby="modal-1-desc">
+            <button class="close-btn" aria-label="Close">&times;</button>
+            <h2 id="modal-1-title">Confirmation Required</h2>
+            <div class="modal-content">
+                <p id="modal-1-desc">This modal is missing aria-modal="true". Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary close-modal">Cancel</button>
+                <button class="btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Correct implementation with aria-modal -->
+    <div id="modal-2" class="modal-overlay">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-2-title" aria-describedby="modal-2-desc">
+            <button class="close-btn" aria-label="Close">&times;</button>
+            <h2 id="modal-2-title">Contact Form</h2>
+            <div class="modal-content">
+                <p id="modal-2-desc">Please fill out your contact information:</p>
+                <form>
+                    <div class="form-group">
+                        <label for="contact-name">Name:</label>
+                        <input type="text" id="contact-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Email:</label>
+                        <input type="email" id="contact-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-message">Message:</label>
+                        <textarea id="contact-message" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary close-modal">Cancel</button>
+                <button class="btn-primary">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Incorrect aria-modal="false" -->
+    <div id="modal-3" class="modal-overlay">
+        <div class="modal" role="dialog" aria-modal="false" aria-labelledby="modal-3-title">
+            <button class="close-btn" aria-label="Close">&times;</button>
+            <h2 id="modal-3-title">Settings</h2>
+            <div class="modal-content">
+                <p>This modal incorrectly has aria-modal="false"</p>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox"> Enable notifications
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox"> Auto-save drafts
+                    </label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary close-modal">Cancel</button>
+                <button class="btn-primary">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Parent modal without aria-modal -->
+    <div id="modal-4" class="modal-overlay">
+        <div class="modal" role="dialog" aria-labelledby="modal-4-title">
+            <button class="close-btn" aria-label="Close">&times;</button>
+            <h2 id="modal-4-title">File Manager</h2>
+            <div class="modal-content">
+                <p>Select a file to delete:</p>
+                <ul>
+                    <li>document1.pdf</li>
+                    <li>image2.jpg</li>
+                    <li>spreadsheet3.xlsx</li>
+                </ul>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary close-modal">Cancel</button>
+                <button id="open-nested-modal" class="btn-danger">Delete Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4b: Nested modal also without aria-modal -->
+    <div id="nested-modal" class="modal-overlay">
+        <div class="modal" role="dialog" aria-labelledby="nested-modal-title" style="z-index: 1001;">
+            <button class="close-btn" aria-label="Close">&times;</button>
+            <h2 id="nested-modal-title">Confirm Deletion</h2>
+            <div class="modal-content">
+                <p>Are you absolutely sure you want to delete these files? This action cannot be undone.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary close-modal">Keep Files</button>
+                <button class="btn-danger">Permanently Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog 5: Non-modal dialog (should not trigger warning) -->
+    <div id="dialog-5" class="hidden" style="position: fixed; top: 100px; right: 20px; background: white; border: 2px solid #ccc; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 100; max-width: 300px;">
+        <div role="dialog" aria-labelledby="dialog-5-title">
+            <button class="close-btn" aria-label="Close" style="position: absolute; top: 5px; right: 10px;">&times;</button>
+            <h3 id="dialog-5-title">Notification</h3>
+            <p>This is a non-modal dialog. You can still interact with the page behind it.</p>
+            <button class="btn-primary close-dialog">Acknowledge</button>
+        </div>
+    </div>
+
+    <script>
+        // Modal management
+        const modals = document.querySelectorAll('.modal-overlay');
+        const dialog5 = document.getElementById('dialog-5');
+
+        // Open modal functions
+        document.getElementById('open-modal-1').addEventListener('click', () => openModal('modal-1'));
+        document.getElementById('open-modal-2').addEventListener('click', () => openModal('modal-2'));
+        document.getElementById('open-modal-3').addEventListener('click', () => openModal('modal-3'));
+        document.getElementById('open-modal-4').addEventListener('click', () => openModal('modal-4'));
+        document.getElementById('open-dialog-5').addEventListener('click', () => openDialog('dialog-5'));
+
+        // Open nested modal
+        document.getElementById('open-nested-modal').addEventListener('click', () => {
+            openModal('nested-modal');
+        });
+
+        // Close modal handlers
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('close-btn') || 
+                e.target.classList.contains('close-modal') ||
+                e.target.classList.contains('modal-overlay')) {
+                closeAllModals();
+            }
+            if (e.target.classList.contains('close-dialog')) {
+                closeDialog();
+            }
+        });
+
+        // Escape key handler
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAllModals();
+                closeDialog();
+            }
+        });
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('open');
+                // Focus the first focusable element in the modal
+                const focusableElements = modal.querySelectorAll('button, input, textarea, [tabindex]:not([tabindex="-1"])');
+                if (focusableElements.length > 0) {
+                    focusableElements[0].focus();
+                }
+            }
+        }
+
+        function openDialog(dialogId) {
+            const dialog = document.getElementById(dialogId);
+            if (dialog) {
+                dialog.classList.remove('hidden');
+                // Focus the first focusable element
+                const focusableElements = dialog.querySelectorAll('button, input, textarea, [tabindex]:not([tabindex="-1"])');
+                if (focusableElements.length > 0) {
+                    focusableElements[0].focus();
+                }
+            }
+        }
+
+        function closeAllModals() {
+            modals.forEach(modal => {
+                modal.classList.remove('open');
+            });
+        }
+
+        function closeDialog() {
+            dialog5.classList.add('hidden');
+        }
+
+        // Prevent clicks inside modal from closing it
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.stopPropagation();
+            }
+        });
+    </script>
+</body>
+</html>

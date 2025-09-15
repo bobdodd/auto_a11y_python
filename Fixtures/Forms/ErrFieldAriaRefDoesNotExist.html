@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: ErrFieldAriaRefDoesNotExist</title>
+</head>
+<body>
+    <h1>Form Fields with Broken aria-labelledby References</h1>
+    
+    <form>
+        <fieldset>
+            <legend>Test Cases for ErrFieldAriaRefDoesNotExist</legend>
+            
+            <!-- Test Case 1: Single broken reference -->
+            <div>
+                <input type="text" aria-labelledby="nonexistent-label-1" placeholder="Field with broken single reference">
+            </div>
+            
+            <!-- Test Case 2: Multiple broken references -->
+            <div>
+                <input type="email" aria-labelledby="missing-label-a missing-label-b" placeholder="Field with multiple broken references">
+            </div>
+            
+            <!-- Test Case 3: Mixed - one valid, one broken reference -->
+            <div>
+                <span id="valid-label">Valid Label:</span>
+                <input type="password" aria-labelledby="valid-label broken-reference" placeholder="Mixed valid/invalid references">
+            </div>
+            
+            <!-- Test Case 4: Textarea with broken reference -->
+            <div>
+                <textarea aria-labelledby="missing-textarea-label" placeholder="Textarea with broken reference"></textarea>
+            </div>
+            
+            <!-- Test Case 5: Select element with broken reference -->
+            <div>
+                <select aria-labelledby="nonexistent-select-label">
+                    <option value="">Choose an option</option>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                </select>
+            </div>
+            
+            <!-- Test Case 6: Radio button with broken reference -->
+            <div>
+                <input type="radio" name="radio-group" value="option1" aria-labelledby="missing-radio-label">
+                <span>Radio option (broken reference)</span>
+            </div>
+            
+            <!-- Test Case 7: Checkbox with broken reference -->
+            <div>
+                <input type="checkbox" aria-labelledby="nonexistent-checkbox-label">
+                <span>Checkbox with broken reference</span>
+            </div>
+            
+            <!-- Test Case 8: Custom form control with broken reference -->
+            <div role="textbox" contenteditable="true" aria-labelledby="missing-custom-label" style="border: 1px solid #ccc; padding: 5px;">
+                Custom editable div with broken reference
+            </div>
+            
+            <!-- Test Case 9: Range input with broken reference -->
+            <div>
+                <input type="range" min="0" max="100" aria-labelledby="missing-range-label">
+            </div>
+            
+            <!-- Test Case 10: File input with broken reference -->
+            <div>
+                <input type="file" aria-labelledby="nonexistent-file-label">
+            </div>
+            
+            <!-- Test Case 11: Number input with typo in reference -->
+            <div>
+                <span id="number-label-correct">Number Input:</span>
+                <input type="number" aria-labelledby="number-label-typo" placeholder="Reference has typo">
+            </div>
+            
+            <!-- Test Case 12: Date input with case-sensitive reference issue -->
+            <div>
+                <span id="date-label">Date Input:</span>
+                <input type="date" aria-labelledby="DATE-LABEL" placeholder="Case mismatch in reference">
+            </div>
+            
+            <!-- Valid examples for comparison (should not trigger errors) -->
+            <h2>Valid Examples (Should Not Trigger Errors)</h2>
+            
+            <div>
+                <label id="valid-text-label">Properly Referenced Field:</label>
+                <input type="text" aria-labelledby="valid-text-label" placeholder="This has a valid reference">
+            </div>
+            
+            <div>
+                <label for="standard-label-field">Standard Label Method:</label>
+                <input type="text" id="standard-label-field" placeholder="Uses standard label element">
+            </div>
+            
+            <div>
+                <input type="text" aria-label="Direct aria-label" placeholder="Uses direct aria-label">
+            </div>
+            
+        </fieldset>
+    </form>
+    
+    <!-- Some existing elements that could be referenced but aren't -->
+    <div id="unused-label-1">This label exists but isn't referenced</div>
+    <div id="unused-label-2">Another unused label</div>
+    
+</body>
+</html>

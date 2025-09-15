@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complementary Landmark Conflicting Label Test Fixture</title>
+</head>
+<body>
+    <main>
+        <h1>Test Fixture: Complementary Landmark with Conflicting Labels</h1>
+        
+        <!-- Valid complementary landmarks for comparison -->
+        <aside aria-label="Valid sidebar with aria-label only">
+            <h2>Valid: aria-label only</h2>
+            <p>This complementary landmark uses only aria-label for labeling.</p>
+        </aside>
+        
+        <aside aria-labelledby="valid-heading">
+            <h2 id="valid-heading">Valid: aria-labelledby only</h2>
+            <p>This complementary landmark uses only aria-labelledby for labeling.</p>
+        </aside>
+        
+        <aside>
+            <h2>Valid: No explicit labeling</h2>
+            <p>This complementary landmark has no explicit labeling attributes.</p>
+        </aside>
+        
+        <!-- ERROR CASES: Complementary landmarks with both aria-label and aria-labelledby -->
+        
+        <!-- Error Case 1: Basic conflicting labels -->
+        <aside aria-label="Navigation sidebar" aria-labelledby="error-heading-1">
+            <h2 id="error-heading-1">Related Articles</h2>
+            <p>This complementary landmark has BOTH aria-label and aria-labelledby attributes, which creates confusion for screen readers.</p>
+            <ul>
+                <li><a href="#">Article 1</a></li>
+                <li><a href="#">Article 2</a></li>
+            </ul>
+        </aside>
+        
+        <!-- Error Case 2: Different content in conflicting labels -->
+        <aside aria-label="Advertisement section" aria-labelledby="error-heading-2">
+            <h2 id="error-heading-2">User Comments</h2>
+            <p>The aria-label says "Advertisement section" while aria-labelledby points to "User Comments" - this is confusing.</p>
+            <div>
+                <p>Comment 1: Great article!</p>
+                <p>Comment 2: Very helpful information.</p>
+            </div>
+        </aside>
+        
+        <!-- Error Case 3: Multiple elements referenced in aria-labelledby with conflicting aria-label -->
+        <aside aria-label="Social media links" aria-labelledby="error-heading-3 error-subtitle-3">
+            <h2 id="error-heading-3">Newsletter Signup</h2>
+            <h3 id="error-subtitle-3">Stay Updated</h3>
+            <p>This has both aria-label="Social media links" and aria-labelledby pointing to newsletter content.</p>
+            <form>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+                <button type="submit">Subscribe</button>
+            </form>
+        </aside>
+        
+        <!-- Error Case 4: Empty aria-label with aria-labelledby -->
+        <aside aria-label="" aria-labelledby="error-heading-4">
+            <h2 id="error-heading-4">Quick Links</h2>
+            <p>Even with an empty aria-label, having both attributes present is still an error.</p>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Error Case 5: role="complementary" with conflicting labels -->
+        <div role="complementary" aria-label="Product recommendations" aria-labelledby="error-heading-5">
+            <h2 id="error-heading-5">Customer Reviews</h2>
+            <p>Using role="complementary" instead of aside element, but still has conflicting labeling.</p>
+            <div>
+                <blockquote>
+                    "Excellent service and fast delivery!"
+                    <cite>- John D.</cite>
+                </blockquote>
+            </div>
+        </div>
+        
+        <!-- Error Case 6: aria-labelledby pointing to non-existent element with aria-label -->
+        <aside aria-label="Search filters" aria-labelledby="non-existent-id">
+            <h2>Filter Options</h2>
+            <p>This has both aria-label and aria-labelledby (pointing to non-existent element).</p>
+            <form>
+                <fieldset>
+                    <legend>Category</legend>
+                    <input type="checkbox" id="tech" name="category" value="tech">
+                    <label for="tech">Technology</label>
+                    <input type="checkbox" id="business" name="category" value="business">
+                    <label for="business">Business</label>
+                </fieldset>
+            </form>
+        </aside>
+        
+        <!-- Additional test case: Nested complementary with conflicting labels -->
+        <aside aria-label="Main sidebar" aria-labelledby="main-sidebar-heading">
+            <h2 id="main-sidebar-heading">Sidebar Content</h2>
+            <p>This outer complementary has conflicting labels.</p>
+            
+            <!-- Nested complementary also with conflicting labels -->
+            <aside aria-label="Widget area" aria-labelledby="widget-heading">
+                <h3 id="widget-heading">Latest News Widget</h3>
+                <p>This nested complementary also has conflicting labels.</p>
+                <ul>
+                    <li>News item 1</li>
+                    <li>News item 2</li>
+                </ul>
+            </aside>
+        </aside>
+    </main>
+    
+    <footer>
+        <p>Test fixture for detecting complementary landmarks with both aria-label and aria-labelledby attributes.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Label Reference Error Test Fixture</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.6; 
+        }
+        .test-section { 
+            border: 2px solid #ccc; 
+            margin: 20px 0; 
+            padding: 15px; 
+            border-radius: 5px; 
+        }
+        .error { 
+            border-color: #d32f2f; 
+            background-color: #ffebee; 
+        }
+        .correct { 
+            border-color: #388e3c; 
+            background-color: #e8f5e8; 
+        }
+        .test-title { 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+        }
+        .form-group { 
+            margin-bottom: 15px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Label Reference Error Test Fixture</h1>
+    <p>This fixture tests various scenarios where label elements reference non-existent form fields.</p>
+
+    <!-- Test Case 1: Basic missing ID reference -->
+    <div class="test-section error">
+        <div class="test-title">Test Case 1: Label references completely non-existent ID</div>
+        <form>
+            <div class="form-group">
+                <label for="missing-field">Username:</label>
+                <!-- No input with id="missing-field" exists -->
+                <input type="text" id="actual-username" name="username">
+            </div>
+        </form>
+    </div>
+
+    <!-- Test Case 2: Typo in ID reference -->
+    <div class="test-section error">
+        <div class="test-title">Test Case 2: Label references ID with typo</div>
+        <form>
+            <div class="form-group">
+                <label for="emai">Email:</label>
+                <!-- ID should be "email" not "emai" -->
+                <input type="email" id="email" name="email">
+            </div>
+        </form>
+    </div>
+
+    <!-- Test Case 3: Case-sensitive mismatch -->
+    <div class="test-section error">
+        <div class="test-title">Test Case 3: Case-sensitive ID mismatch</div>
+        <form>
+            <div class="form-group">
+                <label for="PASSWORD">Password:</label>
+                <input type="password" id="password" name="password">
+            </div>
+        </form>
+    </div>
+
+    <!-- Test Case 4: Multiple labels with same non-existent reference -->
+    <div class="test-section error">
+        <div class="test-title">Test Case 4: Multiple labels referencing same non-existent ID</div>
+        <form>
+            <div class="form-group">
+                <label for="phone-number">Phone Number:</label>
+                <label for="phone-number">Alternative Phone Label:</label>
+                <!-- No input with id="phone-number" exists -->
+                <input type="tel" id="telephone" name="phone">
+            </div>
+        </form>
+    </div>
+
+    <!-- Test Case 5: Label references removed field -->
+    <div class="test-section error">
+        <div class="test-title">Test Case 5: Label references field that was removed</div>
+        <form>
+            <div class="form-group">
+                <label for="middle-name">Middle Name:</label>
+                <!-- Field was removed but label reference remains -->
+                <!-- <input type="text" id="middle-name" name="middleName"> -->
+            </div>
+        </form>
+    </div>
+
+    <!-- Test Case 6: Complex form with mixed errors -->
+    <div class="test-section error">
+        <div class="test-title">Test Case 6: Complex form with multiple reference errors</div>
+        <form>
+            <fieldset>
+                <legend>Personal Information</legend>
+                
+                <div class="form-group">
+                    <label for="first-name">First Name:</label>
+                    <input type="text" id="firstName" name="firstName">
+                </div>
+                
+                <div class="form-group">
+                    <label for="last-name">Last Name:</label>
+                    <input type="text" id="surname" name="lastName">
+                </div>
+                
+                <div class="form-group">
+                    <label for="birth-date">Date of Birth:</label>
+                    <input type="date" id="dob" name="dateOfBirth">
+                </div>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Contact Information</legend>
+                
+                <div class="form-group">
+                    <label for="email-address">Email:</label>
+                    <input type="email" id="email-field" name="email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="home-phone">Phone:</label>
+                    <!-- Field completely missing -->
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Test Case 7: Label referencing wrong element type -->
+    <div class="test-section error">
+        <div class="test-title">Test Case 7: Label references non-form element ID</div>
+        <form>
+            <div class="form-group">
+                <label for="description-text">Description:</label>
+                <p id="description-text">This is a paragraph, not a form field</p>
+                <textarea name="description" rows="4" cols="50"></textarea>
+            </div>
+        </form>
+    </div>
+
+    <!-- Correct Examples for Comparison -->
+    <div class="test-section correct">
+        <div class="test-title">Correct Examples: Proper label-field associations</div>
+        <form>
+            <div class="form-group">
+                <label for="correct-username">Username:</label>
+                <input type="text" id="correct-username" name="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="correct-email">Email:</label>
+                <input type="email" id="correct-email" name="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="correct-password">Password:</label>
+                <input type="password" id="correct-password" name="password">
+            </div>
+            
+            <div class="form-group">
+                <label for="correct-comments">Comments:</label>
+                <textarea id="correct-comments" name="comments" rows="4" cols="50"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="correct-country">Country:</label>
+                <select id="correct-country" name="country">
+                    <option value="">Select a country</option>
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                    <option value="uk">United Kingdom</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <!-- Edge Cases -->
+    <div class="test-section error">
+        <div class="test-title">Edge Cases</div>
+        <form>
+            <!-- Empty for attribute -->
+            <div class="form-group">
+                <label for="">Empty for attribute:</label>
+                <input type="text" id="test-field" name="testField">
+            </div>
+            
+            <!-- Space in for attribute -->
+            <div class="form-group">
+                <label for="test field">For attribute with space:</label>
+                <input type="text" id="test-field-2" name="testField2">
+            </div>
+            
+            <!-- Special characters in for attribute -->
+            <div class="form-group">
+                <label for="test@field#123">For attribute with special chars:</label>
+                <input type="text" id="test-field-3" name="testField3">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

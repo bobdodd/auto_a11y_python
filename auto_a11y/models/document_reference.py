@@ -57,6 +57,8 @@ class DocumentReference:
     is_internal: bool  # True if document is within the base URL domain
     link_text: Optional[str] = None  # The text of the link pointing to the document
     file_extension: Optional[str] = None
+    language: Optional[str] = None  # Detected language of the document (e.g., 'en', 'fr')
+    language_confidence: Optional[float] = None  # Confidence score for language detection
     discovered_at: datetime = field(default_factory=datetime.now)
     last_seen: datetime = field(default_factory=datetime.now)
     seen_count: int = 1  # Track how many times this document is referenced
@@ -86,6 +88,62 @@ class DocumentReference:
         }
         return type_map.get(self.mime_type, "Document")
     
+    @property
+    def language_display(self) -> str:
+        """Get human-friendly language name"""
+        if not self.language:
+            return "Unknown"
+        
+        language_map = {
+            'en': 'English',
+            'fr': 'French',
+            'es': 'Spanish',
+            'de': 'German',
+            'it': 'Italian',
+            'pt': 'Portuguese',
+            'nl': 'Dutch',
+            'ru': 'Russian',
+            'zh': 'Chinese',
+            'ja': 'Japanese',
+            'ko': 'Korean',
+            'ar': 'Arabic',
+            'hi': 'Hindi',
+            'pl': 'Polish',
+            'tr': 'Turkish',
+            'sv': 'Swedish',
+            'da': 'Danish',
+            'no': 'Norwegian',
+            'fi': 'Finnish',
+            'cs': 'Czech',
+            'hu': 'Hungarian',
+            'ro': 'Romanian',
+            'el': 'Greek',
+            'he': 'Hebrew',
+            'th': 'Thai',
+            'vi': 'Vietnamese',
+            'id': 'Indonesian',
+            'ms': 'Malay',
+            'uk': 'Ukrainian',
+            'bg': 'Bulgarian',
+            'hr': 'Croatian',
+            'sr': 'Serbian',
+            'sk': 'Slovak',
+            'sl': 'Slovenian',
+            'lt': 'Lithuanian',
+            'lv': 'Latvian',
+            'et': 'Estonian',
+            'sq': 'Albanian',
+            'mk': 'Macedonian',
+            'mt': 'Maltese',
+            'is': 'Icelandic',
+            'ga': 'Irish',
+            'cy': 'Welsh',
+            'eu': 'Basque',
+            'ca': 'Catalan',
+            'gl': 'Galician'
+        }
+        return language_map.get(self.language, self.language.upper())
+    
     def to_dict(self) -> dict:
         """Convert to dictionary for MongoDB"""
         data = {
@@ -96,6 +154,8 @@ class DocumentReference:
             'is_internal': self.is_internal,
             'link_text': self.link_text,
             'file_extension': self.file_extension,
+            'language': self.language,
+            'language_confidence': self.language_confidence,
             'discovered_at': self.discovered_at,
             'last_seen': self.last_seen,
             'seen_count': self.seen_count,
@@ -116,6 +176,8 @@ class DocumentReference:
             is_internal=data['is_internal'],
             link_text=data.get('link_text'),
             file_extension=data.get('file_extension'),
+            language=data.get('language'),
+            language_confidence=data.get('language_confidence'),
             discovered_at=data.get('discovered_at', datetime.now()),
             last_seen=data.get('last_seen', datetime.now()),
             seen_count=data.get('seen_count', 1),

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Label Testing Fixture - ErrNoLabel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 30px 0; padding: 15px; border: 1px solid #ccc; }
+        .section h3 { margin-top: 0; color: #333; }
+        .error { background-color: #ffe6e6; }
+        .valid { background-color: #e6ffe6; }
+        .form-group { margin: 10px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { padding: 5px; margin: 2px 0; }
+        .inline { display: inline-block; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Form Label Testing Fixture - ErrNoLabel</h1>
+    <p>This fixture tests various scenarios for form inputs with and without proper labels.</p>
+
+    <!-- ERROR CASES - These should trigger ErrNoLabel -->
+    <div class="section error">
+        <h3>🚨 ERROR CASES - Should trigger ErrNoLabel</h3>
+        
+        <!-- Basic input with no label -->
+        <div class="form-group">
+            <h4>1. Text input with no label</h4>
+            <input type="text" name="unlabeled-text" placeholder="Enter your name">
+        </div>
+
+        <!-- Email input with no label -->
+        <div class="form-group">
+            <h4>2. Email input with no label</h4>
+            <input type="email" name="unlabeled-email">
+        </div>
+
+        <!-- Password input with no label -->
+        <div class="form-group">
+            <h4>3. Password input with no label</h4>
+            <input type="password" name="unlabeled-password">
+        </div>
+
+        <!-- Select with no label -->
+        <div class="form-group">
+            <h4>4. Select dropdown with no label</h4>
+            <select name="unlabeled-select">
+                <option value="">Choose an option</option>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+            </select>
+        </div>
+
+        <!-- Textarea with no label -->
+        <div class="form-group">
+            <h4>5. Textarea with no label</h4>
+            <textarea name="unlabeled-textarea" rows="3" cols="30"></textarea>
+        </div>
+
+        <!-- Checkbox with no label -->
+        <div class="form-group">
+            <h4>6. Checkbox with no label</h4>
+            <input type="checkbox" name="unlabeled-checkbox" value="agree">
+        </div>
+
+        <!-- Radio buttons with no labels -->
+        <div class="form-group">
+            <h4>7. Radio buttons with no labels</h4>
+            <input type="radio" name="unlabeled-radio" value="yes">
+            <input type="radio" name="unlabeled-radio" value="no">
+        </div>
+
+        <!-- Number input with no label -->
+        <div class="form-group">
+            <h4>8. Number input with no label</h4>
+            <input type="number" name="unlabeled-number" min="1" max="100">
+        </div>
+
+        <!-- Date input with no label -->
+        <div class="form-group">
+            <h4>9. Date input with no label</h4>
+            <input type="date" name="unlabeled-date">
+        </div>
+
+        <!-- File input with no label -->
+        <div class="form-group">
+            <h4>10. File input with no label</h4>
+            <input type="file" name="unlabeled-file">
+        </div>
+
+        <!-- Range input with no label -->
+        <div class="form-group">
+            <h4>11. Range input with no label</h4>
+            <input type="range" name="unlabeled-range" min="0" max="100">
+        </div>
+
+        <!-- Label exists but not associated (no for attribute or wrapping) -->
+        <div class="form-group">
+            <h4>12. Label present but not associated</h4>
+            <label>Username</label>
+            <input type="text" name="unassociated-input">
+        </div>
+
+        <!-- Label with incorrect for attribute -->
+        <div class="form-group">
+            <h4>13. Label with incorrect for attribute</h4>
+            <label for="wrong-id">Email Address</label>
+            <input type="email" name="incorrect-association" id="different-id">
+        </div>
+    </div>
+
+    <!-- VALID CASES - These should NOT trigger ErrNoLabel -->
+    <div class="section valid">
+        <h3>✅ VALID CASES - Should NOT trigger ErrNoLabel</h3>
+        
+        <!-- Proper label with for attribute -->
+        <div class="form-group">
+            <h4>1. Text input with proper label (for attribute)</h4>
+            <label for="proper-text">Full Name</label>
+            <input type="text" id="proper-text" name="proper-text">
+        </div>
+
+        <!-- Label wrapping input -->
+        <div class="form-group">
+            <h4>2. Input wrapped by label</h4>
+            <label>
+                Email Address
+                <input type="email" name="wrapped-email">
+            </label>
+        </div>
+
+        <!-- Input with aria-label -->
+        <div class="form-group">
+            <h4>3. Input with aria-label</h4>
+            <input type="text" name="aria-labeled" aria-label="Phone Number">
+        </div>
+
+        <!-- Input with aria-labelledby -->
+        <div class="form-group">
+            <h4>4. Input with aria-labelledby</h4>
+            <span id="address-label">Home Address</span>
+            <input type="text" name="aria-labelledby" aria-labelledby="address-label">
+        </div>
+
+        <!-- Select with proper label -->
+        <div class="form-group">
+            <h4>5. Select with proper label</h4>
+            <label for="proper-select">Country</label>
+            <select id="proper-select" name="proper-select">
+                <option value="">Select a country</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+            </select>
+        </div>
+
+        <!-- Textarea with proper label -->
+        <div class="form-group">
+            <h4>6. Textarea with proper label</h4>
+            <label for="proper-textarea">Comments</label>
+            <textarea id="proper-textarea" name="proper-textarea" rows="3" cols="30"></textarea>
+        </div>
+
+        <!-- Checkbox with proper label -->
+        <div class="form-group">
+            <h4>7. Checkbox with proper label</h4>
+            <label for="proper-checkbox">
+                <input type="checkbox" id="proper-checkbox" name="proper-checkbox" value="agree">
+                I agree to the terms
+            </label>
+        </div>
+
+        <!-- Radio buttons with proper labels -->
+        <div class="form-group">
+            <h4>8. Radio buttons with proper labels</h4>
+            <label for="radio-yes">
+                <input type="radio" id="radio-yes" name="proper-radio" value="yes">
+                Yes
+            </label>
+            <label for="radio-no">
+                <input type="radio" id="radio-no" name="proper-radio" value="no">
+                No
+            </label>
+        </div>
+
+        <!-- Hidden input (should be ignored) -->
+        <div class="form-group">
+            <h4>9. Hidden input (should not require label)</h4>
+            <input type="hidden" name="csrf-token" value="abc123">
+        </div>
+
+        <!-- Submit button (should not require label) -->
+        <div class="form-group">
+            <h4>10. Submit button (should not require label)</h4>
+            <input type="submit" value="Submit Form">
+        </div>
+
+        <!-- Button input (should not require label) -->
+        <div class="form-group">
+            <h4>11. Button input (should not require label)</h4>
+            <input type="button" value="Click Me">
+        </div>
+
+        <!-- Input with title attribute (acceptable in some contexts) -->
+        <div class="form-group">
+            <h4>12. Input with title attribute</h4>
+            <input type="search" name="search-title" title="Search products">
+        </div>
+    </div>
+
+    <!-- EDGE CASES -->
+    <div class="section">
+        <h3>🔍 EDGE CASES - Test specific scenarios</h3>
+        
+        <!-- Disabled input with no label -->
+        <div class="form-group">
+            <h4>1. Disabled input with no label</h4>
+            <input type="text" name="disabled-unlabeled" disabled>
+        </div>
+
+        <!-- Readonly input with no label -->
+        <div class="form-group">
+            <h4>2. Readonly input with no label</h4>
+            <input type="text" name="readonly-unlabeled" readonly value="Cannot edit">
+        </div>
+
+        <!-- Multiple labels for same input -->
+        <div class="form-group">
+            <h4>3. Multiple labels for same input</h4>
+            <label for="multiple-labels">Primary Label</label>
+            <label for="multiple-labels">Secondary Label</label>
+            <input type="text" id="multiple-labels" name="multiple-labels">
+        </div>
+
+        <!-- Input with both aria-label and label -->
+        <div class="form-group">
+            <h4>4. Input with both label and aria-label</h4>
+            <label for="both-labels">Visible Label</label>
+            <input type="text" id="both-labels" name="both-labels" aria-label="Aria Label">
+        </div>
+
+        <!-- Fieldset with legend (group labeling) -->
+        <div class="form-group">
+            <h4>5. Fieldset with legend</h4>
+            <fieldset>
+                <legend>Contact Preference</legend>
+                <input type="radio" name="contact-method" value="email" aria-label="Email">
+                <input type="radio" name="contact-method" value="phone" aria-label="Phone">
+            </fieldset>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 15px; background-color: #f0f0f0;">
+        <h3>Testing Instructions</h3>
+        <p><strong>Expected Results:</strong></p>
+        <ul>
+            <li>Accessibility checker should flag 13 errors in the "ERROR CASES" section</li>
+            <li>No errors should be flagged in the "VALID CASES" section</li>
+            <li>Edge cases may vary depending on checker implementation</li>
+        </ul>
+    </div>
+</body>
+</html>

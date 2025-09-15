@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Style Definition Test Fixture</title>
+    
+    <!-- POSITIVE CASES: These should trigger the error -->
+    <style>
+        /* Basic color properties that should be flagged */
+        .error-case-1 {
+            color: red;
+        }
+        
+        .error-case-2 {
+            background-color: #ff0000;
+        }
+        
+        .error-case-3 {
+            border-color: blue;
+        }
+        
+        /* Multiple color properties in one rule */
+        .error-case-4 {
+            color: #333333;
+            background-color: white;
+            border-color: gray;
+        }
+        
+        /* Color with !important */
+        .error-case-5 {
+            color: green !important;
+        }
+        
+        /* Different color formats */
+        .error-case-6 {
+            color: rgb(255, 0, 0);
+        }
+        
+        .error-case-7 {
+            background-color: rgba(0, 255, 0, 0.5);
+        }
+        
+        .error-case-8 {
+            color: hsl(240, 100%, 50%);
+        }
+        
+        .error-case-9 {
+            background-color: hsla(120, 100%, 50%, 0.8);
+        }
+        
+        /* Named colors */
+        .error-case-10 {
+            color: darkblue;
+        }
+        
+        /* Outline color */
+        .error-case-11 {
+            outline-color: orange;
+        }
+        
+        /* Text decoration color */
+        .error-case-12 {
+            text-decoration-color: purple;
+        }
+        
+        /* Box shadow with color */
+        .error-case-13 {
+            box-shadow: 2px 2px 4px red;
+        }
+        
+        /* Multiple selectors with color */
+        .error-case-14,
+        .error-case-15 {
+            color: #ff6600;
+        }
+        
+        /* Pseudo-classes with color */
+        .error-case-16:hover {
+            color: magenta;
+        }
+        
+        .error-case-17:focus {
+            background-color: yellow;
+        }
+        
+        /* Media query with color styles */
+        @media screen and (max-width: 768px) {
+            .error-case-18 {
+                color: teal;
+            }
+        }
+        
+        /* Nested selectors */
+        .parent .error-case-19 {
+            color: maroon;
+        }
+        
+        /* Element selectors */
+        h1 {
+            color: navy;
+        }
+        
+        p {
+            background-color: lightgray;
+        }
+        
+        /* NEGATIVE CASES: These should NOT trigger the error */
+        .no-error-1 {
+            font-size: 16px;
+            margin: 10px;
+            padding: 5px;
+        }
+        
+        .no-error-2 {
+            width: 100%;
+            height: 200px;
+            display: flex;
+        }
+        
+        /* Properties that contain 'color' but aren't color-related */
+        .no-error-3 {
+            /* These should not trigger if the checker is sophisticated */
+            background-image: url('colorful-image.jpg');
+        }
+        
+        /* Transparent values (edge case) */
+        .edge-case-1 {
+            background-color: transparent;
+        }
+        
+        /* Inherit/initial/unset values (edge case) */
+        .edge-case-2 {
+            color: inherit;
+        }
+        
+        .edge-case-3 {
+            background-color: initial;
+        }
+        
+        /* CSS custom properties with colors */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: rgb(108, 117, 125);
+        }
+        
+        .error-case-20 {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <h1>Color Style Definition Test Fixture</h1>
+    
+    <div class="test-section">
+        <h2>Positive Test Cases (Should trigger error)</h2>
+        
+        <div class="error-case-1">Basic red color text</div>
+        <div class="error-case-2">Red background color</div>
+        <div class="error-case-3" style="border: 1px solid;">Blue border color</div>
+        <div class="error-case-4">Multiple color properties</div>
+        <div class="error-case-5">Green color with !important</div>
+        <div class="error-case-6">RGB color format</div>
+        <div class="error-case-7">RGBA background color</div>
+        <div class="error-case-8">HSL color format</div>
+        <div class="error-case-9">HSLA background color</div>
+        <div class="error-case-10">Named color (darkblue)</div>
+        <div class="error-case-11" style="outline: 1px solid;">Orange outline color</div>
+        <div class="error-case-12" style="text-decoration: underline;">Purple text decoration</div>
+        <div class="error-case-13">Red box shadow</div>
+        <div class="error-case-14">Multiple selector color 1</div>
+        <div class="error-case-15">Multiple selector color 2</div>
+        <div class="error-case-16">Hover color (try hovering)</div>
+        <div class="error-case-17" tabindex="0">Focus background (try focusing)</div>
+        <div class="error-case-18">Media query color (resize window)</div>
+        <div class="parent">
+            <div class="error-case-19">Nested selector color</div>
+        </div>
+        <div class="error-case-20">CSS custom property color</div>
+        
+        <!-- Elements with element selectors -->
+        <h1>This h1 has color defined in style tag</h1>
+        <p>This paragraph has background-color defined in style tag</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Negative Test Cases (Should NOT trigger error)</h2>
+        
+        <div class="no-error-1">No color properties</div>
+        <div class="no-error-2">Layout properties only</div>
+        <div class="no-error-3">Background image property</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Edge Cases</h2>
+        
+        <div class="edge-case-1">Transparent background</div>
+        <div class="edge-case-2">Inherited color</div>
+        <div class="edge-case-3">Initial background color</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Inline Styles (Additional Test)</h2>
+        <!-- These test inline styles vs style tag - depending on checker scope -->
+        <div style="color: red;">Inline red color (may or may not trigger depending on checker scope)</div>
+        <div style="background-color: blue;">Inline blue background (may or may not trigger depending on checker scope)</div>
+    </div>
+    
+    <!-- Additional style tag for multiple style tag testing -->
+    <style>
+        .additional-error-case {
+            color: cyan;
+        }
+        
+        /* More complex selectors */
+        div > .child-error-case {
+            background-color: pink;
+        }
+        
+        .container .nested .deep-error-case {
+            color: indigo;
+        }
+    </style>
+    
+    <div class="additional-test-section">
+        <h2>Additional Style Tag Tests</h2>
+        <div class="additional-error-case">Cyan color from second style tag</div>
+        <div>
+            <div class="child-error-case">Pink background from child selector</div>
+        </div>
+        <div class="container">
+            <div class="nested">
+                <div class="deep-error-case">Indigo color from deep nested selector</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

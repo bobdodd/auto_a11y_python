@@ -37,6 +37,96 @@
                             </div>
                         </div>
                         
+                        <!-- Touchpoint Testing Configuration -->
+                        <div class="mb-3">
+                            <label class="form-label">Touchpoint Tests Configuration</label>
+                            <div class="form-text mb-2">
+                                Configure which accessibility tests to run. Tests are organized by touchpoint (testing category).
+                            </div>
+                            
+                            <!-- Global Controls -->
+                            <div class="btn-group mb-3" role="group">
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllTests(true)">Enable All</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAllTests(false)">Disable All</button>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('minimal')">Minimal</button>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('wcag-aa')">WCAG AA</button>
+                            </div>
+                            
+                            <!-- Touchpoint Tree -->
+                            <div class="touchpoint-tree border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                                {% set touchpoint_data = [
+                                    ('accessible_names', 'Accessible Names', ['ErrMissingAccessibleName', 'WarnGenericAccessibleName']),
+                                    ('animation', 'Animation', ['ErrAutoStartTimers', 'ErrInfiniteAnimation', 'ErrNoReducedMotionSupport', 'WarnFastInterval', 'WarnLongAnimation']),
+                                    ('aria', 'ARIA', ['AI_ErrMissingInteractiveRole', 'ErrMapAriaHidden', 'WarnMissingAriaModal']),
+                                    ('buttons', 'Buttons', ['ErrButtonEmpty', 'ErrButtonNoText', 'ErrMissingCloseButton', 'WarnButtonTextInsufficient']),
+                                    ('colors_contrast', 'Colors & Contrast', ['ErrInsufficientContrast', 'ErrSmallText', 'InfoNoColorSchemeSupport', 'InfoNoContrastSupport', 'WarnColorOnlyLink']),
+                                    ('dialogs', 'Dialogs & Modals', ['ErrModalMissingClose', 'ErrModalMissingHeading', 'ErrModalWithoutEscape', 'WarnMissingAriaModal', 'WarnModalMissingAriaLabelledby', 'WarnModalMissingAriaModal', 'WarnModalNoFocusableElements']),
+                                    ('documents', 'Documents', ['ErrMissingDocumentType', 'WarnGenericDocumentLinkText', 'WarnMissingDocumentMetadata']),
+                                    ('event_handling', 'Event Handling', ['ErrMouseOnlyHandler']),
+                                    ('focus_management', 'Focus Management', ['ErrContentObscuring', 'ErrNoFocusIndicator', 'ErrNoOutlineOffsetDefined', 'ErrOutlineIsNoneOnInteractiveElement', 'WarnZeroOutlineOffset']),
+                                    ('forms', 'Forms', ['ErrEmptyLabel', 'ErrNoLabel', 'ErrPlaceholderAsLabel', 'ErrUnlabelledField', 'WarnMissingAriaLabelledby', 'WarnMissingRequiredIndication', 'WarnNoFieldset', 'WarnNoLegend', 'WarnUnlabelledForm', 'WarnUnlabelledRegion']),
+                                    ('headings', 'Headings', ['DiscoHeadingWithID', 'ErrEmptyHeading', 'ErrIncorrectHeadingLevel', 'ErrModalMissingHeading', 'ErrMultipleH1', 'ErrNoH1', 'ErrSkippedHeadingLevel', 'InfoHeadingNearLengthLimit', 'WarnHeadingInsideDisplayNone', 'WarnHeadingOver60CharsLong', 'WarnVisualHierarchy']),
+                                    ('iframes', 'Iframes', ['ErrVideoIframeMissingTitle']),
+                                    ('images', 'Images', ['DiscoFoundInlineSvg', 'DiscoFoundSvgImage', 'ErrAltOnElementThatDoesntTakeIt', 'ErrAltTooLong', 'ErrImageAltContainsHTML', 'ErrImageWithEmptyAlt', 'ErrImageWithImgFileExtensionAlt', 'ErrImageWithNoAlt', 'ErrImageWithURLAsAlt', 'ErrNoAlt', 'ErrRedundantAlt', 'ErrSVGNoAccessibleName', 'WarnSVGNoRole', 'WarnSvgPositiveTabindex']),
+                                    ('keyboard_navigation', 'Keyboard Navigation', ['ErrMissingTabindex', 'ErrNonInteractiveZeroTabindex', 'ErrNoFocusIndicator', 'ErrPositiveTabindex', 'ErrTabOrderViolation', 'WarnHighTabindex', 'WarnMissingNegativeTabindex', 'WarnModalNoFocusableElements', 'WarnNegativeTabindex']),
+                                    ('landmarks', 'Landmarks', ['ErrDuplicateLandmarkWithoutName', 'ErrMissingMainLandmark', 'WarnContentOutsideLandmarks', 'WarnMissingBannerLandmark', 'WarnMissingContentinfoLandmark']),
+                                    ('language', 'Language', ['ErrHreflangAttrEmpty', 'ErrHreflangNotOnLink', 'ErrIncorrectlyFormattedPrimaryLang', 'ErrNoDocumentLanguage', 'WarnMissingDocumentMetadata']),
+                                    ('links', 'Links', ['ErrInvalidGenericLinkName', 'WarnAnchorTargetTabindex', 'WarnColorOnlyLink', 'WarnGenericDocumentLinkText', 'WarnGenericLinkNoImprovement']),
+                                    ('lists', 'Lists', ['ErrEmptyList', 'ErrFakeListImplementation', 'WarnCustomBulletStyling', 'WarnDeepListNesting']),
+                                    ('maps', 'Maps', ['ErrDivMapMissingAttributes', 'ErrMapMissingTitle']),
+                                    ('media', 'Media', ['ErrNativeVideoMissingControls', 'ErrVideoIframeMissingTitle', 'WarnVideoAutoplay']),
+                                    ('navigation', 'Navigation', ['AI_ErrAccordionWithoutARIA', 'AI_ErrCarouselWithoutARIA', 'AI_ErrDropdownWithoutARIA', 'ErrDuplicateNavNames', 'ErrInappropriateMenuRole', 'ErrNavMissingAccessibleName', 'WarnNoCurrentPageIndicator']),
+                                    ('reading_order', 'Reading Order', ['AI_InfoContentOrder', 'AI_WarnPossibleReadingOrderIssue']),
+                                    ('semantic_structure', 'Semantic Structure', ['ErrEmptyPageTitle', 'ErrHeaderMissingScope', 'ErrImproperTitleAttribute', 'ErrMissingDocumentType', 'ErrMultiplePageTitles', 'ErrNoPageTitle', 'WarnPageTitleTooLong', 'WarnPageTitleTooShort', 'WarnVisualHierarchy']),
+                                    ('tables', 'Tables', ['ErrHeaderMissingScope', 'ErrTableMissingCaption', 'ErrTableNoColumnHeaders', 'WarnTableMissingThead']),
+                                    ('timing', 'Timing', ['ErrAutoStartTimers', 'ErrTimersWithoutControls', 'WarnFastInterval']),
+                                    ('typography', 'Typography', ['ErrSmallText', 'WarnItalicText', 'WarnJustifiedText', 'WarnRightAlignedText', 'WarnSmallLineHeight'])
+                                ] %}
+                                
+                                {% for touchpoint_id, touchpoint_name, test_ids in touchpoint_data %}
+                                <div class="touchpoint-item mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <!-- Expand/Collapse button -->
+                                        <button class="btn btn-sm btn-link p-0 me-2" type="button" 
+                                                data-bs-toggle="collapse" data-bs-target="#tests_{{ touchpoint_id }}"
+                                                aria-expanded="false" aria-controls="tests_{{ touchpoint_id }}">
+                                            <i class="bi bi-chevron-right" id="chevron_{{ touchpoint_id }}"></i>
+                                        </button>
+                                        
+                                        <!-- Touchpoint checkbox -->
+                                        <div class="form-check">
+                                            <input class="form-check-input touchpoint-checkbox" type="checkbox" 
+                                                   id="touchpoint_{{ touchpoint_id }}" name="touchpoint_{{ touchpoint_id }}"
+                                                   checked
+                                                   onchange="toggleTouchpoint('{{ touchpoint_id }}')">
+                                            <label class="form-check-label fw-bold" for="touchpoint_{{ touchpoint_id }}">
+                                                <i class="bi bi-folder2 me-1"></i>{{ touchpoint_name }}
+                                                <span class="badge bg-secondary ms-2">{{ test_ids|length }}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Individual tests under this touchpoint (collapsible) -->
+                                    <div class="collapse ms-5 mt-1" id="tests_{{ touchpoint_id }}">
+                                        {% for test_id in test_ids %}
+                                        <div class="form-check">
+                                            <input class="form-check-input test-checkbox" type="checkbox" 
+                                                   id="test_{{ touchpoint_id }}_{{ test_id }}" 
+                                                   name="test_{{ touchpoint_id }}_{{ test_id }}"
+                                                   data-touchpoint="{{ touchpoint_id }}"
+                                                   checked>
+                                            <label class="form-check-label small" for="test_{{ touchpoint_id }}_{{ test_id }}">
+                                                <i class="bi bi-file-earmark-code me-1"></i>
+                                                <code>{{ test_id }}</code>
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
                         <!-- AI Testing Configuration -->
                         <div class="mb-3">
                             <label class="form-label">AI-Assisted Testing</label>
@@ -114,8 +204,62 @@
 </div>
 {% endblock %}
 
-{% block scripts %}
+{% block extra_js %}
 <script>
+// Handle collapse/expand chevron rotation
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const chevron = this.querySelector('i');
+            if (chevron) {
+                chevron.classList.toggle('bi-chevron-right');
+                chevron.classList.toggle('bi-chevron-down');
+            }
+        });
+    });
+});
+
+// Toggle all tests within a touchpoint
+function toggleTouchpoint(touchpointId) {
+    const touchpointCheckbox = document.getElementById('touchpoint_' + touchpointId);
+    const testCheckboxes = document.querySelectorAll(`[data-touchpoint="${touchpointId}"]`);
+    
+    testCheckboxes.forEach(checkbox => {
+        checkbox.checked = touchpointCheckbox.checked;
+    });
+}
+
+// Select or deselect all tests
+function selectAllTests(enable) {
+    document.querySelectorAll('.touchpoint-checkbox').forEach(cb => {
+        cb.checked = enable;
+    });
+    document.querySelectorAll('.test-checkbox').forEach(cb => {
+        cb.checked = enable;
+    });
+}
+
+// Apply test presets
+function applyPreset(preset) {
+    // First disable all
+    selectAllTests(false);
+    
+    if (preset === 'minimal') {
+        // Enable only critical error tests
+        const minimalTouchpoints = ['headings', 'images', 'forms', 'colors_contrast', 'keyboard_navigation'];
+        minimalTouchpoints.forEach(tp => {
+            const checkbox = document.getElementById('touchpoint_' + tp);
+            if (checkbox) {
+                checkbox.checked = true;
+                toggleTouchpoint(tp);
+            }
+        });
+    } else if (preset === 'wcag-aa') {
+        // Enable all touchpoints for WCAG AA compliance
+        selectAllTests(true);
+    }
+}
+
 function toggleAITests() {
     const enabled = document.getElementById('enable_ai_testing').checked;
     const selection = document.getElementById('ai_tests_selection');

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Generic Text Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        button, input[type="submit"], input[type="button"] {
+            margin: 10px 5px;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .warning { background-color: #fff3cd; }
+        .good { background-color: #d4edda; }
+        .form-section {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Button Generic Text Accessibility Test Fixture</h1>
+    <p>This fixture tests detection of buttons with generic text that should trigger warnings.</p>
+
+    <!-- SECTION 1: Generic text that SHOULD trigger warnings -->
+    <div class="section warning">
+        <h2>🚨 Should Trigger Warnings - Generic Button Text</h2>
+        
+        <h3>Common Generic Words</h3>
+        <button>Click here</button>
+        <button>CLICK HERE</button>
+        <button>Click Here</button>
+        <button>Submit</button>
+        <button>OK</button>
+        <button>ok</button>
+        <button>Cancel</button>
+        <button>Yes</button>
+        <button>No</button>
+        <button>Go</button>
+        <button>Next</button>
+        <button>Previous</button>
+        <button>Back</button>
+        <button>Continue</button>
+        <button>Done</button>
+        <button>Finish</button>
+        <button>Start</button>
+        <button>Stop</button>
+        <button>Save</button>
+        <button>Delete</button>
+        <button>Remove</button>
+        <button>Add</button>
+        <button>Edit</button>
+        <button>Update</button>
+        <button>Download</button>
+        <button>Upload</button>
+        <button>Send</button>
+        <button>Get</button>
+        <button>Buy</button>
+        <button>Search</button>
+        <button>Find</button>
+        <button>View</button>
+        <button>Show</button>
+        <button>Hide</button>
+        <button>Open</button>
+        <button>Close</button>
+        <button>More</button>
+        <button>Less</button>
+        <button>Read more</button>
+        <button>Learn more</button>
+
+        <h3>Generic with Punctuation/Symbols</h3>
+        <button>Click here!</button>
+        <button>Submit...</button>
+        <button>OK?</button>
+        <button>Go →</button>
+        <button>▶ Play</button>
+        <button>⏸ Pause</button>
+
+        <h3>Input Elements with Generic Text</h3>
+        <input type="submit" value="Submit">
+        <input type="button" value="Click here">
+        <input type="submit" value="OK">
+        <input type="button" value="Cancel">
+        <input type="reset" value="Reset">
+
+        <h3>Buttons in Form Context (Still Generic)</h3>
+        <div class="form-section">
+            <form>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+                <button type="submit">Submit</button>
+                <button type="button">Cancel</button>
+            </form>
+        </div>
+
+        <h3>Generic Text in Different Cases</h3>
+        <button>submit</button>
+        <button>SUBMIT</button>
+        <button>Submit</button>
+        <button>click here</button>
+        <button>CLICK HERE</button>
+
+        <h3>Generic with Extra Whitespace</h3>
+        <button>  Submit  </button>
+        <button>
+            OK
+        </button>
+        <button>	Click here	</button>
+    </div>
+
+    <!-- SECTION 2: Descriptive text that should NOT trigger warnings -->
+    <div class="section good">
+        <h2>✅ Should NOT Trigger Warnings - Descriptive Button Text</h2>
+        
+        <h3>Descriptive Action Buttons</h3>
+        <button>Submit registration form</button>
+        <button>Download PDF report</button>
+        <button>Save draft article</button>
+        <button>Delete selected items</button>
+        <button>Add new contact</button>
+        <button>Edit profile information</button>
+        <button>Search for products</button>
+        <button>Upload profile photo</button>
+        <button>Send message to John</button>
+        <button>Buy premium subscription</button>
+        <button>View order history</button>
+        <button>Cancel subscription</button>
+        <button>Continue to checkout</button>
+        <button>Go to next step</button>
+        <button>Back to previous page</button>
+
+        <h3>Generic Words in Descriptive Context</h3>
+        <button>Submit job application</button>
+        <button>OK, I understand the terms</button>
+        <button>Click here to view full image</button>
+        <button>Start free trial</button>
+        <button>Open advanced settings</button>
+        <button>Close modal dialog</button>
+
+        <h3>Buttons with aria-label (Good Practice)</h3>
+        <button aria-label="Submit contact form">Submit</button>
+        <button aria-label="Download annual financial report">Download</button>
+        <button aria-label="Delete this comment permanently">Delete</button>
+        <button aria-label="Save changes to user profile">Save</button>
+
+        <h3>Input Elements with Descriptive Text</h3>
+        <input type="submit" value="Submit registration">
+        <input type="button" value="Calculate monthly payment">
+        <input type="submit" value="Send feedback">
+
+        <h3>Contextual Buttons</h3>
+        <div class="form-section">
+            <h4>Contact Form</h4>
+            <form>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+                <button type="submit">Send contact message</button>
+                <button type="button">Clear form fields</button>
+            </form>
+        </div>
+
+        <h3>Specific Action Buttons</h3>
+        <button>Play video tutorial</button>
+        <button>Pause background music</button>
+        <button>Stop slideshow</button>
+        <button>Resume download</button>
+        <button>Restart application</button>
+        <button>Refresh page content</button>
+    </div>
+
+    <!-- SECTION 3: Edge cases and variations -->
+    <div class="section">
+        <h2>🔍 Edge Cases for Testing</h2>
+        
+        <h3>Buttons with Mixed Content</h3>
+        <button><span>Submit</span></button>
+        <button><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTggMTRMMiA4TDggMkwxNCA4TDggMTRaIiBmaWxsPSJjdXJyZW50Q29sb3IiLz4KPHN2Zz4K" alt=""> OK</button>
+        <button>🔍 Search</button>
+        <button>💾 Save</button>
+
+        <h3>Empty or Minimal Content</h3>
+        <button></button>
+        <button> </button>
+        <button>×</button>
+        <button>+</button>
+        <button>?</button>
+
+        <h3>Numbers Only</h3>
+        <button>1</button>
+        <button>2</button>
+        <button>10</button>
+
+        <h3>Role Button Elements</h3>
+        <div role="button" tabindex="0">Click here</div>
+        <div role="button" tabindex="0">Submit form</div>
+        <span role="button" tabindex="0">OK</span>
+        <a href="#" role="button">Download file</a>
+
+        <h3>Disabled Buttons</h3>
+        <button disabled>Submit</button>
+        <button disabled>Submit application form</button>
+
+        <h3>Buttons with Only Icons (aria-label needed)</h3>
+        <button aria-label="Close dialog">×</button>
+        <button aria-label="Add to favorites">♡</button>
+        <button>♡</button> <!-- Should trigger warning -->
+
+        <h3>Link Buttons</h3>
+        <a href="#" role="button">Click here</a> <!-- Should warn -->
+        <a href="#" role="button">Read full article</a> <!-- Should not warn -->
+    </div>
+
+    <!-- SECTION 4: Complex scenarios -->
+    <div class="section">
+        <h2>🎯 Complex Scenarios</h2>
+        
+        <h3>Form with Multiple Generic Buttons</h3>
+        <form class="form-section">
+            <fieldset>
+                <legend>User Registration</legend>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+                <br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+                <br><br>
+                <button type="submit">Submit</button> <!-- Should warn -->
+                <button type="reset">Reset</button> <!-- Should warn -->
+                <button type="button">Cancel</button> <!-- Should warn -->
+            </fieldset>
+        </form>
+
+        <h3>Dialog with Generic Buttons</h3>
+        <div style="border: 2px solid #333; padding: 15px; background: white;">
+            <h4>Confirm Action</h4>
+            <p>Are you sure you want to delete this item?</p>
+            <button>Yes</button> <!-- Should warn -->
+            <button>No</button> <!-- Should warn -->
+            <button>OK</button> <!-- Should warn -->
+            <button>Cancel</button> <!-- Should warn -->
+        </div>
+
+        <h3>Navigation with Generic Text</h3>
+        <nav>
+            <button>Previous</button> <!-- Should warn -->
+            <button>Next</button> <!-- Should warn -->
+            <button>Go to previous article</button> <!-- Should not warn -->
+            <button>Go to next article</button> <!-- Should not warn -->
+        </nav>
+
+        <h3>Table Actions</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td>john@example.com</td>
+                    <td>
+                        <button>Edit</button> <!-- Should warn -->
+                        <button>Delete</button> <!-- Should warn -->
+                        <button>View</button> <!-- Should warn -->
+                    </td>
+                </tr>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>jane@example.com</td>
+                    <td>
+                        <button>Edit user profile</button> <!-- Should not warn -->
+                        <button>Delete user account</button> <!-- Should not warn -->
+                        <button>View user details</button> <!-- Should not warn -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Add some basic functionality to demonstrate button behavior
+        document.querySelectorAll('button, input[type="submit"], input[type="button"]').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Button clicked:', this.textContent || this.value || this.getAttribute('aria-label') || 'unlabeled button');
+            });
+        });
+
+        // Handle role="button" elements
+        document.querySelectorAll('[role="button"]').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Role button clicked:', this.textContent || this.getAttribute('aria-label') || 'unlabeled button');
+            });
+            
+            button.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

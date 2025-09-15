@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Missing Label Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .failing {
+            border-color: #d73527;
+            background-color: #fdf2f2;
+        }
+
+        .passing {
+            border-color: #22c55e;
+            background-color: #f0fdf4;
+        }
+
+        /* Modal base styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.open {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .close:hover {
+            color: #999;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #e9ecef;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Modal Missing Label Test Fixture - AI_WarnModalMissingLabel</h1>
+    <p>This fixture tests various scenarios where modals lack proper accessible names or descriptions.</p>
+
+    <!-- FAILING CASES - Should trigger AI_WarnModalMissingLabel warning -->
+    
+    <div class="test-section failing">
+        <h2>❌ Test 1: Basic Modal with No Accessible Name</h2>
+        <p>Modal using role="dialog" but missing both aria-label and aria-labelledby</p>
+        <button onclick="openModal('modal1')">Open Modal 1</button>
+        
+        <div id="modal1" class="modal" role="dialog">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('modal1')">&times;</button>
+                <h3>Confirmation</h3>
+                <p>Are you sure you want to delete this item?</p>
+                <button onclick="closeModal('modal1')">Cancel</button>
+                <button onclick="closeModal('modal1')">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section failing">
+        <h2>❌ Test 2: Modal with Empty aria-label</h2>
+        <p>Modal has aria-label attribute but it's empty</p>
+        <button onclick="openModal('modal2')">Open Modal 2</button>
+        
+        <div id="modal2" class="modal" role="dialog" aria-label="">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('modal2')">&times;</button>
+                <h3>Settings</h3>
+                <p>Configure your preferences below.</p>
+                <button onclick="closeModal('modal2')">Save</button>
+                <button onclick="closeModal('modal2')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section failing">
+        <h2>❌ Test 3: Modal with Invalid aria-labelledby</h2>
+        <p>Modal has aria-labelledby pointing to non-existent element</p>
+        <button onclick="openModal('modal3')">Open Modal 3</button>
+        
+        <div id="modal3" class="modal" role="dialog" aria-labelledby="nonexistent-id">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('modal3')">&times;</button>
+                <h3>Warning</h3>
+                <p>This action cannot be undone.</p>
+                <button onclick="closeModal('modal3')">Proceed</button>
+                <button onclick="closeModal('modal3')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section failing">
+        <h2>❌ Test 4: Custom Modal Element with No Label</h2>
+        <p>Custom element with modal functionality but no accessible name</p>
+        <button onclick="openModal('modal4')">Open Modal 4</button>
+        
+        <div id="modal4" class="modal" role="dialog">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('modal4')">&times;</button>
+                <div>
+                    <p><strong>Important Notice</strong></p>
+                    <p>Your session will expire soon.</p>
+                    <button onclick="closeModal('modal4')">Extend Session</button>
+                    <button onclick="closeModal('modal4')">Log Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section failing">
+        <h2>❌ Test 5: Modal with aria-labelledby Pointing to Hidden Element</h2>
+        <p>Modal has aria-labelledby but references a hidden element</p>
+        <button onclick="openModal('modal5')">Open Modal 5</button>
+        
+        <div id="hidden-title" class="hidden">Error Dialog</div>
+        <div id="modal5" class="modal" role="dialog" aria-labelledby="hidden-title">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('modal5')">&times;</button>
+                <h3>System Error</h3>
+                <p>An unexpected error occurred.</p>
+                <button onclick="closeModal('modal5')">Retry</button>
+                <button onclick="closeModal('modal5')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PASSING CASES - Should NOT trigger the warning -->
+    
+    <div class="test-section passing">
+        <h2>✅ Test 6: Modal with aria-label</h2>
+        <p>Modal properly labeled with aria-label</p>
+        <button onclick="openModal('modal6')">Open Modal 6</button>
+        
+        <div id="modal6" class="modal" role="dialog" aria-label="Confirmation Dialog">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('modal6')">&times;</button>
+                <h3>Confirm Action</h3>
+                <p>Please confirm your action.</p>
+                <button onclick="closeModal('modal6')">Confirm</button>
+                <button onclick="closeModal('modal6')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section passing">
+        <h2>✅ Test 7: Modal with aria-labelledby</h2>
+        <p>Modal properly labeled with aria-labelledby</p>
+        <button onclick="openModal('modal7')">Open Modal 7</button>
+        
+        <h3 id="modal7-title">Account Settings</h3>
+        <div id="modal7" class="modal" role="dialog" aria-labelledby="modal7-title">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('modal7')">&times;</button>
+                <p>Manage your account settings here.</p>
+                <button onclick="closeModal('modal7')">Save Changes</button>
+                <button onclick="closeModal('modal7')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section passing">
+        <h2>✅ Test 8: Modal with aria-describedby</h2>
+        <p>Modal with aria-label and additional description</p>
+        <button onclick="openModal('modal8')">Open Modal 8</button>
+        
+        <p id="modal8-desc">This dialog allows you to update your profile information</p>
+        <div id="modal8" class="modal" role="dialog" aria-label="Edit Profile" aria-describedby="modal8-desc">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('modal8')">&times;</button>
+                <h3>Edit Profile</h3>
+                <p>Update your information below.</p>
+                <button onclick="closeModal('modal8')">Update</button>
+                <button onclick="closeModal('modal8')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section passing">
+        <h2>✅ Test 9: Modal with Both aria-label and aria-labelledby</h2>
+        <p>Modal with both aria-label and aria-labelledby (aria-labelledby takes precedence)</p>
+        <button onclick="openModal('modal9')">Open Modal 9</button>
+        
+        <h3 id="modal9-heading">Data Export</h3>
+        <div id="modal9" class="modal" role="dialog" aria-label="Fallback Label" aria-labelledby="modal9-heading">
+            <div class="modal-content">
+                <button class="close" onclick="closeModal('modal9')">&times;</button>
+                <p>Choose the format for your data export.</p>
+                <button onclick="closeModal('modal9')">Export CSV</button>
+                <button onclick="closeModal('modal9')">Export JSON</button>
+                <button onclick="closeModal('modal9')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDGE CASES -->
+    
+    <div class="test-section failing">
+        <h2>❌ Test 10: Dialog Element without Accessible Name</h2>
+        <p>HTML5 dialog element without accessible name</p>
+        <button onclick="document.getElementById('dialog1').showModal()">Open Dialog</button>
+        
+        <dialog id="dialog1">
+            <div class="modal-content">
+                <button onclick="document.getElementById('dialog1').close()">&times;</button>
+                <h3>Native Dialog</h3>
+                <p>This is a native HTML dialog element.</p>
+                <button onclick="document.getElementById('dialog1').close()">Close</button>
+            </div>
+        </dialog>
+    </div>
+
+    <div class="test-section passing">
+        <h2>✅ Test 11: Dialog Element with Accessible Name</h2>
+        <p>HTML5 dialog element with aria-label</p>
+        <button onclick="document.getElementById('dialog2').showModal()">Open Accessible Dialog</button>
+        
+        <dialog id="dialog2" aria-label="Information Dialog">
+            <div class="modal-content">
+                <button onclick="document.getElementById('dialog2').close()">&times;</button>
+                <h3>Accessible Dialog</h3>
+                <p>This dialog has proper labeling.</p>
+                <button onclick="document.getElementById('dialog2').close()">Close</button>
+            </div>
+        </dialog>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('open');
+                // Focus trap would go here in a real implementation
+                modal.focus();
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('open');
+            }
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('open');
+            }
+        }
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const openModals = document.querySelectorAll('.modal.open');
+                openModals.forEach(modal => modal.classList.remove('open'));
+                
+                const openDialogs = document.querySelectorAll('dialog[open]');
+                openDialogs.forEach(dialog => dialog.close());
+            }
+        });
+
+        // Add some dynamic modals for testing
+        function createDynamicModal() {
+            const modal = document.createElement('div');
+            modal.id = 'dynamic-modal';
+            modal.className = 'modal';
+            modal.setAttribute('role', 'dialog');
+            // Intentionally missing aria-label or aria-labelledby
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <button class="close" onclick="removeDynamicModal()">&times;</button>
+                    <h3>Dynamic Modal</h3>
+                    <p>This modal was created dynamically without proper labeling.</p>
+                    <button onclick="removeDynamicModal()">Close</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.classList.add('open');
+        }
+
+        function removeDynamicModal() {
+            const modal = document.getElementById('dynamic-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+    </script>
+
+    <div class="test-section failing">
+        <h2>❌ Test 12: Dynamically Created Modal</h2>
+        <p>Modal created via JavaScript without accessible name</p>
+        <button onclick="createDynamicModal()">Create Dynamic Modal</button>
+    </div>
+
+    <div style="margin-top: 40px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+        <h2>Test Summary</h2>
+        <p><strong>Expected Results:</strong></p>
+        <ul>
+            <li><strong>Should FAIL:</strong> Tests 1-5, 10, 12 (7 failures expected)</li>
+            <li><strong>Should PASS:</strong> Tests 6-9, 11 (5 passes expected)</li>
+        </ul>
+        <p><strong>Testing Notes:</strong></p>
+        <ul>
+            <li>Modals with <code>role="dialog"</code> must have accessible names</li>
+            <li>HTML5 <code>&lt;dialog&gt;</code> elements must have accessible names</li>
+            <li>Empty <code>aria-label</code> attributes should be treated as missing</li>
+            <li><code>aria-labelledby</code> must reference existing, visible elements</li>
+            <li>Both static and dynamically created modals should be tested</li>
+        </ul>
+    </div>
+</body>
+</html>

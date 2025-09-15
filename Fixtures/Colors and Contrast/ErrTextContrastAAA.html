@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WCAG AAA Text Contrast Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.5;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 2px solid #000;
+        }
+        
+        .test-description {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        /* Test Case 1: Light gray on white - should fail AAA (passes AA) */
+        .fail-aaa-light {
+            background-color: #ffffff;
+            color: #757575; /* Contrast ratio approximately 4.5:1 */
+            padding: 10px;
+            font-size: 16px;
+        }
+        
+        /* Test Case 2: Medium gray on light background - should fail AAA */
+        .fail-aaa-medium {
+            background-color: #f5f5f5;
+            color: #888888; /* Contrast ratio approximately 3.5:1 */
+            padding: 10px;
+            font-size: 18px;
+        }
+        
+        /* Test Case 3: Blue on light blue - should fail AAA */
+        .fail-aaa-blue {
+            background-color: #e6f3ff;
+            color: #4d94ff; /* Contrast ratio approximately 3.2:1 */
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        /* Test Case 4: Dark gray on medium gray - should fail AAA */
+        .fail-aaa-gray-combo {
+            background-color: #cccccc;
+            color: #666666; /* Contrast ratio approximately 2.8:1 */
+            padding: 10px;
+            font-size: 20px;
+        }
+        
+        /* Test Case 5: Green on light green - should fail AAA */
+        .fail-aaa-green {
+            background-color: #f0fff0;
+            color: #6b8e6b; /* Contrast ratio approximately 3.8:1 */
+            padding: 10px;
+            font-size: 16px;
+        }
+        
+        /* Test Case 6: Red on pink - should fail AAA */
+        .fail-aaa-red {
+            background-color: #ffe6e6;
+            color: #cc6666; /* Contrast ratio approximately 3.1:1 */
+            padding: 10px;
+            font-size: 15px;
+        }
+        
+        /* Test Case 7: Purple on light purple - should fail AAA */
+        .fail-aaa-purple {
+            background-color: #f5f0ff;
+            color: #8066cc; /* Contrast ratio approximately 4.2:1 */
+            padding: 10px;
+            font-size: 17px;
+        }
+        
+        /* Test Case 8: Orange on cream - should fail AAA */
+        .fail-aaa-orange {
+            background-color: #fffaf0;
+            color: #cc8533; /* Contrast ratio approximately 5.5:1 */
+            padding: 10px;
+            font-size: 16px;
+        }
+        
+        /* Test Case 9: Teal on light teal - should fail AAA */
+        .fail-aaa-teal {
+            background-color: #e6ffff;
+            color: #4d9999; /* Contrast ratio approximately 4.8:1 */
+            padding: 10px;
+            font-size: 19px;
+        }
+        
+        /* Test Case 10: Brown on beige - should fail AAA */
+        .fail-aaa-brown {
+            background-color: #f5f5dc;
+            color: #8b6914; /* Contrast ratio approximately 6.2:1 */
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        /* Reference: Good AAA contrast for comparison */
+        .pass-aaa-reference {
+            background-color: #ffffff;
+            color: #333333; /* Contrast ratio approximately 12.6:1 */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #00aa00;
+        }
+        
+        /* Additional test with custom properties for dynamic testing */
+        .dynamic-contrast-test {
+            background-color: var(--bg-color, #f8f8f8);
+            color: var(--text-color, #999999);
+            padding: 10px;
+            font-size: var(--font-size, 16px);
+        }
+    </style>
+</head>
+<body>
+    <h1>WCAG AAA Text Contrast Test Fixture</h1>
+    <p><strong>Purpose:</strong> Test automated accessibility checker for ErrTextContrastAAA detection</p>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 1:</strong> Light gray on white background (4.5:1 ratio - passes AA, fails AAA)
+        </div>
+        <div class="fail-aaa-light">
+            This text should trigger ErrTextContrastAAA. The contrast ratio is approximately 4.5:1 between #757575 and #ffffff, which passes WCAG AA but fails AAA requirements of 7:1 for normal text.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 2:</strong> Medium gray on light gray background (3.5:1 ratio)
+        </div>
+        <div class="fail-aaa-medium">
+            This text demonstrates insufficient contrast with approximately 3.5:1 ratio between #888888 and #f5f5f5. This should definitely trigger the AAA contrast error.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 3:</strong> Blue on light blue background (3.2:1 ratio)
+        </div>
+        <div class="fail-aaa-blue">
+            Blue text (#4d94ff) on light blue background (#e6f3ff) creates poor contrast of about 3.2:1, well below AAA requirements.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 4:</strong> Dark gray on medium gray (2.8:1 ratio)
+        </div>
+        <div class="fail-aaa-gray-combo">
+            This combination of #666666 on #cccccc background has very poor contrast at approximately 2.8:1.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 5:</strong> Green on light green (3.8:1 ratio)
+        </div>
+        <div class="fail-aaa-green">
+            Green text (#6b8e6b) on mint background (#f0fff0) provides insufficient contrast at about 3.8:1.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 6:</strong> Red on pink background (3.1:1 ratio)
+        </div>
+        <div class="fail-aaa-red">
+            Red text (#cc6666) on pink background (#ffe6e6) creates poor readability with 3.1:1 contrast.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 7:</strong> Purple on light purple (4.2:1 ratio)
+        </div>
+        <div class="fail-aaa-purple">
+            Purple text (#8066cc) on lavender background (#f5f0ff) has 4.2:1 contrast - passes AA but fails AAA.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 8:</strong> Orange on cream (5.5:1 ratio)
+        </div>
+        <div class="fail-aaa-orange">
+            Orange text (#cc8533) on cream background (#fffaf0) provides 5.5:1 contrast - close to AAA but still insufficient.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 9:</strong> Teal on light teal (4.8:1 ratio)
+        </div>
+        <div class="fail-aaa-teal">
+            Teal text (#4d9999) on light teal background (#e6ffff) offers 4.8:1 contrast ratio.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Test Case 10:</strong> Brown on beige (6.2:1 ratio - very close to AAA threshold)
+        </div>
+        <div class="fail-aaa-brown">
+            Brown text (#8b6914) on beige (#f5f5dc) is close at 6.2:1 but still below 7:1 AAA requirement.
+        </div>
+    </div>
+    
+    <!-- Dynamic test case for runtime modification -->
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Dynamic Test Case:</strong> Customizable via CSS custom properties
+        </div>
+        <div class="dynamic-contrast-test" style="--bg-color: #eeeeee; --text-color: #777777; --font-size: 18px;">
+            This text uses CSS custom properties and can be modified dynamically for testing different contrast scenarios.
+        </div>
+    </div>
+    
+    <!-- Reference for comparison -->
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Reference:</strong> Good AAA contrast (12.6:1 ratio) - should NOT trigger error
+        </div>
+        <div class="pass-aaa-reference">
+            This text demonstrates good AAA contrast with #333333 on #ffffff background, providing 12.6:1 ratio.
+        </div>
+    </div>
+    
+    <!-- Additional test elements with various font sizes -->
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Font Size Variations:</strong> Same contrast ratio with different font sizes
+        </div>
+        <p style="background-color: #ffffff; color: #777777; font-size: 12px; padding: 5px;">12px text with poor contrast</p>
+        <p style="background-color: #ffffff; color: #777777; font-size: 14px; padding: 5px;">14px text with poor contrast</p>
+        <p style="background-color: #ffffff; color: #777777; font-size: 18px; padding: 5px;">18px text with poor contrast</p>
+        <p style="background-color: #ffffff; color: #777777; font-size: 24px; padding: 5px;">24px text with poor contrast</p>
+    </div>
+    
+    <!-- Inline styles for additional test coverage -->
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Inline Styles:</strong> Testing contrast detection with inline CSS
+        </div>
+        <span style="background-color: #f9f9f9; color: #909090; padding: 8px; font-size: 16px;">
+            Inline styled text that should fail AAA contrast requirements.
+        </span>
+    </div>
+    
+    <!-- Nested elements -->
+    <div class="test-section">
+        <div class="test-description">
+            <strong>Nested Elements:</strong> Text within nested containers
+        </div>
+        <div style="background-color: #fafafa; padding: 10px;">
+            <p style="color: #808080; margin: 0;">
+                Nested paragraph with inherited background and explicit text color that fails AAA.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for dynamic testing scenarios
+        console.log('WCAG AAA Contrast Test Fixture Loaded');
+        
+        // Function to dynamically modify contrast for testing
+        function updateDynamicTest(bgColor, textColor, fontSize) {
+            const element = document.querySelector('.dynamic-contrast-test');
+            element.style.setProperty('--bg-color', bgColor);
+            element.style.setProperty('--text-color', textColor);
+            element.style.setProperty('--font-size', fontSize + 'px');
+        }
+        
+        // Example usage (uncomment for testing):
+        // updateDynamicTest('#f0f0f0', '#888888', 16);
+    </script>
+</body>
+</html>

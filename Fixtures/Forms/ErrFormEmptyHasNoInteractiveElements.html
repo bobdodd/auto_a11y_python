@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Empty Interactive Elements Test Fixture</title>
+</head>
+<body>
+    <h1>Form Interactive Elements Test Cases</h1>
+    
+    <!-- FAILING CASES: Forms with content but no interactive elements -->
+    
+    <!-- Test Case 1: Form with only text content -->
+    <form id="form-text-only">
+        <h2>Contact Information</h2>
+        <p>Please provide your contact details below.</p>
+        <div>Name: </div>
+        <div>Email: </div>
+        <div>Phone: </div>
+    </form>
+    
+    <!-- Test Case 2: Form with labels but no associated inputs -->
+    <form id="form-labels-only">
+        <fieldset>
+            <legend>User Registration</legend>
+            <label>Username</label>
+            <label>Password</label>
+            <label>Confirm Password</label>
+        </fieldset>
+    </form>
+    
+    <!-- Test Case 3: Form with disabled interactive elements only -->
+    <form id="form-disabled-only">
+        <h3>Subscription Form</h3>
+        <input type="text" placeholder="Email" disabled>
+        <button type="submit" disabled>Subscribe</button>
+    </form>
+    
+    <!-- Test Case 4: Form with hidden interactive elements only -->
+    <form id="form-hidden-only">
+        <h3>Survey Form</h3>
+        <p>Please complete the survey below:</p>
+        <input type="text" name="question1" style="display: none;">
+        <input type="hidden" name="user_id" value="123">
+        <button type="submit" hidden>Submit Survey</button>
+    </form>
+    
+    <!-- Test Case 5: Form with non-interactive elements that look interactive -->
+    <form id="form-pseudo-interactive">
+        <h3>Feedback Form</h3>
+        <div class="fake-input">Enter your name here</div>
+        <div class="fake-button">Submit Feedback</div>
+        <span class="fake-checkbox">☐</span> I agree to terms
+    </form>
+    
+    <!-- Test Case 6: Form with only read-only elements -->
+    <form id="form-readonly-only">
+        <h3>Profile Summary</h3>
+        <input type="text" value="John Doe" readonly>
+        <textarea readonly>This is read-only content that cannot be modified.</textarea>
+    </form>
+    
+    <!-- Test Case 7: Empty form with no content at all -->
+    <form id="form-completely-empty">
+    </form>
+    
+    <!-- Test Case 8: Form with nested elements but no interactive content -->
+    <form id="form-nested-non-interactive">
+        <div class="form-section">
+            <div class="form-group">
+                <span class="label-text">First Name:</span>
+                <div class="input-placeholder"></div>
+            </div>
+            <div class="form-group">
+                <span class="label-text">Last Name:</span>
+                <div class="input-placeholder"></div>
+            </div>
+        </div>
+    </form>
+    
+    <!-- PASSING CASES: Properly functioning forms with interactive elements -->
+    
+    <!-- Test Case 9: Valid form with interactive elements -->
+    <form id="form-valid-interactive">
+        <h3>Working Contact Form</h3>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        
+        <button type="submit">Send Message</button>
+    </form>
+    
+    <!-- Test Case 10: Form with various interactive element types -->
+    <form id="form-multiple-interactive">
+        <fieldset>
+            <legend>Comprehensive Form</legend>
+            
+            <input type="text" name="text-field" placeholder="Text input">
+            
+            <select name="dropdown">
+                <option value="">Choose an option</option>
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+            </select>
+            
+            <textarea name="message" placeholder="Your message"></textarea>
+            
+            <input type="checkbox" id="agree" name="agree">
+            <label for="agree">I agree to the terms</label>
+            
+            <input type="radio" id="yes" name="response" value="yes">
+            <label for="yes">Yes</label>
+            
+            <input type="radio" id="no" name="response" value="no">
+            <label for="no">No</label>
+            
+            <input type="submit" value="Submit Form">
+        </fieldset>
+    </form>
+    
+    <!-- Test Case 11: Form with mix of interactive and non-interactive elements -->
+    <form id="form-mixed-content">
+        <h3>Mixed Content Form</h3>
+        <p>This form has both interactive and non-interactive content.</p>
+        
+        <div>Static text content</div>
+        <input type="text" name="username" placeholder="Username">
+        
+        <div>More static content</div>
+        <button type="submit">Login</button>
+    </form>
+
+    <style>
+        /* Styling to make fake elements look interactive */
+        .fake-input {
+            border: 1px solid #ccc;
+            padding: 8px;
+            margin: 4px 0;
+            background: white;
+        }
+        
+        .fake-button {
+            background: #007cba;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 4px 0;
+        }
+        
+        .fake-checkbox {
+            font-size: 16px;
+            margin-right: 8px;
+        }
+        
+        .input-placeholder {
+            height: 30px;
+            border: 1px solid #ddd;
+            margin: 4px 0;
+        }
+        
+        form {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #eee;
+            background: #f9f9f9;
+        }
+        
+        h3 {
+            margin-top: 0;
+        }
+    </style>
+</body>
+</html>

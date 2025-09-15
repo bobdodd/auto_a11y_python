@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Discovery Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            padding: 8px;
+            border: 1px solid #999;
+            border-radius: 3px;
+        }
+        input[type="text"], input[type="email"], input[type="password"], 
+        input[type="tel"], select, textarea {
+            width: 100%;
+            max-width: 300px;
+        }
+        button, input[type="submit"] {
+            background-color: #007cba;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+        fieldset {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #999;
+        }
+        legend {
+            font-weight: bold;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Form Discovery Test Fixture</h1>
+    <p>This page contains multiple forms to test automated form discovery functionality.</p>
+
+    <!-- Contact Form with Various Input Types -->
+    <div class="form-section">
+        <h2>Contact Form</h2>
+        <form id="contact-form" action="/submit-contact" method="post">
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" required aria-describedby="name-error">
+                <div id="name-error" class="error" style="display:none;">Name is required</div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required aria-describedby="email-help">
+                <div id="email-help">We'll never share your email</div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" aria-describedby="phone-format">
+                <div id="phone-format">Format: (555) 123-4567</div>
+            </div>
+
+            <fieldset>
+                <legend>Preferred Contact Method</legend>
+                <div class="form-group">
+                    <input type="radio" id="contact-email" name="contact-method" value="email" checked>
+                    <label for="contact-email">Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="radio" id="contact-phone" name="contact-method" value="phone">
+                    <label for="contact-phone">Phone</label>
+                </div>
+            </fieldset>
+
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <select id="subject" name="subject">
+                    <option value="">Select a subject</option>
+                    <option value="general">General Inquiry</option>
+                    <option value="support">Technical Support</option>
+                    <option value="billing">Billing Question</option>
+                    <option value="feedback">Feedback</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea id="message" name="message" rows="5" required 
+                         aria-describedby="message-counter" maxlength="500"></textarea>
+                <div id="message-counter">0/500 characters</div>
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" id="newsletter" name="newsletter" value="yes">
+                <label for="newsletter">Subscribe to our newsletter</label>
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" id="terms" name="terms" value="yes" required>
+                <label for="terms">I agree to the terms and conditions *</label>
+            </div>
+
+            <button type="submit">Send Message</button>
+            <button type="reset">Clear Form</button>
+        </form>
+    </div>
+
+    <!-- Login Form -->
+    <div class="form-section">
+        <h2>Login Form</h2>
+        <form id="login-form" action="/login" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" id="remember" name="remember" value="1">
+                <label for="remember">Remember me</label>
+            </div>
+
+            <input type="submit" value="Log In">
+            <a href="/forgot-password">Forgot your password?</a>
+        </form>
+    </div>
+
+    <!-- Search Form -->
+    <div class="form-section">
+        <h2>Search</h2>
+        <form id="search-form" role="search" action="/search" method="get">
+            <div class="form-group">
+                <label for="search-query">Search our site</label>
+                <input type="search" id="search-query" name="q" placeholder="Enter search terms..." 
+                       aria-describedby="search-help">
+                <div id="search-help">Use quotes for exact phrases</div>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="">All Categories</option>
+                    <option value="products">Products</option>
+                    <option value="services">Services</option>
+                    <option value="support">Support</option>
+                </select>
+            </div>
+
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <!-- Survey Form with Complex Elements -->
+    <div class="form-section">
+        <h2>Customer Survey</h2>
+        <form id="survey-form" action="/survey" method="post">
+            <fieldset>
+                <legend>Rate Our Service</legend>
+                <div class="form-group">
+                    <input type="radio" id="rating-1" name="rating" value="1">
+                    <label for="rating-1">1 - Poor</label>
+                </div>
+                <div class="form-group">
+                    <input type="radio" id="rating-2" name="rating" value="2">
+                    <label for="rating-2">2 - Fair</label>
+                </div>
+                <div class="form-group">
+                    <input type="radio" id="rating-3" name="rating" value="3">
+                    <label for="rating-3">3 - Good</label>
+                </div>
+                <div class="form-group">
+                    <input type="radio" id="rating-4" name="rating" value="4">
+                    <label for="rating-4">4 - Very Good</label>
+                </div>
+                <div class="form-group">
+                    <input type="radio" id="rating-5" name="rating" value="5">
+                    <label for="rating-5">5 - Excellent</label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Which features do you use? (Select all that apply)</legend>
+                <div class="form-group">
+                    <input type="checkbox" id="feature-1" name="features[]" value="feature1">
+                    <label for="feature-1">Online Ordering</label>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="feature-2" name="features[]" value="feature2">
+                    <label for="feature-2">Customer Support</label>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="feature-3" name="features[]" value="feature3">
+                    <label for="feature-3">Mobile App</label>
+                </div>
+            </fieldset>
+
+            <div class="form-group">
+                <label for="satisfaction">Overall Satisfaction</label>
+                <input type="range" id="satisfaction" name="satisfaction" 
+                       min="0" max="10" value="5" 
+                       aria-describedby="satisfaction-value">
+                <div id="satisfaction-value">Current value: 5</div>
+            </div>
+
+            <div class="form-group">
+                <label for="visit-date">Date of Last Visit</label>
+                <input type="date" id="visit-date" name="visit-date">
+            </div>
+
+            <div class="form-group">
+                <label for="comments">Additional Comments</label>
+                <textarea id="comments" name="comments" rows="4" 
+                         placeholder="Tell us about your experience..."></textarea>
+            </div>
+
+            <button type="submit">Submit Survey</button>
+        </form>
+    </div>
+
+    <!-- File Upload Form -->
+    <div class="form-section">
+        <h2>Document Upload</h2>
+        <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="document">Choose document to upload</label>
+                <input type="file" id="document" name="document" 
+                       accept=".pdf,.doc,.docx" 
+                       aria-describedby="file-help">
+                <div id="file-help">Accepted formats: PDF, DOC, DOCX (max 5MB)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="document-title">Document Title</label>
+                <input type="text" id="document-title" name="document-title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="document-description">Description</label>
+                <textarea id="document-description" name="document-description" rows="3"></textarea>
+            </div>
+
+            <button type="submit">Upload Document</button>
+        </form>
+    </div>
+
+    <script>
+        // Simple form interaction for testing
+        document.getElementById('satisfaction').addEventListener('input', function(e) {
+            document.getElementById('satisfaction-value').textContent = 'Current value: ' + e.target.value;
+        });
+
+        document.getElementById('message').addEventListener('input', function(e) {
+            const counter = document.getElementById('message-counter');
+            const length = e.target.value.length;
+            counter.textContent = length + '/500 characters';
+        });
+    </script>
+</body>
+</html>

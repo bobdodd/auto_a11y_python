@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal aria-modal Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal.show {
+            display: block;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 5px;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+        
+        button {
+            background-color: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        
+        button:hover {
+            background-color: #005a87;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+        }
+        
+        .pass {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Modal aria-modal Attribute Test Fixture</h1>
+    <p>This fixture tests for the presence of <code>aria-modal="true"</code> on modal dialogs.</p>
+
+    <!-- Test Case 1: Modal WITHOUT aria-modal (should trigger warning) -->
+    <div class="test-section warning">
+        <h3>❌ Test Case 1: Modal Missing aria-modal (Should Warn)</h3>
+        <p>This modal has role="dialog" but is missing the aria-modal attribute.</p>
+        <button onclick="openModal('modal1')">Open Modal Without aria-modal</button>
+        
+        <div id="modal1" class="modal" role="dialog" aria-labelledby="modal1-title" aria-describedby="modal1-desc">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('modal1')" aria-label="Close modal">&times;</span>
+                <h2 id="modal1-title">Modal Without aria-modal</h2>
+                <p id="modal1-desc">This modal is missing the aria-modal="true" attribute, which should trigger a warning.</p>
+                <button onclick="closeModal('modal1')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 2: Modal WITH proper aria-modal (should pass) -->
+    <div class="test-section pass">
+        <h3>✅ Test Case 2: Modal With aria-modal (Should Pass)</h3>
+        <p>This modal properly includes aria-modal="true".</p>
+        <button onclick="openModal('modal2')">Open Modal With aria-modal</button>
+        
+        <div id="modal2" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal2-title" aria-describedby="modal2-desc">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('modal2')" aria-label="Close modal">&times;</span>
+                <h2 id="modal2-title">Modal With aria-modal</h2>
+                <p id="modal2-desc">This modal correctly includes aria-modal="true" and should not trigger warnings.</p>
+                <button onclick="closeModal('modal2')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 3: Alertdialog WITHOUT aria-modal (should trigger warning) -->
+    <div class="test-section warning">
+        <h3>❌ Test Case 3: Alert Dialog Missing aria-modal (Should Warn)</h3>
+        <p>This alert dialog has role="alertdialog" but is missing the aria-modal attribute.</p>
+        <button onclick="openModal('modal3')">Open Alert Dialog Without aria-modal</button>
+        
+        <div id="modal3" class="modal" role="alertdialog" aria-labelledby="modal3-title" aria-describedby="modal3-desc">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('modal3')" aria-label="Close dialog">&times;</span>
+                <h2 id="modal3-title">⚠️ Alert Dialog</h2>
+                <p id="modal3-desc">This alert dialog is missing aria-modal="true" which should trigger a warning.</p>
+                <button onclick="closeModal('modal3')">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 4: Modal with aria-modal="false" (should trigger warning) -->
+    <div class="test-section warning">
+        <h3>❌ Test Case 4: Modal With aria-modal="false" (Should Warn)</h3>
+        <p>This modal has aria-modal set to "false" which is incorrect for a true modal.</p>
+        <button onclick="openModal('modal4')">Open Modal With aria-modal="false"</button>
+        
+        <div id="modal4" class="modal" role="dialog" aria-modal="false" aria-labelledby="modal4-title" aria-describedby="modal4-desc">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('modal4')" aria-label="Close modal">&times;</span>
+                <h2 id="modal4-title">Modal With aria-modal="false"</h2>
+                <p id="modal4-desc">This modal has aria-modal="false" which should trigger a warning for true modals.</p>
+                <button onclick="closeModal('modal4')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 5: Non-modal dialog (should not trigger warning) -->
+    <div class="test-section">
+        <h3>ℹ️ Test Case 5: Non-modal Dialog (Should Not Warn)</h3>
+        <p>This is a non-modal dialog that doesn't block interaction with the page.</p>
+        <button onclick="toggleNonModal()">Toggle Non-modal Dialog</button>
+        
+        <div id="nonmodal" role="dialog" aria-labelledby="nonmodal-title" style="position: absolute; top: 100px; right: 20px; background: white; border: 1px solid #ccc; padding: 15px; display: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 id="nonmodal-title">Non-modal Dialog</h3>
+            <p>This dialog doesn't block interaction with the page, so aria-modal is not required.</p>
+            <button onclick="toggleNonModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Test Case 6: Element that looks like modal but has no role (edge case) -->
+    <div class="test-section">
+        <h3>ℹ️ Test Case 6: Modal-like Element Without Dialog Role</h3>
+        <p>This element looks like a modal but has no dialog role, so aria-modal warnings may not apply.</p>
+        <button onclick="openModal('modal6')">Open Modal-like Element</button>
+        
+        <div id="modal6" class="modal" aria-labelledby="modal6-title">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('modal6')" aria-label="Close">&times;</span>
+                <h2 id="modal6-title">Modal-like Element</h2>
+                <p>This element behaves like a modal but has no role="dialog" or role="alertdialog".</p>
+                <button onclick="closeModal('modal6')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('show');
+            
+            // Focus management for accessibility
+            const firstFocusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (firstFocusable) {
+                setTimeout(() => firstFocusable.focus(), 100);
+            }
+            
+            // Trap focus and handle escape key
+            modal.addEventListener('keydown', handleModalKeydown);
+            
+            // Store previously focused element
+            modal.dataset.previousFocus = document.activeElement.id || '';
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+            modal.removeEventListener('keydown', handleModalKeydown);
+            
+            // Restore focus to previously focused element
+            const previousFocusId = modal.dataset.previousFocus;
+            if (previousFocusId) {
+                const previousElement = document.getElementById(previousFocusId);
+                if (previousElement) {
+                    previousElement.focus();
+                }
+            }
+        }
+
+        function toggleNonModal() {
+            const nonModal = document.getElementById('nonmodal');
+            nonModal.style.display = nonModal.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function handleModalKeydown(event) {
+            if (event.key === 'Escape') {
+                const modal = event.currentTarget;
+                closeModal(modal.id);
+            }
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target.id);
+            }
+        });
+
+        // Accessibility testing helper
+        function runAccessibilityCheck() {
+            const modals = document.querySelectorAll('[role="dialog"], [role="alertdialog"]');
+            const results = [];
+            
+            modals.forEach((modal, index) => {
+                const hasAriaModal = modal.hasAttribute('aria-modal');
+                const ariaModalValue = modal.getAttribute('aria-modal');
+                const isCorrect = hasAriaModal && ariaModalValue === 'true';
+                
+                results.push({
+                    element: modal.id || `modal-${index}`,
+                    role: modal.getAttribute('role'),
+                    hasAriaModal: hasAriaModal,
+                    ariaModalValue: ariaModalValue,
+                    isCorrect: isCorrect,
+                    shouldWarn: !isCorrect
+                });
+            });
+            
+            console.table(results);
+            return results;
+        }
+
+        // Auto-run accessibility check on page load
+        window.addEventListener('load', function() {
+            console.log('🔍 Running aria-modal accessibility check...');
+            runAccessibilityCheck();
+            console.log('Use runAccessibilityCheck() in console to check again');
+        });
+    </script>
+</body>
+</html>

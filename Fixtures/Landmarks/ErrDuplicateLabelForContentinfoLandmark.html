@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Duplicate Label for Contentinfo Landmark</title>
+</head>
+<body>
+    <header>
+        <h1>Test Page for Duplicate Contentinfo Landmark Labels</h1>
+        <nav aria-label="Main navigation">
+            <ul>
+                <li><a href="#main">Main Content</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main">
+        <h2>Main Content Area</h2>
+        <p>This page contains multiple contentinfo landmarks with identical labels to test accessibility checker detection.</p>
+        
+        <section>
+            <h3>Article Content</h3>
+            <p>Some sample content goes here.</p>
+        </section>
+    </main>
+
+    <!-- VIOLATION: First contentinfo landmark with generic label -->
+    <footer role="contentinfo" aria-label="Footer">
+        <div>
+            <h3>Company Information</h3>
+            <p>Main company footer with contact details</p>
+            <address>
+                123 Main Street<br>
+                City, State 12345<br>
+                Phone: (555) 123-4567
+            </address>
+        </div>
+    </footer>
+
+    <!-- VIOLATION: Second contentinfo landmark with identical label -->
+    <div role="contentinfo" aria-label="Footer">
+        <div>
+            <h3>Legal Information</h3>
+            <p>Legal disclaimer and privacy policy links</p>
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/cookies">Cookie Policy</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- VIOLATION: Third contentinfo landmark with identical label -->
+    <section role="contentinfo" aria-label="Footer">
+        <div>
+            <h3>Social Media</h3>
+            <p>Follow us on social media</p>
+            <ul>
+                <li><a href="https://facebook.com/company">Facebook</a></li>
+                <li><a href="https://twitter.com/company">Twitter</a></li>
+                <li><a href="https://linkedin.com/company">LinkedIn</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Additional test cases with different duplicate scenarios -->
+    
+    <!-- VIOLATION: Contentinfo landmarks with aria-labelledby pointing to identical text -->
+    <div role="contentinfo" aria-labelledby="footer-heading-1">
+        <h4 id="footer-heading-1">Site Footer</h4>
+        <p>Newsletter signup area</p>
+        <form>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+            <button type="submit">Subscribe</button>
+        </form>
+    </div>
+
+    <footer role="contentinfo" aria-labelledby="footer-heading-2">
+        <h4 id="footer-heading-2">Site Footer</h4>
+        <p>Copyright and licensing information</p>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+
+    <!-- VIOLATION: Contentinfo landmarks with no aria-label (implicit duplicate labels) -->
+    <div role="contentinfo">
+        <div>
+            <h3>Additional Footer Content</h3>
+            <p>This contentinfo has no explicit label, creating ambiguity</p>
+        </div>
+    </div>
+
+    <footer role="contentinfo">
+        <div>
+            <h3>Another Footer Section</h3>
+            <p>This contentinfo also has no explicit label, creating duplicate unlabeled landmarks</p>
+        </div>
+    </footer>
+
+    <!-- CORRECT EXAMPLE: Properly differentiated contentinfo landmarks -->
+    <!-- 
+    The following would be the correct approach:
+    
+    <footer role="contentinfo" aria-label="Main site footer">
+        <p>Primary footer content</p>
+    </footer>
+    
+    <div role="contentinfo" aria-label="Legal information">
+        <p>Legal and compliance footer</p>
+    </div>
+    
+    <section role="contentinfo" aria-label="Social media links">
+        <p>Social media footer</p>
+    </section>
+    -->
+
+</body>
+</html>

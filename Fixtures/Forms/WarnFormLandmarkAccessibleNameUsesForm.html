@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Landmark Accessible Name Test Fixture</title>
+</head>
+<body>
+    <!-- Test Case 1: VIOLATION - Form with generic "form" label using aria-label -->
+    <form aria-label="form" id="violation-1">
+        <label for="name1">Name:</label>
+        <input type="text" id="name1" name="name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 2: VIOLATION - Form with generic "Form" label (capitalized) using aria-label -->
+    <form aria-label="Form" id="violation-2">
+        <label for="email1">Email:</label>
+        <input type="email" id="email1" name="email">
+        <button type="submit">Send</button>
+    </form>
+
+    <!-- Test Case 3: VIOLATION - Form with generic "form" label using aria-labelledby -->
+    <h2 id="generic-heading">form</h2>
+    <form aria-labelledby="generic-heading" id="violation-3">
+        <label for="phone1">Phone:</label>
+        <input type="tel" id="phone1" name="phone">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 4: VIOLATION - Form with "Form:" label (with punctuation) -->
+    <form aria-label="Form:" id="violation-4">
+        <label for="address1">Address:</label>
+        <input type="text" id="address1" name="address">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 5: VIOLATION - Form with "form " (with trailing space) -->
+    <form aria-label="form " id="violation-5">
+        <label for="city1">City:</label>
+        <input type="text" id="city1" name="city">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 6: PASS - Form with descriptive "Contact form" label -->
+    <form aria-label="Contact form" id="pass-1">
+        <label for="contact-name">Name:</label>
+        <input type="text" id="contact-name" name="name">
+        <label for="contact-email">Email:</label>
+        <input type="email" id="contact-email" name="email">
+        <button type="submit">Send Message</button>
+    </form>
+
+    <!-- Test Case 7: PASS - Form with descriptive "Search form" label -->
+    <form aria-label="Search form" id="pass-2" role="search">
+        <label for="search-query">Search:</label>
+        <input type="search" id="search-query" name="q">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Test Case 8: PASS - Form with descriptive "Newsletter signup form" label -->
+    <h2 id="newsletter-heading">Newsletter signup form</h2>
+    <form aria-labelledby="newsletter-heading" id="pass-3">
+        <label for="newsletter-email">Email address:</label>
+        <input type="email" id="newsletter-email" name="email">
+        <button type="submit">Subscribe</button>
+    </form>
+
+    <!-- Test Case 9: PASS - Form with descriptive "Login form" label -->
+    <form aria-label="Login form" id="pass-4">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+        <button type="submit">Log In</button>
+    </form>
+
+    <!-- Test Case 10: PASS - Form without any accessible name (should not trigger this specific warning) -->
+    <form id="pass-5">
+        <label for="feedback">Feedback:</label>
+        <textarea id="feedback" name="feedback"></textarea>
+        <button type="submit">Submit Feedback</button>
+    </form>
+
+    <!-- Test Case 11: VIOLATION - Form with "Registration form" but contains "form" at end -->
+    <!-- This tests if the checker properly identifies "form" within longer strings -->
+    <form aria-label="form for registration" id="edge-case-1">
+        <label for="reg-name">Full Name:</label>
+        <input type="text" id="reg-name" name="fullname">
+        <button type="submit">Register</button>
+    </form>
+
+    <!-- Test Case 12: PASS - Form with "Application" (similar but not "form") -->
+    <form aria-label="Job application" id="pass-6">
+        <label for="applicant-name">Name:</label>
+        <input type="text" id="applicant-name" name="name">
+        <button type="submit">Apply</button>
+    </form>
+
+    <!-- Test Case 13: VIOLATION - Case insensitive test "FORM" -->
+    <form aria-label="FORM" id="violation-6">
+        <label for="test-input">Test:</label>
+        <input type="text" id="test-input" name="test">
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate Banner Landmark Label Test Fixture</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .banner { background: #f0f0f0; padding: 20px; margin-bottom: 20px; border: 1px solid #ccc; }
+        .content { padding: 20px; }
+        .footer { background: #e0e0e0; padding: 20px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Test Cases for Duplicate Banner Landmark Labels</h1>
+    
+    <!-- ERROR CASE 1: Two <header> elements with identical aria-label -->
+    <header class="banner" aria-label="Main Site Header">
+        <h2>Main Header (Case 1)</h2>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <header class="banner" aria-label="Main Site Header">
+        <h2>Secondary Header (Case 1 - Duplicate Label)</h2>
+        <nav>
+            <ul>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ERROR CASE 2: Multiple elements with role="banner" and same aria-labelledby -->
+    <div id="banner-title-1">Company Logo</div>
+    <div class="banner" role="banner" aria-labelledby="banner-title-1">
+        <h2>Banner via Role Attribute (Case 2)</h2>
+        <p>This is a banner landmark created with role="banner"</p>
+    </div>
+
+    <div id="banner-title-2">Company Logo</div>
+    <div class="banner" role="banner" aria-labelledby="banner-title-2">
+        <h2>Another Banner via Role (Case 2 - Same Referenced Text)</h2>
+        <p>This banner references an element with identical text content</p>
+    </div>
+
+    <!-- ERROR CASE 3: Mixed header and role="banner" with same aria-label -->
+    <header class="banner" aria-label="Site Navigation">
+        <h2>Native Header Element (Case 3)</h2>
+        <nav>Navigation content here</nav>
+    </header>
+
+    <div class="banner" role="banner" aria-label="Site Navigation">
+        <h2>DIV with Banner Role (Case 3 - Same Label)</h2>
+        <nav>More navigation content</nav>
+    </div>
+
+    <!-- ERROR CASE 4: Banners with no explicit labels (both will have empty/null labels) -->
+    <header class="banner">
+        <h2>Unlabeled Header 1 (Case 4)</h2>
+        <p>This header has no aria-label or aria-labelledby</p>
+    </header>
+
+    <header class="banner">
+        <h2>Unlabeled Header 2 (Case 4 - Both Unlabeled)</h2>
+        <p>This header also has no aria-label or aria-labelledby</p>
+    </header>
+
+    <!-- ERROR CASE 5: Complex case with nested content and identical computed labels -->
+    <div id="complex-label">Welcome Portal</div>
+    <header class="banner" aria-labelledby="complex-label">
+        <h2>User Dashboard Header</h2>
+        <div>User: John Doe</div>
+    </header>
+
+    <div id="another-complex-label">Welcome Portal</div>
+    <section role="banner" aria-labelledby="another-complex-label">
+        <h2>Admin Dashboard Header</h2>
+        <div>Admin Panel Access</div>
+    </section>
+
+    <!-- VALID CASE: Properly differentiated banners (should not trigger error) -->
+    <header class="banner" aria-label="Primary Navigation">
+        <h2>Correctly Labeled Header 1</h2>
+        <nav>Primary navigation</nav>
+    </header>
+
+    <div role="banner" aria-label="Secondary Toolbar">
+        <h2>Correctly Labeled Header 2</h2>
+        <div>Secondary tools and options</div>
+    </div>
+
+    <!-- Main content -->
+    <main class="content">
+        <h2>Main Content Area</h2>
+        <p>This is the main content of the page, which should not be affected by the banner landmark issues above.</p>
+        
+        <!-- Note: This section explains the test cases -->
+        <section>
+            <h3>Test Case Documentation</h3>
+            <ul>
+                <li><strong>Case 1:</strong> Two &lt;header&gt; elements with identical aria-label values</li>
+                <li><strong>Case 2:</strong> Two elements with role="banner" referencing elements with identical text</li>
+                <li><strong>Case 3:</strong> Mixed native header and role="banner" with same aria-label</li>
+                <li><strong>Case 4:</strong> Multiple banners with no labels (both have empty accessible names)</li>
+                <li><strong>Case 5:</strong> Complex labeling with aria-labelledby pointing to identical content</li>
+                <li><strong>Valid Case:</strong> Properly differentiated banners that should pass validation</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Footer (not a banner, so won't contribute to the error) -->
+    <footer class="footer">
+        <p>&copy; 2024 Test Fixture. This footer should not interfere with banner landmark testing.</p>
+    </footer>
+</body>
+</html>

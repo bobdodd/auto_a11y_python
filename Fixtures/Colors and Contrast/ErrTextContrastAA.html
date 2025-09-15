@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Contrast AA Test Fixture - ErrTextContrastAA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #333;
+            background: white;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        /* Test Case 1: Light gray text on white (contrast ~2.9:1) */
+        .fail-light-gray {
+            color: #9d9d9d;
+            background: #ffffff;
+            font-size: 16px;
+        }
+        
+        /* Test Case 2: Medium gray text on light gray (contrast ~2.1:1) */
+        .fail-gray-on-light {
+            color: #888888;
+            background: #e8e8e8;
+            font-size: 14px;
+        }
+        
+        /* Test Case 3: Light blue text on white (contrast ~3.2:1) */
+        .fail-light-blue {
+            color: #7fb3d3;
+            background: #ffffff;
+            font-size: 18px;
+        }
+        
+        /* Test Case 4: Dark gray text on medium gray (contrast ~2.8:1) */
+        .fail-dark-on-medium {
+            color: #666666;
+            background: #cccccc;
+            font-size: 16px;
+        }
+        
+        /* Test Case 5: Yellow text on light yellow (contrast ~1.8:1) */
+        .fail-yellow {
+            color: #d4aa00;
+            background: #fffacd;
+            font-size: 20px;
+        }
+        
+        /* Test Case 6: Purple text on light purple (contrast ~3.8:1) */
+        .fail-purple {
+            color: #8b5a8c;
+            background: #f0e6f7;
+            font-size: 15px;
+        }
+        
+        /* Test Case 7: Orange text on peach (contrast ~2.5:1) */
+        .fail-orange {
+            color: #cc7a00;
+            background: #ffe5cc;
+            font-size: 17px;
+        }
+        
+        /* Test Case 8: Green text on light green (contrast ~3.1:1) */
+        .fail-green {
+            color: #5d8a5d;
+            background: #e8f5e8;
+            font-size: 19px;
+        }
+        
+        /* Test Case 9: Red text on pink (contrast ~4.2:1 - close but still failing) */
+        .fail-red {
+            color: #b33939;
+            background: #ffeaea;
+            font-size: 16px;
+        }
+        
+        /* Test Case 10: Very light text on white (contrast ~1.1:1) */
+        .fail-very-light {
+            color: #f0f0f0;
+            background: #ffffff;
+            font-size: 14px;
+        }
+        
+        /* Test Case 11: Small text with borderline contrast (~4.4:1) */
+        .fail-small-text {
+            color: #767676;
+            background: #ffffff;
+            font-size: 12px;
+        }
+        
+        /* Test Case 12: Link-like text failing contrast */
+        .fail-link {
+            color: #9bb3ff;
+            background: #ffffff;
+            font-size: 16px;
+            text-decoration: underline;
+        }
+        
+        /* Paragraph styles for better testing */
+        .test-paragraph {
+            line-height: 1.5;
+            margin: 10px 0;
+            padding: 10px;
+        }
+        
+        /* Additional content types */
+        .fail-heading {
+            color: #aaaaaa;
+            background: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .fail-list-item {
+            color: #999999;
+            background: #ffffff;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Text Contrast AA Test Fixture</h1>
+    <p><strong>Purpose:</strong> This fixture contains multiple text elements that fail WCAG 2.1 Level AA contrast requirements (4.5:1 for normal text) to test the ErrTextContrastAA error detection.</p>
+    
+    <div class="test-section">
+        <h3>Test Case 1: Light Gray on White (~2.9:1)</h3>
+        <div class="test-paragraph fail-light-gray">
+            This text uses #9d9d9d on #ffffff background with 16px font size. The contrast ratio is approximately 2.9:1, which fails WCAG AA requirements. This should trigger an ErrTextContrastAA error.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 2: Gray on Light Gray (~2.1:1)</h3>
+        <div class="test-paragraph fail-gray-on-light">
+            This paragraph demonstrates #888888 text on #e8e8e8 background at 14px. The contrast ratio is around 2.1:1, significantly below the required 4.5:1 threshold.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 3: Light Blue on White (~3.2:1)</h3>
+        <div class="test-paragraph fail-light-blue">
+            Here we have #7fb3d3 colored text on white background (#ffffff) at 18px font size. This creates approximately 3.2:1 contrast ratio, failing AA compliance.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 4: Dark Gray on Medium Gray (~2.8:1)</h3>
+        <div class="test-paragraph fail-dark-on-medium">
+            This content uses #666666 foreground color on #cccccc background with 16px font. The resulting contrast of ~2.8:1 does not meet accessibility standards.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 5: Yellow on Light Yellow (~1.8:1)</h3>
+        <div class="test-paragraph fail-yellow">
+            This text demonstrates #d4aa00 on #fffacd background at 20px font size. With only 1.8:1 contrast ratio, this is particularly problematic for users with visual impairments.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 6: Purple on Light Purple (~3.8:1)</h3>
+        <div class="test-paragraph fail-purple">
+            Using #8b5a8c text on #f0e6f7 background with 15px font creates approximately 3.8:1 contrast. While better than previous examples, it still falls short of the 4.5:1 requirement.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 7: Orange on Peach (~2.5:1)</h3>
+        <div class="test-paragraph fail-orange">
+            This demonstrates #cc7a00 text on #ffe5cc background at 17px. The 2.5:1 contrast ratio makes this text difficult to read for many users.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 8: Green on Light Green (~3.1:1)</h3>
+        <div class="test-paragraph fail-green">
+            Here's #5d8a5d colored text on #e8f5e8 background with 19px font size. The contrast ratio of approximately 3.1:1 fails to meet WCAG AA standards.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 9: Red on Pink (~4.2:1 - Close Failure)</h3>
+        <div class="test-paragraph fail-red">
+            This text uses #b33939 on #ffeaea background at 16px. With 4.2:1 contrast, it's close to passing but still fails the 4.5:1 AA requirement by a narrow margin.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 10: Very Light Gray on White (~1.1:1)</h3>
+        <div class="test-paragraph fail-very-light">
+            This extremely low contrast example uses #f0f0f0 on #ffffff with 14px font. At only 1.1:1 contrast ratio, this text is nearly invisible to many users.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 11: Small Text Edge Case</h3>
+        <div class="test-paragraph fail-small-text">
+            This smaller text (12px) uses #767676 on white background. While large text might pass at lower contrast, normal text at this size with ~4.4:1 contrast fails AA requirements.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 12: Link-Style Text</h3>
+        <div class="test-paragraph">
+            This paragraph contains a <span class="fail-link">link with poor contrast</span> using #9bb3ff on white background at 16px font size.
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 13: Heading with Poor Contrast</h3>
+        <h2 class="fail-heading">This Heading Fails Contrast Requirements</h2>
+        <p>The heading above uses #aaaaaa on white background at 24px, creating insufficient contrast.</p>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Case 14: List Items</h3>
+        <ul>
+            <li class="fail-list-item">First list item with poor contrast (#999999 on white)</li>
+            <li class="fail-list-item">Second list item also failing contrast requirements</li>
+            <li class="fail-list-item">Third item demonstrating consistent contrast failure</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h3>Additional Test Content</h3>
+        <div class="test-paragraph fail-light-gray">
+            <strong>Bold text</strong> that still fails contrast requirements when using #9d9d9d on white background.
+        </div>
+        <div class="test-paragraph fail-gray-on-light">
+            <em>Italic text</em> with insufficient contrast ratio of approximately 2.1:1.
+        </div>
+        <div class="test-paragraph fail-light-blue">
+            Text with <code style="color: inherit; background: inherit;">inline code styling</code> that maintains the same poor contrast.
+        </div>
+    </div>
+    
+    <div class="test-section" style="background: #333;">
+        <h3 style="color: white;">Dark Background Tests</h3>
+        <div style="color: #666666; background: #333333; padding: 10px; font-size: 16px;">
+            This text uses #666666 on #333333 background, creating approximately 1.9:1 contrast ratio, failing AA requirements.
+        </div>
+        <div style="color: #888888; background: #444444; padding: 10px; font-size: 18px; margin-top: 10px;">
+            Another dark theme example with #888888 on #444444, resulting in roughly 2.8:1 contrast.
+        </div>
+    </div>
+</body>
+</html>

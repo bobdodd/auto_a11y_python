@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrOrphanLabelWithNoId Test Fixture</title>
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        .error { border-color: #ff0000; }
+        .pass { border-color: #00ff00; }
+        h2 { margin-top: 0; }
+        .description { font-style: italic; color: #666; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>ErrOrphanLabelWithNoId Test Fixture</h1>
+    <p>This fixture tests detection of label elements that exist but have no 'for' attribute to associate them with form controls.</p>
+
+    <!-- ERROR CASES - These should trigger ErrOrphanLabelWithNoId -->
+    
+    <div class="test-section error">
+        <h2>❌ Error Case 1: Basic orphan label</h2>
+        <div class="description">Label with no 'for' attribute and no associated input</div>
+        <label>First Name</label>
+        <input type="text" id="firstName">
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Error Case 2: Multiple orphan labels</h2>
+        <div class="description">Multiple labels without 'for' attributes</div>
+        <label>Email Address</label>
+        <input type="email" id="email">
+        <br><br>
+        <label>Phone Number</label>
+        <input type="tel" id="phone">
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Error Case 3: Orphan label with form controls nearby</h2>
+        <div class="description">Label exists but not properly associated despite proximity to inputs</div>
+        <label>Choose your preference</label>
+        <input type="radio" name="preference" value="option1" id="opt1"> Option 1
+        <input type="radio" name="preference" value="option2" id="opt2"> Option 2
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Error Case 4: Orphan label in fieldset</h2>
+        <div class="description">Label without 'for' attribute inside fieldset</div>
+        <fieldset>
+            <legend>Personal Information</legend>
+            <label>Date of Birth</label>
+            <input type="date" id="dob">
+        </fieldset>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Error Case 5: Orphan label with empty for attribute</h2>
+        <div class="description">Label has 'for' attribute but it's empty</div>
+        <label for="">Last Name</label>
+        <input type="text" id="lastName">
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Error Case 6: Orphan label with whitespace-only for attribute</h2>
+        <div class="description">Label has 'for' attribute but contains only whitespace</div>
+        <label for="   ">Middle Name</label>
+        <input type="text" id="middleName">
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Error Case 7: Orphan label in table</h2>
+        <div class="description">Label without proper association in table structure</div>
+        <table>
+            <tr>
+                <td><label>Username</label></td>
+                <td><input type="text" id="username"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- PASSING CASES - These should NOT trigger ErrOrphanLabelWithNoId -->
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 1: Properly associated label with 'for' attribute</h2>
+        <div class="description">Label correctly associated using 'for' attribute</div>
+        <label for="properEmail">Email Address</label>
+        <input type="email" id="properEmail">
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 2: Implicit label association</h2>
+        <div class="description">Label wrapping the input (implicit association)</div>
+        <label>
+            Full Name
+            <input type="text" id="fullName">
+        </label>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 3: Multiple labels properly associated</h2>
+        <div class="description">Multiple labels each with correct 'for' attributes</div>
+        <label for="address1">Address Line 1</label>
+        <input type="text" id="address1">
+        <br><br>
+        <label for="address2">Address Line 2</label>
+        <input type="text" id="address2">
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 4: Label for textarea</h2>
+        <div class="description">Label properly associated with textarea</div>
+        <label for="comments">Comments</label>
+        <textarea id="comments" rows="4" cols="50"></textarea>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 5: Label for select</h2>
+        <div class="description">Label properly associated with select element</div>
+        <label for="country">Country</label>
+        <select id="country">
+            <option value="us">United States</option>
+            <option value="ca">Canada</option>
+            <option value="uk">United Kingdom</option>
+        </select>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 6: Fieldset with legend (no individual labels needed)</h2>
+        <div class="description">Radio buttons in fieldset with legend providing group label</div>
+        <fieldset>
+            <legend>Gender</legend>
+            <input type="radio" name="gender" value="male" id="male">
+            <label for="male">Male</label>
+            <input type="radio" name="gender" value="female" id="female">
+            <label for="female">Female</label>
+        </fieldset>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ Pass Case 7: Complex form with proper associations</h2>
+        <div class="description">Form with mixed input types, all properly labeled</div>
+        <form>
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" required>
+            
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" required>
+            
+            <label>
+                <input type="checkbox" id="rememberMe"> Remember me
+            </label>
+            
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <!-- EDGE CASES -->
+
+    <div class="test-section error">
+        <h2>❌ Edge Case 1: Label with for attribute pointing to non-existent ID</h2>
+        <div class="description">Label has 'for' attribute but target doesn't exist</div>
+        <label for="nonExistentField">Mystery Field</label>
+        <input type="text" id="actualField">
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ Edge Case 2: Orphan label with ARIA attributes</h2>
+        <div class="description">Label has ARIA attributes but no proper association</div>
+        <label aria-label="Special Field">Special Input</label>
+        <input type="text" id="specialField" aria-describedby="help">
+        <div id="help">This field needs special attention</div>
+    </div>
+
+</body>
+</html>

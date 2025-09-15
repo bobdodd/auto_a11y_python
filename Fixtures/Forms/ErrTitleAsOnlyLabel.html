@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTitleAsOnlyLabel Test Fixture</title>
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .error { border-left: 5px solid #d32f2f; }
+        .correct { border-left: 5px solid #2e7d32; }
+        input, select, textarea {
+            margin: 5px 10px 5px 0;
+            padding: 5px;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTitleAsOnlyLabel Test Fixture</h1>
+    <p>This fixture tests form elements using title attribute as their only accessible label.</p>
+
+    <!-- ERROR CASES: Form elements with only title attributes -->
+    <div class="test-section error">
+        <h3>❌ ERROR: Form elements using only title attribute for labeling</h3>
+        
+        <!-- Text input with only title -->
+        <div class="form-group">
+            <input type="text" id="email-title-only" title="Enter your email address">
+        </div>
+        
+        <!-- Password input with only title -->
+        <div class="form-group">
+            <input type="password" id="password-title-only" title="Enter your password (minimum 8 characters)">
+        </div>
+        
+        <!-- Select with only title -->
+        <div class="form-group">
+            <select id="country-title-only" title="Select your country">
+                <option value="">Choose...</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+                <option value="uk">United Kingdom</option>
+            </select>
+        </div>
+        
+        <!-- Textarea with only title -->
+        <div class="form-group">
+            <textarea id="comments-title-only" title="Please enter your comments or feedback" rows="3" cols="40"></textarea>
+        </div>
+        
+        <!-- Checkbox with only title -->
+        <div class="form-group">
+            <input type="checkbox" id="newsletter-title-only" title="Subscribe to our newsletter">
+        </div>
+        
+        <!-- Radio buttons with only title -->
+        <div class="form-group">
+            <input type="radio" id="contact-email-title-only" name="contact-method-title" title="Contact me by email" value="email">
+            <input type="radio" id="contact-phone-title-only" name="contact-method-title" title="Contact me by phone" value="phone">
+        </div>
+        
+        <!-- Number input with only title -->
+        <div class="form-group">
+            <input type="number" id="age-title-only" title="Enter your age" min="13" max="120">
+        </div>
+        
+        <!-- Date input with only title -->
+        <div class="form-group">
+            <input type="date" id="birthdate-title-only" title="Select your birth date">
+        </div>
+        
+        <!-- File input with only title -->
+        <div class="form-group">
+            <input type="file" id="document-title-only" title="Upload your resume or CV">
+        </div>
+        
+        <!-- Range input with only title -->
+        <div class="form-group">
+            <input type="range" id="satisfaction-title-only" title="Rate your satisfaction from 1 to 10" min="1" max="10">
+        </div>
+    </div>
+
+    <!-- EDGE CASES: Title combined with insufficient labeling -->
+    <div class="test-section error">
+        <h3>❌ ERROR: Edge cases with insufficient labeling</h3>
+        
+        <!-- Empty label with title -->
+        <div class="form-group">
+            <label for="empty-label"></label>
+            <input type="text" id="empty-label" title="This field has an empty label element">
+        </div>
+        
+        <!-- Whitespace-only label with title -->
+        <div class="form-group">
+            <label for="whitespace-label">   </label>
+            <input type="text" id="whitespace-label" title="This label contains only whitespace">
+        </div>
+        
+        <!-- Title with placeholder but no proper label -->
+        <div class="form-group">
+            <input type="email" id="placeholder-title-only" title="Your email address" placeholder="email@example.com">
+        </div>
+        
+        <!-- Multiple elements sharing same title-only labeling -->
+        <div class="form-group">
+            <input type="text" id="first-name-title" title="First Name">
+            <input type="text" id="last-name-title" title="Last Name">
+        </div>
+    </div>
+
+    <!-- CORRECT IMPLEMENTATIONS: Proper labeling examples -->
+    <div class="test-section correct">
+        <h3>✅ CORRECT: Proper form labeling implementations</h3>
+        
+        <!-- Proper label element -->
+        <div class="form-group">
+            <label for="email-proper">Email Address:</label>
+            <input type="email" id="email-proper" title="Additional hint: Use your work email">
+        </div>
+        
+        <!-- Label with aria-describedby -->
+        <div class="form-group">
+            <label for="password-proper">Password:</label>
+            <input type="password" id="password-proper" aria-describedby="pwd-help">
+            <div id="pwd-help">Must be at least 8 characters long</div>
+        </div>
+        
+        <!-- Fieldset and legend for radio group -->
+        <div class="form-group">
+            <fieldset>
+                <legend>Preferred contact method:</legend>
+                <input type="radio" id="contact-email-proper" name="contact-method" value="email">
+                <label for="contact-email-proper">Email</label>
+                <input type="radio" id="contact-phone-proper" name="contact-method" value="phone">
+                <label for="contact-phone-proper">Phone</label>
+            </fieldset>
+        </div>
+        
+        <!-- Aria-label as proper alternative -->
+        <div class="form-group">
+            <input type="search" aria-label="Search products" placeholder="Enter search terms">
+        </div>
+        
+        <!-- Aria-labelledby referencing visible text -->
+        <div class="form-group">
+            <h4 id="billing-header">Billing Information</h4>
+            <input type="text" aria-labelledby="billing-header" placeholder="Street address">
+        </div>
+    </div>
+
+    <!-- FORM CONTEXT: Complete form showing the issue in context -->
+    <div class="test-section error">
+        <h3>❌ ERROR: Complete form with title-only labeling</h3>
+        <form>
+            <h4>Registration Form (Inaccessible Version)</h4>
+            <input type="text" title="Full Name" placeholder="John Doe">
+            <input type="email" title="Email Address" placeholder="john@example.com">
+            <input type="tel" title="Phone Number" placeholder="555-123-4567">
+            <select title="Country">
+                <option value="">Select Country</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+            </select>
+            <textarea title="Additional Comments" placeholder="Any special requests?"></textarea>
+            <input type="checkbox" title="I agree to the terms and conditions">
+            <button type="submit">Submit Registration</button>
+        </form>
+    </div>
+</body>
+</html>

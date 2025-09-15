@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Landmark Labeling Test Fixture</title>
+</head>
+<body>
+    <!-- Hidden heading for aria-labelledby reference -->
+    <h1 id="site-title" style="position: absolute; left: -9999px;">My Website</h1>
+    <h2 id="banner-heading" style="position: absolute; left: -9999px;">Site Header</h2>
+
+    <!-- TEST CASE 1: Banner with BOTH aria-label AND aria-labelledby (ERROR) -->
+    <header role="banner" 
+            aria-label="Main site header" 
+            aria-labelledby="banner-heading">
+        <h1>Welcome to Our Site</h1>
+        <nav aria-label="Primary navigation">
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- TEST CASE 2: Another banner with conflicting labels (ERROR) -->
+    <div role="banner" 
+         aria-label="Company header section" 
+         aria-labelledby="site-title">
+        <img src="logo.png" alt="Company Logo" />
+        <p>Your trusted partner since 1995</p>
+    </div>
+
+    <!-- TEST CASE 3: Banner with only aria-label (CORRECT) -->
+    <header role="banner" aria-label="Secondary site header">
+        <h2>Product Information</h2>
+        <nav>
+            <ul>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#services">Services</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- TEST CASE 4: Banner with only aria-labelledby (CORRECT) -->
+    <div role="banner" aria-labelledby="site-title">
+        <div>Customer Portal</div>
+        <nav>
+            <a href="#login">Login</a>
+            <a href="#register">Register</a>
+        </nav>
+    </div>
+
+    <!-- TEST CASE 5: Banner with no explicit labeling (CORRECT - relies on implicit labeling) -->
+    <header role="banner">
+        <h1>News Section</h1>
+        <nav>
+            <a href="#latest">Latest</a>
+            <a href="#archive">Archive</a>
+        </nav>
+    </header>
+
+    <!-- TEST CASE 6: Complex banner with both attributes and multiple references (ERROR) -->
+    <header role="banner" 
+            aria-label="Multi-section header with navigation and search" 
+            aria-labelledby="site-title banner-heading">
+        <div>
+            <h1>E-commerce Site</h1>
+            <form role="search">
+                <input type="search" placeholder="Search products..." />
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#shop">Shop</a></li>
+                <li><a href="#cart">Cart</a></li>
+                <li><a href="#account">Account</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Main Content</h1>
+        <p>This fixture tests banner landmarks with conflicting aria-label and aria-labelledby attributes.</p>
+        <p>Expected errors should be detected on test cases 1, 2, and 6 where both labeling methods are used simultaneously.</p>
+    </main>
+</body>
+</html>

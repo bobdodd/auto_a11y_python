@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Empty Child Nodes Test Fixture</title>
+</head>
+<body>
+    <h1>Form Empty Child Nodes Test Fixture</h1>
+    <p>This fixture tests for empty form elements that should trigger the ErrFormEmptyHasNoChildNodes error.</p>
+
+    <section>
+        <h2>ERROR CASES - Should trigger ErrFormEmptyHasNoChildNodes</h2>
+        
+        <!-- Test Case 1: Completely empty form with no content -->
+        <form id="empty-form-1"></form>
+        
+        <!-- Test Case 2: Form with only whitespace -->
+        <form id="empty-form-2">   
+        
+        </form>
+        
+        <!-- Test Case 3: Form with only HTML comments -->
+        <form id="empty-form-3">
+            <!-- This is just a comment -->
+            <!-- Another comment -->
+        </form>
+        
+        <!-- Test Case 4: Form with only whitespace and comments -->
+        <form id="empty-form-4">
+            
+            <!-- Comment with whitespace around -->
+            
+        </form>
+        
+        <!-- Test Case 5: Self-closing form (invalid HTML but may exist) -->
+        <form id="empty-form-5"/>
+    </section>
+
+    <section>
+        <h2>VALID CASES - Should NOT trigger the error</h2>
+        
+        <!-- Valid Case 1: Form with input elements -->
+        <form id="valid-form-1">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+            <button type="submit">Submit</button>
+        </form>
+        
+        <!-- Valid Case 2: Form with text content -->
+        <form id="valid-form-2">
+            Please fill out this form.
+        </form>
+        
+        <!-- Valid Case 3: Form with fieldset -->
+        <form id="valid-form-3">
+            <fieldset>
+                <legend>Personal Information</legend>
+                <input type="text" name="email">
+            </fieldset>
+        </form>
+        
+        <!-- Valid Case 4: Form with div container -->
+        <form id="valid-form-4">
+            <div>
+                <input type="checkbox" id="agree" name="agree">
+                <label for="agree">I agree to the terms</label>
+            </div>
+        </form>
+        
+        <!-- Valid Case 5: Form with just text node -->
+        <form id="valid-form-5">Some text content</form>
+        
+        <!-- Valid Case 6: Form with span element -->
+        <form id="valid-form-6">
+            <span>Form content in span</span>
+        </form>
+    </section>
+
+    <section>
+        <h2>EDGE CASES - Boundary conditions to test</h2>
+        
+        <!-- Edge Case 1: Form with nested empty elements -->
+        <form id="edge-form-1">
+            <div></div>
+        </form>
+        
+        <!-- Edge Case 2: Form with br tag only -->
+        <form id="edge-form-2">
+            <br>
+        </form>
+        
+        <!-- Edge Case 3: Form with hidden input only -->
+        <form id="edge-form-3">
+            <input type="hidden" name="csrf" value="token">
+        </form>
+        
+        <!-- Edge Case 4: Form with disabled elements only -->
+        <form id="edge-form-4">
+            <input type="text" disabled>
+        </form>
+    </section>
+</body>
+</html>

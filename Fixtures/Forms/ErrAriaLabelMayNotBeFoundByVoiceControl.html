@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARIA Label Voice Control Test Fixture</title>
+    <style>
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+        .error { background: #ffe6e6; }
+        .pass { background: #e6ffe6; }
+        button, input, a {
+            margin: 10px 5px;
+            padding: 8px 12px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Voice Control ARIA Label Test Fixture</h1>
+    
+    <!-- ERROR CASES: aria-label doesn't match visible text -->
+    <section class="section error">
+        <h2>❌ Error Cases (Should trigger ErrAriaLabelMayNotBeFoundByVoiceControl)</h2>
+        
+        <!-- Button with completely different aria-label -->
+        <button aria-label="Submit form">Save Changes</button>
+        
+        <!-- Link with unrelated aria-label -->
+        <a href="#" aria-label="Navigation menu">Contact Us</a>
+        
+        <!-- Input with aria-label that doesn't include visible label -->
+        <label for="search1">Search Products</label>
+        <input type="text" id="search1" aria-label="Find items" placeholder="Enter keywords">
+        
+        <!-- Button with aria-label that's completely different -->
+        <button aria-label="Close dialog">Delete Account</button>
+        
+        <!-- Link with generic aria-label, specific visible text -->
+        <a href="#" aria-label="Click here">Download Report</a>
+        
+        <!-- Button with abbreviated aria-label -->
+        <button aria-label="Login">Sign In to Your Account</button>
+        
+        <!-- Input with aria-label that doesn't match associated label -->
+        <label for="email1">Email Address</label>
+        <input type="email" id="email1" aria-label="Username field">
+        
+        <!-- Button with technical aria-label, user-friendly visible text -->
+        <button aria-label="execute-payment-process">Pay Now</button>
+    </section>
+    
+    <!-- PASS CASES: aria-label includes or matches visible text -->
+    <section class="section pass">
+        <h2>✅ Pass Cases (Should NOT trigger the error)</h2>
+        
+        <!-- Button with aria-label that includes visible text -->
+        <button aria-label="Save Changes to profile">Save Changes</button>
+        
+        <!-- Link with aria-label that includes visible text -->
+        <a href="#" aria-label="Contact Us for support">Contact Us</a>
+        
+        <!-- Button with exact match -->
+        <button aria-label="Delete Account">Delete Account</button>
+        
+        <!-- Button with aria-label that expands on visible text -->
+        <button aria-label="Sign In to Your Account securely">Sign In to Your Account</button>
+        
+        <!-- Input with aria-label that includes the label text -->
+        <label for="search2">Search Products</label>
+        <input type="text" id="search2" aria-label="Search Products in our catalog" placeholder="Enter keywords">
+        
+        <!-- Link with aria-label that starts with visible text -->
+        <a href="#" aria-label="Download Report as PDF">Download Report</a>
+        
+        <!-- Button without aria-label (uses visible text) -->
+        <button>Submit Form</button>
+        
+        <!-- Input with matching label and aria-label -->
+        <label for="email2">Email Address</label>
+        <input type="email" id="email2" aria-label="Email Address for login">
+    </section>
+    
+    <!-- EDGE CASES -->
+    <section class="section">
+        <h2>⚠️ Edge Cases</h2>
+        
+        <!-- Button with partial match -->
+        <button aria-label="Save">Save Changes</button>
+        
+        <!-- Button with case differences -->
+        <button aria-label="DOWNLOAD FILE">Download File</button>
+        
+        <!-- Button with extra punctuation in aria-label -->
+        <button aria-label="Next Page...">Next Page</button>
+        
+        <!-- Button with visible text as substring of aria-label -->
+        <button aria-label="Click to print document">Print</button>
+        
+        <!-- Input with aria-label that contains label text but in different order -->
+        <label for="name1">First Name</label>
+        <input type="text" id="name1" aria-label="Name (First)">
+        
+        <!-- Button with numbers in different formats -->
+        <button aria-label="Page 1">Page One</button>
+        
+        <!-- Icon button with descriptive aria-label -->
+        <button aria-label="Settings menu">⚙️</button>
+        
+        <!-- Button with abbreviation vs full text -->
+        <button aria-label="United States">US</button>
+    </section>
+    
+    <!-- COMPLEX SCENARIOS -->
+    <section class="section">
+        <h2>🔍 Complex Scenarios</h2>
+        
+        <!-- Form with mixed compliance -->
+        <form>
+            <fieldset>
+                <legend>User Registration</legend>
+                
+                <!-- Error: aria-label doesn't match -->
+                <label for="username">Username</label>
+                <input type="text" id="username" aria-label="Login ID">
+                
+                <!-- Pass: aria-label includes label -->
+                <label for="password">Password</label>
+                <input type="password" id="password" aria-label="Password (minimum 8 characters)">
+                
+                <!-- Error: completely different -->
+                <button type="submit" aria-label="Create account">Register Now</button>
+            </fieldset>
+        </form>
+        
+        <!-- Navigation with mixed compliance -->
+        <nav>
+            <ul>
+                <li><a href="#" aria-label="Go to homepage">Home</a></li> <!-- Pass -->
+                <li><a href="#" aria-label="Products page">About</a></li> <!-- Error -->
+                <li><a href="#" aria-label="Contact information">Contact</a></li> <!-- Pass -->
+            </ul>
+        </nav>
+        
+        <!-- Data table with action buttons -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td>
+                        <!-- Error: generic aria-label -->
+                        <button aria-label="Action">Edit User</button>
+                        <!-- Pass: includes visible text -->
+                        <button aria-label="Delete User John Doe">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

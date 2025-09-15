@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnProblematicAnimation Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        /* PROBLEMATIC ANIMATIONS - These should trigger warnings */
+        
+        /* 1. Flashing/Blinking animation exceeding 3Hz */
+        .flash-animation {
+            width: 200px;
+            height: 100px;
+            background-color: red;
+            animation: flash 0.1s infinite; /* 10Hz - exceeds safe threshold */
+        }
+        
+        @keyframes flash {
+            0% { background-color: red; }
+            50% { background-color: white; }
+            100% { background-color: red; }
+        }
+        
+        /* 2. Strobing text animation */
+        .strobe-text {
+            font-size: 24px;
+            font-weight: bold;
+            animation: strobe 0.2s infinite; /* 5Hz - problematic */
+        }
+        
+        @keyframes strobe {
+            0% { opacity: 1; }
+            25% { opacity: 0; }
+            50% { opacity: 1; }
+            75% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        /* 3. Rapid color changing animation */
+        .color-change {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            animation: colorChange 0.15s infinite; /* ~6.7Hz */
+        }
+        
+        @keyframes colorChange {
+            0% { background-color: #ff0000; }
+            16% { background-color: #ff8000; }
+            33% { background-color: #ffff00; }
+            50% { background-color: #00ff00; }
+            66% { background-color: #0080ff; }
+            83% { background-color: #8000ff; }
+            100% { background-color: #ff0000; }
+        }
+        
+        /* 4. Fast moving/parallax animation that could cause vestibular issues */
+        .moving-element {
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            position: relative;
+            animation: fastMove 1s infinite linear;
+        }
+        
+        @keyframes fastMove {
+            0% { transform: translateX(0px) translateY(0px); }
+            25% { transform: translateX(300px) translateY(100px); }
+            50% { transform: translateX(300px) translateY(-100px); }
+            75% { transform: translateX(-100px) translateY(-100px); }
+            100% { transform: translateX(0px) translateY(0px); }
+        }
+        
+        /* 5. Spinning animation that's too fast */
+        .fast-spin {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, black, white, black, white);
+            animation: fastSpin 0.3s infinite linear;
+        }
+        
+        @keyframes fastSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 6. Scaling/pulsing animation that's too aggressive */
+        .aggressive-pulse {
+            width: 100px;
+            height: 100px;
+            background-color: orange;
+            animation: aggressivePulse 0.25s infinite;
+        }
+        
+        @keyframes aggressivePulse {
+            0% { transform: scale(0.5); opacity: 0.3; }
+            50% { transform: scale(2); opacity: 1; }
+            100% { transform: scale(0.5); opacity: 0.3; }
+        }
+        
+        /* 7. Multiple simultaneous problematic animations */
+        .multi-problem {
+            width: 120px;
+            height: 120px;
+            background-color: purple;
+            animation: 
+                flash 0.12s infinite,
+                fastSpin 0.4s infinite linear,
+                aggressivePulse 0.18s infinite;
+        }
+        
+        /* 8. CSS animation without prefers-reduced-motion consideration */
+        .no-reduced-motion-respect {
+            width: 200px;
+            height: 50px;
+            background: linear-gradient(90deg, red, yellow, green, blue, red);
+            background-size: 400% 100%;
+            animation: slideGradient 0.5s infinite linear;
+        }
+        
+        @keyframes slideGradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        /* 9. Animated GIF placeholder (simulated with CSS) */
+        .gif-simulation {
+            width: 100px;
+            height: 100px;
+            background-color: #ff6b6b;
+            position: relative;
+            animation: gifFrame 0.1s infinite steps(8);
+        }
+        
+        @keyframes gifFrame {
+            0% { background-color: #ff6b6b; }
+            12.5% { background-color: #4ecdc4; }
+            25% { background-color: #45b7d1; }
+            37.5% { background-color: #f9ca24; }
+            50% { background-color: #f0932b; }
+            62.5% { background-color: #eb4d4b; }
+            75% { background-color: #6c5ce7; }
+            87.5% { background-color: #a29bfe; }
+            100% { background-color: #ff6b6b; }
+        }
+        
+        /* 10. Transition that could be problematic */
+        .problematic-transition {
+            width: 100px;
+            height: 100px;
+            background-color: #2ecc71;
+            transition: all 0.05s ease-in-out; /* Very fast transition */
+        }
+        
+        .problematic-transition:hover {
+            transform: scale(3) rotate(360deg);
+            background-color: #e74c3c;
+        }
+        
+        /* GOOD EXAMPLES - These should NOT trigger warnings */
+        
+        /* Respectful animation with prefers-reduced-motion */
+        .good-animation {
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            animation: gentleFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .good-animation {
+                animation: none;
+            }
+        }
+        
+        /* Slow, gentle animation */
+        .gentle-fade {
+            width: 100px;
+            height: 100px;
+            background-color: #9b59b6;
+            animation: gentleFade 4s ease-in-out infinite;
+        }
+        
+        @keyframes gentleFade {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .gentle-fade {
+                animation: none;
+                opacity: 1;
+            }
+        }
+        
+        /* Control buttons */
+        .controls {
+            margin: 20px 0;
+        }
+        
+        .control-button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #34495e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .control-button:hover {
+            background-color: #2c3e50;
+        }
+        
+        .paused {
+            animation-play-state: paused !important;
+        }
+        
+        .warning-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            color: #856404;
+        }
+        
+        .good-note {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI_WarnProblematicAnimation Test Fixture</h1>
+    <p>This page contains various animations designed to test the AI_WarnProblematicAnimation accessibility checker rule.</p>
+    
+    <div class="controls">
+        <button class="control-button" onclick="pauseAllAnimations()">Pause All Animations</button>
+        <button class="control-button" onclick="resumeAllAnimations()">Resume All Animations</button>
+    </div>
+    
+    <!-- PROBLEMATIC ANIMATIONS SECTION -->
+    <div class="test-section">
+        <h2>⚠️ Problematic Animations (Should Trigger Warnings)</h2>
+        
+        <div class="warning-note">
+            <strong>Warning:</strong> The animations below may cause accessibility issues and should trigger the AI_WarnProblematicAnimation rule.
+        </div>
+        
+        <h3>1. Fast Flashing Animation (&gt;3Hz)</h3>
+        <div class="flash-animation"></div>
+        <p>Flashes at 10Hz - exceeds WCAG safe threshold of 3Hz</p>
+        
+        <h3>2. Strobing Text</h3>
+        <div class="strobe-text">FLASHING TEXT</div>
+        <p>Text that strobes at 5Hz</p>
+        
+        <h3>3. Rapid Color Changes</h3>
+        <div class="color-change"></div>
+        <p>Cycles through colors at ~6.7Hz</p>
+        
+        <h3>4. Fast Moving Element</h3>
+        <div class="moving-element"></div>
+        <p>Rapid movement that could trigger vestibular disorders</p>
+        
+        <h3>5. Fast Spinning Animation</h3>
+        <div class="fast-spin"></div>
+        <p>Spins at high speed with contrasting pattern</p>
+        
+        <h3>6. Aggressive Pulsing</h3>
+        <div class="aggressive-pulse"></div>
+        <p>Rapidly scales and changes opacity</p>
+        
+        <h3>7. Multiple Problematic Animations</h3>
+        <div class="multi-problem"></div>
+        <p>Combines flashing, spinning, and pulsing</p>
+        
+        <h3>8. No Reduced Motion Respect</h3>
+        <div class="no-reduced-motion-respect"></div>
+        <p>Animated gradient without prefers-reduced-motion consideration</p>
+        
+        <h3>9. Animated GIF Simulation</h3>
+        <div class="gif-simulation"></div>
+        <p>Simulates problematic animated GIF with rapid frame changes</p>
+        
+        <h3>10. Problematic Hover Transition</h3>
+        <div class="problematic-transition">Hover me</div>
+        <p>Very fast transition on hover that could be jarring</p>
+    </div>
+    
+    <!-- GOOD ANIMATIONS SECTION -->
+    <div class="test-section">
+        <h2>✅ Accessible Animations (Should NOT Trigger Warnings)</h2>
+        
+        <div class="good-note">
+            <strong>Good Examples:</strong> These animations should not trigger warnings as they follow accessibility best practices.
+        </div>
+        
+        <h3>1. Gentle Animation with Reduced Motion Support</h3>
+        <div class="good-animation"></div>
+        <p>Slow, gentle floating animation that respects prefers-reduced-motion</p>
+        
+        <h3>2. Subtle Fade Animation</h3>
+        <div class="gentle-fade"></div>
+        <p>Slow fade animation with reduced motion support</p>
+        
+        <h3>3. Static Content (No Animation)</h3>
+        <div style="width: 100px; height: 100px; background-color: #e67e22;"></div>
+        <p>Static element with no animation</p>
+    </div>
+    
+    <!-- ADDITIONAL TEST CASES -->
+    <div class="test-section">
+        <h2>🔬 Edge Cases and Additional Tests</h2>
+        
+        <h3>1. Video Element (Should be checked for autoplay)</h3>
+        <video width="200" height="100" autoplay muted loop style="background-color: #bdc3c7;">
+            <!-- No source - will show gray placeholder -->
+            <p>Your browser doesn't support video.</p>
+        </video>
+        <p>Autoplaying video without controls</p>
+        
+        <h3>2. Canvas Animation</h3>
+        <canvas id="problematicCanvas" width="200" height="100" style="border: 1px solid #ccc;"></canvas>
+        <p>Canvas with potentially problematic animation</p>
+        
+        <h3>3. SVG Animation</h3>
+        <svg width="100" height="100">
+            <circle cx="50" cy="50" r="20" fill="red">
+                <animate attributeName="r" values="20;40;20" dur="0.2s" repeatCount="indefinite" />
+                <animate attributeName="fill" values="red;yellow;red" dur="0.1s" repeatCount="indefinite" />
+            </circle>
+        </svg>
+        <p>SVG with fast animated circle</p>
+        
+        <h3>4. JavaScript-driven Animation</h3>
+        <div id="jsAnimation" style="width: 100px; height: 100px; background-color: #1abc9c;"></div>
+        <p>Element animated via JavaScript</p>
+    </div>
+
+    <script>
+        // JavaScript animation that should trigger warnings
+        let jsElement = document.getElementById('jsAnimation');
+        let colors = ['#1abc9c', '#3498db', '#9b59b6', '#e74c3c', '#f39c12'];
+        let colorIndex = 0;
+        
+        setInterval(() => {
+            jsElement.style.backgroundColor = colors[colorIndex];
+            colorIndex = (colorIndex + 1) % colors.length;
+        }, 100); // Changes every 100ms = 10Hz
+        
+        // Canvas animation
+        const canvas = document.getElementById('problematicCanvas');
+        const ctx = canvas.getContext('2d');
+        let canvasFrame = 0;
+        
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Create flashing pattern
+            if (canvasFrame % 6 < 3) {
+                ctx.fillStyle = 'red';
+            } else {
+                ctx.fillStyle = 'white';
+            }
+            
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            canvasFrame++;
+            requestAnimationFrame(animateCanvas);
+        }
+        
+        animateCanvas();
+        
+        // Control functions
+        function pauseAllAnimations() {
+            const animatedElements = document.querySelectorAll('*');
+            animatedElements.forEach(el => {
+                el.classList.add('paused');
+            });
+        }
+        
+        function resumeAllAnimations() {
+            const animatedElements = document.querySelectorAll('*');
+            animatedElements.forEach(el => {
+                el.classList.remove('paused');
+            });
+        }
+        
+        // Test for window.matchMedia support
+        if (window.matchMedia) {
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            console.log('Prefers reduced motion:', prefersReducedMotion.matches);
+        }
+    </script>
+</body>
+</html>

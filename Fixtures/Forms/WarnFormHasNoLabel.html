@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Label Testing Fixture - WarnFormHasNoLabel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .form-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .good { border-color: #4CAF50; background-color: #f9fff9; }
+        .bad { border-color: #f44336; background-color: #fff9f9; }
+        h2 { color: #333; margin-top: 0; }
+        .status { font-weight: bold; padding: 5px 10px; border-radius: 3px; }
+        .pass { background-color: #4CAF50; color: white; }
+        .fail { background-color: #f44336; color: white; }
+        form { margin: 15px 0; }
+        input, textarea, select, button {
+            margin: 5px;
+            padding: 8px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Form Labeling Test Fixture - WarnFormHasNoLabel</h1>
+    <p>This fixture tests various scenarios for form elements with and without accessible names to trigger the WarnFormHasNoLabel accessibility issue.</p>
+
+    <!-- FAILING CASES - Should trigger WarnFormHasNoLabel warnings -->
+    
+    <div class="form-section bad">
+        <h2>❌ Form with No Label (Primary Test Case)</h2>
+        <span class="status fail">FAIL - Should trigger warning</span>
+        <p>A basic form with no accessible name - the most common violation.</p>
+        <form action="/search" method="get">
+            <input type="text" name="q" placeholder="Enter search term">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="form-section bad">
+        <h2>❌ Multiple Unlabeled Forms</h2>
+        <span class="status fail">FAIL - Should trigger multiple warnings</span>
+        <p>Multiple forms without labels - users can't distinguish their purposes.</p>
+        
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <button type="submit">Login</button>
+        </form>
+
+        <form action="/newsletter" method="post">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <button type="submit">Subscribe</button>
+        </form>
+
+        <form action="/contact" method="post">
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="4"></textarea>
+            </div>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <div class="form-section bad">
+        <h2>❌ Form with Adjacent Heading (No aria-labelledby)</h2>
+        <span class="status fail">FAIL - Should trigger warning</span>
+        <p>Form has a relevant heading nearby but doesn't use aria-labelledby to connect them.</p>
+        <h3 id="feedback-heading">Customer Feedback</h3>
+        <form action="/feedback" method="post">
+            <div class="form-group">
+                <label for="rating">Rating:</label>
+                <select id="rating" name="rating">
+                    <option value="">Select rating</option>
+                    <option value="5">Excellent</option>
+                    <option value="4">Good</option>
+                    <option value="3">Average</option>
+                    <option value="2">Poor</option>
+                    <option value="1">Terrible</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="comments">Comments:</label>
+                <textarea id="comments" name="comments" rows="3"></textarea>
+            </div>
+            <button type="submit">Submit Feedback</button>
+        </form>
+    </div>
+
+    <div class="form-section bad">
+        <h2>❌ Complex Form Without Purpose Identification</h2>
+        <span class="status fail">FAIL - Should trigger warning</span>
+        <p>A complex form that would benefit from clear purpose identification.</p>
+        <form action="/application" method="post">
+            <fieldset>
+                <legend>Personal Information</legend>
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Preferences</legend>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="newsletter" value="yes">
+                        Subscribe to newsletter
+                    </label>
+                </div>
+            </fieldset>
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+
+    <!-- PASSING CASES - Should NOT trigger WarnFormHasNoLabel warnings -->
+
+    <div class="form-section good">
+        <h2>✅ Form with aria-label</h2>
+        <span class="status pass">PASS - Should not trigger warning</span>
+        <p>Form properly labeled with aria-label describing its purpose.</p>
+        <form action="/search" method="get" aria-label="Site search">
+            <input type="text" name="q" placeholder="Enter search term">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="form-section good">
+        <h2>✅ Form with aria-labelledby</h2>
+        <span class="status pass">PASS - Should not trigger warning</span>
+        <p>Form properly labeled using aria-labelledby to reference a heading.</p>
+        <h3 id="contact-form-heading">Contact Us</h3>
+        <form action="/contact" method="post" aria-labelledby="contact-form-heading">
+            <div class="form-group">
+                <label for="contact-name">Name:</label>
+                <input type="text" id="contact-name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="contact-email">Email:</label>
+                <input type="email" id="contact-email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="contact-message">Message:</label>
+                <textarea id="contact-message" name="message" rows="4" required></textarea>
+            </div>
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
+    <div class="form-section good">
+        <h2>✅ Multiple Properly Labeled Forms</h2>
+        <span class="status pass">PASS - Should not trigger warnings</span>
+        <p>Multiple forms with unique, descriptive labels.</p>
+        
+        <form action="/login" method="post" aria-label="User login">
+            <div class="form-group">
+                <label for="login-username">Username:</label>
+                <input type="text" id="login-username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" name="password">
+            </div>
+            <button type="submit">Login</button>
+        </form>
+
+        <h3 id="newsletter-signup">Newsletter Signup</h3>
+        <form action="/newsletter" method="post" aria-labelledby="newsletter-signup">
+            <div class="form-group">
+                <label for="newsletter-email">Email:</label>
+                <input type="email" id="newsletter-email" name="email">
+            </div>
+            <button type="submit">Subscribe</button>
+        </form>
+    </div>
+
+    <div class="form-section good">
+        <h2>✅ Form with Descriptive aria-label for Complex Purpose</h2>
+        <span class="status pass">PASS - Should not trigger warning</span>
+        <p>Complex form with clear purpose identification.</p>
+        <form action="/application" method="post" aria-label="Job application form">
+            <fieldset>
+                <legend>Applicant Information</legend>
+                <div class="form-group">
+                    <label for="applicant-name">Full Name:</label>
+                    <input type="text" id="applicant-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="applicant-email">Email:</label>
+                    <input type="email" id="applicant-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="position">Position Applied For:</label>
+                    <select id="position" name="position" required>
+                        <option value="">Select position</option>
+                        <option value="developer">Software Developer</option>
+                        <option value="designer">UI/UX Designer</option>
+                        <option value="manager">Project Manager</option>
+                    </select>
+                </div>
+            </fieldset>
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+
+    <div class="form-section good">
+        <h2>✅ Search Form with Concise Label</h2>
+        <span class="status pass">PASS - Should not trigger warning</span>
+        <p>Search form with simple, appropriate label.</p>
+        <form action="/search" method="get" aria-label="Search">
+            <div class="form-group">
+                <label for="search-input">Search term:</label>
+                <input type="search" id="search-input" name="q">
+                <button type="submit">Go</button>
+            </div>
+        </form>
+    </div>
+
+    <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #666;">
+        <p><strong>Testing Notes:</strong></p>
+        <ul>
+            <li>Forms marked with ❌ should trigger WarnFormHasNoLabel warnings</li>
+            <li>Forms marked with ✅ should NOT trigger warnings</li>
+            <li>Test both individual form detection and proper differentiation between multiple forms</li>
+            <li>Verify that aria-label and aria-labelledby solutions are both recognized as valid fixes</li>
+            <li>Check that the accessibility checker properly identifies the impact level as Medium</li>
+        </ul>
+    </footer>
+</body>
+</html>

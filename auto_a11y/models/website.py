@@ -11,8 +11,8 @@ from bson import ObjectId
 @dataclass
 class ScrapingConfig:
     """Configuration for website scraping"""
-    max_pages: int = 500
-    max_depth: int = 3
+    max_pages: int = 999999  # Effectively unlimited (1 million pages)
+    max_depth: int = 10  # How many clicks away from the starting page
     follow_external: bool = False
     include_subdomains: bool = True
     respect_robots: bool = True

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Title Attribute Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .error { border-color: #e74c3c; }
+        .pass { border-color: #27ae60; }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input[type="text"], input[type="email"], input[type="password"], textarea {
+            width: 300px;
+        }
+        .hidden-label {
+            position: absolute;
+            left: -10000px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Form Title Attribute Test Fixture</h1>
+    <p>This fixture tests the ErrFormUsesTitleAttribute rule which identifies form controls that improperly use title attributes for labeling.</p>
+
+    <!-- ERROR CASES: Forms using title attributes for labeling -->
+    <div class="form-section error">
+        <h2>❌ ERROR CASES - Forms Using Title Attributes</h2>
+        
+        <!-- Basic input with only title attribute -->
+        <div class="form-group">
+            <input type="text" title="First Name" placeholder="Enter your first name">
+        </div>
+        
+        <!-- Email input with title as primary label -->
+        <div class="form-group">
+            <input type="email" title="Email Address" placeholder="user@example.com">
+        </div>
+        
+        <!-- Password with title attribute -->
+        <div class="form-group">
+            <input type="password" title="Password (minimum 8 characters)">
+        </div>
+        
+        <!-- Select dropdown with title -->
+        <div class="form-group">
+            <select title="Country Selection">
+                <option value="">Choose a country</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+                <option value="uk">United Kingdom</option>
+            </select>
+        </div>
+        
+        <!-- Textarea with title -->
+        <div class="form-group">
+            <textarea title="Comments or feedback" rows="4" cols="40" placeholder="Enter your comments here"></textarea>
+        </div>
+        
+        <!-- Checkbox with title -->
+        <div class="form-group">
+            <input type="checkbox" id="newsletter" title="Subscribe to newsletter">
+        </div>
+        
+        <!-- Radio buttons with title -->
+        <div class="form-group">
+            <input type="radio" name="contact-method" value="email" title="Contact by email">
+            <input type="radio" name="contact-method" value="phone" title="Contact by phone">
+        </div>
+        
+        <!-- Complex case: has label but title seems to be used as additional labeling -->
+        <div class="form-group">
+            <label for="phone-number">Phone:</label>
+            <input type="tel" id="phone-number" title="Phone Number (include area code)">
+        </div>
+    </div>
+
+    <!-- PASS CASES: Proper form labeling without title attributes -->
+    <div class="form-section pass">
+        <h2>✅ PASS CASES - Proper Form Labeling</h2>
+        
+        <!-- Proper label association -->
+        <div class="form-group">
+            <label for="proper-name">First Name:</label>
+            <input type="text" id="proper-name" placeholder="Enter your first name">
+        </div>
+        
+        <!-- Using aria-label -->
+        <div class="form-group">
+            <input type="email" aria-label="Email Address" placeholder="user@example.com">
+        </div>
+        
+        <!-- Using aria-labelledby -->
+        <div class="form-group">
+            <span id="password-label">Password:</span>
+            <input type="password" aria-labelledby="password-label">
+        </div>
+        
+        <!-- Select with proper label -->
+        <div class="form-group">
+            <label for="country-select">Country:</label>
+            <select id="country-select">
+                <option value="">Choose a country</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+            </select>
+        </div>
+        
+        <!-- Textarea with label -->
+        <div class="form-group">
+            <label for="comments">Comments:</label>
+            <textarea id="comments" rows="4" cols="40" placeholder="Enter your comments here"></textarea>
+        </div>
+        
+        <!-- Checkbox with proper label -->
+        <div class="form-group">
+            <input type="checkbox" id="newsletter-proper">
+            <label for="newsletter-proper">Subscribe to newsletter</label>
+        </div>
+        
+        <!-- Radio buttons with proper labels -->
+        <div class="form-group">
+            <input type="radio" name="contact-proper" value="email" id="contact-email">
+            <label for="contact-email">Contact by email</label>
+            <input type="radio" name="contact-proper" value="phone" id="contact-phone">
+            <label for="contact-phone">Contact by phone</label>
+        </div>
+        
+        <!-- Hidden label technique -->
+        <div class="form-group">
+            <label for="search-field" class="hidden-label">Search</label>
+            <input type="text" id="search-field" placeholder="Search..." aria-label="Search products">
+        </div>
+    </div>
+
+    <!-- EDGE CASES -->
+    <div class="form-section">
+        <h2>🔍 EDGE CASES</h2>
+        
+        <!-- Title attribute used for tooltip, not labeling (has proper label) -->
+        <div class="form-group">
+            <label for="edge-case-1">Credit Card Number:</label>
+            <input type="text" id="edge-case-1" title="We use SSL encryption to protect your data" aria-label="Credit Card Number">
+        </div>
+        
+        <!-- Empty title attribute -->
+        <div class="form-group">
+            <label for="edge-case-2">Phone Number:</label>
+            <input type="tel" id="edge-case-2" title="">
+        </div>
+        
+        <!-- Title same as label (redundant but not necessarily wrong) -->
+        <div class="form-group">
+            <label for="edge-case-3">Last Name:</label>
+            <input type="text" id="edge-case-3" title="Last Name">
+        </div>
+        
+        <!-- Input with both aria-label and title -->
+        <div class="form-group">
+            <input type="text" aria-label="Middle Initial" title="Middle Initial (optional)">
+        </div>
+    </div>
+
+    <!-- Form submission buttons (should not trigger errors) -->
+    <div class="form-section pass">
+        <h2>Form Actions (Should Not Trigger Errors)</h2>
+        <button type="submit">Submit Form</button>
+        <button type="reset" title="Clear all form fields">Reset</button>
+        <input type="submit" value="Submit" title="Submit the form">
+    </div>
+</body>
+</html>

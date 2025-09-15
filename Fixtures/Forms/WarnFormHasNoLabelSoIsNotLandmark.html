@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Landmark Test Fixture - WarnFormHasNoLabelSoIsNotLandmark</title>
+</head>
+<body>
+    <h1>Form Landmark Test Cases</h1>
+    
+    <!-- Test Case 1: Form without any label (SHOULD TRIGGER WARNING) -->
+    <form method="post" action="/submit">
+        <h2>Unlabeled Form (Should Trigger Warning)</h2>
+        <label for="name1">Name:</label>
+        <input type="text" id="name1" name="name">
+        <label for="email1">Email:</label>
+        <input type="email" id="email1" name="email">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 2: Form with aria-label (SHOULD NOT TRIGGER WARNING) -->
+    <form method="post" action="/submit" aria-label="Contact Information Form">
+        <h2>Form with aria-label (Should Not Trigger Warning)</h2>
+        <label for="name2">Name:</label>
+        <input type="text" id="name2" name="name">
+        <label for="email2">Email:</label>
+        <input type="email" id="email2" name="email">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 3: Form with aria-labelledby (SHOULD NOT TRIGGER WARNING) -->
+    <h2 id="form-heading-3">User Registration Form</h2>
+    <form method="post" action="/submit" aria-labelledby="form-heading-3">
+        <p>Form with aria-labelledby (Should Not Trigger Warning)</p>
+        <label for="name3">Name:</label>
+        <input type="text" id="name3" name="name">
+        <label for="email3">Email:</label>
+        <input type="email" id="email3" name="email">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 4: Multiple unlabeled forms (SHOULD TRIGGER WARNING for both) -->
+    <form method="post" action="/submit1">
+        <h2>First Unlabeled Form (Should Trigger Warning)</h2>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <button type="submit">Login</button>
+    </form>
+
+    <form method="get" action="/search">
+        <h2>Second Unlabeled Form (Should Trigger Warning)</h2>
+        <label for="query">Search:</label>
+        <input type="search" id="query" name="q">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Test Case 5: Form with empty aria-label (SHOULD TRIGGER WARNING) -->
+    <form method="post" action="/submit" aria-label="">
+        <h2>Form with Empty aria-label (Should Trigger Warning)</h2>
+        <label for="name5">Name:</label>
+        <input type="text" id="name5" name="name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 6: Form with whitespace-only aria-label (SHOULD TRIGGER WARNING) -->
+    <form method="post" action="/submit" aria-label="   ">
+        <h2>Form with Whitespace-only aria-label (Should Trigger Warning)</h2>
+        <label for="name6">Name:</label>
+        <input type="text" id="name6" name="name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 7: Form with aria-labelledby pointing to non-existent element (SHOULD TRIGGER WARNING) -->
+    <form method="post" action="/submit" aria-labelledby="non-existent-id">
+        <h2>Form with Invalid aria-labelledby (Should Trigger Warning)</h2>
+        <label for="name7">Name:</label>
+        <input type="text" id="name7" name="name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 8: Form with aria-labelledby pointing to empty element (SHOULD TRIGGER WARNING) -->
+    <span id="empty-label"></span>
+    <form method="post" action="/submit" aria-labelledby="empty-label">
+        <h2>Form with Empty aria-labelledby Target (Should Trigger Warning)</h2>
+        <label for="name8">Name:</label>
+        <input type="text" id="name8" name="name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 9: Nested forms (SHOULD TRIGGER WARNING - forms cannot be nested anyway) -->
+    <form method="post" action="/outer">
+        <h2>Outer Unlabeled Form (Should Trigger Warning)</h2>
+        <label for="outer-field">Outer Field:</label>
+        <input type="text" id="outer-field" name="outer">
+        <!-- Note: This inner form would be invalid HTML but tests edge cases -->
+        <div role="form">
+            <h3>Inner Form-like Element</h3>
+            <label for="inner-field">Inner Field:</label>
+            <input type="text" id="inner-field" name="inner">
+        </div>
+        <button type="submit">Submit Outer</button>
+    </form>
+
+    <!-- Test Case 10: Form with both aria-label and aria-labelledby (aria-labelledby should take precedence) -->
+    <h2 id="priority-heading">Priority Test Form</h2>
+    <form method="post" action="/submit" aria-label="Ignored Label" aria-labelledby="priority-heading">
+        <p>Form with Both Labels - aria-labelledby Takes Precedence (Should Not Trigger Warning)</p>
+        <label for="name10">Name:</label>
+        <input type="text" id="name10" name="name">
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>

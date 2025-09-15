@@ -1,0 +1,184 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing DOCTYPE Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            border: 2px solid #e74c3c;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #fdf2f2;
+        }
+        .warning {
+            color: #c0392b;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: 1px solid #333;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+        input, select, textarea {
+            margin: 5px;
+            padding: 5px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>HTML Document Without DOCTYPE Declaration</h1>
+        <p class="warning">⚠️ This document intentionally lacks a DOCTYPE declaration to test accessibility checker behavior.</p>
+    </header>
+
+    <main>
+        <section class="test-section">
+            <h2>Impact of Missing DOCTYPE</h2>
+            <p>This document demonstrates what happens when the DOCTYPE declaration is missing:</p>
+            <ul>
+                <li>Browser may render in quirks mode</li>
+                <li>CSS box model behavior may be inconsistent</li>
+                <li>JavaScript behavior may be unpredictable</li>
+                <li>Assistive technologies may have parsing difficulties</li>
+                <li>WCAG 4.1.1 Parsing compliance is violated</li>
+            </ul>
+        </section>
+
+        <section class="test-section">
+            <h2>Interactive Elements (Testing Quirks Mode Impact)</h2>
+            
+            <div class="form-group">
+                <label for="text-input">Text Input:</label>
+                <input type="text" id="text-input" name="text-input" placeholder="Enter text here">
+            </div>
+
+            <div class="form-group">
+                <label for="select-dropdown">Select Dropdown:</label>
+                <select id="select-dropdown" name="select-dropdown">
+                    <option value="">Choose an option</option>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="textarea-field">Textarea:</label>
+                <textarea id="textarea-field" name="textarea-field" rows="3" cols="40" placeholder="Enter longer text here"></textarea>
+            </div>
+
+            <div class="form-group">
+                <fieldset>
+                    <legend>Radio Button Group</legend>
+                    <input type="radio" id="radio1" name="radio-group" value="radio1">
+                    <label for="radio1">Radio Option 1</label><br>
+                    <input type="radio" id="radio2" name="radio-group" value="radio2">
+                    <label for="radio2">Radio Option 2</label><br>
+                    <input type="radio" id="radio3" name="radio-group" value="radio3">
+                    <label for="radio3">Radio Option 3</label>
+                </fieldset>
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" id="checkbox1" name="checkbox1" value="check1">
+                <label for="checkbox1">Checkbox Option 1</label><br>
+                <input type="checkbox" id="checkbox2" name="checkbox2" value="check2">
+                <label for="checkbox2">Checkbox Option 2</label>
+            </div>
+
+            <button type="button" onclick="alert('Button clicked in quirks mode!')">Test Button</button>
+            <button type="submit">Submit Button</button>
+        </section>
+
+        <section class="test-section">
+            <h2>Data Table (May Render Differently in Quirks Mode)</h2>
+            <table>
+                <caption>Sample Data Table</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Header 1</th>
+                        <th scope="col">Header 2</th>
+                        <th scope="col">Header 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Data 1</td>
+                        <td>Data 2</td>
+                        <td>Data 3</td>
+                    </tr>
+                    <tr>
+                        <td>Data 4</td>
+                        <td>Data 5</td>
+                        <td>Data 6</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="test-section">
+            <h2>Accessibility Features That May Be Affected</h2>
+            <nav aria-label="Test navigation">
+                <ul>
+                    <li><a href="#section1" aria-describedby="nav-desc">Navigate to Section 1</a></li>
+                    <li><a href="#section2">Navigate to Section 2</a></li>
+                    <li><a href="#section3">Navigate to Section 3</a></li>
+                </ul>
+            </nav>
+            <p id="nav-desc">This navigation may not work properly in quirks mode.</p>
+
+            <div role="alert" aria-live="polite" id="status-message">
+                Status messages may not be properly announced by screen readers.
+            </div>
+
+            <div tabindex="0" role="button" aria-pressed="false" onclick="togglePressed(this)">
+                Custom Button (ARIA)
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p><strong>Expected Result:</strong> Accessibility checker should flag this document with ErrMissingDocumentType error.</p>
+        <p><strong>WCAG Level:</strong> A (4.1.1 Parsing)</p>
+        <p><strong>Impact:</strong> Medium - affects all users due to potential rendering inconsistencies</p>
+    </footer>
+
+    <script>
+        function togglePressed(element) {
+            const isPressed = element.getAttribute('aria-pressed') === 'true';
+            element.setAttribute('aria-pressed', !isPressed);
+            element.textContent = isPressed ? 'Custom Button (ARIA)' : 'Custom Button (Pressed)';
+        }
+
+        // Test script that might behave differently in quirks mode
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusMessage = document.getElementById('status-message');
+            statusMessage.textContent = 'Page loaded in ' + (document.compatMode || 'unknown') + ' mode';
+        });
+    </script>
+</body>
+</html>

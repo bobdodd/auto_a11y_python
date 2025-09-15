@@ -45,6 +45,7 @@
                         <tr>
                             <th>Document URL</th>
                             <th>Type</th>
+                            <th>Language</th>
                             <th>Link Text</th>
                             <th>Found On Page</th>
                             <th>First Seen</th>
@@ -65,10 +66,20 @@
                                 <span class="badge bg-info">{{ doc.document_type_display }}</span>
                             </td>
                             <td>
+                                {% if doc.language %}
+                                    <span class="badge bg-secondary" 
+                                          title="Confidence: {{ (doc.language_confidence * 100)|round(0)|int }}%">
+                                        {{ doc.language_display }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
                                 {{ doc.link_text|truncate(40, True) if doc.link_text else '-' }}
                             </td>
                             <td>
-                                <a href="{{ doc.referring_page_url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;">
+                                <a href="{{ doc.referring_page_url }}" target="_blank" class="text-break">
                                     {{ doc.referring_page_url }}
                                 </a>
                             </td>
@@ -110,6 +121,7 @@
                         <tr>
                             <th>Document URL</th>
                             <th>Type</th>
+                            <th>Language</th>
                             <th>Link Text</th>
                             <th>Found On Page</th>
                             <th>First Seen</th>
@@ -130,10 +142,20 @@
                                 <span class="badge bg-info">{{ doc.document_type_display }}</span>
                             </td>
                             <td>
+                                {% if doc.language %}
+                                    <span class="badge bg-secondary" 
+                                          title="Confidence: {{ (doc.language_confidence * 100)|round(0)|int }}%">
+                                        {{ doc.language_display }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
                                 {{ doc.link_text|truncate(40, True) if doc.link_text else '-' }}
                             </td>
                             <td>
-                                <a href="{{ doc.referring_page_url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;">
+                                <a href="{{ doc.referring_page_url }}" target="_blank" class="text-break">
                                     {{ doc.referring_page_url }}
                                 </a>
                             </td>
@@ -187,6 +209,43 @@
                     </div>
                 </div>
                 {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Language Summary -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Document Language Summary</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% set doc_languages = {} %}
+                {% for doc in internal_docs + external_docs %}
+                    {% if doc.language %}
+                        {% set lang_display = doc.language_display %}
+                        {% if lang_display in doc_languages %}
+                            {% set _ = doc_languages.update({lang_display: doc_languages[lang_display] + 1}) %}
+                        {% else %}
+                            {% set _ = doc_languages.update({lang_display: 1}) %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if doc_languages %}
+                    {% for language, count in doc_languages.items() %}
+                    <div class="col-md-3 mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>{{ language }}:</span>
+                            <span class="badge bg-primary">{{ count }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <p class="text-muted mb-0">No language information available yet.</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form aria-labelledby Blank Reference Test Fixture</title>
+</head>
+<body>
+    <h1>Test Fixture: Form aria-labelledby References Blank Elements</h1>
+    
+    <!-- Test Case 1: Form with aria-labelledby pointing to completely empty element -->
+    <div id="empty-label"></div>
+    <form aria-labelledby="empty-label">
+        <input type="text" name="test1" placeholder="This form has empty labelledby">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 2: Form with aria-labelledby pointing to element with only whitespace -->
+    <div id="whitespace-label">   
+        
+    </div>
+    <form aria-labelledby="whitespace-label">
+        <input type="email" name="test2" placeholder="This form has whitespace-only labelledby">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 3: Form with aria-labelledby pointing to element with only HTML comments -->
+    <div id="comment-only-label"><!-- This is just a comment --></div>
+    <form aria-labelledby="comment-only-label">
+        <input type="password" name="test3" placeholder="This form has comment-only labelledby">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 4: Form with aria-labelledby pointing to element with empty nested elements -->
+    <div id="empty-nested-label"><span></span><div></div></div>
+    <form aria-labelledby="empty-nested-label">
+        <input type="tel" name="test4" placeholder="This form has empty nested elements in labelledby">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 5: Form with aria-labelledby pointing to multiple IDs where all are blank -->
+    <div id="blank1"></div>
+    <div id="blank2">  </div>
+    <div id="blank3"><!-- comment --></div>
+    <form aria-labelledby="blank1 blank2 blank3">
+        <input type="url" name="test5" placeholder="This form has multiple blank labelledby references">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 6: Form with aria-labelledby pointing to hidden empty element -->
+    <div id="hidden-empty-label" style="display: none;"></div>
+    <form aria-labelledby="hidden-empty-label">
+        <input type="number" name="test6" placeholder="This form references hidden empty element">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 7: Form with aria-labelledby pointing to element with only non-breaking spaces -->
+    <div id="nbsp-label">&nbsp;&nbsp;&nbsp;</div>
+    <form aria-labelledby="nbsp-label">
+        <input type="date" name="test7" placeholder="This form has non-breaking spaces in labelledby">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Test Case 8: Form with aria-labelledby pointing to element that contains only invisible characters -->
+    <div id="invisible-chars-label">&#8203;&#8204;&#8205;</div>
+    <form aria-labelledby="invisible-chars-label">
+        <input type="time" name="test8" placeholder="This form has invisible characters in labelledby">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- CORRECT EXAMPLES (should not trigger the error) -->
+    <h2>Correct Examples (Should Pass)</h2>
+    
+    <!-- Correct: Form with proper aria-labelledby pointing to element with text content -->
+    <div id="proper-label">User Registration Form</div>
+    <form aria-labelledby="proper-label">
+        <input type="text" name="username" placeholder="Username">
+        <input type="email" name="email" placeholder="Email">
+        <button type="submit">Register</button>
+    </form>
+
+    <!-- Correct: Form with aria-labelledby pointing to visible text content -->
+    <h3 id="contact-heading">Contact Information</h3>
+    <form aria-labelledby="contact-heading">
+        <input type="text" name="name" placeholder="Full Name">
+        <input type="tel" name="phone" placeholder="Phone Number">
+        <button type="submit">Save Contact</button>
+    </form>
+
+    <!-- Correct: Form with multiple labelledby IDs where at least one has content -->
+    <div id="form-title">Payment Details</div>
+    <div id="form-subtitle">Secure Checkout</div>
+    <div id="empty-but-has-sibling"></div>
+    <form aria-labelledby="form-title form-subtitle empty-but-has-sibling">
+        <input type="text" name="cardnumber" placeholder="Card Number">
+        <button type="submit">Process Payment</button>
+    </form>
+</body>
+</html>

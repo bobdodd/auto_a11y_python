@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Label Contains Multiple Fields Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        .error {
+            border-color: #e74c3c;
+            background-color: #fdf2f2;
+        }
+        .correct {
+            border-color: #27ae60;
+            background-color: #f2fdf2;
+        }
+        h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .error h2::before {
+            content: "❌ ";
+        }
+        .correct h2::before {
+            content: "✅ ";
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+        }
+        input, select {
+            margin: 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        fieldset {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #999;
+        }
+        legend {
+            font-weight: bold;
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Fixture: ErrLabelContainsMultipleFields</h1>
+    <p><strong>Testing WCAG 1.3.1, 3.3.2 - Labels with multiple form fields</strong></p>
+
+    <!-- ERROR CASE 1: Single label with 2 text inputs -->
+    <div class="test-section error">
+        <h2>Error: Label with 2 Text Fields</h2>
+        <label for="first-name">
+            Enter your first and last name:
+            <input type="text" id="first-name" name="firstName" placeholder="First name">
+            <input type="text" id="last-name" name="lastName" placeholder="Last name">
+        </label>
+        <p><em>Issue: One label describes two input fields, creating ambiguity.</em></p>
+    </div>
+
+    <!-- ERROR CASE 2: Single label with 3 date fields -->
+    <div class="test-section error">
+        <h2>Error: Label with 3 Date Fields</h2>
+        <label for="birth-month">
+            Date of birth:
+            <select id="birth-month" name="birthMonth">
+                <option value="">Month</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+            </select>
+            <select id="birth-day" name="birthDay">
+                <option value="">Day</option>
+                <option value="01">1</option>
+                <option value="02">2</option>
+            </select>
+            <select id="birth-year" name="birthYear">
+                <option value="">Year</option>
+                <option value="2000">2000</option>
+                <option value="2001">2001</option>
+            </select>
+        </label>
+        <p><em>Issue: One label describes three select fields, making it unclear which is which.</em></p>
+    </div>
+
+    <!-- ERROR CASE 3: Single label with 4 address fields -->
+    <div class="test-section error">
+        <h2>Error: Label with 4 Address Fields</h2>
+        <label for="street">
+            Complete address:
+            <input type="text" id="street" name="street" placeholder="Street address">
+            <input type="text" id="city" name="city" placeholder="City">
+            <input type="text" id="state" name="state" placeholder="State">
+            <input type="text" id="zip" name="zip" placeholder="ZIP code">
+        </label>
+        <p><em>Issue: One label describes four input fields, creating maximum confusion.</em></p>
+    </div>
+
+    <!-- ERROR CASE 4: Mixed input types in single label -->
+    <div class="test-section error">
+        <h2>Error: Label with Mixed Field Types</h2>
+        <label for="contact-email">
+            Contact information:
+            <input type="email" id="contact-email" name="email" placeholder="Email">
+            <input type="tel" id="contact-phone" name="phone" placeholder="Phone">
+        </label>
+        <p><em>Issue: One label for different types of contact fields.</em></p>
+    </div>
+
+    <!-- CORRECT SOLUTION 1: Separate labels -->
+    <div class="test-section correct">
+        <h2>Correct: Individual Labels</h2>
+        <label for="correct-first">First name:</label>
+        <input type="text" id="correct-first" name="correctFirst">
+        
+        <label for="correct-last">Last name:</label>
+        <input type="text" id="correct-last" name="correctLast">
+        <p><em>Solution: Each field has its own descriptive label.</em></p>
+    </div>
+
+    <!-- CORRECT SOLUTION 2: Fieldset with legend and individual labels -->
+    <div class="test-section correct">
+        <h2>Correct: Fieldset with Individual Labels</h2>
+        <fieldset>
+            <legend>Date of birth</legend>
+            <label for="correct-month">Month:</label>
+            <select id="correct-month" name="correctMonth">
+                <option value="">Select month</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+            </select>
+            
+            <label for="correct-day">Day:</label>
+            <select id="correct-day" name="correctDay">
+                <option value="">Select day</option>
+                <option value="01">1</option>
+                <option value="02">2</option>
+            </select>
+            
+            <label for="correct-year">Year:</label>
+            <select id="correct-year" name="correctYear">
+                <option value="">Select year</option>
+                <option value="2000">2000</option>
+                <option value="2001">2001</option>
+            </select>
+        </fieldset>
+        <p><em>Solution: Related fields grouped with fieldset/legend, each with individual labels.</em></p>
+    </div>
+
+    <!-- CORRECT SOLUTION 3: aria-labelledby approach -->
+    <div class="test-section correct">
+        <h2>Correct: Using aria-labelledby</h2>
+        <p id="address-group">Mailing address:</p>
+        <label for="aria-street">Street:</label>
+        <input type="text" id="aria-street" name="ariaStreet" aria-labelledby="address-group aria-street-label">
+        
+        <label for="aria-city">City:</label>
+        <input type="text" id="aria-city" name="ariaCity" aria-labelledby="address-group aria-city-label">
+        <p><em>Solution: Group context with individual field labels using aria-labelledby.</em></p>
+    </div>
+
+    <!-- EDGE CASE: Label with nested elements but single field (should NOT trigger error) -->
+    <div class="test-section correct">
+        <h2>Edge Case: Single Field with Rich Label Content</h2>
+        <label for="single-field">
+            <strong>Password</strong> (must contain at least 8 characters):
+            <input type="password" id="single-field" name="singleField">
+        </label>
+        <p><em>Note: This should NOT trigger the error - it's one label for one field with rich content.</em></p>
+    </div>
+</body>
+</html>

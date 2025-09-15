@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Duplicate Label for Region Landmark</title>
+    <style>
+        .region {
+            border: 2px solid #ccc;
+            margin: 10px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        .valid {
+            border-color: green;
+        }
+        .invalid {
+            border-color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Fixture: ErrDuplicateLabelForRegionLandmark</h1>
+    
+    <p><strong>Purpose:</strong> This fixture tests for multiple region landmarks with identical labels.</p>
+    
+    <!-- INVALID: Multiple regions with identical aria-label -->
+    <section class="region invalid" role="region" aria-label="Product Information">
+        <h2>First Product Section</h2>
+        <p>This is the first product information section with aria-label "Product Information".</p>
+    </section>
+    
+    <section class="region invalid" role="region" aria-label="Product Information">
+        <h2>Second Product Section</h2>
+        <p>This is the second product information section with the SAME aria-label "Product Information".</p>
+    </section>
+    
+    <!-- INVALID: Multiple regions with identical aria-labelledby -->
+    <h3 id="news-heading">Latest News</h3>
+    <section class="region invalid" role="region" aria-labelledby="news-heading">
+        <p>First news section labeled by the same heading.</p>
+    </section>
+    
+    <section class="region invalid" role="region" aria-labelledby="news-heading">
+        <p>Second news section labeled by the SAME heading.</p>
+    </section>
+    
+    <!-- INVALID: Mix of aria-label and aria-labelledby with same computed name -->
+    <h4 id="content-title">Content Area</h4>
+    <section class="region invalid" role="region" aria-labelledby="content-title">
+        <p>Region using aria-labelledby pointing to "Content Area".</p>
+    </section>
+    
+    <section class="region invalid" role="region" aria-label="Content Area">
+        <p>Region using aria-label with the SAME text "Content Area".</p>
+    </section>
+    
+    <!-- VALID: Unique labels for comparison -->
+    <section class="region valid" role="region" aria-label="User Profile">
+        <h2>Profile Information</h2>
+        <p>This region has a unique label.</p>
+    </section>
+    
+    <section class="region valid" role="region" aria-label="Account Settings">
+        <h2>Settings Panel</h2>
+        <p>This region has a different unique label.</p>
+    </section>
+    
+    <!-- VALID: Same element type but different computed accessible names -->
+    <h5 id="sidebar-title">Navigation Menu</h5>
+    <h5 id="footer-title">Contact Information</h5>
+    
+    <section class="region valid" role="region" aria-labelledby="sidebar-title">
+        <p>Navigation region with unique labelledby reference.</p>
+    </section>
+    
+    <section class="region valid" role="region" aria-labelledby="footer-title">
+        <p>Footer region with different labelledby reference.</p>
+    </section>
+    
+    <!-- Edge case: Region without explicit role but implicit region semantics -->
+    <section class="region invalid" aria-label="Special Offers">
+        <h2>Today's Deals</h2>
+        <p>Implicit region landmark with aria-label.</p>
+    </section>
+    
+    <section class="region invalid" aria-label="Special Offers">
+        <h2>Weekly Specials</h2>
+        <p>Another implicit region landmark with SAME aria-label.</p>
+    </section>
+    
+    <!-- Test Notes -->
+    <div style="margin-top: 30px; padding: 20px; background: #e8f4fd; border: 1px solid #b3d9ff;">
+        <h3>Expected Accessibility Violations:</h3>
+        <ul>
+            <li>Two sections with aria-label="Product Information"</li>
+            <li>Two sections with aria-labelledby="news-heading" (both resolve to "Latest News")</li>
+            <li>One section with aria-labelledby="content-title" and one with aria-label="Content Area" (same computed name)</li>
+            <li>Two sections with aria-label="Special Offers"</li>
+        </ul>
+        
+        <h3>Valid Examples (should not trigger violations):</h3>
+        <ul>
+            <li>Sections with unique aria-label values</li>
+            <li>Sections with aria-labelledby pointing to different elements</li>
+        </ul>
+    </div>
+</body>
+</html>

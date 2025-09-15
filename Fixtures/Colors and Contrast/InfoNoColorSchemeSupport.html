@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Scheme Support Test Fixture</title>
+    <style>
+        /* Static styles without prefers-color-scheme support */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #444;
+            margin-top: 30px;
+        }
+        
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .button {
+            background-color: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .button:hover {
+            background-color: #005a9e;
+        }
+        
+        .alert {
+            background-color: #ffebe6;
+            border: 1px solid #ff9999;
+            color: #cc0000;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .success {
+            background-color: #e6ffec;
+            border: 1px solid #66cc66;
+            color: #006600;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .nav {
+            background-color: #f0f0f0;
+            padding: 10px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav a {
+            color: #007acc;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+        
+        .nav a:hover {
+            background-color: #e0e0e0;
+            border-radius: 3px;
+        }
+        
+        .sidebar {
+            background-color: #f5f5f5;
+            border-left: 3px solid #007acc;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .input-group {
+            margin: 15px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: white;
+            color: black;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .table th {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        /* Intentionally NO prefers-color-scheme media queries */
+        /* This fixture tests for the absence of color scheme support */
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Color Scheme Support Test Page</h1>
+        <p>This page intentionally lacks support for OS color scheme preferences to test the InfoNoColorSchemeSupport accessibility checker result.</p>
+
+        <div class="alert">
+            <strong>Alert:</strong> This is an alert message that should adapt to user color preferences but doesn't.
+        </div>
+
+        <div class="success">
+            <strong>Success:</strong> This is a success message with fixed colors regardless of user preferences.
+        </div>
+
+        <section>
+            <h2>Content Cards</h2>
+            <div class="card">
+                <h3>Card Title 1</h3>
+                <p>This card has fixed light colors and doesn't respond to dark mode preferences. Users who have enabled dark mode in their OS will still see this content with light backgrounds and dark text.</p>
+                <button class="button">Action Button</button>
+            </div>
+
+            <div class="card">
+                <h3>Card Title 2</h3>
+                <p>Another card with static styling. Users with light sensitivity who prefer dark mode won't get the benefit of reduced eye strain on this page.</p>
+                <button class="button">Another Button</button>
+            </div>
+        </section>
+
+        <aside class="sidebar">
+            <h3>Sidebar Content</h3>
+            <p>This sidebar maintains the same appearance regardless of user color scheme preferences. It should ideally adapt to provide better readability in different lighting conditions.</p>
+        </aside>
+
+        <section>
+            <h2>Form Section</h2>
+            <form>
+                <div class="input-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name">
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                
+                <div class="input-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message"></textarea>
+                </div>
+                
+                <button type="submit" class="button">Submit Form</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Data Table</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Status</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Light Mode Support</td>
+                        <td>Available</td>
+                        <td>Standard experience</td>
+                    </tr>
+                    <tr>
+                        <td>Dark Mode Support</td>
+                        <td>Missing</td>
+                        <td>Reduced accessibility</td>
+                    </tr>
+                    <tr>
+                        <td>Auto Color Scheme</td>
+                        <td>Not Implemented</td>
+                        <td>Poor user experience</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Testing Instructions</h2>
+            <div class="card">
+                <h3>How to Test</h3>
+                <ol>
+                    <li>Set your OS to dark mode preference</li>
+                    <li>Refresh this page</li>
+                    <li>Notice that the page remains in light colors</li>
+                    <li>The accessibility checker should flag this as InfoNoColorSchemeSupport</li>
+                </ol>
+                <p><strong>Expected Result:</strong> The page should maintain light colors regardless of OS preference, triggering the accessibility check for missing color scheme support.</p>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Color Scheme Test Fixture. This footer also lacks color scheme adaptation.</p>
+    </footer>
+
+    <script>
+        // Optional: JavaScript to demonstrate the issue
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user prefers dark color scheme
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                console.warn('User prefers dark color scheme, but this site does not support it.');
+                
+                // You could add a notice to the page
+                const notice = document.createElement('div');
+                notice.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    background: #ff6b6b;
+                    color: white;
+                    padding: 10px;
+                    border-radius: 5px;
+                    font-size: 12px;
+                    z-index: 1000;
+                    max-width: 200px;
+                `;
+                notice.textContent = 'You prefer dark mode, but this site doesn\'t support it!';
+                document.body.appendChild(notice);
+                
+                // Remove notice after 5 seconds
+                setTimeout(() => notice.remove(), 5000);
+            }
+        });
+    </script>
+</body>
+</html>

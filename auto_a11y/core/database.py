@@ -38,6 +38,7 @@ class Database:
         self.pages: Collection = self.db.pages
         self.test_results: Collection = self.db.test_results
         self.document_references: Collection = self.db.document_references
+        self.discovery_runs: Collection = self.db.discovery_runs
         
         # Create indexes
         self._create_indexes()
@@ -68,6 +69,16 @@ class Database:
         self.document_references.create_index("website_id")
         self.document_references.create_index("document_url")
         self.document_references.create_index([("website_id", 1), ("document_url", 1)])
+        
+        # Discovery runs
+        self.discovery_runs.create_index("website_id")
+        self.discovery_runs.create_index("started_at")
+        self.discovery_runs.create_index("is_latest")
+        self.discovery_runs.create_index([("website_id", 1), ("is_latest", 1)])
+        
+        # Update pages index for discovery run
+        self.pages.create_index("discovery_run_id")
+        self.pages.create_index("is_in_latest_discovery")
     
     def test_connection(self) -> bool:
         """Test database connection"""
@@ -241,12 +252,17 @@ class Database:
         website_id: str,
         status: Optional[PageStatus] = None,
         limit: int = 1000,
-        skip: int = 0
+        skip: int = 0,
+        latest_only: bool = True
     ) -> List[Page]:
         """Get pages for a website"""
         query = {"website_id": website_id}
         if status:
             query["status"] = status.value
+        
+        # By default, only return pages from latest discovery for testing
+        if latest_only:
+            query["is_in_latest_discovery"] = True
         
         docs = self.pages.find(query).limit(limit).skip(skip)
         return [Page.from_dict(doc) for doc in docs]
@@ -463,3 +479,151 @@ class Database:
         """Delete all document references for a website"""
         result = self.document_references.delete_many({'website_id': website_id})
         return result.deleted_count > 0
+    
+    # Discovery Run methods
+    def create_discovery_run(self, discovery_run: 'DiscoveryRun') -> str:
+        """Create a new discovery run"""
+        from auto_a11y.models import DiscoveryRun
+        
+        # Mark all previous runs for this website as not latest
+        self.discovery_runs.update_many(
+            {'website_id': discovery_run.website_id},
+            {'$set': {'is_latest': False}}
+        )
+        
+        # Insert new discovery run
+        result = self.discovery_runs.insert_one(discovery_run.to_dict())
+        discovery_run._id = result.inserted_id
+        logger.info(f"Created discovery run {discovery_run.id} for website {discovery_run.website_id}")
+        return discovery_run.id
+    
+    def get_discovery_run(self, discovery_run_id: str) -> Optional['DiscoveryRun']:
+        """Get a discovery run by ID"""
+        from auto_a11y.models import DiscoveryRun
+        
+        doc = self.discovery_runs.find_one({'_id': ObjectId(discovery_run_id)})
+        return DiscoveryRun.from_dict(doc) if doc else None
+    
+    def get_latest_discovery_run(self, website_id: str) -> Optional['DiscoveryRun']:
+        """Get the latest discovery run for a website"""
+        from auto_a11y.models import DiscoveryRun
+        
+        doc = self.discovery_runs.find_one({
+            'website_id': website_id,
+            'is_latest': True
+        })
+        return DiscoveryRun.from_dict(doc) if doc else None
+    
+    def get_discovery_runs(self, website_id: str) -> List['DiscoveryRun']:
+        """Get all discovery runs for a website, ordered by date descending"""
+        from auto_a11y.models import DiscoveryRun
+        
+        docs = self.discovery_runs.find({'website_id': website_id}).sort('started_at', -1)
+        return [DiscoveryRun.from_dict(doc) for doc in docs]
+    
+    def update_discovery_run(self, discovery_run: 'DiscoveryRun') -> bool:
+        """Update a discovery run"""
+        result = self.discovery_runs.update_one(
+            {'_id': discovery_run._id},
+            {'$set': discovery_run.to_dict()}
+        )
+        return result.modified_count > 0
+    
+    def bulk_create_pages_with_discovery(self, pages: List[Page], discovery_run_id: str) -> int:
+        """Create multiple pages with discovery run tracking"""
+        if not pages:
+            return 0
+        
+        # Get existing pages for this website
+        website_id = pages[0].website_id
+        existing_urls = set()
+        for doc in self.pages.find({'website_id': website_id}, {'url': 1}):
+            existing_urls.add(doc['url'])
+        
+        # Mark all existing pages as not in latest discovery
+        self.pages.update_many(
+            {'website_id': website_id},
+            {'$set': {'is_in_latest_discovery': False}}
+        )
+        
+        # Process new and existing pages
+        new_pages = []
+        updated_count = 0
+        
+        for page in pages:
+            page.discovery_run_id = discovery_run_id
+            page.is_in_latest_discovery = True
+            
+            if page.url in existing_urls:
+                # Update existing page
+                self.pages.update_one(
+                    {'website_id': website_id, 'url': page.url},
+                    {'$set': {
+                        'discovery_run_id': discovery_run_id,
+                        'is_in_latest_discovery': True,
+                        'discovered_at': page.discovered_at,
+                        'title': page.title,
+                        'depth': page.depth,
+                        'status': page.status.value if hasattr(page.status, 'value') else page.status,
+                        'error_reason': page.error_reason
+                    }}
+                )
+                updated_count += 1
+            else:
+                # New page
+                new_pages.append(page.to_dict())
+        
+        # Insert new pages
+        if new_pages:
+            insert_result = self.pages.insert_many(new_pages)
+            
+            # Update website page count
+            self.websites.update_one(
+                {"_id": ObjectId(website_id)},
+                {"$inc": {"page_count": len(new_pages)}}
+            )
+            logger.info(f"Added {len(new_pages)} new pages, updated {updated_count} existing pages")
+            
+            return len(insert_result.inserted_ids) + updated_count
+        
+        return updated_count
+    
+    def get_pages_for_testing(self, website_id: str, status: Optional[PageStatus] = None) -> List[Page]:
+        """Get pages for testing (only from latest discovery)"""
+        query = {
+            'website_id': website_id,
+            'is_in_latest_discovery': True
+        }
+        
+        if status:
+            query['status'] = status.value
+        
+        docs = self.pages.find(query)
+        return [Page.from_dict(doc) for doc in docs]
+    
+    def compare_discoveries(self, website_id: str, old_run_id: str, new_run_id: str) -> Dict[str, Any]:
+        """Compare two discovery runs to find added/removed pages"""
+        
+        # Get pages from old discovery
+        old_pages = set()
+        for doc in self.pages.find({'website_id': website_id, 'discovery_run_id': old_run_id}, {'url': 1}):
+            old_pages.add(doc['url'])
+        
+        # Get pages from new discovery
+        new_pages = set()
+        for doc in self.pages.find({'website_id': website_id, 'discovery_run_id': new_run_id}, {'url': 1}):
+            new_pages.add(doc['url'])
+        
+        # Calculate differences
+        pages_added = new_pages - old_pages
+        pages_removed = old_pages - new_pages
+        pages_unchanged = old_pages & new_pages
+        
+        return {
+            'pages_added': list(pages_added),
+            'pages_removed': list(pages_removed),
+            'pages_unchanged': list(pages_unchanged),
+            'added_count': len(pages_added),
+            'removed_count': len(pages_removed),
+            'unchanged_count': len(pages_unchanged)
+        }

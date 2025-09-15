@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insufficient Contrast Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: white;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+        
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        /* FAILING CASES - These should trigger ErrInsufficientContrast */
+        
+        /* Normal text with insufficient contrast (< 4.5:1) */
+        .fail-normal-1 {
+            color: #999999;
+            background-color: #ffffff;
+            font-size: 16px;
+            /* Contrast ratio: ~2.85:1 */
+        }
+        
+        .fail-normal-2 {
+            color: #cccccc;
+            background-color: #ffffff;
+            font-size: 14px;
+            /* Contrast ratio: ~1.61:1 */
+        }
+        
+        .fail-normal-3 {
+            color: #000000;
+            background-color: #777777;
+            font-size: 16px;
+            /* Contrast ratio: ~2.85:1 */
+        }
+        
+        .fail-normal-4 {
+            color: #ff6666;
+            background-color: #ffffff;
+            font-size: 15px;
+            /* Contrast ratio: ~3.04:1 */
+        }
+        
+        .fail-normal-5 {
+            color: #0066cc;
+            background-color: #e6f2ff;
+            font-size: 16px;
+            /* Contrast ratio: ~2.1:1 */
+        }
+        
+        /* Large text with insufficient contrast (< 3:1) */
+        .fail-large-1 {
+            color: #aaaaaa;
+            background-color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            /* Contrast ratio: ~2.32:1 */
+        }
+        
+        .fail-large-2 {
+            color: #cccccc;
+            background-color: #ffffff;
+            font-size: 18pt;
+            /* Contrast ratio: ~1.61:1 */
+        }
+        
+        .fail-large-3 {
+            color: #ffffff;
+            background-color: #999999;
+            font-size: 20px;
+            font-weight: bold;
+            /* Contrast ratio: ~2.85:1 */
+        }
+        
+        /* Edge case: Barely failing normal text */
+        .fail-edge-normal {
+            color: #757575;
+            background-color: #ffffff;
+            font-size: 16px;
+            /* Contrast ratio: ~4.48:1 - just below 4.5:1 threshold */
+        }
+        
+        /* Edge case: Barely failing large text */
+        .fail-edge-large {
+            color: #949494;
+            background-color: #ffffff;
+            font-size: 18pt;
+            font-weight: bold;
+            /* Contrast ratio: ~2.99:1 - just below 3:1 threshold */
+        }
+        
+        /* Different color combinations */
+        .fail-blue-light {
+            color: #6699ff;
+            background-color: #ffffff;
+            font-size: 16px;
+            /* Poor blue on white */
+        }
+        
+        .fail-green-light {
+            color: #66cc66;
+            background-color: #ffffff;
+            font-size: 16px;
+            /* Poor green on white */
+        }
+        
+        .fail-red-pink {
+            color: #ff3333;
+            background-color: #ffcccc;
+            font-size: 16px;
+            /* Poor red on pink */
+        }
+        
+        .fail-dark-backgrounds {
+            color: #333333;
+            background-color: #666666;
+            font-size: 16px;
+            /* Dark gray on darker gray */
+        }
+        
+        /* PASSING CASES - These should NOT trigger the error */
+        
+        .pass-normal-1 {
+            color: #000000;
+            background-color: #ffffff;
+            font-size: 16px;
+            /* Contrast ratio: 21:1 */
+        }
+        
+        .pass-normal-2 {
+            color: #666666;
+            background-color: #ffffff;
+            font-size: 16px;
+            /* Contrast ratio: ~5.74:1 */
+        }
+        
+        .pass-large-1 {
+            color: #888888;
+            background-color: #ffffff;
+            font-size: 24px;
+            /* Contrast ratio: ~3.54:1 */
+        }
+        
+        .pass-large-2 {
+            color: #ffffff;
+            background-color: #000000;
+            font-size: 18pt;
+            font-weight: bold;
+            /* Contrast ratio: 21:1 */
+        }
+        
+        /* Form elements with poor contrast */
+        .fail-input {
+            color: #aaaaaa;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-size: 16px;
+        }
+        
+        .fail-button {
+            color: #cccccc;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        
+        /* Link with poor contrast */
+        .fail-link {
+            color: #cc99ff;
+            text-decoration: underline;
+            font-size: 16px;
+        }
+        
+        /* Text in different states */
+        .fail-disabled {
+            color: #cccccc;
+            background-color: #f5f5f5;
+            font-size: 16px;
+        }
+        
+        .fail-placeholder::placeholder {
+            color: #bbbbbb;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Insufficient Contrast Test Fixture</h1>
+    <p>This fixture tests various scenarios where text fails to meet WCAG contrast requirements.</p>
+    
+    <div class="test-section">
+        <div class="test-title">FAILING Cases - Normal Text (Should trigger ErrInsufficientContrast)</div>
+        
+        <p class="fail-normal-1">This normal text has insufficient contrast (light gray on white, ~2.85:1 ratio)</p>
+        
+        <p class="fail-normal-2">This normal text has very poor contrast (very light gray on white, ~1.61:1 ratio)</p>
+        
+        <p class="fail-normal-3">This normal text has poor contrast (black on medium gray, ~2.85:1 ratio)</p>
+        
+        <p class="fail-normal-4">This normal text has insufficient contrast (light red on white, ~3.04:1 ratio)</p>
+        
+        <p class="fail-normal-5">This normal text has poor contrast (blue on light blue background, ~2.1:1 ratio)</p>
+        
+        <p class="fail-blue-light">This normal text uses light blue on white background</p>
+        
+        <p class="fail-green-light">This normal text uses light green on white background</p>
+        
+        <p class="fail-red-pink">This normal text uses red on pink background</p>
+        
+        <p class="fail-dark-backgrounds">This normal text uses dark gray on darker gray</p>
+        
+        <p class="fail-edge-normal">This normal text barely fails the 4.5:1 requirement (~4.48:1 ratio)</p>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">FAILING Cases - Large Text (Should trigger ErrInsufficientContrast)</div>
+        
+        <h2 class="fail-large-1">This large heading has insufficient contrast (~2.32:1 ratio)</h2>
+        
+        <h3 class="fail-large-2">This large heading has very poor contrast (~1.61:1 ratio)</h3>
+        
+        <p class="fail-large-3">This large bold text has poor contrast on gray background</p>
+        
+        <p class="fail-edge-large">This large text barely fails the 3:1 requirement (~2.99:1 ratio)</p>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">FAILING Cases - Form Elements (Should trigger ErrInsufficientContrast)</div>
+        
+        <input type="text" class="fail-input" value="Input with poor contrast text" />
+        
+        <button class="fail-button">Button with poor contrast text</button>
+        
+        <input type="text" class="fail-placeholder" placeholder="Placeholder with poor contrast" />
+        
+        <p class="fail-disabled">This text simulates disabled state with poor contrast</p>
+        
+        <a href="#" class="fail-link">This link has insufficient contrast</a>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">PASSING Cases - Should NOT trigger ErrInsufficientContrast</div>
+        
+        <p class="pass-normal-1">This normal text has excellent contrast (black on white, 21:1 ratio)</p>
+        
+        <p class="pass-normal-2">This normal text has good contrast (medium gray on white, ~5.74:1 ratio)</p>
+        
+        <h2 class="pass-large-1">This large heading has acceptable contrast (~3.54:1 ratio)</h2>
+        
+        <h3 class="pass-large-2">This large heading has excellent contrast (white on black)</h3>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test Instructions</div>
+        <div style="color: #333; background: #f9f9f9; padding: 15px; border-radius: 4px;">
+            <strong>Expected Results:</strong>
+            <ul>
+                <li>All text in "FAILING Cases" sections should trigger <code>ErrInsufficientContrast</code></li>
+                <li>Text in "PASSING Cases" section should NOT trigger this error</li>
+                <li>The error should identify the specific contrast ratios that fail requirements</li>
+                <li>Both normal text (&lt; 4.5:1) and large text (&lt; 3:1) failures should be detected</li>
+                <li>Various color combinations and UI elements should be tested</li>
+            </ul>
+            <strong>Edge Cases Covered:</strong>
+            <ul>
+                <li>Barely failing contrast ratios (just below thresholds)</li>
+                <li>Different color combinations (not just gray-scale)</li>
+                <li>Form elements and interactive content</li>
+                <li>Large text vs normal text thresholds</li>
+                <li>Various background colors</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

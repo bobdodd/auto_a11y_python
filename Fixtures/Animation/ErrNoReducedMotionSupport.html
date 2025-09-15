@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduced Motion Support Test Fixture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* PROBLEMATIC: Animations that don't respect prefers-reduced-motion */
+        
+        .spinning-logo {
+            width: 60px;
+            height: 60px;
+            background: #007bff;
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+
+        .bouncing-ball {
+            width: 30px;
+            height: 30px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            animation: bounce 1s ease-in-out infinite alternate;
+            margin: 20px;
+        }
+
+        .sliding-banner {
+            background: #28a745;
+            color: white;
+            padding: 15px;
+            animation: slideIn 3s ease-in-out infinite;
+            margin: 20px 0;
+        }
+
+        .pulsing-button {
+            background: #ffc107;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            animation: pulse 1.5s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        .shaking-alert {
+            background: #dc3545;
+            color: white;
+            padding: 10px;
+            margin: 20px 0;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        .rotating-card {
+            width: 200px;
+            height: 100px;
+            background: #6f42c1;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            animation: rotate3d 4s linear infinite;
+        }
+
+        .zooming-image {
+            width: 150px;
+            height: 150px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23ff9500"/><text x="50" y="55" text-anchor="middle" fill="white" font-size="20">IMG</text></svg>');
+            background-size: cover;
+            animation: zoomInOut 2s ease-in-out infinite alternate;
+            margin: 20px auto;
+        }
+
+        .parallax-section {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            animation: parallaxMove 5s ease-in-out infinite;
+            margin: 20px 0;
+        }
+
+        .flickering-text {
+            font-size: 18px;
+            animation: flicker 0.8s ease-in-out infinite alternate;
+            margin: 20px 0;
+        }
+
+        /* Interactive animations that should also respect reduced motion */
+        .hover-scale:hover {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        .click-rotate:active {
+            transform: rotate(180deg);
+            transition: transform 0.5s ease;
+        }
+
+        /* Animation keyframes */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-30px); }
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes rotate3d {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        @keyframes zoomInOut {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+
+        @keyframes parallaxMove {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes flicker {
+            from { opacity: 1; }
+            to { opacity: 0.3; }
+        }
+
+        /* Test section styling */
+        .test-section {
+            border: 2px solid #ccc;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .description {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        /* Control panel for manual testing */
+        .controls {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .controls label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        .controls input[type="checkbox"] {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Reduced Motion Support Test Fixture</h1>
+            <div class="description">
+                This page contains various animations that <strong>DO NOT</strong> respect the prefers-reduced-motion setting.
+                All animations should be disabled or significantly reduced when the user has enabled reduced motion preferences.
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>Test Instructions:</h3>
+            <p>To test this fixture:</p>
+            <ol>
+                <li>Enable "Reduce motion" in your OS accessibility settings</li>
+                <li>Refresh this page</li>
+                <li>All animations should stop or be significantly reduced</li>
+                <li>Currently, they will continue running (demonstrating the error)</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>1. Spinning Logo Animation</h3>
+            <div class="spinning-logo"></div>
+            <p>Continuously rotating element that can cause dizziness</p>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Bouncing Ball</h3>
+            <div class="bouncing-ball"></div>
+            <p>Vertical bouncing motion that can trigger vestibular issues</p>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Sliding Banner</h3>
+            <div class="sliding-banner">This banner slides back and forth continuously</div>
+            <p>Horizontal sliding motion that can be disorienting</p>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Pulsing Button</h3>
+            <button class="pulsing-button">Click Me (Pulsing)</button>
+            <p>Scale and opacity changes that can be distracting for users with ADHD</p>
+        </div>
+
+        <div class="test-section">
+            <h3>5. Shaking Alert</h3>
+            <div class="shaking-alert">⚠️ Warning: This alert is shaking!</div>
+            <p>Rapid shaking motion that can trigger seizures in sensitive users</p>
+        </div>
+
+        <div class="test-section">
+            <h3>6. 3D Rotating Card</h3>
+            <div class="rotating-card">Rotating Card</div>
+            <p>3D rotation that can cause motion sickness</p>
+        </div>
+
+        <div class="test-section">
+            <h3>7. Zooming Image</h3>
+            <div class="zooming-image"></div>
+            <p>Scale animation that can be overwhelming for motion-sensitive users</p>
+        </div>
+
+        <div class="test-section">
+            <h3>8. Parallax Section</h3>
+            <div class="parallax-section">Parallax Effect</div>
+            <p>Subtle parallax motion that should be disabled for reduced motion users</p>
+        </div>
+
+        <div class="test-section">
+            <h3>9. Flickering Text</h3>
+            <div class="flickering-text">This text flickers rapidly</div>
+            <p>Opacity changes that can trigger photosensitive seizures</p>
+        </div>
+
+        <div class="test-section">
+            <h3>10. Interactive Hover/Click Animations</h3>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <button class="hover-scale" style="padding: 15px 30px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer;">Hover to Scale</button>
+                <button class="click-rotate" style="padding: 15px 30px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer;">Click to Rotate</button>
+            </div>
+            <p>Interactive animations that should also respect motion preferences</p>
+        </div>
+
+        <div class="test-section" style="background: #fff3cd; border-color: #ffeaa7;">
+            <h3>Expected Behavior with Reduced Motion:</h3>
+            <ul>
+                <li>All continuous animations should stop</li>
+                <li>Transform animations should be replaced with simple opacity or color changes</li>
+                <li>Interactive animations should be instant or very brief</li>
+                <li>Parallax and scrolling effects should be disabled</li>
+                <li>Flickering or rapid changes should be eliminated</li>
+            </ul>
+        </div>
+
+        <div class="test-section" style="background: #f8d7da; border-color: #f5c6cb;">
+            <h3>Accessibility Impact:</h3>
+            <ul>
+                <li><strong>Vestibular Disorders:</strong> Motion can cause nausea, dizziness, and disorientation</li>
+                <li><strong>Photosensitive Epilepsy:</strong> Flickering and rapid changes can trigger seizures</li>
+                <li><strong>ADHD:</strong> Animations can be extremely distracting and prevent focus</li>
+                <li><strong>Cognitive Disabilities:</strong> Motion can interfere with content comprehension</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Add some JavaScript-based animations that also don't respect reduced motion
+        document.addEventListener('DOMContentLoaded', function() {
+            // Problematic: JavaScript animation without reduced motion check
+            const jsAnimatedElement = document.createElement('div');
+            jsAnimatedElement.style.cssText = `
+                width: 50px;
+                height: 50px;
+                background: #e83e8c;
+                border-radius: 50%;
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                z-index: 1000;
+            `;
+            jsAnimatedElement.innerHTML = 'JS';
+            jsAnimatedElement.style.color = 'white';
+            jsAnimatedElement.style.display = 'flex';
+            jsAnimatedElement.style.alignItems = 'center';
+            jsAnimatedElement.style.justifyContent = 'center';
+            jsAnimatedElement.style.fontSize = '12px';
+            jsAnimatedElement.style.fontWeight = 'bold';
+            document.body.appendChild(jsAnimatedElement);
+
+            // Animate with JavaScript - this should also check for reduced motion preference
+            let position = 100;
+            let direction = 1;
+            setInterval(() => {
+                position += direction * 2;
+                if (position > 200 || position < 100) {
+                    direction *= -1;
+                }
+                jsAnimatedElement.style.top = position + 'px';
+            }, 50);
+
+            // Auto-scrolling content that doesn't respect reduced motion
+            const autoScrollElement = document.createElement('div');
+            autoScrollElement.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                background: #6c757d;
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                font-size: 12px;
+                max-width: 200px;
+            `;
+            autoScrollElement.innerHTML = 'Auto-scrolling ticker: This text moves automatically...';
+            document.body.appendChild(autoScrollElement);
+
+            let scrollPosition = 0;
+            setInterval(() => {
+                scrollPosition -= 1;
+                if (scrollPosition < -200) {
+                    scrollPosition = 200;
+                }
+                autoScrollElement.style.transform = `translateX(${scrollPosition}px)`;
+            }, 100);
+        });
+    </script>
+</body>
+</html>

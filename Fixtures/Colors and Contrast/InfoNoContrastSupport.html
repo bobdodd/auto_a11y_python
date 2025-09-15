@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Contrast Mode Test Fixture</title>
+    <style>
+        /* Standard styles that may not work well in high contrast mode */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Problematic elements for high contrast mode */
+        .subtle-text {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .icon-button:hover {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+            width: 65%;
+            transition: width 0.3s ease;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #e8f4f8;
+            color: #2196F3;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            margin: 2px;
+            border: 1px solid #e3f2fd;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background-color: #4CAF50;
+        }
+
+        .status-pending {
+            background-color: #FF9800;
+        }
+
+        .status-inactive {
+            background-color: #9E9E9E;
+        }
+
+        /* Custom checkbox styling that may not work in high contrast */
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .custom-checkbox .checkmark {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked + .checkmark {
+            background-color: #2196F3;
+            border-color: #2196F3;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked + .checkmark::after {
+            content: "✓";
+            color: white;
+            position: absolute;
+            left: 3px;
+            top: -2px;
+            font-size: 12px;
+        }
+
+        /* Link styling that may not be distinguishable */
+        .subtle-link {
+            color: #666;
+            text-decoration: none;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .subtle-link:hover {
+            color: #333;
+            border-bottom-color: #666;
+        }
+
+        /* Image with text overlay */
+        .hero-section {
+            position: relative;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="200"><rect width="100%" height="100%" fill="%23cccccc"/></svg>') center/cover;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .hero-text {
+            color: #555;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        /* Form elements with subtle styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #fafafa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        /* High contrast mode detection and override styles */
+        @media (prefers-contrast: high) {
+            /* This section would contain high contrast overrides if implemented */
+            /* Currently empty to demonstrate lack of high contrast support */
+        }
+
+        /* Windows High Contrast Mode detection */
+        @media screen and (-ms-high-contrast: active) {
+            /* This section would contain Windows HCM overrides if implemented */
+            /* Currently empty to demonstrate lack of high contrast support */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>High Contrast Mode Test Page</h1>
+        <p>This page tests various elements that may not work well in high contrast mode</p>
+    </div>
+
+    <div class="card">
+        <h2>Problematic Elements for High Contrast Mode</h2>
+        
+        <div class="form-group">
+            <h3>Status Indicators</h3>
+            <p><span class="status-indicator status-active"></span>Active Service</p>
+            <p><span class="status-indicator status-pending"></span>Pending Review</p>
+            <p><span class="status-indicator status-inactive"></span>Inactive Status</p>
+        </div>
+
+        <div class="form-group">
+            <h3>Progress Bar</h3>
+            <p>Task Completion: 65%</p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <h3>Custom Form Controls</h3>
+            <label class="custom-checkbox">
+                <input type="checkbox" checked>
+                <span class="checkmark"></span>
+                Custom styled checkbox (checked)
+            </label>
+            <br>
+            <label class="custom-checkbox">
+                <input type="checkbox">
+                <span class="checkmark"></span>
+                Custom styled checkbox (unchecked)
+            </label>
+        </div>
+
+        <div class="form-group">
+            <h3>Subtle Text and Links</h3>
+            <p>This is regular text with <span class="subtle-text">subtle secondary text</span> that may be hard to see.</p>
+            <p>Here's a <a href="#" class="subtle-link">subtly styled link</a> that relies on color and minimal visual cues.</p>
+        </div>
+
+        <div class="form-group">
+            <h3>Icon Buttons</h3>
+            <button class="icon-button" title="Settings">⚙️</button>
+            <button class="icon-button" title="Delete">🗑️</button>
+            <button class="icon-button" title="Edit">✏️</button>
+            <button class="icon-button" title="Share">📤</button>
+        </div>
+
+        <div class="form-group">
+            <h3>Tags/Labels</h3>
+            <span class="tag">JavaScript</span>
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">Accessibility</span>
+        </div>
+    </div>
+
+    <div class="hero-section">
+        <div class="hero-text">Hero Section with Text Overlay</div>
+    </div>
+
+    <div class="card">
+        <h2>Form Example</h2>
+        <form>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" class="form-input" placeholder="Enter your username">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" class="form-input" rows="4" placeholder="Enter your message"></textarea>
+            </div>
+            
+            <button type="submit" class="btn-primary">Submit Form</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Testing Instructions</h2>
+        <p><strong>To test high contrast mode:</strong></p>
+        <ul>
+            <li><strong>Windows:</strong> Press Left Alt + Left Shift + Print Screen to toggle High Contrast mode</li>
+            <li><strong>macOS:</strong> Go to System Preferences → Accessibility → Display → Increase Contrast</li>
+            <li><strong>Browser DevTools:</strong> Emulate "prefers-contrast: high" in developer tools</li>
+        </ul>
+        
+        <p><strong>Expected issues in high contrast mode:</strong></p>
+        <ul>
+            <li>Custom checkboxes may become invisible or unusable</li>
+            <li>Progress bars may lose visual indication</li>
+            <li>Status indicators (colored dots) may disappear</li>
+            <li>Subtle text may become unreadable</li>
+            <li>Icon buttons may lack sufficient visual boundaries</li>
+            <li>Tags/labels may lose background colors</li>
+            <li>Hero section text overlay may become invisible</li>
+            <li>Form focus indicators may not be visible</li>
+        </ul>
+        
+        <p class="subtle-text">This text demonstrates potential readability issues in high contrast mode.</p>
+    </div>
+
+    <script>
+        // JavaScript to demonstrate dynamic content that may not work in high contrast mode
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some interactive behavior that might not translate well to high contrast
+            const iconButtons = document.querySelectorAll('.icon-button');
+            iconButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Temporary visual feedback that may not work in high contrast
+                    this.style.backgroundColor = '#e0e0e0';
+                    setTimeout(() => {
+                        this.style.backgroundColor = '';
+                    }, 200);
+                });
+            });
+
+            // Simulate progress bar animation
+            const progressBar = document.querySelector('.progress-fill');
+            let progress = 65;
+            setInterval(() => {
+                progress = progress >= 100 ? 0 : progress + 5;
+                progressBar.style.width = progress + '%';
+            }, 2000);
+        });
+        
+        // High contrast detection (for demonstration)
+        function detectHighContrast() {
+            // This is a basic detection method - real implementation would be more robust
+            const testElement = document.createElement('div');
+            testElement.style.border = '1px solid';
+            testElement.style.borderColor = 'rgb(31, 31, 31)';
+            testElement.style.position = 'absolute';
+            testElement.style.height = '5px';
+            testElement.style.top = '-999px';
+            testElement.style.backgroundColor = 'rgb(31, 31, 31)';
+            
+            document.body.appendChild(testElement);
+            
+            const computedStyle = window.getComputedStyle(testElement);
+            const isHighContrast = computedStyle.backgroundColor === computedStyle.borderColor;
+            
+            document.body.removeChild(testElement);
+            
+            if (isHighContrast) {
+                console.warn('High contrast mode detected, but site lacks high contrast support');
+            }
+            
+            return isHighContrast;
+        }
+        
+        // Check on page load
+        setTimeout(detectHighContrast, 100);
+    </script>
+</body>
+</html>

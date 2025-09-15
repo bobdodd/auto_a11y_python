@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Landmark Label Duplication Test</title>
+</head>
+<body>
+    <header>
+        <h1>Form Landmark Label Testing</h1>
+    </header>
+
+    <main>
+        <!-- Test Case 1: Multiple forms with identical aria-label (ERROR) -->
+        <section>
+            <h2>Login Forms Section</h2>
+            <form aria-label="User Login">
+                <fieldset>
+                    <legend>Main Login</legend>
+                    <label for="username1">Username:</label>
+                    <input type="text" id="username1" name="username">
+                    <label for="password1">Password:</label>
+                    <input type="password" id="password1" name="password">
+                    <button type="submit">Login</button>
+                </fieldset>
+            </form>
+
+            <form aria-label="User Login">
+                <fieldset>
+                    <legend>Admin Login</legend>
+                    <label for="username2">Admin Username:</label>
+                    <input type="text" id="username2" name="username">
+                    <label for="password2">Admin Password:</label>
+                    <input type="password" id="password2" name="password">
+                    <button type="submit">Admin Login</button>
+                </fieldset>
+            </form>
+        </section>
+
+        <!-- Test Case 2: Multiple forms with identical aria-labelledby (ERROR) -->
+        <section>
+            <h2>Registration Forms</h2>
+            <h3 id="registration-heading">Registration</h3>
+            
+            <form aria-labelledby="registration-heading">
+                <fieldset>
+                    <legend>Personal Registration</legend>
+                    <label for="name1">Full Name:</label>
+                    <input type="text" id="name1" name="fullname">
+                    <label for="email1">Email:</label>
+                    <input type="email" id="email1" name="email">
+                    <button type="submit">Register</button>
+                </fieldset>
+            </form>
+
+            <form aria-labelledby="registration-heading">
+                <fieldset>
+                    <legend>Business Registration</legend>
+                    <label for="company">Company Name:</label>
+                    <input type="text" id="company" name="company">
+                    <label for="email2">Business Email:</label>
+                    <input type="email" id="email2" name="email">
+                    <button type="submit">Register Business</button>
+                </fieldset>
+            </form>
+        </section>
+
+        <!-- Test Case 3: Three forms with same implicit label via title (ERROR) -->
+        <section>
+            <h2>Contact Forms</h2>
+            <form title="Contact Form">
+                <fieldset>
+                    <legend>General Inquiry</legend>
+                    <label for="subject1">Subject:</label>
+                    <input type="text" id="subject1" name="subject">
+                    <label for="message1">Message:</label>
+                    <textarea id="message1" name="message"></textarea>
+                    <button type="submit">Send</button>
+                </fieldset>
+            </form>
+
+            <form title="Contact Form">
+                <fieldset>
+                    <legend>Technical Support</legend>
+                    <label for="issue">Issue Type:</label>
+                    <select id="issue" name="issue">
+                        <option>Bug Report</option>
+                        <option>Feature Request</option>
+                    </select>
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description"></textarea>
+                    <button type="submit">Submit</button>
+                </fieldset>
+            </form>
+
+            <form title="Contact Form">
+                <fieldset>
+                    <legend>Sales Inquiry</legend>
+                    <label for="product">Product Interest:</label>
+                    <input type="text" id="product" name="product">
+                    <label for="budget">Budget Range:</label>
+                    <input type="text" id="budget" name="budget">
+                    <button type="submit">Inquire</button>
+                </fieldset>
+            </form>
+        </section>
+
+        <!-- Test Case 4: Forms with no labels (also problematic) -->
+        <section>
+            <h2>Unlabeled Forms</h2>
+            <form>
+                <fieldset>
+                    <legend>Newsletter Signup</legend>
+                    <label for="newsletter-email">Email:</label>
+                    <input type="email" id="newsletter-email" name="email">
+                    <button type="submit">Subscribe</button>
+                </fieldset>
+            </form>
+
+            <form>
+                <fieldset>
+                    <legend>Survey</legend>
+                    <label for="rating">Rating:</label>
+                    <select id="rating" name="rating">
+                        <option>Excellent</option>
+                        <option>Good</option>
+                        <option>Fair</option>
+                        <option>Poor</option>
+                    </select>
+                    <button type="submit">Submit Rating</button>
+                </fieldset>
+            </form>
+        </section>
+
+        <!-- Test Case 5: CORRECT - Properly labeled unique forms -->
+        <section>
+            <h2>Correctly Labeled Forms (No Errors Expected)</h2>
+            <form aria-label="User Account Login">
+                <fieldset>
+                    <legend>Login to Your Account</legend>
+                    <label for="user-email">Email:</label>
+                    <input type="email" id="user-email" name="email">
+                    <label for="user-pass">Password:</label>
+                    <input type="password" id="user-pass" name="password">
+                    <button type="submit">Sign In</button>
+                </fieldset>
+            </form>
+
+            <form aria-label="Administrator Access Portal">
+                <fieldset>
+                    <legend>Administrator Login</legend>
+                    <label for="admin-id">Admin ID:</label>
+                    <input type="text" id="admin-id" name="adminId">
+                    <label for="admin-key">Access Key:</label>
+                    <input type="password" id="admin-key" name="accessKey">
+                    <button type="submit">Access Portal</button>
+                </fieldset>
+            </form>
+
+            <h3 id="feedback-form-title">Customer Feedback Form</h3>
+            <form aria-labelledby="feedback-form-title">
+                <fieldset>
+                    <legend>Share Your Experience</legend>
+                    <label for="customer-name">Your Name:</label>
+                    <input type="text" id="customer-name" name="name">
+                    <label for="feedback">Feedback:</label>
+                    <textarea id="feedback" name="feedback"></textarea>
+                    <button type="submit">Submit Feedback</button>
+                </fieldset>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>Test fixture for ErrDuplicateLabelForFormLandmark detection</p>
+    </footer>
+</body>
+</html>

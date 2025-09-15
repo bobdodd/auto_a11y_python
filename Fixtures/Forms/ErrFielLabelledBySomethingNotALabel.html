@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Labeling Test Fixture - ErrFielLabelledBySomethingNotALabel</title>
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        .error { background-color: #ffe6e6; }
+        .pass { background-color: #e6ffe6; }
+        h2 { color: #333; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <h1>Field Labeling Test Fixture</h1>
+    <p>This fixture tests various scenarios for the ErrFielLabelledBySomethingNotALabel accessibility issue.</p>
+
+    <!-- ERROR CASES: Fields labeled by inappropriate elements -->
+    
+    <div class="test-section error">
+        <h2>❌ ERROR: Field labeled by div element</h2>
+        <div id="username-text">Username</div>
+        <input type="text" aria-labelledby="username-text" />
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Field labeled by span element</h2>
+        <span id="email-text">Email Address</span>
+        <input type="email" aria-labelledby="email-text" />
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Field labeled by paragraph element</h2>
+        <p id="phone-text">Phone Number</p>
+        <input type="tel" aria-labelledby="phone-text" />
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Field labeled by heading element</h2>
+        <h3 id="address-text">Mailing Address</h3>
+        <textarea aria-labelledby="address-text"></textarea>
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Field labeled by button element</h2>
+        <button id="submit-text">Submit Form</button>
+        <input type="password" aria-labelledby="submit-text" />
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Field labeled by image element</h2>
+        <img id="avatar-text" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iMTAiIGZpbGw9IiNjY2MiLz4KPC9zdmc+" alt="Profile Picture" />
+        <input type="file" aria-labelledby="avatar-text" />
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Multiple fields labeled by same non-label element</h2>
+        <div id="contact-info">Contact Information</div>
+        <input type="text" placeholder="First Name" aria-labelledby="contact-info" />
+        <input type="text" placeholder="Last Name" aria-labelledby="contact-info" />
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Select labeled by list item</h2>
+        <ul>
+            <li id="country-text">Select your country</li>
+        </ul>
+        <select aria-labelledby="country-text">
+            <option>United States</option>
+            <option>Canada</option>
+            <option>Mexico</option>
+        </select>
+    </div>
+
+    <!-- PASSING CASES: Proper labeling methods -->
+    
+    <div class="test-section pass">
+        <h2>✅ PASS: Proper label element</h2>
+        <label for="proper-input">Full Name</label>
+        <input type="text" id="proper-input" />
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Field labeled by actual label element with aria-labelledby</h2>
+        <label id="proper-label">Email Address</label>
+        <input type="email" aria-labelledby="proper-label" />
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Field with aria-label</h2>
+        <input type="password" aria-label="Password" />
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Field with implicit label (wrapped)</h2>
+        <label>
+            Date of Birth
+            <input type="date" />
+        </label>
+    </div>
+
+    <div class="test-section pass">
+        <h2>✅ PASS: Field with title attribute (acceptable fallback)</h2>
+        <input type="search" title="Search products" placeholder="Search..." />
+    </div>
+
+    <!-- EDGE CASES -->
+    
+    <div class="test-section error">
+        <h2>❌ ERROR: Field labeled by element with no text content</h2>
+        <div id="empty-label"></div>
+        <input type="text" aria-labelledby="empty-label" />
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Field labeled by hidden element</h2>
+        <span id="hidden-label" style="display: none;">Hidden Label</span>
+        <input type="number" aria-labelledby="hidden-label" />
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Field references non-existent ID</h2>
+        <input type="checkbox" aria-labelledby="nonexistent-id" />
+    </div>
+
+    <div class="test-section error">
+        <h2>❌ ERROR: Radio group labeled by div instead of fieldset/legend</h2>
+        <div id="gender-text">Gender</div>
+        <input type="radio" name="gender" value="male" aria-labelledby="gender-text" /> Male
+        <input type="radio" name="gender" value="female" aria-labelledby="gender-text" /> Female
+    </div>
+
+</body>
+</html>

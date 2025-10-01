@@ -153,31 +153,56 @@ def cancel_job(job_id):
     })
 
 
+@testing_bp.route('/fixture-status')
+def fixture_status():
+    """Display fixture test status page"""
+    return render_template('testing/fixture_status.html')
+
+
 @testing_bp.route('/configure', methods=['GET', 'POST'])
 def configure_testing():
     """Configure testing settings"""
     if request.method == 'POST':
         # Save testing configuration
         config = request.get_json()
-        
+
         # Validate configuration
         if not config:
             return jsonify({'error': 'Invalid configuration'}), 400
-        
-        # In production, save to database or config file
+
+        # Update runtime configuration
+        if 'parallel_tests' in config:
+            current_app.app_config.PARALLEL_TESTS = config['parallel_tests']
+        if 'test_timeout' in config:
+            current_app.app_config.TEST_TIMEOUT = config['test_timeout']
+        if 'run_ai_analysis' in config:
+            current_app.app_config.RUN_AI_ANALYSIS = config['run_ai_analysis']
+        if 'browser_headless' in config:
+            current_app.app_config.BROWSER_HEADLESS = config['browser_headless']
+        if 'viewport_width' in config:
+            current_app.app_config.BROWSER_VIEWPORT_WIDTH = config['viewport_width']
+        if 'viewport_height' in config:
+            current_app.app_config.BROWSER_VIEWPORT_HEIGHT = config['viewport_height']
+        if 'pages_per_page' in config:
+            current_app.app_config.PAGES_PER_PAGE = config['pages_per_page']
+        if 'max_pages_per_page' in config:
+            current_app.app_config.MAX_PAGES_PER_PAGE = config['max_pages_per_page']
+
         return jsonify({
             'success': True,
-            'message': 'Testing configuration updated'
+            'message': 'Configuration updated successfully (applies to new operations)'
         })
-    
-    # Get current configuration
+
+    # Get current configuration with backward compatibility
     current_config = {
         'parallel_tests': current_app.app_config.PARALLEL_TESTS,
         'test_timeout': current_app.app_config.TEST_TIMEOUT,
         'run_ai_analysis': current_app.app_config.RUN_AI_ANALYSIS,
         'browser_headless': current_app.app_config.BROWSER_HEADLESS,
         'viewport_width': current_app.app_config.BROWSER_VIEWPORT_WIDTH,
-        'viewport_height': current_app.app_config.BROWSER_VIEWPORT_HEIGHT
+        'viewport_height': current_app.app_config.BROWSER_VIEWPORT_HEIGHT,
+        'pages_per_page': getattr(current_app.app_config, 'PAGES_PER_PAGE', 100),
+        'max_pages_per_page': getattr(current_app.app_config, 'MAX_PAGES_PER_PAGE', 500)
     }
-    
+
     return render_template('testing/configure.html', config=current_config)

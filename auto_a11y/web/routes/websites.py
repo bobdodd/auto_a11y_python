@@ -40,24 +40,90 @@ def view_website(website_id):
     if not website:
         flash('Website not found', 'error')
         return redirect(url_for('projects.list_projects'))
-    
+
     project = current_app.db.get_project(website.project_id)
-    pages = current_app.db.get_pages(website_id, limit=100)
-    
-    # Calculate statistics
-    stats = {
-        'total_pages': len(pages),
-        'tested_pages': sum(1 for p in pages if p.status == PageStatus.TESTED),
-        'pages_with_issues': sum(1 for p in pages if p.has_issues),
-        'total_violations': sum(p.violation_count for p in pages),
-        'total_warnings': sum(p.warning_count for p in pages)
-    }
-    
+
+    # Get pagination parameters from request, with config defaults and limits
+    page_num = request.args.get('page', 1, type=int)
+    # Use getattr with defaults for backward compatibility if config not reloaded
+    default_per_page = getattr(current_app.app_config, 'PAGES_PER_PAGE', 100)
+    max_per_page = getattr(current_app.app_config, 'MAX_PAGES_PER_PAGE', 500)
+    per_page = request.args.get('per_page', default_per_page, type=int)
+
+    # Enforce max pages per page limit
+    if per_page > max_per_page:
+        per_page = max_per_page
+    elif per_page < 10:
+        per_page = 10
+
+    # Get total count of ALL pages for this website (not limited to latest discovery)
+    total_page_count = current_app.db.pages.count_documents({'website_id': website_id})
+
+    # Calculate statistics using database aggregation (efficient for large datasets)
+    # This ensures we show stats for ALL discovered pages, not just the limited set
+    pipeline = [
+        {'$match': {'website_id': website_id}},
+        {'$group': {
+            '_id': None,
+            'total_pages': {'$sum': 1},
+            'tested_pages': {
+                '$sum': {'$cond': [{'$eq': ['$status', 'tested']}, 1, 0]}
+            },
+            'pages_with_issues': {
+                '$sum': {'$cond': [{'$gt': ['$violation_count', 0]}, 1, 0]}
+            },
+            'total_violations': {'$sum': '$violation_count'},
+            'total_warnings': {'$sum': '$warning_count'}
+        }}
+    ]
+
+    stats_result = list(current_app.db.pages.aggregate(pipeline))
+    if stats_result:
+        stats = stats_result[0]
+        # Remove MongoDB's _id field
+        stats.pop('_id', None)
+        # Ensure total_pages matches the count
+        stats['total_pages'] = total_page_count
+    else:
+        # No pages yet
+        stats = {
+            'total_pages': 0,
+            'tested_pages': 0,
+            'pages_with_issues': 0,
+            'total_violations': 0,
+            'total_warnings': 0
+        }
+
+    # Get paginated pages for display - show ALL pages, not just latest discovery
+    skip = (page_num - 1) * per_page
+    pages = current_app.db.get_pages(website_id, limit=per_page, skip=skip, latest_only=False)
+
+    # Calculate pagination info
+    total_pages_pagination = (total_page_count + per_page - 1) // per_page  # Ceiling division
+    start_item = ((page_num - 1) * per_page) + 1
+    end_item = min(page_num * per_page, total_page_count)
+
+    # Calculate page range for pagination controls (show 5 pages at a time)
+    start_page = max(1, page_num - 2)
+    end_page = min(total_pages_pagination, page_num + 2)
+
     return render_template('websites/view.html',
                          website=website,
                          project=project,
                          pages=pages,
-                         stats=stats)
+                         stats=stats,
+                         pagination={
+                             'page': page_num,
+                             'per_page': per_page,
+                             'total_pages': total_pages_pagination,
+                             'total_items': total_page_count,
+                             'start_item': start_item,
+                             'end_item': end_item,
+                             'start_page': start_page,
+                             'end_page': end_page,
+                             'has_prev': page_num > 1,
+                             'has_next': page_num < total_pages_pagination
+                         })
 
 
 @websites_bp.route('/<website_id>/edit', methods=['GET', 'POST'])

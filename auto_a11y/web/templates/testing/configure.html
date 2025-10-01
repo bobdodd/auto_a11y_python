@@ -62,16 +62,34 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="viewport_width" class="form-label">Viewport Width</label>
-                                <input type="number" class="form-control" id="viewport_width" 
+                                <input type="number" class="form-control" id="viewport_width"
                                        value="{{ config.viewport_width }}" min="320" max="3840">
                             </div>
                             <div class="col-md-6">
                                 <label for="viewport_height" class="form-label">Viewport Height</label>
-                                <input type="number" class="form-control" id="viewport_height" 
+                                <input type="number" class="form-control" id="viewport_height"
                                        value="{{ config.viewport_height }}" min="480" max="2160">
                             </div>
                         </div>
-                        
+
+                        <hr class="my-4">
+                        <h6><i class="bi bi-layout-text-window-reverse"></i> UI Pagination Settings</h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="pages_per_page" class="form-label">Pages Per Page</label>
+                                <input type="number" class="form-control" id="pages_per_page"
+                                       value="{{ config.pages_per_page }}" min="10" max="500">
+                                <small class="text-muted">Default number of pages shown per view</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="max_pages_per_page" class="form-label">Maximum Pages Per Page</label>
+                                <input type="number" class="form-control" id="max_pages_per_page"
+                                       value="{{ config.max_pages_per_page }}" min="100" max="1000">
+                                <small class="text-muted">Maximum allowed per page (for ?per_page parameter)</small>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-save"></i> Save Configuration
                         </button>
@@ -253,14 +271,16 @@ function clearStaleJobs() {
 // Save configuration
 document.getElementById('testing-config-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const config = {
         parallel_tests: parseInt(document.getElementById('parallel_tests').value),
         test_timeout: parseInt(document.getElementById('test_timeout').value),
         run_ai_analysis: document.getElementById('run_ai_analysis').checked,
         browser_headless: document.getElementById('browser_headless').checked,
         viewport_width: parseInt(document.getElementById('viewport_width').value),
-        viewport_height: parseInt(document.getElementById('viewport_height').value)
+        viewport_height: parseInt(document.getElementById('viewport_height').value),
+        pages_per_page: parseInt(document.getElementById('pages_per_page').value),
+        max_pages_per_page: parseInt(document.getElementById('max_pages_per_page').value)
     };
     
     fetch('/testing/configure', {

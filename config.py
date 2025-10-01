@@ -60,7 +60,11 @@ class Config:
     PARALLEL_TESTS: int = int(os.getenv('PARALLEL_TESTS', 5))
     TEST_TIMEOUT: int = int(os.getenv('TEST_TIMEOUT', 60000))
     RUN_AI_ANALYSIS: bool = os.getenv('RUN_AI_ANALYSIS', 'True').lower() == 'true'
-    
+
+    # UI Pagination
+    PAGES_PER_PAGE: int = int(os.getenv('PAGES_PER_PAGE', 100))
+    MAX_PAGES_PER_PAGE: int = int(os.getenv('MAX_PAGES_PER_PAGE', 500))
+
     # Paths
     SCRIPTS_DIR: Path = SCRIPTS_DIR
     DATA_DIR: Path = DATA_DIR

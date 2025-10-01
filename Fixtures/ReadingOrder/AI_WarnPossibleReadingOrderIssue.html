@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Possible Reading Order Issue Test - AI_WarnPossibleReadingOrderIssue</title>
+    <style>
+        .two-column {
+            column-count: 2;
+            column-gap: 20px;
+        }
+        
+        .visual-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+        }
+        
+        .order-1 { order: 1; }
+        .order-2 { order: 2; }
+        .order-3 { order: 3; }
+        
+        .flex-container {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <h1>Possible Reading Order Issues</h1>
+    
+    <!-- Multi-column layout that might confuse reading order -->
+    <div class="two-column">
+        <h2>Column Layout Reading Order</h2>
+        <p>This content is in a two-column layout. Screen readers will read all of this first column content before moving to the second column, which may not match the visual reading pattern that goes across columns.</p>
+        <p>Users visually scan across both columns, but screen readers follow DOM order strictly.</p>
+        <h3>Subsection in First Column</h3>
+        <p>This subsection appears midway down the first column.</p>
+        <h3>Another Topic</h3>
+        <p>This content continues in the columns, potentially causing confusion about the logical flow.</p>
+    </div>
+    
+    <!-- Flexbox with order property -->
+    <div class="flex-container">
+        <div class="visual-card order-3">
+            <h2>Step 1: Start Here</h2>
+            <p>Visually first, but third in DOM order.</p>
+        </div>
+        <div class="visual-card order-1">
+            <h2>Step 2: Then This</h2>
+            <p>Visually second, but first in DOM order.</p>
+        </div>
+        <div class="visual-card order-2">
+            <h2>Step 3: Finally</h2>
+            <p>Visually third, but second in DOM order.</p>
+        </div>
+    </div>
+    
+    <!-- Table used for layout -->
+    <table>
+        <tr>
+            <td>Navigation items here</td>
+            <td rowspan="2">Main content that spans multiple rows</td>
+        </tr>
+        <tr>
+            <td>Secondary navigation</td>
+        </tr>
+    </table>
+    
+    <p>These layouts may cause reading order confusion.</p>
+</body>
+</html>

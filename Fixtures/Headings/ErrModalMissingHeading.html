@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Missing Heading Test - ErrModalMissingHeading</title>
+</head>
+<body>
+    <h1>Page with Modals</h1>
+    
+    <!-- Modal dialog without any heading -->
+    <div role="dialog" aria-modal="true" aria-labelledby="modal1-title">
+        <div class="modal-content">
+            <!-- Missing heading element -->
+            <p>This modal has no heading to describe its purpose.</p>
+            <button>Close</button>
+        </div>
+    </div>
+    
+    <!-- Alert dialog without heading -->
+    <div role="alertdialog" aria-modal="true">
+        <p>Are you sure you want to delete this item?</p>
+        <button>Yes</button>
+        <button>No</button>
+    </div>
+    
+    <!-- Modal with only aria-label, no visible heading -->
+    <div role="dialog" aria-modal="true" aria-label="Settings">
+        <form>
+            <label>Username: <input type="text"></label>
+            <label>Email: <input type="email"></label>
+            <button>Save</button>
+        </form>
+    </div>
+    
+    <p>Modals should have visible headings for context.</p>
+</body>
+</html>

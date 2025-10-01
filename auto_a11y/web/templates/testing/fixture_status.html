@@ -1,0 +1,388 @@
+{% extends "base.html" %}
+
+{% block title %}Fixture Test Status - Auto A11y{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Improve table layout */
+    #test-status-table {
+        table-layout: fixed;
+    }
+    
+    #test-status-table th,
+    #test-status-table td {
+        vertical-align: middle;
+        padding: 0.75rem 0.5rem;
+    }
+    
+    #test-status-table code {
+        font-size: 0.875rem;
+        padding: 0.125rem 0.25rem;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 0.25rem;
+    }
+    
+    /* Improve badge appearance */
+    #test-status-table .badge {
+        font-weight: 500;
+        padding: 0.375rem 0.5rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        #test-status-table th:first-child,
+        #test-status-table td:first-child {
+            width: 60% !important;
+        }
+        
+        #test-status-table th:nth-child(2),
+        #test-status-table td:nth-child(2) {
+            width: 40% !important;
+        }
+    }
+    
+    @media (min-width: 768px) and (max-width: 992px) {
+        #test-status-table th:first-child,
+        #test-status-table td:first-child {
+            width: 30% !important;
+        }
+        
+        #test-status-table th:nth-child(2),
+        #test-status-table td:nth-child(2) {
+            width: 15% !important;
+        }
+        
+        #test-status-table th:nth-child(3),
+        #test-status-table td:nth-child(3) {
+            width: 55% !important;
+        }
+    }
+    
+    /* Hover effect for table rows */
+    #test-status-table tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+    
+    .table-warning {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+    }
+    
+    .table-warning:hover {
+        background-color: rgba(255, 193, 7, 0.15) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">
+                <i class="bi bi-check2-square text-primary"></i> Fixture Test Status
+            </h1>
+            <p class="lead">View which accessibility tests have passing fixtures</p>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4 g-3">
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title fs-6">Debug Mode</h5>
+                    <p class="card-text">
+                        <span id="debug-mode-badge" class="badge bg-secondary">Loading...</span>
+                    </p>
+                    <small class="text-muted">All tests available in debug mode</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title fs-6">Total Tests</h5>
+                    <p class="card-text display-6" id="total-tests">-</p>
+                    <small class="text-muted">Tests with fixtures</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title fs-6">Passing Tests</h5>
+                    <p class="card-text display-6 text-success" id="passing-tests">-</p>
+                    <small class="text-muted">Available for use</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title fs-6">Failed Tests</h5>
+                    <p class="card-text display-6 text-danger" id="failed-tests">-</p>
+                    <small class="text-muted">Disabled (unless debug)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Test Run Info -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Latest Fixture Test Run</h5>
+                </div>
+                <div class="card-body" id="test-run-info">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Status Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Individual Test Status</h5>
+                    <small class="text-muted">Tests are automatically enabled/disabled based on fixture results</small>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="search-tests" placeholder="Search tests...">
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="test-status-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 25%;">Error Code</th>
+                                    <th style="width: 10%;">Status</th>
+                                    <th style="width: 30%;" class="d-none d-md-table-cell">Fixture Path</th>
+                                    <th style="width: 20%;" class="d-none d-lg-table-cell">Notes</th>
+                                    <th style="width: 15%;" class="d-none d-sm-table-cell">Tested At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="test-status-tbody">
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Mobile-friendly view hint -->
+                    <div class="d-md-none mt-2">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Swipe table horizontally for more details
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Actions</h5>
+                    <p class="text-muted mb-2">Run the fixture test script to update test availability</p>
+                    <div class="bg-light p-2 rounded mb-3">
+                        <code>python test_fixtures.py</code>
+                    </div>
+                    <hr>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{{ url_for('testing.configure_testing') }}" class="btn btn-secondary">
+                            <i class="bi bi-gear"></i> Settings
+                        </a>
+                        <button class="btn btn-primary" onclick="refreshStatus()">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh Status
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let allTestStatuses = {};
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadFixtureStatus();
+    
+    // Setup search
+    document.getElementById('search-tests').addEventListener('input', function(e) {
+        filterTests(e.target.value);
+    });
+});
+
+function loadFixtureStatus() {
+    fetch('/api/v1/fixture-tests/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateSummary(data);
+                updateTestRunInfo(data.fixture_run_summary);
+                updateTestTable(data.test_statuses);
+                allTestStatuses = data.test_statuses;
+            } else {
+                showError('Failed to load fixture test status');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showError('Error loading fixture test status');
+        });
+}
+
+function updateSummary(data) {
+    // Update debug mode badge
+    const debugBadge = document.getElementById('debug-mode-badge');
+    if (data.debug_mode) {
+        debugBadge.textContent = 'ON';
+        debugBadge.className = 'badge bg-warning';
+    } else {
+        debugBadge.textContent = 'OFF';
+        debugBadge.className = 'badge bg-secondary';
+    }
+    
+    // Update counts
+    document.getElementById('total-tests').textContent = data.total_tests;
+    document.getElementById('passing-tests').textContent = data.passing_count;
+    document.getElementById('failed-tests').textContent = data.total_tests - data.passing_count;
+}
+
+function updateTestRunInfo(summary) {
+    const container = document.getElementById('test-run-info');
+    
+    if (!summary) {
+        container.innerHTML = `
+            <div class="alert alert-warning mb-0">
+                <i class="bi bi-exclamation-triangle"></i> No fixture test runs found. 
+                Run <code>python test_fixtures.py</code> to test fixtures.
+            </div>
+        `;
+        return;
+    }
+    
+    const completedAt = new Date(summary.completed_at);
+    const successRate = summary.success_rate || 0;
+    const badgeClass = successRate >= 80 ? 'success' : successRate >= 60 ? 'warning' : 'danger';
+    
+    container.innerHTML = `
+        <div class="row g-3">
+            <div class="col-12 col-lg-6">
+                <p class="mb-2"><strong>Run ID:</strong> <code class="text-break">${summary.run_id}</code></p>
+                <p class="mb-2"><strong>Completed:</strong> ${completedAt.toLocaleString()}</p>
+            </div>
+            <div class="col-12 col-lg-6">
+                <p class="mb-2"><strong>Total Fixtures:</strong> ${summary.total}</p>
+                <p class="mb-2">
+                    <strong>Results:</strong> 
+                    <span class="badge bg-success">${summary.passed} passed</span>
+                    <span class="badge bg-danger ms-1">${summary.failed} failed</span>
+                    <span class="badge bg-${badgeClass} ms-2">${successRate.toFixed(1)}% success rate</span>
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+function updateTestTable(statuses) {
+    const tbody = document.getElementById('test-status-tbody');
+    
+    if (!statuses || Object.keys(statuses).length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No test results found
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    let html = '';
+    for (const [errorCode, status] of Object.entries(statuses)) {
+        const success = status.success;
+        const statusBadge = success 
+            ? '<span class="badge bg-success">✓ Passed</span>' 
+            : '<span class="badge bg-danger">✗ Failed</span>';
+        
+        const notes = status.notes && status.notes.length > 0 
+            ? status.notes.join(', ') 
+            : '-';
+        
+        const testedAt = status.tested_at 
+            ? new Date(status.tested_at).toLocaleString() 
+            : '-';
+        
+        const rowClass = success ? '' : 'table-warning';
+        
+        html += `
+            <tr class="${rowClass}">
+                <td style="word-break: break-word;"><code>${errorCode}</code></td>
+                <td>${statusBadge}</td>
+                <td class="d-none d-md-table-cell" style="word-break: break-word;"><small>${status.fixture_path || '-'}</small></td>
+                <td class="d-none d-lg-table-cell" style="word-break: break-word;"><small>${notes}</small></td>
+                <td class="d-none d-sm-table-cell text-nowrap"><small>${testedAt}</small></td>
+            </tr>
+        `;
+    }
+    
+    tbody.innerHTML = html;
+}
+
+function filterTests(searchTerm) {
+    const term = searchTerm.toLowerCase();
+    const tbody = document.getElementById('test-status-tbody');
+    
+    if (!term) {
+        updateTestTable(allTestStatuses);
+        return;
+    }
+    
+    const filtered = {};
+    for (const [errorCode, status] of Object.entries(allTestStatuses)) {
+        if (errorCode.toLowerCase().includes(term) || 
+            (status.fixture_path && status.fixture_path.toLowerCase().includes(term))) {
+            filtered[errorCode] = status;
+        }
+    }
+    
+    updateTestTable(filtered);
+}
+
+function refreshStatus() {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Refreshing...';
+    
+    loadFixtureStatus();
+    
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Refresh Status';
+    }, 1000);
+}
+
+function showError(message) {
+    // Show error in test run info area
+    document.getElementById('test-run-info').innerHTML = `
+        <div class="alert alert-danger mb-0">
+            <i class="bi bi-exclamation-circle"></i> ${message}
+        </div>
+    `;
+}
+</script>
+{% endblock %}

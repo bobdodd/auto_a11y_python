@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Found SVG Image Discovery Test - DiscoFoundSvgImage</title>
+</head>
+<body>
+    <h1>SVG Image Discovery</h1>
+    
+    <!-- SVG used as image source -->
+    <img src="icon.svg" alt="Icon">
+    
+    <!-- SVG in object element -->
+    <object data="diagram.svg" type="image/svg+xml">
+        <p>Your browser doesn't support SVG</p>
+    </object>
+    
+    <!-- SVG in embed element -->
+    <embed src="graphic.svg" type="image/svg+xml">
+    
+    <!-- SVG as background image -->
+    <div style="background-image: url('pattern.svg'); width: 200px; height: 200px;">
+        Content with SVG background
+    </div>
+    
+    <!-- SVG in iframe -->
+    <iframe src="chart.svg" width="400" height="300" title="Chart"></iframe>
+    
+    <p>This page uses SVG images in various ways for discovery tracking.</p>
+</body>
+</html>

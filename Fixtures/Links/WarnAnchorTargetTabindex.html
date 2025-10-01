@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anchor Target Tabindex Warning Test - WarnAnchorTargetTabindex</title>
+</head>
+<body>
+    <h1>Anchor Targets and Tabindex Issues</h1>
+    
+    <!-- Anchor target without tabindex="-1" -->
+    <a href="#section1">Go to Section 1</a>
+    <h2 id="section1">Section 1 (missing tabindex="-1")</h2>
+    
+    <!-- Multiple anchor targets without proper tabindex -->
+    <nav>
+        <a href="#intro">Introduction</a>
+        <a href="#content">Main Content</a>
+        <a href="#conclusion">Conclusion</a>
+    </nav>
+    
+    <section id="intro">
+        <h2>Introduction (no tabindex)</h2>
+    </section>
+    
+    <section id="content">
+        <h2>Main Content (no tabindex)</h2>
+    </section>
+    
+    <section id="conclusion">
+        <h2>Conclusion (no tabindex)</h2>
+    </section>
+    
+    <!-- Skip link target without tabindex -->
+    <a href="#main" class="skip-link">Skip to main</a>
+    <main id="main">
+        Main content area (needs tabindex="-1")
+    </main>
+    
+    <p>Anchor targets should have tabindex="-1" for programmatic focus.</p>
+</body>
+</html>

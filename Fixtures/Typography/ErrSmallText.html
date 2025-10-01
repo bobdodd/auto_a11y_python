@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Small Text Test - ErrSmallText</title>
+    <style>
+        .tiny-text {
+            font-size: 8px;
+        }
+        
+        .very-small {
+            font-size: 10px;
+        }
+        
+        .small-disclaimer {
+            font-size: 9px;
+            color: #666;
+        }
+        
+        .microscopic {
+            font-size: 6px;
+        }
+        
+        .reduced {
+            font-size: 0.6em; /* Relative but still too small */
+        }
+    </style>
+</head>
+<body>
+    <h1>Text Size Accessibility Issues</h1>
+    
+    <!-- Text that's too small to read comfortably -->
+    <p class="tiny-text">This text is only 8 pixels tall, making it very difficult to read.</p>
+    
+    <p class="very-small">Important information should not be in 10px font.</p>
+    
+    <div class="small-disclaimer">
+        Terms and conditions apply. By using this service you agree to our policies.
+        This critical legal text is in 9px font.
+    </div>
+    
+    <span class="microscopic">This 6px text is nearly impossible to read.</span>
+    
+    <p class="reduced">Even with relative units, this text is too small at 0.6em.</p>
+    
+    <!-- Small text in form labels -->
+    <label style="font-size: 10px;">
+        <input type="checkbox"> I agree to the terms (10px label text)
+    </label>
+    
+    <p>Minimum readable font size should be 12px or larger.</p>
+</body>
+</html>

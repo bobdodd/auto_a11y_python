@@ -12,6 +12,71 @@ logger = logging.getLogger(__name__)
 api_bp = Blueprint('api', __name__)
 
 
+# Fixture Test Status API
+
+@api_bp.route('/fixture-tests/status', methods=['GET'])
+def get_fixture_test_status():
+    """Get fixture test status for all tests"""
+    try:
+        # Get test configuration
+        test_config = current_app.test_config
+        
+        # Get all test statuses
+        statuses = test_config.get_all_test_statuses()
+        
+        # Get fixture run summary
+        summary = None
+        if test_config.fixture_validator:
+            summary = test_config.fixture_validator.get_fixture_run_summary()
+        
+        # Get passing tests
+        passing_tests = set()
+        if test_config.fixture_validator:
+            passing_tests = test_config.fixture_validator.get_passing_tests()
+        
+        return jsonify({
+            'success': True,
+            'debug_mode': test_config.debug_mode,
+            'fixture_run_summary': summary,
+            'passing_tests': list(passing_tests),
+            'test_statuses': statuses,
+            'total_tests': len(statuses),
+            'passing_count': len(passing_tests)
+        })
+    except Exception as e:
+        logger.error(f"Error getting fixture test status: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@api_bp.route('/fixture-tests/check/<error_code>', methods=['GET'])
+def check_test_availability(error_code):
+    """Check if a specific test is available based on fixture status"""
+    try:
+        test_config = current_app.test_config
+        
+        # Get fixture status for this test
+        status = test_config.get_test_fixture_status(error_code)
+        
+        return jsonify({
+            'success': True,
+            'error_code': error_code,
+            'available': status.get('available', False),
+            'passed_fixture': status.get('passed_fixture', False),
+            'debug_override': status.get('debug_override', False),
+            'fixture_path': status.get('fixture_path', ''),
+            'tested_at': status.get('tested_at')
+        })
+    except Exception as e:
+        logger.error(f"Error checking test availability for {error_code}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 # Projects API
 
 @api_bp.route('/projects', methods=['GET'])

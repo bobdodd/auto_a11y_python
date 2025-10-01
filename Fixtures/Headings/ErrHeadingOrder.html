@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heading Order Test - ErrHeadingOrder</title>
+</head>
+<body>
+    <!-- Start with h3, then h2, then h1 - wrong order -->
+    <h3>Starting with Level 3</h3>
+    <p>This heading comes first but is level 3.</p>
+    
+    <h2>Then Level 2</h2>
+    <p>This heading comes second but is level 2.</p>
+    
+    <h1>Finally Level 1</h1>
+    <p>The main heading appears last, breaking logical order.</p>
+    
+    <!-- Going backwards in heading hierarchy -->
+    <h4>Subsection</h4>
+    <h3>Parent Section After Child</h3>
+    
+    <p>This tests detection of illogical heading order.</p>
+</body>
+</html>

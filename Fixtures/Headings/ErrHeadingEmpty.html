@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heading Empty Test - ErrHeadingEmpty</title>
+</head>
+<body>
+    <h1>Page Title</h1>
+    
+    <!-- Self-closing heading tag (invalid HTML but may occur) -->
+    <h2/>
+    
+    <!-- Heading with aria-label but no visible text -->
+    <h3 aria-label="Section Title"></h3>
+    
+    <!-- Heading with only decorative content -->
+    <h4><img src="decoration.png" alt=""></h4>
+    
+    <!-- Heading with CSS generated content only -->
+    <h5 class="icon-only"></h5>
+    
+    <style>
+        .icon-only::before {
+            content: "★";
+        }
+    </style>
+    
+    <p>Testing various forms of empty headings.</p>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alt on Wrong Element Test - ErrAltOnElementThatDoesntTakeIt</title>
+</head>
+<body>
+    <h1>Alt Attribute on Non-Image Elements</h1>
+    
+    <!-- Alt on div -->
+    <div alt="This is not an image">
+        This div has an alt attribute but shouldn't.
+    </div>
+    
+    <!-- Alt on span -->
+    <span alt="Decorative element">★</span>
+    
+    <!-- Alt on paragraph -->
+    <p alt="Paragraph description">
+        This paragraph has an alt attribute incorrectly.
+    </p>
+    
+    <!-- Alt on link (should use title or aria-label instead) -->
+    <a href="page.html" alt="Link description">
+        Link with alt attribute
+    </a>
+    
+    <!-- Alt on button -->
+    <button alt="Button description">
+        Click me
+    </button>
+    
+    <!-- Alt on heading -->
+    <h2 alt="Section heading">Section Title</h2>
+    
+    <p>Alt attributes should only be used on img, area, and input type="image" elements.</p>
+</body>
+</html>

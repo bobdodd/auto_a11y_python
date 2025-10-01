@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Found Inline SVG Discovery Test - DiscoFoundInlineSvg</title>
+</head>
+<body>
+    <h1>Inline SVG Discovery</h1>
+    
+    <!-- Inline SVG icon -->
+    <svg width="24" height="24" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" fill="blue"/>
+    </svg>
+    
+    <!-- Inline SVG with title -->
+    <svg width="100" height="100" role="img" aria-labelledby="svg-title">
+        <title id="svg-title">Company Logo</title>
+        <rect width="100" height="100" fill="red"/>
+    </svg>
+    
+    <!-- Complex inline SVG graphic -->
+    <svg width="200" height="200">
+        <defs>
+            <pattern id="pattern1" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <rect width="10" height="10" fill="lightblue"/>
+            </pattern>
+        </defs>
+        <rect width="200" height="200" fill="url(#pattern1)"/>
+        <circle cx="100" cy="100" r="50" fill="orange"/>
+    </svg>
+    
+    <p>This page contains inline SVG elements for discovery tracking.</p>
+</body>
+</html>

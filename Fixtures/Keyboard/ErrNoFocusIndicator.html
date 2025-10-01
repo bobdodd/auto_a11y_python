@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Focus Indicator Test - ErrNoFocusIndicator</title>
+    <style>
+        /* Remove focus indicators */
+        .no-focus:focus {
+            outline: none;
+        }
+        
+        .transparent-focus:focus {
+            outline: transparent;
+        }
+        
+        .zero-outline:focus {
+            outline-width: 0;
+        }
+        
+        /* Remove all outlines */
+        * {
+            outline: none !important;
+        }
+        
+        /* Override browser defaults */
+        button:focus,
+        a:focus,
+        input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Missing Focus Indicators</h1>
+    
+    <!-- Buttons with focus outline removed -->
+    <button class="no-focus">No Focus Outline</button>
+    <button class="transparent-focus">Transparent Focus</button>
+    <button class="zero-outline">Zero Width Outline</button>
+    
+    <!-- Links with focus disabled -->
+    <a href="#" class="no-focus">Link without focus indicator</a>
+    
+    <!-- Form elements without focus -->
+    <input type="text" class="no-focus" placeholder="Input without focus">
+    <select class="no-focus">
+        <option>Select without focus</option>
+    </select>
+    
+    <!-- Custom interactive elements -->
+    <div role="button" tabindex="0" class="no-focus">Custom button no focus</div>
+    
+    <p>All interactive elements above have focus indicators removed.</p>
+</body>
+</html>

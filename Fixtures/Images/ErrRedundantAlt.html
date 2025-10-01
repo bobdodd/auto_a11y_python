@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redundant Alt Test - ErrRedundantAlt</title>
+</head>
+<body>
+    <h1>Images With Redundant Alt Text</h1>
+    
+    <!-- Alt text says "image of" -->
+    <img src="sunset.jpg" alt="Image of sunset">
+    
+    <!-- Alt text says "picture of" -->
+    <img src="team.jpg" alt="Picture of our team">
+    
+    <!-- Alt text says "graphic of" -->
+    <img src="chart.png" alt="Graphic of sales data">
+    
+    <!-- Alt text says "photo of" -->
+    <img src="ceo.jpg" alt="Photo of CEO John Smith">
+    
+    <!-- Alt text just says "image" -->
+    <img src="logo.png" alt="Image">
+    
+    <!-- Alt text says "icon" -->
+    <img src="email.svg" alt="Icon">
+    
+    <p>Screen readers already announce images, so "image of" is redundant.</p>
+</body>
+</html>

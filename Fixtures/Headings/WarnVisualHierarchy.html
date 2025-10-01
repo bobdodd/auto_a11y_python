@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Hierarchy Warning Test - WarnVisualHierarchy</title>
+    <style>
+        /* Making h3 look bigger than h2 */
+        h2.small {
+            font-size: 14px;
+        }
+        
+        h3.large {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        /* Making h4 look like h1 */
+        h4.styled-as-main {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        /* Making h1 look small */
+        h1.tiny {
+            font-size: 12px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <!-- H1 styled to look smaller than other headings -->
+    <h1 class="tiny">Main Title (but looks tiny)</h1>
+    
+    <!-- H2 that looks smaller than its subsection -->
+    <h2 class="small">Section Heading (looks small)</h2>
+    
+    <!-- H3 that looks bigger than its parent H2 -->
+    <h3 class="large">Subsection (looks bigger than section)</h3>
+    <p>This subsection heading appears larger than its parent.</p>
+    
+    <!-- H4 styled to look like main heading -->
+    <h4 class="styled-as-main">Minor Heading (looks major)</h4>
+    <p>This h4 is styled to look like a primary heading.</p>
+    
+    <p>Visual hierarchy should match semantic hierarchy.</p>
+</body>
+</html>

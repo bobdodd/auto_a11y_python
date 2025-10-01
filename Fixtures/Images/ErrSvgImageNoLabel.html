@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Image No Label Test - ErrSvgImageNoLabel</title>
+</head>
+<body>
+    <h1>SVG Images Without Labels</h1>
+    
+    <!-- SVG used as img without proper alt -->
+    <img src="icon.svg">
+    
+    <!-- Object element with SVG but no accessible fallback -->
+    <object data="diagram.svg" type="image/svg+xml"></object>
+    
+    <!-- Embed element with SVG and no title -->
+    <embed src="logo.svg" type="image/svg+xml">
+    
+    <!-- SVG in iframe without title -->
+    <iframe src="chart.svg"></iframe>
+    
+    <!-- Background SVG with no text alternative -->
+    <div style="background: url('pattern.svg'); width: 200px; height: 200px;"></div>
+    
+    <p>SVG images need proper labeling for screen readers.</p>
+</body>
+</html>

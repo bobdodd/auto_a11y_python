@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty Heading Test - ErrEmptyHeading</title>
+</head>
+<body>
+    <h1>Valid Main Heading</h1>
+    
+    <!-- Empty heading with no content -->
+    <h2></h2>
+    
+    <!-- Heading with only whitespace -->
+    <h3>   </h3>
+    
+    <!-- Heading with only HTML comments -->
+    <h4><!-- This is just a comment --></h4>
+    
+    <!-- Heading with only non-visible content -->
+    <h2><span style="display:none">Hidden text</span></h2>
+    
+    <p>This page tests detection of empty headings that break document structure.</p>
+</body>
+</html>

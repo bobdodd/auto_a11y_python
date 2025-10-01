@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake List Implementation Test - ErrFakeListImplementation</title>
+    <style>
+        .fake-list-item::before {
+            content: "• ";
+        }
+        
+        .numbered-item::before {
+            content: counter(item) ". ";
+            counter-increment: item;
+        }
+        
+        .numbered-container {
+            counter-reset: item;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fake Lists Using Visual Styling</h1>
+    
+    <!-- Fake unordered list using divs and CSS -->
+    <div class="fake-list">
+        <div class="fake-list-item">First item with bullet</div>
+        <div class="fake-list-item">Second item with bullet</div>
+        <div class="fake-list-item">Third item with bullet</div>
+    </div>
+    
+    <!-- Fake ordered list using CSS counters -->
+    <div class="numbered-container">
+        <div class="numbered-item">First numbered item</div>
+        <div class="numbered-item">Second numbered item</div>
+        <div class="numbered-item">Third numbered item</div>
+    </div>
+    
+    <!-- Using br tags instead of list structure -->
+    <div>
+        • Item one<br>
+        • Item two<br>
+        • Item three<br>
+    </div>
+    
+    <!-- Using paragraphs with manual bullets -->
+    <p>• First point</p>
+    <p>• Second point</p>
+    <p>• Third point</p>
+    
+    <p>These look like lists but lack proper semantic structure.</p>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Native Video Missing Controls Test - ErrNativeVideoMissingControls</title>
+</head>
+<body>
+    <h1>Videos Without Controls</h1>
+    
+    <!-- Video element without controls attribute -->
+    <video src="video.mp4" width="320" height="240">
+        Your browser does not support the video tag.
+    </video>
+    
+    <!-- Video with autoplay but no controls -->
+    <video src="background.mp4" autoplay muted loop width="320" height="240">
+        Background video without controls
+    </video>
+    
+    <!-- Video with source elements but no controls -->
+    <video width="320" height="240">
+        <source src="movie.mp4" type="video/mp4">
+        <source src="movie.ogg" type="video/ogg">
+        No controls available for this video
+    </video>
+    
+    <!-- Video with poster but no controls -->
+    <video src="presentation.mp4" poster="thumbnail.jpg" width="320" height="240">
+        Presentation video
+    </video>
+    
+    <p>Videos must have controls for users to pause, play, and adjust volume.</p>
+</body>
+</html>

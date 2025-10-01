@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Obscuring Test - ErrContentObscuring</title>
+    <style>
+        /* Fixed overlay that obscures content */
+        .overlay {
+            position: fixed;
+            top: 50px;
+            left: 50px;
+            width: 200px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            z-index: 1000;
+            padding: 10px;
+        }
+        
+        /* Sticky element that can obscure content */
+        .sticky-banner {
+            position: sticky;
+            top: 0;
+            background: yellow;
+            padding: 20px;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        /* Absolutely positioned element overlapping form */
+        .floating-ad {
+            position: absolute;
+            right: 20px;
+            top: 300px;
+            width: 150px;
+            height: 150px;
+            background: red;
+            z-index: 50;
+        }
+        
+        /* Modal backdrop not fully transparent */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+        }
+    </style>
+</head>
+<body>
+    <h1>Content Obscuring Issues</h1>
+    
+    <!-- Fixed overlay that covers interactive elements -->
+    <div class="overlay">
+        This overlay covers content below
+    </div>
+    
+    <!-- Content that gets obscured -->
+    <div style="margin: 60px;">
+        <button>This button might be partially hidden</button>
+        <input type="text" placeholder="This input might be obscured">
+    </div>
+    
+    <!-- Sticky element that can cover content when scrolling -->
+    <div class="sticky-banner">
+        Sticky banner that follows scroll
+    </div>
+    
+    <!-- Form with floating element on top -->
+    <form style="position: relative; margin-top: 100px;">
+        <label>Name: <input type="text"></label>
+        <label>Email: <input type="email"></label>
+        <div class="floating-ad">Ad overlaps form</div>
+        <button>Submit</button>
+    </form>
+    
+    <!-- Semi-transparent modal backdrop -->
+    <div class="modal-backdrop" style="display: none;"></div>
+    
+    <p>Content should not be obscured by other elements.</p>
+</body>
+</html>

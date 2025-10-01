@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Order Violation Test - ErrTabOrderViolation</title>
+</head>
+<body>
+    <h1>Tab Order Violations</h1>
+    
+    <div style="display: flex; flex-direction: column;">
+        <!-- Visual order: Name, Email, Submit -->
+        <!-- Tab order: Email (1), Submit (2), Name (3) -->
+        
+        <label for="name">Name:</label>
+        <input id="name" type="text" tabindex="3">
+        
+        <label for="email">Email:</label>
+        <input id="email" type="email" tabindex="1">
+        
+        <button tabindex="2">Submit</button>
+    </div>
+    
+    <!-- Floating elements with wrong tab order -->
+    <div style="position: relative; height: 200px;">
+        <button style="position: absolute; right: 0;" tabindex="1">Right Button</button>
+        <button style="position: absolute; left: 0;" tabindex="2">Left Button</button>
+    </div>
+    
+    <!-- CSS Grid with visual/tab order mismatch -->
+    <div style="display: grid; grid-template-areas: 'b a' 'd c';">
+        <input style="grid-area: a;" placeholder="Second visually" tabindex="1">
+        <input style="grid-area: b;" placeholder="First visually" tabindex="2">
+        <input style="grid-area: c;" placeholder="Fourth visually" tabindex="3">
+        <input style="grid-area: d;" placeholder="Third visually" tabindex="4">
+    </div>
+    
+    <p>Tab order doesn't match visual/logical order.</p>
+</body>
+</html>

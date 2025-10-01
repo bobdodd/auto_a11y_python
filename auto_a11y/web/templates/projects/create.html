@@ -2,11 +2,49 @@
 
 {% block title %}Create Project - Auto A11y{% endblock %}
 
+{% block extra_css %}
+<style>
+    .test-disabled {
+        opacity: 0.5;
+        text-decoration: line-through;
+    }
+    
+    .test-debug-override {
+        opacity: 0.7;
+    }
+    
+    .fixture-status-badge {
+        font-size: 0.7rem;
+        padding: 0.1rem 0.3rem;
+        margin-left: 0.5rem;
+    }
+    
+    .touchpoint-disabled .form-check-label {
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-lg-6 mx-auto">
             <h1 class="h2 mb-4">Create New Project</h1>
+            
+            <!-- Fixture Status Notice -->
+            {% if debug_mode %}
+            <div class="alert alert-warning mb-3">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Debug Mode Active:</strong> All tests are available regardless of fixture status.
+                <a href="{{ url_for('testing.fixture_status') }}" class="alert-link float-end">View Fixture Status</a>
+            </div>
+            {% else %}
+            <div class="alert alert-info mb-3">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <strong>Test Availability:</strong> Only tests that passed fixture validation are enabled.
+                <a href="{{ url_for('testing.fixture_status') }}" class="alert-link float-end">View Fixture Status</a>
+            </div>
+            {% endif %}
             
             <div class="card">
                 <div class="card-body">
@@ -101,7 +139,17 @@
                                                    onchange="toggleTouchpoint('{{ touchpoint_id }}')">
                                             <label class="form-check-label fw-bold" for="touchpoint_{{ touchpoint_id }}">
                                                 <i class="bi bi-folder2 me-1"></i>{{ touchpoint_name }}
-                                                <span class="badge bg-secondary ms-2">{{ test_ids|length }}</span>
+                                                {% set available_count = test_ids|select('in', passing_tests)|list|length %}
+                                                {% set total_count = test_ids|length %}
+                                                {% if debug_mode %}
+                                                    <span class="badge bg-warning ms-2" title="Debug mode - all tests available">{{ total_count }}</span>
+                                                {% elif available_count == total_count %}
+                                                    <span class="badge bg-success ms-2" title="All tests passed fixtures">{{ available_count }}</span>
+                                                {% elif available_count == 0 %}
+                                                    <span class="badge bg-danger ms-2" title="No tests available">0/{{ total_count }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning ms-2" title="{{ available_count }} of {{ total_count }} tests available">{{ available_count }}/{{ total_count }}</span>
+                                                {% endif %}
                                             </label>
                                         </div>
                                     </div>
@@ -109,15 +157,32 @@
                                     <!-- Individual tests under this touchpoint (collapsible) -->
                                     <div class="collapse ms-5 mt-1" id="tests_{{ touchpoint_id }}">
                                         {% for test_id in test_ids %}
-                                        <div class="form-check">
+                                        {% set test_passed = test_id in passing_tests %}
+                                        {% set test_status = test_statuses.get(test_id, {}) %}
+                                        {% set test_available = test_passed or debug_mode %}
+                                        {% set is_debug_override = not test_passed and debug_mode %}
+                                        
+                                        <div class="form-check {% if not test_available %}test-disabled{% elif is_debug_override %}test-debug-override{% endif %}">
                                             <input class="form-check-input test-checkbox" type="checkbox" 
                                                    id="test_{{ touchpoint_id }}_{{ test_id }}" 
                                                    name="test_{{ touchpoint_id }}_{{ test_id }}"
                                                    data-touchpoint="{{ touchpoint_id }}"
-                                                   checked>
+                                                   {% if test_available %}checked{% else %}disabled{% endif %}>
                                             <label class="form-check-label small" for="test_{{ touchpoint_id }}_{{ test_id }}">
                                                 <i class="bi bi-file-earmark-code me-1"></i>
                                                 <code>{{ test_id }}</code>
+                                                {% if not test_passed %}
+                                                    {% if test_status %}
+                                                        <span class="badge bg-danger fixture-status-badge" title="Failed fixture test">✗</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning fixture-status-badge" title="No fixture test">?</span>
+                                                    {% endif %}
+                                                    {% if is_debug_override %}
+                                                        <span class="badge bg-info fixture-status-badge" title="Enabled in debug mode">DEBUG</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="badge bg-success fixture-status-badge" title="Passed fixture test">✓</span>
+                                                {% endif %}
                                             </label>
                                         </div>
                                         {% endfor %}
@@ -225,7 +290,10 @@ function toggleTouchpoint(touchpointId) {
     const testCheckboxes = document.querySelectorAll(`[data-touchpoint="${touchpointId}"]`);
     
     testCheckboxes.forEach(checkbox => {
-        checkbox.checked = touchpointCheckbox.checked;
+        // Only toggle if not disabled
+        if (!checkbox.disabled) {
+            checkbox.checked = touchpointCheckbox.checked;
+        }
     });
 }
 
@@ -235,7 +303,10 @@ function selectAllTests(enable) {
         cb.checked = enable;
     });
     document.querySelectorAll('.test-checkbox').forEach(cb => {
-        cb.checked = enable;
+        // Only toggle if not disabled
+        if (!cb.disabled) {
+            cb.checked = enable;
+        }
     });
 }
 

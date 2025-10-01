@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing Negative Tabindex Warning Test - WarnMissingNegativeTabindex</title>
+</head>
+<body>
+    <h1>Elements That Should Have Negative Tabindex</h1>
+    
+    <!-- Hidden skip link that should have tabindex="-1" -->
+    <a href="#main" class="skip-link">Skip to main content</a>
+    
+    <!-- Modal backdrop that shouldn't be focusable -->
+    <div class="modal-backdrop" role="presentation">
+        <!-- Missing tabindex="-1" -->
+    </div>
+    
+    <!-- Decorative interactive element -->
+    <button disabled style="opacity: 0.3;">
+        Disabled button (should have tabindex="-1")
+    </button>
+    
+    <!-- Hidden menu items -->
+    <nav>
+        <ul>
+            <li><a href="#">Visible Item</a></li>
+            <li style="display: none;"><a href="#">Hidden Item (needs tabindex="-1")</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Off-screen content -->
+    <div style="position: absolute; left: -9999px;">
+        <a href="#">Off-screen link (should have tabindex="-1")</a>
+    </div>
+    
+    <p>Elements removed from tab order should have tabindex="-1".</p>
+</body>
+</html>

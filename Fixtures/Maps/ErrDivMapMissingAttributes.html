@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Div Map Missing Attributes Test - ErrDivMapMissingAttributes</title>
+</head>
+<body>
+    <h1>Interactive Map Divs Without Accessibility Attributes</h1>
+    
+    <!-- Interactive map div without any ARIA labels -->
+    <div id="map" style="width: 600px; height: 400px; background: #ccc;">
+        <!-- Map rendered by JavaScript -->
+    </div>
+    
+    <!-- Canvas-based map without accessibility attributes -->
+    <canvas id="map-canvas" width="600" height="400">
+        <!-- Map drawn on canvas -->
+    </canvas>
+    
+    <!-- SVG map without proper labeling -->
+    <svg width="600" height="400" style="background: #eee;">
+        <rect x="10" y="10" width="100" height="50" fill="blue"/>
+        <rect x="150" y="100" width="80" height="60" fill="red"/>
+        <!-- Map regions -->
+    </svg>
+    
+    <!-- Custom map container without role or aria-label -->
+    <div class="custom-map" style="width: 100%; height: 500px; position: relative;">
+        <div class="map-marker" style="position: absolute; top: 100px; left: 200px;">📍</div>
+        <div class="map-marker" style="position: absolute; top: 250px; left: 400px;">📍</div>
+    </div>
+    
+    <!-- Interactive map component without keyboard support -->
+    <div class="leaflet-map" data-lat="40.7128" data-lng="-74.0060">
+        <div class="map-controls">
+            <span onclick="zoomIn()">+</span>
+            <span onclick="zoomOut()">-</span>
+        </div>
+    </div>
+    
+    <p>Interactive maps need proper ARIA attributes and keyboard support.</p>
+</body>
+</html>

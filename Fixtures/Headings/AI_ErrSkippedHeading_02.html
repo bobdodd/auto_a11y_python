@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proper Heading Hierarchy - No Violations</title>
+</head>
+<body>
+    <!-- PASS: Proper sequential headings -->
+    <h1>Main Page Title</h1>
+    <p>Introduction paragraph.</p>
+
+    <h2>First Section</h2>
+    <p>Section content.</p>
+
+    <h3>Subsection</h3>
+    <p>Subsection content.</p>
+
+    <h4>Detail Level</h4>
+    <p>Detailed content.</p>
+
+    <!-- PASS: Going back to previous levels is fine -->
+    <h2>Second Section</h2>
+    <p>New section content.</p>
+
+    <h3>Another Subsection</h3>
+    <p>More content.</p>
+
+    <!-- PASS: Back to h2 is fine -->
+    <h2>Third Section</h2>
+    <p>Section content.</p>
+
+    <!-- PASS: Starting fresh with h1 for new content area -->
+    <h1>New Major Section</h1>
+    <h2>Subsection of New Major Section</h2>
+    <h3>Further Detail</h3>
+</body>
+</html>

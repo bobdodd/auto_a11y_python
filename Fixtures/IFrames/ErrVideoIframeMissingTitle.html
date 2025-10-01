@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Iframe Missing Title Test - ErrVideoIframeMissingTitle</title>
+</head>
+<body>
+    <h1>Embedded Video Iframes Without Titles</h1>
+    
+    <!-- YouTube video iframe without title -->
+    <iframe width="560" height="315" 
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+    </iframe>
+    
+    <!-- Vimeo video iframe without title -->
+    <iframe src="https://player.vimeo.com/video/76979871" 
+            width="640" height="360" 
+            frameborder="0" 
+            allow="autoplay; fullscreen; picture-in-picture">
+    </iframe>
+    
+    <!-- Dailymotion video iframe without title -->
+    <iframe frameborder="0" width="480" height="270" 
+            src="https://www.dailymotion.com/embed/video/x2wfgiv" 
+            allowfullscreen allow="autoplay">
+    </iframe>
+    
+    <!-- Custom video player iframe with empty title -->
+    <iframe src="/player/video.html" 
+            title="" 
+            width="800" height="450">
+    </iframe>
+    
+    <!-- Twitch stream embed without title -->
+    <iframe src="https://player.twitch.tv/?channel=example&parent=example.com" 
+            height="480" width="854" 
+            allowfullscreen>
+    </iframe>
+    
+    <p>All video iframes must have descriptive title attributes.</p>
+</body>
+</html>

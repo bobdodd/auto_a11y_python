@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outline None on Interactive Test - ErrOutlineIsNoneOnInteractiveElement</title>
+    <style>
+        /* Explicitly setting outline to none on interactive elements */
+        button.no-outline {
+            outline: none;
+        }
+        
+        a.no-outline {
+            outline: none;
+        }
+        
+        input.no-outline {
+            outline: none;
+        }
+        
+        select.no-outline {
+            outline: none;
+        }
+        
+        textarea.no-outline {
+            outline: none;
+        }
+        
+        /* Using :focus pseudo-class to remove outline */
+        .remove-on-focus:focus {
+            outline: none;
+        }
+        
+        /* Interactive custom elements */
+        [role="button"].no-outline {
+            outline: none;
+        }
+        
+        [tabindex].no-outline {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Elements With Outline Set to None</h1>
+    
+    <!-- Standard form elements -->
+    <button class="no-outline">Button with no outline</button>
+    <a href="#" class="no-outline">Link with no outline</a>
+    <input type="text" class="no-outline" placeholder="Input with no outline">
+    <select class="no-outline">
+        <option>Select with no outline</option>
+    </select>
+    <textarea class="no-outline" placeholder="Textarea with no outline"></textarea>
+    
+    <!-- Elements that remove outline on focus -->
+    <button class="remove-on-focus">Outline removed on focus</button>
+    <a href="#" class="remove-on-focus">Link outline removed on focus</a>
+    
+    <!-- Custom interactive elements -->
+    <div role="button" tabindex="0" class="no-outline">Custom button no outline</div>
+    <span tabindex="0" class="no-outline">Focusable span no outline</span>
+    
+    <p>Removing outline without replacement focus indicator is an accessibility violation.</p>
+</body>
+</html>

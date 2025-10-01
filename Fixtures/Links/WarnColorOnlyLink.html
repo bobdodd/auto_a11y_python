@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Only Link Warning Test - WarnColorOnlyLink</title>
+    <style>
+        /* Links styled to look like regular text except for color */
+        .color-only-link {
+            text-decoration: none;
+            color: blue;
+        }
+        
+        .color-only-link:hover {
+            text-decoration: none;
+            color: darkblue;
+        }
+        
+        /* Visited links only distinguished by color */
+        .no-underline {
+            text-decoration: none;
+        }
+        
+        .no-underline:visited {
+            color: purple;
+        }
+        
+        /* Links in text with only color difference */
+        .inline-link {
+            text-decoration: none;
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <h1>Links Distinguished Only by Color</h1>
+    
+    <p>
+        This paragraph contains a <a href="page1.html" class="color-only-link">link that looks like text</a> 
+        except for its color. This violates WCAG because color alone shouldn't convey information.
+    </p>
+    
+    <p>
+        Here's another <a href="page2.html" class="no-underline">link without underline</a> that 
+        relies solely on color to indicate it's clickable.
+    </p>
+    
+    <div>
+        <span>Regular text and </span>
+        <a href="page3.html" class="inline-link">this is a link</a>
+        <span> more regular text.</span>
+    </div>
+    
+    <p>Links should have underline or other non-color indicator.</p>
+</body>
+</html>

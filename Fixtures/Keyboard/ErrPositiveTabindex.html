@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positive Tabindex Test - ErrPositiveTabindex</title>
+</head>
+<body>
+    <h1>Positive Tabindex Values</h1>
+    
+    <!-- Positive tabindex values disrupt natural tab order -->
+    <button tabindex="3">Third in tab order</button>
+    <button tabindex="1">First in tab order</button>
+    <button tabindex="2">Second in tab order</button>
+    
+    <!-- Natural tab order elements come after positive tabindex -->
+    <input type="text" placeholder="This comes fourth">
+    <button>This button comes fifth</button>
+    
+    <!-- Very high tabindex -->
+    <a href="#" tabindex="999">This link has tabindex 999</a>
+    
+    <!-- Mixed positive values -->
+    <div tabindex="10" role="button">Custom button with tabindex 10</div>
+    <span tabindex="5" role="link">Custom link with tabindex 5</span>
+    
+    <p>Positive tabindex values create confusing navigation order.</p>
+</body>
+</html>

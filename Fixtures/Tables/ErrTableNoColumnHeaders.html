@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table No Column Headers Test - ErrTableNoColumnHeaders</title>
+</head>
+<body>
+    <h1>Tables Without Column Headers</h1>
+    
+    <!-- Table with no header row at all -->
+    <table>
+        <tr>
+            <td>John Smith</td>
+            <td>Developer</td>
+            <td>$80,000</td>
+        </tr>
+        <tr>
+            <td>Jane Doe</td>
+            <td>Designer</td>
+            <td>$75,000</td>
+        </tr>
+        <tr>
+            <td>Bob Johnson</td>
+            <td>Manager</td>
+            <td>$90,000</td>
+        </tr>
+    </table>
+    
+    <!-- Table with visual headers but using td instead of th -->
+    <table>
+        <tr>
+            <td><strong>Product</strong></td>
+            <td><strong>Price</strong></td>
+            <td><strong>Stock</strong></td>
+        </tr>
+        <tr>
+            <td>Widget A</td>
+            <td>$19.99</td>
+            <td>150</td>
+        </tr>
+        <tr>
+            <td>Widget B</td>
+            <td>$29.99</td>
+            <td>75</td>
+        </tr>
+    </table>
+    
+    <p>Tables need proper th elements for column headers.</p>
+</body>
+</html>

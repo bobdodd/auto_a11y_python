@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skipped Heading Levels - Violations</title>
+</head>
+<body>
+    <h1>Main Page Title</h1>
+    
+    <!-- VIOLATION: Skip from h1 to h3 (missing h2) -->
+    <h3>Subsection Title</h3>
+    <p>This skips h2, which is a violation.</p>
+
+    <!-- VIOLATION: Skip from h3 to h5 (missing h4) -->
+    <h5>Fifth Level Title</h5>
+    <p>This skips h4, which is a violation.</p>
+
+    <!-- PASS: Back to h2 is fine -->
+    <h2>Section Title</h2>
+    <p>Proper level 2 heading.</p>
+    
+    <!-- VIOLATION: Skip from h2 to h4 (missing h3) -->
+    <h4>Detail Title</h4>
+    <p>This skips h3, which is a violation.</p>
+
+    <!-- VIOLATION: Skip from h4 to h6 (missing h5) -->
+    <h6>Deep Nested Title</h6>
+    <p>This skips h5, which is a violation.</p>
+</body>
+</html>

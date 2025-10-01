@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG No Accessible Name Test - ErrSVGNoAccessibleName</title>
+</head>
+<body>
+    <h1>SVG Elements Without Accessible Names</h1>
+    
+    <!-- Inline SVG without title or aria-label -->
+    <svg width="100" height="100">
+        <circle cx="50" cy="50" r="40" fill="red"/>
+    </svg>
+    
+    <!-- SVG with role="img" but no accessible name -->
+    <svg width="200" height="100" role="img">
+        <rect width="200" height="100" fill="blue"/>
+        <text x="100" y="50" text-anchor="middle" fill="white">Logo</text>
+    </svg>
+    
+    <!-- Complex SVG chart without description -->
+    <svg width="300" height="200" viewBox="0 0 300 200">
+        <rect x="10" y="150" width="30" height="50" fill="green"/>
+        <rect x="50" y="100" width="30" height="100" fill="green"/>
+        <rect x="90" y="120" width="30" height="80" fill="green"/>
+    </svg>
+    
+    <!-- Interactive SVG without accessible name -->
+    <svg width="100" height="100" onclick="doSomething()">
+        <polygon points="50,10 90,90 10,90" fill="yellow"/>
+    </svg>
+    
+    <p>SVG elements need title, aria-label, or aria-labelledby for accessibility.</p>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Order Test - AI_InfoContentOrder</title>
+    <style>
+        .flex-reverse {
+            display: flex;
+            flex-direction: column-reverse;
+        }
+        
+        .grid-layout {
+            display: grid;
+            grid-template-areas: 
+                "sidebar header"
+                "sidebar main"
+                "footer footer";
+        }
+        
+        .header { grid-area: header; }
+        .sidebar { grid-area: sidebar; }
+        .main { grid-area: main; }
+        .footer { grid-area: footer; }
+        
+        .float-right {
+            float: right;
+            width: 30%;
+        }
+        
+        .absolute-top {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Content Reading Order Issues</h1>
+    
+    <!-- Flexbox reversing visual order -->
+    <div class="flex-reverse">
+        <p>3. This paragraph appears third visually but is first in DOM</p>
+        <p>2. This paragraph appears second visually but is second in DOM</p>
+        <p>1. This paragraph appears first visually but is third in DOM</p>
+    </div>
+    
+    <!-- CSS Grid rearranging content -->
+    <div class="grid-layout">
+        <div class="main">Main content (appears center-right visually)</div>
+        <div class="header">Header (appears top-right visually)</div>
+        <div class="sidebar">Sidebar (appears left visually)</div>
+        <div class="footer">Footer (appears bottom visually)</div>
+    </div>
+    
+    <!-- Floated content changing order -->
+    <div>
+        <div class="float-right">
+            <h2>Important Notice</h2>
+            <p>This floated content appears on the right but comes first in DOM.</p>
+        </div>
+        <p>This main paragraph appears on the left but comes after the floated content in DOM.</p>
+    </div>
+    
+    <!-- Absolutely positioned content -->
+    <div style="position: relative; height: 200px;">
+        <div class="absolute-top">
+            This absolutely positioned content appears at the top but is last in DOM order.
+        </div>
+        <p>First paragraph in DOM order.</p>
+        <p>Second paragraph in DOM order.</p>
+    </div>
+    
+    <p>Visual order should match DOM order for logical reading flow.</p>
+</body>
+</html>

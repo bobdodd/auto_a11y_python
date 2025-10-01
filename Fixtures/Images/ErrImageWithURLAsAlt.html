@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image with URL as Alt Test - ErrImageWithURLAsAlt</title>
+</head>
+<body>
+    <h1>Images with URLs as Alt Text</h1>
+    
+    <!-- Alt text is full URL -->
+    <img src="logo.png" alt="https://www.example.com/images/logo.png">
+    
+    <!-- Alt text is domain name -->
+    <img src="banner.jpg" alt="www.example.com">
+    
+    <!-- Alt text is relative URL -->
+    <img src="photo.gif" alt="/assets/images/photo.gif">
+    
+    <!-- Alt text is CDN URL -->
+    <img src="icon.svg" alt="https://cdn.example.com/icons/icon.svg">
+    
+    <!-- Alt text is data URL -->
+    <img src="data:image/png;base64,..." alt="data:image/png;base64,...">
+    
+    <!-- Alt text is file:// URL -->
+    <img src="local.jpg" alt="file:///C:/Users/images/local.jpg">
+    
+    <p>Alt text should describe the image content, not its URL.</p>
+</body>
+</html>

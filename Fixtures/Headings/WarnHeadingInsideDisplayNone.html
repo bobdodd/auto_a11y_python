@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heading Inside Display None Test - WarnHeadingInsideDisplayNone</title>
+    <style>
+        .hidden-section {
+            display: none;
+        }
+        
+        .invisible {
+            visibility: hidden;
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Page with Hidden Headings</h1>
+    
+    <!-- Heading inside display:none container -->
+    <div class="hidden-section">
+        <h2>This Heading is Hidden</h2>
+        <p>This entire section is hidden with display:none.</p>
+    </div>
+    
+    <!-- Heading with visibility:hidden -->
+    <h2 class="invisible">Invisible Heading</h2>
+    
+    <!-- Heading hidden but available to screen readers -->
+    <h2 class="sr-only">Screen Reader Only Heading</h2>
+    
+    <!-- Heading in element that will be shown later -->
+    <div style="display: none;" id="modal">
+        <h2>Modal Heading</h2>
+        <p>This heading is in a modal that's currently hidden.</p>
+    </div>
+    
+    <p>Hidden headings can disrupt document structure.</p>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing Tabindex Test - ErrMissingTabindex</title>
+</head>
+<body>
+    <h1>Interactive Elements Missing Tabindex</h1>
+    
+    <!-- Custom button without tabindex -->
+    <div role="button" onclick="doAction()">
+        Custom Button (not keyboard accessible)
+    </div>
+    
+    <!-- Custom link without tabindex -->
+    <span role="link" onclick="navigate()">
+        Custom Link (can't tab to it)
+    </span>
+    
+    <!-- Interactive div without tabindex -->
+    <div onclick="toggleMenu()" role="menuitem">
+        Menu Item (not focusable)
+    </div>
+    
+    <!-- Custom checkbox without tabindex -->
+    <div role="checkbox" aria-checked="false" onclick="toggle()">
+        Custom Checkbox
+    </div>
+    
+    <!-- Custom slider without tabindex -->
+    <div role="slider" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+        Custom Slider Control
+    </div>
+    
+    <p>Custom interactive elements need tabindex="0" for keyboard access.</p>
+</body>
+</html>

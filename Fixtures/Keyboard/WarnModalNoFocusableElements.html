@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal No Focusable Elements Warning Test - WarnModalNoFocusableElements</title>
+</head>
+<body>
+    <h1>Modals Without Focusable Elements</h1>
+    
+    <!-- Modal with only text, no focusable elements -->
+    <div role="dialog" aria-modal="true" aria-labelledby="modal1-title">
+        <h2 id="modal1-title">Information</h2>
+        <p>This modal only contains text with no buttons or focusable elements.</p>
+    </div>
+    
+    <!-- Alert dialog with disabled buttons only -->
+    <div role="alertdialog" aria-modal="true">
+        <p>System maintenance in progress.</p>
+        <button disabled>OK (disabled)</button>
+        <button disabled>Cancel (disabled)</button>
+    </div>
+    
+    <!-- Modal with elements that have tabindex="-1" -->
+    <div role="dialog" aria-modal="true">
+        <h2>Settings</h2>
+        <div tabindex="-1">Content not in tab order</div>
+        <button tabindex="-1">Save (removed from tab order)</button>
+    </div>
+    
+    <!-- Modal with only decorative elements -->
+    <div role="dialog" aria-modal="true">
+        <img src="loading.gif" alt="">
+        <p>Loading...</p>
+    </div>
+    
+    <p>Modals should have at least one focusable element.</p>
+</body>
+</html>

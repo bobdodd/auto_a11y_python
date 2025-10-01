@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generic Link No Improvement Warning Test - WarnGenericLinkNoImprovement</title>
+</head>
+<body>
+    <h1>Generic Links Without Context Improvement</h1>
+    
+    <!-- Generic link with aria-label that doesn't improve -->
+    <a href="page1.html" aria-label="click here">Click here</a>
+    
+    <!-- Generic link with title that doesn't help -->
+    <a href="page2.html" title="Read more">Read more</a>
+    
+    <!-- Links with redundant aria-label -->
+    <a href="article.html" aria-label="More info">More info</a>
+    
+    <!-- Links with unhelpful aria-labelledby -->
+    <span id="link1">Learn more</span>
+    <a href="details.html" aria-labelledby="link1">Learn more</a>
+    
+    <!-- Generic links with no surrounding context -->
+    <div>
+        <a href="page.html">Here</a>
+    </div>
+    
+    <div>
+        <a href="doc.html">This</a>
+    </div>
+    
+    <p>Generic link text should be improved with context.</p>
+</body>
+</html>

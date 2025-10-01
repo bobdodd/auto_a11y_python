@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Italic Text Warning Test - WarnItalicText</title>
+    <style>
+        .italic-paragraph {
+            font-style: italic;
+        }
+        
+        .large-italic-block {
+            font-style: italic;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Excessive Italic Text Usage</h1>
+    
+    <!-- Entire paragraph in italics -->
+    <p class="italic-paragraph">
+        This entire paragraph is in italics, which can be difficult to read for extended periods.
+        Italic text should be used sparingly for emphasis, not for large blocks of content.
+        Extended italic text can cause eye strain and reduce reading speed.
+    </p>
+    
+    <!-- Long italic section -->
+    <div class="large-italic-block">
+        <p>This is a large block of italic text that spans multiple lines and paragraphs.</p>
+        <p>Using italics for extended content makes it harder to scan and comprehend.</p>
+        <p>Screen readers don't distinguish italic text, so meaning shouldn't depend on it.</p>
+    </div>
+    
+    <!-- Multiple italic elements -->
+    <i>This uses the i tag for italic text, which is semantically unclear.</i>
+    <em style="display: block; margin: 10px 0;">
+        This entire emphasis block is italicized, reducing readability for long content.
+        The em tag is better semantically but still shouldn't be used for large text blocks.
+    </em>
+    
+    <p>Italic text should be used sparingly for emphasis.</p>
+</body>
+</html>

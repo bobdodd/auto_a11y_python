@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-Interactive Zero Tabindex Test - ErrNonInteractiveZeroTabindex</title>
+</head>
+<body>
+    <h1>Non-Interactive Elements with Tabindex="0"</h1>
+    
+    <!-- Paragraph with tabindex="0" -->
+    <p tabindex="0">
+        This paragraph is focusable but not interactive.
+    </p>
+    
+    <!-- Div with tabindex="0" but no role -->
+    <div tabindex="0">
+        This div can receive focus but serves no interactive purpose.
+    </div>
+    
+    <!-- Heading with tabindex="0" -->
+    <h2 tabindex="0">Focusable Heading</h2>
+    
+    <!-- Span with tabindex="0" -->
+    <span tabindex="0">This text span is focusable unnecessarily.</span>
+    
+    <!-- List item with tabindex="0" -->
+    <ul>
+        <li tabindex="0">Focusable list item</li>
+        <li>Normal list item</li>
+    </ul>
+    
+    <!-- Table cell with tabindex="0" -->
+    <table>
+        <tr>
+            <td tabindex="0">Focusable cell</td>
+            <td>Normal cell</td>
+        </tr>
+    </table>
+    
+    <p>Only interactive elements should have tabindex="0".</p>
+</body>
+</html>

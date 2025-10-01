@@ -46,6 +46,13 @@ def create_app(config):
     # Store config for access in routes
     app.app_config = config
     
+    # Initialize test configuration with database and debug mode
+    from auto_a11y.config import get_test_config
+    app.test_config = get_test_config(
+        database=app.db,
+        debug_mode=config.DEBUG
+    )
+    
     # Start task runner
     from auto_a11y.core.task_runner import task_runner
     task_runner.start()

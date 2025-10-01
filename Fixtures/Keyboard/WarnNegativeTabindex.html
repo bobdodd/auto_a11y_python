@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negative Tabindex Warning Test - WarnNegativeTabindex</title>
+</head>
+<body>
+    <h1>Interactive Elements with Negative Tabindex</h1>
+    
+    <!-- Active button with tabindex="-1" -->
+    <button tabindex="-1">Active button removed from tab order</button>
+    
+    <!-- Link with negative tabindex -->
+    <a href="page.html" tabindex="-1">Link not keyboard accessible</a>
+    
+    <!-- Form elements with negative tabindex -->
+    <input type="text" tabindex="-1" placeholder="Can't tab to this input">
+    
+    <select tabindex="-1">
+        <option>Can't tab to this select</option>
+    </select>
+    
+    <!-- Important interactive elements with tabindex="-1" -->
+    <button tabindex="-1" onclick="submitForm()">Submit (not in tab order)</button>
+    
+    <a href="#main" tabindex="-1">Skip to main (can't tab to it)</a>
+    
+    <p>Negative tabindex removes elements from keyboard navigation.</p>
+</body>
+</html>

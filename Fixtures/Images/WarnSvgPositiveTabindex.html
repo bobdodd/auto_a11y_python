@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Positive Tabindex Warning Test - WarnSvgPositiveTabindex</title>
+</head>
+<body>
+    <h1>SVG Elements with Positive Tabindex</h1>
+    
+    <!-- SVG with positive tabindex -->
+    <svg width="100" height="100" tabindex="1">
+        <circle cx="50" cy="50" r="40" fill="blue"/>
+    </svg>
+    
+    <!-- Interactive SVG with high tabindex -->
+    <svg width="100" height="100" tabindex="5" role="button">
+        <rect width="100" height="100" fill="green"/>
+        <text x="50" y="50" text-anchor="middle">Button</text>
+    </svg>
+    
+    <!-- SVG link with positive tabindex -->
+    <svg width="200" height="50" tabindex="3">
+        <a href="page.html">
+            <rect width="200" height="50" fill="orange"/>
+            <text x="100" y="30" text-anchor="middle">Link</text>
+        </a>
+    </svg>
+    
+    <!-- Multiple SVGs with positive tabindex -->
+    <svg width="50" height="50" tabindex="2">
+        <rect width="50" height="50" fill="red"/>
+    </svg>
+    
+    <p>Positive tabindex values disrupt natural tab order.</p>
+</body>
+</html>

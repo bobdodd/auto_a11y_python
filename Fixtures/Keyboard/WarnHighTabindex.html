@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Tabindex Warning Test - WarnHighTabindex</title>
+</head>
+<body>
+    <h1>Elements with Very High Tabindex Values</h1>
+    
+    <!-- Extremely high tabindex values -->
+    <button tabindex="999">Button with tabindex 999</button>
+    
+    <input type="text" tabindex="100" placeholder="Input with tabindex 100">
+    
+    <a href="#" tabindex="500">Link with tabindex 500</a>
+    
+    <select tabindex="250">
+        <option>Select with tabindex 250</option>
+    </select>
+    
+    <!-- Custom elements with high tabindex -->
+    <div role="button" tabindex="1000">Custom button tabindex 1000</div>
+    
+    <span role="link" tabindex="9999">Custom link tabindex 9999</span>
+    
+    <!-- Maximum tabindex value -->
+    <button tabindex="32767">Maximum tabindex value</button>
+    
+    <p>High tabindex values make tab order unpredictable and hard to maintain.</p>
+</body>
+</html>

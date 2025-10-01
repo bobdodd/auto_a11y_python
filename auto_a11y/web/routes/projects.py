@@ -74,13 +74,39 @@ def create_project():
         
         if not name:
             flash('Project name is required', 'error')
-            return render_template('projects/create.html')
+            # Get fixture test status for error case
+            test_statuses = {}
+            passing_tests = set()
+            if hasattr(current_app, 'test_config') and current_app.test_config:
+                test_statuses = current_app.test_config.get_all_test_statuses()
+                if current_app.test_config.fixture_validator:
+                    passing_tests = current_app.test_config.fixture_validator.get_passing_tests()
+                debug_mode = current_app.test_config.debug_mode
+            else:
+                debug_mode = current_app.app_config.DEBUG
+            return render_template('projects/create.html',
+                                 test_statuses=test_statuses,
+                                 passing_tests=passing_tests,
+                                 debug_mode=debug_mode)
         
         # Check if project name exists
         existing = current_app.db.projects.find_one({'name': name})
         if existing:
             flash(f'Project "{name}" already exists', 'error')
-            return render_template('projects/create.html')
+            # Get fixture test status for error case
+            test_statuses = {}
+            passing_tests = set()
+            if hasattr(current_app, 'test_config') and current_app.test_config:
+                test_statuses = current_app.test_config.get_all_test_statuses()
+                if current_app.test_config.fixture_validator:
+                    passing_tests = current_app.test_config.fixture_validator.get_passing_tests()
+                debug_mode = current_app.test_config.debug_mode
+            else:
+                debug_mode = current_app.app_config.DEBUG
+            return render_template('projects/create.html',
+                                 test_statuses=test_statuses,
+                                 passing_tests=passing_tests,
+                                 debug_mode=debug_mode)
         
         # Get touchpoint configuration
         from auto_a11y.config.touchpoint_tests import TOUCHPOINT_TEST_MAPPING
@@ -138,7 +164,22 @@ def create_project():
         
         return redirect(url_for('projects.view_project', project_id=project_id))
     
-    return render_template('projects/create.html')
+    # Get fixture test status for all tests
+    test_statuses = {}
+    passing_tests = set()
+    
+    if hasattr(current_app, 'test_config') and current_app.test_config:
+        test_statuses = current_app.test_config.get_all_test_statuses()
+        if current_app.test_config.fixture_validator:
+            passing_tests = current_app.test_config.fixture_validator.get_passing_tests()
+        debug_mode = current_app.test_config.debug_mode
+    else:
+        debug_mode = current_app.app_config.DEBUG
+    
+    return render_template('projects/create.html',
+                         test_statuses=test_statuses,
+                         passing_tests=passing_tests,
+                         debug_mode=debug_mode)
 
 
 @projects_bp.route('/<project_id>')

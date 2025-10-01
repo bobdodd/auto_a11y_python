@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image With No Alt Test - ErrImageWithNoAlt</title>
+</head>
+<body>
+    <h1>Images Without Alt Attributes</h1>
+    
+    <!-- Image with no alt attribute at all -->
+    <img src="photo.jpg">
+    
+    <!-- Image with other attributes but no alt -->
+    <img src="diagram.png" title="Diagram" class="responsive">
+    
+    <!-- Image in a link without alt -->
+    <a href="page.html">
+        <img src="icon.gif">
+    </a>
+    
+    <!-- Image used as button without alt -->
+    <img src="button.jpg" onclick="doSomething()">
+    
+    <p>All images above are missing alt attributes entirely.</p>
+</body>
+</html>

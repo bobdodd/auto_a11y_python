@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Iframe Missing Title Test - ErrVideoIframeMissingTitle</title>
+</head>
+<body>
+    <h1>Video Iframes Without Title Attributes</h1>
+    
+    <!-- YouTube embed without title -->
+    <iframe width="560" height="315" 
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+            frameborder="0" 
+            allowfullscreen>
+    </iframe>
+    
+    <!-- Vimeo embed without title -->
+    <iframe src="https://player.vimeo.com/video/123456789" 
+            width="640" 
+            height="360" 
+            frameborder="0">
+    </iframe>
+    
+    <!-- Custom video player iframe without title -->
+    <iframe src="video-player.html" 
+            width="800" 
+            height="450">
+    </iframe>
+    
+    <!-- Media embed with empty title -->
+    <iframe src="https://example.com/embed/video" 
+            title=""
+            width="640" 
+            height="360">
+    </iframe>
+    
+    <p>Video iframes need descriptive title attributes for screen readers.</p>
+</body>
+</html>

@@ -3,60 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preferences - Missing Fieldsets</title>
+    <title>forms_WarnNoFieldset - Warnings</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "forms_WarnNoFieldset_001_violations_basic",
     "issueId": "forms_WarnNoFieldset",
     "expectedViolationCount": 2,
     "expectedPassCount": 0,
-    "description": "Radio button and checkbox groups without fieldset/legend grouping",
+    "description": "Related form controls not grouped in fieldsets",
     "wcag": "1.3.1, 3.3.2",
-    "impact": "Medium"
+    "impact": "Low"
 }
     </script>
 </head>
 <body>
-    <h1>Account Preferences</h1>
+    <h1>Shipping Information</h1>
 
-    <form>
-        <div data-expected-violation="true"
-             data-violation-id="forms_WarnNoFieldset"
-             data-violation-reason="Radio button group not wrapped in fieldset, screen readers won't announce 'Contact method' group label">
-            <p>Contact method:</p>
-            <div>
-                <input type="radio" id="email" name="contact" value="email">
-                <label for="email">Email</label>
-            </div>
-            <div>
-                <input type="radio" id="phone" name="contact" value="phone">
-                <label for="phone">Phone</label>
-            </div>
-            <div>
-                <input type="radio" id="mail" name="contact" value="mail">
-                <label for="mail">Mail</label>
-            </div>
-        </div>
+    <main>
+        <form>
+            <section data-expected-violation="true"
+                     data-violation-reason="Related radio buttons for shipping method not grouped in fieldset. Screen readers don't announce group relationship. Users with cognitive disabilities may not understand options are related. No programmatic grouping of related controls. Warning for WCAG 1.3.1 Info and Relationships and 3.3.2 Labels or Instructions - group related controls in fieldset with legend">
+                <h2>Shipping Method</h2>
 
-        <div data-expected-violation="true"
-             data-violation-id="forms_WarnNoFieldset"
-             data-violation-reason="Checkbox group lacks fieldset, relationship between options not clear to assistive technology">
-            <p>Notifications:</p>
-            <div>
-                <input type="checkbox" id="updates" name="notifications" value="updates">
-                <label for="updates">Product updates</label>
-            </div>
-            <div>
-                <input type="checkbox" id="offers" name="notifications" value="offers">
-                <label for="offers">Special offers</label>
-            </div>
-            <div>
-                <input type="checkbox" id="news" name="notifications" value="news">
-                <label for="news">Newsletter</label>
-            </div>
-        </div>
+                <label><input type="radio" name="shipping" value="standard"> Standard (5-7 days)</label>
+                <label><input type="radio" name="shipping" value="express"> Express (2-3 days)</label>
+                <label><input type="radio" name="shipping" value="overnight"> Overnight</label>
+            </section>
 
-        <button type="submit">Save Preferences</button>
-    </form>
+            <section data-expected-violation="true"
+                     data-violation-reason="Related checkboxes for notification preferences not in fieldset. Screen readers can't identify these as grouped options. Users may not understand checkboxes are related preferences. No semantic grouping of related form controls. Warning for WCAG 1.3.1 Info and Relationships and 3.3.2 Labels or Instructions - use fieldset and legend for related checkbox groups">
+                <h2>Notification Preferences</h2>
+
+                <label><input type="checkbox" name="email_updates"> Email updates</label>
+                <label><input type="checkbox" name="sms_updates"> SMS notifications</label>
+                <label><input type="checkbox" name="push_updates"> Push notifications</label>
+            </section>
+
+            <button type="submit">Continue</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
 </body>
 </html>

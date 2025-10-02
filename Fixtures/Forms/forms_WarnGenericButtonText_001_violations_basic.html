@@ -3,50 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website - Generic Button Text</title>
+    <title>forms_WarnGenericButtonText - Warnings</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "forms_WarnGenericButtonText_001_violations_basic",
     "issueId": "forms_WarnGenericButtonText",
     "expectedViolationCount": 3,
     "expectedPassCount": 0,
-    "description": "Buttons with generic non-descriptive text",
+    "description": "Buttons with generic text like Click Here, Submit",
     "wcag": "2.4.6",
     "impact": "Low"
 }
     </script>
 </head>
 <body>
-    <h1>Account Settings</h1>
+    <h1>Product Information</h1>
 
-    <section>
-        <h2>Profile Information</h2>
-        <p>Update your name, email, and photo.</p>
-        <button data-expected-violation="true"
-                data-violation-id="forms_WarnGenericButtonText"
-                data-violation-reason="Button text 'Click here' doesn't describe the action, users navigating by buttons won't understand its purpose">
-            Click here
-        </button>
-    </section>
+    <main>
+        <section>
+            <h2>Premium Package</h2>
+            <p>Upgrade to our premium package for advanced features and priority support.</p>
 
-    <section>
-        <h2>Email Preferences</h2>
-        <p>Choose which emails you'd like to receive.</p>
-        <button data-expected-violation="true"
-                data-violation-id="forms_WarnGenericButtonText"
-                data-violation-reason="Generic 'Submit' provides no context about what is being submitted">
-            Submit
-        </button>
-    </section>
+            <button data-expected-violation="true"
+                    data-violation-reason="Button text is generic 'Click Here' without context. Screen reader users navigating by buttons hear multiple 'Click Here' buttons. Users don't know what clicking button will do without reading surrounding text. Generic text requires context to understand purpose. Warning for WCAG 2.4.6 Headings and Labels - use descriptive button text like 'Upgrade to Premium'">
+                Click Here
+            </button>
+        </section>
 
-    <section>
-        <h2>Delete Account</h2>
-        <p>Permanently remove your account and all data.</p>
-        <button data-expected-violation="true"
-                data-violation-id="forms_WarnGenericButtonText"
-                data-violation-reason="Button text 'OK' doesn't indicate the serious action of account deletion">
-            OK
-        </button>
-    </section>
+        <section>
+            <h2>Newsletter</h2>
+            <p>Stay updated with our latest news and special offers by subscribing to our newsletter.</p>
+
+            <button data-expected-violation="true"
+                    data-violation-reason="Button text is generic 'Submit' without describing what is being submitted. Screen readers list multiple 'Submit' buttons with no differentiation. Users can't tell if this submits newsletter, order, or feedback. Generic submit text is ambiguous. Warning for WCAG 2.4.6 Headings and Labels - use descriptive text like 'Subscribe to Newsletter'">
+                Submit
+            </button>
+        </section>
+
+        <section>
+            <h2>Contact Us</h2>
+            <p>Have questions? Our support team is here to help you with any inquiries.</p>
+
+            <button data-expected-violation="true"
+                    data-violation-reason="Button text is generic 'Click' which is meaningless. Screen reader users don't know button purpose from text alone. Generic one-word button text provides no information. Users must read surrounding content to understand action. Warning for WCAG 2.4.6 Headings and Labels - button text should describe action like 'Contact Support Team'">
+                Click
+            </button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
 </body>
 </html>

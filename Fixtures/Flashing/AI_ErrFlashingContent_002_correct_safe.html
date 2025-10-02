@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrFlashingContent - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrFlashingContent_002_correct_safe",
+    "issueId": "AI_ErrFlashingContent",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Content with safe flash rates or no flashing",
+    "wcag": "2.3.1",
+    "impact": "Critical"
+}
+    </script>
+    <style>
+        .safe-blink {
+            width: 200px;
+            height: 200px;
+            animation: safe-flash 1s infinite;
+        }
+        @keyframes safe-flash {
+            0%, 49% { background: #ffebee; }
+            50%, 100% { background: #ffcdd2; }
+        }
+        .gentle-pulse {
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Alert System - Correct Usage</h1>
+
+    <main>
+        <!-- Slow, safe flashing element - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Element flashes once per second (1s interval), well below 3 flashes/second threshold. Safe for users with photosensitive epilepsy. Uses low-contrast colors for added safety">
+            <h2>Critical Alert</h2>
+            <div class="safe-blink"></div>
+            <p>System error detected! Please check system logs.</p>
+        </div>
+
+        <!-- Gentle pulsing text - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Text uses gentle opacity pulse (2s cycle) instead of color strobe. No rapid flashing or high-contrast transitions. Safe for all users including those with photosensitive epilepsy">
+            <p class="gentle-pulse" role="alert">WARNING: Immediate action required</p>
+            <button style="padding: 1rem 2rem; background: #f44336; color: white; border: none; font-size: 1rem; cursor: pointer;">
+                Acknowledge Alert
+            </button>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrContentObscuring - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrContentObscuring_001_violations_basic",
+    "issueId": "ErrContentObscuring",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Content obscured by overlapping elements preventing interaction",
+    "wcag": "2.4.3, 2.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .obscured-form {
+            position: relative;
+            z-index: 1;
+        }
+
+        .overlapping-banner {
+            position: absolute;
+            top: 100px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: red;
+            z-index: 100;
+        }
+
+        .hidden-button {
+            position: relative;
+            z-index: 1;
+        }
+
+        .covering-div {
+            position: absolute;
+            top: 250px;
+            left: 20px;
+            width: 200px;
+            height: 50px;
+            background: blue;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Content Obscured By Other Elements</h1>
+
+    <div class="overlay"
+         data-expected-violation="true"
+         data-violation-id="ErrContentObscuring"
+         data-violation-reason="Fixed overlay covers all content on page, preventing interaction">
+    </div>
+
+    <main style="position: relative;">
+        <section>
+            <h2>Obscured Form</h2>
+            <form class="obscured-form"
+                  data-expected-violation="true"
+                  data-violation-id="ErrContentObscuring"
+                  data-violation-reason="Form is below the overlay banner and cannot be interacted with">
+                <label for="name">Name:</label>
+                <input type="text" id="name">
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+
+        <div class="overlapping-banner">This banner covers content below</div>
+
+        <section style="margin-top: 150px;">
+            <h2>More Content</h2>
+            <button class="hidden-button"
+                    data-expected-violation="true"
+                    data-violation-id="ErrContentObscuring"
+                    data-violation-reason="Button is covered by the positioned div and cannot be clicked">
+                Click Me
+            </button>
+            <div class="covering-div">Covering element</div>
+        </section>
+    </main>
+</body>
+</html>

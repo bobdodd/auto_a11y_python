@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNoCursorPointer - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNoCursorPointer_002_correct_with_pointer",
+    "issueId": "WarnNoCursorPointer",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Clickable elements with proper pointer cursor indication",
+    "wcag": "2.1.1",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .clickable-div {
+            padding: 10px;
+            background: lightblue;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .fake-button {
+            padding: 10px 20px;
+            background: gray;
+            color: white;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .custom-link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Clickable Elements With Pointer Cursor</h1>
+
+    <main>
+        <section>
+            <h2>Clickable Div</h2>
+            <div class="clickable-div"
+                 onclick="alert('clicked')"
+                 data-expected-pass="true"
+                 data-pass-reason="Clickable div has cursor:pointer for visual indication">
+                Click me (shows pointer cursor)
+            </div>
+        </section>
+
+        <section>
+            <h2>Fake Button</h2>
+            <span class="fake-button"
+                  role="button"
+                  tabindex="0"
+                  data-expected-pass="true"
+                  data-pass-reason="Custom button has cursor:pointer">
+                Submit
+            </span>
+        </section>
+
+        <section>
+            <h2>Custom Link</h2>
+            <span class="custom-link"
+                  onclick="location.href='/page'"
+                  data-expected-pass="true"
+                  data-pass-reason="Custom link has cursor:pointer for clickable indication">
+                Go to page
+            </span>
+        </section>
+
+        <section>
+            <h2>Standard Button</h2>
+            <button data-expected-pass="true"
+                    data-pass-reason="Native button element has default pointer cursor">
+                Click Button
+            </button>
+        </section>
+    </main>
+</body>
+</html>

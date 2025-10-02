@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNoCursorPointer - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNoCursorPointer_001_violations_basic",
+    "issueId": "WarnNoCursorPointer",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Clickable elements without pointer cursor indication",
+    "wcag": "2.1.1",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .clickable-div {
+            padding: 10px;
+            background: lightblue;
+            margin: 10px 0;
+        }
+
+        .fake-button {
+            padding: 10px 20px;
+            background: gray;
+            color: white;
+            display: inline-block;
+        }
+
+        .custom-link {
+            color: blue;
+            text-decoration: underline;
+        }
+
+        button.no-pointer {
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Clickable Elements Without Pointer Cursor</h1>
+
+    <main>
+        <section>
+            <h2>Clickable Div</h2>
+            <div class="clickable-div"
+                 onclick="alert('clicked')"
+                 data-expected-violation="true"
+                 data-violation-id="WarnNoCursorPointer"
+                 data-violation-reason="Clickable div has onclick but no cursor:pointer">
+                Click me (no pointer cursor)
+            </div>
+        </section>
+
+        <section>
+            <h2>Fake Button</h2>
+            <span class="fake-button"
+                  role="button"
+                  tabindex="0"
+                  data-expected-violation="true"
+                  data-violation-id="WarnNoCursorPointer"
+                  data-violation-reason="Custom button element lacks cursor:pointer">
+                Submit
+            </span>
+        </section>
+
+        <section>
+            <h2>Custom Link</h2>
+            <span class="custom-link"
+                  onclick="location.href='/page'"
+                  data-expected-violation="true"
+                  data-violation-id="WarnNoCursorPointer"
+                  data-violation-reason="Span acting as link but no pointer cursor">
+                Go to page
+            </span>
+        </section>
+
+        <section>
+            <h2>Button With Overridden Cursor</h2>
+            <button class="no-pointer"
+                    data-expected-violation="true"
+                    data-violation-id="WarnNoCursorPointer"
+                    data-violation-reason="Button has cursor:default instead of pointer">
+                Click Button
+            </button>
+        </section>
+    </main>
+</body>
+</html>

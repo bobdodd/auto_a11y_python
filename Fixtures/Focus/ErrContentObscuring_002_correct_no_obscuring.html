@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrContentObscuring - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrContentObscuring_002_correct_no_obscuring",
+    "issueId": "ErrContentObscuring",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Content properly positioned without obscuring elements",
+    "wcag": "2.4.3, 2.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .proper-modal {
+            display: none;
+        }
+
+        .proper-banner {
+            position: relative;
+            width: 100%;
+            background: lightblue;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .properly-stacked {
+            position: relative;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Content Without Obscuring</h1>
+
+    <div class="proper-modal"
+         data-expected-pass="true"
+         data-pass-reason="Modal is hidden by default, doesn't obscure content">
+    </div>
+
+    <main>
+        <div class="proper-banner"
+             data-expected-pass="true"
+             data-pass-reason="Banner is in document flow, doesn't cover other content">
+            This banner is properly positioned in the flow
+        </div>
+
+        <section>
+            <h2>Accessible Form</h2>
+            <form data-expected-pass="true"
+                  data-pass-reason="Form is fully accessible, not covered by any elements">
+                <label for="name">Name:</label>
+                <input type="text" id="name">
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+
+        <section class="properly-stacked">
+            <h2>More Content</h2>
+            <button>Click Me</button>
+            <p>All elements are properly stacked without obscuring each other.</p>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Visible Text Matches Accessible Name</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "VisibleHeadingDoesNotMatchA11yName_002_correct_matching",
+    "issueId": "VisibleHeadingDoesNotMatchA11yName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Headings where visible text matches or is contained in accessible name",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1 data-expected-pass="true"
+            data-pass-reason="No aria-label, visible text is accessible name">Services</h1>
+
+        <h2 aria-label="Support: Contact our customer service team"
+            data-expected-pass="true"
+            data-pass-reason="Visible text 'Support' is contained in accessible name">Support</h2>
+        <p>Contact our support team.</p>
+
+        <h3 data-expected-pass="true"
+            data-pass-reason="Visible text matches accessible name">Frequently Asked Questions</h3>
+        <p>Common questions and answers.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

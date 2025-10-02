@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Headings Well Under Limit</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "InfoHeadingNearLengthLimit_002_correct_short",
+    "issueId": "InfoHeadingNearLengthLimit",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Headings well under the 60 character limit",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1 data-expected-pass="true"
+            data-pass-reason="Heading is 13 characters">Documentation</h1>
+
+        <h2 data-expected-pass="true"
+            data-pass-reason="Heading is 24 characters">Implementation Overview</h2>
+        <p>Concise, clear heading.</p>
+
+        <h3 data-expected-pass="true"
+            data-pass-reason="Heading is 18 characters">Setup Instructions</h3>
+        <p>Another appropriately short heading.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

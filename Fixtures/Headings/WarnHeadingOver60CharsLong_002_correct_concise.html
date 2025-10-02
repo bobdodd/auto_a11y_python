@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Appropriately Concise Headings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnHeadingOver60CharsLong_002_correct_concise",
+    "issueId": "WarnHeadingOver60CharsLong",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Headings under 60 characters in length",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1 data-expected-pass="true"
+            data-pass-reason="Heading is 20 characters">Documentation Portal</h1>
+
+        <h2 data-expected-pass="true"
+            data-pass-reason="Heading is 32 characters">Implementation and Configuration</h2>
+        <p>Concise heading with descriptive subtitle in body text if needed.</p>
+
+        <h3 data-expected-pass="true"
+            data-pass-reason="Heading is 23 characters">System Maintenance Guide</h3>
+        <p>Additional details can go in paragraph text below the heading.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

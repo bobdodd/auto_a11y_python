@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Headings Near Length Limit</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "InfoHeadingNearLengthLimit_001_violations_basic",
+    "issueId": "InfoHeadingNearLengthLimit",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Headings approaching but not exceeding 60 character limit (50-60 chars)",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1>Documentation</h1>
+
+        <h2 data-expected-violation="true"
+            data-violation-id="InfoHeadingNearLengthLimit"
+            data-violation-reason="Heading is 58 characters long">This Heading Is Getting Close to the Recommended Length</h2>
+        <p>This heading is near the 60 character limit.</p>
+
+        <h3 data-expected-violation="true"
+            data-violation-id="InfoHeadingNearLengthLimit"
+            data-violation-reason="Heading is 55 characters long">Understanding Implementation, Configuration and Setup</h3>
+        <p>Another heading approaching the limit.</p>
+
+        <h2>Short Heading</h2>
+        <p>This heading is fine.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

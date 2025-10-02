@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Proper aria-labelledby on Fields</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyAriaLabelledByOnField_002_correct_with_ids",
+    "issueId": "ErrEmptyAriaLabelledByOnField",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Form fields with valid aria-labelledby referencing element IDs",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Preferences Form</h1>
+    <form>
+        <div>
+            <span id="username-label">Username</span>
+            <input type="text"
+                   aria-labelledby="username-label"
+                   data-expected-pass="true"
+                   data-pass-reason="aria-labelledby references valid element ID">
+        </div>
+
+        <div>
+            <span id="email-label">Email</span>
+            <span id="email-help">Must be a valid email address</span>
+            <input type="email"
+                   aria-labelledby="email-label email-help"
+                   data-expected-pass="true"
+                   data-pass-reason="aria-labelledby references multiple valid IDs">
+        </div>
+
+        <div>
+            <span id="role-label">Role</span>
+            <select aria-labelledby="role-label"
+                    data-expected-pass="true"
+                    data-pass-reason="aria-labelledby references valid element ID">
+                <option>Admin</option>
+                <option>User</option>
+            </select>
+        </div>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

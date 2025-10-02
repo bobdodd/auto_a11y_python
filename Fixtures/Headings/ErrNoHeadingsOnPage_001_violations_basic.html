@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: No Headings on Page</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoHeadingsOnPage_001_violations_basic",
+    "issueId": "ErrNoHeadingsOnPage",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page with no heading elements whatsoever",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrNoHeadingsOnPage"
+      data-violation-reason="No heading elements (h1-h6) found on page">
+    <div class="header">
+        <div class="logo">Company Name</div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <p class="page-title">Welcome to Our Website</p>
+        <p>This page has no semantic heading structure, making it difficult for screen reader users to navigate.</p>
+
+        <p class="section-title">About Us</p>
+        <p>Information about the company.</p>
+
+        <p class="section-title">Our Services</p>
+        <p>Description of services offered.</p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </div>
+</body>
+</html>

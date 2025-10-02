@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Visual Headings Not Marked</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrVisualHeadingNotMarked_001_violations_basic",
+    "issueId": "AI_ErrVisualHeadingNotMarked",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Text styled to look like headings but not marked up as headings",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .fake-heading {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .another-fake {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Company Services</h1>
+
+        <div class="fake-heading"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrVisualHeadingNotMarked"
+             data-violation-reason="Styled to look like heading but not marked as heading">Our Products</div>
+        <p>We offer various products to meet your needs.</p>
+
+        <p class="another-fake"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrVisualHeadingNotMarked"
+           data-violation-reason="Bold, large text functioning as heading">Support Services</p>
+        <p>Get help when you need it.</p>
+
+        <span class="fake-heading"
+              data-expected-violation="true"
+              data-violation-id="AI_ErrVisualHeadingNotMarked"
+              data-violation-reason="Visually appears as heading without semantic markup">Contact Information</span>
+        <p>Reach out to our team.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

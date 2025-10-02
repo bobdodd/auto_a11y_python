@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Heading Levels Match Visual Hierarchy</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrHeadingLevelMismatch_002_correct_matching",
+    "issueId": "AI_ErrHeadingLevelMismatch",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Heading levels properly match visual hierarchy",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1 data-expected-pass="true"
+            data-pass-reason="h1 matches visual importance">Product Guide</h1>
+
+        <h2 data-expected-pass="true"
+            data-pass-reason="h2 matches visual hierarchy level">Major Section</h2>
+        <p>This is a major section with appropriate h2.</p>
+
+        <h3 data-expected-pass="true"
+            data-pass-reason="h3 matches visual hierarchy level">Subsection</h3>
+        <p>This is a subsection with appropriate h3.</p>
+
+        <h4 data-expected-pass="true"
+            data-pass-reason="h4 matches visual hierarchy level">Minor Detail</h4>
+        <p>This is a minor detail with appropriate h4.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

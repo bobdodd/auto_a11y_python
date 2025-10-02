@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Visible Text Doesn't Match Accessible Name</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "VisibleHeadingDoesNotMatchA11yName_001_violations_basic",
+    "issueId": "VisibleHeadingDoesNotMatchA11yName",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Headings where visible text doesn't match accessible name",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1>Services</h1>
+
+        <h2 aria-label="Customer Support Services"
+            data-expected-violation="true"
+            data-violation-id="VisibleHeadingDoesNotMatchA11yName"
+            data-violation-reason="Visible text 'Support' does not match accessible name 'Customer Support Services'">Support</h2>
+        <p>Contact our support team.</p>
+
+        <h3 data-expected-violation="true"
+            data-violation-id="VisibleHeadingDoesNotMatchA11yName"
+            data-violation-reason="Visible text 'FAQ' hidden, accessible name from aria-label is completely different">
+            <span aria-hidden="true">FAQ</span>
+            <span class="sr-only" aria-label="Frequently Asked Questions and Answers">Questions</span>
+        </h3>
+        <p>Common questions and answers.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

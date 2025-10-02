@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNoBannerLandmark - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNoBannerLandmark_001_violations_basic",
+    "issueId": "WarnNoBannerLandmark",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page missing banner landmark (non-critical warning)",
+    "wcag": "1.3.1, 2.4.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnNoBannerLandmark"
+      data-violation-reason="Page lacks a banner landmark. While not always required, a banner helps screen reader users identify and navigate to site-wide content like logos and global navigation. Without it, users must tab through header content or use other navigation strategies. This is a warning rather than an error because some pages (like single-page applications or embedded content) may not need a banner">
+    <!-- Using div instead of header element - no banner landmark -->
+    <div class="site-header">
+        <div class="logo">
+            <img src="logo.png" alt="Company Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <h1>Our Services</h1>
+
+        <section>
+            <h2>Web Development</h2>
+            <p>
+                We create modern, accessible websites that work for all users. Our development
+                process emphasizes clean code, performance, and adherence to web standards.
+            </p>
+        </section>
+
+        <section>
+            <h2>Accessibility Consulting</h2>
+            <p>
+                Our team can audit your existing website and provide detailed recommendations
+                for improving accessibility. We help you meet WCAG guidelines and create
+                inclusive digital experiences.
+            </p>
+        </section>
+
+        <section>
+            <h2>Training and Support</h2>
+            <p>
+                We offer training sessions for your team on accessibility best practices,
+                WCAG compliance, and how to maintain accessible content over time.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Our Company. All rights reserved.</p>
+        <p>
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a>
+        </p>
+    </footer>
+</body>
+</html>

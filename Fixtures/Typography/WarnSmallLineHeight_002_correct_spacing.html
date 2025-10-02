@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnSmallLineHeight - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnSmallLineHeight_002_correct_spacing",
+    "issueId": "WarnSmallLineHeight",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Text with appropriate line height (1.5 or greater)",
+    "wcag": "1.4.8, 1.4.12",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .readable-text {
+            font-size: 16px;
+            line-height: 1.5; /* WCAG recommended minimum */
+        }
+        .comfortable-paragraph {
+            font-size: 14px;
+            line-height: 1.6; /* Good spacing */
+        }
+        .excellent-spacing {
+            font-size: 18px;
+            line-height: 1.7; /* Excellent readability */
+        }
+    </style>
+</head>
+<body>
+    <h1>Terms and Conditions</h1>
+
+    <main>
+        <!-- Paragraph with line-height 1.5 - CORRECT -->
+        <p class="readable-text"
+           data-expected-pass="true"
+           data-pass-reason="Line height of 1.5 meets WCAG recommendation. Users with dyslexia can read text comfortably. Low vision users can easily track lines. Users with cognitive disabilities experience reduced reading difficulty. Proper spacing improves comprehension for all users">
+            This agreement governs your use of our services. By accessing or using the service, you agree to be bound by these terms. If you do not agree to these terms, you may not use the service. We reserve the right to modify these terms at any time without prior notice.
+        </p>
+
+        <!-- Paragraph with line-height 1.6 - CORRECT -->
+        <section>
+            <h2>Privacy Policy</h2>
+            <p class="comfortable-paragraph"
+               data-expected-pass="true"
+               data-pass-reason="Line height of 1.6 exceeds minimum requirement. Comfortable spacing for users with dyslexia. Low vision users can distinguish lines clearly. Excellent readability for users with cognitive disabilities. Meets and exceeds WCAG accessibility standards">
+                We collect personal information including your name, email address, and usage data. This information is used to provide and improve our services. We do not sell your personal information to third parties. Your data is stored securely using industry-standard encryption methods.
+            </p>
+        </section>
+
+        <!-- Paragraph with line-height 1.7 - CORRECT -->
+        <section>
+            <h2>Liability Disclaimer</h2>
+            <p class="excellent-spacing"
+               data-expected-pass="true"
+               data-pass-reason="Line height of 1.7 provides excellent readability. Optimal spacing for users with dyslexia. Low vision users can easily track between lines. Reduced cognitive load for all readers. Superior accessibility meeting highest standards">
+                The service is provided "as is" without warranties of any kind. We are not liable for any damages arising from your use of the service. This includes direct, indirect, incidental, or consequential damages. Your sole remedy for dissatisfaction is to stop using the service.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

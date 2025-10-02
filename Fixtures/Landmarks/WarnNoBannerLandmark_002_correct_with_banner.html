@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNoBannerLandmark - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNoBannerLandmark_002_correct_with_banner",
+    "issueId": "WarnNoBannerLandmark",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Page with banner landmark using HTML5 header element",
+    "wcag": "1.3.1, 2.4.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <!-- Using header element creates banner landmark automatically -->
+    <header data-expected-pass="true"
+            data-pass-reason="Banner landmark present using HTML5 header element. Screen reader users can quickly navigate to site-wide header content including logo and global navigation. The banner landmark helps users understand page structure and provides a consistent navigation point. This improves orientation and efficiency for assistive technology users">
+        <div class="logo">
+            <img src="logo.png" alt="Company Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Our Services</h1>
+
+        <section>
+            <h2>Web Development</h2>
+            <p>
+                We create modern, accessible websites that work for all users. Our development
+                process emphasizes clean code, performance, and adherence to web standards.
+            </p>
+        </section>
+
+        <section>
+            <h2>Accessibility Consulting</h2>
+            <p>
+                Our team can audit your existing website and provide detailed recommendations
+                for improving accessibility. We help you meet WCAG guidelines and create
+                inclusive digital experiences.
+            </p>
+        </section>
+
+        <section>
+            <h2>Training and Support</h2>
+            <p>
+                We offer training sessions for your team on accessibility best practices,
+                WCAG compliance, and how to maintain accessible content over time.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Our Company. All rights reserved.</p>
+        <p>
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a>
+        </p>
+    </footer>
+</body>
+</html>

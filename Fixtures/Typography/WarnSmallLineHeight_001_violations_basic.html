@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnSmallLineHeight - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnSmallLineHeight_001_violations_basic",
+    "issueId": "WarnSmallLineHeight",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Text with insufficient line height (spacing)",
+    "wcag": "1.4.8, 1.4.12",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .tight-text {
+            font-size: 16px;
+            line-height: 1.0; /* Too small - WCAG recommends 1.5+ */
+        }
+        .cramped-paragraph {
+            font-size: 14px;
+            line-height: 14px; /* 1:1 ratio - too cramped */
+        }
+        .small-spacing {
+            font-size: 18px;
+            line-height: 1.2; /* Below 1.5 minimum */
+        }
+    </style>
+</head>
+<body>
+    <h1>Terms and Conditions</h1>
+
+    <main>
+        <!-- Paragraph with line-height 1.0 - VIOLATION -->
+        <p class="tight-text"
+           data-expected-violation="true"
+           data-violation-id="WarnSmallLineHeight"
+           data-violation-reason="Line height of 1.0 is insufficient. Users with dyslexia struggle with cramped text. Low vision users lose track of lines. Users with cognitive disabilities have difficulty reading. WCAG recommends minimum 1.5 line height for body text">
+            This agreement governs your use of our services. By accessing or using the service, you agree to be bound by these terms. If you do not agree to these terms, you may not use the service. We reserve the right to modify these terms at any time without prior notice.
+        </p>
+
+        <!-- Paragraph with 1:1 line height - VIOLATION -->
+        <section>
+            <h2>Privacy Policy</h2>
+            <p class="cramped-paragraph"
+               data-expected-violation="true"
+               data-violation-id="WarnSmallLineHeight"
+               data-violation-reason="Line height equals font size (1:1 ratio). Text lines touch each other making reading extremely difficult. Users with dyslexia cannot distinguish lines. Low vision users experience significant reading challenges. Fails accessibility best practices for line spacing">
+                We collect personal information including your name, email address, and usage data. This information is used to provide and improve our services. We do not sell your personal information to third parties. Your data is stored securely using industry-standard encryption methods.
+            </p>
+        </section>
+
+        <!-- Paragraph with line-height 1.2 - VIOLATION -->
+        <section>
+            <h2>Liability Disclaimer</h2>
+            <p class="small-spacing"
+               data-expected-violation="true"
+               data-violation-id="WarnSmallLineHeight"
+               data-violation-reason="Line height of 1.2 is below recommended 1.5 minimum. Reduced readability for users with dyslexia. Users with low vision have difficulty tracking lines. Cognitive load increased due to cramped spacing. Does not meet WCAG Level AA recommendations">
+                The service is provided \"as is\" without warranties of any kind. We are not liable for any damages arising from your use of the service. This includes direct, indirect, incidental, or consequential damages. Your sole remedy for dissatisfaction is to stop using the service.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

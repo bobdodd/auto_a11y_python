@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Form Detection</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoFormOnPage_001_discovery_basic",
+    "issueId": "DiscoFormOnPage",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Basic form detected requiring manual accessibility testing",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Us</h1>
+
+    <form>
+        <div>
+            <label for="name">Name *</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div>
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div>
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject">
+        </div>
+
+        <div>
+            <label for="message">Message *</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+
+        <button type="submit">Send Message</button>
+    </form>
+
+    <p><strong>Discovery:</strong> Form detected on this page. Manual testing required to verify:</p>
+    <ul>
+        <li>All fields have proper labels</li>
+        <li>Keyboard navigation works correctly</li>
+        <li>Error messages are accessible</li>
+        <li>Screen reader announcements are clear</li>
+        <li>Required fields are properly indicated</li>
+    </ul>
+</body>
+</html>

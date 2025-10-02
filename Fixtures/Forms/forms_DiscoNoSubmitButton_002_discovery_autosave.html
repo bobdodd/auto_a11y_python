@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Auto-save Form</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "forms_DiscoNoSubmitButton_002_discovery_autosave",
+    "issueId": "forms_DiscoNoSubmitButton",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Form with auto-save behavior instead of explicit submit button",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>User Preferences</h1>
+
+    <form>
+        <h2>Email Notifications</h2>
+
+        <div>
+            <input type="checkbox" id="marketing" name="marketing">
+            <label for="marketing">Marketing emails</label>
+        </div>
+
+        <div>
+            <input type="checkbox" id="updates" name="updates">
+            <label for="updates">Product updates</label>
+        </div>
+
+        <div>
+            <label for="frequency">Email Frequency</label>
+            <select id="frequency" name="frequency">
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+            </select>
+        </div>
+
+        <p><em>Changes are saved automatically</em></p>
+    </form>
+
+    <p><strong>Discovery Issue:</strong> This form uses auto-save instead of explicit submit.
+    While the text indicates changes save automatically, users may be uncertain whether their
+    changes have been saved, especially screen reader users or those with cognitive disabilities.</p>
+
+    <p><strong>Testing Required:</strong> Verify that auto-save is clearly communicated, provides
+    feedback, and that users can undo changes if needed.</p>
+</body>
+</html>

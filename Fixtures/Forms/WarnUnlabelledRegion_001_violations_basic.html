@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Portal - Unlabelled Regions</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnUnlabelledRegion_001_violations_basic",
+    "issueId": "WarnUnlabelledRegion",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Region landmarks lacking accessible names for navigation",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <main>
+        <region data-expected-violation="true"
+                data-violation-id="WarnUnlabelledRegion"
+                data-violation-reason="Region landmark lacks aria-label or aria-labelledby, users navigating by landmarks won't understand its content">
+            <h2>Recent Activity</h2>
+            <ul>
+                <li>Login from new device</li>
+                <li>Password changed</li>
+                <li>Profile updated</li>
+            </ul>
+        </region>
+
+        <region data-expected-violation="true"
+                data-violation-id="WarnUnlabelledRegion"
+                data-violation-reason="Unlabelled region provides no context, screen readers announce only 'region' without description">
+            <h2>Quick Actions</h2>
+            <button>Export Data</button>
+            <button>Change Password</button>
+            <button>View Settings</button>
+        </region>
+    </main>
+
+    <p>Note: Region landmarks need labels to provide context when navigating by landmarks.</p>
+</body>
+</html>

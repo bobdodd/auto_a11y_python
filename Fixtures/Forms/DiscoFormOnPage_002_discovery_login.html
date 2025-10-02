@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Form Detection</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoFormOnPage_002_discovery_login",
+    "issueId": "DiscoFormOnPage",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Login form detected requiring comprehensive security and accessibility testing",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Sign In</h1>
+
+    <form>
+        <div>
+            <label for="username">Username or Email</label>
+            <input type="text" id="username" name="username" autocomplete="username" required>
+        </div>
+
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+        </div>
+
+        <div>
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember">Remember me</label>
+        </div>
+
+        <button type="submit">Sign In</button>
+
+        <p><a href="/forgot-password">Forgot password?</a></p>
+    </form>
+
+    <p><strong>Discovery:</strong> Login form detected. Critical testing required:</p>
+    <ul>
+        <li>Keyboard-only login possible</li>
+        <li>Screen reader can identify all fields</li>
+        <li>Error messages are accessible and helpful</li>
+        <li>Password requirements are announced</li>
+        <li>Success/failure feedback is clear</li>
+        <li>CAPTCHA (if present) has alternatives</li>
+        <li>Autocomplete attributes assist password managers</li>
+    </ul>
+</body>
+</html>

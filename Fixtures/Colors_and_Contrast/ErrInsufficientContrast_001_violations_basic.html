@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInsufficientContrast - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInsufficientContrast_001_violations_basic",
+    "issueId": "ErrInsufficientContrast",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Text with insufficient color contrast ratios",
+    "wcag": "1.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .low-contrast-1 {
+            color: #999999;
+            background: #ffffff;
+        }
+
+        .low-contrast-2 {
+            color: #cccccc;
+            background: #ffffff;
+        }
+
+        .low-contrast-3 {
+            color: #666666;
+            background: #888888;
+        }
+
+        .low-contrast-4 {
+            color: #4da6ff;
+            background: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Insufficient Color Contrast</h1>
+
+    <main>
+        <section>
+            <h2>Light Gray on White</h2>
+            <p class="low-contrast-1"
+               data-expected-violation="true"
+               data-violation-id="ErrInsufficientContrast"
+               data-violation-reason="Text color #999 on #fff has ~2.8:1 contrast ratio, needs 4.5:1 for normal text">
+                This text has insufficient contrast at approximately 2.8:1 ratio.
+            </p>
+        </section>
+
+        <section>
+            <h2>Very Light Gray on White</h2>
+            <p class="low-contrast-2"
+               data-expected-violation="true"
+               data-violation-id="ErrInsufficientContrast"
+               data-violation-reason="Text color #ccc on #fff has ~1.8:1 contrast ratio, severely below 4.5:1 requirement">
+                This text has very low contrast at approximately 1.8:1 ratio.
+            </p>
+        </section>
+
+        <section>
+            <h2>Gray on Gray</h2>
+            <div style="background: #888888; padding: 10px;">
+                <p class="low-contrast-3"
+                   data-expected-violation="true"
+                   data-violation-id="ErrInsufficientContrast"
+                   data-violation-reason="Text color #666 on #888 has ~1.4:1 contrast ratio, needs 4.5:1">
+                    This text has insufficient contrast between gray colors.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Light Blue on Dark Blue</h2>
+            <div style="background: #0066cc; padding: 10px;">
+                <p class="low-contrast-4"
+                   data-expected-violation="true"
+                   data-violation-id="ErrInsufficientContrast"
+                   data-violation-reason="Light blue text on dark blue background has insufficient contrast">
+                    This text has low contrast between blue shades.
+                </p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

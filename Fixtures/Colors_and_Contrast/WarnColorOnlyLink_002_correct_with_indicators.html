@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnColorOnlyLink - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorOnlyLink_002_correct_with_indicators",
+    "issueId": "WarnColorOnlyLink",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Links with visual indicators beyond color (underlines, borders, icons)",
+    "wcag": "1.4.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        a.underlined-link {
+            color: blue;
+            text-decoration: underline;
+        }
+
+        a.bordered-link {
+            color: blue;
+            text-decoration: none;
+            border-bottom: 2px solid blue;
+        }
+
+        .text-content {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Links With Proper Visual Indicators</h1>
+
+    <main>
+        <section>
+            <h2>Link With Underline</h2>
+            <p class="text-content"
+               data-expected-pass="true"
+               data-pass-reason="Links have underline in addition to color">
+                This paragraph contains
+                <a href="/page1" class="underlined-link">a link</a>
+                that uses both color and underline.
+            </p>
+        </section>
+
+        <section>
+            <h2>Link With Border</h2>
+            <p class="text-content"
+               data-expected-pass="true"
+               data-pass-reason="Link has border-bottom as visual indicator beyond color">
+                Check out
+                <a href="/about" class="bordered-link">our company</a>
+                which uses color and a bottom border.
+            </p>
+        </section>
+
+        <section>
+            <h2>Default Browser Link Style</h2>
+            <p class="text-content"
+               data-expected-pass="true"
+               data-pass-reason="Link uses default browser underline styling">
+                For more information, please see
+                <a href="/docs">the documentation</a>.
+                Default links have underlines by default.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

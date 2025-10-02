@@ -1,7 +1,7 @@
 # Fixture Generation Progress
 
 **Last Updated:** 2025-10-01
-**Status:** In Progress - 147 fixtures created across 9 touchpoints
+**Status:** In Progress - Landmarks touchpoint expansion
 
 ## Overview
 
@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 295 files
-- **Issues With Enhanced Fixtures:** 146
+- **Total Enhanced Fixtures Created:** 307 files
+- **Issues With Enhanced Fixtures:** 152
 - **Touchpoints Completed:** 32 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%)
-- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 6%)
-- **Issues Still Needing Fixtures:** 168
+- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 15%)
+- **Issues Still Needing Fixtures:** 162
 
 ## Completed Fixtures by Touchpoint
 
@@ -220,17 +220,23 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 
 **Total:** 4 fixture files
 
-### 🏛️ Landmarks Touchpoint (4/65 issues - 6% complete)
+### 🏛️ Landmarks Touchpoint (10/65 issues - 15% complete)
 
 1. **ErrCompletelyEmptyNavLandmark** - Empty navigation landmarks (2 fixtures)
 2. **ErrBannerLandmarkMayNotBeChildOfAnotherLandmark** - Banner nested in other landmarks (2 fixtures)
 3. **ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark** - Complementary nested in other landmarks (2 fixtures)
 4. **ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark** - Contentinfo nested in other landmarks (2 fixtures)
+5. **ErrBannerLandmarkAccessibleNameIsBlank** - Banner landmarks with blank accessible names (2 fixtures)
+6. **ErrComplementaryLandmarkAccessibleNameIsBlank** - Complementary landmarks with blank accessible names (2 fixtures)
+7. **ErrContentInfoLandmarkAccessibleNameIsBlank** - ContentInfo landmarks with blank accessible names (2 fixtures)
+8. **ErrMainLandmarkAccessibleNameIsBlank** - Main landmarks with blank accessible names (2 fixtures)
+9. **ErrNavigationLandmarkAccessibleNameIsBlank** - Navigation landmarks with blank accessible names (2 fixtures)
+10. **ErrRegionLandmarkAccessibleNameIsBlank** - Region landmarks with blank accessible names (2 fixtures)
 
-**Total:** 8 fixture files
+**Total:** 20 fixture files
 
-#### ⏳ Remaining Issues (61)
-Major gaps: landmark labeling, duplicate landmarks, main/nav/region issues
+#### ⏳ Remaining Issues (55)
+Major gaps: duplicate landmarks, landmark nesting, complementary/contentinfo location restrictions
 
 ### 🎨 Colors and Contrast Touchpoint (4/4 issues - 100% COMPLETE)
 

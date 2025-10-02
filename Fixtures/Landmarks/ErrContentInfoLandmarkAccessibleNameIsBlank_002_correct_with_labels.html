@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentInfo Landmark Proper Accessible Names - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrContentInfoLandmarkAccessibleNameIsBlank_002_correct_with_labels",
+        "issueId": "ErrContentInfoLandmarkAccessibleNameIsBlank",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "ContentInfo landmarks with proper accessible names for distinguishing multiple footer regions",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "High"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>ContentInfo Landmark Proper Accessible Names - Correct</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Article Content</h2>
+            <p>Main article text goes here.</p>
+        </article>
+    </main>
+
+    <div role="contentinfo"
+         aria-label="Main site footer"
+         data-expected-pass="true"
+         data-pass-reason="ContentInfo landmark has descriptive aria-label, screen readers announce 'Main site footer contentinfo' to distinguish from other footer regions">
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+        <nav aria-label="Legal links">
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a> |
+            <a href="/accessibility">Accessibility Statement</a>
+        </nav>
+    </div>
+
+    <footer role="contentinfo"
+            aria-labelledby="contact-heading"
+            data-expected-pass="true"
+            data-pass-reason="ContentInfo landmark references meaningful heading via aria-labelledby, providing clear accessible name for contact footer">
+        <h2 id="contact-heading">Contact Information</h2>
+        <address>
+            <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+            <p>Phone: <a href="tel:+15551234567">(555) 123-4567</a></p>
+            <p>Address: 123 Main Street, Suite 100, City, ST 12345</p>
+        </address>
+    </footer>
+
+    <div role="contentinfo"
+         aria-label="Social media links"
+         data-expected-pass="true"
+         data-pass-reason="ContentInfo landmark has specific aria-label identifying social media footer, helps screen reader users navigate to correct footer section">
+        <h2>Connect With Us</h2>
+        <nav aria-label="Social media">
+            <a href="https://twitter.com/example">Twitter</a>
+            <a href="https://facebook.com/example">Facebook</a>
+            <a href="https://linkedin.com/company/example">LinkedIn</a>
+        </nav>
+    </div>
+
+    <p>This page demonstrates proper labeling of contentinfo landmarks. When multiple contentinfo regions exist (uncommon but possible), each must have a unique, descriptive accessible name to help screen reader users distinguish between them.</p>
+</body>
+</html>

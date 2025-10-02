@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoFieldLabelledUsingAriaLabel - Info Notice</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "InfoFieldLabelledUsingAriaLabel_001_violations_basic",
+    "issueId": "InfoFieldLabelledUsingAriaLabel",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Form fields using aria-label instead of visible label",
+    "wcag": "3.3.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Search and Filter Form</h1>
+
+    <main>
+        <form>
+            <section>
+                <h2>Search</h2>
+
+                <input type="text"
+                       name="search"
+                       aria-label="Search products"
+                       data-expected-violation="true"
+                       data-violation-reason="Form field uses aria-label without visible label. Screen readers announce 'Search products' but sighted users see no label text. Voice control users may struggle to activate field without visible label text to reference. Aria-label not discoverable to all users. While technically accessible, visible labels are preferred. Information note for WCAG 3.3.2 Labels or Instructions - best practice is visible label element">
+            </section>
+
+            <section>
+                <h2>Filter Options</h2>
+
+                <select name="category"
+                        aria-label="Product category"
+                        data-expected-violation="true"
+                        data-violation-reason="Select dropdown uses aria-label without visible label. Screen readers get 'Product category' but sighted users have no visual label. Voice control users may say 'click combobox' instead of category name. Aria-label only announces to screen readers. Not best practice - visible labels benefit all users. Info for WCAG 3.3.2 - visible label element preferred over aria-label">
+                    <option value="">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="books">Books</option>
+                </select>
+            </section>
+
+            <section>
+                <h2>Price Range</h2>
+
+                <input type="number"
+                       name="minprice"
+                       aria-label="Minimum price"
+                       data-expected-violation="true"
+                       data-violation-reason="Number input uses aria-label without visible label. Screen readers announce 'Minimum price' but sighted users see unlabeled field. Voice control commands may not work reliably without visible label text. Aria-label provides accessibility but not optimal. Visible labels help all users including cognitive disabilities. Information note for WCAG 3.3.2 - visible label element is best practice">
+            </section>
+
+            <button type="submit">Apply Filters</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

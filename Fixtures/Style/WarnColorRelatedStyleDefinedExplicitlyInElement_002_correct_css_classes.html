@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnColorRelatedStyleDefinedExplicitlyInElement - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorRelatedStyleDefinedExplicitlyInElement_002_correct_css_classes",
+    "issueId": "WarnColorRelatedStyleDefinedExplicitlyInElement",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Colors defined via CSS classes not inline styles",
+    "wcag": "1.4.3, 1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .special-offer {
+            color: #777777;
+            background-color: #f0f0f0;
+        }
+
+        .premium-features {
+            color: blue;
+            border: 2px solid lightblue;
+        }
+
+        .warning-message {
+            background-color: yellow;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Announcements</h1>
+
+    <main>
+        <section>
+            <h2>Special Offers</h2>
+
+            <p class="special-offer"
+               data-expected-pass="true"
+               data-pass-reason="Color styles defined via CSS class not inline style attribute. Users with custom stylesheets can override colors easily. Users with color blindness can apply their preferred color schemes. Better maintainability and theming flexibility. User style preferences can be applied. Complies with WCAG 1.4.3 Contrast and 1.4.8 Visual Presentation best practices - using CSS classes instead of inline color styles">
+                Limited time offer! Save 20% on all products this weekend only.
+            </p>
+        </section>
+
+        <section>
+            <h2>Product Features</h2>
+
+            <div class="premium-features"
+                 data-expected-pass="true"
+                 data-pass-reason="Color and border-color defined in CSS class not inline on element. CSS classes allow user stylesheets and preferences to work. Users with visual impairments can apply high contrast modes. Supports dark mode and custom themes easily. Enhances accessibility of color customization. Meets WCAG 1.4.3 and 1.4.8 best practices - using CSS classes for styling">
+                <h3>Premium Features</h3>
+                <p>Advanced functionality included at no extra cost.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Status Messages</h2>
+
+            <span class="warning-message"
+                  data-expected-pass="true"
+                  data-pass-reason="Background and text colors defined via CSS class not inline style. CSS classes enable users to apply custom color schemes. Users with dyslexia or color vision deficiency can use preferred color combinations. Improves theme flexibility and user control. User style preferences respected. Complies with WCAG 1.4.3 Contrast and 1.4.8 Visual Presentation - preferring external CSS over inline colors">
+                Warning: Your session will expire soon
+            </span>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

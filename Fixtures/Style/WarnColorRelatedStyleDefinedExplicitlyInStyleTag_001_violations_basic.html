@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnColorRelatedStyleDefinedExplicitlyInStyleTag - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorRelatedStyleDefinedExplicitlyInStyleTag_001_violations_basic",
+    "issueId": "WarnColorRelatedStyleDefinedExplicitlyInStyleTag",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Specific colors hard-coded in style tags",
+    "wcag": "1.4.3, 1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .notification {
+            color: #333333;
+            background-color: #ffffcc;
+        }
+
+        .error-text {
+            color: #cc0000;
+        }
+
+        .success-box {
+            background-color: #00ff00;
+            border-color: #008800;
+        }
+    </style>
+</head>
+<body>
+    <h1>System Messages</h1>
+
+    <main>
+        <section>
+            <h2>Notifications</h2>
+
+            <div class="notification"
+                 data-expected-violation="true"
+                 data-violation-reason="Specific colors hard-coded in style tag using hex values. Makes it harder to implement theme switching or dark mode. Users with custom color preferences can't easily override styles. Hard-coded colors reduce flexibility for accessibility features. Warning for WCAG 1.4.3 Contrast and 1.4.8 Visual Presentation - consider using CSS custom properties (variables) for colors to enable easy theming">
+                <p>You have 3 new messages.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Error Messages</h2>
+
+            <p class="error-text"
+               data-expected-violation="true"
+               data-violation-reason="Red error color hard-coded in style tag. Fixed color values make theme switching difficult. Users who need high contrast can't easily adjust colors. Hard-coded colors don't adapt to user preferences or system settings. Warning for WCAG 1.4.3 and 1.4.8 - use CSS variables to enable flexible color schemes that adapt to user needs">
+                Error: Invalid input detected.
+            </p>
+        </section>
+
+        <section>
+            <h2>Success Confirmation</h2>
+
+            <div class="success-box"
+                 data-expected-violation="true"
+                 data-violation-reason="Green success colors hard-coded in style tag. Fixed colors make it difficult to support dark mode or high contrast mode. Users with color vision deficiencies can't customize colors. Hard-coded values reduce theme flexibility. Warning for WCAG 1.4.3 Contrast and 1.4.8 Visual Presentation - prefer CSS custom properties over hard-coded color values">
+                <p>Your changes have been saved successfully!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoFieldLabelledUsingAriaLabel - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "InfoFieldLabelledUsingAriaLabel_002_correct_visible_labels",
+    "issueId": "InfoFieldLabelledUsingAriaLabel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Form fields with visible label elements",
+    "wcag": "3.3.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Search and Filter Form</h1>
+
+    <main>
+        <form>
+            <section>
+                <h2>Search</h2>
+
+                <label for="search">Search Products:</label>
+                <input type="text"
+                       id="search"
+                       name="search"
+                       data-expected-pass="true"
+                       data-pass-reason="Form field uses visible label element instead of aria-label. Screen readers announce 'Search Products:' and sighted users see same text. Voice control users can say 'click search products' using visible label. Label is discoverable to all users. Visible labels benefit everyone including cognitive disabilities. Best practice for WCAG 3.3.2 Labels or Instructions - visible label element preferred">
+            </section>
+
+            <section>
+                <h2>Filter Options</h2>
+
+                <label for="category">Product Category:</label>
+                <select id="category"
+                        name="category"
+                        data-expected-pass="true"
+                        data-pass-reason="Select dropdown uses visible label element instead of aria-label. Screen readers and sighted users both get 'Product Category:' label. Voice control users can reference visible label text. Label visible to all users not just screen readers. Visible labels improve usability for everyone. Complies with WCAG 3.3.2 best practice - visible label element over aria-label">
+                    <option value="">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="books">Books</option>
+                </select>
+            </section>
+
+            <section>
+                <h2>Price Range</h2>
+
+                <label for="minprice">Minimum Price:</label>
+                <input type="number"
+                       id="minprice"
+                       name="minprice"
+                       data-expected-pass="true"
+                       data-pass-reason="Number input uses visible label element instead of aria-label. Screen readers announce 'Minimum Price:' and sighted users see visible label. Voice control commands work reliably with visible label text. Label provides accessibility and optimal usability. Visible labels help all users including those with cognitive disabilities. Best practice for WCAG 3.3.2 - visible label element is optimal">
+            </section>
+
+            <button type="submit">Apply Filters</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

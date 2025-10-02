@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnModalMissingAriaLabelledby - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnModalMissingAriaLabelledby_002_correct_with_labelledby",
+    "issueId": "WarnModalMissingAriaLabelledby",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Modal dialogs with proper aria-labelledby referencing title",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Dashboard - Correct Usage</h1>
+
+    <main>
+        <p>Click buttons to open accessible modals.</p>
+        <button onclick="document.getElementById('modal3').style.display='block'">Open Confirmation</button>
+        <button onclick="document.getElementById('modal4').style.display='block'">Open Settings</button>
+        <button onclick="document.getElementById('modal5').style.display='block'">Open Alert</button>
+    </main>
+
+    <!-- Modal with aria-labelledby - CORRECT -->
+    <div id="modal3" role="dialog" aria-modal="true" aria-labelledby="modal3-title" style="display:none;"
+         data-expected-pass="true"
+         data-pass-reason="Dialog uses aria-labelledby to reference title heading. Screen readers announce 'Confirm Action dialog' when focus enters">
+        <h2 id="modal3-title">Confirm Action</h2>
+        <p>Are you sure you want to proceed?</p>
+        <button>Yes</button>
+        <button onclick="this.closest('[role=dialog]').style.display='none'">Cancel</button>
+    </div>
+
+    <!-- Modal with aria-labelledby and aria-describedby - CORRECT -->
+    <div id="modal4" role="dialog" aria-modal="true" aria-labelledby="modal4-title" aria-describedby="modal4-desc" style="display:none;"
+         data-expected-pass="true"
+         data-pass-reason="Dialog properly labeled with aria-labelledby referencing title and aria-describedby for description, providing complete context">
+        <h2 id="modal4-title">Settings</h2>
+        <p id="modal4-desc">Customize your preferences</p>
+        <form>
+            <label for="theme2">Theme</label>
+            <select id="theme2">
+                <option>Light</option>
+                <option>Dark</option>
+            </select>
+            <button type="submit">Save</button>
+            <button type="button" onclick="this.closest('[role=dialog]').style.display='none'">Close</button>
+        </form>
+    </div>
+
+    <!-- Modal with aria-labelledby - CORRECT -->
+    <div id="modal5" role="dialog" aria-modal="true" aria-labelledby="modal5-title" style="display:none;"
+         data-expected-pass="true"
+         data-pass-reason="Alert dialog uses aria-labelledby to link to title, ensuring screen readers announce dialog purpose immediately">
+        <h2 id="modal5-title">Important Notice</h2>
+        <p>Your session will expire in 5 minutes.</p>
+        <button onclick="this.closest('[role=dialog]').style.display='none'">OK</button>
+    </div>
+</body>
+</html>

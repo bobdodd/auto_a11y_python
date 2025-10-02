@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrPositiveTabindex - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPositiveTabindex_002_correct_tabindex",
+    "issueId": "ErrPositiveTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Interactive elements using natural DOM order without positive tabindex",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form</h1>
+
+    <main>
+        <form data-expected-pass="true"
+              data-pass-reason="Form uses natural DOM order for tab navigation. No positive tabindex values disrupt focus order. Keyboard users can navigate top-to-bottom in logical sequence. Tab order matches visual layout and reading order. Complies with WCAG 2.4.3 by maintaining predictable focus order. Custom elements that need focus can use tabindex='0' or '-1' without disrupting order">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+            </div>
+
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+            </div>
+
+            <div>
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+
+            <div>
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="4"></textarea>
+            </div>
+
+            <div>
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+
+        <aside>
+            <h2>Contact Information</h2>
+            <p>You can also reach us by phone at (555) 123-4567 or visit our office.</p>
+            <!-- If needed, non-interactive elements can use tabindex="0" to add to tab order -->
+            <!-- or tabindex="-1" to remove from tab order, without breaking focus sequence -->
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Contact Us. All rights reserved.</p>
+    </footer>
+</body>
+</html>

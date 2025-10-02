@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNoFocusIndicator - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoFocusIndicator_001_violations_basic",
+    "issueId": "ErrNoFocusIndicator",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Interactive elements without visible focus indicators",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Removing all focus indicators - VIOLATION */
+        button:focus,
+        a:focus,
+        input:focus {
+            outline: none;
+        }
+
+        .custom-button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-link {
+            color: #0066cc;
+            text-decoration: none;
+            padding: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Dashboard</h1>
+
+    <nav>
+        <a href="/home"
+           class="nav-link"
+           data-expected-violation="true"
+           data-violation-id="ErrNoFocusIndicator"
+           data-violation-reason="Link has outline:none removing focus indicator. Keyboard users cannot see where they are when navigating. Users with low vision cannot track their position. Users with motor impairments who rely on keyboard cannot determine if element has focus. This violates WCAG 2.4.7 Focus Visible">
+            Home
+        </a>
+        <a href="/products" class="nav-link">Products</a>
+        <a href="/contact" class="nav-link">Contact</a>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Product Actions</h2>
+
+            <button class="custom-button"
+                    data-expected-violation="true"
+                    data-violation-id="ErrNoFocusIndicator"
+                    data-violation-reason="Button has outline:none with no alternative focus indicator. Keyboard users cannot tell when button has focus. Makes keyboard navigation impossible for users who cannot use a mouse. Violates WCAG 2.4.7 by removing visible focus indication">
+                Add to Cart
+            </button>
+
+            <button class="custom-button">View Details</button>
+        </section>
+
+        <section>
+            <h2>Search Products</h2>
+            <form>
+                <label for="search">Search:</label>
+                <input type="text"
+                       id="search"
+                       name="search"
+                       data-expected-violation="true"
+                       data-violation-id="ErrNoFocusIndicator"
+                       data-violation-reason="Input field has outline:none removing focus indicator. Users cannot see which form field is active. Keyboard users lose track of their position in the form. Makes form filling difficult for users with cognitive disabilities who need clear visual feedback. Fails WCAG 2.4.7 Focus Visible">
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Product Information</h2>
+            <p>
+                Browse our extensive catalog of products. Use the navigation above to explore
+                different categories or search for specific items.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Our Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

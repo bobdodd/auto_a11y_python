@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Sale - Timed Content Without Controls</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTimersWithoutControls_001_violations_basic",
+    "issueId": "ErrTimersWithoutControls",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Time-based content lacks user controls",
+    "wcag": "2.2.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .sale-banner {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .countdown {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrTimersWithoutControls"
+      data-violation-reason="Page has auto-refreshing content and countdown timer with no user controls to pause, stop, or extend time">
+    <h1>Flash Sale - Limited Time Only!</h1>
+
+    <div class="sale-banner">
+        <h2>Sale Ends In:</h2>
+        <div class="countdown" id="countdown">05:00</div>
+        <p>Hurry! Prices return to normal when timer reaches zero!</p>
+    </div>
+
+    <div id="product-area">
+        <div class="product-card">
+            <h3>Product A</h3>
+            <p>Sale Price: $29.99</p>
+            <button>Add to Cart</button>
+        </div>
+        <div class="product-card">
+            <h3>Product B</h3>
+            <p>Sale Price: $49.99</p>
+            <button>Add to Cart</button>
+        </div>
+    </div>
+
+    <p id="auto-refresh-notice">Page will automatically refresh in <span id="refresh-timer">30</span> seconds to show latest inventory.</p>
+
+    <script>
+        // Countdown timer with no controls
+        let timeLeft = 300; // 5 minutes
+        const countdownEl = document.getElementById('countdown');
+
+        setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            if (timeLeft <= 0) {
+                alert('Sale has ended! Prices have been updated.');
+                window.location.reload();
+            }
+        }, 1000);
+
+        // Auto-refresh timer with no controls
+        let refreshTime = 30;
+        const refreshTimerEl = document.getElementById('refresh-timer');
+
+        setInterval(() => {
+            refreshTime--;
+            refreshTimerEl.textContent = refreshTime;
+
+            if (refreshTime <= 0) {
+                window.location.reload();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

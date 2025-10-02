@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Sale - Controllable Timed Content</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTimersWithoutControls_002_correct_with_controls",
+    "issueId": "ErrTimersWithoutControls",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Time-based content with user controls to pause and extend",
+    "wcag": "2.2.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .sale-banner {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .countdown {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .timer-controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .timer-controls button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background: white;
+            color: #ee5a24;
+            border: 2px solid white;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            display: inline-block;
+        }
+        .refresh-control {
+            background: #f0f0f0;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="All timed content includes user controls to pause, resume, and extend time limits">
+    <h1>Flash Sale - Limited Time Only!</h1>
+
+    <div class="sale-banner">
+        <h2>Sale Ends In:</h2>
+        <div class="countdown" id="countdown">05:00</div>
+
+        <div class="timer-controls">
+            <button id="pauseBtn" type="button">Pause Timer</button>
+            <button id="extendBtn" type="button">Extend Time (+5 min)</button>
+        </div>
+
+        <p>Use the controls above to manage the countdown timer.</p>
+    </div>
+
+    <div id="product-area">
+        <div class="product-card">
+            <h3>Product A</h3>
+            <p>Sale Price: $29.99</p>
+            <button>Add to Cart</button>
+        </div>
+        <div class="product-card">
+            <h3>Product B</h3>
+            <p>Sale Price: $49.99</p>
+            <button>Add to Cart</button>
+        </div>
+    </div>
+
+    <div class="refresh-control">
+        <p>Page can refresh to show latest inventory in <span id="refresh-timer">30</span> seconds.</p>
+        <button id="cancelRefreshBtn" type="button">Cancel Auto-Refresh</button>
+        <button id="refreshNowBtn" type="button">Refresh Now</button>
+    </div>
+
+    <script>
+        // Countdown timer with controls
+        let timeLeft = 300; // 5 minutes
+        let isPaused = false;
+        const countdownEl = document.getElementById('countdown');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const extendBtn = document.getElementById('extendBtn');
+
+        function updateCountdownDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        setInterval(() => {
+            if (!isPaused && timeLeft > 0) {
+                timeLeft--;
+                updateCountdownDisplay();
+
+                if (timeLeft <= 0) {
+                    alert('Sale has ended! Prices have been updated.');
+                }
+            }
+        }, 1000);
+
+        pauseBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            pauseBtn.textContent = isPaused ? 'Resume Timer' : 'Pause Timer';
+        });
+
+        extendBtn.addEventListener('click', () => {
+            timeLeft += 300; // Add 5 minutes
+            updateCountdownDisplay();
+            alert('Timer extended by 5 minutes!');
+        });
+
+        // Auto-refresh with controls
+        let refreshTime = 30;
+        let refreshCancelled = false;
+        let refreshIntervalId;
+        const refreshTimerEl = document.getElementById('refresh-timer');
+        const cancelRefreshBtn = document.getElementById('cancelRefreshBtn');
+        const refreshNowBtn = document.getElementById('refreshNowBtn');
+
+        refreshIntervalId = setInterval(() => {
+            if (!refreshCancelled) {
+                refreshTime--;
+                refreshTimerEl.textContent = refreshTime;
+
+                if (refreshTime <= 0) {
+                    window.location.reload();
+                }
+            }
+        }, 1000);
+
+        cancelRefreshBtn.addEventListener('click', () => {
+            refreshCancelled = true;
+            clearInterval(refreshIntervalId);
+            refreshTimerEl.textContent = 'cancelled';
+            cancelRefreshBtn.disabled = true;
+            alert('Auto-refresh has been cancelled.');
+        });
+
+        refreshNowBtn.addEventListener('click', () => {
+            window.location.reload();
+        });
+    </script>
+</body>
+</html>

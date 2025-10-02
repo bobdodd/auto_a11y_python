@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Locator - Accessible Map</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDivMapMissingAttributes_002_correct_with_aria",
+    "issueId": "ErrDivMapMissingAttributes",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Map container with proper accessibility attributes",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        #map {
+            width: 100%;
+            height: 400px;
+            background: #e0e0e0;
+            border: 1px solid #ccc;
+        }
+        .location-list {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find Our Store</h1>
+
+    <p>Use the interactive map below to find our nearest location:</p>
+
+    <div id="map"
+         role="application"
+         aria-label="Interactive map showing store locations"
+         aria-describedby="map-description"
+         tabindex="0"
+         data-expected-pass="true"
+         data-pass-reason="Map has proper ARIA role, label, description, and is keyboard focusable">
+    </div>
+
+    <div id="map-description" class="sr-only">
+        Interactive map with store locations. Use arrow keys to navigate map. Press Enter on markers to view store details.
+    </div>
+
+    <div class="location-list">
+        <h2>Store Locations (Text Alternative)</h2>
+        <ul>
+            <li>
+                <strong>Downtown Store</strong><br>
+                123 Main Street, City, State 12345<br>
+                <button onclick="alert('Showing downtown store on map')">Show on map</button>
+            </li>
+            <li>
+                <strong>Westside Store</strong><br>
+                456 Oak Avenue, City, State 12346<br>
+                <button onclick="alert('Showing westside store on map')">Show on map</button>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // Simulated map initialization
+        const map = document.getElementById('map');
+        map.innerHTML = '<p style="padding: 20px;">Interactive map would load here with full keyboard support</p>';
+
+        // Add keyboard-accessible marker
+        const marker = document.createElement('button');
+        marker.textContent = '📍';
+        marker.setAttribute('aria-label', 'Downtown Store at 123 Main Street');
+        marker.style.cssText = 'font-size: 2em; position: absolute; top: 50%; left: 50%; background: none; border: none; cursor: pointer;';
+        marker.onclick = () => alert('Store Location: 123 Main St');
+        map.style.position = 'relative';
+        map.appendChild(marker);
+
+        // Keyboard navigation for map
+        map.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+                e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                console.log('Map navigation:', e.key);
+            }
+        });
+    </script>
+
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</body>
+</html>

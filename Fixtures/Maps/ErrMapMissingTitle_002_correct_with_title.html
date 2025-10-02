@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Location Map</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMapMissingTitle_002_correct_with_title",
+    "issueId": "ErrMapMissingTitle",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Map iframe with descriptive title attribute",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Us</h1>
+
+    <h2>Our Location</h2>
+    <p>Visit us at our office in downtown:</p>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Map iframe has descriptive title attribute identifying location shown">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18..."
+                width="600"
+                height="450"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                title="Google Maps showing Example Company office at 123 Main Street, City, State">
+        </iframe>
+    </div>
+
+    <address>
+        Example Company<br>
+        123 Main Street<br>
+        City, State 12345<br>
+        <a href="mailto:info@example.com">info@example.com</a>
+    </address>
+</body>
+</html>

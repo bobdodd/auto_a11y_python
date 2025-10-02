@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - Clear Single Labels</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFieldLabelledByMultipleElements_002_correct_simple_labels",
+    "issueId": "WarnFieldLabelledByMultipleElements",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Fields with simple, clear single labels or aria-describedby for help text",
+    "wcag": "3.3.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Account Setup</h1>
+
+    <form>
+        <div data-expected-pass="true"
+             data-pass-reason="Username field has single clear label element, easy to understand">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Password uses single label plus aria-describedby for help text, proper separation of label and description">
+            <label for="password">Password (required)</label>
+            <input type="password" id="password" name="password"
+                   aria-describedby="pwd-help" required>
+            <span id="pwd-help">Must be 8+ characters and include numbers</span>
+        </div>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p>Best practice: Use a single clear label element, and aria-describedby for
+    additional help text or instructions.</p>
+</body>
+</html>

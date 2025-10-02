@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Page - Complex Forms</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoFormPage_002_discovery_complex",
+    "issueId": "DiscoFormPage",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Page with complex multi-step forms requiring thorough manual testing",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Checkout</h1>
+
+    <form aria-label="Billing information">
+        <h2>Step 1: Billing Information</h2>
+
+        <fieldset>
+            <legend>Name</legend>
+            <div>
+                <label for="first-name">First Name</label>
+                <input type="text" id="first-name" name="first-name" required>
+            </div>
+            <div>
+                <label for="last-name">Last Name</label>
+                <input type="text" id="last-name" name="last-name" required>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Address</legend>
+            <div>
+                <label for="street">Street Address</label>
+                <input type="text" id="street" name="street" required>
+            </div>
+            <div>
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+            <div>
+                <label for="state">State</label>
+                <select id="state" name="state" required>
+                    <option value="">Select a state</option>
+                    <option value="CA">California</option>
+                    <option value="NY">New York</option>
+                    <option value="TX">Texas</option>
+                </select>
+            </div>
+            <div>
+                <label for="zip">ZIP Code</label>
+                <input type="text" id="zip" name="zip" pattern="[0-9]{5}" required>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Payment Method</legend>
+            <div>
+                <input type="radio" id="card" name="payment" value="card" checked>
+                <label for="card">Credit/Debit Card</label>
+            </div>
+            <div>
+                <input type="radio" id="paypal" name="payment" value="paypal">
+                <label for="paypal">PayPal</label>
+            </div>
+        </fieldset>
+
+        <button type="submit">Continue to Payment</button>
+    </form>
+
+    <p><strong>Testing Notes:</strong> This complex form includes fieldsets, radio groups,
+    select dropdowns, and pattern validation. Manual testing should verify proper keyboard
+    navigation order, screen reader announcements, error handling, and validation messages.</p>
+</body>
+</html>

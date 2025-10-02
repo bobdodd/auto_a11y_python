@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Dialog - Missing aria-labelledby</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnModalMissingAriaLabelledby_001_violations_basic",
+    "issueId": "WarnModalMissingAriaLabelledby",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Modal dialogs without aria-labelledby referencing their headings",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal.show { display: block; }
+        .modal-content { background: white; margin: 15% auto; padding: 20px; width: 50%; border-radius: 5px; }
+        .close { float: right; font-size: 28px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Settings Page</h1>
+
+    <button onclick="openModal('confirm')">Delete Account</button>
+    <button onclick="openModal('terms')">View Terms</button>
+
+    <div class="modal" id="confirm-modal" role="dialog"
+         data-expected-violation="true"
+         data-violation-id="WarnModalMissingAriaLabelledby"
+         data-violation-reason="Modal lacks aria-labelledby pointing to its heading, screen readers won't announce context">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('confirm')">&times;</span>
+            <h2 id="confirm-title">Confirm Account Deletion</h2>
+            <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+            <button>Cancel</button>
+            <button>Delete</button>
+        </div>
+    </div>
+
+    <div class="modal" id="terms-modal" role="dialog"
+         data-expected-violation="true"
+         data-violation-id="WarnModalMissingAriaLabelledby"
+         data-violation-reason="Terms modal lacks aria-labelledby, users won't hear 'Terms of Service' announced when opened">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('terms')">&times;</span>
+            <h2 id="terms-title">Terms of Service</h2>
+            <p>By using this service, you agree to our terms and conditions...</p>
+            <button>Accept</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) { document.getElementById(id + '-modal').classList.add('show'); }
+        function closeModal(id) { document.getElementById(id + '-modal').classList.remove('show'); }
+    </script>
+</body>
+</html>

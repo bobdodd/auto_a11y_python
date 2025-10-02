@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnContentinfoLandmarkAccessibleNameUsesContentinfo - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnContentinfoLandmarkAccessibleNameUsesContentinfo_001_violations_basic",
+    "issueId": "WarnContentinfoLandmarkAccessibleNameUsesContentinfo",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Contentinfo landmarks with redundant 'contentinfo' in labels",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Contentinfo Landmark Redundant Labeling Test</h1>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here.</p>
+    </main>
+
+    <!-- Contentinfo with "contentinfo" in label -->
+    <footer role="contentinfo"
+            aria-label="Contentinfo"
+            data-expected-violation="true"
+            data-violation-id="WarnContentinfoLandmarkAccessibleNameUsesContentinfo"
+            data-violation-reason="Contentinfo landmark label uses generic term 'Contentinfo'. Screen readers will announce 'Contentinfo contentinfo', which is redundant">
+        <p>&copy; 2024 Company</p>
+    </footer>
+
+    <!-- Another example with "contentinfo" in different case -->
+    <div role="contentinfo"
+         aria-label="Content Info Section"
+         data-expected-violation="true"
+         data-violation-id="WarnContentinfoLandmarkAccessibleNameUsesContentinfo"
+         data-violation-reason="Contentinfo landmark label contains 'Content Info' which is redundant with the landmark role. Avoid using the landmark type in its label">
+        <p>Contact: info@example.com</p>
+    </div>
+
+    <!-- Contentinfo with redundant term -->
+    <footer role="contentinfo"
+            aria-label="Page contentinfo area"
+            data-expected-violation="true"
+            data-violation-id="WarnContentinfoLandmarkAccessibleNameUsesContentinfo"
+            data-violation-reason="Contentinfo landmark label unnecessarily includes the word 'contentinfo'. This creates redundant announcements for screen reader users">
+        <p>Footer information</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnContentinfoLandmarkAccessibleNameUsesContentinfo - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnContentinfoLandmarkAccessibleNameUsesContentinfo_002_correct_descriptive_labels",
+    "issueId": "WarnContentinfoLandmarkAccessibleNameUsesContentinfo",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Contentinfo landmarks with descriptive labels that avoid redundancy",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Contentinfo Landmarks With Descriptive Labels - Correct Usage</h1>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here.</p>
+    </main>
+
+    <!-- Contentinfo with descriptive label - CORRECT -->
+    <footer role="contentinfo"
+            aria-label="Site footer"
+            data-expected-pass="true"
+            data-pass-reason="Contentinfo landmark uses descriptive label 'Site footer' that describes purpose without redundantly using the word 'contentinfo'">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+    </footer>
+
+    <!-- Contentinfo without label (relies on implicit role) - CORRECT -->
+    <footer role="contentinfo"
+            data-expected-pass="true"
+            data-pass-reason="Contentinfo landmark has no aria-label, relying on implicit footer role. This avoids redundancy and lets screen readers announce just 'contentinfo' or 'footer'">
+        <nav aria-label="Footer navigation">
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+        </nav>
+        <p>Contact: info@example.com</p>
+    </footer>
+
+    <!-- Contentinfo with purpose-based label - CORRECT -->
+    <div role="contentinfo"
+         aria-label="Legal and copyright information"
+         data-expected-pass="true"
+         data-pass-reason="Contentinfo landmark has clear, descriptive label that identifies its specific content without redundantly mentioning 'contentinfo'">
+        <p>&copy; 2024 Company</p>
+        <p>All trademarks are property of their respective owners.</p>
+    </div>
+</body>
+</html>

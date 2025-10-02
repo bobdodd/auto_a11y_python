@@ -125,6 +125,28 @@ An error code test is **only enabled in production** if:
 
 If ANY fixture fails, the entire error code is disabled.
 
+### AI_ Prefixed Tests (Partially Implemented)
+
+**Note:** AI_ prefixed error codes (e.g., `AI_ErrAccordionWithoutARIA`, `AI_WarnProblematicAnimation`) test AI-detected accessibility issues using Claude AI analysis.
+
+**Implementation Status:**
+- ✅ 182 AI_ fixtures exist in the repository (91 unique error codes)
+- ✅ 20 AI_ error codes are implemented in the Claude analyzer
+- ⚠️ 71 AI_ error codes have fixtures but no implementation yet
+- ⚠️ Most AI_ fixtures will fail until their corresponding analyzers are implemented
+
+**Currently Implemented AI_ Tests:**
+- `AI_ErrAccordionWithoutARIA`, `AI_ErrCarouselWithoutARIA`, `AI_ErrClickableWithoutKeyboard`
+- `AI_ErrDialogWithoutARIA`, `AI_ErrDropdownWithoutARIA`, `AI_ErrEmptyHeading`
+- `AI_ErrHeadingLevelMismatch`, `AI_ErrInteractiveElementIssue`, `AI_ErrMenuWithoutARIA`
+- `AI_ErrModalFocusTrap`, `AI_ErrNonSemanticButton`, `AI_ErrReadingOrderMismatch`
+- `AI_ErrSkippedHeading`, `AI_ErrTabsWithoutARIA`, `AI_ErrToggleWithoutState`
+- `AI_ErrVisualHeadingNotMarked`, `AI_WarnMixedLanguage`, `AI_WarnProblematicAnimation`
+- `AI_WarnTooltipIssue`, `AI_InfoVisualCue`
+
+**Running AI Tests:**
+AI analysis requires an API key and incurs costs. Configure via `RUN_AI_ANALYSIS` in config. AI tests have a 60-second timeout (vs 30s for regular tests).
+
 ### Why This Matters
 
 Consider `ErrNoAltText` with two fixtures:

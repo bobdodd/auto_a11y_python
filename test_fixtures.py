@@ -142,18 +142,27 @@ class FixtureTestRunner:
             
             # Run tests on the fixture with timeout
             print("   Running accessibility tests...")
+
             # Get the page object
             page_obj = self.db.get_page(page_id)
-            
+
             try:
-                # Add a timeout of 30 seconds per fixture
+                # Determine if AI analysis should run
+                # Run AI analysis for AI_ prefixed tests
+                run_ai = expected_code.startswith("AI_")
+
+                if run_ai:
+                    print("   🤖 Running with AI analysis enabled...")
+
+                # Add a timeout of 30 seconds per fixture (60s for AI tests)
+                timeout = 60.0 if run_ai else 30.0
                 test_result = await asyncio.wait_for(
                     self.test_runner.test_page(
                         page=page_obj,
                         take_screenshot=False,
-                        run_ai_analysis=expected_code.startswith("AI_")  # Run AI for AI_ prefixed tests
+                        run_ai_analysis=run_ai
                     ),
-                    timeout=30.0
+                    timeout=timeout
                 )
             except asyncio.TimeoutError:
                 print("   ⏱️  Test timed out after 30 seconds")

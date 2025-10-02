@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Landmark Single Labeling Method - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method",
+        "issueId": "ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 4,
+        "description": "Navigation landmarks using only one labeling method (aria-label OR aria-labelledby, not both)",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Navigation Landmark Single Labeling Method - Correct</h1>
+
+        <nav aria-label="Main navigation"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark uses only aria-label for accessible name, clear and unambiguous labeling method">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <nav aria-label="User account"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark uses only aria-label, single clear labeling method without conflicting attributes">
+            <ul>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <li><a href="/cart">Cart</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Complete Accessibility Guide</h2>
+            <p>Learn best practices for creating accessible navigation landmarks.</p>
+
+            <nav aria-labelledby="toc-heading"
+                 data-expected-pass="true"
+                 data-pass-reason="Navigation landmark uses only aria-labelledby to reference visible heading, provides clear accessible name without ambiguity">
+                <h3 id="toc-heading">Table of Contents</h3>
+                <ul>
+                    <li><a href="#introduction">Introduction</a></li>
+                    <li><a href="#wcag">WCAG Guidelines</a></li>
+                    <li><a href="#testing">Testing Strategies</a></li>
+                    <li><a href="#tools">Testing Tools</a></li>
+                    <li><a href="#resources">Additional Resources</a></li>
+                </ul>
+            </nav>
+
+            <section id="introduction">
+                <h3>Introduction</h3>
+                <p>Content about web accessibility...</p>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <nav aria-labelledby="footer-nav-heading"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark uses only aria-labelledby referencing heading, single clear labeling method">
+            <h3 id="footer-nav-heading">Legal & Support</h3>
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/accessibility">Accessibility Statement</a></li>
+                <li><a href="/help">Help Center</a></li>
+                <li><a href="/sitemap">Site Map</a></li>
+            </ul>
+        </nav>
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+    </footer>
+
+    <hr>
+
+    <p><strong>Best Practice:</strong> Use aria-label when you need a label but don't have a visible heading for the navigation. Use aria-labelledby when you have a visible heading that describes the navigation. Never use both attributes on the same element.</p>
+</body>
+</html>

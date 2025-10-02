@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Navigation Landmarks - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrNestedNavLandmarks_001_violations_basic",
+        "issueId": "ErrNestedNavLandmarks",
+        "expectedViolationCount": 2,
+        "expectedPassCount": 0,
+        "description": "Navigation landmarks incorrectly nested inside other navigation landmarks",
+        "wcag": "1.3.1",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Nested Navigation Landmarks - Violations</h1>
+
+        <nav aria-label="Main navigation"
+             data-expected-violation="true"
+             data-violation-id="ErrNestedNavLandmarks"
+             data-violation-reason="Navigation landmark contains another nested navigation landmark, creating confusing navigation hierarchy">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/products">Products</a></li>
+            </ul>
+
+            <nav aria-label="User account"
+                 data-expected-violation="true"
+                 data-violation-id="ErrNestedNavLandmarks"
+                 data-violation-reason="Navigation landmark is nested inside another nav landmark. This creates ambiguous hierarchy and confuses screen reader landmark navigation">
+                <ul>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/cart">Cart</a></li>
+                </ul>
+            </nav>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding Navigation Nesting Issues</h2>
+            <p>Navigation landmarks should not be nested inside other navigation landmarks. Each nav should be a distinct, top-level navigation region.</p>
+            <p>Nested navigation creates confusion about the navigation hierarchy and makes it difficult for screen reader users to understand the relationship between navigation sections.</p>
+        </article>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p>Keep navigation landmarks at the same hierarchical level. Use lists and headings within a single nav to organize links, not nested nav elements.</p>
+    </footer>
+</body>
+</html>

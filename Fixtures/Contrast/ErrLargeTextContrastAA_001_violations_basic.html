@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLargeTextContrastAA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLargeTextContrastAA_001_violations_basic",
+    "issueId": "ErrLargeTextContrastAA",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Large text with insufficient contrast below AA standard",
+    "wcag": "1.4.3",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .large-low-contrast-gray {
+            font-size: 24px;
+            font-weight: normal;
+            color: #8a8a8a;
+            background: #ffffff;
+            /* Large text, contrast ratio: 2.9:1 - below 3:1 requirement */
+        }
+
+        .large-low-contrast-blue {
+            font-size: 18px;
+            font-weight: bold;
+            color: #6fa8dc;
+            background: #ffffff;
+            /* Large bold text, contrast ratio: 2.5:1 - below 3:1 requirement */
+        }
+
+        .large-low-contrast-red {
+            font-size: 28px;
+            font-weight: normal;
+            color: #cc7a7a;
+            background: #ffffff;
+            /* Large text, contrast ratio: 2.7:1 - below 3:1 requirement */
+        }
+    </style>
+</head>
+<body>
+    <h1>Marketing Campaign</h1>
+
+    <main>
+        <section>
+            <h2 class="large-low-contrast-gray"
+                data-expected-violation="true"
+                data-violation-id="ErrLargeTextContrastAA"
+                data-violation-reason="Large text (24px) has 2.9:1 contrast ratio, below WCAG AA requirement of 3:1 for large text. While lower contrast is acceptable for large text, this still fails minimum standard. Users with low vision struggle to read this heading. Light gray on white is insufficient even for large text. Violates WCAG 1.4.3 Contrast (Minimum) for large text">
+                Summer Sale Event
+            </h2>
+
+            <p>Save up to 50% on select items during our annual summer clearance event.</p>
+        </section>
+
+        <section>
+            <h2>Featured Offer</h2>
+
+            <p class="large-low-contrast-blue"
+               data-expected-violation="true"
+               data-violation-id="ErrLargeTextContrastAA"
+               data-violation-reason="Large bold text (18px bold = large text) has 2.5:1 contrast ratio, below 3:1 minimum. Light blue on white background fails even relaxed large text requirement. Users with low vision cannot easily distinguish this promotional text. Insufficient contrast makes call-to-action less effective and inaccessible. Fails WCAG 1.4.3 by not meeting large text contrast threshold">
+                Buy 2, Get 1 Free on All Electronics!
+            </p>
+
+            <p>Limited time offer. Shop now to take advantage of this incredible deal.</p>
+        </section>
+
+        <section>
+            <h2>Important Notice</h2>
+
+            <div class="large-low-contrast-red"
+                 data-expected-violation="true"
+                 data-violation-id="ErrLargeTextContrastAA"
+                 data-violation-reason="Large text (28px) has 2.7:1 contrast ratio, failing 3:1 requirement for large text. Light red on white is particularly problematic for users with color vision deficiencies. Low vision users cannot read this important notice. Despite large size, contrast is too low for accessibility. Violates WCAG 1.4.3 Contrast (Minimum) for large text">
+                Sale ends Sunday at midnight!
+            </div>
+        </section>
+
+        <section>
+            <h2>Terms and Conditions</h2>
+            <p>
+                Offer valid while supplies last. Cannot be combined with other promotions.
+                See store for complete details.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Retail Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

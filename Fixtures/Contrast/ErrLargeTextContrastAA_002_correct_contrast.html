@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLargeTextContrastAA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLargeTextContrastAA_002_correct_contrast",
+    "issueId": "ErrLargeTextContrastAA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Large text with sufficient AA contrast",
+    "wcag": "1.4.3",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .large-good-contrast-gray {
+            font-size: 24px;
+            font-weight: normal;
+            color: #595959;
+            background: #ffffff;
+            /* Large text, contrast ratio: 7.0:1 - exceeds 3:1 requirement */
+        }
+
+        .large-good-contrast-blue {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0056b3;
+            background: #ffffff;
+            /* Large bold text, contrast ratio: 8.2:1 - exceeds 3:1 requirement */
+        }
+
+        .large-good-contrast-red {
+            font-size: 28px;
+            font-weight: normal;
+            color: #c41e1e;
+            background: #ffffff;
+            /* Large text, contrast ratio: 7.6:1 - exceeds 3:1 requirement */
+        }
+    </style>
+</head>
+<body>
+    <h1>Marketing Campaign</h1>
+
+    <main>
+        <section>
+            <h2 class="large-good-contrast-gray"
+                data-expected-pass="true"
+                data-pass-reason="Large text (24px) has 7.0:1 contrast ratio, well exceeding WCAG AA requirement of 3:1 for large text. Dark gray on white provides excellent readability. Users with low vision can easily read this heading. High contrast ensures accessibility for users with various vision impairments. Complies with WCAG 1.4.3 and exceeds AAA level (4.5:1) for large text">
+                Summer Sale Event
+            </h2>
+
+            <p>Save up to 50% on select items during our annual summer clearance event.</p>
+        </section>
+
+        <section>
+            <h2>Featured Offer</h2>
+
+            <p class="large-good-contrast-blue"
+               data-expected-pass="true"
+               data-pass-reason="Large bold text (18px bold = large text) has 8.2:1 contrast ratio, far exceeding 3:1 minimum. Dark blue on white background provides strong contrast. Users with low vision can clearly see this promotional text. Excellent contrast makes call-to-action effective and accessible. Meets WCAG 1.4.3 at AAA level for large text">
+                Buy 2, Get 1 Free on All Electronics!
+            </p>
+
+            <p>Limited time offer. Shop now to take advantage of this incredible deal.</p>
+        </section>
+
+        <section>
+            <h2>Important Notice</h2>
+
+            <div class="large-good-contrast-red"
+                 data-expected-pass="true"
+                 data-pass-reason="Large text (28px) has 7.6:1 contrast ratio, significantly exceeding 3:1 requirement. Dark red on white provides strong visibility. Users with color vision deficiencies can read this important notice. Low vision users benefit from high contrast. Strong contrast ensures message reaches all users. Complies with WCAG 1.4.3 at AAA level for large text">
+                Sale ends Sunday at midnight!
+            </div>
+        </section>
+
+        <section>
+            <h2>Terms and Conditions</h2>
+            <p>
+                Offer valid while supplies last. Cannot be combined with other promotions.
+                See store for complete details.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Retail Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

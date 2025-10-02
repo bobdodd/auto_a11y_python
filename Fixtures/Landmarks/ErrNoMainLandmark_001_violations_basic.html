@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNoMainLandmark - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoMainLandmark_001_violations_basic",
+    "issueId": "ErrNoMainLandmark",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page missing main landmark for primary content",
+    "wcag": "1.3.1, 2.4.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrNoMainLandmark"
+      data-violation-reason="Page has no main landmark. Screen reader users cannot quickly navigate to primary content. Users must tab through all navigation and header content to reach main content. No way to skip directly to page's main purpose. Screen readers provide landmark navigation, but without main landmark, users lose this critical functionality. Violates WCAG 1.3.1 by missing semantic structure and 2.4.1 by lacking bypass mechanism">
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="Company Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Using div instead of main element - VIOLATION -->
+    <div class="content">
+        <h1>Our Services</h1>
+
+        <section>
+            <h2>Web Development</h2>
+            <p>
+                We create modern, responsive websites that work across all devices.
+                Our team specializes in accessible design and clean, maintainable code.
+            </p>
+        </section>
+
+        <section>
+            <h2>Consulting</h2>
+            <p>
+                Our accessibility experts can audit your website and provide detailed
+                recommendations for improving compliance with WCAG standards.
+            </p>
+        </section>
+
+        <section>
+            <h2>Training</h2>
+            <p>
+                We offer training sessions for your development team on accessibility
+                best practices, WCAG guidelines, and inclusive design principles.
+            </p>
+        </section>
+    </div>
+
+    <aside class="sidebar">
+        <h2>Related Links</h2>
+        <ul>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/faq">FAQ</a></li>
+        </ul>
+    </aside>
+
+    <footer>
+        <p>&copy; 2024 Our Company. All rights reserved.</p>
+        <nav>
+            <a href="/privacy">Privacy</a> |
+            <a href="/terms">Terms</a>
+        </nav>
+    </footer>
+</body>
+</html>

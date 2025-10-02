@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNoMainLandmark - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoMainLandmark_002_correct_with_main",
+    "issueId": "ErrNoMainLandmark",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Page with main landmark for primary content",
+    "wcag": "1.3.1, 2.4.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="Company Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Using main element creates main landmark - CORRECT -->
+    <main data-expected-pass="true"
+          data-pass-reason="Page has main landmark using HTML5 main element. Screen reader users can navigate directly to primary content using landmark navigation. Users can skip repetitive header and navigation content. ARIA landmark regions provide efficient navigation structure. Screen readers announce 'main region' and users can jump to it with single keystroke. Complies with WCAG 1.3.1 by providing semantic structure and 2.4.1 by enabling bypass of repeated content">
+        <h1>Our Services</h1>
+
+        <section>
+            <h2>Web Development</h2>
+            <p>
+                We create modern, responsive websites that work across all devices.
+                Our team specializes in accessible design and clean, maintainable code.
+            </p>
+        </section>
+
+        <section>
+            <h2>Consulting</h2>
+            <p>
+                Our accessibility experts can audit your website and provide detailed
+                recommendations for improving compliance with WCAG standards.
+            </p>
+        </section>
+
+        <section>
+            <h2>Training</h2>
+            <p>
+                We offer training sessions for your development team on accessibility
+                best practices, WCAG guidelines, and inclusive design principles.
+            </p>
+        </section>
+    </main>
+
+    <aside class="sidebar">
+        <h2>Related Links</h2>
+        <ul>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/faq">FAQ</a></li>
+        </ul>
+    </aside>
+
+    <footer>
+        <p>&copy; 2024 Our Company. All rights reserved.</p>
+        <nav>
+            <a href="/privacy">Privacy</a> |
+            <a href="/terms">Terms</a>
+        </nav>
+    </footer>
+</body>
+</html>

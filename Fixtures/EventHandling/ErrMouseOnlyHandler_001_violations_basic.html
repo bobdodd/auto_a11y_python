@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Content - Mouse-Only Events</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_001_violations_basic",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Interactive functionality only available through mouse events",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Dashboard</h1>
+
+    <div class="dropdown"
+         data-expected-violation="true"
+         data-violation-id="ErrMouseOnlyHandler"
+         data-violation-reason="Dropdown only opens on mouseover, keyboard users cannot access menu">
+        <span id="dropdown-trigger">Menu</span>
+        <div class="dropdown-content" id="dropdown-menu">
+            <a href="#profile">Profile</a>
+            <a href="#settings">Settings</a>
+            <a href="#logout">Logout</a>
+        </div>
+    </div>
+
+    <p>Hover over the
+        <span class="tooltip"
+              data-expected-violation="true"
+              data-violation-id="ErrMouseOnlyHandler"
+              data-violation-reason="Tooltip only appears on mouseover, keyboard users cannot see help text">
+            underlined text
+            <span class="tooltip-text" id="tooltip">Additional information appears here</span>
+        </span>
+        for more information.
+    </p>
+
+    <div data-expected-violation="true"
+         data-violation-id="ErrMouseOnlyHandler"
+         data-violation-reason="Double-click event has no keyboard equivalent, functionality unavailable to keyboard users">
+        <p id="editable-text">Double-click this text to edit it</p>
+    </div>
+
+    <script>
+        // Mouse-only dropdown
+        const dropdown = document.getElementById('dropdown-trigger');
+        const menu = document.getElementById('dropdown-menu');
+        dropdown.addEventListener('mouseover', () => {
+            menu.style.display = 'block';
+        });
+        dropdown.addEventListener('mouseout', () => {
+            menu.style.display = 'none';
+        });
+
+        // Mouse-only tooltip
+        const tooltip = document.querySelector('.tooltip');
+        const tooltipText = document.getElementById('tooltip');
+        tooltip.addEventListener('mouseover', () => {
+            tooltipText.style.visibility = 'visible';
+        });
+        tooltip.addEventListener('mouseout', () => {
+            tooltipText.style.visibility = 'hidden';
+        });
+
+        // Double-click only
+        const editableText = document.getElementById('editable-text');
+        editableText.addEventListener('dblclick', () => {
+            const newText = prompt('Enter new text:', editableText.textContent);
+            if (newText) editableText.textContent = newText;
+        });
+    </script>
+</body>
+</html>

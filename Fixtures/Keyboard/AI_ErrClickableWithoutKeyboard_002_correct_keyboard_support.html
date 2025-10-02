@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clickable Elements - Keyboard Accessible</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrClickableWithoutKeyboard_002_correct_keyboard_support",
+    "issueId": "AI_ErrClickableWithoutKeyboard",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Interactive elements with proper keyboard support",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .card:focus {
+            outline: 2px solid #2196f3;
+            outline-offset: 2px;
+        }
+        .icon {
+            font-size: 2em;
+            cursor: pointer;
+        }
+        .icon:focus {
+            outline: 2px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Div has tabindex, role, and keyboard event handlers for Enter and Space keys">
+        <div class="card"
+             role="button"
+             tabindex="0"
+             onclick="alert('Card clicked')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();alert('Card clicked')}">
+            <h2>Project A</h2>
+            <p>Click or press Enter to view project details</p>
+        </div>
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Span has tabindex, role, and keyboard handlers making it fully keyboard accessible">
+        <p>
+            <span class="icon"
+                  role="button"
+                  tabindex="0"
+                  aria-label="Toggle favorite"
+                  onclick="toggleFavorite()"
+                  onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFavorite()}">
+                ⭐
+            </span>
+            Mark as favorite
+        </p>
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Button element provides native keyboard support automatically">
+        <button type="button" onclick="openSettings()" style="padding: 20px; width: 100%; text-align: left; cursor: pointer;">
+            Click or press Enter to open settings
+        </button>
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Button wrapping image provides keyboard support with proper accessible label">
+        <button type="button"
+                onclick="closeModal()"
+                aria-label="Close modal"
+                style="background: none; border: none; cursor: pointer; padding: 0;">
+            <img src="close.png"
+                 alt=""
+                 aria-hidden="true"
+                 style="width: 24px; height: 24px;">
+        </button>
+    </div>
+
+    <script>
+        function toggleFavorite() {
+            alert('Favorite toggled');
+        }
+
+        function openSettings() {
+            alert('Settings opened');
+        }
+
+        function closeModal() {
+            alert('Modal closed');
+        }
+    </script>
+</body>
+</html>

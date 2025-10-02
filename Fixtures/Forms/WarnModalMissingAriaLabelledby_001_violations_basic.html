@@ -3,59 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modal Dialog - Missing aria-labelledby</title>
+    <title>WarnModalMissingAriaLabelledby - Violations</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "WarnModalMissingAriaLabelledby_001_violations_basic",
     "issueId": "WarnModalMissingAriaLabelledby",
     "expectedViolationCount": 2,
     "expectedPassCount": 0,
-    "description": "Modal dialogs without aria-labelledby referencing their headings",
+    "description": "Modal dialogs without aria-labelledby referencing title",
     "wcag": "4.1.2",
     "impact": "Medium"
 }
     </script>
-    <style>
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-        .modal.show { display: block; }
-        .modal-content { background: white; margin: 15% auto; padding: 20px; width: 50%; border-radius: 5px; }
-        .close { float: right; font-size: 28px; cursor: pointer; }
-    </style>
 </head>
 <body>
-    <h1>Settings Page</h1>
+    <h1>Dashboard</h1>
 
-    <button onclick="openModal('confirm')">Delete Account</button>
-    <button onclick="openModal('terms')">View Terms</button>
+    <main>
+        <p>Click buttons to open modals with missing aria-labelledby.</p>
+        <button onclick="document.getElementById('modal1').style.display='block'">Open Confirmation</button>
+        <button onclick="document.getElementById('modal2').style.display='block'">Open Settings</button>
+    </main>
 
-    <div class="modal" id="confirm-modal" role="dialog"
+    <!-- Modal without aria-labelledby -->
+    <div id="modal1" role="dialog" aria-modal="true" style="display:none;"
          data-expected-violation="true"
          data-violation-id="WarnModalMissingAriaLabelledby"
-         data-violation-reason="Modal lacks aria-labelledby pointing to its heading, screen readers won't announce context">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('confirm')">&times;</span>
-            <h2 id="confirm-title">Confirm Account Deletion</h2>
-            <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-            <button>Cancel</button>
-            <button>Delete</button>
-        </div>
+         data-violation-reason="Dialog has title heading but lacks aria-labelledby to reference it. Screen readers may not announce dialog purpose clearly">
+        <h2>Confirm Action</h2>
+        <p>Are you sure you want to proceed?</p>
+        <button>Yes</button>
+        <button onclick="this.closest('[role=dialog]').style.display='none'">Cancel</button>
     </div>
 
-    <div class="modal" id="terms-modal" role="dialog"
+    <!-- Modal without aria-labelledby -->
+    <div id="modal2" role="dialog" aria-modal="true" style="display:none;"
          data-expected-violation="true"
          data-violation-id="WarnModalMissingAriaLabelledby"
-         data-violation-reason="Terms modal lacks aria-labelledby, users won't hear 'Terms of Service' announced when opened">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('terms')">&times;</span>
-            <h2 id="terms-title">Terms of Service</h2>
-            <p>By using this service, you agree to our terms and conditions...</p>
-            <button>Accept</button>
-        </div>
+         data-violation-reason="Dialog missing aria-labelledby to reference 'Settings' heading. Best practice is to link dialog to its title for clear identification">
+        <h2>Settings</h2>
+        <form>
+            <label for="theme">Theme</label>
+            <select id="theme">
+                <option>Light</option>
+                <option>Dark</option>
+            </select>
+            <button type="submit">Save</button>
+            <button type="button" onclick="this.closest('[role=dialog]').style.display='none'">Close</button>
+        </form>
     </div>
-
-    <script>
-        function openModal(id) { document.getElementById(id + '-modal').classList.add('show'); }
-        function closeModal(id) { document.getElementById(id + '-modal').classList.remove('show'); }
-    </script>
 </body>
 </html>

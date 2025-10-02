@@ -3,44 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Portal - Labelled Regions</title>
+    <title>WarnUnlabelledRegion - Correct Usage</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "WarnUnlabelledRegion_002_correct_with_labels",
     "issueId": "WarnUnlabelledRegion",
     "expectedViolationCount": 0,
-    "expectedPassCount": 2,
-    "description": "Region landmarks with proper accessible names via aria-label or aria-labelledby",
-    "wcag": "1.3.1",
-    "impact": "Low"
+    "expectedPassCount": 3,
+    "description": "Region landmarks with proper accessible names",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
 }
     </script>
 </head>
 <body>
-    <h1>Dashboard</h1>
+    <h1>Company Website - Correct Usage</h1>
 
     <main>
-        <region aria-label="Recent activity"
-                data-expected-pass="true"
-                data-pass-reason="Region has aria-label providing clear description for landmark navigation">
-            <h2>Recent Activity</h2>
-            <ul>
-                <li>Login from new device</li>
-                <li>Password changed</li>
-                <li>Profile updated</li>
-            </ul>
-        </region>
+        <!-- Region with aria-label - CORRECT -->
+        <section role="region"
+                 aria-label="Featured products"
+                 data-expected-pass="true"
+                 data-pass-reason="Region has aria-label making it exposed as landmark. Screen readers announce 'Featured products region'">
+            <h2>New Arrivals</h2>
+            <p>Check out our latest offerings.</p>
+        </section>
 
-        <region aria-labelledby="actions-heading"
-                data-expected-pass="true"
-                data-pass-reason="Region uses aria-labelledby to reference heading, screen readers announce 'Quick Actions region'">
-            <h2 id="actions-heading">Quick Actions</h2>
-            <button>Export Data</button>
-            <button>Change Password</button>
-            <button>View Settings</button>
-        </region>
+        <!-- Region with aria-labelledby - CORRECT -->
+        <div role="region"
+             aria-labelledby="testimonials-heading"
+             data-expected-pass="true"
+             data-pass-reason="Region uses aria-labelledby to reference heading, creating landmark with accessible name from visible text">
+            <h3 id="testimonials-heading">Customer Testimonials</h3>
+            <blockquote>Great service!</blockquote>
+            <blockquote>Highly recommend!</blockquote>
+        </div>
+
+        <!-- Region with aria-label - CORRECT -->
+        <aside role="region"
+               aria-label="Special offers"
+               data-expected-pass="true"
+               data-pass-reason="Region landmark properly labeled with aria-label, exposed to assistive technologies for landmark navigation">
+            <h3>Limited Time Deals</h3>
+            <p>Save up to 50% on select items.</p>
+        </aside>
     </main>
 
-    <p>Best practice: Always label region landmarks with aria-label or aria-labelledby.</p>
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
 </body>
 </html>

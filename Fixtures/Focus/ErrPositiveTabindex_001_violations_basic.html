@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrPositiveTabindex - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPositiveTabindex_001_violations_basic",
+    "issueId": "ErrPositiveTabindex",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Interactive elements with positive tabindex values disrupting tab order",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form</h1>
+
+    <main>
+        <form>
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+            </div>
+
+            <div>
+                <label for="email">Email:</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       tabindex="5"
+                       data-expected-violation="true"
+                       data-violation-id="ErrPositiveTabindex"
+                       data-violation-reason="Input has tabindex='5' which disrupts natural tab order. Keyboard users will jump to this field out of sequence. Creates confusing navigation experience. Users with cognitive disabilities may become disoriented. Violates WCAG 2.4.3 Focus Order by forcing unnatural tab sequence">
+            </div>
+
+            <div>
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+
+            <div>
+                <label for="message">Message:</label>
+                <textarea id="message"
+                          name="message"
+                          rows="4"
+                          tabindex="1"
+                          data-expected-violation="true"
+                          data-violation-id="ErrPositiveTabindex"
+                          data-violation-reason="Textarea has tabindex='1' making it first in tab order despite being last in DOM. Breaks logical reading and navigation order. Keyboard users will tab to message field before name or email. Confuses users who expect top-to-bottom navigation. Fails WCAG 2.4.3 by disrupting focus order">
+                </textarea>
+            </div>
+
+            <div>
+                <button type="submit"
+                        tabindex="10"
+                        data-expected-violation="true"
+                        data-violation-id="ErrPositiveTabindex"
+                        data-violation-reason="Submit button has tabindex='10' creating unpredictable tab order. May come before or after other elements depending on their tabindex values. Keyboard navigation becomes illogical. Users cannot predict where Tab key will move focus. Violates WCAG 2.4.3 Focus Order requirements">
+                    Submit
+                </button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+
+        <aside>
+            <h2>Contact Information</h2>
+            <p>You can also reach us by phone at (555) 123-4567 or visit our office.</p>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Contact Us. All rights reserved.</p>
+    </footer>
+</body>
+</html>

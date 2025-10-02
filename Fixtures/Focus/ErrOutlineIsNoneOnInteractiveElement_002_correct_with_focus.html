@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrOutlineIsNoneOnInteractiveElement - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrOutlineIsNoneOnInteractiveElement_002_correct_with_focus",
+    "issueId": "ErrOutlineIsNoneOnInteractiveElement",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Interactive elements with custom focus indicators replacing outline",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Acceptable: removing outline but providing clear replacement - CORRECT */
+        .action-button {
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .action-button:focus {
+            border-color: #fff;
+            box-shadow: 0 0 0 3px #28a745, 0 0 0 5px #fff;
+        }
+
+        .menu-link {
+            color: #333;
+            text-decoration: none;
+            padding: 8px 16px;
+            display: inline-block;
+            outline: none;
+            position: relative;
+        }
+
+        .menu-link:focus {
+            background-color: #e9ecef;
+            box-shadow: inset 0 0 0 2px #007bff;
+        }
+
+        .menu-link:focus::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 3px;
+            background: #007bff;
+        }
+
+        .text-input {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            outline: none;
+        }
+
+        .text-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <h1>User Settings</h1>
+
+    <nav data-expected-pass="true"
+         data-pass-reason="Links have outline:none but with replacement focus styles. Background change, box-shadow, and bottom border create clear focus indication. Keyboard users can easily track navigation position. The multiple visual cues ensure high visibility. Meets WCAG 2.4.7 by providing strong alternative to default outline">
+        <a href="/profile" class="menu-link">Profile</a>
+        <a href="/settings" class="menu-link">Settings</a>
+        <a href="/logout" class="menu-link">Logout</a>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Account Actions</h2>
+
+            <button class="action-button"
+                    data-expected-pass="true"
+                    data-pass-reason="Button removes outline but provides visible replacement with border and box-shadow. The double ring effect (inner and outer shadows) creates excellent contrast. Keyboard users can clearly see focused state. Complies with WCAG 2.4.7 by ensuring focus remains visible with custom styling">
+                Save Changes
+            </button>
+
+            <button class="action-button">Cancel</button>
+        </section>
+
+        <section>
+            <h2>Update Email</h2>
+            <form data-expected-pass="true"
+                  data-pass-reason="Input field has outline:none but provides clear replacement focus indicator. Blue border and shadow create obvious visual change on focus. Users can easily identify active form field. The combination of border color change and box-shadow exceeds WCAG 2.4.7 requirements for focus visibility">
+                <label for="email">Email Address:</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       class="text-input"
+                       value="user@example.com">
+                <button type="submit" class="action-button">Update Email</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Privacy Settings</h2>
+            <p>
+                Manage your account privacy settings and email preferences. Make sure to save
+                your changes before navigating away from this page.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 User Portal. All rights reserved.</p>
+    </footer>
+</body>
+</html>

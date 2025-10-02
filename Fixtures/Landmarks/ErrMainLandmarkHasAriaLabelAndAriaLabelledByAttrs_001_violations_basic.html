@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Landmark Conflicting ARIA Attributes - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic",
+        "issueId": "ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Main landmarks with both aria-label and aria-labelledby attributes",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Main Landmark Conflicting ARIA Attributes - Violations</h1>
+    </header>
+
+    <main aria-label="Primary content"
+          aria-labelledby="main-heading"
+          data-expected-violation="true"
+          data-violation-id="ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+          data-violation-reason="Main landmark has both aria-label and aria-labelledby, creating ambiguity. Only aria-labelledby will be used, making aria-label redundant">
+        <h2 id="main-heading">Welcome to Our Website</h2>
+        <p>This is the main content area of the page.</p>
+        <article>
+            <h3>Featured Article</h3>
+            <p>Article content goes here.</p>
+        </article>
+    </main>
+
+    <div role="main"
+         aria-labelledby="content-heading subheading"
+         aria-label="Main content area"
+         data-expected-violation="true"
+         data-violation-id="ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+         data-violation-reason="Main landmark specifies both aria-labelledby and aria-label. The aria-labelledby takes precedence, making aria-label unnecessary and violating best practices">
+        <h2 id="content-heading">Product Catalog</h2>
+        <p id="subheading">Browse our selection</p>
+        <section>
+            <h3>Category: Electronics</h3>
+            <p>View our electronic products.</p>
+        </section>
+    </div>
+
+    <main aria-label="Dashboard content"
+          aria-labelledby="dashboard-title"
+          data-expected-violation="true"
+          data-violation-id="ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+          data-violation-reason="Main landmark has both aria-label and aria-labelledby attributes. Only one should be used to provide clear, unambiguous accessible name">
+        <h2 id="dashboard-title">User Dashboard</h2>
+        <section>
+            <h3>Recent Activity</h3>
+            <p>Your recent actions and updates.</p>
+        </section>
+        <section>
+            <h3>Quick Stats</h3>
+            <p>Overview of your account metrics.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Using both aria-label and aria-labelledby on main landmarks creates ambiguity and violates WCAG 4.1.2. Choose one labeling method.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Landmark Conflicting ARIA Attributes - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic",
+        "issueId": "ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Banner landmarks with both aria-label and aria-labelledby attributes",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <h1>Banner Landmark Conflicting ARIA Attributes - Violations</h1>
+
+    <header role="banner"
+            aria-label="Main site header"
+            aria-labelledby="site-title"
+            data-expected-violation="true"
+            data-violation-id="ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+            data-violation-reason="Banner landmark has both aria-label and aria-labelledby, creating ambiguity. Only aria-labelledby will be used, making aria-label redundant">
+        <h2 id="site-title">Company Website</h2>
+        <nav aria-label="Primary navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/products">Products</a>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding ARIA Attribute Conflicts</h2>
+            <p>When an element has both aria-label and aria-labelledby, the aria-labelledby takes precedence. Having both attributes creates confusion and violates WCAG 4.1.2 best practices.</p>
+        </article>
+    </main>
+
+    <div role="banner"
+         aria-labelledby="promo-heading secondary-heading"
+         aria-label="Promotional banner"
+         data-expected-violation="true"
+         data-violation-id="ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+         data-violation-reason="Banner landmark specifies both aria-labelledby and aria-label. The aria-labelledby takes precedence, making aria-label unnecessary and violating best practices">
+        <h2 id="promo-heading">Special Offer</h2>
+        <p id="secondary-heading">Limited Time Only</p>
+        <p>Save 30% on all products this weekend!</p>
+        <button>Shop Now</button>
+    </div>
+
+    <header role="banner"
+            aria-label="User account header"
+            aria-labelledby="account-title"
+            data-expected-violation="true"
+            data-violation-id="ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+            data-violation-reason="Banner landmark has both aria-label and aria-labelledby attributes. Only one should be used to provide clear, unambiguous accessible name">
+        <h2 id="account-title">My Dashboard</h2>
+        <p>Welcome back, User!</p>
+        <nav aria-label="Account menu">
+            <a href="/profile">Profile</a>
+            <a href="/settings">Settings</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <footer>
+        <p>Using both aria-label and aria-labelledby on the same element creates ambiguity and violates WCAG 4.1.2. Choose one labeling method based on your needs.</p>
+    </footer>
+</body>
+</html>

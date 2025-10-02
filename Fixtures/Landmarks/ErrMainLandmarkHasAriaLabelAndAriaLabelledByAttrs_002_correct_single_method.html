@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Landmark Single Labeling Method - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method",
+        "issueId": "ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 4,
+        "description": "Main landmarks using only one labeling method (aria-label OR aria-labelledby, not both)",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Main Landmark Single Labeling Method - Correct</h1>
+    </header>
+
+    <main aria-label="Primary content area"
+          data-expected-pass="true"
+          data-pass-reason="Main landmark uses only aria-label for accessible name, clear and unambiguous labeling method">
+        <h2>Welcome to Our Platform</h2>
+        <p>This is the primary content section using aria-label for identification when multiple main landmarks exist.</p>
+        <article>
+            <h3>Getting Started</h3>
+            <p>Learn how to use our platform effectively.</p>
+        </article>
+    </main>
+
+    <div role="main"
+         aria-labelledby="catalog-heading"
+         data-expected-pass="true"
+         data-pass-reason="Main landmark uses only aria-labelledby to reference visible heading, provides clear accessible name without ambiguity">
+        <h2 id="catalog-heading">Product Catalog</h2>
+        <p>Browse our extensive selection of products.</p>
+        <section>
+            <h3>Featured Items</h3>
+            <ul>
+                <li>Product 1</li>
+                <li>Product 2</li>
+                <li>Product 3</li>
+            </ul>
+        </section>
+    </div>
+
+    <main aria-label="User dashboard"
+          data-expected-pass="true"
+          data-pass-reason="Main landmark uses only aria-label, single clear labeling method without conflicting attributes">
+        <h2>My Dashboard</h2>
+        <section>
+            <h3>Recent Activity</h3>
+            <p>Your latest actions and updates appear here.</p>
+        </section>
+        <section>
+            <h3>Quick Stats</h3>
+            <ul>
+                <li>Total Projects: 12</li>
+                <li>Active Tasks: 8</li>
+                <li>Completed: 145</li>
+            </ul>
+        </section>
+    </main>
+
+    <main data-expected-pass="true"
+          data-pass-reason="Single unlabeled main landmark (main element) is acceptable when only one exists on page, no labeling attributes needed">
+        <h2>Simple Page Content</h2>
+        <p>When a page has only one main landmark, it doesn't require aria-label or aria-labelledby.</p>
+        <p>This is the most common pattern for main content areas.</p>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p><strong>Best Practice:</strong> Main landmarks typically don't need labels when only one exists. If multiple main landmarks are present (uncommon), use aria-label or aria-labelledby, but never both.</p>
+    </footer>
+</body>
+</html>

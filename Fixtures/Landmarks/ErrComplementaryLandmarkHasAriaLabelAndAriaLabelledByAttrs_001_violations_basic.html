@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complementary Landmark Conflicting ARIA Attributes - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic",
+        "issueId": "ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Complementary landmarks with both aria-label and aria-labelledby attributes",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Complementary Landmark Conflicting ARIA Attributes - Violations</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Main Article Content</h2>
+            <p>Understanding how conflicting ARIA attributes affect complementary landmarks.</p>
+
+            <aside role="complementary"
+                   aria-label="Related articles"
+                   aria-labelledby="related-heading"
+                   data-expected-violation="true"
+                   data-violation-id="ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+                   data-violation-reason="Complementary landmark has both aria-label and aria-labelledby, creating ambiguity. Only aria-labelledby will be used, making aria-label redundant">
+                <h3 id="related-heading">Related Reading</h3>
+                <ul>
+                    <li><a href="/article1">Introduction to ARIA</a></li>
+                    <li><a href="/article2">Semantic HTML</a></li>
+                    <li><a href="/article3">Keyboard Navigation</a></li>
+                </ul>
+            </aside>
+        </article>
+
+        <aside role="complementary"
+               aria-labelledby="sidebar-heading additional-heading"
+               aria-label="Article sidebar"
+               data-expected-violation="true"
+               data-violation-id="ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+               data-violation-reason="Complementary landmark specifies both aria-labelledby and aria-label. The aria-labelledby takes precedence, making aria-label unnecessary">
+            <h3 id="sidebar-heading">Quick Links</h3>
+            <p id="additional-heading">Navigation Resources</p>
+            <ul>
+                <li><a href="/guide">User Guide</a></li>
+                <li><a href="/faq">FAQ</a></li>
+                <li><a href="/support">Support</a></li>
+            </ul>
+        </aside>
+
+        <div role="complementary"
+             aria-label="Newsletter signup"
+             aria-labelledby="newsletter-heading"
+             data-expected-violation="true"
+             data-violation-id="ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+             data-violation-reason="Complementary landmark has both aria-label and aria-labelledby attributes. Only one should be used to provide clear accessible name">
+            <h3 id="newsletter-heading">Stay Updated</h3>
+            <form>
+                <label for="email">Email address:</label>
+                <input type="email" id="email" name="email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>Using both aria-label and aria-labelledby on complementary landmarks creates ambiguity and violates WCAG 4.1.2 best practices. Choose one labeling method.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate Form Landmark Labels - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrDuplicateLabelForFormLandmark_001_violations_basic",
+        "issueId": "ErrDuplicateLabelForFormLandmark",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Multiple form landmarks with identical accessible names",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Duplicate Form Landmark Labels - Violations</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding Form Landmark Labels</h2>
+            <p>Form elements become landmarks when they have an accessible name (via aria-label or aria-labelledby). When multiple form landmarks exist, duplicate labels prevent screen reader users from distinguishing between them.</p>
+        </article>
+
+        <form aria-label="Contact form"
+              data-expected-violation="true"
+              data-violation-id="ErrDuplicateLabelForFormLandmark"
+              data-violation-reason="Multiple form landmarks share the same accessible name 'Contact form', screen reader users cannot distinguish between them">
+            <h3>General Inquiry</h3>
+            <div>
+                <label for="name1">Name:</label>
+                <input type="text" id="name1" name="name" required>
+            </div>
+            <div>
+                <label for="email1">Email:</label>
+                <input type="email" id="email1" name="email" required>
+            </div>
+            <div>
+                <label for="message1">Message:</label>
+                <textarea id="message1" name="message" rows="4" required></textarea>
+            </div>
+            <button type="submit">Send</button>
+        </form>
+
+        <form aria-label="Contact form"
+              data-expected-violation="true"
+              data-violation-id="ErrDuplicateLabelForFormLandmark"
+              data-violation-reason="Form landmark has duplicate accessible name 'Contact form' matching another form, making navigation confusing">
+            <h3>Technical Support Request</h3>
+            <div>
+                <label for="name2">Name:</label>
+                <input type="text" id="name2" name="name" required>
+            </div>
+            <div>
+                <label for="email2">Email:</label>
+                <input type="email" id="email2" name="email" required>
+            </div>
+            <div>
+                <label for="issue">Issue Description:</label>
+                <textarea id="issue" name="issue" rows="4" required></textarea>
+            </div>
+            <button type="submit">Submit Request</button>
+        </form>
+
+        <form aria-label="Contact form"
+              data-expected-violation="true"
+              data-violation-id="ErrDuplicateLabelForFormLandmark"
+              data-violation-reason="Third form landmark also labeled 'Contact form', screen readers cannot meaningfully distinguish between these three forms">
+            <h3>Schedule a Call</h3>
+            <div>
+                <label for="name3">Name:</label>
+                <input type="text" id="name3" name="name" required>
+            </div>
+            <div>
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div>
+                <label for="preferred-time">Preferred Time:</label>
+                <input type="datetime-local" id="preferred-time" name="preferred-time" required>
+            </div>
+            <button type="submit">Schedule Call</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>Note: Forms only become landmarks when they have an accessible name. When multiple form landmarks exist with the same label, users must visit each form to determine which one they need.</p>
+    </footer>
+</body>
+</html>

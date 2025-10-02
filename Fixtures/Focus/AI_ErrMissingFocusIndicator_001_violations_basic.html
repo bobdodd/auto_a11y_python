@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMissingFocusIndicator - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMissingFocusIndicator_001_violations_basic",
+    "issueId": "AI_ErrMissingFocusIndicator",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Interactive elements lacking visible focus indicators",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Remove focus indicators */
+        button:focus, a:focus, input:focus {
+            outline: none;
+        }
+        .custom-button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Online Store</h1>
+
+    <main>
+        <!-- Button with removed focus indicator -->
+        <button data-expected-violation="true"
+                data-violation-id="AI_ErrMissingFocusIndicator"
+                data-violation-reason="Button has outline:none removing visible focus indicator. Keyboard users cannot see which element has focus">
+            Add to Cart
+        </button>
+
+        <!-- Link with no focus indicator -->
+        <a href="/products"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrMissingFocusIndicator"
+           data-violation-reason="Link has focus indicator removed via CSS. Users navigating with keyboard have no visual feedback of current focus position">
+            View Products
+        </a>
+
+        <!-- Input field with removed focus styling -->
+        <form>
+            <label for="search">Search</label>
+            <input type="text"
+                   id="search"
+                   data-expected-violation="true"
+                   data-violation-id="AI_ErrMissingFocusIndicator"
+                   data-violation-reason="Input field lacks visible focus indicator due to outline:none. Keyboard users cannot tell when field is focused">
+            <button type="submit">Go</button>
+        </form>
+    </main>
+</body>
+</html>

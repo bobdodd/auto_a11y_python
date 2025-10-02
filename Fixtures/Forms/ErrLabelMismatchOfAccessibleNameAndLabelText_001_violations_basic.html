@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLabelMismatchOfAccessibleNameAndLabelText - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelMismatchOfAccessibleNameAndLabelText_001_violations_basic",
+    "issueId": "ErrLabelMismatchOfAccessibleNameAndLabelText",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Form fields where accessible name doesn't match visible label text",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Mismatched Accessible Names and Labels</h1>
+
+    <main>
+        <form>
+            <section>
+                <label for="name">Full Name</label>
+                <input type="text"
+                       id="name"
+                       aria-label="Enter your complete name"
+                       data-expected-violation="true"
+                       data-violation-id="ErrLabelMismatchOfAccessibleNameAndLabelText"
+                       data-violation-reason="Visible label is 'Full Name' but aria-label doesn't include it, confusing for voice control">
+            </section>
+
+            <section>
+                <label for="email">Email</label>
+                <input type="email"
+                       id="email"
+                       aria-label="Your email address"
+                       data-expected-violation="true"
+                       data-violation-id="ErrLabelMismatchOfAccessibleNameAndLabelText"
+                       data-violation-reason="Voice command 'click Email' won't work, accessible name doesn't match visible text">
+            </section>
+
+            <section>
+                <label for="phone">Phone</label>
+                <input type="tel"
+                       id="phone"
+                       aria-label="Contact number"
+                       data-expected-violation="true"
+                       data-violation-id="ErrLabelMismatchOfAccessibleNameAndLabelText"
+                       data-violation-reason="Visible label 'Phone' doesn't appear in accessible name 'Contact number'">
+            </section>
+
+            <section>
+                <label for="message">Message</label>
+                <textarea id="message"
+                          aria-label="Type your inquiry"
+                          data-expected-violation="true"
+                          data-violation-id="ErrLabelMismatchOfAccessibleNameAndLabelText"
+                          data-violation-reason="Accessible name doesn't match visible label, problematic for voice control users"></textarea>
+            </section>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+</body>
+</html>

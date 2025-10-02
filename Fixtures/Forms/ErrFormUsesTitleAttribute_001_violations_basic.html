@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFormUsesTitleAttribute - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesTitleAttribute_001_violations_basic",
+    "issueId": "ErrFormUsesTitleAttribute",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Forms using title attribute for labeling instead of proper ARIA",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Forms Using Title Attribute</h1>
+
+    <main>
+        <section>
+            <h2>Login Form</h2>
+            <form title="User Login Form"
+                  data-expected-violation="true"
+                  data-violation-id="ErrFormUsesTitleAttribute"
+                  data-violation-reason="Form uses title attribute which is not reliably accessible">
+                <label for="username">Username:</label>
+                <input type="text" id="username">
+                <label for="password">Password:</label>
+                <input type="password" id="password">
+                <button type="submit">Login</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Newsletter</h2>
+            <form title="Newsletter subscription"
+                  data-expected-violation="true"
+                  data-violation-id="ErrFormUsesTitleAttribute"
+                  data-violation-reason="Form relies on title attribute instead of aria-label or aria-labelledby">
+                <label for="subscriber-email">Email:</label>
+                <input type="email" id="subscriber-email">
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Feedback</h2>
+            <form title="Customer feedback form"
+                  data-expected-violation="true"
+                  data-violation-id="ErrFormUsesTitleAttribute"
+                  data-violation-reason="Title attribute not accessible to mobile users and screen readers">
+                <label for="feedback">Your Feedback:</label>
+                <textarea id="feedback"></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

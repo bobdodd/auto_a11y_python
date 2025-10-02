@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrOrphanLabelWithNoId - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrOrphanLabelWithNoId_001_violations_basic",
+    "issueId": "ErrOrphanLabelWithNoId",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Label elements without for attribute, not programmatically associated",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Orphan Labels Without Associations</h1>
+
+    <main>
+        <form>
+            <section>
+                <label data-expected-violation="true"
+                       data-violation-id="ErrOrphanLabelWithNoId"
+                       data-violation-reason="Label has no for attribute, not programmatically associated with field">
+                    Full Name
+                </label>
+                <input type="text" id="name">
+            </section>
+
+            <section>
+                <label data-expected-violation="true"
+                       data-violation-id="ErrOrphanLabelWithNoId"
+                       data-violation-reason="Label missing for attribute, screen readers won't associate it">
+                    Email Address
+                </label>
+                <input type="email" id="email">
+            </section>
+
+            <section>
+                <label data-expected-violation="true"
+                       data-violation-id="ErrOrphanLabelWithNoId"
+                       data-violation-reason="Label not connected to field via for attribute">
+                    Phone Number
+                </label>
+                <input type="tel" id="phone">
+            </section>
+
+            <section>
+                <label data-expected-violation="true"
+                       data-violation-id="ErrOrphanLabelWithNoId"
+                       data-violation-reason="Label orphaned, no programmatic association with textarea">
+                    Comments
+                </label>
+                <textarea id="comments"></textarea>
+            </section>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+</body>
+</html>

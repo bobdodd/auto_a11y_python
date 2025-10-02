@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visible Main Landmark - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMainLandmarkIsHidden_002_correct_visible",
+        "issueId": "ErrMainLandmarkIsHidden",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "Main landmarks that are properly visible and accessible",
+        "wcag": "1.3.1",
+        "impact": "High"
+    }
+    </script>
+    <style>
+        .content-section {
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .visually-hidden-heading {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Visible Main Landmark - Correct</h1>
+        <nav aria-label="Primary navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </header>
+
+    <main class="content-section"
+          data-expected-pass="true"
+          data-pass-reason="Main landmark is fully visible with normal CSS styling, accessible to all users">
+        <h2>Welcome to Our Website</h2>
+        <p>This is the primary content area, properly visible and accessible.</p>
+        <p>All users can access this content without any visibility restrictions.</p>
+        <article>
+            <h3>Featured Article</h3>
+            <p>Article content that is accessible to everyone.</p>
+            <button>Read More</button>
+        </article>
+    </main>
+
+    <div role="main"
+         data-expected-pass="true"
+         data-pass-reason="Main landmark is visible without any hiding CSS or aria-hidden, ensuring accessibility for all users">
+        <h2 class="visually-hidden-heading">Main Content</h2>
+        <section>
+            <h3>Product Catalog</h3>
+            <p>Browse our selection of products.</p>
+            <p>Note: The h2 above uses visually-hidden CSS, but the main landmark itself is fully visible.</p>
+            <p>It's acceptable to visually hide elements within main, but not the main landmark itself.</p>
+        </section>
+    </div>
+
+    <main data-expected-pass="true"
+          data-pass-reason="Main landmark has no hiding attributes or styles, primary content is accessible and visible">
+        <h2>Dashboard</h2>
+        <p>This is your personal dashboard with all your information.</p>
+        <section>
+            <h3>Recent Activity</h3>
+            <ul>
+                <li>Item 1 - 2 hours ago</li>
+                <li>Item 2 - 5 hours ago</li>
+                <li>Item 3 - Yesterday</li>
+            </ul>
+        </section>
+        <section>
+            <h3>Quick Stats</h3>
+            <p>Total projects: 12</p>
+            <p>Active tasks: 8</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p><strong>Critical:</strong> The main landmark must always be visible and accessible. It marks the primary content area - hiding it defeats the entire purpose of using landmarks for navigation.</p>
+    </footer>
+</body>
+</html>

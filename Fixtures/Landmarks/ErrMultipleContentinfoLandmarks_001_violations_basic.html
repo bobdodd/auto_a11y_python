@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple ContentInfo Landmarks - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMultipleContentinfoLandmarks_001_violations_basic",
+        "issueId": "ErrMultipleContentinfoLandmarks",
+        "expectedViolationCount": 2,
+        "expectedPassCount": 0,
+        "description": "Page with multiple contentinfo landmarks without unique labels",
+        "wcag": "1.3.1",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Multiple ContentInfo Landmarks - Violations</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding ContentInfo Landmarks</h2>
+            <p>Typically, a page should have only one contentinfo landmark (the site footer). Multiple unlabeled contentinfo landmarks confuse the page structure.</p>
+        </article>
+    </main>
+
+    <footer data-expected-violation="true"
+            data-violation-id="ErrMultipleContentinfoLandmarks"
+            data-violation-reason="Multiple contentinfo landmarks exist on page without unique labels. First unlabeled footer conflicts with second contentinfo">
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+        <nav aria-label="Legal links">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+        </nav>
+    </footer>
+
+    <div role="contentinfo"
+         data-expected-violation="true"
+         data-violation-id="ErrMultipleContentinfoLandmarks"
+         data-violation-reason="Second unlabeled contentinfo landmark on page. Multiple contentinfo regions without unique accessible names confuse landmark navigation">
+        <h2>Contact Information</h2>
+        <address>
+            <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+            <p>Phone: (555) 123-4567</p>
+        </address>
+    </div>
+
+    <p style="margin: 2rem;">Pages should typically have only one contentinfo landmark. If multiple exist (very uncommon), each must have a unique accessible name. However, the single footer pattern is strongly recommended.</p>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Landmark Proper Tabindex Usage - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost_002_correct_no_tabindex",
+        "issueId": "ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "Main landmarks with no tabindex or appropriate tabindex=-1",
+        "wcag": "2.4.3",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Main Landmark Proper Tabindex Usage - Correct</h1>
+        <nav aria-label="Primary navigation">
+            <a href="#main-content">Skip to main content</a>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+        </nav>
+    </header>
+
+    <main data-expected-pass="true"
+          data-pass-reason="Main landmark without tabindex attribute is correct. Interactive elements within receive focus naturally without the landmark itself being focusable">
+        <h2>Article Content</h2>
+        <p>This is the correct default pattern - no tabindex on the main landmark.</p>
+        <p>Users can tab to interactive elements within the main content without the landmark container being in the tab order.</p>
+        <button>Click Me</button>
+        <a href="/learn-more">Learn More</a>
+    </main>
+
+    <div role="main"
+         id="main-content"
+         tabindex="-1"
+         data-expected-pass="true"
+         data-pass-reason="Main landmark with tabindex='-1' is acceptable. This allows programmatic focus (e.g., from skip link) without adding to natural tab order">
+        <h2>Dashboard Overview</h2>
+        <p>This main landmark uses tabindex="-1" which is appropriate when you need to support programmatic focus from skip links.</p>
+        <p>The tabindex="-1" allows JavaScript to focus this element but doesn't add it to the normal tab order.</p>
+        <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+            <button type="submit">Save</button>
+        </form>
+    </div>
+
+    <main data-expected-pass="true"
+          data-pass-reason="Main landmark without any tabindex is the most common and recommended pattern, letting natural tab order work through interactive content">
+        <h2>Product Catalog</h2>
+        <p>Best practice: Don't add tabindex to landmark elements unless you specifically need programmatic focus for skip links.</p>
+        <section>
+            <h3>Featured Products</h3>
+            <button>View Product 1</button>
+            <button>View Product 2</button>
+            <button>View Product 3</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p><strong>Best Practice:</strong> Main landmarks should not have tabindex="0" or positive values. Use no tabindex (default) or tabindex="-1" only when programmatic focus is needed for skip links.</p>
+    </footer>
+</body>
+</html>

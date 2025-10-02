@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Landmark Inappropriate Tabindex - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost_001_violations_basic",
+        "issueId": "ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Main landmarks with tabindex=0 or positive values",
+        "wcag": "2.4.3",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Main Landmark Inappropriate Tabindex - Violations</h1>
+    </header>
+
+    <main tabindex="0"
+          data-expected-violation="true"
+          data-violation-id="ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost"
+          data-violation-reason="Main landmark has tabindex='0', which adds it to the natural tab order. Landmarks should not be focusable via Tab key navigation">
+        <h2>Article Content</h2>
+        <p>This main landmark has tabindex="0" which inappropriately adds it to the tab order.</p>
+        <p>Keyboard users will tab to the landmark itself, which is confusing and redundant since they can already tab to interactive elements within it.</p>
+        <button>Interactive Button</button>
+    </main>
+
+    <div role="main"
+         tabindex="1"
+         data-expected-violation="true"
+         data-violation-id="ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost"
+         data-violation-reason="Main landmark has positive tabindex='1', which disrupts natural tab order and adds the landmark to tab navigation inappropriately">
+        <h2>Dashboard Content</h2>
+        <p>This main landmark has a positive tabindex, which is even worse than tabindex="0".</p>
+        <p>Positive tabindex values disrupt the natural reading order and create unpredictable navigation.</p>
+        <a href="/settings">Settings</a>
+    </div>
+
+    <main tabindex="5"
+          data-expected-violation="true"
+          data-violation-id="ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost"
+          data-violation-reason="Main landmark has positive tabindex='5', severely disrupting tab order and creating confusing keyboard navigation experience">
+        <h2>Product Catalog</h2>
+        <p>High positive tabindex values create an unpredictable and confusing tab order.</p>
+        <form>
+            <label for="search">Search products:</label>
+            <input type="search" id="search" name="q">
+            <button type="submit">Search</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>Landmarks should not be in the tab order. Use tabindex="-1" only if programmatic focus is needed (e.g., skip links), never tabindex="0" or positive values.</p>
+    </footer>
+</body>
+</html>

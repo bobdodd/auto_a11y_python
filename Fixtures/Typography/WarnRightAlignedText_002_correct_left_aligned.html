@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnRightAlignedText - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnRightAlignedText_002_correct_left_aligned",
+    "issueId": "WarnRightAlignedText",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Body text using left alignment",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .left-aligned-text {
+            text-align: left;
+            max-width: 600px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Annual Report Highlights</h1>
+
+    <main>
+        <section>
+            <h2>Financial Performance</h2>
+            <!-- Left-aligned body text - CORRECT -->
+            <div class="left-aligned-text"
+                 data-expected-pass="true"
+                 data-pass-reason="Body text uses text-align: left for optimal readability. Users with dyslexia can read naturally following left-to-right pattern. Consistent left edge makes tracking lines easy. Users with low vision can easily find the start of each line">
+                <p>The company achieved record revenue of $2.5 billion in fiscal year 2024, representing a 15% increase over the previous year. Strong performance across all business segments contributed to this growth.</p>
+
+                <p>Operating margins improved by 3 percentage points, reflecting successful cost optimization initiatives and operational efficiencies implemented throughout the organization.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Market Expansion</h2>
+            <!-- Left-aligned text - CORRECT -->
+            <div class="left-aligned-text"
+                 data-expected-pass="true"
+                 data-pass-reason="Left-aligned paragraph text maximizes readability. People with dyslexia can track lines naturally. Reduced cognitive load as line starts are predictable. Users with attention deficits maintain focus more easily with standard left alignment">
+                <p>We successfully entered five new international markets this year, expanding our global footprint and customer base. Strategic partnerships enabled rapid market penetration and brand recognition in these regions.</p>
+
+                <p>Customer satisfaction scores reached an all-time high of 94%, demonstrating our commitment to excellence in service delivery and product quality across all markets.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Innovation Leadership</h2>
+            <!-- Left-aligned text - CORRECT -->
+            <div class="left-aligned-text"
+                 data-expected-pass="true"
+                 data-pass-reason="Text-align: left on body text follows accessibility best practices. Dyslexic readers read comfortably. Consistent left edges support natural reading flow for all users. Screen magnification users can easily find line beginnings. Left alignment appropriate for LTR languages">
+                <p>Investment in research and development increased by 25%, fueling innovation across our product portfolio. We launched 12 new products and secured 45 patents for groundbreaking technologies.</p>
+
+                <p>Our innovation pipeline remains robust with exciting developments in artificial intelligence, machine learning, and sustainable technology solutions planned for the coming years.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

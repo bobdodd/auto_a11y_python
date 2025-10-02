@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnJustifiedText - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnJustifiedText_001_violations_basic",
+    "issueId": "WarnJustifiedText",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Text using text-align: justify",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .justified-text {
+            text-align: justify;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Company Blog</h1>
+
+    <main>
+        <article>
+            <h2>The Future of Technology</h2>
+            <!-- Justified text - VIOLATION -->
+            <div class="justified-text"
+                 data-expected-violation="true"
+                 data-violation-id="WarnJustifiedText"
+                 data-violation-reason="Text uses text-align: justify creating uneven spacing between words. Users with dyslexia find justified text harder to read due to 'rivers' of white space. Cognitive load increases as word spacing varies. Users with low vision may struggle with irregular spacing patterns">
+                <p>Technology continues to evolve at a rapid pace, transforming the way we live and work. From artificial intelligence to quantum computing, innovations are reshaping industries and creating new possibilities for the future.</p>
+
+                <p>Companies around the world are investing heavily in research and development to stay competitive in this fast-changing landscape. The pace of technological advancement shows no signs of slowing down.</p>
+            </div>
+        </article>
+
+        <article>
+            <h2>Sustainability Practices</h2>
+            <!-- Another justified text block - VIOLATION -->
+            <div class="justified-text"
+                 data-expected-violation="true"
+                 data-violation-id="WarnJustifiedText"
+                 data-violation-reason="Justified text creates irregular word spacing that reduces readability. People with dyslexia experience difficulty tracking lines. Variable spacing between words disrupts reading flow. Users with attention deficits may lose focus due to uneven text patterns">
+                <p>Environmental sustainability has become a critical priority for organizations worldwide. Implementing green practices not only helps protect our planet but also makes good business sense in the long run.</p>
+
+                <p>Reducing carbon emissions, minimizing waste, and adopting renewable energy sources are just a few ways companies can contribute to a more sustainable future for generations to come.</p>
+            </div>
+        </article>
+
+        <article>
+            <h2>Remote Work Trends</h2>
+            <!-- Third justified text block - VIOLATION -->
+            <div class="justified-text"
+                 data-expected-violation="true"
+                 data-violation-id="WarnJustifiedText"
+                 data-violation-reason="Text-align: justify makes reading difficult for users with cognitive disabilities. Irregular word spacing creates visual 'rivers' that disrupt comprehension. Dyslexic users particularly struggle with justified text. Better to use left-aligned text for improved readability">
+                <p>Remote work has transformed from a rare benefit to a standard practice in many industries. This shift has brought both opportunities and challenges as organizations adapt to distributed teams.</p>
+
+                <p>Maintaining productivity, fostering team collaboration, and ensuring work-life balance are key considerations for companies embracing remote and hybrid work models in the modern era.</p>
+            </div>
+        </article>
+    </main>
+</body>
+</html>

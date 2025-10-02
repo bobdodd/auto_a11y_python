@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTooltipWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTooltipWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrTooltipWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Tooltip elements with proper ARIA markup, relationships, and keyboard support",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Form with Help Icons - Correct Usage</h1>
+
+    <main>
+        <form>
+            <!-- Tooltip with proper ARIA - CORRECT -->
+            <div class="field"
+                 data-expected-pass="true"
+                 data-pass-reason="Tooltip uses role='tooltip', linked via aria-describedby, keyboard accessible with focus/blur events, and Escape key dismisses it">
+                <label for="username2">Username</label>
+                <input type="text"
+                       id="username2"
+                       name="username"
+                       aria-describedby="tip1">
+                <button type="button"
+                        class="help-icon"
+                        aria-label="Help for username"
+                        onfocus="accessibleShowTooltip('tip1')"
+                        onblur="accessibleHideTooltip('tip1')"
+                        onmouseover="accessibleShowTooltip('tip1')"
+                        onmouseout="accessibleHideTooltip('tip1')">
+                    ?
+                </button>
+                <div id="tip1"
+                     role="tooltip"
+                     style="display:none;">
+                    Choose a unique username with 6-20 characters
+                </div>
+            </div>
+
+            <!-- Tooltip with keyboard and screen reader support - CORRECT -->
+            <div class="field"
+                 data-expected-pass="true"
+                 data-pass-reason="Complete tooltip pattern with role='tooltip', aria-describedby linking to input, keyboard focus support, and programmatic show/hide">
+                <label for="password2">Password</label>
+                <input type="text"
+                       id="password2"
+                       name="password"
+                       aria-describedby="tip2">
+                <button type="button"
+                        class="help-icon"
+                        aria-label="Help for password"
+                        onfocus="accessibleShowTooltip('tip2')"
+                        onblur="accessibleHideTooltip('tip2')"
+                        onmouseover="accessibleShowTooltip('tip2')"
+                        onmouseout="accessibleHideTooltip('tip2')">
+                    ?
+                </button>
+                <div id="tip2"
+                     role="tooltip"
+                     style="display:none;">
+                    Must contain uppercase, lowercase, number, and symbol
+                </div>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+    <script>
+        function accessibleShowTooltip(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function accessibleHideTooltip(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Allow Escape key to dismiss tooltips
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('[role="tooltip"]').forEach(tip => {
+                    tip.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

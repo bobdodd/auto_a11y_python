@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Landmark Descriptive Labels - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "WarnBannerLandmarkAccessibleNameUsesBanner_002_correct_descriptive_labels",
+        "issueId": "WarnBannerLandmarkAccessibleNameUsesBanner",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "Banner landmarks with descriptive labels or no label when appropriate",
+        "wcag": "2.4.6",
+        "impact": "Low"
+    }
+    </script>
+</head>
+<body>
+    <h1>Banner Landmark Descriptive Labels - Correct</h1>
+
+    <header data-expected-pass="true"
+            data-pass-reason="Banner landmark without label is appropriate when only one banner exists. Screen readers simply announce 'banner'">
+        <h2>Company Name - Official Website</h2>
+        <nav aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/products">Products</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Proper Landmark Labeling</h2>
+            <p>When labels are needed to distinguish multiple landmarks, use descriptive terms that explain the purpose or content, not the landmark type.</p>
+        </article>
+    </main>
+
+    <div role="banner"
+         aria-label="Main site header"
+         data-expected-pass="true"
+         data-pass-reason="Banner landmark uses descriptive label 'Main site header' that describes purpose without using the word 'banner'">
+        <h2>Welcome to Our Platform</h2>
+        <p>Your trusted source for information</p>
+    </div>
+
+    <header role="banner"
+            aria-label="Promotional announcement"
+            data-expected-pass="true"
+            data-pass-reason="Banner landmark has descriptive label explaining content purpose without redundant use of 'banner' term">
+        <h2>Limited Time Offer</h2>
+        <p>Save 50% on all products this weekend!</p>
+        <button>Shop Now</button>
+    </header>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+    </footer>
+
+    <hr>
+
+    <p><strong>Best Practice:</strong> If you need to label landmarks to distinguish multiple instances, use labels that describe the specific purpose or content (e.g., "Main site header", "Promotional announcement", "User dashboard header") rather than repeating the landmark type (e.g., "Banner", "Site banner").</p>
+
+    <details>
+        <summary>Good vs. Bad Label Examples</summary>
+        <p><strong>Good labels:</strong></p>
+        <ul>
+            <li>aria-label="Main site header"</li>
+            <li>aria-label="Promotional announcement"</li>
+            <li>aria-label="User account header"</li>
+        </ul>
+        <p><strong>Avoid these labels:</strong></p>
+        <ul>
+            <li>aria-label="Banner" (redundant)</li>
+            <li>aria-label="Site banner" (redundant)</li>
+            <li>aria-label="Top banner section" (redundant)</li>
+        </ul>
+    </details>
+</body>
+</html>

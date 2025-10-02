@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Landmark Generic Label - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "WarnBannerLandmarkAccessibleNameUsesBanner_001_violations_basic",
+        "issueId": "WarnBannerLandmarkAccessibleNameUsesBanner",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Banner landmarks using generic term 'banner' in accessible name",
+        "wcag": "2.4.6",
+        "impact": "Low"
+    }
+    </script>
+</head>
+<body>
+    <h1>Banner Landmark Generic Label - Violations</h1>
+
+    <header aria-label="Banner"
+            data-expected-violation="true"
+            data-violation-id="WarnBannerLandmarkAccessibleNameUsesBanner"
+            data-violation-reason="Banner landmark label uses generic term 'Banner'. Screen readers will announce 'Banner banner', which is redundant">
+        <h2>Company Website</h2>
+        <nav aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding Landmark Labels</h2>
+            <p>When labeling landmarks, avoid using the landmark type in the label. Screen readers already announce the landmark role, so including it in the label creates redundancy.</p>
+        </article>
+    </main>
+
+    <div role="banner"
+         aria-label="Site banner"
+         data-expected-violation="true"
+         data-violation-id="WarnBannerLandmarkAccessibleNameUsesBanner"
+         data-violation-reason="Banner landmark label contains word 'banner'. Screen readers announce 'Site banner banner', creating redundant announcement">
+        <h2>Promotional Header</h2>
+        <p>Special offer this week!</p>
+    </div>
+
+    <header role="banner"
+            aria-label="Top banner section"
+            data-expected-violation="true"
+            data-violation-id="WarnBannerLandmarkAccessibleNameUsesBanner"
+            data-violation-reason="Banner landmark label includes 'banner'. Results in redundant announcement like 'Top banner section banner'">
+        <h2>Alternative Header</h2>
+        <p>Important announcement</p>
+    </header>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p>Use descriptive labels that describe the content or purpose, not the landmark type. The role is already announced by screen readers.</p>
+    </footer>
+</body>
+</html>

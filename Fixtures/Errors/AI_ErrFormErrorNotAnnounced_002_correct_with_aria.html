@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrFormErrorNotAnnounced - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrFormErrorNotAnnounced_002_correct_with_aria",
+    "issueId": "AI_ErrFormErrorNotAnnounced",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Form validation errors properly announced with ARIA",
+    "wcag": "3.3.1, 4.1.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .error {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+        }
+        .field-error {
+            border: 2px solid red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registration Form - Correct Usage</h1>
+
+    <main>
+        <!-- Error summary with live region - CORRECT -->
+        <div id="error-summary"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true"
+             style="display: none; color: red; margin-bottom: 1rem;"
+             data-expected-pass="true"
+             data-pass-reason="Error summary uses role='alert' and aria-live='assertive' to immediately announce validation errors to screen readers when form is submitted">
+        </div>
+
+        <form onsubmit="return validateForm()">
+            <!-- Email field with proper error announcement - CORRECT -->
+            <div data-expected-pass="true"
+                 data-pass-reason="Input uses aria-describedby to connect to error message and aria-invalid to indicate error state. Screen readers announce the error when field is focused">
+                <label for="email">Email:</label>
+                <input type="text"
+                       id="email"
+                       name="email"
+                       aria-describedby="email-error">
+                <span id="email-error" class="error" role="alert">Please enter a valid email</span>
+            </div>
+
+            <!-- Password field with ARIA - CORRECT -->
+            <div data-expected-pass="true"
+                 data-pass-reason="Field connected to error via aria-describedby. Error message has role='alert' for immediate announcement when displayed">
+                <label for="password">Password:</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       aria-describedby="password-error">
+                <span id="password-error" class="error" role="alert">Password must be at least 8 characters</span>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+    <script>
+        function validateForm() {
+            let valid = true;
+            let errors = [];
+
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            if (!email.value.includes('@')) {
+                email.classList.add('field-error');
+                email.setAttribute('aria-invalid', 'true');
+                emailError.style.display = 'block';
+                errors.push('Email is invalid');
+                valid = false;
+            } else {
+                email.classList.remove('field-error');
+                email.setAttribute('aria-invalid', 'false');
+                emailError.style.display = 'none';
+            }
+
+            const password = document.getElementById('password');
+            const passwordError = document.getElementById('password-error');
+            if (password.value.length < 8) {
+                password.classList.add('field-error');
+                password.setAttribute('aria-invalid', 'true');
+                passwordError.style.display = 'block';
+                errors.push('Password is too short');
+                valid = false;
+            } else {
+                password.classList.remove('field-error');
+                password.setAttribute('aria-invalid', 'false');
+                passwordError.style.display = 'none';
+            }
+
+            const errorSummary = document.getElementById('error-summary');
+            if (!valid) {
+                errorSummary.textContent = 'Form has ' + errors.length + ' error(s): ' + errors.join(', ');
+                errorSummary.style.display = 'block';
+            } else {
+                errorSummary.style.display = 'none';
+            }
+
+            return valid;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrFormErrorNotAnnounced - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrFormErrorNotAnnounced_001_violations_basic",
+    "issueId": "AI_ErrFormErrorNotAnnounced",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Form validation errors not announced to screen readers",
+    "wcag": "3.3.1, 4.1.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .error {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+        }
+        .field-error {
+            border: 2px solid red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registration Form</h1>
+
+    <main>
+        <form onsubmit="return validateForm()">
+            <!-- Email field with visual-only error -->
+            <div data-expected-violation="true"
+                 data-violation-id="AI_ErrFormErrorNotAnnounced"
+                 data-violation-reason="Error message displayed visually but not connected to input via aria-describedby. Screen reader users are not informed of validation errors">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email">
+                <span id="email-error" class="error">Please enter a valid email</span>
+            </div>
+
+            <!-- Password field with visual error only -->
+            <div data-expected-violation="true"
+                 data-violation-id="AI_ErrFormErrorNotAnnounced"
+                 data-violation-reason="Error message lacks aria-describedby association and aria-live region. Error not announced when it appears dynamically">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+                <span id="password-error" class="error">Password must be at least 8 characters</span>
+            </div>
+
+            <!-- Username field with no ARIA -->
+            <div data-expected-violation="true"
+                 data-violation-id="AI_ErrFormErrorNotAnnounced"
+                 data-violation-reason="Input lacks aria-invalid and aria-describedby attributes. Error message not associated with field for assistive technology">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+                <span id="username-error" class="error">Username is required</span>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+    <script>
+        function validateForm() {
+            let valid = true;
+
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            if (!email.value.includes('@')) {
+                email.classList.add('field-error');
+                emailError.style.display = 'block';
+                valid = false;
+            }
+
+            const password = document.getElementById('password');
+            const passwordError = document.getElementById('password-error');
+            if (password.value.length < 8) {
+                password.classList.add('field-error');
+                passwordError.style.display = 'block';
+                valid = false;
+            }
+
+            const username = document.getElementById('username');
+            const usernameError = document.getElementById('username-error');
+            if (!username.value) {
+                username.classList.add('field-error');
+                usernameError.style.display = 'block';
+                valid = false;
+            }
+
+            return valid;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMissingSkipLink - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMissingSkipLink_001_violations_basic",
+    "issueId": "AI_ErrMissingSkipLink",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Pages with navigation blocks lacking skip links",
+    "wcag": "2.4.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        nav {
+            background: #333;
+            padding: 1rem;
+        }
+        nav a {
+            color: white;
+            margin: 0 1rem;
+        }
+        .sidebar {
+            float: left;
+            width: 200px;
+            background: #eee;
+            padding: 1rem;
+        }
+        main {
+            margin-left: 220px;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="AI_ErrMissingSkipLink"
+      data-violation-reason="Page has navigation blocks but no skip link to jump to main content. Keyboard users must tab through all navigation items to reach content">
+
+    <!-- Large navigation block without skip link -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/services">Services</a>
+        <a href="/about">About</a>
+        <a href="/team">Team</a>
+        <a href="/blog">Blog</a>
+        <a href="/news">News</a>
+        <a href="/careers">Careers</a>
+        <a href="/contact">Contact</a>
+        <a href="/support">Support</a>
+    </nav>
+
+    <div class="sidebar"
+         data-expected-violation="true"
+         data-violation-id="AI_ErrMissingSkipLink"
+         data-violation-reason="Page has additional sidebar navigation without skip mechanism. Forces keyboard users to navigate through all sidebar items before reaching main content">
+        <h2>Categories</h2>
+        <ul>
+            <li><a href="/category1">Category 1</a></li>
+            <li><a href="/category2">Category 2</a></li>
+            <li><a href="/category3">Category 3</a></li>
+            <li><a href="/category4">Category 4</a></li>
+            <li><a href="/category5">Category 5</a></li>
+        </ul>
+    </div>
+
+    <main id="main-content">
+        <h1>Welcome to Our Site</h1>
+        <p>This is the main content area that users need to navigate to.</p>
+        <p>Without skip links, keyboard users must tab through all navigation elements to reach this content.</p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional web development services specializing in accessible, modern websites for businesses of all sizes">
+    <meta name="author" content="Our Company Web Development Team">
+    <meta name="keywords" content="web development, accessibility, website design, WCAG compliance, user experience">
+    <title>WarnMissingDocumentMetadata - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingDocumentMetadata_002_correct_metadata",
+    "issueId": "WarnMissingDocumentMetadata",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Page with appropriate document metadata elements",
+    "wcag": "1.3.1, 3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Page includes comprehensive metadata with description, author, and keywords. This helps search engines properly index content, provides context for users previewing the page, and supports assistive technologies that may present metadata to users. Meta description appears in search results and social media shares. While not strictly required by WCAG, good metadata improves overall accessibility and user experience">
+    <h1>Welcome to Our Website</h1>
+
+    <main>
+        <article>
+            <h2>About Our Services</h2>
+            <p>
+                We provide comprehensive web development services to businesses of all sizes.
+                Our team specializes in creating accessible, modern websites that meet industry standards.
+            </p>
+
+            <section>
+                <h3>What We Offer</h3>
+                <ul>
+                    <li>Custom website design and development</li>
+                    <li>Accessibility audits and remediation</li>
+                    <li>Performance optimization</li>
+                    <li>Ongoing maintenance and support</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Our Approach</h3>
+                <p>
+                    We believe in building websites that work for everyone. Our development process
+                    emphasizes accessibility, performance, and user experience from the ground up.
+                </p>
+                <p>
+                    Every project begins with understanding your users and their needs. We then create
+                    solutions that are not only functional but also intuitive and accessible.
+                </p>
+            </section>
+        </article>
+
+        <aside>
+            <h2>Contact Information</h2>
+            <p>Email: info@example.com</p>
+            <p>Phone: (555) 123-4567</p>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Our Company. All rights reserved.</p>
+    </footer>
+</body>
+</html>

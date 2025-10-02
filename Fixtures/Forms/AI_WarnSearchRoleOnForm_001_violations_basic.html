@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnSearchRoleOnForm - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnSearchRoleOnForm_001_violations_basic",
+    "issueId": "AI_WarnSearchRoleOnForm",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Form elements with role='search' potentially inappropriate",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Company Name</h1>
+
+        <form action="/search"
+              method="get"
+              role="search"
+              data-expected-violation="true"
+              data-violation-reason="Form element has role='search' which may be inappropriate. While search is a valid landmark role, applying it directly to form element can create confusion. Better practice is to wrap form in div or section with role='search'. Form already has form semantics. Mixing form and search roles on same element is not ideal. Warning for WCAG 4.1.2 Name, Role, Value - consider wrapping form in container with role='search' instead">
+            <label for="site-search">Search site:</label>
+            <input type="search" id="site-search" name="q">
+            <button type="submit">Search</button>
+        </form>
+    </header>
+
+    <main>
+        <h2>Products</h2>
+        <p>Browse our product catalog.</p>
+
+        <form action="/products/search"
+              method="get"
+              role="search"
+              aria-label="Product search"
+              data-expected-violation="true"
+              data-violation-reason="Form with role='search' combines two landmark roles on single element. Form with accessible name already creates form landmark. Adding role='search' overrides form semantics. Screen readers may not recognize as form. Better to nest form inside search landmark container. Violates best practices for WCAG 4.1.2 Name, Role, Value - use wrapper element for role='search' around form element">
+            <label for="product-search">Search products:</label>
+            <input type="search" id="product-search" name="query">
+            <button type="submit">Search Products</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

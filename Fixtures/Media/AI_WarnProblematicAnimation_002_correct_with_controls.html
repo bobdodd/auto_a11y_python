@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnProblematicAnimation - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnProblematicAnimation_002_correct_with_controls",
+    "issueId": "AI_WarnProblematicAnimation",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Animations with proper pause controls and respect for prefers-reduced-motion",
+    "wcag": "2.3.1, 2.3.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        @keyframes gentle-fade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes slow-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animated-banner {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: gentle-fade 3s ease-in-out infinite;
+        }
+
+        .animated-logo {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            animation: slow-rotate 8s linear infinite;
+        }
+
+        .animated-icon {
+            width: 50px;
+            height: 50px;
+            background: #4CAF50;
+            border-radius: 50%;
+            animation: subtle-float 2s ease-in-out infinite;
+        }
+
+        .paused {
+            animation-play-state: paused !important;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animated-banner,
+            .animated-logo,
+            .animated-icon {
+                animation: none;
+            }
+        }
+
+        .control-button {
+            margin: 10px 0;
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function toggleAnimation(buttonId, targetClass) {
+            const button = document.getElementById(buttonId);
+            const target = document.querySelector('.' + targetClass);
+            target.classList.toggle('paused');
+            button.textContent = target.classList.contains('paused') ? 'Resume Animation' : 'Pause Animation';
+        }
+    </script>
+</head>
+<body>
+    <h1>Animated Content</h1>
+
+    <main>
+        <div data-expected-pass="true"
+             data-pass-reason="Gentle fade animation with 3 second cycle is well below seizure threshold (less than 3 flashes per second). Animation respects prefers-reduced-motion media query disabling for users who request reduced motion. Pause control button provided for user control. Opacity change is gradual not flashing. Complies with WCAG 2.3.1 Three Flashes or Below Threshold and 2.3.2 Three Flashes by providing safe animation rate and user controls">
+            <button id="banner-btn" class="control-button" onclick="toggleAnimation('banner-btn', 'animated-banner')">
+                Pause Animation
+            </button>
+            <div class="animated-banner"></div>
+        </div>
+
+        <section data-expected-pass="true"
+                 data-pass-reason="Slow rotation animation takes 8 seconds per cycle preventing vestibular issues. Rotation speed is gentle and predictable. Pause button gives users control over animation. Respects prefers-reduced-motion setting disabling animation for users with motion sensitivity. No bright flashing colors. Meets WCAG 2.2.2 Pause, Stop, Hide and 2.3.2 Three Flashes by providing user controls and safe animation parameters">
+            <h2>Our Logo</h2>
+            <button id="logo-btn" class="control-button" onclick="toggleAnimation('logo-btn', 'animated-logo')">
+                Pause Animation
+            </button>
+            <div class="animated-logo"></div>
+        </section>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Subtle floating animation with 2 second cycle and 10px movement range is gentle and non-disruptive. Small movement distance prevents vestibular disorders. Animation can be paused via button control. Respects prefers-reduced-motion preference automatically disabling for sensitive users. Animation enhances without being essential. Complies with WCAG 2.2.2 Pause, Stop, Hide by providing controls and safe animation that can be disabled">
+            <h2>Feature Icon</h2>
+            <button id="icon-btn" class="control-button" onclick="toggleAnimation('icon-btn', 'animated-icon')">
+                Pause Animation
+            </button>
+            <div class="animated-icon"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

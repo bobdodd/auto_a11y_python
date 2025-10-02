@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XHTML Document - Proper xml:lang</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyXmlLangAttr_002_correct_with_xmllang",
+    "issueId": "ErrEmptyXmlLangAttr",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "XHTML document with matching lang and xml:lang attributes",
+    "wcag": "3.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Both lang and xml:lang attributes properly set to 'en', ensuring language identification works across HTML and XML parsers">
+    <h1>Technical Documentation</h1>
+
+    <p>This XHTML document correctly specifies both lang="en" and xml:lang="en" on the html element.
+    This ensures compatibility with both HTML5 parsers (which use lang) and XML parsers (which use xml:lang).</p>
+
+    <div>
+        <h2>XHTML Best Practices</h2>
+        <p>In XHTML documents, always include both lang and xml:lang attributes with identical values.
+        This provides maximum compatibility and ensures assistive technologies can properly identify
+        the document language regardless of the parsing context.</p>
+    </div>
+</body>
+</html>

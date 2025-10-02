@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XHTML Document - Language Mismatch</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPrimaryLangAndXmlLangMismatch_001_violations_basic",
+    "issueId": "ErrPrimaryLangAndXmlLangMismatch",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "lang and xml:lang attributes have conflicting values",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrPrimaryLangAndXmlLangMismatch"
+      data-violation-reason="HTML element has lang='en' but xml:lang='es', creating conflicting language information">
+    <h1>Technical Documentation</h1>
+
+    <p>This XHTML document has conflicting lang and xml:lang attributes on the html element.
+    Different processors may use different values, causing inconsistent behavior.</p>
+
+    <div lang="fr" xml:lang="de"
+         data-expected-violation="true"
+         data-violation-id="ErrPrimaryLangAndXmlLangMismatch"
+         data-violation-reason="Element has lang='fr' but xml:lang='de', assistive technologies may interpret language differently">
+        <h2>Mismatched Language Declaration</h2>
+        <p>This section has conflicting French and German language codes.</p>
+    </div>
+
+    <blockquote lang="it" xml:lang="pt"
+                data-expected-violation="true"
+                data-violation-id="ErrPrimaryLangAndXmlLangMismatch"
+                data-violation-reason="Blockquote has lang='it' but xml:lang='pt', creating ambiguous language context">
+        <p>Conflicting Italian and Portuguese language codes on this blockquote.</p>
+    </blockquote>
+</body>
+</html>

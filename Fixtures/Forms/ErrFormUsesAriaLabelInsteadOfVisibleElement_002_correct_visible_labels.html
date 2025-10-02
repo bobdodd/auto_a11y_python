@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFormUsesAriaLabelInsteadOfVisibleElement - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesAriaLabelInsteadOfVisibleElement_002_correct_visible_labels",
+    "issueId": "ErrFormUsesAriaLabelInsteadOfVisibleElement",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Forms with visible headings or labels for all users",
+    "wcag": "2.5.3, 3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Forms With Visible Labels</h1>
+
+    <main>
+        <section>
+            <h2 id="contact-form-heading">Contact Form</h2>
+            <form aria-labelledby="contact-form-heading"
+                  data-expected-pass="true"
+                  data-pass-reason="Form uses visible heading referenced by aria-labelledby">
+                <label for="contact-name">Name:</label>
+                <input type="text" id="contact-name">
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+
+        <section>
+            <h2 id="newsletter-heading">Newsletter Signup</h2>
+            <form aria-labelledby="newsletter-heading"
+                  data-expected-pass="true"
+                  data-pass-reason="Form labeled with visible heading accessible to all users">
+                <label for="email">Email:</label>
+                <input type="email" id="email">
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+
+        <section>
+            <label for="search-input"
+                   data-expected-pass="true"
+                   data-pass-reason="Search form has visible label for all users">
+                Search the website:
+            </label>
+            <form>
+                <input type="search" id="search-input">
+                <button type="submit">Search</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

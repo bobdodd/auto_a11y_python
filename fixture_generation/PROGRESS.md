@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 113 files
-- **Issues With Enhanced Fixtures:** 54
+- **Total Enhanced Fixtures Created:** 121 files
+- **Issues With Enhanced Fixtures:** 58
 - **Touchpoints Completed:** 4 (Images - 100%, Links - 78%, ARIA - 75%, Focus Management - 100%)
-- **Touchpoints In Progress:** 3 (Headings 91%, Forms 33%, Buttons 67%)
-- **Issues Still Needing Fixtures:** 260
+- **Touchpoints In Progress:** 3 (Headings 91%, Forms 40%, Buttons 67%)
+- **Issues Still Needing Fixtures:** 256
 
 ## Completed Fixtures by Touchpoint
 
@@ -136,7 +136,7 @@ This document tracks the progress of generating comprehensive test fixtures for 
 #### ⏳ Remaining Issues (2)
 - Note: Some issues may have duplicate old fixtures to verify/replace
 
-### 📝 Forms Touchpoint (15/45 issues - 33% complete)
+### 📝 Forms Touchpoint (18/45 issues - 40% complete)
 
 1. **ErrEmptyLabel** - Empty label elements (2 fixtures)
 2. **ErrEmptyAriaLabelOnField** - Empty aria-label (2 fixtures)
@@ -156,10 +156,14 @@ This document tracks the progress of generating comprehensive test fixtures for 
 16. **ErrFormAriaLabelledByReferenceDoesNotExist** - Form aria-labelledby broken reference (2 fixtures)
 17. **AI_ErrToggleWithoutState** - Toggle buttons without state indication (2 fixtures)
 18. **AI_ErrMissingInteractiveRole** - Interactive elements without ARIA roles (2 fixtures)
+19. **ErrFormUsesAriaLabelInsteadOfVisibleElement** - Form aria-label instead of visible heading (2 fixtures)
+20. **ErrFormUsesTitleAttribute** - Form using title attribute for labeling (2 fixtures)
+21. **ErrOrphanLabelWithNoId** - Label without for attribute (2 fixtures)
+22. **ErrLabelMismatchOfAccessibleNameAndLabelText** - Accessible name doesn't match visible label (2 fixtures)
 
-**Total:** 28 fixture files
+**Total:** 36 fixture files
 
-#### ⏳ Remaining Issues (30)
+#### ⏳ Remaining Issues (27)
 Major gaps: validation messages, input types, dropdown/select issues, required fields
 
 ### 🔗 Links Touchpoint (7/9 issues - 78% complete)

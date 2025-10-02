@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Site - Unlabelled Forms</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnUnlabelledForm_001_violations_basic",
+    "issueId": "WarnUnlabelledForm",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Form elements lacking accessible names for screen reader users",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Search</h1>
+
+    <section>
+        <h2>Find Products</h2>
+        <form data-expected-violation="true"
+              data-violation-id="WarnUnlabelledForm"
+              data-violation-reason="Form lacks accessible name (aria-label or aria-labelledby), users won't understand its purpose">
+            <div>
+                <label for="query">Search</label>
+                <input type="text" id="query" name="query">
+            </div>
+            <button type="submit">Go</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Newsletter</h2>
+        <form data-expected-violation="true"
+              data-violation-id="WarnUnlabelledForm"
+              data-violation-reason="Newsletter form has no accessible name, screen reader users navigating forms won't know its purpose">
+            <div>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <button type="submit">Subscribe</button>
+        </form>
+    </section>
+
+    <p>Note: Forms without accessible names are harder to identify when navigating by form landmarks.</p>
+</body>
+</html>

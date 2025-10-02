@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrVideoIframeMissingTitle - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrVideoIframeMissingTitle_002_correct_with_title",
+    "issueId": "ErrVideoIframeMissingTitle",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Video iframes with descriptive title attributes",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Video IFrames With Titles</h1>
+
+    <main>
+        <section>
+            <h2>YouTube Video</h2>
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                    width="560"
+                    height="315"
+                    title="Rick Astley - Never Gonna Give You Up (Official Music Video)"
+                    data-expected-pass="true"
+                    data-pass-reason="YouTube iframe has descriptive title attribute">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Vimeo Video</h2>
+            <iframe src="https://player.vimeo.com/video/123456789"
+                    width="640"
+                    height="360"
+                    title="Product Demo: How to Use Our Software"
+                    data-expected-pass="true"
+                    data-pass-reason="Vimeo iframe has descriptive title explaining video content">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Generic Video Embed</h2>
+            <iframe src="https://example.com/video-player"
+                    width="560"
+                    height="315"
+                    title="Company Overview Video"
+                    data-expected-pass="true"
+                    data-pass-reason="Video iframe has title attribute describing the embedded content">
+            </iframe>
+        </section>
+    </main>
+</body>
+</html>

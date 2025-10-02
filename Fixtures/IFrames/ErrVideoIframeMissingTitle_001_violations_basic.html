@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrVideoIframeMissingTitle - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrVideoIframeMissingTitle_001_violations_basic",
+    "issueId": "ErrVideoIframeMissingTitle",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Video iframes without title attributes",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Video IFrames Without Titles</h1>
+
+    <main>
+        <section>
+            <h2>YouTube Video</h2>
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                    width="560"
+                    height="315"
+                    data-expected-violation="true"
+                    data-violation-id="ErrVideoIframeMissingTitle"
+                    data-violation-reason="YouTube iframe has no title attribute, screen readers cannot identify content">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Vimeo Video</h2>
+            <iframe src="https://player.vimeo.com/video/123456789"
+                    width="640"
+                    height="360"
+                    data-expected-violation="true"
+                    data-violation-id="ErrVideoIframeMissingTitle"
+                    data-violation-reason="Vimeo iframe lacks title, users cannot understand embedded video content">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Generic Video Embed</h2>
+            <iframe src="https://example.com/video-player"
+                    width="560"
+                    height="315"
+                    data-expected-violation="true"
+                    data-violation-id="ErrVideoIframeMissingTitle"
+                    data-violation-reason="Video iframe missing title attribute">
+            </iframe>
+        </section>
+    </main>
+</body>
+</html>

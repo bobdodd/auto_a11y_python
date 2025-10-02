@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegionLandmarkAccessibleNameIsBlank - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "RegionLandmarkAccessibleNameIsBlank_001_violations_basic",
+    "issueId": "RegionLandmarkAccessibleNameIsBlank",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Region landmarks with blank accessible names",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Region Landmarks with Blank Accessible Names Test</h1>
+
+    <main>
+        <h2>Main Content</h2>
+
+        <!-- Region with empty aria-label -->
+        <div role="region"
+             aria-label=""
+             data-expected-violation="true"
+             data-violation-id="RegionLandmarkAccessibleNameIsBlank"
+             data-violation-reason="Region landmark has empty aria-label attribute. Region landmarks require meaningful accessible names to be useful">
+            <h3>Featured Content</h3>
+            <p>This region has a blank label.</p>
+        </div>
+
+        <!-- Region with aria-labelledby referencing blank element -->
+        <section role="region"
+                 aria-labelledby="blank-heading"
+                 data-expected-violation="true"
+                 data-violation-id="RegionLandmarkAccessibleNameIsBlank"
+                 data-violation-reason="Region landmark references element with blank text via aria-labelledby, resulting in blank accessible name">
+            <h3 id="blank-heading"></h3>
+            <p>Important information here but heading is empty.</p>
+        </section>
+
+        <!-- Region with whitespace-only aria-label -->
+        <div role="region"
+             aria-label="    "
+             data-expected-violation="true"
+             data-violation-id="RegionLandmarkAccessibleNameIsBlank"
+             data-violation-reason="Region landmark has aria-label with only whitespace, effectively blank for screen readers">
+            <h3>Special Section</h3>
+            <p>This region's label contains only whitespace.</p>
+        </div>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

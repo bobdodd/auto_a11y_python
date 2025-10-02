@@ -1,6 +1,6 @@
 # Fixture Generation Progress
 
-**Last Updated:** 2025-10-01
+**Last Updated:** 2025-10-02
 **Status:** In Progress - Landmarks touchpoint expansion
 
 ## Overview
@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 409 files
-- **Issues With Enhanced Fixtures:** 203
+- **Total Enhanced Fixtures Created:** 417 files
+- **Issues With Enhanced Fixtures:** 205
 - **Touchpoints Completed:** 32 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%)
-- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 92%)
-- **Issues Still Needing Fixtures:** 111
+- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 94%)
+- **Issues Still Needing Fixtures:** 109
 
 ## Completed Fixtures by Touchpoint
 
@@ -220,7 +220,7 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 
 **Total:** 4 fixture files
 
-### 🏛️ Landmarks Touchpoint (61/65 issues - 92% complete)
+### 🏛️ Landmarks Touchpoint (63/65 issues - 94% complete)
 
 1. **ErrBannerLandmarkMayNotBeChildOfAnotherLandmark** - Banner nested in other landmarks (2 fixtures)
 2. **ErrComplementaryLandmarkAccessibleNameIsBlank** - Complementary landmarks with blank accessible names (2 fixtures)
@@ -280,11 +280,15 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 56. **WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark** - Region without label not exposed as landmark (WCAG 1.3.1) (2 fixtures)
 57. **WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark** - Heading inside landmark not used as label (WCAG 1.3.1) (2 fixtures)
 58. **WarnMultipleNavNeedsLabel** - Multiple nav landmarks without distinguishing labels (WCAG 1.3.1) (2 fixtures)
+59. **WarnMultipleBannerLandmarksButNotAllHaveLabels** - Multiple banner landmarks with inconsistent labeling (WCAG 1.3.1, 2.4.6) (2 fixtures)
+60. **WarnMultipleContentInfoLandmarksButNotAllHaveLabels** - Multiple contentinfo landmarks with inconsistent labeling (WCAG 1.3.1, 2.4.6) (2 fixtures)
+61. **RegionLandmarkAccessibleNameIsBlank** - Region landmarks with blank accessible names (WCAG 1.3.1, 2.4.6) (2 fixtures)
+62. **WarnNoNavigationLandmark** - Page without navigation landmark (WCAG 1.3.1, 2.4.1) (2 fixtures)
 
-**Total:** 122 fixture files
+**Total:** 130 fixture files
 
-#### ⏳ Remaining Issues (4)
-Major gaps: additional label warnings, search/form landmark issues, landmark nesting edge cases
+#### ⏳ Remaining Issues (2)
+Major gaps: additional label warnings, search/form landmark issues
 
 ### 🎨 Colors and Contrast Touchpoint (4/4 issues - 100% COMPLETE)
 

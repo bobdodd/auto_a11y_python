@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonNoVisibleFocus - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonNoVisibleFocus_002_correct_visible_focus",
+    "issueId": "ErrButtonNoVisibleFocus",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with clear visible focus indicators",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .custom-focus:focus {
+            outline: 3px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .enhanced-focus:focus {
+            outline: 2px solid #000;
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Buttons With Proper Visible Focus</h1>
+
+    <main>
+        <section>
+            <h2>Button with Browser Default Focus</h2>
+            <button data-expected-pass="true"
+                    data-pass-reason="Button uses browser default focus indicator which is visible">
+                Submit Form
+            </button>
+            <p>This button retains the browser's default focus indicator.</p>
+        </section>
+
+        <section>
+            <h2>Button with Custom Focus Outline</h2>
+            <button class="custom-focus"
+                    data-expected-pass="true"
+                    data-pass-reason="Button has custom focus indicator with good contrast">
+                Save Changes
+            </button>
+            <p>This button has a custom focus outline with 3px width and high contrast.</p>
+        </section>
+
+        <section>
+            <h2>Button with Enhanced Focus</h2>
+            <button class="enhanced-focus"
+                    data-expected-pass="true"
+                    data-pass-reason="Button has enhanced focus indicator with outline and box-shadow">
+                Delete Item
+            </button>
+            <p>This button has both an outline and box-shadow for enhanced focus visibility.</p>
+        </section>
+    </main>
+</body>
+</html>

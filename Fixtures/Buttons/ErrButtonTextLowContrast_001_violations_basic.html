@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonTextLowContrast - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonTextLowContrast_001_violations_basic",
+    "issueId": "ErrButtonTextLowContrast",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Button text with insufficient contrast against button background",
+    "wcag": "1.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .low-contrast-1 {
+            background: #ffffff;
+            color: #cccccc;
+            border: 1px solid #999;
+            padding: 10px 20px;
+        }
+
+        .low-contrast-2 {
+            background: #666666;
+            color: #888888;
+            border: 1px solid #444;
+            padding: 10px 20px;
+        }
+
+        .low-contrast-3 {
+            background: #0066cc;
+            color: #4da6ff;
+            border: none;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Button Text With Low Contrast</h1>
+
+    <main>
+        <section>
+            <h2>Light Gray Text on White Background</h2>
+            <button class="low-contrast-1"
+                    data-expected-violation="true"
+                    data-violation-id="ErrButtonTextLowContrast"
+                    data-violation-reason="Button text #ccc on #fff has contrast ratio ~1.8:1 (needs 4.5:1)">
+                Submit Form
+            </button>
+            <p>This button has light gray text on white background (insufficient contrast).</p>
+        </section>
+
+        <section>
+            <h2>Medium Gray Text on Dark Gray Background</h2>
+            <button class="low-contrast-2"
+                    data-expected-violation="true"
+                    data-violation-id="ErrButtonTextLowContrast"
+                    data-violation-reason="Button text #888 on #666 has contrast ratio ~1.4:1 (needs 4.5:1)">
+                Save Changes
+            </button>
+            <p>This button has medium gray text on dark gray background.</p>
+        </section>
+
+        <section>
+            <h2>Light Blue Text on Blue Background</h2>
+            <button class="low-contrast-3"
+                    data-expected-violation="true"
+                    data-violation-id="ErrButtonTextLowContrast"
+                    data-violation-reason="Button text has insufficient contrast with blue background">
+                Delete Item
+            </button>
+            <p>This button has light blue text on darker blue background (low contrast).</p>
+        </section>
+    </main>
+</body>
+</html>

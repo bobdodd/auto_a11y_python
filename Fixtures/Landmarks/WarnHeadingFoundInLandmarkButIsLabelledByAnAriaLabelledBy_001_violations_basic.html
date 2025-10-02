@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy_001_violations_basic",
+    "issueId": "WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Landmarks with headings but labeled by different elements",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Landmarks with Conflicting Heading and Label Test</h1>
+
+    <main>
+        <h2>Main Content</h2>
+
+        <!-- Navigation with heading but labeled by different element -->
+        <nav aria-labelledby="nav-label"
+             data-expected-violation="true"
+             data-violation-id="WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy"
+             data-violation-reason="Navigation landmark contains h3 heading 'Site Navigation' but uses aria-labelledby to reference different element, causing mismatch between visible heading and announced landmark label">
+            <span id="nav-label">Main Menu</span>
+            <h3>Site Navigation</h3>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+        </nav>
+
+        <!-- Region with heading but labeled by different element -->
+        <section role="region"
+                 aria-labelledby="region-label"
+                 data-expected-violation="true"
+                 data-violation-id="WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy"
+                 data-violation-reason="Region landmark contains h3 heading 'Featured Content' but aria-labelledby references different text 'Special Features', creating confusion between visible and accessible names">
+            <p id="region-label">Special Features</p>
+            <h3>Featured Content</h3>
+            <p>This section has a heading that doesn't match the landmark label.</p>
+        </section>
+
+        <!-- Complementary with heading but labeled by different element -->
+        <aside role="complementary"
+               aria-labelledby="aside-label"
+               data-expected-violation="true"
+               data-violation-id="WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy"
+               data-violation-reason="Complementary landmark contains h3 heading 'Related Articles' but uses aria-labelledby to reference 'Sidebar Content', causing disconnect between what users see and what screen readers announce">
+            <div id="aside-label">Sidebar Content</div>
+            <h3>Related Articles</h3>
+            <p>Additional information and resources.</p>
+        </aside>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

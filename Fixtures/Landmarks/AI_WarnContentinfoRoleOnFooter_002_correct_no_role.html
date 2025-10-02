@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnContentinfoRoleOnFooter - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnContentinfoRoleOnFooter_002_correct_no_role",
+    "issueId": "AI_WarnContentinfoRoleOnFooter",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Footer elements without redundant role='contentinfo'",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Company Name</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Article Title</h2>
+            <p>Main article content goes here.</p>
+
+            <footer data-expected-pass="true"
+                    data-pass-reason="Nested footer element without role='contentinfo' correctly used. Footer inside article provides sectioning context not contentinfo landmark. No inappropriate contentinfo role. Proper use of footer for article metadata. Screen readers understand footer is scoped to article not page. Meets WCAG 4.1.2 Name, Role, Value - nested footer without incorrect contentinfo role">
+                <p>Article published on January 1, 2024</p>
+                <p>Author: Jane Doe</p>
+            </footer>
+        </article>
+    </main>
+
+    <footer data-expected-pass="true"
+            data-pass-reason="Footer element without explicit role='contentinfo' relies on native HTML5 semantics. Footer as direct child of body implicitly provides contentinfo landmark. No redundant ARIA. Clean HTML semantics preferred. Screen readers recognize footer as contentinfo automatically. Complies with WCAG 4.1.2 Name, Role, Value - using native HTML semantics instead of redundant ARIA role">
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+        <nav aria-label="Footer navigation">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/sitemap">Sitemap</a></li>
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>

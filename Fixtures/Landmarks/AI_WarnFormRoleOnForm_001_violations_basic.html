@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnFormRoleOnForm - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnFormRoleOnForm_001_violations_basic",
+    "issueId": "AI_WarnFormRoleOnForm",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Form elements with explicit role='form' redundantly",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Us</h1>
+
+    <main>
+        <form role="form"
+              aria-label="Contact form"
+              data-expected-violation="true"
+              data-violation-reason="Form element has explicit role='form' which is redundant. HTML5 form element already provides form semantics when it has an accessible name. Redundant ARIA is unnecessary and adds code clutter. Native HTML semantics should be preferred over explicit ARIA. Warning for WCAG 4.1.2 Name, Role, Value - remove redundant role='form' from form element">
+            <h2>Send us a message</h2>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+
+        <section>
+            <h2>Newsletter Signup</h2>
+
+            <form role="form"
+                  aria-labelledby="newsletter-heading"
+                  data-expected-violation="true"
+                  data-violation-reason="Form element with redundant role='form'. Form already has implicit form role in HTML5 when it has accessible name. Explicit ARIA role is not needed. Developers should rely on native semantics. Screen readers recognize form automatically when labeled. Warning for WCAG 4.1.2 Name, Role, Value - remove unnecessary role='form' from form">
+                <h3 id="newsletter-heading">Subscribe to our newsletter</h3>
+
+                <label for="newsletter-email">Email address:</label>
+                <input type="email" id="newsletter-email" name="email" required>
+
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

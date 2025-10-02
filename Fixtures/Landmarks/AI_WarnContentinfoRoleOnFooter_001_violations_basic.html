@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnContentinfoRoleOnFooter - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnContentinfoRoleOnFooter_001_violations_basic",
+    "issueId": "AI_WarnContentinfoRoleOnFooter",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Footer elements with explicit role='contentinfo' redundantly",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Company Name</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Article Title</h2>
+            <p>Main article content goes here.</p>
+
+            <footer role="contentinfo"
+                    data-expected-violation="true"
+                    data-violation-reason="Nested footer element with role='contentinfo' incorrectly applied. Footer inside article/section should not have contentinfo role. Only one contentinfo per page (typically page-level footer). Misuse of contentinfo role creates confusion for screen reader users. Multiple contentinfo landmarks violate expectations. Warning for WCAG 4.1.2 Name, Role, Value - remove inappropriate role='contentinfo' from nested footer">
+                <p>Article published on January 1, 2024</p>
+                <p>Author: Jane Doe</p>
+            </footer>
+        </article>
+    </main>
+
+    <footer role="contentinfo"
+            data-expected-violation="true"
+            data-violation-reason="Footer element has explicit role='contentinfo' which is redundant. HTML5 footer element already provides contentinfo semantics when used as direct child of body. Redundant ARIA is unnecessary and adds code clutter. Native HTML semantics should be preferred over explicit ARIA. Warning for WCAG 4.1.2 Name, Role, Value - remove redundant role='contentinfo' from footer element">
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+        <nav aria-label="Footer navigation">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/sitemap">Sitemap</a></li>
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>

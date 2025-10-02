@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFielLabelledBySomethingNotALabel - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFielLabelledBySomethingNotALabel_001_violations_basic",
+    "issueId": "ErrFielLabelledBySomethingNotALabel",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Form fields labeled by inappropriate elements (div, span, p)",
+    "wcag": "1.3.1, 3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Fields Labeled By Non-Label Elements</h1>
+
+    <main>
+        <form>
+            <section>
+                <div id="name-text">Full Name</div>
+                <input type="text"
+                       aria-labelledby="name-text"
+                       data-expected-violation="true"
+                       data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                       data-violation-reason="Field labeled by div instead of proper label element">
+            </section>
+
+            <section>
+                <span id="email-text">Email Address</span>
+                <input type="email"
+                       aria-labelledby="email-text"
+                       data-expected-violation="true"
+                       data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                       data-violation-reason="Field labeled by span instead of proper label element">
+            </section>
+
+            <section>
+                <p id="phone-text">Phone Number</p>
+                <input type="tel"
+                       aria-labelledby="phone-text"
+                       data-expected-violation="true"
+                       data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                       data-violation-reason="Field labeled by p element instead of proper label element">
+            </section>
+
+            <section>
+                <h3 id="address-text">Address</h3>
+                <textarea aria-labelledby="address-text"
+                          data-expected-violation="true"
+                          data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                          data-violation-reason="Field labeled by h3 element instead of proper label element"></textarea>
+            </section>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+</body>
+</html>

@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 93 files
-- **Issues With Enhanced Fixtures:** 44
+- **Total Enhanced Fixtures Created:** 103 files
+- **Issues With Enhanced Fixtures:** 49
 - **Touchpoints Completed:** 2 (Images - 100%, Links - 78%)
-- **Touchpoints In Progress:** 3 (Headings 91%, Forms 22%, Buttons 67%)
-- **Issues Still Needing Fixtures:** 270
+- **Touchpoints In Progress:** 3 (Headings 91%, Forms 33%, Buttons 67%)
+- **Issues Still Needing Fixtures:** 265
 
 ## Completed Fixtures by Touchpoint
 
@@ -136,7 +136,7 @@ This document tracks the progress of generating comprehensive test fixtures for 
 #### ⏳ Remaining Issues (2)
 - Note: Some issues may have duplicate old fixtures to verify/replace
 
-### 📝 Forms Touchpoint (10/45 issues - 22% complete)
+### 📝 Forms Touchpoint (15/45 issues - 33% complete)
 
 1. **ErrEmptyLabel** - Empty label elements (2 fixtures)
 2. **ErrEmptyAriaLabelOnField** - Empty aria-label (2 fixtures)
@@ -147,11 +147,20 @@ This document tracks the progress of generating comprehensive test fixtures for 
 7. **ErrFormEmptyHasNoInteractiveElements** - Form without controls (2 fixtures)
 8. **ErrNoLabel** - Input without label (2 fixtures)
 9. **ErrLabelContainsMultipleFields** - Single label with multiple fields (2 fixtures)
+10. **ErrPlaceholderAsLabel** - Placeholder as only label (2 fixtures)
+11. **ErrTitleAsOnlyLabel** - Title attribute as only label (2 fixtures)
+12. **WarnNoFieldset** - Radio/checkbox groups without fieldset (2 fixtures)
+13. **WarnFormHasNoLabel** - Form without label (2 fixtures)
+14. **ErrFielLabelledBySomethingNotALabel** - Field labeled by non-label elements (2 fixtures)
+15. **ErrFieldLabelledUsinAriaLabel** - Field using aria-label instead of visible label (2 fixtures)
+16. **ErrFormAriaLabelledByReferenceDoesNotExist** - Form aria-labelledby broken reference (2 fixtures)
+17. **AI_ErrToggleWithoutState** - Toggle buttons without state indication (2 fixtures)
+18. **AI_ErrMissingInteractiveRole** - Interactive elements without ARIA roles (2 fixtures)
 
-**Total:** 18 fixture files
+**Total:** 28 fixture files
 
-#### ⏳ Remaining Issues (35)
-Major gaps: field labeling variants, validation messages, input types, fieldset/legend
+#### ⏳ Remaining Issues (30)
+Major gaps: validation messages, input types, dropdown/select issues, required fields
 
 ### 🔗 Links Touchpoint (7/9 issues - 78% complete)
 

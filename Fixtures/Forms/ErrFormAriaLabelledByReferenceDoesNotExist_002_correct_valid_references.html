@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFormAriaLabelledByReferenceDoesNotExist - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormAriaLabelledByReferenceDoesNotExist_002_correct_valid_references",
+    "issueId": "ErrFormAriaLabelledByReferenceDoesNotExist",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Forms with aria-labelledby referencing valid existing element IDs",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Forms With Valid aria-labelledby References</h1>
+
+    <main>
+        <section>
+            <h2 id="contact-form-title">Contact Form</h2>
+            <form aria-labelledby="contact-form-title"
+                  data-expected-pass="true"
+                  data-pass-reason="aria-labelledby references existing element ID 'contact-form-title'">
+                <label for="contact-name">Name</label>
+                <input type="text" id="contact-name">
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+
+        <section>
+            <h2 id="newsletter-heading">Newsletter Signup</h2>
+            <p id="signup-description">Stay informed with our monthly newsletter</p>
+            <form aria-labelledby="newsletter-heading signup-description"
+                  data-expected-pass="true"
+                  data-pass-reason="aria-labelledby references two existing element IDs">
+                <label for="newsletter-email">Email</label>
+                <input type="email" id="newsletter-email">
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+
+        <section>
+            <h2 id="feedback-form-title">Feedback Form</h2>
+            <form aria-labelledby="feedback-form-title"
+                  data-expected-pass="true"
+                  data-pass-reason="aria-labelledby references existing element ID 'feedback-form-title'">
+                <label for="feedback-text">Your Feedback</label>
+                <textarea id="feedback-text"></textarea>
+                <button type="submit">Send Feedback</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

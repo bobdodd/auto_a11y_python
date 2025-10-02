@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFieldLabelledUsinAriaLabel - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFieldLabelledUsinAriaLabel_001_violations_basic",
+    "issueId": "ErrFieldLabelledUsinAriaLabel",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Form fields labeled with aria-label instead of visible label",
+    "wcag": "3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Fields With Only aria-label</h1>
+
+    <main>
+        <form>
+            <section>
+                <input type="text"
+                       aria-label="Full Name"
+                       data-expected-violation="true"
+                       data-violation-id="ErrFieldLabelledUsinAriaLabel"
+                       data-violation-reason="Field has aria-label but no visible label element">
+            </section>
+
+            <section>
+                <input type="email"
+                       aria-label="Email Address"
+                       data-expected-violation="true"
+                       data-violation-id="ErrFieldLabelledUsinAriaLabel"
+                       data-violation-reason="Field has aria-label but no visible label element">
+            </section>
+
+            <section>
+                <select aria-label="Country"
+                        data-expected-violation="true"
+                        data-violation-id="ErrFieldLabelledUsinAriaLabel"
+                        data-violation-reason="Select field has aria-label but no visible label element">
+                    <option value="">Select Country</option>
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                </select>
+            </section>
+
+            <section>
+                <textarea aria-label="Comments"
+                          data-expected-violation="true"
+                          data-violation-id="ErrFieldLabelledUsinAriaLabel"
+                          data-violation-reason="Textarea has aria-label but no visible label element"></textarea>
+            </section>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+</body>
+</html>

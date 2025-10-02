@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMenuWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMenuWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrMenuWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Menu/dropdown components lacking proper ARIA markup",
+    "wcag": "2.1.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Application Menu</h1>
+
+    <main>
+        <!-- Dropdown menu without ARIA -->
+        <div class="menu-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrMenuWithoutARIA"
+             data-violation-reason="Menu lacks role='menu', aria-haspopup, aria-expanded state. Screen readers cannot identify this as a menu or understand its state">
+            <button onclick="toggleMenu()">File</button>
+            <div id="file-menu" class="menu" style="display:none;">
+                <div onclick="newFile()">New</div>
+                <div onclick="openFile()">Open</div>
+                <div onclick="saveFile()">Save</div>
+            </div>
+        </div>
+
+        <!-- Context menu without proper roles -->
+        <div class="context-menu-trigger"
+             onclick="showContextMenu()"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrMenuWithoutARIA"
+             data-violation-reason="Context menu missing role='menu' on container and role='menuitem' on items. No aria-haspopup or keyboard navigation support">
+            Right-click area
+            <ul id="context-menu" style="display:none;">
+                <li onclick="copy()">Copy</li>
+                <li onclick="paste()">Paste</li>
+                <li onclick="deleteItem()">Delete</li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('file-menu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function showContextMenu() {
+            document.getElementById('context-menu').style.display = 'block';
+        }
+
+        function newFile() { alert('New file'); }
+        function openFile() { alert('Open file'); }
+        function saveFile() { alert('Save file'); }
+        function copy() { alert('Copy'); }
+        function paste() { alert('Paste'); }
+        function deleteItem() { alert('Delete'); }
+    </script>
+</body>
+</html>

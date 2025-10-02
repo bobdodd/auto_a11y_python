@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMenuWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMenuWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrMenuWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Menu/dropdown components with proper ARIA markup and keyboard support",
+    "wcag": "2.1.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Application Menu - Correct Usage</h1>
+
+    <main>
+        <!-- Dropdown menu with proper ARIA - CORRECT -->
+        <div class="menu-container"
+             data-expected-pass="true"
+             data-pass-reason="Menu button has aria-haspopup='true', aria-expanded state, aria-controls linking to menu. Menu uses role='menu' and menuitems have role='menuitem'">
+            <button id="menu-btn"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    aria-controls="file-menu"
+                    onclick="accessibleToggleMenu()">
+                File
+            </button>
+            <div id="file-menu"
+                 role="menu"
+                 aria-labelledby="menu-btn"
+                 style="display:none;">
+                <button role="menuitem" onclick="newFile()">New</button>
+                <button role="menuitem" onclick="openFile()">Open</button>
+                <button role="menuitem" onclick="saveFile()">Save</button>
+            </div>
+        </div>
+
+        <!-- Context menu with proper roles and keyboard support - CORRECT -->
+        <div class="context-menu-trigger"
+             tabindex="0"
+             role="button"
+             aria-haspopup="menu"
+             aria-controls="context-menu"
+             onclick="accessibleShowContextMenu()"
+             data-expected-pass="true"
+             data-pass-reason="Trigger has role='button', aria-haspopup='menu', aria-controls. Menu uses role='menu', items have role='menuitem', and supports keyboard navigation">
+            Right-click area
+            <ul id="context-menu"
+                role="menu"
+                aria-label="Context menu"
+                style="display:none;">
+                <li role="menuitem" tabindex="0" onclick="copy()">Copy</li>
+                <li role="menuitem" tabindex="0" onclick="paste()">Paste</li>
+                <li role="menuitem" tabindex="0" onclick="deleteItem()">Delete</li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        function accessibleToggleMenu() {
+            const button = document.getElementById('menu-btn');
+            const menu = document.getElementById('file-menu');
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+            button.setAttribute('aria-expanded', !isExpanded);
+            menu.style.display = isExpanded ? 'none' : 'block';
+
+            if (!isExpanded) {
+                // Focus first menu item
+                menu.querySelector('[role="menuitem"]').focus();
+            }
+        }
+
+        function accessibleShowContextMenu() {
+            const menu = document.getElementById('context-menu');
+            menu.style.display = 'block';
+            menu.querySelector('[role="menuitem"]').focus();
+        }
+
+        function newFile() { alert('New file'); }
+        function openFile() { alert('Open file'); }
+        function saveFile() { alert('Save file'); }
+        function copy() { alert('Copy'); }
+        function paste() { alert('Paste'); }
+        function deleteItem() { alert('Delete'); }
+    </script>
+</body>
+</html>

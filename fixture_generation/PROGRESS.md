@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 267 files
-- **Issues With Enhanced Fixtures:** 132
+- **Total Enhanced Fixtures Created:** 275 files
+- **Issues With Enhanced Fixtures:** 136
 - **Touchpoints Completed:** 32 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%)
-- **Touchpoints In Progress:** 2 (Forms 51%, Landmarks 6%)
-- **Issues Still Needing Fixtures:** 182
+- **Touchpoints In Progress:** 2 (Forms 60%, Landmarks 6%)
+- **Issues Still Needing Fixtures:** 178
 
 ## Completed Fixtures by Touchpoint
 
@@ -133,7 +133,7 @@ This document tracks the progress of generating comprehensive test fixtures for 
 
 **Total:** 43 fixture files
 
-### 📝 Forms Touchpoint (23/45 issues - 51% complete)
+### 📝 Forms Touchpoint (27/45 issues - 60% complete)
 
 1. **ErrEmptyLabel** - Empty label elements (2 fixtures)
 2. **ErrEmptyAriaLabelOnField** - Empty aria-label (2 fixtures)
@@ -162,11 +162,15 @@ This document tracks the progress of generating comprehensive test fixtures for 
 25. **DiscoFormPage** - Page contains forms needing manual testing (2 fixtures)
 26. **WarnModalMissingAriaLabelledby** - Modals without aria-labelledby (2 fixtures)
 27. **WarnFieldLabelledByMultipleElements** - Fields labeled by multiple elements (2 fixtures)
+28. **WarnNoLegend** - Fieldsets without legend elements (2 fixtures)
+29. **WarnFormLandmarkAccessibleNameUsesForm** - Form labels with generic 'form' term (2 fixtures)
+30. **WarnFormHasNoLabelSoIsNotLandmark** - Forms not exposed as landmarks (2 fixtures)
+31. **WarnMissingAriaLabelledby** - Complex fields that could benefit from aria-labelledby (2 fixtures)
 
-**Total:** 46 fixture files
+**Total:** 54 fixture files
 
-#### ⏳ Remaining Issues (22)
-Major gaps: validation messages, input types, select/option issues, fieldset legends, form submission
+#### ⏳ Remaining Issues (18)
+Major gaps: validation messages, input types, select/option issues, form submission, unlabeled regions
 
 ### 🔗 Links Touchpoint (8/8 unique issues - 100% COMPLETE)
 

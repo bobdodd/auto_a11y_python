@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrEmptyHeading - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrEmptyHeading_001_violations_basic",
+    "issueId": "AI_ErrEmptyHeading",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Various types of empty heading elements detected by AI analysis",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: AI-Detected Empty Headings</h1>
+
+    <main>
+        <section>
+            <h2 data-expected-violation="true"
+                data-violation-id="AI_ErrEmptyHeading"
+                data-violation-reason="Heading is completely empty with no content"></h2>
+            <p>This section has an empty h2 heading that provides no context.</p>
+        </section>
+
+        <section>
+            <h3 data-expected-violation="true"
+                data-violation-id="AI_ErrEmptyHeading"
+                data-violation-reason="Heading contains only whitespace">
+            </h3>
+            <p>This section has an h3 heading containing only whitespace.</p>
+        </section>
+
+        <section>
+            <h4 data-expected-violation="true"
+                data-violation-id="AI_ErrEmptyHeading"
+                data-violation-reason="Heading contains only non-breaking spaces">&nbsp;&nbsp;&nbsp;</h4>
+            <p>This section has an h4 heading with only non-breaking spaces.</p>
+        </section>
+
+        <section>
+            <h5 data-expected-violation="true"
+                data-violation-id="AI_ErrEmptyHeading"
+                data-violation-reason="Heading contains only special characters">***</h5>
+            <p>This section has an h5 heading with only special characters.</p>
+        </section>
+
+        <section>
+            <h6 data-expected-violation="true"
+                data-violation-id="AI_ErrEmptyHeading"
+                data-violation-reason="Heading with display:none has no visible content">
+                <span style="display: none;">Hidden</span>
+            </h6>
+            <p>This section has an h6 heading where content is hidden.</p>
+        </section>
+    </main>
+</body>
+</html>

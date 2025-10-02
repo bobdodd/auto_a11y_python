@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnFormRoleOnForm - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnFormRoleOnForm_002_correct_no_role",
+    "issueId": "AI_WarnFormRoleOnForm",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Form elements without redundant role='form'",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Us</h1>
+
+    <main>
+        <form aria-label="Contact form"
+              data-expected-pass="true"
+              data-pass-reason="Form element without explicit role='form' relies on native HTML5 semantics. Form automatically provides form landmark role when it has accessible name. No redundant ARIA needed. HTML5 semantic elements preferred. Screen readers recognize form as landmark automatically. Clean code without unnecessary attributes. Complies with WCAG 4.1.2 Name, Role, Value - using native HTML semantics instead of redundant ARIA role">
+            <h2>Send us a message</h2>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+
+        <section>
+            <h2>Newsletter Signup</h2>
+
+            <form aria-labelledby="newsletter-heading"
+                  data-expected-pass="true"
+                  data-pass-reason="Form element relies on implicit form role from HTML5 when it has accessible name. No explicit role='form' attribute needed. Native semantics provide proper landmark. Screen readers automatically announce form as form region when labeled. Cleaner code without redundant ARIA. Best practice for HTML5 semantic elements. Meets WCAG 4.1.2 Name, Role, Value - using native element semantics">
+                <h3 id="newsletter-heading">Subscribe to our newsletter</h3>
+
+                <label for="newsletter-email">Email address:</label>
+                <input type="email" id="newsletter-email" name="email" required>
+
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

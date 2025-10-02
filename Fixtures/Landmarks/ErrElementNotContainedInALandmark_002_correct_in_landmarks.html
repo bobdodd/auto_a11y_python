@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrElementNotContainedInALandmark - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrElementNotContainedInALandmark_002_correct_in_landmarks",
+    "issueId": "ErrElementNotContainedInALandmark",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "All content properly contained within appropriate landmark regions",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <header role="banner"
+            data-expected-pass="true"
+            data-pass-reason="Page heading is properly contained within banner landmark, providing clear structure for screen reader users">
+        <h1>Content Properly In Landmarks - Correct Usage</h1>
+    </header>
+
+    <nav aria-label="Main navigation"
+         data-expected-pass="true"
+         data-pass-reason="Navigation links are contained within nav landmark, making them easily discoverable via landmark navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+
+    <main data-expected-pass="true"
+          data-pass-reason="Main content is properly contained within main landmark, clearly identifying the primary content area">
+        <h2>Main Content Area</h2>
+        <p>This content is properly contained within the main landmark, making it easy for users to skip directly to the primary content.</p>
+
+        <article>
+            <h3>Article Title</h3>
+            <p>Article content here, nested within main.</p>
+        </article>
+    </main>
+
+    <aside role="complementary"
+           aria-label="Additional information"
+           data-expected-pass="true"
+           data-pass-reason="Complementary content is properly contained within aside landmark with clear labeling">
+        <h2>Related Information</h2>
+        <ul>
+            <li>Related link 1</li>
+            <li>Related link 2</li>
+        </ul>
+    </aside>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+    </footer>
+</body>
+</html>

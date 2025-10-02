@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrDuplicateLandmarkWithoutName - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDuplicateLandmarkWithoutName_002_correct_unique_labels",
+    "issueId": "ErrDuplicateLandmarkWithoutName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 6,
+    "description": "Multiple landmarks of the same type with unique accessible names",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Landmarks With Unique Labels - Correct Usage</h1>
+
+    <!-- Multiple navigation landmarks WITH unique labels - CORRECT -->
+    <nav aria-label="Main navigation"
+         data-expected-pass="true"
+         data-pass-reason="Navigation landmark has unique accessible name 'Main navigation' that distinguishes it from other nav landmarks on the page">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+
+    <nav aria-label="Footer navigation"
+         data-expected-pass="true"
+         data-pass-reason="Navigation landmark has unique accessible name 'Footer navigation' that clearly distinguishes it from the main navigation">
+        <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+
+        <!-- Multiple complementary landmarks WITH unique labels - CORRECT -->
+        <aside aria-label="Related articles"
+               data-expected-pass="true"
+               data-pass-reason="Complementary landmark has descriptive label 'Related articles' that identifies its specific purpose">
+            <h3>Related Articles</h3>
+            <ul>
+                <li><a href="/article1">First Related Article</a></li>
+                <li><a href="/article2">Second Related Article</a></li>
+            </ul>
+        </aside>
+
+        <aside aria-label="Author bio"
+               data-expected-pass="true"
+               data-pass-reason="Complementary landmark has unique label 'Author bio' distinguishing it from other sidebar content">
+            <h3>About the Author</h3>
+            <p>Biography information here</p>
+        </aside>
+    </main>
+
+    <!-- Multiple form landmarks WITH unique labels - CORRECT -->
+    <form role="form"
+          aria-label="Site search"
+          data-expected-pass="true"
+          data-pass-reason="Form landmark has clear accessible name 'Site search' that identifies its purpose and distinguishes it from other forms">
+        <label for="search1">Search:</label>
+        <input type="search" id="search1" name="q">
+        <button type="submit">Search</button>
+    </form>
+
+    <form role="form"
+          aria-label="Newsletter subscription"
+          data-expected-pass="true"
+          data-pass-reason="Form landmark has descriptive label 'Newsletter subscription' that clearly identifies it and distinguishes it from the search form">
+        <label for="newsletter">Email:</label>
+        <input type="email" id="newsletter" name="email">
+        <button type="submit">Subscribe</button>
+    </form>
+</body>
+</html>

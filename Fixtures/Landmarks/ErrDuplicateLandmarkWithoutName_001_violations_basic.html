@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrDuplicateLandmarkWithoutName - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDuplicateLandmarkWithoutName_001_violations_basic",
+    "issueId": "ErrDuplicateLandmarkWithoutName",
+    "expectedViolationCount": 6,
+    "expectedPassCount": 0,
+    "description": "Multiple landmarks of the same type without distinguishing accessible names",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Duplicate Landmarks Without Names Test</h1>
+
+    <!-- Multiple navigation landmarks without labels -->
+    <nav data-expected-violation="true"
+         data-violation-id="ErrDuplicateLandmarkWithoutName"
+         data-violation-reason="Multiple navigation landmarks exist on page without distinguishing accessible names. Users cannot tell this navigation apart from other nav landmarks">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <nav data-expected-violation="true"
+         data-violation-id="ErrDuplicateLandmarkWithoutName"
+         data-violation-reason="Second navigation landmark without accessible name. When multiple nav landmarks exist, each needs a unique label">
+        <ul>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/terms">Terms</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+
+        <!-- Multiple complementary landmarks without labels -->
+        <aside data-expected-violation="true"
+               data-violation-id="ErrDuplicateLandmarkWithoutName"
+               data-violation-reason="Multiple complementary landmarks exist without accessible names. Screen reader users cannot distinguish between them">
+            <h3>Sidebar 1</h3>
+            <p>First sidebar content</p>
+        </aside>
+
+        <aside data-expected-violation="true"
+               data-violation-id="ErrDuplicateLandmarkWithoutName"
+               data-violation-reason="Second complementary landmark without accessible name. Each aside needs unique identification when multiple exist">
+            <h3>Sidebar 2</h3>
+            <p>Second sidebar content</p>
+        </aside>
+    </main>
+
+    <!-- Multiple form landmarks without labels -->
+    <form role="form"
+          data-expected-violation="true"
+          data-violation-id="ErrDuplicateLandmarkWithoutName"
+          data-violation-reason="Multiple form landmarks exist without accessible names. Users cannot distinguish this form from other forms on the page">
+        <label for="search1">Search:</label>
+        <input type="search" id="search1" name="q">
+        <button type="submit">Search</button>
+    </form>
+
+    <form role="form"
+          data-expected-violation="true"
+          data-violation-id="ErrDuplicateLandmarkWithoutName"
+          data-violation-reason="Second form landmark without accessible name. When multiple forms exist, each needs a descriptive label">
+        <label for="newsletter">Email:</label>
+        <input type="email" id="newsletter" name="email">
+        <button type="submit">Subscribe</button>
+    </form>
+</body>
+</html>

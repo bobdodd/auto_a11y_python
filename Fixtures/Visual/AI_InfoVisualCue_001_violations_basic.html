@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation - Visual Cues Only</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_InfoVisualCue_001_violations_basic",
+    "issueId": "AI_InfoVisualCue",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Information conveyed only through visual cues",
+    "wcag": "1.3.3, 1.4.1",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .required {
+            border-left: 5px solid red;
+        }
+        .error {
+            background-color: #ffe6e6;
+        }
+        .success {
+            background-color: #e6ffe6;
+        }
+        .warning {
+            color: orange;
+        }
+        input {
+            padding: 8px;
+            margin: 5px 0;
+            display: block;
+            width: 300px;
+        }
+        .priority-high {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .status-red { background: red; }
+        .status-yellow { background: yellow; }
+        .status-green { background: green; }
+    </style>
+</head>
+<body>
+    <h1>User Registration</h1>
+
+    <form>
+        <div data-expected-violation="true"
+             data-violation-id="AI_InfoVisualCue"
+             data-violation-reason="Required field indicated only by red border, screen reader and colorblind users won't know it's required">
+            <label for="email">Email</label>
+            <input type="email" id="email" class="required">
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="AI_InfoVisualCue"
+             data-violation-reason="Error state indicated only by background color, no text or ARIA to convey the error">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="error">
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <h2>Task List</h2>
+
+    <div data-expected-violation="true"
+         data-violation-id="AI_InfoVisualCue"
+         data-violation-reason="Priority indicated only by font size, screen readers cannot distinguish importance">
+        <p class="priority-high">Complete project report</p>
+        <p>Review team feedback</p>
+        <p>Schedule meeting</p>
+    </div>
+
+    <h2>System Status</h2>
+
+    <div data-expected-violation="true"
+         data-violation-id="AI_InfoVisualCue"
+         data-violation-reason="Status conveyed only through colored circles, colorblind and screen reader users cannot understand system state">
+        <p><span class="status-indicator status-red"></span> Database</p>
+        <p><span class="status-indicator status-yellow"></span> API Service</p>
+        <p><span class="status-indicator status-green"></span> Web Server</p>
+    </div>
+</body>
+</html>

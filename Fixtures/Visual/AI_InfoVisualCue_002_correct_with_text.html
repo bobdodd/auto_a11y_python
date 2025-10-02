@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation - Accessible Cues</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_InfoVisualCue_002_correct_with_text",
+    "issueId": "AI_InfoVisualCue",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Information conveyed through both visual and text cues",
+    "wcag": "1.3.3, 1.4.1",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .required {
+            border-left: 5px solid red;
+        }
+        .required-label::after {
+            content: " *";
+            color: red;
+        }
+        .error {
+            background-color: #ffe6e6;
+            border: 2px solid red;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .success {
+            background-color: #e6ffe6;
+        }
+        input {
+            padding: 8px;
+            margin: 5px 0;
+            display: block;
+            width: 300px;
+        }
+        .priority-badge {
+            background: #f44336;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .status-red { background: red; }
+        .status-yellow { background: yellow; }
+        .status-green { background: green; }
+        .status-text {
+            font-weight: bold;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Registration</h1>
+
+    <form>
+        <div data-expected-pass="true"
+             data-pass-reason="Required field indicated by visual border, asterisk, aria-required, and text label">
+            <label for="email" class="required-label">Email (required)</label>
+            <input type="email" id="email" class="required" aria-required="true">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Error state indicated by color, border, text message, and aria-invalid">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="error" aria-invalid="true" aria-describedby="password-error">
+            <div id="password-error" class="error-message" role="alert">
+                Error: Password must be at least 8 characters
+            </div>
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <h2>Task List</h2>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Priority indicated by visual styling plus explicit text badge">
+        <p>
+            Complete project report
+            <span class="priority-badge">High Priority</span>
+        </p>
+        <p>
+            Review team feedback
+            <span class="priority-badge" style="background: #FFC107; color: black;">Medium Priority</span>
+        </p>
+        <p>
+            Schedule meeting
+            <span class="priority-badge" style="background: #4CAF50;">Low Priority</span>
+        </p>
+    </div>
+
+    <h2>System Status</h2>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Status conveyed through colored circles plus explicit text labels">
+        <p>
+            <span class="status-indicator status-red" aria-hidden="true"></span>
+            <span class="status-text">Database: Offline</span>
+        </p>
+        <p>
+            <span class="status-indicator status-yellow" aria-hidden="true"></span>
+            <span class="status-text">API Service: Degraded</span>
+        </p>
+        <p>
+            <span class="status-indicator status-green" aria-hidden="true"></span>
+            <span class="status-text">Web Server: Online</span>
+        </p>
+    </div>
+</body>
+</html>

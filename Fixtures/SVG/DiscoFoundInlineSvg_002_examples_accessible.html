@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inline SVG Examples - Accessible Implementations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoFoundInlineSvg_002_examples_accessible",
+    "issueId": "DiscoFoundInlineSvg",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Inline SVG elements with proper accessibility implementations",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <p>Welcome to your dashboard. Below are your statistics:</p>
+
+    <!-- Informative icon SVG with proper accessibility -->
+    <div data-expected-pass="true"
+         data-pass-reason="SVG icon has role='img' and title for screen reader users">
+        <svg width="24" height="24" viewBox="0 0 24 24" role="img" aria-labelledby="check-title">
+            <title id="check-title">Completed</title>
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/>
+        </svg>
+        Task completed
+    </div>
+
+    <!-- Data visualization SVG with full accessibility -->
+    <div data-expected-pass="true"
+         data-pass-reason="SVG chart has role, title, desc, and adjacent text alternative with detailed data">
+        <h2>Sales Performance</h2>
+        <svg width="400" height="200" viewBox="0 0 400 200" role="img" aria-labelledby="chart-title chart-desc">
+            <title id="chart-title">Quarterly Sales Chart</title>
+            <desc id="chart-desc">Bar chart showing sales data for four quarters</desc>
+            <rect x="50" y="150" width="40" height="50" fill="#4CAF50"/>
+            <rect x="110" y="120" width="40" height="80" fill="#4CAF50"/>
+            <rect x="170" y="80" width="40" height="120" fill="#4CAF50"/>
+            <rect x="230" y="100" width="40" height="100" fill="#4CAF50"/>
+            <line x1="40" y1="200" x2="280" y2="200" stroke="black" stroke-width="2"/>
+            <line x1="40" y1="50" x2="40" y2="200" stroke="black" stroke-width="2"/>
+        </svg>
+        <table>
+            <caption>Sales Data</caption>
+            <tr><th>Quarter</th><th>Sales</th></tr>
+            <tr><td>Q1</td><td>$50k</td></tr>
+            <tr><td>Q2</td><td>$80k</td></tr>
+            <tr><td>Q3</td><td>$120k</td></tr>
+            <tr><td>Q4</td><td>$100k</td></tr>
+        </table>
+    </div>
+
+    <!-- Decorative SVG properly hidden -->
+    <div data-expected-pass="true"
+         data-pass-reason="Decorative SVG has aria-hidden='true' to hide from screen readers">
+        <svg width="200" height="100" viewBox="0 0 200 100" aria-hidden="true">
+            <rect width="200" height="100" fill="url(#grad1)"/>
+            <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+
+    <!-- Interactive SVG with keyboard accessibility -->
+    <div data-expected-pass="true"
+         data-pass-reason="Interactive SVG uses buttons for keyboard access with proper labels and focus management">
+        <p>Toggle the shapes' colors:</p>
+        <svg width="300" height="200" viewBox="0 0 300 200" role="img" aria-labelledby="interactive-title">
+            <title id="interactive-title">Interactive shape toggler</title>
+            <circle id="circle1" cx="75" cy="75" r="50" fill="#2196F3"/>
+            <rect id="rect1" x="150" y="25" width="100" height="100" fill="#4CAF50"/>
+        </svg>
+        <div>
+            <button type="button" aria-label="Toggle circle color between blue and orange" onclick="
+                const circle = document.getElementById('circle1');
+                const color = circle.getAttribute('fill') === '#2196F3' ? '#FF5722' : '#2196F3';
+                circle.setAttribute('fill', color);
+                this.setAttribute('aria-label', `Toggle circle color between blue and orange. Currently ${color === '#2196F3' ? 'blue' : 'orange'}`);
+            ">Toggle Circle</button>
+            <button type="button" aria-label="Toggle rectangle color between green and purple" onclick="
+                const rect = document.getElementById('rect1');
+                const color = rect.getAttribute('fill') === '#4CAF50' ? '#9C27B0' : '#4CAF50';
+                rect.setAttribute('fill', color);
+                this.setAttribute('aria-label', `Toggle rectangle color between green and purple. Currently ${color === '#4CAF50' ? 'green' : 'purple'}`);
+            ">Toggle Rectangle</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Layout - Correct Reading Order</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrReadingOrderMismatch_002_correct_dom_order",
+    "issueId": "AI_ErrReadingOrderMismatch",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "DOM order matches visual reading order",
+    "wcag": "1.3.2, 2.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 20px;
+        }
+        .header {
+            grid-column: 1 / 3;
+            grid-row: 1;
+        }
+        .content {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        .sidebar {
+            grid-column: 2;
+            grid-row: 2;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        .footer {
+            grid-column: 1 / 3;
+            grid-row: 3;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="DOM order matches visual reading order: header-content-sidebar-footer, screen readers will navigate content in logical sequence">
+    <h1>News Article</h1>
+
+    <div class="container">
+        <div class="header">
+            <h2>Breaking: Major Technology Announcement</h2>
+            <p><em>Published: October 1, 2025</em></p>
+        </div>
+
+        <!-- DOM order: content comes before sidebar, matching visual flow -->
+        <main class="content">
+            <p>This is the main article content that should be read before the sidebar...</p>
+            <p>The announcement details the company's new direction and strategic initiatives for the coming year.</p>
+            <p>Experts believe this will significantly impact the industry landscape.</p>
+        </main>
+
+        <aside class="sidebar">
+            <h3>Related Articles</h3>
+            <ul>
+                <li><a href="#">Previous announcement</a></li>
+                <li><a href="#">Company background</a></li>
+                <li><a href="#">Industry analysis</a></li>
+            </ul>
+            <h3>Advertisement</h3>
+            <div style="background: #e0e0e0; padding: 20px;">
+                Ad content here
+            </div>
+        </aside>
+
+        <footer class="footer">
+            <p>Tags: technology, business, innovation</p>
+            <p>Share: [Facebook] [Twitter] [LinkedIn]</p>
+        </footer>
+    </div>
+</body>
+</html>

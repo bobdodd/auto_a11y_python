@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Landmark Conflicting ARIA Attributes - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic",
+        "issueId": "ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Navigation landmarks with both aria-label and aria-labelledby attributes",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Navigation Landmark Conflicting ARIA Attributes - Violations</h1>
+
+        <nav aria-label="Main navigation"
+             aria-labelledby="main-nav-heading"
+             data-expected-violation="true"
+             data-violation-id="ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+             data-violation-reason="Navigation landmark has both aria-label and aria-labelledby, creating ambiguity. Only aria-labelledby will be used, making aria-label redundant">
+            <h2 id="main-nav-heading">Primary Site Navigation</h2>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/products">Products</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Article Content</h2>
+            <p>Understanding conflicting ARIA attributes on navigation landmarks.</p>
+
+            <nav aria-labelledby="toc-heading sidebar-heading"
+                 aria-label="Table of contents"
+                 data-expected-violation="true"
+                 data-violation-id="ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+                 data-violation-reason="Navigation landmark specifies both aria-labelledby and aria-label. The aria-labelledby takes precedence, making aria-label unnecessary">
+                <h3 id="toc-heading">Contents</h3>
+                <p id="sidebar-heading">Quick Links</p>
+                <ul>
+                    <li><a href="#section1">Section 1</a></li>
+                    <li><a href="#section2">Section 2</a></li>
+                    <li><a href="#section3">Section 3</a></li>
+                </ul>
+            </nav>
+        </article>
+    </main>
+
+    <footer>
+        <nav aria-label="Footer navigation"
+             aria-labelledby="footer-nav-heading"
+             data-expected-violation="true"
+             data-violation-id="ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+             data-violation-reason="Navigation landmark has both aria-label and aria-labelledby attributes. Only one should be used to provide clear accessible name">
+            <h3 id="footer-nav-heading">Legal Information</h3>
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/sitemap">Site Map</a></li>
+            </ul>
+        </nav>
+        <p>© 2025 Example Corporation</p>
+    </footer>
+</body>
+</html>

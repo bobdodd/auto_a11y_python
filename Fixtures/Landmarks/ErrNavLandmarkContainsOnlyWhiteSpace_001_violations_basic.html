@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Landmark Contains Only Whitespace - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrNavLandmarkContainsOnlyWhiteSpace_001_violations_basic",
+        "issueId": "ErrNavLandmarkContainsOnlyWhiteSpace",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Navigation landmarks containing only whitespace with no functional content",
+        "wcag": "1.3.1",
+        "impact": "High"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Navigation Landmark Contains Only Whitespace - Violations</h1>
+
+        <nav aria-label="Main navigation"
+             data-expected-violation="true"
+             data-violation-id="ErrNavLandmarkContainsOnlyWhiteSpace"
+             data-violation-reason="Navigation landmark contains only whitespace characters with no actual navigation links or content">
+
+
+
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding Navigation Content Requirements</h2>
+            <p>Navigation landmarks must contain functional navigation links. A nav element with only whitespace serves no purpose.</p>
+
+            <nav aria-label="Article navigation"
+                 data-expected-violation="true"
+                 data-violation-id="ErrNavLandmarkContainsOnlyWhiteSpace"
+                 data-violation-reason="Navigation landmark contains only spaces, tabs, and newlines with no navigation content">
+
+
+
+            </nav>
+
+            <p>Article content continues here.</p>
+        </article>
+    </main>
+
+    <footer>
+        <div role="navigation"
+             aria-label="Footer links"
+             data-expected-violation="true"
+             data-violation-id="ErrNavLandmarkContainsOnlyWhiteSpace"
+             data-violation-reason="Navigation landmark is empty except for whitespace, providing no navigation functionality">
+
+
+
+        </div>
+        <p>© 2025 Example Corporation</p>
+        <p>Empty or whitespace-only navigation landmarks confuse users and break the semantic meaning of the landmark structure.</p>
+    </footer>
+</body>
+</html>

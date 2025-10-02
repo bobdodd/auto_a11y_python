@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flat Navigation Landmark Structure - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrNestedNavLandmarks_002_correct_flat_structure",
+        "issueId": "ErrNestedNavLandmarks",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "Navigation landmarks at same hierarchical level or organized within single nav",
+        "wcag": "1.3.1",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Flat Navigation Landmark Structure - Correct</h1>
+
+        <nav aria-label="Main navigation"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark is at top level, not nested inside other nav landmarks. Sibling to user account nav">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <nav aria-label="User account"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark is sibling to main navigation, not nested. Maintains flat navigation structure">
+            <ul>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <li><a href="/profile">My Profile</a></li>
+                <li><a href="/cart">Shopping Cart (0)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Proper Navigation Structure</h2>
+            <p>This page demonstrates the correct approach: multiple navigation landmarks as siblings, not nested.</p>
+
+            <nav aria-label="Article sections"
+                 data-expected-pass="true"
+                 data-pass-reason="Navigation landmark contains organized links using headings and lists within single nav, not nested nav elements">
+                <h3>On This Page</h3>
+                <ul>
+                    <li><a href="#introduction">Introduction</a></li>
+                    <li><a href="#best-practices">Best Practices</a></li>
+                    <li><a href="#examples">Code Examples</a></li>
+                </ul>
+
+                <h3>Related Topics</h3>
+                <ul>
+                    <li><a href="/aria-guide">ARIA Guide</a></li>
+                    <li><a href="/semantic-html">Semantic HTML</a></li>
+                    <li><a href="/testing">Testing Tools</a></li>
+                </ul>
+            </nav>
+
+            <section id="introduction">
+                <h3>Introduction</h3>
+                <p>When you need to organize links into categories within navigation, use headings and lists within a single nav element, not nested nav elements.</p>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <nav aria-label="Footer links">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/accessibility">Accessibility Statement</a></li>
+                <li><a href="/sitemap">Site Map</a></li>
+            </ul>
+        </nav>
+        <p>© 2025 Example Corporation</p>
+    </footer>
+
+    <hr>
+
+    <p><strong>Best Practice:</strong> Keep all navigation landmarks at the same hierarchical level (as siblings). If you need to organize links into categories, use headings (h2, h3, etc.) and lists within a single nav element, not nested nav landmarks.</p>
+
+    <details>
+        <summary>Example: Organizing links within one nav</summary>
+        <pre>
+&lt;nav aria-label="Site navigation"&gt;
+  &lt;h2&gt;Main Pages&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/about"&gt;About&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h2&gt;Resources&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/guides"&gt;Guides&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/faq"&gt;FAQ&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+        </pre>
+    </details>
+</body>
+</html>

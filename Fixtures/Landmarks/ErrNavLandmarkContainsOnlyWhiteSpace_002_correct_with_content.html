@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Landmark with Proper Content - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrNavLandmarkContainsOnlyWhiteSpace_002_correct_with_content",
+        "issueId": "ErrNavLandmarkContainsOnlyWhiteSpace",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "Navigation landmarks containing functional navigation links",
+        "wcag": "1.3.1",
+        "impact": "High"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Navigation Landmark with Proper Content - Correct</h1>
+
+        <nav aria-label="Main navigation"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark contains functional navigation links, providing actual navigation functionality">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Web Accessibility Best Practices</h2>
+            <p>Learn how to create accessible websites that work for everyone.</p>
+
+            <nav aria-label="Article sections"
+                 data-expected-pass="true"
+                 data-pass-reason="Navigation landmark contains links to article sections, providing functional in-page navigation">
+                <h3>On This Page</h3>
+                <ul>
+                    <li><a href="#introduction">Introduction</a></li>
+                    <li><a href="#guidelines">WCAG Guidelines</a></li>
+                    <li><a href="#implementation">Implementation Tips</a></li>
+                    <li><a href="#testing">Testing Methods</a></li>
+                    <li><a href="#resources">Additional Resources</a></li>
+                </ul>
+            </nav>
+
+            <section id="introduction">
+                <h3>Introduction</h3>
+                <p>Content about web accessibility introduction...</p>
+            </section>
+
+            <section id="guidelines">
+                <h3>WCAG Guidelines</h3>
+                <p>Overview of WCAG standards...</p>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <nav aria-label="Footer links"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark contains footer navigation links, providing access to legal and informational pages">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/accessibility">Accessibility Statement</a></li>
+                <li><a href="/sitemap">Site Map</a></li>
+                <li><a href="/help">Help Center</a></li>
+            </ul>
+        </nav>
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+    </footer>
+
+    <hr>
+
+    <p><strong>Critical:</strong> Navigation landmarks must contain actual navigation content (links). If navigation is dynamically loaded via JavaScript, ensure the nav element is not rendered until content is available, or show a loading indicator within the nav. Never leave navigation landmarks empty or containing only whitespace.</p>
+</body>
+</html>

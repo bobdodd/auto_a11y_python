@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Customer Support</title>
+    <title>Get in Touch</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMultiplePageTitles_001_violations_basic",
+    "issueId": "ErrMultiplePageTitles",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page with multiple title elements in head",
+    "wcag": "2.4.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrMultiplePageTitles"
+      data-violation-reason="Page has 2 title elements, creating ambiguity about which title browsers and assistive technologies should use">
+    <h1>Contact Us</h1>
+    <form>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message"></textarea>
+
+        <button type="submit">Send Message</button>
+    </form>
+</body>
+</html>

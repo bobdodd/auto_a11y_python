@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnContentOutsideLandmarks - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnContentOutsideLandmarks_001_violations_basic",
+    "issueId": "WarnContentOutsideLandmarks",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Content that exists outside of landmark regions (warning level)",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1 data-expected-violation="true"
+        data-violation-id="WarnContentOutsideLandmarks"
+        data-violation-reason="Page heading exists outside of any landmark region. While not critical, this reduces navigability for screen reader users">
+        Content Outside Landmarks Warning Test
+    </h1>
+
+    <p data-expected-violation="true"
+       data-violation-id="WarnContentOutsideLandmarks"
+       data-violation-reason="Paragraph content is outside landmark regions. For better structure, consider placing within appropriate landmarks">
+        This introductory paragraph is floating outside of landmarks.
+    </p>
+
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>This content is properly within the main landmark.</p>
+    </main>
+
+    <aside role="complementary" aria-label="Sidebar">
+        <h3>Sidebar Content</h3>
+        <p>Complementary information here.</p>
+    </aside>
+
+    <div data-expected-violation="true"
+         data-violation-id="WarnContentOutsideLandmarks"
+         data-violation-reason="Content block outside landmark regions. While technically valid, organizing content within landmarks improves accessibility">
+        <p>This content is between the aside and footer, not in any landmark.</p>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

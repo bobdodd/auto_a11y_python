@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - Missing aria-labelledby</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby_001_violations_basic",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Form fields with complex labeling that could benefit from aria-labelledby",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Profile Settings</h1>
+
+    <form>
+        <div data-expected-violation="true"
+             data-violation-id="WarnMissingAriaLabelledby"
+             data-violation-reason="Phone field has heading and help text that should be associated via aria-labelledby">
+            <h2 id="phone-heading">Phone Number</h2>
+            <p id="phone-help">We'll use this to send you security alerts. Include country code.</p>
+            <input type="tel" id="phone" name="phone">
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="WarnMissingAriaLabelledby"
+             data-violation-reason="Address field has multiple related labels that should be connected with aria-labelledby">
+            <h3 id="address-heading">Mailing Address</h3>
+            <p id="address-note">(Required for shipping)</p>
+            <label id="address-label" for="address">Street Address</label>
+            <input type="text" id="address" name="address">
+        </div>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <p>Note: These fields have multiple labeling elements that aren't properly associated.</p>
+</body>
+</html>

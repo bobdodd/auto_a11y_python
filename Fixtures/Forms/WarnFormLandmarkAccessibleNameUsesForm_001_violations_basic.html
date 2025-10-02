@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website - Generic Form Labels</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFormLandmarkAccessibleNameUsesForm_001_violations_basic",
+    "issueId": "WarnFormLandmarkAccessibleNameUsesForm",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Form landmarks with generic 'form' in their accessible names",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>User Account</h1>
+
+    <form aria-label="Login form"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Form label uses generic term 'form', should be just 'Login' or 'Sign in'">
+        <h2>Sign In</h2>
+        <div>
+            <label for="username1">Username</label>
+            <input type="text" id="username1" name="username">
+        </div>
+        <div>
+            <label for="password1">Password</label>
+            <input type="password" id="password1" name="password">
+        </div>
+        <button type="submit">Sign In</button>
+    </form>
+
+    <form aria-label="Contact form"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Label 'Contact form' uses redundant word 'form', should be 'Contact' or 'Contact us'">
+        <h2>Get in Touch</h2>
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div>
+            <label for="message">Message</label>
+            <textarea id="message" name="message"></textarea>
+        </div>
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>

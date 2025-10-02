@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnModalWithoutFocusTrap - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnModalWithoutFocusTrap_002_correct_with_trap",
+    "issueId": "AI_WarnModalWithoutFocusTrap",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Modal dialogs with proper focus trap implementation",
+    "wcag": "2.1.2, 2.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.open {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Subscription Plans</h1>
+
+    <main>
+        <p>Choose the plan that works best for you.</p>
+
+        <button id="premiumBtn">View Premium Plan</button>
+        <button id="enterpriseBtn">View Enterprise Plan</button>
+
+        <!-- Modal with focus trap - CORRECT -->
+        <div id="premiumModal" class="modal" role="dialog" aria-labelledby="premiumTitle"
+             data-expected-pass="true"
+             data-pass-reason="Modal dialog implements focus trap. Tab and Shift+Tab cycle focus only within modal. Screen reader users cannot accidentally interact with background content. Keyboard-only users stay within the dialog context. Meets expected modal behavior">
+            <div class="modal-content">
+                <button class="close-btn" aria-label="Close dialog">&times;</button>
+                <h2 id="premiumTitle">Premium Plan</h2>
+                <p>Get access to all premium features for $19.99/month.</p>
+                <ul>
+                    <li>Unlimited projects</li>
+                    <li>Priority support</li>
+                    <li>Advanced analytics</li>
+                </ul>
+                <button>Subscribe Now</button>
+                <button>Cancel</button>
+            </div>
+        </div>
+
+        <!-- Another modal with focus trap - CORRECT -->
+        <div id="enterpriseModal" class="modal" role="dialog" aria-labelledby="enterpriseTitle"
+             data-expected-pass="true"
+             data-pass-reason="Modal implements proper focus trap. Focus cycles through all focusable elements within modal. Background page content is inert and unreachable via keyboard. Screen reader users maintain context within the dialog. Keyboard navigation predictable and contained">
+            <div class="modal-content">
+                <button class="close-btn" aria-label="Close dialog">&times;</button>
+                <h2 id="enterpriseTitle">Enterprise Plan</h2>
+                <p>Custom solutions for large organizations.</p>
+                <form>
+                    <label for="company">Company Name:</label>
+                    <input type="text" id="company" name="company">
+
+                    <label for="contact">Contact Email:</label>
+                    <input type="email" id="contact" name="contact">
+
+                    <button type="submit">Request Quote</button>
+                    <button type="button">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Focus trap implementation - CORRECT
+        let previousFocus;
+
+        function trapFocus(modal) {
+            const focusableElements = modal.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            modal.addEventListener('keydown', function(e) {
+                if (e.key !== 'Tab') return;
+
+                if (e.shiftKey) {
+                    // Shift + Tab
+                    if (document.activeElement === firstElement) {
+                        lastElement.focus();
+                        e.preventDefault();
+                    }
+                } else {
+                    // Tab
+                    if (document.activeElement === lastElement) {
+                        firstElement.focus();
+                        e.preventDefault();
+                    }
+                }
+            });
+        }
+
+        function openModal(modalId) {
+            previousFocus = document.activeElement;
+            const modal = document.getElementById(modalId);
+            modal.classList.add('open');
+
+            // Set focus to first focusable element
+            const firstFocusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (firstFocusable) firstFocusable.focus();
+
+            // Setup focus trap
+            trapFocus(modal);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('open');
+            // Return focus to element that opened modal
+            if (previousFocus) previousFocus.focus();
+        }
+
+        document.getElementById('premiumBtn').addEventListener('click', () => openModal('premiumModal'));
+        document.getElementById('enterpriseBtn').addEventListener('click', () => openModal('enterpriseModal'));
+
+        document.querySelectorAll('.close-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const modal = this.closest('.modal');
+                closeModal(modal.id);
+            });
+        });
+
+        document.querySelectorAll('.modal button[type="button"]').forEach(btn => {
+            if (!btn.classList.contains('close-btn')) {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal.id);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

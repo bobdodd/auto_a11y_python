@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnModalWithoutFocusTrap - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnModalWithoutFocusTrap_001_violations_basic",
+    "issueId": "AI_WarnModalWithoutFocusTrap",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Modal dialogs that don't trap focus",
+    "wcag": "2.1.2, 2.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.open {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Subscription Plans</h1>
+
+    <main>
+        <p>Choose the plan that works best for you.</p>
+
+        <button id="premiumBtn">View Premium Plan</button>
+        <button id="enterpriseBtn">View Enterprise Plan</button>
+
+        <!-- Modal without focus trap - VIOLATION -->
+        <div id="premiumModal" class="modal" role="dialog" aria-labelledby="premiumTitle"
+             data-expected-violation="true"
+             data-violation-id="AI_WarnModalWithoutFocusTrap"
+             data-violation-reason="Modal dialog does not trap focus. Keyboard users can tab out of the modal and interact with content behind it. Screen reader users may lose context when focus moves outside the dialog. Creates confusion about which content is currently active">
+            <div class="modal-content">
+                <button class="close-btn" aria-label="Close dialog">&times;</button>
+                <h2 id="premiumTitle">Premium Plan</h2>
+                <p>Get access to all premium features for $19.99/month.</p>
+                <ul>
+                    <li>Unlimited projects</li>
+                    <li>Priority support</li>
+                    <li>Advanced analytics</li>
+                </ul>
+                <button>Subscribe Now</button>
+                <button>Cancel</button>
+            </div>
+        </div>
+
+        <!-- Another modal without focus trap - VIOLATION -->
+        <div id="enterpriseModal" class="modal" role="dialog" aria-labelledby="enterpriseTitle"
+             data-expected-violation="true"
+             data-violation-id="AI_WarnModalWithoutFocusTrap"
+             data-violation-reason="Modal lacks focus trap implementation. Keyboard navigation allows escape to background page. Screen reader users may interact with inert content behind the modal. Violates expected modal dialog behavior for keyboard-only users">
+            <div class="modal-content">
+                <button class="close-btn" aria-label="Close dialog">&times;</button>
+                <h2 id="enterpriseTitle">Enterprise Plan</h2>
+                <p>Custom solutions for large organizations.</p>
+                <form>
+                    <label for="company">Company Name:</label>
+                    <input type="text" id="company" name="company">
+
+                    <label for="contact">Contact Email:</label>
+                    <input type="email" id="contact" name="contact">
+
+                    <button type="submit">Request Quote</button>
+                    <button type="button">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Simple modal open/close without focus management - INCORRECT
+        document.getElementById('premiumBtn').addEventListener('click', function() {
+            document.getElementById('premiumModal').classList.add('open');
+        });
+
+        document.getElementById('enterpriseBtn').addEventListener('click', function() {
+            document.getElementById('enterpriseModal').classList.add('open');
+        });
+
+        document.querySelectorAll('.close-btn, .modal button[type="button"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.modal').forEach(m => m.classList.remove('open'));
+            });
+        });
+    </script>
+</body>
+</html>

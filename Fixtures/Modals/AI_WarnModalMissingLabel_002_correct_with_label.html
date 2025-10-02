@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnModalMissingLabel - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnModalMissingLabel_002_correct_with_label",
+    "issueId": "AI_WarnModalMissingLabel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Modal dialogs with proper accessible names",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.open {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Account Settings</h1>
+
+    <main>
+        <button onclick="document.getElementById('confirmModal').classList.add('open')">Delete Account</button>
+        <button onclick="document.getElementById('settingsModal').classList.add('open')">Edit Profile</button>
+
+        <!-- Modal with aria-labelledby - CORRECT -->
+        <div id="confirmModal" class="modal" role="dialog" aria-labelledby="confirmTitle"
+             data-expected-pass="true"
+             data-pass-reason="Modal dialog uses aria-labelledby to reference the heading element. Screen readers announce 'Confirm Action dialog' when opened. Users immediately understand the purpose of the dialog. Assistive technologies can convey context properly">
+            <div class="modal-content">
+                <button class="close-btn" onclick="document.getElementById('confirmModal').classList.remove('open')" aria-label="Close dialog">&times;</button>
+                <h2 id="confirmTitle">Confirm Action</h2>
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                <button>Yes, Delete</button>
+                <button onclick="document.getElementById('confirmModal').classList.remove('open')">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Modal with aria-label - CORRECT -->
+        <div id="settingsModal" class="modal" role="dialog" aria-label="Profile Settings"
+             data-expected-pass="true"
+             data-pass-reason="Modal dialog uses aria-label to provide accessible name. Screen readers announce 'Profile Settings dialog' when opened. Clear purpose communicated to all assistive technology users. Users with cognitive disabilities understand the modal's function">
+            <div class="modal-content">
+                <button class="close-btn" onclick="document.getElementById('settingsModal').classList.remove('open')" aria-label="Close settings dialog">&times;</button>
+                <h2>Profile Settings</h2>
+                <form>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username">
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+
+                    <button type="submit">Save Changes</button>
+                    <button type="button" onclick="document.getElementById('settingsModal').classList.remove('open')">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

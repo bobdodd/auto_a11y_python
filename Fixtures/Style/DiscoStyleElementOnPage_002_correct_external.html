@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoStyleElementOnPage - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoStyleElementOnPage_002_correct_external",
+    "issueId": "DiscoStyleElementOnPage",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Page using external stylesheet instead of embedded styles",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+    <!-- External stylesheet instead of embedded <style> tag - CORRECT -->
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="components.css">
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Page uses external stylesheets instead of embedded <style> element. Better cacheability improves page load performance. Users with custom stylesheets can override styles more easily. Style organization and maintainability improved. Works better with user preferences for high contrast, dark mode, and custom fonts">
+    <header class="page-header">
+        <h1 class="page-title">Welcome to Our Platform</h1>
+        <p>Discover amazing features and capabilities</p>
+    </header>
+
+    <main>
+        <section class="content-section">
+            <h2>About Our Service</h2>
+            <p>We provide cutting-edge solutions for your business needs.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Fast Performance</h3>
+                    <p>Lightning-quick load times and responsive interactions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Secure Platform</h3>
+                    <p>Enterprise-grade security protecting your data.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Easy Integration</h3>
+                    <p>Simple APIs and comprehensive documentation.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Get Started Today</h2>
+            <p>Join thousands of satisfied customers using our platform.</p>
+            <a href="/signup" class="cta-button">Sign Up Now</a>
+        </section>
+    </main>
+
+    <!--
+    Note: External stylesheets provide:
+    - Better browser caching (faster page loads)
+    - Easier override with user stylesheets
+    - Consistent styling across multiple pages
+    - Easier maintenance and updates
+    - Better support for accessibility tools
+    - Cleaner HTML structure
+    -->
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoStyleAttrOnElements - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoStyleAttrOnElements_002_correct_external",
+    "issueId": "DiscoStyleAttrOnElements",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Elements styled with CSS classes instead of inline styles",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Using internal styles with classes as acceptable alternative */
+        .product-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .product-title {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+        .product-description {
+            color: #666;
+            line-height: 1.6;
+        }
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .add-to-cart-btn {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .alert-banner {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .alert-text {
+            color: #856404;
+            font-weight: 600;
+            margin: 0;
+        }
+        .main-nav {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: #e9ecef;
+        }
+        .nav-link {
+            color: #007bff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="page-title"
+        data-expected-pass="true"
+        data-pass-reason="Page uses CSS classes instead of inline styles. Users with custom stylesheets can override styles as needed. Browser extensions and user agents can apply accessibility enhancements. High contrast mode and dark mode work correctly">Product Catalog</h1>
+
+    <main>
+        <!-- CSS classes instead of inline styles - CORRECT -->
+        <div class="product-card"
+             data-expected-pass="true"
+             data-pass-reason="Product card uses CSS classes for styling. Users can apply custom stylesheets for better readability. Styles can be overridden for high contrast or user preferences. Responsive design and user customization work properly">
+            <h2 class="product-title">Premium Widget</h2>
+            <p class="product-description">The best widget money can buy with advanced features.</p>
+            <p class="product-price">$99.99</p>
+            <button class="add-to-cart-btn">Add to Cart</button>
+        </div>
+
+        <!-- Alert with CSS classes -->
+        <div class="alert-banner"
+             data-expected-pass="true"
+             data-pass-reason="Alert banner uses CSS classes instead of inline styles. Users with custom color schemes can override colors. High contrast mode applies correctly. Screen magnification and zoom work without issues">
+            <p class="alert-text">Special Offer: Free shipping on orders over $50!</p>
+        </div>
+
+        <!-- Navigation with CSS classes -->
+        <nav class="main-nav">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/products" class="nav-link">Products</a>
+            <a href="/about" class="nav-link">About</a>
+        </nav>
+    </main>
+</body>
+</html>

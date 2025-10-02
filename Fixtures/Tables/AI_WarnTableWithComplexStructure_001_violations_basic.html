@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnTableWithComplexStructure - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnTableWithComplexStructure_001_violations_basic",
+    "issueId": "AI_WarnTableWithComplexStructure",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Complex tables without proper headers, scope, or id/headers associations",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Sales Reports</h1>
+
+    <main>
+        <section>
+            <h2>Quarterly Sales by Region and Product</h2>
+
+            <table data-expected-violation="true"
+                   data-violation-reason="Complex table with multiple header levels without proper scope attributes or id/headers associations. Table has both row and column headers spanning multiple levels. Cell 'Q1' is header for column but lacks scope='col'. Cell 'North' is row header but lacks scope='row'. Screen readers cannot determine which headers apply to data cells. Users cannot understand table structure and relationships. Violates WCAG 1.3.1 Info and Relationships - complex tables must use scope or id/headers to associate data cells with headers">
+                <tr>
+                    <th>Region</th>
+                    <th>Product</th>
+                    <th>Q1</th>
+                    <th>Q2</th>
+                    <th>Q3</th>
+                    <th>Q4</th>
+                </tr>
+                <tr>
+                    <td>North</td>
+                    <td>Widget A</td>
+                    <td>$10,000</td>
+                    <td>$12,000</td>
+                    <td>$11,000</td>
+                    <td>$13,000</td>
+                </tr>
+                <tr>
+                    <td>North</td>
+                    <td>Widget B</td>
+                    <td>$8,000</td>
+                    <td>$9,000</td>
+                    <td>$8,500</td>
+                    <td>$9,500</td>
+                </tr>
+                <tr>
+                    <td>South</td>
+                    <td>Widget A</td>
+                    <td>$15,000</td>
+                    <td>$16,000</td>
+                    <td>$14,000</td>
+                    <td>$17,000</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Employee Schedule with Merged Cells</h2>
+
+            <table data-expected-violation="true"
+                   data-violation-reason="Table with merged cells (rowspan/colspan) without id/headers associations. Table has complex structure with headers spanning multiple columns/rows. Cell spanning multiple columns lacks clear association. Screen readers navigating cell-by-cell cannot determine relationships. Data cells don't specify which header cells apply using headers attribute. Violates WCAG 1.3.1 Info and Relationships - tables with merged cells need id/headers attributes to maintain accessibility">
+                <tr>
+                    <th rowspan="2">Employee</th>
+                    <th colspan="3">Week 1</th>
+                    <th colspan="3">Week 2</th>
+                </tr>
+                <tr>
+                    <th>Mon</th>
+                    <th>Wed</th>
+                    <th>Fri</th>
+                    <th>Mon</th>
+                    <th>Wed</th>
+                    <th>Fri</th>
+                </tr>
+                <tr>
+                    <td>Alice</td>
+                    <td>9-5</td>
+                    <td>9-5</td>
+                    <td>Off</td>
+                    <td>9-5</td>
+                    <td>9-5</td>
+                    <td>9-5</td>
+                </tr>
+                <tr>
+                    <td>Bob</td>
+                    <td>Off</td>
+                    <td>10-6</td>
+                    <td>10-6</td>
+                    <td>10-6</td>
+                    <td>Off</td>
+                    <td>10-6</td>
+                </tr>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

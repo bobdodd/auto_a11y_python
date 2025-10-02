@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnTableWithComplexStructure - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnTableWithComplexStructure_002_correct_with_scope",
+    "issueId": "AI_WarnTableWithComplexStructure",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Complex tables with proper scope attributes and id/headers associations",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Sales Reports</h1>
+
+    <main>
+        <section data-expected-pass="true"
+                 data-pass-reason="Complex table with proper scope attributes on all header cells. Column headers have scope='col' indicating they apply to entire column. Row headers have scope='row' indicating they apply to entire row. Screen readers can determine which headers apply to each data cell. Users navigating with assistive technology understand table structure. Cell relationships clearly defined. Complies with WCAG 1.3.1 Info and Relationships - proper use of scope attributes in complex table">
+            <h2>Quarterly Sales by Region and Product</h2>
+
+            <table>
+                <caption>Quarterly sales data by region and product</caption>
+                <tr>
+                    <th scope="col">Region</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Q1</th>
+                    <th scope="col">Q2</th>
+                    <th scope="col">Q3</th>
+                    <th scope="col">Q4</th>
+                </tr>
+                <tr>
+                    <th scope="row">North - Widget A</th>
+                    <td>Widget A</td>
+                    <td>$10,000</td>
+                    <td>$12,000</td>
+                    <td>$11,000</td>
+                    <td>$13,000</td>
+                </tr>
+                <tr>
+                    <th scope="row">North - Widget B</th>
+                    <td>Widget B</td>
+                    <td>$8,000</td>
+                    <td>$9,000</td>
+                    <td>$8,500</td>
+                    <td>$9,500</td>
+                </tr>
+                <tr>
+                    <th scope="row">South - Widget A</th>
+                    <td>Widget A</td>
+                    <td>$15,000</td>
+                    <td>$16,000</td>
+                    <td>$14,000</td>
+                    <td>$17,000</td>
+                </tr>
+            </table>
+        </section>
+
+        <section data-expected-pass="true"
+                 data-pass-reason="Table with merged cells using id/headers associations for accessibility. Each header cell has unique id. Data cells use headers attribute listing all applicable header ids. Screen readers announce all relevant headers when navigating to data cell. Complex spanning relationships preserved. Users understand which headers apply despite rowspan/colspan. Meets WCAG 1.3.1 Info and Relationships - id/headers pattern properly implements complex table structure">
+            <h2>Employee Schedule with Merged Cells</h2>
+
+            <table>
+                <caption>Employee work schedule for two weeks</caption>
+                <tr>
+                    <th id="employee" rowspan="2" scope="col">Employee</th>
+                    <th id="week1" colspan="3" scope="colgroup">Week 1</th>
+                    <th id="week2" colspan="3" scope="colgroup">Week 2</th>
+                </tr>
+                <tr>
+                    <th id="w1-mon" scope="col">Mon</th>
+                    <th id="w1-wed" scope="col">Wed</th>
+                    <th id="w1-fri" scope="col">Fri</th>
+                    <th id="w2-mon" scope="col">Mon</th>
+                    <th id="w2-wed" scope="col">Wed</th>
+                    <th id="w2-fri" scope="col">Fri</th>
+                </tr>
+                <tr>
+                    <th id="alice" scope="row">Alice</th>
+                    <td headers="alice w1-mon week1">9-5</td>
+                    <td headers="alice w1-wed week1">9-5</td>
+                    <td headers="alice w1-fri week1">Off</td>
+                    <td headers="alice w2-mon week2">9-5</td>
+                    <td headers="alice w2-wed week2">9-5</td>
+                    <td headers="alice w2-fri week2">9-5</td>
+                </tr>
+                <tr>
+                    <th id="bob" scope="row">Bob</th>
+                    <td headers="bob w1-mon week1">Off</td>
+                    <td headers="bob w1-wed week1">10-6</td>
+                    <td headers="bob w1-fri week1">10-6</td>
+                    <td headers="bob w2-mon week2">10-6</td>
+                    <td headers="bob w2-wed week2">Off</td>
+                    <td headers="bob w2-fri week2">10-6</td>
+                </tr>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

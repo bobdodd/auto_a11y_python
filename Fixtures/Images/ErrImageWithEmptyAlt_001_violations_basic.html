@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithEmptyAlt - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithEmptyAlt_001_violations_basic",
+    "issueId": "ErrImageWithEmptyAlt",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Informative images with empty alt text",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Catalog</h1>
+
+    <main>
+        <section>
+            <h2>Featured Products</h2>
+
+            <article>
+                <img src="premium-laptop.jpg"
+                     alt=""
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithEmptyAlt"
+                     data-violation-reason="Product image has empty alt text (alt=''). Screen reader users cannot understand what product is shown. The image conveys important information (it's a premium laptop) but that information is completely unavailable to blind users. Empty alt should only be used for purely decorative images. Violates WCAG 1.1.1 by failing to provide text alternative for non-text content">
+                <h3>Premium Laptop</h3>
+                <p>High-performance laptop for professionals. $1,299.99</p>
+                <button>Add to Cart</button>
+            </article>
+
+            <article>
+                <img src="wireless-mouse.jpg"
+                     alt=""
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithEmptyAlt"
+                     data-violation-reason="Product image with empty alt text. Screen readers will announce 'image' or filename without description. Users cannot make informed purchasing decisions without knowing what the image shows. The visual information (wireless mouse design) is essential but missing from assistive technology. Fails WCAG 1.1.1 Non-text Content">
+                <h3>Wireless Mouse</h3>
+                <p>Ergonomic wireless mouse with precision tracking. $29.99</p>
+                <button>Add to Cart</button>
+            </article>
+        </section>
+
+        <section>
+            <h2>Customer Testimonials</h2>
+
+            <article>
+                <img src="customer-sarah.jpg"
+                     alt=""
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithEmptyAlt"
+                     data-violation-reason="Customer photo with empty alt text. Screen reader users miss visual context that sighted users see (professional business woman, smiling, satisfied customer). The image adds credibility and personality but those benefits are lost for blind users. Empty alt makes content less accessible. Violates WCAG 1.1.1 by omitting text alternative">
+                <blockquote>
+                    <p>"This company's products have transformed my workflow. Highly recommended!"</p>
+                    <cite>- Sarah Johnson, Marketing Director</cite>
+                </blockquote>
+            </article>
+        </section>
+
+        <section>
+            <h2>Our Commitment</h2>
+            <p>
+                We believe in delivering quality products that meet the needs of all users.
+                Browse our selection and experience the difference.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Product Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

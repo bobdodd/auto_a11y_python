@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTransparentFocusIndicator - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTransparentFocusIndicator_001_violations_basic",
+    "issueId": "ErrTransparentFocusIndicator",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Focus indicators with transparency making them invisible",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .transparent-outline:focus {
+            outline: 2px solid transparent;
+        }
+
+        .mostly-transparent:focus {
+            outline: 3px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .invisible-focus:focus {
+            outline: 2px solid rgba(255, 255, 255, 0);
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Elements</h1>
+
+    <main>
+        <section>
+            <h2>Buttons</h2>
+
+            <button class="transparent-outline"
+                    data-expected-violation="true"
+                    data-violation-reason="Focus outline uses 'transparent' color making it completely invisible. Keyboard users can't see which element has focus. Users with low vision have no visual focus indicator. Focus state is indistinguishable from non-focused state. Creates major usability barrier. Violates WCAG 2.4.7 Focus Visible by making focus indicator invisible">
+                Submit Form
+            </button>
+        </section>
+
+        <section>
+            <h2>Links</h2>
+
+            <a href="/page1" class="mostly-transparent"
+               data-expected-violation="true"
+               data-violation-reason="Focus outline uses rgba(0, 0, 0, 0.1) with 90% transparency making it nearly invisible. Keyboard users can barely see focus indicator. Users with low vision cannot perceive focus state. Outline is too faint to be useful. Functionally equivalent to no focus indicator. Violates WCAG 2.4.7 Focus Visible by using insufficient opacity for visibility">
+                Navigate to Page 1
+            </a>
+        </section>
+
+        <section>
+            <h2>Form Fields</h2>
+
+            <form>
+                <label for="username">Username:</label>
+                <input type="text"
+                       id="username"
+                       class="invisible-focus"
+                       data-expected-violation="true"
+                       data-violation-reason="Focus outline uses rgba(255, 255, 255, 0) with 100% transparency making it completely invisible. Keyboard users have no visual feedback when field is focused. Users with low vision can't track keyboard focus. Focus state provides no visual indication. Major accessibility barrier. Violates WCAG 2.4.7 Focus Visible by rendering focus indicator invisible">
+
+                <button type="submit">Login</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

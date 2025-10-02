@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrWrongTabindexForInteractiveElement - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrWrongTabindexForInteractiveElement_001_violations_basic",
+    "issueId": "ErrWrongTabindexForInteractiveElement",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Interactive elements with inappropriate tabindex values",
+    "wcag": "2.1.1, 2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation and Actions</h1>
+
+    <main>
+        <section>
+            <h2>Primary Actions</h2>
+
+            <button tabindex="-1"
+                    data-expected-violation="true"
+                    data-violation-reason="Button has tabindex='-1' removing it from keyboard tab order. Keyboard-only users can't reach button. Interactive element should be keyboard accessible by default. Negative tabindex on naturally focusable element breaks keyboard navigation. Users can't activate button. Violates WCAG 2.1.1 Keyboard by removing keyboard access from interactive element">
+                Submit Form
+            </button>
+        </section>
+
+        <section>
+            <h2>Navigation Links</h2>
+
+            <a href="/products" tabindex="-1"
+               data-expected-violation="true"
+               data-violation-reason="Link has tabindex='-1' removing it from tab order. Keyboard users can't navigate to this link. Links should be keyboard accessible by default. Negative tabindex on anchor element breaks navigation. Users can't access linked content via keyboard. Violates WCAG 2.1.1 Keyboard and 2.4.3 Focus Order by removing interactive element from keyboard access">
+                View Products
+            </a>
+        </section>
+
+        <section>
+            <h2>Form Fields</h2>
+
+            <form>
+                <label for="email">Email:</label>
+                <input type="email"
+                       id="email"
+                       tabindex="-1"
+                       data-expected-violation="true"
+                       data-violation-reason="Input field has tabindex='-1' removing keyboard access. Keyboard users can't enter data in this field. Form inputs should be naturally keyboard accessible. Negative tabindex on form control breaks data entry. Users can't complete form via keyboard. Violates WCAG 2.1.1 Keyboard by removing keyboard access from interactive form control">
+
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

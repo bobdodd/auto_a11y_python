@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTransparentFocusIndicator - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTransparentFocusIndicator_002_correct_opaque_indicator",
+    "issueId": "ErrTransparentFocusIndicator",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Focus indicators with solid, visible colors",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .solid-outline:focus {
+            outline: 2px solid blue;
+            outline-offset: 2px;
+        }
+
+        .high-visibility:focus {
+            outline: 3px solid rgba(255, 100, 0, 1);
+            outline-offset: 3px;
+        }
+
+        .clear-focus:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Elements</h1>
+
+    <main>
+        <section>
+            <h2>Buttons</h2>
+
+            <button class="solid-outline"
+                    data-expected-pass="true"
+                    data-pass-reason="Focus outline uses solid blue color with 100% opacity making it highly visible. Keyboard users can clearly see which element has focus. Users with low vision have clear visual focus indicator. Focus state is easily distinguishable from non-focused state. Excellent usability. Complies with WCAG 2.4.7 Focus Visible by providing clearly visible focus indicator">
+                Submit Form
+            </button>
+        </section>
+
+        <section>
+            <h2>Links</h2>
+
+            <a href="/page1" class="high-visibility"
+               data-expected-pass="true"
+               data-pass-reason="Focus outline uses rgba(255, 100, 0, 1) with 100% opacity making it highly visible. Keyboard users can easily see focus indicator. Users with low vision can clearly perceive focus state. Outline is bold and distinct with good contrast. High visibility focus indicator. Meets WCAG 2.4.7 Focus Visible by using full opacity for maximum visibility">
+                Navigate to Page 1
+            </a>
+        </section>
+
+        <section>
+            <h2>Form Fields</h2>
+
+            <form>
+                <label for="username">Username:</label>
+                <input type="text"
+                       id="username"
+                       class="clear-focus"
+                       data-expected-pass="true"
+                       data-pass-reason="Focus outline uses solid hex color #0066cc with no transparency making it completely visible. Keyboard users have clear visual feedback when field is focused. Users with low vision can easily track keyboard focus. Focus state provides strong visual indication. Excellent accessibility. Complies with WCAG 2.4.7 Focus Visible by rendering focus indicator with full opacity">
+
+                <button type="submit">Login</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Controls - Proper Accessible Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_002_correct_with_names",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Interactive elements have proper accessible names",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #2196f3;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Page</h1>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Button has aria-label providing clear accessible name">
+        <button class="icon-button" aria-label="Search products">🔍</button>
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Link has accessible name from image alt text">
+        <a href="/cart">
+            <img src="cart.png" alt="Shopping cart">
+        </a>
+    </div>
+
+    <form>
+        <div data-expected-pass="true"
+             data-pass-reason="Input has associated label element providing accessible name">
+            <label for="search">Search:</label>
+            <input type="text" id="search" name="search">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Select dropdown has associated label identifying its purpose">
+            <label for="quantity">Quantity:</label>
+            <select id="quantity" name="quantity">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+        </div>
+
+        <button type="submit">Add to Cart</button>
+    </form>
+</body>
+</html>

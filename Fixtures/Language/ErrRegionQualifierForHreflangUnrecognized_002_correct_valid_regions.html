@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International Links - Valid Hreflang Regions</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrRegionQualifierForHreflangUnrecognized_002_correct_valid_regions",
+    "issueId": "ErrRegionQualifierForHreflangUnrecognized",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Links with valid ISO 3166-1 alpha-2 region codes in hreflang",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Regional Documentation</h1>
+
+    <p>Access regional variants of our documentation:</p>
+
+    <nav>
+        <ul>
+            <li data-expected-pass="true"
+                data-pass-reason="hreflang='en-US' uses valid ISO 3166-1 alpha-2 code 'US' for United States">
+                <a href="/docs/en-us/" hreflang="en-US">English (USA)</a>
+            </li>
+            <li data-expected-pass="true"
+                data-pass-reason="hreflang='es-ES' uses valid ISO 3166-1 alpha-2 code 'ES' for Spain">
+                <a href="/docs/es-es/" hreflang="es-ES">Spanish (España)</a>
+            </li>
+            <li data-expected-pass="true"
+                data-pass-reason="hreflang='fr-FR' uses valid ISO 3166-1 alpha-2 code 'FR' for France">
+                <a href="/docs/fr-fr/" hreflang="fr-FR">French (France)</a>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>

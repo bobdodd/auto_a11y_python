@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="xyz">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XHTML - Unrecognized xml:lang Code</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPrimaryXmlLangUnrecognized_001_violations_basic",
+    "issueId": "ErrPrimaryXmlLangUnrecognized",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "XHTML with invalid xml:lang codes not recognized by ISO 639",
+    "wcag": "3.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrPrimaryXmlLangUnrecognized"
+      data-violation-reason="xml:lang='xyz' is not a recognized ISO 639 language code">
+    <h1>XHTML Document</h1>
+
+    <p>This XHTML document has an unrecognized xml:lang code "xyz" on the root element.</p>
+
+    <div lang="en" xml:lang="abc"
+         data-expected-violation="true"
+         data-violation-id="ErrPrimaryXmlLangUnrecognized"
+         data-violation-reason="xml:lang='abc' is not a recognized ISO 639 language code">
+        <h2>Section with Invalid xml:lang</h2>
+        <p>This uses "abc" which is not valid.</p>
+    </div>
+
+    <blockquote lang="en" xml:lang="qq"
+                data-expected-violation="true"
+                data-violation-id="ErrPrimaryXmlLangUnrecognized"
+                data-violation-reason="xml:lang='qq' is not a recognized ISO 639 language code">
+        <p>This blockquote uses "qq" which is not a valid language code.</p>
+    </blockquote>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website - Correctly Formatted Lang</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrIncorrectlyFormattedPrimaryLang_002_correct_formatting",
+    "issueId": "ErrIncorrectlyFormattedPrimaryLang",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Language codes with correct BCP 47 formatting",
+    "wcag": "3.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="lang='en-US' properly formatted with lowercase language code, hyphen separator, and uppercase region code">
+    <h1>Welcome</h1>
+
+    <p>This page correctly uses "en-US" following BCP 47 formatting standards.</p>
+
+    <article lang="es-ES"
+             data-expected-pass="true"
+             data-pass-reason="lang='es-ES' correctly formatted with lowercase 'es' and uppercase 'ES'">
+        <h2>Contenido en Español</h2>
+        <p>Esta sección usa el formato correcto "es-ES" para español de España.</p>
+    </article>
+
+    <section lang="fr"
+             data-expected-pass="true"
+             data-pass-reason="lang='fr' is a valid simple language code without region, properly lowercase">
+        <h2>Contenu en Français</h2>
+        <p>Cette section utilise le code de langue français simple et correctement formaté.</p>
+    </section>
+</body>
+</html>

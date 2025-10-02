@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="xyz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website - Unrecognized Language Code</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPrimaryLangUnrecognized_001_violations_basic",
+    "issueId": "ErrPrimaryLangUnrecognized",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Invalid language codes that are not recognized by ISO 639 standards",
+    "wcag": "3.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrPrimaryLangUnrecognized"
+      data-violation-reason="lang='xyz' is not a recognized ISO 639 language code">
+    <h1>Welcome</h1>
+
+    <p>This page uses an unrecognized language code "xyz" that doesn't exist in ISO 639 standards.</p>
+
+    <section lang="abc"
+             data-expected-violation="true"
+             data-violation-id="ErrPrimaryLangUnrecognized"
+             data-violation-reason="lang='abc' is not a recognized ISO 639 language code">
+        <h2>Section with Invalid Code</h2>
+        <p>This section uses "abc" which is not a valid language code.</p>
+    </section>
+
+    <div lang="zz"
+         data-expected-violation="true"
+         data-violation-id="ErrPrimaryLangUnrecognized"
+         data-violation-reason="lang='zz' is not a recognized ISO 639 language code">
+        <p>This content uses "zz" which is not valid for actual languages.</p>
+    </div>
+</body>
+</html>

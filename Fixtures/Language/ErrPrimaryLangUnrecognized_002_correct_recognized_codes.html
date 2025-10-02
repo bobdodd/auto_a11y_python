@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website - Recognized Language Codes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPrimaryLangUnrecognized_002_correct_recognized_codes",
+    "issueId": "ErrPrimaryLangUnrecognized",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Valid ISO 639 language codes properly recognized",
+    "wcag": "3.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="lang='en' is a valid ISO 639-1 code for English">
+    <h1>Welcome</h1>
+
+    <p>This page uses "en" which is a valid ISO 639-1 language code for English.</p>
+
+    <section lang="ja"
+             data-expected-pass="true"
+             data-pass-reason="lang='ja' is a valid ISO 639-1 code for Japanese">
+        <h2>日本語のセクション</h2>
+        <p>このセクションは有効な日本語の言語コードを使用しています。</p>
+    </section>
+
+    <div lang="ar"
+         data-expected-pass="true"
+         data-pass-reason="lang='ar' is a valid ISO 639-1 code for Arabic">
+        <p>هذا المحتوى يستخدم رمز لغة عربية صالح.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport that allows zoom - CORRECT -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"
+          data-expected-pass="true"
+          data-pass-reason="Viewport meta tag does not restrict zoom. Users with low vision can zoom up to 500% to enlarge text and content as needed">
+    <title>AI_ErrZoomDisabled - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrZoomDisabled_002_correct_zoom_enabled",
+    "issueId": "AI_ErrZoomDisabled",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Viewport settings that allow zoom",
+    "wcag": "1.4.4",
+    "impact": "Critical"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Information - Correct Usage</h1>
+
+    <main>
+        <h2>Premium Laptop</h2>
+        <p>High-performance laptop with cutting-edge specifications.</p>
+
+        <h3>Features</h3>
+        <ul>
+            <li>16GB RAM</li>
+            <li>512GB SSD</li>
+            <li>15.6" Display</li>
+            <li>8-hour battery life</li>
+        </ul>
+
+        <p>This page allows users to zoom in and out freely. Users with low vision can enlarge the content to make it easier to read.</p>
+
+        <p><strong>Try zooming:</strong> Use Ctrl/Cmd + Plus to zoom in, or pinch to zoom on touch devices.</p>
+    </main>
+</body>
+</html>

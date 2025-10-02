@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrLandmarkWithoutLabel - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrLandmarkWithoutLabel_001_violations_basic",
+    "issueId": "AI_ErrLandmarkWithoutLabel",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Multiple landmarks of same type lacking distinguishing labels",
+    "wcag": "2.4.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Company Portal</h1>
+
+    <!-- Multiple navigation landmarks without labels -->
+    <nav data-expected-violation="true"
+         data-violation-id="AI_ErrLandmarkWithoutLabel"
+         data-violation-reason="Page has multiple navigation landmarks but none have aria-label or aria-labelledby. Screen reader users cannot distinguish between main navigation and utility navigation">
+        <h2>Main Navigation</h2>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Welcome</h1>
+        <p>Welcome to our company portal.</p>
+    </main>
+
+    <nav data-expected-violation="true"
+         data-violation-id="AI_ErrLandmarkWithoutLabel"
+         data-violation-reason="Second navigation landmark lacks distinguishing label. Screen readers announce 'navigation' for both, making it unclear which is which">
+        <h2>Utility Links</h2>
+        <ul>
+            <li><a href="/settings">Settings</a></li>
+            <li><a href="/help">Help</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Multiple complementary landmarks without labels -->
+    <aside data-expected-violation="true"
+           data-violation-id="AI_ErrLandmarkWithoutLabel"
+           data-violation-reason="Page has multiple aside/complementary landmarks without aria-label. Users cannot differentiate between sidebar sections when navigating by landmark">
+        <h2>Recent Updates</h2>
+        <ul>
+            <li>Update 1</li>
+            <li>Update 2</li>
+        </ul>
+    </aside>
+
+    <aside>
+        <h2>Quick Links</h2>
+        <ul>
+            <li><a href="/link1">Link 1</a></li>
+            <li><a href="/link2">Link 2</a></li>
+        </ul>
+    </aside>
+</body>
+</html>

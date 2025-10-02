@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 185 files
-- **Issues With Enhanced Fixtures:** 90
-- **Touchpoints Completed:** 15 (Images - 100%, Links - 78%, ARIA - 75%, Focus Management - 100%, Colors/Contrast - 50%, Lists - 75%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%)
+- **Total Enhanced Fixtures Created:** 191 files
+- **Issues With Enhanced Fixtures:** 93
+- **Touchpoints Completed:** 17 (Images - 100%, Links - 78%, ARIA - 75%, Focus Management - 100%, Colors/Contrast - 50%, Lists - 75%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%)
 - **Touchpoints In Progress:** 5 (Headings 91%, Forms 40%, Buttons 67%, Landmarks 6%, Language 17%)
-- **Issues Still Needing Fixtures:** 224
+- **Issues Still Needing Fixtures:** 221
 
 ## Completed Fixtures by Touchpoint
 
@@ -317,6 +317,19 @@ Major gaps: xml:lang issues, hreflang issues, region qualifiers, lang/xml:lang m
 ### ⌨️ Keyboard Touchpoint (1/1 issues - 100% COMPLETE)
 
 1. **AI_ErrClickableWithoutKeyboard** - Element with onclick handler not keyboard accessible (2 fixtures)
+
+**Total:** 2 fixture files
+
+### 🗺️ Maps Touchpoint (2/2 issues - 100% COMPLETE)
+
+1. **ErrDivMapMissingAttributes** - Map container div missing accessibility attributes (2 fixtures)
+2. **ErrMapMissingTitle** - Map iframe missing title attribute (2 fixtures)
+
+**Total:** 4 fixture files
+
+### ⏱️ Timing Touchpoint (1/1 issues - 100% COMPLETE)
+
+1. **ErrTimersWithoutControls** - Time-based content lacks user controls (2 fixtures)
 
 **Total:** 2 fixture files
 

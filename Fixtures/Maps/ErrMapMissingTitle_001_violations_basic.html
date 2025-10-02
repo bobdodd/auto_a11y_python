@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Location Map</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMapMissingTitle_001_violations_basic",
+    "issueId": "ErrMapMissingTitle",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Map iframe missing title attribute",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Us</h1>
+
+    <h2>Our Location</h2>
+    <p>Visit us at our office in downtown:</p>
+
+    <div data-expected-violation="true"
+         data-violation-id="ErrMapMissingTitle"
+         data-violation-reason="Map iframe has no title attribute, screen readers announce 'frame' with no context about content">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18..."
+                width="600"
+                height="450"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy">
+        </iframe>
+    </div>
+
+    <address>
+        Example Company<br>
+        123 Main Street<br>
+        City, State 12345<br>
+        <a href="mailto:info@example.com">info@example.com</a>
+    </address>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNavMissingAccessibleName - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNavMissingAccessibleName_002_correct_with_labels",
+    "issueId": "ErrNavMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Multiple nav landmarks with accessible names",
+    "wcag": "2.4.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Website with Multiple Navigation Regions</h1>
+
+    <header>
+        <nav aria-label="Primary"
+             data-expected-pass="true"
+             data-pass-reason="First nav landmark has aria-label 'Primary' providing accessible name. Screen readers announce 'Primary navigation' when entering landmark. Users can distinguish this from other nav regions. Clear identification for landmark navigation. Complies with WCAG 2.4.1 Bypass Blocks and 4.1.2 Name, Role, Value by providing unique accessible name when multiple nav landmarks exist">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <aside>
+        <nav aria-label="Resources"
+             data-expected-pass="true"
+             data-pass-reason="Second nav landmark has aria-label 'Resources' providing unique accessible name. Screen readers announce 'Resources navigation' distinct from primary. Users navigating by landmarks can identify this as resources section. Clear differentiation between navigation regions. Meets WCAG 2.4.1 and 4.1.2 by uniquely labeling navigation landmark">
+            <ul>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/resources">Resources</a></li>
+                <li><a href="/support">Support</a></li>
+                <li><a href="/docs">Documentation</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <section>
+            <h2>Page Content</h2>
+            <p>Main content area with properly labeled navigation regions.</p>
+        </section>
+    </main>
+
+    <footer>
+        <nav aria-label="Footer"
+             data-expected-pass="true"
+             data-pass-reason="Third nav landmark has aria-label 'Footer' providing unique accessible name. Screen readers announce 'Footer navigation' clearly distinct from others. Users can directly navigate to footer links by selecting footer navigation landmark. All three nav regions have unique, descriptive labels. Complies with WCAG 2.4.1 Bypass Blocks and 4.1.2 Name, Role, Value by ensuring all nav landmarks are uniquely identifiable">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/sitemap">Sitemap</a></li>
+            </ul>
+        </nav>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

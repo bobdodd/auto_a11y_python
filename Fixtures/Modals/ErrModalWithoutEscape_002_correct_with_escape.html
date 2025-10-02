@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrModalWithoutEscape - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrModalWithoutEscape_002_correct_with_escape",
+    "issueId": "ErrModalWithoutEscape",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Modal dialogs with Escape key handler",
+    "wcag": "2.1.1, 2.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 2px solid black;
+            z-index: 1000;
+        }
+        .modal.active { display: block; }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .overlay.active { display: block; }
+    </style>
+    <script>
+        function closeModal(modalId, overlayId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.getElementById(overlayId).classList.remove('active');
+        }
+
+        // Add Escape key handler for all modals
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                // Close any open modal
+                document.querySelectorAll('.modal.active').forEach(function(modal) {
+                    modal.classList.remove('active');
+                });
+                document.querySelectorAll('.overlay.active').forEach(function(overlay) {
+                    overlay.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Modal Examples</h1>
+
+    <main>
+        <section>
+            <h2>Alert Modal</h2>
+            <button onclick="document.getElementById('alertModal').classList.add('active'); document.getElementById('overlay1').classList.add('active');">Show Alert</button>
+
+            <div class="overlay" id="overlay1"></div>
+            <div class="modal" id="alertModal" role="dialog" aria-labelledby="alertTitle"
+                 data-expected-pass="true"
+                 data-pass-reason="Modal dialog has Escape key handler attached via document event listener. Users can press Escape to dismiss modal following standard UI pattern. Keyboard users have quick exit method without needing to tab to close button. Screen reader users can use familiar Escape pattern. No keyboard trap. Complies with WCAG 2.1.1 Keyboard by supporting standard keyboard interaction and 2.1.2 No Keyboard Trap by providing keyboard escape mechanism">
+                <h2 id="alertTitle">Important Alert</h2>
+                <p>This is an important message that requires your attention.</p>
+                <button onclick="closeModal('alertModal', 'overlay1')">Close</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Form Modal</h2>
+            <button onclick="document.getElementById('formModal').classList.add('active'); document.getElementById('overlay2').classList.add('active');">Show Form</button>
+
+            <div class="overlay" id="overlay2"></div>
+            <div class="modal" id="formModal" role="dialog" aria-labelledby="formTitle"
+                 data-expected-pass="true"
+                 data-pass-reason="Modal dialog implements Escape key handler. Users can press Escape to close modal matching expected behavior. Keyboard-only users can quickly exit without tabbing through all form fields. Standard keyboard pattern reduces friction. Screen readers work with familiar modal dismissal pattern. Meets WCAG 2.1.1 Keyboard by supporting standard keyboard interactions and 2.1.2 No Keyboard Trap by ensuring users aren't trapped in modal">
+                <h2 id="formTitle">Contact Form</h2>
+                <form>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name">
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+
+                    <button type="submit">Submit</button>
+                    <button type="button" onclick="closeModal('formModal', 'overlay2')">Cancel</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

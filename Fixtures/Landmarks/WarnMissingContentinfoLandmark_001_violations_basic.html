@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingContentinfoLandmark - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingContentinfoLandmark_001_violations_basic",
+    "issueId": "WarnMissingContentinfoLandmark",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page missing contentinfo landmark for footer content (warning level)",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnMissingContentinfoLandmark"
+      data-violation-reason="Page is missing a contentinfo landmark. While not critical, contentinfo landmarks help screen reader users quickly navigate to footer information like copyright, privacy policy, and contact links">
+    
+    <header role="banner">
+        <h1>Website Title</h1>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>This page has banner and main landmarks but is missing a contentinfo landmark for the footer area. Screen reader users cannot quickly jump to footer information using landmark navigation.</p>
+    </main>
+
+    <!-- Footer content without contentinfo landmark -->
+    <div id="footer">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+        <nav aria-label="Footer navigation">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+        </nav>
+    </div>
+</body>
+</html>

@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 387 files
-- **Issues With Enhanced Fixtures:** 192
+- **Total Enhanced Fixtures Created:** 393 files
+- **Issues With Enhanced Fixtures:** 195
 - **Touchpoints Completed:** 32 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%)
-- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 77%)
-- **Issues Still Needing Fixtures:** 122
+- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 82%)
+- **Issues Still Needing Fixtures:** 119
 
 ## Completed Fixtures by Touchpoint
 
@@ -220,7 +220,7 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 
 **Total:** 4 fixture files
 
-### 🏛️ Landmarks Touchpoint (50/65 issues - 77% complete)
+### 🏛️ Landmarks Touchpoint (53/65 issues - 82% complete)
 
 1. **ErrBannerLandmarkMayNotBeChildOfAnotherLandmark** - Banner nested in other landmarks (2 fixtures)
 2. **ErrComplementaryLandmarkAccessibleNameIsBlank** - Complementary landmarks with blank accessible names (2 fixtures)
@@ -269,10 +269,13 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 45. **ErrRegionLandmarkMustHaveAccessibleName** - Region landmarks without accessible names (WCAG 1.3.1) (2 fixtures)
 46. **WarnContentOutsideLandmarks** - Content outside landmark regions warning (WCAG 1.3.1) (2 fixtures)
 47. **WarnContentinfoLandmarkAccessibleNameUsesContentinfo** - Contentinfo label redundantly uses 'contentinfo' (WCAG 2.4.6) (2 fixtures)
+48. **WarnElementNotInLandmark** - Important content outside landmark regions (WCAG 1.3.1) (2 fixtures)
+49. **WarnMissingBannerLandmark** - Page missing banner landmark for header (WCAG 1.3.1) (2 fixtures)
+50. **WarnMissingContentinfoLandmark** - Page missing contentinfo landmark for footer (WCAG 1.3.1) (2 fixtures)
 
-**Total:** 100 fixture files
+**Total:** 106 fixture files
 
-#### ⏳ Remaining Issues (15)
+#### ⏳ Remaining Issues (12)
 Major gaps: additional label warnings, search/form landmark issues, landmark nesting edge cases
 
 ### 🎨 Colors and Contrast Touchpoint (4/4 issues - 100% COMPLETE)

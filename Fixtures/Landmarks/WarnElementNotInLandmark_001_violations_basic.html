@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnElementNotInLandmark - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnElementNotInLandmark_001_violations_basic",
+    "issueId": "WarnElementNotInLandmark",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Important content outside landmark regions (warning level)",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1 data-expected-violation="true"
+        data-violation-id="WarnElementNotInLandmark"
+        data-violation-reason="Page heading is outside any landmark region. While not a critical error, this reduces navigability for screen reader users who navigate by landmarks">
+        Element Not In Landmark Warning Test
+    </h1>
+
+    <p data-expected-violation="true"
+       data-violation-id="WarnElementNotInLandmark"
+       data-violation-reason="Important paragraph content is not within a landmark. Screen reader users navigating by landmarks may miss this content">
+        This paragraph contains important information but is not within any landmark, making it harder for screen reader users to locate when using landmark navigation.
+    </p>
+
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>This content is properly within the main landmark.</p>
+    </main>
+
+    <section data-expected-violation="true"
+             data-violation-id="WarnElementNotInLandmark"
+             data-violation-reason="Section with meaningful content is outside landmark regions. Without landmarks, this content requires linear navigation to discover">
+        <h3>Important Section</h3>
+        <p>This section has content but isn't inside a landmark like main, aside, or a section with role='region' and a label.</p>
+    </section>
+
+    <div data-expected-violation="true"
+         data-violation-id="WarnElementNotInLandmark"
+         data-violation-reason="Content block outside landmarks. For better accessibility, organize within appropriate semantic landmarks">
+        <h3>Additional Content</h3>
+        <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+        </ul>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

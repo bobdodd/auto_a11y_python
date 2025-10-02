@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation - Informative Title Attributes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnVagueTitleAttribute_002_correct_informative",
+    "issueId": "WarnVagueTitleAttribute",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Title attributes provide useful supplementary information",
+    "wcag": "3.3.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <nav>
+        <div data-expected-pass="true"
+             data-pass-reason="Title attribute provides additional context about what profile information is available">
+            <a href="/profile" title="View and edit your personal information, preferences, and account settings">My Profile</a>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="No title attribute used since visible text is already descriptive">
+            <a href="/settings">Settings</a>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Title provides helpful supplementary information about help center contents">
+            <a href="/help" title="Search FAQs, tutorials, and contact support">Help Center</a>
+        </div>
+    </nav>
+
+    <main>
+        <h2>Recent Activity</h2>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Title attribute explains what data will be refreshed and potential side effects">
+            <button type="button" title="Reload activity feed. This may take a few seconds.">Refresh Data</button>
+        </div>
+
+        <p>Your last login was yesterday at 3:45 PM.</p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Page - Safe Animations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnProblematicAnimation_002_correct_safe_animations",
+    "issueId": "AI_WarnProblematicAnimation",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Animations with safety considerations and user controls",
+    "wcag": "2.2.2, 2.3.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        @keyframes gentle-fade {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes slow-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes subtle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .sale-banner {
+            animation: gentle-fade 3s ease-in-out infinite;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .logo {
+            animation: slow-rotate 6s linear infinite;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            margin: 20px auto;
+            border-radius: 50%;
+        }
+
+        .cta-button {
+            animation: subtle-pulse 2s ease-in-out infinite;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .sale-banner,
+            .logo,
+            .cta-button {
+                animation: none;
+            }
+        }
+
+        .animation-controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="animation-controls">
+        <button id="toggleAnimations" type="button">Pause Animations</button>
+    </div>
+
+    <h1>Limited Time Offer!</h1>
+
+    <div class="sale-banner"
+         data-expected-pass="true"
+         data-pass-reason="Gentle animation with 3s cycle is safe, respects prefers-reduced-motion, and has pause control">
+        🎉 Special Sale - 50% Off 🎉
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Slow rotation (6s) is safe for vestibular users, respects motion preferences, pauseable">
+        <div class="logo"></div>
+        <p style="text-align: center;">Discover amazing deals</p>
+    </div>
+
+    <div style="text-align: center;"
+         data-expected-pass="true"
+         data-pass-reason="Subtle pulse animation is non-aggressive, respects reduced motion preference, has controls">
+        <button class="cta-button">Shop Now</button>
+    </div>
+
+    <p>Enjoy great savings on quality products!</p>
+
+    <script>
+        const toggleBtn = document.getElementById('toggleAnimations');
+        let animationsPaused = false;
+
+        toggleBtn.addEventListener('click', () => {
+            animationsPaused = !animationsPaused;
+            document.body.style.animationPlayState = animationsPaused ? 'paused' : 'running';
+
+            // Pause all animated elements
+            document.querySelectorAll('.sale-banner, .logo, .cta-button').forEach(el => {
+                el.style.animationPlayState = animationsPaused ? 'paused' : 'running';
+            });
+
+            toggleBtn.textContent = animationsPaused ? 'Resume Animations' : 'Pause Animations';
+        });
+    </script>
+</body>
+</html>

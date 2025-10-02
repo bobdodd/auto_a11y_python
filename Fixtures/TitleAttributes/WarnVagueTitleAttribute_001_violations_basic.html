@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation - Vague Title Attributes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnVagueTitleAttribute_001_violations_basic",
+    "issueId": "WarnVagueTitleAttribute",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Title attributes contain vague or redundant information",
+    "wcag": "3.3.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <nav>
+        <div data-expected-violation="true"
+             data-violation-id="WarnVagueTitleAttribute"
+             data-violation-reason="Title attribute 'Click here' is vague and doesn't provide useful information">
+            <a href="/profile" title="Click here">My Profile</a>
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="WarnVagueTitleAttribute"
+             data-violation-reason="Title attribute repeats visible link text exactly, providing no additional value">
+            <a href="/settings" title="Settings">Settings</a>
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="WarnVagueTitleAttribute"
+             data-violation-reason="Generic 'Link' title provides no meaningful supplementary information">
+            <a href="/help" title="Link">Help Center</a>
+        </div>
+    </nav>
+
+    <main>
+        <h2>Recent Activity</h2>
+
+        <div data-expected-violation="true"
+             data-violation-id="WarnVagueTitleAttribute"
+             data-violation-reason="Title 'Button' is generic and redundant, adds no useful context">
+            <button type="button" title="Button">Refresh Data</button>
+        </div>
+
+        <p>Your last login was yesterday at 3:45 PM.</p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Page - Problematic Animations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnProblematicAnimation_001_violations_basic",
+    "issueId": "AI_WarnProblematicAnimation",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Animations that may cause accessibility issues",
+    "wcag": "2.2.2, 2.3.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        @keyframes flash {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0; }
+        }
+
+        @keyframes rapid-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes aggressive-shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-20px); }
+            20%, 40%, 60%, 80% { transform: translateX(20px); }
+        }
+
+        .flashing-banner {
+            animation: flash 0.5s infinite;
+            background: #ff0000;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .spinning-logo {
+            animation: rapid-spin 0.8s linear infinite;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff);
+            margin: 20px auto;
+        }
+
+        .shaking-cta {
+            animation: aggressive-shake 0.3s infinite;
+            background: #ffd700;
+            padding: 15px 30px;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Limited Time Offer!</h1>
+
+    <div class="flashing-banner"
+         data-expected-violation="true"
+         data-violation-id="AI_WarnProblematicAnimation"
+         data-violation-reason="Rapidly flashing animation (0.5s cycle) can trigger seizures in photosensitive users, no controls provided">
+        ⚡ FLASH SALE - 50% OFF ⚡
+    </div>
+
+    <div data-expected-violation="true"
+         data-violation-id="AI_WarnProblematicAnimation"
+         data-violation-reason="Rapid spinning animation can cause dizziness and nausea in users with vestibular disorders">
+        <div class="spinning-logo"></div>
+        <p style="text-align: center;">Loading amazing deals...</p>
+    </div>
+
+    <div style="text-align: center;"
+         data-expected-violation="true"
+         data-violation-id="AI_WarnProblematicAnimation"
+         data-violation-reason="Aggressive shaking animation is distracting and can trigger discomfort, no way to stop it">
+        <button class="shaking-cta">Click Here Now!</button>
+    </div>
+
+    <p>Don't miss out on this incredible opportunity!</p>
+</body>
+</html>

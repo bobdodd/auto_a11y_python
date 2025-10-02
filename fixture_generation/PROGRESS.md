@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 197 files
-- **Issues With Enhanced Fixtures:** 96
-- **Touchpoints Completed:** 20 (Images - 100%, Links - 78%, ARIA - 75%, Focus Management - 100%, Colors/Contrast - 50%, Lists - 75%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%)
+- **Total Enhanced Fixtures Created:** 203 files
+- **Issues With Enhanced Fixtures:** 99
+- **Touchpoints Completed:** 23 (Images - 100%, Links - 78%, ARIA - 75%, Focus Management - 100%, Colors/Contrast - 50%, Lists - 75%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%)
 - **Touchpoints In Progress:** 5 (Headings 91%, Forms 40%, Buttons 67%, Landmarks 6%, Language 17%)
-- **Issues Still Needing Fixtures:** 218
+- **Issues Still Needing Fixtures:** 215
 
 ## Completed Fixtures by Touchpoint
 
@@ -348,6 +348,24 @@ Major gaps: xml:lang issues, hreflang issues, region qualifiers, lang/xml:lang m
 ### 📐 Structure Touchpoint (1/1 unique issues - 100% COMPLETE)
 
 1. **AI_ErrReadingOrderMismatch** - Visual order doesn't match DOM order (2 fixtures)
+
+**Total:** 2 fixture files
+
+### 📄 PDF Touchpoint (1/1 unique issues - 100% COMPLETE)
+
+1. **DiscoPDFLinksFound** - Links to PDF documents requiring review (2 fixtures)
+
+**Total:** 2 fixture files
+
+### 🏷️ Title Attributes Touchpoint (1/1 issues - 100% COMPLETE)
+
+1. **WarnVagueTitleAttribute** - Title attributes with vague or redundant information (2 fixtures)
+
+**Total:** 2 fixture files
+
+### 🎭 Animations Touchpoint (1/1 unique issues - 100% COMPLETE)
+
+1. **AI_WarnProblematicAnimation** - Animations that may cause accessibility issues (2 fixtures)
 
 **Total:** 2 fixture files
 

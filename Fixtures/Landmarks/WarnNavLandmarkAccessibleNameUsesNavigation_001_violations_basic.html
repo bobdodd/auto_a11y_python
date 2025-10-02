@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNavLandmarkAccessibleNameUsesNavigation - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNavLandmarkAccessibleNameUsesNavigation_001_violations_basic",
+    "issueId": "WarnNavLandmarkAccessibleNameUsesNavigation",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Navigation landmarks with redundant 'navigation' in labels",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation Landmark Redundant Labeling Test</h1>
+
+    <!-- Nav with "navigation" in label -->
+    <nav aria-label="Navigation"
+         data-expected-violation="true"
+         data-violation-id="WarnNavLandmarkAccessibleNameUsesNavigation"
+         data-violation-reason="Navigation landmark label uses generic term 'Navigation'. Screen readers will announce 'Navigation navigation', which is redundant and not descriptive">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here.</p>
+    </main>
+
+    <!-- Nav with "Main Navigation" -->
+    <nav aria-label="Main Navigation"
+         data-expected-violation="true"
+         data-violation-id="WarnNavLandmarkAccessibleNameUsesNavigation"
+         data-violation-reason="Navigation landmark label contains 'Navigation'. While 'Main' provides some context, using 'navigation' in the label creates redundancy. Use 'Main menu' instead">
+        <ul>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+
+    <!-- Nav with "Site Navigation" -->
+    <div role="navigation"
+         aria-label="Site Navigation Menu"
+         data-expected-violation="true"
+         data-violation-id="WarnNavLandmarkAccessibleNameUsesNavigation"
+         data-violation-reason="Navigation landmark label unnecessarily includes 'Navigation'. Labels should describe the specific purpose without redundantly stating the landmark type">
+        <ul>
+            <li><a href="/help">Help</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

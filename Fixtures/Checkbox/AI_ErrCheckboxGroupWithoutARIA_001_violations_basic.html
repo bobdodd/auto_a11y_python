@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrCheckboxGroupWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrCheckboxGroupWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrCheckboxGroupWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Checkbox groups lacking proper ARIA markup or semantic structure",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .checkbox-group {
+            margin: 1rem 0;
+        }
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            cursor: pointer;
+        }
+        .checkbox-indicator {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #666;
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .checkbox-indicator.checked::after {
+            content: '';
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Newsletter Preferences</h1>
+
+    <main>
+        <!-- Custom checkbox group without ARIA -->
+        <div class="checkbox-group"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrCheckboxGroupWithoutARIA"
+             data-violation-reason="Custom checkbox group lacks role='group', items lack role='checkbox', and no aria-checked state. Screen readers cannot identify as checkboxes or announce checked state">
+            <div class="group-label">Select topics of interest:</div>
+            <div class="custom-checkbox" onclick="toggleCheckbox(this)">
+                <div class="checkbox-indicator"></div>
+                <span>Technology News</span>
+            </div>
+            <div class="custom-checkbox" onclick="toggleCheckbox(this)">
+                <div class="checkbox-indicator"></div>
+                <span>Product Updates</span>
+            </div>
+            <div class="custom-checkbox" onclick="toggleCheckbox(this)">
+                <div class="checkbox-indicator"></div>
+                <span>Special Offers</span>
+            </div>
+        </div>
+
+        <!-- Native checkboxes without grouping or labels -->
+        <div class="checkbox-group"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrCheckboxGroupWithoutARIA"
+             data-violation-reason="Checkboxes lack fieldset/legend grouping and associated labels. Screen readers cannot determine group context or identify checkbox purposes">
+            <div>Account settings:</div>
+            <input type="checkbox" name="notifications"> Email notifications
+            <input type="checkbox" name="newsletter"> Weekly newsletter
+            <input type="checkbox" name="sms"> SMS alerts
+        </div>
+    </main>
+
+    <script>
+        function toggleCheckbox(element) {
+            const indicator = element.querySelector('.checkbox-indicator');
+            indicator.classList.toggle('checked');
+        }
+    </script>
+</body>
+</html>

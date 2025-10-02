@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrDatePickerWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrDatePickerWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrDatePickerWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Date picker widgets with proper ARIA markup and keyboard navigation",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .datepicker-container {
+            margin: 1rem 0;
+        }
+        .calendar {
+            border: 1px solid #ccc;
+            width: 280px;
+            padding: 1rem;
+            display: none;
+            background: white;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .day {
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+        }
+        .day:hover,
+        .day:focus {
+            background: #e7f3ff;
+            outline: 2px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Appointment Booking - Correct Usage</h1>
+
+    <main>
+        <!-- Date picker with proper ARIA - CORRECT -->
+        <div class="datepicker-container"
+             data-expected-pass="true"
+             data-pass-reason="Date picker button has aria-haspopup and aria-expanded. Calendar dialog has role='dialog', aria-modal, and aria-label. Grid has role='grid', cells have role='gridcell' with aria-label for each date. Arrow keys navigate dates">
+            <label for="date-input">Select appointment date:</label>
+            <input type="text"
+                   id="date-input"
+                   placeholder="MM/DD/YYYY"
+                   aria-describedby="date-instructions"
+                   readonly>
+            <button onclick="showCalendar()"
+                    aria-haspopup="dialog"
+                    aria-expanded="false"
+                    aria-label="Choose date">
+                =Å
+            </button>
+            <div id="date-instructions" style="font-size: 0.9em; color: #666;">
+                Press Enter or click calendar icon to open date picker
+            </div>
+
+            <div id="calendar"
+                 class="calendar"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-label="Choose a date">
+                <div class="calendar-header">
+                    <button onclick="prevMonth()" aria-label="Previous month">&lt;</button>
+                    <h2 id="month-year">January 2024</h2>
+                    <button onclick="nextMonth()" aria-label="Next month">&gt;</button>
+                </div>
+                <div class="calendar-grid" role="grid" aria-labelledby="month-year">
+                    <div role="gridcell" aria-label="January 1, 2024" tabindex="0" class="day">1</div>
+                    <div role="gridcell" aria-label="January 2, 2024" tabindex="-1" class="day">2</div>
+                    <div role="gridcell" aria-label="January 3, 2024" tabindex="-1" class="day">3</div>
+                    <div role="gridcell" aria-label="January 4, 2024" tabindex="-1" class="day">4</div>
+                    <div role="gridcell" aria-label="January 5, 2024" tabindex="-1" class="day">5</div>
+                    <div role="gridcell" aria-label="January 6, 2024" tabindex="-1" class="day">6</div>
+                    <div role="gridcell" aria-label="January 7, 2024" tabindex="-1" class="day">7</div>
+                </div>
+                <button onclick="closeCalendar()">Close</button>
+            </div>
+        </div>
+
+        <!-- Date components with proper grouping - CORRECT -->
+        <fieldset class="datepicker-container"
+                  data-expected-pass="true"
+                  data-pass-reason="Date components wrapped in fieldset with legend. Each select has associated label. Screen readers announce group purpose and individual component labels">
+            <legend>Birth date:</legend>
+            <div>
+                <label for="month">Month:</label>
+                <select id="month" aria-label="Month">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                </select>
+            </div>
+            <div>
+                <label for="day">Day:</label>
+                <select id="day" aria-label="Day">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+            <div>
+                <label for="year">Year:</label>
+                <select id="year" aria-label="Year">
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
+        </fieldset>
+    </main>
+
+    <script>
+        function showCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.style.display = 'block';
+            document.querySelector('[aria-haspopup="dialog"]').setAttribute('aria-expanded', 'true');
+            // Focus first date
+            calendar.querySelector('[role="gridcell"]').focus();
+        }
+
+        function closeCalendar() {
+            document.getElementById('calendar').style.display = 'none';
+            document.querySelector('[aria-haspopup="dialog"]').setAttribute('aria-expanded', 'false');
+        }
+
+        function prevMonth() {}
+        function nextMonth() {}
+    </script>
+</body>
+</html>

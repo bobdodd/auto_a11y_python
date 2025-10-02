@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 493 files
-- **Issues With Enhanced Fixtures:** 243
+- **Total Enhanced Fixtures Created:** 501 files
+- **Issues With Enhanced Fixtures:** 247
 - **Touchpoints Completed:** 34 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%, Landmarks - 100%, Forms - 100%)
-- **Touchpoints In Progress:** 22 (Navigation - 4 issues, Interactive AI - 4 issues, Focus AI - 1 issue, Dialogs AI - 1 issue, Structure AI - 1 issue, Buttons AI - 1 issue, SkipLinks AI - 1 issue, LiveRegions AI - 1 issue, Status AI - 1 issue, Errors AI - 1 issue, Video AI - 1 issue, Audio AI - 1 issue, Breadcrumbs AI - 1 issue, Pagination AI - 1 issue, Search AI - 1 issue, Notifications AI - 1 issue, Autocomplete AI - 1 issue, Progress AI - 1 issue, Sliders AI - 1 issue, Disclosure AI - 1 issue, TreeView AI - 1 issue, Spinbutton AI - 1 issue)
-- **Issues Still Needing Fixtures:** 71
+- **Touchpoints In Progress:** 26 (Navigation - 4 issues, Interactive AI - 4 issues, Focus AI - 1 issue, Dialogs AI - 1 issue, Structure AI - 1 issue, Buttons AI - 1 issue, SkipLinks AI - 1 issue, LiveRegions AI - 1 issue, Status AI - 1 issue, Errors AI - 1 issue, Video AI - 1 issue, Audio AI - 1 issue, Breadcrumbs AI - 1 issue, Pagination AI - 1 issue, Search AI - 1 issue, Notifications AI - 1 issue, Autocomplete AI - 1 issue, Progress AI - 1 issue, Sliders AI - 1 issue, Disclosure AI - 1 issue, TreeView AI - 1 issue, Spinbutton AI - 1 issue, RadioGroup AI - 1 issue, Checkbox AI - 1 issue, Toggle AI - 1 issue, DatePicker AI - 1 issue)
+- **Issues Still Needing Fixtures:** 67
 
 ## Completed Fixtures by Touchpoint
 
@@ -675,5 +675,29 @@ For each issue, we aim to create:
 ### 🔢 Spinbutton AI Touchpoint (1 issue - In Progress)
 
 1. **AI_ErrSpinbuttonWithoutARIA** - Spinbutton/number controls lacking proper ARIA markup (WCAG 4.1.2) (2 fixtures)
+
+**Total:** 2 fixture files
+
+### 🔘 RadioGroup AI Touchpoint (1 issue - In Progress)
+
+1. **AI_ErrRadioGroupWithoutARIA** - Custom radio button groups lacking proper ARIA markup (WCAG 4.1.2) (2 fixtures)
+
+**Total:** 2 fixture files
+
+### ☑️ Checkbox AI Touchpoint (1 issue - In Progress)
+
+1. **AI_ErrCheckboxGroupWithoutARIA** - Checkbox groups lacking proper ARIA markup or semantic structure (WCAG 4.1.2) (2 fixtures)
+
+**Total:** 2 fixture files
+
+### 🔀 Toggle AI Touchpoint (1 issue - In Progress)
+
+1. **AI_ErrToggleWithoutARIA** - Toggle switches lacking proper ARIA markup (WCAG 4.1.2) (2 fixtures)
+
+**Total:** 2 fixture files
+
+### 📅 DatePicker AI Touchpoint (1 issue - In Progress)
+
+1. **AI_ErrDatePickerWithoutARIA** - Date picker widgets lacking proper ARIA markup (WCAG 4.1.2) (2 fixtures)
 
 **Total:** 2 fixture files

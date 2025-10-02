@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrRadioGroupWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrRadioGroupWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrRadioGroupWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Custom radio button groups lacking proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .radio-group {
+            margin: 1rem 0;
+        }
+        .custom-radio {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            cursor: pointer;
+        }
+        .radio-indicator {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #666;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .radio-indicator.selected::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #007bff;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Payment Method</h1>
+
+    <main>
+        <!-- Custom radio group without ARIA -->
+        <div class="radio-group"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrRadioGroupWithoutARIA"
+             data-violation-reason="Custom radio group lacks role='radiogroup', items lack role='radio', and no aria-checked state. Screen readers cannot identify as radio buttons or announce selection state">
+            <div class="group-label">Choose payment method:</div>
+            <div class="custom-radio" onclick="selectPayment(this, 'credit')">
+                <div class="radio-indicator" id="credit-indicator"></div>
+                <span>Credit Card</span>
+            </div>
+            <div class="custom-radio" onclick="selectPayment(this, 'debit')">
+                <div class="radio-indicator" id="debit-indicator"></div>
+                <span>Debit Card</span>
+            </div>
+            <div class="custom-radio" onclick="selectPayment(this, 'paypal')">
+                <div class="radio-indicator" id="paypal-indicator"></div>
+                <span>PayPal</span>
+            </div>
+        </div>
+
+        <!-- Radio buttons styled as buttons without grouping -->
+        <div class="radio-group"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrRadioGroupWithoutARIA"
+             data-violation-reason="Native radio inputs lack fieldset/legend grouping and associated labels. Screen readers cannot determine group context or relationships between options">
+            <div>Select shipping speed:</div>
+            <input type="radio" name="shipping" value="standard"> Standard
+            <input type="radio" name="shipping" value="express"> Express
+            <input type="radio" name="shipping" value="overnight"> Overnight
+        </div>
+    </main>
+
+    <script>
+        let selectedPayment = null;
+
+        function selectPayment(element, value) {
+            // Deselect all
+            document.querySelectorAll('.radio-indicator').forEach(ind => {
+                ind.classList.remove('selected');
+            });
+            // Select clicked
+            element.querySelector('.radio-indicator').classList.add('selected');
+            selectedPayment = value;
+        }
+    </script>
+</body>
+</html>

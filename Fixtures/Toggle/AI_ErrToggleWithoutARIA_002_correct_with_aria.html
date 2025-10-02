@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrToggleWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrToggleWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrToggleWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Toggle switches with proper ARIA markup and keyboard access",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .toggle-container {
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+        }
+        .toggle-switch {
+            width: 50px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .toggle-switch:focus {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+        .toggle-slider {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.2s;
+        }
+        .toggle-switch.on {
+            background: #007bff;
+        }
+        .toggle-switch.on .toggle-slider {
+            left: 28px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Settings - Correct Usage</h1>
+
+    <main>
+        <!-- Toggle switch with proper ARIA - CORRECT -->
+        <div class="toggle-container"
+             data-expected-pass="true"
+             data-pass-reason="Toggle has role='switch' with aria-checked state and aria-label. Keyboard accessible with Space/Enter keys. Screen readers announce as switch with on/off state">
+            <div class="toggle-switch"
+                 role="switch"
+                 aria-checked="false"
+                 aria-label="Dark mode"
+                 tabindex="0"
+                 onclick="toggleSwitch(this)"
+                 onkeydown="handleToggleKeydown(event, this)">
+                <div class="toggle-slider"></div>
+            </div>
+            <span id="dark-mode-label">Dark mode</span>
+        </div>
+
+        <!-- Toggle with button element - CORRECT -->
+        <div class="toggle-container"
+             data-expected-pass="true"
+             data-pass-reason="Toggle uses button element with role='switch', aria-checked, and aria-labelledby. Semantic button provides keyboard accessibility. Screen readers properly announce toggle state">
+            <button class="toggle-switch"
+                    role="switch"
+                    aria-checked="false"
+                    aria-labelledby="notifications-label"
+                    onclick="toggleSwitch(this)">
+                <span class="toggle-slider"></span>
+            </button>
+            <span id="notifications-label">Email notifications</span>
+        </div>
+    </main>
+
+    <script>
+        function toggleSwitch(element) {
+            const isChecked = element.getAttribute('aria-checked') === 'true';
+            element.setAttribute('aria-checked', !isChecked);
+            element.classList.toggle('on');
+        }
+
+        function handleToggleKeydown(event, element) {
+            if (event.key === ' ' || event.key === 'Enter') {
+                event.preventDefault();
+                toggleSwitch(element);
+            }
+        }
+    </script>
+</body>
+</html>

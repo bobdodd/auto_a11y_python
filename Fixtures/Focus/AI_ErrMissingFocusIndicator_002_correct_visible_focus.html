@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMissingFocusIndicator - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMissingFocusIndicator_002_correct_visible_focus",
+    "issueId": "AI_ErrMissingFocusIndicator",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Interactive elements with visible focus indicators",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Custom visible focus indicators */
+        button:focus {
+            outline: 3px solid #0066cc;
+            outline-offset: 2px;
+        }
+        a:focus {
+            outline: 2px dashed #cc0000;
+            outline-offset: 3px;
+            background-color: #ffffcc;
+        }
+        input:focus {
+            outline: 2px solid #00aa00;
+            box-shadow: 0 0 5px rgba(0, 170, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <h1>Online Store - Correct Usage</h1>
+
+    <main>
+        <!-- Button with visible focus indicator - CORRECT -->
+        <button data-expected-pass="true"
+                data-pass-reason="Button has visible focus indicator with 3px solid outline and offset, making keyboard focus clearly visible">
+            Add to Cart
+        </button>
+
+        <!-- Link with visible focus indicator - CORRECT -->
+        <a href="/products"
+           data-expected-pass="true"
+           data-pass-reason="Link has dashed outline and background color change on focus, providing clear visual feedback for keyboard navigation">
+            View Products
+        </a>
+
+        <!-- Input with visible focus styling - CORRECT -->
+        <form>
+            <label for="search2">Search</label>
+            <input type="text"
+                   id="search2"
+                   data-expected-pass="true"
+                   data-pass-reason="Input field has visible outline and box-shadow on focus, clearly indicating when field is active for keyboard users">
+            <button type="submit">Go</button>
+        </form>
+    </main>
+</body>
+</html>

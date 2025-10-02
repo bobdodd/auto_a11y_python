@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article Layout - Mismatched Reading Order</title>
+    <title>AI_ErrReadingOrderMismatch - Violations</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "AI_ErrReadingOrderMismatch_001_violations_basic",
     "issueId": "AI_ErrReadingOrderMismatch",
-    "expectedViolationCount": 1,
+    "expectedViolationCount": 2,
     "expectedPassCount": 0,
     "description": "Visual reading order doesn't match DOM order",
     "wcag": "1.3.2, 2.4.3",
@@ -16,70 +16,66 @@
 }
     </script>
     <style>
-        .container {
+        .grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            grid-template-rows: auto auto auto;
-            gap: 20px;
+            grid-template-rows: auto auto;
         }
-        .sidebar {
-            grid-column: 2;
-            grid-row: 1 / 4;
-            border: 1px solid #ddd;
-            padding: 20px;
-            background: #f9f9f9;
+        .main-content { grid-column: 1; grid-row: 1 / 3; }
+        .sidebar { grid-column: 2; grid-row: 1; }
+        .featured { grid-column: 2; grid-row: 2; }
+
+        .flex-layout {
+            display: flex;
         }
-        .header {
-            grid-column: 1;
-            grid-row: 1;
-        }
-        .content {
-            grid-column: 1;
-            grid-row: 2;
-        }
-        .footer {
-            grid-column: 1;
-            grid-row: 3;
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
-        }
+        .first { order: 2; }
+        .second { order: 1; }
+        .third { order: 3; }
     </style>
 </head>
-<body data-expected-violation="true"
-      data-violation-id="AI_ErrReadingOrderMismatch"
-      data-violation-reason="DOM order is header-sidebar-content-footer but visual order is header-content-footer with sidebar on right, screen readers will read sidebar content before main content">
-    <h1>News Article</h1>
+<body>
+    <h1>News Website</h1>
 
-    <div class="container">
-        <div class="header">
-            <h2>Breaking: Major Technology Announcement</h2>
-            <p><em>Published: October 1, 2025</em></p>
-        </div>
-
-        <!-- DOM order: sidebar comes before content -->
+    <!-- Grid layout with mismatched order -->
+    <div class="grid"
+         data-expected-violation="true"
+         data-violation-id="AI_ErrReadingOrderMismatch"
+         data-violation-reason="DOM order is sidebar, featured, main content, but visual order is main content, sidebar, featured. Screen readers follow DOM order causing confusing reading sequence">
         <aside class="sidebar">
-            <h3>Related Articles</h3>
-            <ul>
-                <li><a href="#">Previous announcement</a></li>
-                <li><a href="#">Company background</a></li>
-                <li><a href="#">Industry analysis</a></li>
-            </ul>
-            <h3>Advertisement</h3>
-            <div style="background: #e0e0e0; padding: 20px;">
-                Ad content here
-            </div>
+            <h2>Latest Updates</h2>
+            <p>Breaking news sidebar</p>
         </aside>
 
-        <main class="content">
-            <p>This is the main article content that should be read before the sidebar...</p>
-            <p>The announcement details the company's new direction and strategic initiatives for the coming year.</p>
-            <p>Experts believe this will significantly impact the industry landscape.</p>
-        </main>
+        <aside class="featured">
+            <h2>Featured Story</h2>
+            <p>Featured content</p>
+        </aside>
 
-        <footer class="footer">
-            <p>Tags: technology, business, innovation</p>
-            <p>Share: [Facebook] [Twitter] [LinkedIn]</p>
-        </footer>
+        <main class="main-content">
+            <h2>Main Article</h2>
+            <p>Primary news content that appears first visually but last in DOM</p>
+        </main>
     </div>
+
+    <!-- Flexbox with CSS order property -->
+    <section class="flex-layout"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrReadingOrderMismatch"
+             data-violation-reason="CSS order property reorders visual presentation (First, Second, Third) but DOM order remains (Second, First, Third). Screen readers announce in DOM order">
+        <div class="first">
+            <h3>Step 1</h3>
+            <p>First step visually but second in DOM</p>
+        </div>
+
+        <div class="second">
+            <h3>Step 2</h3>
+            <p>Second step visually but first in DOM</p>
+        </div>
+
+        <div class="third">
+            <h3>Step 3</h3>
+            <p>Third step in both orders</p>
+        </div>
+    </section>
 </body>
 </html>

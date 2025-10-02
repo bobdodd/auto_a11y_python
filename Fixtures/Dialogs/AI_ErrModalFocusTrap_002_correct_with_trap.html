@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrModalFocusTrap - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrModalFocusTrap_002_correct_with_trap",
+    "issueId": "AI_ErrModalFocusTrap",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Modal dialogs with proper focus trap and focus management",
+    "wcag": "2.1.2, 2.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal.show { display: block; }
+        .modal-content { background: white; margin: 15% auto; padding: 20px; width: 50%; }
+    </style>
+</head>
+<body>
+    <h1>User Profile - Correct Usage</h1>
+
+    <main id="main-content">
+        <p>Welcome to your profile page.</p>
+        <button onclick="openAccessibleModal('confirm-modal2')">Delete Profile</button>
+        <button onclick="openAccessibleModal('edit-modal2')">Edit Settings</button>
+    </main>
+
+    <!-- Modal with proper focus trap - CORRECT -->
+    <div id="confirm-modal2"
+         class="modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="confirm-title2"
+         data-expected-pass="true"
+         data-pass-reason="Modal properly traps focus within dialog, preventing tab navigation to background content. Focus returns to trigger element on close">
+        <div class="modal-content">
+            <h2 id="confirm-title2">Confirm Deletion</h2>
+            <p>Are you sure you want to delete your profile? This cannot be undone.</p>
+            <button onclick="closeAccessibleModal('confirm-modal2')">Cancel</button>
+            <button onclick="deleteProfile2()">Delete</button>
+        </div>
+    </div>
+
+    <!-- Modal with focus management - CORRECT -->
+    <div id="edit-modal2"
+         class="modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="edit-title2"
+         data-expected-pass="true"
+         data-pass-reason="Modal implements complete focus trap with Tab cycling within dialog, Escape key to close, and focus restoration to trigger element">
+        <div class="modal-content">
+            <h2 id="edit-title2">Edit Settings</h2>
+            <form>
+                <label for="email2">Email</label>
+                <input type="email" id="email2">
+                <button type="submit">Save</button>
+                <button type="button" onclick="closeAccessibleModal('edit-modal2')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let previousFocus = null;
+
+        function openAccessibleModal(modalId) {
+            previousFocus = document.activeElement;
+            const modal = document.getElementById(modalId);
+            modal.classList.add('show');
+
+            // Move focus to first focusable element
+            const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (focusable.length > 0) {
+                focusable[0].focus();
+            }
+
+            // Trap focus within modal
+            modal.addEventListener('keydown', trapFocus);
+        }
+
+        function closeAccessibleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+            modal.removeEventListener('keydown', trapFocus);
+
+            // Return focus to trigger element
+            if (previousFocus) {
+                previousFocus.focus();
+            }
+        }
+
+        function trapFocus(e) {
+            if (e.key !== 'Tab') {
+                if (e.key === 'Escape') {
+                    closeAccessibleModal(e.currentTarget.id);
+                }
+                return;
+            }
+
+            const modal = e.currentTarget;
+            const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
+
+        function deleteProfile2() {
+            alert('Profile deleted');
+            closeAccessibleModal('confirm-modal2');
+        }
+    </script>
+</body>
+</html>

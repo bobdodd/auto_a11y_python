@@ -3,45 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Fixture: Proper Semantic Buttons</title>
+    <title>AI_ErrNonSemanticButton - Correct Usage</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "AI_ErrNonSemanticButton_002_correct_semantic",
     "issueId": "AI_ErrNonSemanticButton",
     "expectedViolationCount": 0,
     "expectedPassCount": 3,
-    "description": "Buttons using proper semantic elements or ARIA",
-    "wcag": "2.1.1",
+    "description": "Proper semantic buttons or elements with complete ARIA",
+    "wcag": "2.1.1, 4.1.2",
     "impact": "High"
 }
     </script>
-    <style>
-        .styled-button {
-            padding: 10px 20px;
-            background: #0066cc;
-            color: white;
-            cursor: pointer;
-            border-radius: 4px;
-            border: none;
-        }
-    </style>
 </head>
 <body>
-    <h1>User Actions</h1>
+    <h1>Shopping Cart - Correct Usage</h1>
 
-    <button class="styled-button"
-            data-expected-pass="true"
-            data-pass-reason="Uses semantic button element">Submit Form</button>
+    <main>
+        <!-- Semantic button element - CORRECT -->
+        <button onclick="addToCart()"
+                data-expected-pass="true"
+                data-pass-reason="Uses semantic button element with inherent keyboard accessibility, proper role announcement, and focus management">
+            Add to Cart
+        </button>
 
-    <button type="button"
-            class="styled-button"
-            data-expected-pass="true"
-            data-pass-reason="Semantic button with explicit type">Save Changes</button>
+        <!-- Div with full ARIA and keyboard support - CORRECT -->
+        <div class="btn"
+             role="button"
+             tabindex="0"
+             onclick="checkout()"
+             onkeydown="if(event.key==='Enter'||event.key===' '){checkout();event.preventDefault();}"
+             data-expected-pass="true"
+             data-pass-reason="Div has role='button', tabindex='0' for focus, and keyboard handlers for Enter and Space keys, making it fully accessible">
+            Checkout
+        </div>
 
-    <div role="button"
-         tabindex="0"
-         class="styled-button"
-         data-expected-pass="true"
-         data-pass-reason="Div with role=button and tabindex=0 for keyboard access">Delete Item</div>
+        <!-- Semantic button (preferred) - CORRECT -->
+        <button onclick="removeItem()"
+                data-expected-pass="true"
+                data-pass-reason="Semantic button element provides automatic keyboard support, appropriate role, and accessible name">
+            Remove Item
+        </button>
+    </main>
+
+    <script>
+        function addToCart() {
+            alert('Added to cart');
+        }
+
+        function checkout() {
+            alert('Proceeding to checkout');
+        }
+
+        function removeItem() {
+            alert('Item removed');
+        }
+    </script>
 </body>
 </html>

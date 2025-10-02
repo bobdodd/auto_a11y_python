@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrReadingOrderMismatch - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrReadingOrderMismatch_002_correct_order",
+    "issueId": "AI_ErrReadingOrderMismatch",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "DOM order matches visual reading order",
+    "wcag": "1.3.2, 2.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: auto auto;
+        }
+        .main-content { grid-column: 1; grid-row: 1 / 3; }
+        .sidebar { grid-column: 2; grid-row: 1; }
+        .featured { grid-column: 2; grid-row: 2; }
+
+        .flex-layout {
+            display: flex;
+        }
+        .step { flex: 1; }
+    </style>
+</head>
+<body>
+    <h1>News Website - Correct Usage</h1>
+
+    <!-- Grid layout with matching order - CORRECT -->
+    <div class="grid"
+         data-expected-pass="true"
+         data-pass-reason="DOM order matches visual order: main content first, then sidebar, then featured. Screen readers and visual presentation are aligned">
+        <main class="main-content">
+            <h2>Main Article</h2>
+            <p>Primary news content that appears first both visually and in DOM</p>
+        </main>
+
+        <aside class="sidebar">
+            <h2>Latest Updates</h2>
+            <p>Breaking news sidebar</p>
+        </aside>
+
+        <aside class="featured">
+            <h2>Featured Story</h2>
+            <p>Featured content</p>
+        </aside>
+    </div>
+
+    <!-- Flexbox without order property - CORRECT -->
+    <section class="flex-layout"
+             data-expected-pass="true"
+             data-pass-reason="DOM order and visual order both show Step 1, Step 2, Step 3. No CSS reordering, ensuring consistent reading sequence for all users">
+        <div class="step">
+            <h3>Step 1</h3>
+            <p>First step in both DOM and visual order</p>
+        </div>
+
+        <div class="step">
+            <h3>Step 2</h3>
+            <p>Second step in both DOM and visual order</p>
+        </div>
+
+        <div class="step">
+            <h3>Step 3</h3>
+            <p>Third step in both DOM and visual order</p>
+        </div>
+    </section>
+</body>
+</html>

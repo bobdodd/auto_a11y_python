@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International Resources - Valid Hreflang Codes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPrimaryHrefLangNotRecognized_002_correct_valid_codes",
+    "issueId": "ErrPrimaryHrefLangNotRecognized",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Links with valid ISO 639 hreflang codes",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>International Documentation</h1>
+
+    <p>Access our documentation in multiple languages:</p>
+
+    <nav>
+        <ul>
+            <li data-expected-pass="true"
+                data-pass-reason="hreflang='es' is a valid ISO 639-1 code for Spanish">
+                <a href="/docs/es/" hreflang="es">Spanish Documentation</a>
+            </li>
+            <li data-expected-pass="true"
+                data-pass-reason="hreflang='zh' is a valid ISO 639-1 code for Chinese">
+                <a href="/docs/zh/" hreflang="zh">Chinese Version</a>
+            </li>
+            <li data-expected-pass="true"
+                data-pass-reason="hreflang='ja' is a valid ISO 639-1 code for Japanese">
+                <a href="/docs/ja/" hreflang="ja">Japanese Guide</a>
+            </li>
+        </ul>
+    </nav>
+
+    <p>These links properly use ISO 639-1 language codes, ensuring correct interpretation by
+    search engines and assistive technologies.</p>
+</body>
+</html>

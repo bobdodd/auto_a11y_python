@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website - Proper Lang Attribute</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyLangAttr_002_correct_with_lang",
+    "issueId": "ErrEmptyLangAttr",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "HTML element has valid lang attribute specifying English",
+    "wcag": "3.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="HTML element has valid lang='en' attribute, enabling screen readers to use correct English pronunciation rules">
+    <h1>Welcome to Our Website</h1>
+
+    <p>This page properly declares its language using lang="en" on the HTML element.
+    Screen readers can now correctly identify the language and use appropriate pronunciation rules.</p>
+
+    <nav>
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <article>
+        <h2>Accessibility Best Practice</h2>
+        <p>Always specify the primary document language on the HTML element using a valid
+        ISO 639-1 language code. This ensures assistive technologies can properly process your content.</p>
+    </article>
+</body>
+</html>

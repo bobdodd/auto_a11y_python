@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XHTML Document - Matching Language Attributes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPrimaryLangAndXmlLangMismatch_002_correct_matching",
+    "issueId": "ErrPrimaryLangAndXmlLangMismatch",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "lang and xml:lang attributes properly match throughout document",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="HTML element has matching lang='en' and xml:lang='en', ensuring consistent language identification">
+    <h1>Technical Documentation</h1>
+
+    <p>This XHTML document correctly specifies matching lang and xml:lang attributes.
+    All processors will consistently identify the language as English.</p>
+
+    <div lang="fr" xml:lang="fr"
+         data-expected-pass="true"
+         data-pass-reason="Element has matching lang='fr' and xml:lang='fr', ensuring consistent French language identification">
+        <h2>Section en Français</h2>
+        <p>Cette section déclare correctement le français avec des attributs correspondants.</p>
+    </div>
+
+    <blockquote lang="de" xml:lang="de"
+                data-expected-pass="true"
+                data-pass-reason="Blockquote has matching lang='de' and xml:lang='de', ensuring consistent German language identification">
+        <p>Dieses Zitat hat übereinstimmende deutsche Sprachcodes.</p>
+        <cite>— Deutsche Dokumentation</cite>
+    </blockquote>
+</body>
+</html>

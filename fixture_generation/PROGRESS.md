@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 229 files
-- **Issues With Enhanced Fixtures:** 113
+- **Total Enhanced Fixtures Created:** 239 files
+- **Issues With Enhanced Fixtures:** 118
 - **Touchpoints Completed:** 31 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%)
-- **Touchpoints In Progress:** 3 (Forms 40%, Landmarks 6%, Language 39%)
-- **Issues Still Needing Fixtures:** 211
+- **Touchpoints In Progress:** 3 (Forms 40%, Landmarks 6%, Language 61%)
+- **Issues Still Needing Fixtures:** 196
 
 ## Completed Fixtures by Touchpoint
 
@@ -222,7 +222,7 @@ Major gaps: landmark labeling, duplicate landmarks, main/nav/region issues
 
 **Total:** 8 fixture files
 
-### 🌐 Language Touchpoint (9/23 issues - 39% complete)
+### 🌐 Language Touchpoint (14/23 issues - 61% complete)
 
 1. **ErrNoPageLanguage** - HTML element missing lang attribute (2 fixtures)
 2. **ErrEmptyLanguageAttribute** - HTML element with empty lang attribute (2 fixtures)
@@ -233,11 +233,16 @@ Major gaps: landmark labeling, duplicate landmarks, main/nav/region issues
 7. **ErrElementRegionQualifierNotRecognized** - Element has unrecognized region qualifier (2 fixtures)
 8. **ErrHreflangAttrEmpty** - Link has empty hreflang attribute (2 fixtures)
 9. **ErrHreflangNotOnLink** - hreflang attribute on non-link element (2 fixtures)
+10. **ErrEmptyLangAttr** - HTML element with empty lang attribute (2 fixtures)
+11. **ErrEmptyXmlLangAttr** - Empty xml:lang attribute in XHTML (2 fixtures)
+12. **ErrPrimaryLangAndXmlLangMismatch** - Conflicting lang and xml:lang values (2 fixtures)
+13. **ErrPrimaryHrefLangNotRecognized** - Invalid hreflang language codes (2 fixtures)
+14. **ErrInvalidLanguageCode** - Invalid language codes (already counted above, files exist)
 
-**Total:** 18 fixture files
+**Total:** 28 fixture files
 
-#### ⏳ Remaining Issues (14)
-Major gaps: xml:lang issues, lang/xml:lang mismatches, more hreflang validation
+#### ⏳ Remaining Issues (9)
+Major gaps: ErrPrimaryLangUnrecognized, ErrPrimaryXmlLangUnrecognized, ErrRegionQualifierForHreflangUnrecognized, ErrRegionQualifierForPrimaryLangNotRecognized, ErrIncorrectlyFormattedPrimaryLang, ErrNoPrimaryLangAttr, and 3 more
 
 ### 📋 Lists Touchpoint (4/4 issues - 100% COMPLETE)
 

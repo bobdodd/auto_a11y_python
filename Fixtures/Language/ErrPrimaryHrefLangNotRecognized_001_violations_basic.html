@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International Resources - Invalid Hreflang Codes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPrimaryHrefLangNotRecognized_001_violations_basic",
+    "issueId": "ErrPrimaryHrefLangNotRecognized",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links with invalid hreflang language codes that don't conform to ISO 639",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>International Documentation</h1>
+
+    <p>Access our documentation in multiple languages (with invalid hreflang codes):</p>
+
+    <nav>
+        <ul>
+            <li data-expected-violation="true"
+                data-violation-id="ErrPrimaryHrefLangNotRecognized"
+                data-violation-reason="hreflang='spanish' is not a valid ISO 639 code, should be 'es'">
+                <a href="/docs/es/" hreflang="spanish">Spanish Documentation</a>
+            </li>
+            <li data-expected-violation="true"
+                data-violation-id="ErrPrimaryHrefLangNotRecognized"
+                data-violation-reason="hreflang='chinese' is not a valid ISO 639 code, should be 'zh'">
+                <a href="/docs/zh/" hreflang="chinese">Chinese Version</a>
+            </li>
+            <li data-expected-violation="true"
+                data-violation-id="ErrPrimaryHrefLangNotRecognized"
+                data-violation-reason="hreflang='jp' is not a valid ISO 639 code, should be 'ja' for Japanese">
+                <a href="/docs/ja/" hreflang="jp">Japanese Guide</a>
+            </li>
+        </ul>
+    </nav>
+
+    <p>These links use invalid hreflang codes that won't be recognized by search engines or assistive technologies.</p>
+</body>
+</html>

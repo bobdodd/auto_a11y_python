@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTabsWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTabsWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrTabsWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Tab interface with proper ARIA roles, states, and keyboard support",
+    "wcag": "2.1.1, 4.1.2, 1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Details - Correct Usage</h1>
+
+    <main>
+        <!-- Tabs with proper ARIA - CORRECT -->
+        <div class="tabs"
+             data-expected-pass="true"
+             data-pass-reason="Tab interface uses proper ARIA roles (tablist, tab, tabpanel), aria-selected state, aria-controls linking tabs to panels, and button elements for keyboard accessibility">
+            <div role="tablist" aria-label="Product information">
+                <button role="tab"
+                        aria-selected="true"
+                        aria-controls="panel1"
+                        id="tab1"
+                        tabindex="0"
+                        onclick="accessibleShowTab(0, 'tab', 'panel')">
+                    Description
+                </button>
+                <button role="tab"
+                        aria-selected="false"
+                        aria-controls="panel2"
+                        id="tab2"
+                        tabindex="-1"
+                        onclick="accessibleShowTab(1, 'tab', 'panel')">
+                    Specifications
+                </button>
+                <button role="tab"
+                        aria-selected="false"
+                        aria-controls="panel3"
+                        id="tab3"
+                        tabindex="-1"
+                        onclick="accessibleShowTab(2, 'tab', 'panel')">
+                    Reviews
+                </button>
+            </div>
+            <div role="tabpanel" id="panel1" aria-labelledby="tab1" tabindex="0">
+                <p>Product description goes here...</p>
+            </div>
+            <div role="tabpanel" id="panel2" aria-labelledby="tab2" tabindex="0" hidden>
+                <p>Technical specifications...</p>
+            </div>
+            <div role="tabpanel" id="panel3" aria-labelledby="tab3" tabindex="0" hidden>
+                <p>Customer reviews...</p>
+            </div>
+        </div>
+
+        <!-- Tabs with keyboard navigation - CORRECT -->
+        <div class="tab-widget"
+             data-expected-pass="true"
+             data-pass-reason="Complete ARIA tabs pattern with role='tablist', role='tab' on buttons, aria-selected state management, aria-controls relationships, and proper tabindex for roving focus">
+            <div role="tablist" aria-label="Product sections">
+                <button role="tab"
+                        aria-selected="true"
+                        aria-controls="section1"
+                        id="sec-tab1"
+                        tabindex="0"
+                        onclick="accessibleShowTab(0, 'sec-tab', 'section')">
+                    Overview
+                </button>
+                <button role="tab"
+                        aria-selected="false"
+                        aria-controls="section2"
+                        id="sec-tab2"
+                        tabindex="-1"
+                        onclick="accessibleShowTab(1, 'sec-tab', 'section')">
+                    Features
+                </button>
+                <button role="tab"
+                        aria-selected="false"
+                        aria-controls="section3"
+                        id="sec-tab3"
+                        tabindex="-1"
+                        onclick="accessibleShowTab(2, 'sec-tab', 'section')">
+                    Pricing
+                </button>
+            </div>
+            <div role="tabpanel" id="section1" aria-labelledby="sec-tab1" tabindex="0">
+                <h3>Overview</h3>
+                <p>Product overview content...</p>
+            </div>
+            <div role="tabpanel" id="section2" aria-labelledby="sec-tab2" tabindex="0" hidden>
+                <h3>Features</h3>
+                <p>Feature list...</p>
+            </div>
+            <div role="tabpanel" id="section3" aria-labelledby="sec-tab3" tabindex="0" hidden>
+                <h3>Pricing</h3>
+                <p>Pricing information...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function accessibleShowTab(index, tabPrefix, panelPrefix) {
+            // Update tabs
+            for (let i = 1; i <= 3; i++) {
+                const tab = document.getElementById(`${tabPrefix}${i}`);
+                const panel = document.getElementById(`${panelPrefix}${i}`);
+                const isSelected = i === index + 1;
+
+                tab.setAttribute('aria-selected', isSelected);
+                tab.setAttribute('tabindex', isSelected ? '0' : '-1');
+                panel.hidden = !isSelected;
+            }
+        }
+    </script>
+</body>
+</html>

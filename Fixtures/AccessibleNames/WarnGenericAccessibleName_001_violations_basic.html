@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation - Generic Accessible Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnGenericAccessibleName_001_violations_basic",
+    "issueId": "WarnGenericAccessibleName",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Elements have generic accessible names that don't describe purpose",
+    "wcag": "2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Article Page</h1>
+
+    <article>
+        <h2>Understanding Web Accessibility</h2>
+        <p>Web accessibility is crucial for ensuring all users can access your content...</p>
+
+        <div data-expected-violation="true"
+             data-violation-id="WarnGenericAccessibleName"
+             data-violation-reason="Button labeled 'Click here' doesn't describe what action it performs">
+            <button>Click here</button>
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="WarnGenericAccessibleName"
+             data-violation-reason="Link text 'Read more' is generic and doesn't identify what will be read">
+            <a href="/article/123">Read more</a>
+        </div>
+    </article>
+
+    <article>
+        <h2>ARIA Best Practices</h2>
+        <p>ARIA attributes should be used thoughtfully and correctly...</p>
+
+        <div data-expected-violation="true"
+             data-violation-id="WarnGenericAccessibleName"
+             data-violation-reason="Generic 'button' text doesn't indicate button purpose or action">
+            <button aria-label="button">Submit</button>
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="WarnGenericAccessibleName"
+             data-violation-reason="Generic 'link' as accessible name provides no information about destination">
+            <a href="/guide" aria-label="link">
+                <img src="guide.png" alt="">
+            </a>
+        </div>
+    </article>
+</body>
+</html>

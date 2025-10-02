@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation - Descriptive Accessible Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnGenericAccessibleName_002_correct_descriptive",
+    "issueId": "WarnGenericAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Elements have descriptive accessible names that explain their purpose",
+    "wcag": "2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Article Page</h1>
+
+    <article>
+        <h2>Understanding Web Accessibility</h2>
+        <p>Web accessibility is crucial for ensuring all users can access your content...</p>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Button text clearly describes the action that will be performed">
+            <button>Download accessibility guide PDF</button>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Link text identifies specific article being referenced">
+            <a href="/article/123">Read full article about web accessibility</a>
+        </div>
+    </article>
+
+    <article>
+        <h2>ARIA Best Practices</h2>
+        <p>ARIA attributes should be used thoughtfully and correctly...</p>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Button has descriptive text indicating it submits accessibility feedback">
+            <button>Submit accessibility feedback</button>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Link has descriptive aria-label explaining destination">
+            <a href="/guide" aria-label="View complete ARIA best practices guide">
+                <img src="guide.png" alt="">
+            </a>
+        </div>
+    </article>
+</body>
+</html>

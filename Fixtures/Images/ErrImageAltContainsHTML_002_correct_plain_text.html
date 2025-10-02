@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageAltContainsHTML - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageAltContainsHTML_002_correct_plain_text",
+    "issueId": "ErrImageAltContainsHTML",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Image alt text with plain text only",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Catalog</h1>
+
+    <main>
+        <section>
+            <h2>Featured Items</h2>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Alt text is plain text without HTML tags. Screen readers clearly announce 'Premium Widget - Best Seller' with no confusion. No HTML markup to read literally. Users get clean, understandable description. Text alternative is accessible and meaningful. Complies with WCAG 1.1.1 by providing proper text alternative without code">
+                <img src="premium-widget.jpg"
+                     alt="Premium Widget - Best Seller">
+                <h3>Premium Widget</h3>
+                <p>Our most popular product. $299.99</p>
+                <button>Buy Now</button>
+            </article>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Alt text uses plain text with natural space for separation. Screen readers announce 'Standard Widget - Affordable Option' clearly. No HTML line break tag. Space character provides natural pause. Clean text description without markup. Meets WCAG 1.1.1 with accessible text alternative">
+                <img src="standard-widget.jpg"
+                     alt="Standard Widget - Affordable Option">
+                <h3>Standard Widget</h3>
+                <p>Great value for everyday use. $99.99</p>
+                <button>Buy Now</button>
+            </article>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Alt text uses plain text with em dash character () not HTML entity. Screen readers pronounce properly as 'Deluxe Widget  Limited Edition'. No HTML tags or entities to read literally. Proper Unicode character instead of &mdash;. Clear and accessible description. Complies with WCAG 1.1.1 by using proper text alternative format">
+                <img src="deluxe-widget.jpg"
+                     alt="Deluxe Widget  Limited Edition">
+                <h3>Deluxe Widget</h3>
+                <p>Exclusive limited edition model. $599.99</p>
+                <button>Buy Now</button>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Product Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complementary Landmark Blank Accessible Name - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrComplementaryLandmarkAccessibleNameIsBlank_002_correct_meaningful_labels",
+        "issueId": "ErrComplementaryLandmarkAccessibleNameIsBlank",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "Complementary landmarks with meaningful, non-blank accessible names",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Complementary Landmark Accessible Names - Correct Usage</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Main Article Content</h2>
+            <p>This is the primary content of the page.</p>
+        </article>
+
+        <aside role="complementary"
+               aria-label="Related links"
+               data-expected-pass="true"
+               data-pass-reason="Complementary landmark has meaningful aria-label that clearly identifies its purpose">
+            <h3>Related Links</h3>
+            <ul>
+                <li><a href="/article1">Related Article 1</a></li>
+                <li><a href="/article2">Related Article 2</a></li>
+            </ul>
+        </aside>
+
+        <aside role="complementary"
+               aria-labelledby="ads-heading"
+               data-expected-pass="true"
+               data-pass-reason="Complementary landmark references element with clear text via aria-labelledby, providing meaningful accessible name">
+            <h3 id="ads-heading">Advertisements</h3>
+            <p>Advertisement content here</p>
+        </aside>
+
+        <div role="complementary"
+             aria-label="Newsletter subscription"
+             data-expected-pass="true"
+             data-pass-reason="Complementary landmark has clear, descriptive aria-label that helps users understand its purpose">
+            <h3>Newsletter Signup</h3>
+            <form>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>All complementary landmarks have meaningful accessible names that help screen reader users distinguish between different sections.</p>
+    </footer>
+</body>
+</html>

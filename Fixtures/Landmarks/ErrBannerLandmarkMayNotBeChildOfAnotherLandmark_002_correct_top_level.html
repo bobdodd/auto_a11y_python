@@ -17,29 +17,31 @@
     </script>
 </head>
 <body>
-    <header data-expected-pass="true"
-            data-pass-reason="Banner landmark is at top level in body, not nested in other landmarks">
-        <h1>Site Title</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-            </ul>
+    <!-- Banner at top level - CORRECT -->
+    <header role="banner"
+            data-expected-pass="true"
+            data-pass-reason="Banner landmark is correctly positioned at the top level of the document, not nested inside any other landmark. This maintains proper landmark hierarchy">
+        <h1>Company Website</h1>
+        <nav aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/services">Services</a>
+            <a href="/contact">Contact</a>
         </nav>
     </header>
 
     <main>
-        <h2>Main Content</h2>
-        <p>Content area without nested banner landmarks</p>
+        <h2>Main Content Area</h2>
+        <p>This is the primary content of the page. The banner landmark is correctly placed outside and before the main landmark.</p>
     </main>
 
-    <aside>
-        <h2>Sidebar</h2>
-        <p>Sidebar content</p>
+    <aside role="complementary" aria-label="Related content">
+        <h3>Related Information</h3>
+        <p>Sidebar content that complements the main content.</p>
     </aside>
 
-    <footer>
-        <p>&copy; 2024 Company</p>
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
     </footer>
 </body>
 </html>

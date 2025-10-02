@@ -17,34 +17,42 @@
     </script>
 </head>
 <body>
-    <h1>Test Page: Navigation Landmarks With Content</h1>
+    <h1>Navigation Landmarks With Content - Correct Usage</h1>
 
-    <nav data-expected-pass="true"
-         data-pass-reason="Navigation landmark contains navigation links">
+    <!-- Nav with list of links - CORRECT -->
+    <nav aria-label="Main navigation"
+         data-expected-pass="true"
+         data-pass-reason="Navigation landmark contains proper navigation links in a list structure. Screen readers can identify and navigate this landmark">
         <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/contact">Contact</a></li>
         </ul>
     </nav>
 
     <main>
-        <h2>Content Section</h2>
-        <p>Main content area</p>
+        <h2>Article Content</h2>
+        <p>This is the main content of the article. The navigation landmarks on this page all contain actual navigation content.</p>
 
+        <!-- Nav with direct links - CORRECT -->
         <nav aria-label="Article navigation"
              data-expected-pass="true"
-             data-pass-reason="Navigation landmark has navigation content and descriptive label">
-            <a href="#previous">Previous Article</a>
-            <a href="#next">Next Article</a>
+             data-pass-reason="Navigation landmark contains links for navigating between articles. Has meaningful content and clear label">
+            <a href="/articles/previous">← Previous Article</a>
+            <span>|</span>
+            <a href="/articles/next">Next Article →</a>
         </nav>
     </main>
 
+    <!-- Nav with role and content - CORRECT -->
     <div role="navigation"
          aria-label="Page navigation"
          data-expected-pass="true"
-         data-pass-reason="ARIA navigation role has navigation links">
+         data-pass-reason="Element with navigation role contains functional navigation links. Properly labeled and has actual content">
         <a href="#top">Back to Top</a>
+        <span>|</span>
+        <a href="#footer">Go to Footer</a>
     </div>
 </body>
 </html>

@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 367 files
-- **Issues With Enhanced Fixtures:** 182
+- **Total Enhanced Fixtures Created:** 375 files
+- **Issues With Enhanced Fixtures:** 186
 - **Touchpoints Completed:** 32 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%)
-- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 62%)
-- **Issues Still Needing Fixtures:** 132
+- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 68%)
+- **Issues Still Needing Fixtures:** 128
 
 ## Completed Fixtures by Touchpoint
 
@@ -220,14 +220,14 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 
 **Total:** 4 fixture files
 
-### 🏛️ Landmarks Touchpoint (40/65 issues - 62% complete)
+### 🏛️ Landmarks Touchpoint (44/65 issues - 68% complete)
 
-1. **ErrCompletelyEmptyNavLandmark** - Empty navigation landmarks (2 fixtures)
-2. **ErrBannerLandmarkMayNotBeChildOfAnotherLandmark** - Banner nested in other landmarks (2 fixtures)
+1. **ErrBannerLandmarkMayNotBeChildOfAnotherLandmark** - Banner nested in other landmarks (2 fixtures)
+2. **ErrComplementaryLandmarkAccessibleNameIsBlank** - Complementary landmarks with blank accessible names (2 fixtures)
 3. **ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark** - Complementary nested in other landmarks (2 fixtures)
-4. **ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark** - Contentinfo nested in other landmarks (2 fixtures)
-5. **ErrBannerLandmarkAccessibleNameIsBlank** - Banner landmarks with blank accessible names (2 fixtures)
-6. **ErrComplementaryLandmarkAccessibleNameIsBlank** - Complementary landmarks with blank accessible names (2 fixtures)
+4. **ErrCompletelyEmptyNavLandmark** - Empty navigation landmarks (2 fixtures)
+5. **ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark** - Contentinfo nested in other landmarks (2 fixtures)
+6. **ErrBannerLandmarkAccessibleNameIsBlank** - Banner landmarks with blank accessible names (2 fixtures)
 7. **ErrContentInfoLandmarkAccessibleNameIsBlank** - ContentInfo landmarks with blank accessible names (2 fixtures)
 8. **ErrMainLandmarkAccessibleNameIsBlank** - Main landmarks with blank accessible names (2 fixtures)
 9. **ErrNavigationLandmarkAccessibleNameIsBlank** - Navigation landmarks with blank accessible names (2 fixtures)
@@ -259,10 +259,14 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 35. **WarnComplementaryLandmarkAccessibleNameUsesComplementary** - Complementary label uses generic term (2 fixtures)
 36. **WarnComplementaryLandmarkHasNoLabel** - Multiple complementary without labels (2 fixtures)
 37. **WarnContentInfoLandmarkHasNoLabel** - Multiple contentinfo without labels (2 fixtures)
+38. **ErrBannerLandmarkMayNotBeChildOfAnotherLandmark** - Banner nested inside other landmarks (WCAG 1.3.1) (2 fixtures)
+39. **ErrComplementaryLandmarkAccessibleNameIsBlank** - Complementary with blank accessible names (WCAG 1.3.1, 2.4.6) (2 fixtures)
+40. **ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark** - Complementary nested inside other landmarks (WCAG 1.3.1) (2 fixtures)
+41. **ErrCompletelyEmptyNavLandmark** - Navigation landmarks with no content (WCAG 1.3.1) (2 fixtures)
 
-**Total:** 80 fixture files
+**Total:** 88 fixture files
 
-#### ⏳ Remaining Issues (25)
+#### ⏳ Remaining Issues (21)
 Major gaps: additional label warnings, search/form landmark issues, landmark nesting edge cases
 
 ### 🎨 Colors and Contrast Touchpoint (4/4 issues - 100% COMPLETE)

@@ -17,37 +17,46 @@
     </script>
 </head>
 <body>
-    <header>
-        <h1>Site Title</h1>
+    <header role="banner">
+        <h1>Website with Proper Landmark Structure</h1>
     </header>
 
-    <main>
-        <h2>Main Content</h2>
-        <p>Primary content area without nested complementary landmarks</p>
-    </main>
-
-    <aside data-expected-pass="true"
-           data-pass-reason="Complementary landmark at top level in body, properly positioned">
-        <h3>Related Info</h3>
-        <p>Sidebar content</p>
-    </aside>
-
-    <nav>
+    <nav aria-label="Main navigation">
         <ul>
-            <li><a href="#home">Home</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
         </ul>
     </nav>
 
+    <main>
+        <h2>Main Content</h2>
+        <p>Primary content area without nested complementary landmarks. All complementary regions are correctly positioned at the top level of the document.</p>
+    </main>
+
+    <!-- Complementary landmark at top level - CORRECT -->
+    <aside role="complementary"
+           aria-label="Related information"
+           data-expected-pass="true"
+           data-pass-reason="Complementary landmark is correctly positioned at the top level of the document, not nested inside any other landmark">
+        <h3>Related Info</h3>
+        <p>This sidebar is a sibling to main, not a child of it, which is the correct structure.</p>
+    </aside>
+
+    <!-- Another complementary landmark at top level - CORRECT -->
     <div role="complementary"
          aria-label="Additional resources"
          data-expected-pass="true"
-         data-pass-reason="Complementary role at top level, not nested">
+         data-pass-reason="Complementary landmark at top level with proper labeling, maintaining correct landmark hierarchy">
         <h3>Resources</h3>
-        <p>Additional information</p>
+        <ul>
+            <li><a href="/docs">Documentation</a></li>
+            <li><a href="/faq">FAQ</a></li>
+        </ul>
     </div>
 
-    <footer>
-        <p>&copy; 2024 Company</p>
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
     </footer>
 </body>
 </html>

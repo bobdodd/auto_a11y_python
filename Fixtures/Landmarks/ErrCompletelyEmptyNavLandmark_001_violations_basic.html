@@ -8,7 +8,7 @@
 {
     "id": "ErrCompletelyEmptyNavLandmark_001_violations_basic",
     "issueId": "ErrCompletelyEmptyNavLandmark",
-    "expectedViolationCount": 3,
+    "expectedViolationCount": 4,
     "expectedPassCount": 0,
     "description": "Navigation landmarks that are completely empty with no content",
     "wcag": "1.3.1",
@@ -17,27 +17,37 @@
     </script>
 </head>
 <body>
-    <h1>Test Page: Empty Navigation Landmarks</h1>
+    <h1>Completely Empty Navigation Landmarks Test</h1>
 
+    <!-- Empty nav element with no content at all -->
     <nav data-expected-violation="true"
          data-violation-id="ErrCompletelyEmptyNavLandmark"
-         data-violation-reason="Navigation landmark is completely empty with no child elements">
+         data-violation-reason="Navigation landmark is completely empty with no child elements or text content. Empty landmarks serve no purpose and confuse screen readers">
+    </nav>
+
+    <!-- Empty nav element with aria-label but no content -->
+    <nav aria-label="Main navigation"
+         data-expected-violation="true"
+         data-violation-id="ErrCompletelyEmptyNavLandmark"
+         data-violation-reason="Navigation landmark has a label but contains no navigation content. Even with aria-label, empty navigation is invalid">
     </nav>
 
     <main>
         <h2>Content Section</h2>
         <p>Main content area</p>
-
-        <nav data-expected-violation="true"
-             data-violation-id="ErrCompletelyEmptyNavLandmark"
-             data-violation-reason="Navigation landmark contains no navigation content">
-        </nav>
     </main>
 
+    <!-- Empty div with navigation role -->
     <div role="navigation"
+         aria-label="Secondary navigation"
          data-expected-violation="true"
          data-violation-id="ErrCompletelyEmptyNavLandmark"
-         data-violation-reason="ARIA navigation role applied but element is empty">
+         data-violation-reason="Element with navigation role is completely empty. ARIA navigation role requires actual navigation content">
     </div>
+
+    <!-- Self-closing nav in HTML5 style with no content -->
+    <nav data-expected-violation="true"
+         data-violation-id="ErrCompletelyEmptyNavLandmark"
+         data-violation-reason="Navigation landmark is empty. Navigation regions must contain links or navigation elements to be useful"></nav>
 </body>
 </html>

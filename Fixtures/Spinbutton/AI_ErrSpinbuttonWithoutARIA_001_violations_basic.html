@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrSpinbuttonWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrSpinbuttonWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrSpinbuttonWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Spinbutton/number controls lacking proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .spinbutton-container {
+            margin: 1rem 0;
+        }
+        .custom-spinbutton {
+            display: inline-flex;
+            border: 1px solid #ccc;
+        }
+        .spin-input {
+            width: 60px;
+            text-align: center;
+            border: none;
+            padding: 0.5rem;
+        }
+        .spin-button {
+            width: 30px;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quantity Selector</h1>
+
+    <main>
+        <!-- Custom spinbutton without ARIA -->
+        <div class="spinbutton-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrSpinbuttonWithoutARIA"
+             data-violation-reason="Custom spinbutton lacks role='spinbutton', aria-valuenow, aria-valuemin, aria-valuemax. Screen readers cannot announce current value or control type">
+            <label>Quantity:</label>
+            <div class="custom-spinbutton">
+                <button class="spin-button" onclick="decrement()">-</button>
+                <input type="text" class="spin-input" id="quantity1" value="1" readonly>
+                <button class="spin-button" onclick="increment()">+</button>
+            </div>
+        </div>
+
+        <!-- Number input without proper labeling -->
+        <div class="spinbutton-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrSpinbuttonWithoutARIA"
+             data-violation-reason="Number input lacks aria-label or associated label. Screen readers announce generic 'spinbutton' without context about purpose or constraints">
+            <input type="number" id="age" min="0" max="120" value="25">
+        </div>
+    </main>
+
+    <script>
+        let quantity = 1;
+
+        function increment() {
+            quantity++;
+            document.getElementById('quantity1').value = quantity;
+        }
+
+        function decrement() {
+            if (quantity > 1) {
+                quantity--;
+                document.getElementById('quantity1').value = quantity;
+            }
+        }
+    </script>
+</body>
+</html>

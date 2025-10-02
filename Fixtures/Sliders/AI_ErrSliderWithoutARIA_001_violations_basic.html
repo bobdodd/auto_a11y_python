@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrSliderWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrSliderWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrSliderWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Slider controls lacking proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .slider-container {
+            margin: 2rem 0;
+        }
+        .custom-slider {
+            width: 300px;
+            height: 40px;
+            background: #ddd;
+            position: relative;
+            cursor: pointer;
+        }
+        .slider-thumb {
+            width: 20px;
+            height: 40px;
+            background: #007bff;
+            position: absolute;
+            left: 50%;
+        }
+        .slider-value {
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Volume Control</h1>
+
+    <main>
+        <!-- Custom slider without ARIA -->
+        <div class="slider-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrSliderWithoutARIA"
+             data-violation-reason="Custom slider lacks role='slider' and ARIA attributes (aria-valuenow, aria-valuemin, aria-valuemax, aria-label). Not keyboard accessible or announced to screen readers">
+            <label>Volume:</label>
+            <div class="custom-slider" id="volume-slider">
+                <div class="slider-thumb" id="volume-thumb"></div>
+            </div>
+            <div class="slider-value">Value: <span id="volume-value">50</span></div>
+        </div>
+
+        <!-- Range input without proper labeling -->
+        <div class="slider-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrSliderWithoutARIA"
+             data-violation-reason="Native range input lacks aria-label or associated label. Screen readers announce generic 'slider' without context about purpose or current value meaning">
+            <input type="range"
+                   id="brightness"
+                   min="0"
+                   max="100"
+                   value="75">
+            <div class="slider-value">Brightness: <span id="brightness-value">75</span></div>
+        </div>
+    </main>
+
+    <script>
+        // Basic drag functionality
+        let isDragging = false;
+        const slider = document.getElementById('volume-slider');
+        const thumb = document.getElementById('volume-thumb');
+        const valueSpan = document.getElementById('volume-value');
+
+        slider.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            updateSlider(e);
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) updateSlider(e);
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        function updateSlider(e) {
+            const rect = slider.getBoundingClientRect();
+            const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+            const percent = (x / rect.width) * 100;
+            thumb.style.left = percent + '%';
+            valueSpan.textContent = Math.round(percent);
+        }
+    </script>
+</body>
+</html>

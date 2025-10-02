@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTreeViewWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTreeViewWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrTreeViewWithoutARIA",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Tree view/hierarchical navigation lacking proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .tree {
+            list-style: none;
+            padding-left: 0;
+        }
+        .tree ul {
+            list-style: none;
+            padding-left: 1.5rem;
+            display: none;
+        }
+        .tree-item {
+            padding: 0.25rem 0;
+            cursor: pointer;
+        }
+        .tree-item:hover {
+            background: #f0f0f0;
+        }
+        .expandable::before {
+            content: '¶ ';
+            display: inline-block;
+            width: 1em;
+        }
+        .expanded::before {
+            content: '¼ ';
+        }
+    </style>
+</head>
+<body>
+    <h1>File Browser</h1>
+
+    <main>
+        <!-- Tree view without ARIA -->
+        <ul class="tree"
+            data-expected-violation="true"
+            data-violation-id="AI_ErrTreeViewWithoutARIA"
+            data-violation-reason="Tree view lacks role='tree', items lack role='treeitem', groups lack role='group', and no aria-expanded state. Screen readers cannot understand hierarchical structure or navigation">
+            <li class="tree-item expandable" onclick="toggleNode(this)">
+                Documents
+                <ul>
+                    <li class="tree-item expandable" onclick="toggleNode(this)">
+                        Work
+                        <ul>
+                            <li class="tree-item">Report.pdf</li>
+                            <li class="tree-item">Presentation.pptx</li>
+                        </ul>
+                    </li>
+                    <li class="tree-item">Resume.docx</li>
+                </ul>
+            </li>
+            <li class="tree-item expandable" onclick="toggleNode(this)">
+                Pictures
+                <ul>
+                    <li class="tree-item">Vacation.jpg</li>
+                    <li class="tree-item">Family.png</li>
+                </ul>
+            </li>
+        </ul>
+    </main>
+
+    <script>
+        function toggleNode(item) {
+            item.classList.toggle('expanded');
+            const childList = item.querySelector('ul');
+            if (childList) {
+                childList.style.display = childList.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+    </script>
+</body>
+</html>

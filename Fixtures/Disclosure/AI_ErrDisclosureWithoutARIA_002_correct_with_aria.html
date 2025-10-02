@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrDisclosureWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrDisclosureWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrDisclosureWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Disclosure widgets with proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .disclosure {
+            border: 1px solid #ccc;
+            margin: 1rem 0;
+            padding: 1rem;
+        }
+        .disclosure-button {
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+        }
+        .disclosure-button:focus {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+        .disclosure-content {
+            margin-top: 1rem;
+            display: none;
+        }
+        .disclosure-icon {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Help Topics - Correct Usage</h1>
+
+    <main>
+        <!-- Disclosure with proper ARIA - CORRECT -->
+        <div class="disclosure"
+             data-expected-pass="true"
+             data-pass-reason="Button has aria-expanded to indicate state and aria-controls linking to content. Screen readers announce expansion state and relationship between button and content">
+            <button class="disclosure-button"
+                    aria-expanded="false"
+                    aria-controls="content1"
+                    onclick="toggleDisclosure(this, 'content1')">
+                What is accessibility?
+                <span class="disclosure-icon" aria-hidden="true">¶</span>
+            </button>
+            <div id="content1" class="disclosure-content">
+                Accessibility ensures that websites and applications can be used by everyone, including people with disabilities.
+            </div>
+        </div>
+
+        <!-- Disclosure with enhanced ARIA - CORRECT -->
+        <div class="disclosure"
+             data-expected-pass="true"
+             data-pass-reason="Semantic button element with aria-expanded state and aria-controls. Icon has aria-hidden='true' to prevent duplication. Full keyboard support and proper state announcements">
+            <button class="disclosure-button"
+                    aria-expanded="false"
+                    aria-controls="content2"
+                    id="disclosure2-btn"
+                    onclick="toggleDisclosure(this, 'content2')">
+                How do I report an issue?
+                <span class="disclosure-icon" aria-hidden="true">¶</span>
+            </button>
+            <div id="content2" class="disclosure-content" role="region" aria-labelledby="disclosure2-btn">
+                You can report issues through our support form or by emailing support@example.com.
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleDisclosure(button, contentId) {
+            const content = document.getElementById(contentId);
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            const icon = button.querySelector('.disclosure-icon');
+
+            // Toggle state
+            button.setAttribute('aria-expanded', !isExpanded);
+            content.style.display = isExpanded ? 'none' : 'block';
+            if (icon) {
+                icon.textContent = isExpanded ? '¶' : '¼';
+            }
+        }
+    </script>
+</body>
+</html>

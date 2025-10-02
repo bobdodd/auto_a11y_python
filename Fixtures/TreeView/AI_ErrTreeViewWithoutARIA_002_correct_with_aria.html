@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTreeViewWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTreeViewWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrTreeViewWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Tree view with proper ARIA markup and keyboard navigation",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .tree {
+            list-style: none;
+            padding-left: 0;
+        }
+        .tree ul {
+            list-style: none;
+            padding-left: 1.5rem;
+            display: none;
+        }
+        .tree-item {
+            padding: 0.25rem 0;
+            cursor: pointer;
+        }
+        .tree-item:focus {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+            background: #e7f3ff;
+        }
+        .tree-item:hover {
+            background: #f0f0f0;
+        }
+        .expandable::before {
+            content: '¶ ';
+            display: inline-block;
+            width: 1em;
+        }
+        .expanded::before {
+            content: '¼ ';
+        }
+    </style>
+</head>
+<body>
+    <h1>File Browser - Correct Usage</h1>
+
+    <main>
+        <!-- Tree view with proper ARIA - CORRECT -->
+        <ul class="tree"
+            role="tree"
+            aria-label="File browser"
+            data-expected-pass="true"
+            data-pass-reason="Tree uses role='tree' with aria-label. Items have role='treeitem', groups have role='group', and expandable items have aria-expanded state. Full keyboard navigation with arrow keys">
+            <li role="treeitem"
+                aria-expanded="false"
+                aria-label="Documents folder"
+                class="tree-item expandable"
+                tabindex="0"
+                onclick="toggleTreeNode(this)"
+                onkeydown="handleTreeKeydown(event, this)">
+                Documents
+                <ul role="group">
+                    <li role="treeitem"
+                        aria-expanded="false"
+                        aria-label="Work folder"
+                        class="tree-item expandable"
+                        tabindex="-1"
+                        onclick="toggleTreeNode(this)"
+                        onkeydown="handleTreeKeydown(event, this)">
+                        Work
+                        <ul role="group">
+                            <li role="treeitem"
+                                aria-label="Report.pdf file"
+                                class="tree-item"
+                                tabindex="-1"
+                                onkeydown="handleTreeKeydown(event, this)">
+                                Report.pdf
+                            </li>
+                            <li role="treeitem"
+                                aria-label="Presentation.pptx file"
+                                class="tree-item"
+                                tabindex="-1"
+                                onkeydown="handleTreeKeydown(event, this)">
+                                Presentation.pptx
+                            </li>
+                        </ul>
+                    </li>
+                    <li role="treeitem"
+                        aria-label="Resume.docx file"
+                        class="tree-item"
+                        tabindex="-1"
+                        onkeydown="handleTreeKeydown(event, this)">
+                        Resume.docx
+                    </li>
+                </ul>
+            </li>
+            <li role="treeitem"
+                aria-expanded="false"
+                aria-label="Pictures folder"
+                class="tree-item expandable"
+                tabindex="-1"
+                onclick="toggleTreeNode(this)"
+                onkeydown="handleTreeKeydown(event, this)">
+                Pictures
+                <ul role="group">
+                    <li role="treeitem"
+                        aria-label="Vacation.jpg file"
+                        class="tree-item"
+                        tabindex="-1"
+                        onkeydown="handleTreeKeydown(event, this)">
+                        Vacation.jpg
+                    </li>
+                    <li role="treeitem"
+                        aria-label="Family.png file"
+                        class="tree-item"
+                        tabindex="-1"
+                        onkeydown="handleTreeKeydown(event, this)">
+                        Family.png
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </main>
+
+    <script>
+        function toggleTreeNode(item) {
+            const isExpanded = item.getAttribute('aria-expanded') === 'true';
+            item.classList.toggle('expanded');
+            item.setAttribute('aria-expanded', !isExpanded);
+
+            const childList = item.querySelector('ul[role="group"]');
+            if (childList) {
+                childList.style.display = isExpanded ? 'none' : 'block';
+            }
+        }
+
+        function handleTreeKeydown(event, item) {
+            const key = event.key;
+            const tree = item.closest('[role="tree"]');
+            const allItems = Array.from(tree.querySelectorAll('[role="treeitem"]'));
+            const currentIndex = allItems.indexOf(item);
+
+            if (key === 'ArrowDown') {
+                event.preventDefault();
+                if (currentIndex < allItems.length - 1) {
+                    focusTreeItem(allItems[currentIndex + 1]);
+                }
+            } else if (key === 'ArrowUp') {
+                event.preventDefault();
+                if (currentIndex > 0) {
+                    focusTreeItem(allItems[currentIndex - 1]);
+                }
+            } else if (key === 'ArrowRight') {
+                event.preventDefault();
+                const isExpanded = item.getAttribute('aria-expanded') === 'true';
+                if (item.classList.contains('expandable') && !isExpanded) {
+                    toggleTreeNode(item);
+                }
+            } else if (key === 'ArrowLeft') {
+                event.preventDefault();
+                const isExpanded = item.getAttribute('aria-expanded') === 'true';
+                if (item.classList.contains('expandable') && isExpanded) {
+                    toggleTreeNode(item);
+                }
+            } else if (key === 'Enter' || key === ' ') {
+                event.preventDefault();
+                if (item.classList.contains('expandable')) {
+                    toggleTreeNode(item);
+                }
+            }
+        }
+
+        function focusTreeItem(item) {
+            const tree = item.closest('[role="tree"]');
+            tree.querySelectorAll('[role="treeitem"]').forEach(i => {
+                i.setAttribute('tabindex', '-1');
+            });
+            item.setAttribute('tabindex', '0');
+            item.focus();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic",
+    "issueId": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Form landmarks with both aria-label and aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>User Forms</h1>
+
+    <main>
+        <section>
+            <h2 id="searchHeading">Product Search</h2>
+
+            <form aria-label="Search Form"
+                  aria-labelledby="searchHeading"
+                  data-expected-violation="true"
+                  data-violation-reason="Form landmark has both aria-label and aria-labelledby attributes. Aria-labelledby takes precedence making aria-label ignored. Screen readers use 'Product Search' from aria-labelledby not 'Search Form' from aria-label. Confusing for developers maintaining code. Only one labeling method should be used. Violates WCAG 4.1.2 Name, Role, Value by having redundant and conflicting accessible name attributes">
+                <label for="search1">Search:</label>
+                <input type="search" id="search1" name="q">
+                <button type="submit">Go</button>
+            </form>
+        </section>
+
+        <section>
+            <div id="contactLabel">Contact Us</div>
+
+            <form aria-label="Support Contact Form"
+                  aria-labelledby="contactLabel"
+                  data-expected-violation="true"
+                  data-violation-reason="Form landmark has both aria-label 'Support Contact Form' and aria-labelledby pointing to 'Contact Us'. Aria-labelledby takes precedence so aria-label is ignored by screen readers. Code is confusing with two naming methods. Only one should be used for clarity. Violates WCAG 4.1.2 Name, Role, Value by having redundant accessible name attributes that cause confusion">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+
+                <label for="message">Message:</label>
+                <textarea id="message" name="message"></textarea>
+
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

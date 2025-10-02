@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoFoundSvgImage - Info Notice</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoFoundSvgImage_001_violations_basic",
+    "issueId": "DiscoFoundSvgImage",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "SVG images detected for review",
+    "wcag": "1.1.1",
+    "impact": "Info"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Icons</h1>
+
+    <main>
+        <section>
+            <h2>Shopping Cart</h2>
+
+            <svg width="50" height="50" viewBox="0 0 50 50"
+                 data-expected-violation="true"
+                 data-violation-reason="SVG image found for accessibility review. SVG needs accessible label via title, aria-label, or aria-labelledby. Check if SVG is decorative or meaningful. If meaningful, add text alternative. If decorative, use aria-hidden='true'. Info for WCAG 1.1.1 Non-text Content - review SVG and add appropriate accessibility markup">
+                <path d="M10 15 L15 35 L40 35 L45 15 Z" fill="none" stroke="black" stroke-width="2"/>
+                <circle cx="20" cy="42" r="3" fill="black"/>
+                <circle cx="35" cy="42" r="3" fill="black"/>
+            </svg>
+
+            <p>Add items to cart</p>
+        </section>
+
+        <section>
+            <h2>User Profile</h2>
+
+            <svg width="40" height="40" viewBox="0 0 40 40"
+                 data-expected-violation="true"
+                 data-violation-reason="SVG image detected requiring accessibility check. Needs evaluation if image conveys information or is decorative. Should have accessible label if meaningful or aria-hidden if decorative. Info for WCAG 1.1.1 Non-text Content - SVG requires accessibility review and appropriate markup">
+                <circle cx="20" cy="15" r="8" fill="gray"/>
+                <path d="M5 35 Q20 25 35 35" fill="gray"/>
+            </svg>
+
+            <p>View profile</p>
+        </section>
+
+        <section>
+            <h2>Settings</h2>
+
+            <svg width="45" height="45" viewBox="0 0 45 45"
+                 data-expected-violation="true"
+                 data-violation-reason="SVG image found needing accessibility evaluation. Determine if SVG is informative or decorative. Add title/aria-label for informative SVG or aria-hidden for decorative. Info for WCAG 1.1.1 Non-text Content - SVG detected, review for proper accessibility implementation">
+                <circle cx="22.5" cy="22.5" r="15" fill="none" stroke="black" stroke-width="2"/>
+                <path d="M22.5 7.5 L22.5 15 M22.5 30 L22.5 37.5 M7.5 22.5 L15 22.5 M30 22.5 L37.5 22.5" stroke="black" stroke-width="2"/>
+            </svg>
+
+            <p>Adjust settings</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

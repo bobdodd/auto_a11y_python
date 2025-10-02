@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnProblematicAnimation - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnProblematicAnimation_001_violations_basic",
+    "issueId": "AI_WarnProblematicAnimation",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Animations that may trigger seizures or vestibular disorders",
+    "wcag": "2.3.1, 2.3.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        @keyframes rapid-flash {
+            0%, 100% { background-color: white; }
+            50% { background-color: black; }
+        }
+
+        @keyframes spinning {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes parallax-scroll {
+            from { transform: translateY(0); }
+            to { transform: translateY(-1000px); }
+        }
+
+        .flashing-banner {
+            width: 100%;
+            height: 200px;
+            animation: rapid-flash 0.3s infinite;
+        }
+
+        .spinning-logo {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, red, blue, green, yellow);
+            animation: spinning 0.5s linear infinite;
+        }
+
+        .parallax-content {
+            height: 100vh;
+            background: url('bg.jpg') center/cover;
+            animation: parallax-scroll 5s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <h1>Animated Content</h1>
+
+    <main>
+        <div class="flashing-banner"
+             data-expected-violation="true"
+             data-violation-reason="Rapid flashing animation cycles between white and black every 0.3 seconds (over 3 times per second). This exceeds safe threshold for photosensitive epilepsy. Can trigger seizures in susceptible individuals. No control to pause or stop animation. Violates WCAG 2.3.1 Three Flashes or Below Threshold and 2.3.2 Three Flashes - animation flashes more than 3 times per second without user control">
+        </div>
+
+        <section>
+            <h2>Our Logo</h2>
+            <div class="spinning-logo"
+                 data-expected-violation="true"
+                 data-violation-reason="Continuous rapid spinning animation with bright gradient colors. Spins 2 complete rotations per second (0.5s per rotation). Can cause vestibular disorders, nausea, dizziness in users with motion sensitivity. No pause control provided. Violates WCAG 2.3.2 Three Flashes and 2.2.2 Pause, Stop, Hide - animation runs continuously without user control">
+            </div>
+        </section>
+
+        <div class="parallax-content"
+             data-expected-violation="true"
+             data-violation-reason="Continuous parallax scrolling animation without user input. Moves 1000px in 5 seconds creating persistent motion effect. Can trigger vestibular disorders causing dizziness, nausea, disorientation. No mechanism to pause or disable. Violates WCAG 2.2.2 Pause, Stop, Hide and 2.3.2 Three Flashes - animation plays automatically for more than 5 seconds without pause control">
+            <h2>Scrolling Background</h2>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

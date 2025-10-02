@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnSearchRoleOnForm - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnSearchRoleOnForm_002_correct_wrapped_search",
+    "issueId": "AI_WarnSearchRoleOnForm",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Search forms properly wrapped in search landmark container",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Company Name</h1>
+
+        <div role="search"
+             data-expected-pass="true"
+             data-pass-reason="Search landmark implemented with role='search' on wrapper div instead of form element. Form inside wrapper maintains its form semantics. Search landmark properly contains search functionality. Screen readers recognize both search landmark and form. Separation of concerns between landmark and form roles. Complies with WCAG 4.1.2 Name, Role, Value - proper use of role='search' on container not form">
+            <form action="/search" method="get">
+                <label for="site-search">Search site:</label>
+                <input type="search" id="site-search" name="q">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </header>
+
+    <main>
+        <h2>Products</h2>
+        <p>Browse our product catalog.</p>
+
+        <section role="search"
+                 aria-label="Product search"
+                 data-expected-pass="true"
+                 data-pass-reason="Search landmark using role='search' on section wrapper with aria-label. Form nested inside maintains form semantics without role conflict. Search landmark provides proper navigation landmark. Form retains its form identity. Screen readers announce both search region and form correctly. Best practice for search forms. Meets WCAG 4.1.2 Name, Role, Value - search role on wrapper preserves form semantics">
+            <form action="/products/search" method="get">
+                <label for="product-search">Search products:</label>
+                <input type="search" id="product-search" name="query">
+                <button type="submit">Search Products</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

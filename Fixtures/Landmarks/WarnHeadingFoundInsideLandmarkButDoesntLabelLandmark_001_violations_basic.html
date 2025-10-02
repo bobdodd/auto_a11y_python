@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark_001_violations_basic",
+    "issueId": "WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Headings inside landmarks that could label them but don't",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Headings Not Used as Landmark Labels Test</h1>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Content here.</p>
+    </main>
+
+    <!-- Nav with heading but different label -->
+    <nav aria-label="Site menu"
+         data-expected-violation="true"
+         data-violation-id="WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark"
+         data-violation-reason="Navigation landmark has heading 'Main Navigation' but uses different aria-label 'Site menu'. Consider using aria-labelledby to reference the heading for consistency">
+        <h3>Main Navigation</h3>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Aside with heading but aria-label instead -->
+    <aside aria-label="Additional content"
+           data-expected-violation="true"
+           data-violation-id="WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark"
+           data-violation-reason="Complementary landmark contains heading 'Related Articles' but uses aria-label instead. Using aria-labelledby with the heading would be more consistent">
+        <h3>Related Articles</h3>
+        <ul>
+            <li><a href="/article1">Article 1</a></li>
+            <li><a href="/article2">Article 2</a></li>
+        </ul>
+    </aside>
+
+    <!-- Region with heading but different label -->
+    <section role="region"
+             aria-label="Important notices"
+             data-expected-violation="true"
+             data-violation-id="WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark"
+             data-violation-reason="Region landmark has heading 'Announcements' but uses different label. Consider referencing the heading with aria-labelledby for better consistency between visual and programmatic labels">
+        <h3>Announcements</h3>
+        <p>Latest announcements here.</p>
+    </section>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

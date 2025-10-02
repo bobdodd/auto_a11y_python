@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMultipleComplementaryLandmarksButNotAllHaveLabels - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMultipleComplementaryLandmarksButNotAllHaveLabels_001_violations_basic",
+    "issueId": "WarnMultipleComplementaryLandmarksButNotAllHaveLabels",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Multiple complementary landmarks with inconsistent labeling",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Complementary Landmarks with Inconsistent Labels Test</h1>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here.</p>
+    </main>
+
+    <!-- First aside with label -->
+    <aside aria-label="Related articles">
+        <h3>Related Articles</h3>
+        <ul>
+            <li><a href="/article1">Article 1</a></li>
+            <li><a href="/article2">Article 2</a></li>
+        </ul>
+    </aside>
+
+    <!-- Second aside WITHOUT label -->
+    <aside data-expected-violation="true"
+           data-violation-id="WarnMultipleComplementaryLandmarksButNotAllHaveLabels"
+           data-violation-reason="Multiple complementary landmarks exist but this one has no label. Inconsistent labeling makes it difficult for screen reader users to distinguish between different complementary sections">
+        <h3>Author Bio</h3>
+        <p>Information about the author goes here.</p>
+    </aside>
+
+    <!-- Third complementary WITHOUT label -->
+    <div role="complementary"
+         data-expected-violation="true"
+         data-violation-id="WarnMultipleComplementaryLandmarksButNotAllHaveLabels"
+         data-violation-reason="Complementary landmark using role='complementary' lacks label while another complementary has a label. All complementary landmarks should have consistent labeling when multiple exist">
+        <h3>Advertisements</h3>
+        <p>Advertisement content here.</p>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

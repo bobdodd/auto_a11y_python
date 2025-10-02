@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMultipleRegionLandmarksButNotAllHaveLabels - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMultipleRegionLandmarksButNotAllHaveLabels_001_violations_basic",
+    "issueId": "WarnMultipleRegionLandmarksButNotAllHaveLabels",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Multiple region landmarks with inconsistent labeling",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Region Landmarks with Inconsistent Labels Test</h1>
+
+    <main>
+        <h2>Main Content</h2>
+
+        <!-- First region with label -->
+        <section role="region" aria-label="Featured content">
+            <h3>Featured Articles</h3>
+            <p>Featured content goes here.</p>
+        </section>
+
+        <!-- Second region WITHOUT label -->
+        <div role="region"
+             data-expected-violation="true"
+             data-violation-id="WarnMultipleRegionLandmarksButNotAllHaveLabels"
+             data-violation-reason="Multiple region landmarks exist but this one has no label. Inconsistent labeling makes it difficult for screen reader users to distinguish between different region sections">
+            <h3>Special Section</h3>
+            <p>Important information here.</p>
+        </div>
+
+        <!-- Third region WITHOUT label -->
+        <section role="region"
+                 data-expected-violation="true"
+                 data-violation-id="WarnMultipleRegionLandmarksButNotAllHaveLabels"
+                 data-violation-reason="Region landmark lacks label while another region has a label. All region landmarks should have consistent labeling when multiple exist">
+            <h3>Additional Content</h3>
+            <p>More content that needs organization.</p>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

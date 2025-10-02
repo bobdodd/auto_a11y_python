@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMultipleNavLandmarksButNotAllHaveLabels - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMultipleNavLandmarksButNotAllHaveLabels_002_correct_all_labeled",
+    "issueId": "WarnMultipleNavLandmarksButNotAllHaveLabels",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Multiple navigation landmarks all consistently labeled",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Navigation Landmarks All Labeled - Correct Usage</h1>
+
+    <!-- First nav with label - CORRECT -->
+    <nav aria-label="Main navigation"
+         data-expected-pass="true"
+         data-pass-reason="Navigation landmark has unique label. When multiple navigation landmarks exist, all should be labeled consistently">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here. All navigation landmarks on this page have unique, descriptive labels.</p>
+
+        <!-- Second nav WITH label - CORRECT -->
+        <nav aria-label="Related articles"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark properly labeled. Consistent labeling allows screen reader users to easily distinguish between different navigation areas">
+            <h3>Related Articles</h3>
+            <ul>
+                <li><a href="/article1">Article 1</a></li>
+                <li><a href="/article2">Article 2</a></li>
+            </ul>
+        </nav>
+    </main>
+
+    <!-- Third nav WITH label - CORRECT -->
+    <nav aria-label="Footer navigation"
+         data-expected-pass="true"
+         data-pass-reason="Footer navigation properly labeled. All navigation landmarks have consistent, descriptive labels for clear identification">
+        <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+        </ul>
+    </nav>
+
+    <!-- Fourth nav WITH label - CORRECT -->
+    <div role="navigation"
+         aria-label="Help and support"
+         data-expected-pass="true"
+         data-pass-reason="Navigation using role='navigation' has descriptive label. Consistent labeling across all navigation landmarks helps users navigate efficiently">
+        <ul>
+            <li><a href="/help">Help</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+    </footer>
+</body>
+</html>

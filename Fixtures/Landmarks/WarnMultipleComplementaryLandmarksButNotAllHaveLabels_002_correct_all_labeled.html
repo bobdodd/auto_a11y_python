@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMultipleComplementaryLandmarksButNotAllHaveLabels - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMultipleComplementaryLandmarksButNotAllHaveLabels_002_correct_all_labeled",
+    "issueId": "WarnMultipleComplementaryLandmarksButNotAllHaveLabels",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Multiple complementary landmarks all consistently labeled",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Complementary Landmarks All Labeled - Correct Usage</h1>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here. All complementary landmarks on this page have unique, descriptive labels.</p>
+    </main>
+
+    <!-- First aside with label - CORRECT -->
+    <aside aria-label="Related articles"
+           data-expected-pass="true"
+           data-pass-reason="Complementary landmark has unique label. When multiple complementary landmarks exist, all should be labeled consistently">
+        <h3>Related Articles</h3>
+        <ul>
+            <li><a href="/article1">First Related Article</a></li>
+            <li><a href="/article2">Second Related Article</a></li>
+        </ul>
+    </aside>
+
+    <!-- Second aside WITH label - CORRECT -->
+    <aside aria-label="Author bio"
+           data-expected-pass="true"
+           data-pass-reason="Complementary landmark properly labeled. Consistent labeling allows screen reader users to easily distinguish between different complementary sections">
+        <h3>About the Author</h3>
+        <p>Information about the author goes here.</p>
+    </aside>
+
+    <!-- Third complementary WITH label - CORRECT -->
+    <div role="complementary"
+         aria-label="Advertisements"
+         data-expected-pass="true"
+         data-pass-reason="Complementary landmark using role='complementary' has descriptive label. Consistent labeling across all complementary landmarks helps users navigate efficiently">
+        <h3>Sponsored Content</h3>
+        <p>Advertisement content here.</p>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+    </footer>
+</body>
+</html>

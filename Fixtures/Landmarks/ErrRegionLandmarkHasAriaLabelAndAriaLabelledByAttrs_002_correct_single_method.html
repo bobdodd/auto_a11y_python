@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Region Landmark Single Labeling Method - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method",
+        "issueId": "ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "Region landmarks using only one labeling method (aria-label OR aria-labelledby, not both)",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Region Landmark Single Labeling Method - Correct</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Proper ARIA Attribute Usage for Region Landmarks</h2>
+            <p>Region landmarks must have accessible names to be exposed as landmarks. Use either aria-label OR aria-labelledby, never both.</p>
+        </article>
+
+        <div role="region"
+             aria-label="Important system announcement"
+             data-expected-pass="true"
+             data-pass-reason="Region landmark uses only aria-label for accessible name, clear and unambiguous labeling method that exposes it as a landmark">
+            <h3>Scheduled Maintenance</h3>
+            <p>Our system will undergo scheduled maintenance this weekend from 2:00 AM to 6:00 AM EST.</p>
+            <p>Please save your work regularly and plan accordingly. We apologize for any inconvenience.</p>
+        </div>
+
+        <section role="region"
+                 aria-labelledby="features-heading"
+                 data-expected-pass="true"
+                 data-pass-reason="Region landmark uses only aria-labelledby to reference visible heading, provides clear accessible name and landmark exposure without ambiguity">
+            <h3 id="features-heading">New Features This Month</h3>
+            <ul>
+                <li><strong>Enhanced Search:</strong> Find content faster with improved search algorithms</li>
+                <li><strong>Mobile Improvements:</strong> Better responsive design for all devices</li>
+                <li><strong>Dark Mode:</strong> Reduce eye strain with our new dark theme</li>
+                <li><strong>Performance:</strong> Faster page loads and smoother interactions</li>
+            </ul>
+        </section>
+
+        <div role="region"
+             aria-label="Current promotions and special offers"
+             data-expected-pass="true"
+             data-pass-reason="Region landmark uses only aria-label, single clear labeling method that properly exposes the region as a navigable landmark">
+            <h3>Special Offers</h3>
+            <p>Don't miss out on these limited-time deals!</p>
+            <ul>
+                <li>50% off Premium Subscription - This week only</li>
+                <li>Free shipping on orders over $50</li>
+                <li>Buy 2, Get 1 Free on selected items</li>
+            </ul>
+            <button>View All Promotions</button>
+            <button>Sign Up for Deal Alerts</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p><strong>Critical:</strong> Region landmarks MUST have an accessible name (aria-label or aria-labelledby) to be exposed as landmarks. Without a name, the region role is not exposed to assistive technology. Always use exactly one labeling method, never both.</p>
+    </footer>
+</body>
+</html>

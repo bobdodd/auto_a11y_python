@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Landmark Single Labeling Method - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method",
+        "issueId": "ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 4,
+        "description": "Banner landmarks using only one labeling method (aria-label OR aria-labelledby, not both)",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <h1>Banner Landmark Single Labeling Method - Correct</h1>
+
+    <header role="banner"
+            aria-label="Main site header"
+            data-expected-pass="true"
+            data-pass-reason="Banner landmark uses only aria-label for accessible name, clear and unambiguous labeling method">
+        <h2>Company Name - Official Website</h2>
+        <nav aria-label="Primary navigation">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/products">Products</a>
+            <a href="/services">Services</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Proper ARIA Attribute Usage</h2>
+            <p>Each landmark should use exactly one labeling method: either aria-label OR aria-labelledby, never both. This ensures clarity and follows WCAG 4.1.2 compliance.</p>
+        </article>
+    </main>
+
+    <div role="banner"
+         aria-labelledby="promo-heading"
+         data-expected-pass="true"
+         data-pass-reason="Banner landmark uses only aria-labelledby to reference visible heading, provides clear accessible name without ambiguity">
+        <h2 id="promo-heading">Weekend Flash Sale</h2>
+        <p>Save up to 50% on selected items - This weekend only!</p>
+        <button>View Sale Items</button>
+        <button>Shop All Deals</button>
+    </div>
+
+    <header role="banner"
+            aria-label="User account dashboard header"
+            data-expected-pass="true"
+            data-pass-reason="Banner landmark uses only aria-label, single clear labeling method without conflicting attributes">
+        <h2>My Account</h2>
+        <p>Welcome back, Jane Smith!</p>
+        <nav aria-label="Account navigation">
+            <a href="/profile">My Profile</a>
+            <a href="/orders">Order History</a>
+            <a href="/settings">Account Settings</a>
+            <a href="/logout">Sign Out</a>
+        </nav>
+    </header>
+
+    <header data-expected-pass="true"
+            data-pass-reason="Single unlabeled banner landmark (header element) is acceptable when only one exists on page, no labeling attributes needed">
+        <h2>Simple Page Header</h2>
+        <p>This is a basic page with one header - no label required.</p>
+    </header>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p><strong>Best Practice:</strong> Use aria-labelledby when you have a visible heading that describes the landmark. Use aria-label when you need a label but don't have a suitable visible element to reference. Never use both on the same element.</p>
+    </footer>
+</body>
+</html>

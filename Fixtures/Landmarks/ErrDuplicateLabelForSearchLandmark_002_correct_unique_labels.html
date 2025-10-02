@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Landmarks with Unique Labels - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrDuplicateLabelForSearchLandmark_002_correct_unique_labels",
+        "issueId": "ErrDuplicateLabelForSearchLandmark",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "Search landmarks with unique accessible names or single search without label",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Search Landmarks with Unique Labels - Correct</h1>
+
+        <div role="search"
+             aria-label="Site search"
+             data-expected-pass="true"
+             data-pass-reason="Search landmark has unique accessible name 'Site search', distinct from other search landmarks on page">
+            <form action="/search" method="get">
+                <label for="header-search">Search the entire site:</label>
+                <input type="search" id="header-search" name="q" placeholder="Enter keywords...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </header>
+
+    <main>
+        <article>
+            <h2>Proper Labeling of Search Landmarks</h2>
+            <p>Each search landmark must have a unique accessible name that clearly identifies its purpose. This helps screen reader users quickly navigate to the specific search they need.</p>
+        </article>
+
+        <aside>
+            <div role="search"
+                 aria-labelledby="article-search-heading"
+                 data-expected-pass="true"
+                 data-pass-reason="Search landmark references unique heading via aria-labelledby, provides clear accessible name 'Article Search'">
+                <h3 id="article-search-heading">Article Search</h3>
+                <form action="/articles/search" method="get">
+                    <label for="article-search-input">Find articles:</label>
+                    <input type="search" id="article-search-input" name="article-q">
+                    <button type="submit">Search Articles</button>
+                </form>
+            </div>
+        </aside>
+
+        <section>
+            <div role="search"
+                 aria-label="Product catalog search"
+                 data-expected-pass="true"
+                 data-pass-reason="Search landmark has unique accessible name 'Product catalog search', clearly distinguishable from site and article search">
+                <h3>Find Products</h3>
+                <form action="/products/search" method="get">
+                    <label for="product-search">Search our product catalog:</label>
+                    <input type="search" id="product-search" name="product-q">
+                    <select id="category" name="category">
+                        <option value="">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="home">Home & Garden</option>
+                    </select>
+                    <button type="submit">Search Products</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p><strong>Best Practice Examples for Search Landmark Labels:</strong></p>
+        <ul>
+            <li><strong>Site search</strong> - Global site-wide search</li>
+            <li><strong>Article search</strong> - Search within articles/blog posts</li>
+            <li><strong>Product catalog search</strong> - Search for products</li>
+            <li><strong>Member directory search</strong> - Find members/users</li>
+            <li><strong>Document search</strong> - Search documentation or help articles</li>
+        </ul>
+    </footer>
+</body>
+</html>

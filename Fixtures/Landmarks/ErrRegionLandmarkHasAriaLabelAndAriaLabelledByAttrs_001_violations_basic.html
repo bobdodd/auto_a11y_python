@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Region Landmark Conflicting ARIA Attributes - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic",
+        "issueId": "ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Region landmarks with both aria-label and aria-labelledby attributes",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Region Landmark Conflicting ARIA Attributes - Violations</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding Region Landmark Labeling</h2>
+            <p>Region landmarks require accessible names to be exposed as landmarks. Using both aria-label and aria-labelledby creates ambiguity.</p>
+        </article>
+
+        <div role="region"
+             aria-label="Important announcement"
+             aria-labelledby="announcement-heading"
+             data-expected-violation="true"
+             data-violation-id="ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+             data-violation-reason="Region landmark has both aria-label and aria-labelledby, creating ambiguity. Only aria-labelledby will be used, making aria-label redundant">
+            <h3 id="announcement-heading">System Update Notice</h3>
+            <p>Our system will undergo maintenance this weekend. Please save your work regularly.</p>
+        </div>
+
+        <section role="region"
+                 aria-labelledby="features-heading bonus-heading"
+                 aria-label="Feature highlights"
+                 data-expected-violation="true"
+                 data-violation-id="ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+                 data-violation-reason="Region landmark specifies both aria-labelledby and aria-label. The aria-labelledby takes precedence, making aria-label unnecessary">
+            <h3 id="features-heading">New Features</h3>
+            <p id="bonus-heading">Latest Updates</p>
+            <ul>
+                <li>Enhanced search functionality</li>
+                <li>Improved mobile interface</li>
+                <li>Dark mode support</li>
+            </ul>
+        </section>
+
+        <div role="region"
+             aria-label="Special offers"
+             aria-labelledby="offers-heading"
+             data-expected-violation="true"
+             data-violation-id="ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+             data-violation-reason="Region landmark has both aria-label and aria-labelledby attributes. Only one should be used to provide clear accessible name">
+            <h3 id="offers-heading">Limited Time Promotions</h3>
+            <p>Save up to 50% on selected items this week only!</p>
+            <button>View All Deals</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>Using both aria-label and aria-labelledby on region landmarks creates ambiguity and violates WCAG 4.1.2. Region landmarks require accessible names, but should use only one labeling method.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Landmarks with Unique Labels - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrDuplicateLabelForFormLandmark_002_correct_unique_labels",
+        "issueId": "ErrDuplicateLabelForFormLandmark",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 4,
+        "description": "Form landmarks with unique accessible names for clear distinction",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Form Landmarks with Unique Labels - Correct</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Proper Labeling of Form Landmarks</h2>
+            <p>Each form landmark must have a unique accessible name that clearly identifies its purpose. This enables screen reader users to quickly navigate to the specific form they need.</p>
+        </article>
+
+        <form aria-label="General inquiry form"
+              data-expected-pass="true"
+              data-pass-reason="Form landmark has unique accessible name 'General inquiry form', distinct from other form landmarks on page">
+            <h3>Contact Us - General Questions</h3>
+            <div>
+                <label for="name1">Your Name:</label>
+                <input type="text" id="name1" name="name" required>
+            </div>
+            <div>
+                <label for="email1">Email Address:</label>
+                <input type="email" id="email1" name="email" required>
+            </div>
+            <div>
+                <label for="message1">Your Message:</label>
+                <textarea id="message1" name="message" rows="4" required></textarea>
+            </div>
+            <button type="submit">Send Message</button>
+        </form>
+
+        <form aria-labelledby="support-heading"
+              data-expected-pass="true"
+              data-pass-reason="Form landmark references unique heading via aria-labelledby, provides clear accessible name 'Technical Support Request'">
+            <h3 id="support-heading">Technical Support Request</h3>
+            <div>
+                <label for="name2">Name:</label>
+                <input type="text" id="name2" name="name" required>
+            </div>
+            <div>
+                <label for="email2">Email:</label>
+                <input type="email" id="email2" name="email" required>
+            </div>
+            <div>
+                <label for="product">Product:</label>
+                <select id="product" name="product" required>
+                    <option value="">Select a product</option>
+                    <option value="software">Software</option>
+                    <option value="hardware">Hardware</option>
+                    <option value="service">Service</option>
+                </select>
+            </div>
+            <div>
+                <label for="issue">Issue Description:</label>
+                <textarea id="issue" name="issue" rows="4" required></textarea>
+            </div>
+            <button type="submit">Submit Support Request</button>
+        </form>
+
+        <form aria-label="Call scheduling form"
+              data-expected-pass="true"
+              data-pass-reason="Form landmark has unique accessible name 'Call scheduling form', clearly distinguishable from inquiry and support forms">
+            <h3>Schedule a Consultation Call</h3>
+            <div>
+                <label for="name3">Full Name:</label>
+                <input type="text" id="name3" name="name" required>
+            </div>
+            <div>
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div>
+                <label for="preferred-time">Preferred Date & Time:</label>
+                <input type="datetime-local" id="preferred-time" name="preferred-time" required>
+            </div>
+            <div>
+                <label for="topic">Discussion Topic:</label>
+                <input type="text" id="topic" name="topic">
+            </div>
+            <button type="submit">Schedule My Call</button>
+        </form>
+
+        <form data-expected-pass="true"
+              data-pass-reason="Unlabeled form is acceptable when only one form exists in a section or when form doesn't need to be exposed as landmark for simple cases">
+            <h3>Newsletter Subscription</h3>
+            <div>
+                <label for="newsletter-email">Email address:</label>
+                <input type="email" id="newsletter-email" name="email" required>
+            </div>
+            <button type="submit">Subscribe</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p><strong>Key Point:</strong> Forms become landmarks only when they have aria-label or aria-labelledby. For pages with multiple forms, use descriptive unique labels like "General inquiry form", "Technical support request", "Call scheduling form", etc.</p>
+    </footer>
+</body>
+</html>

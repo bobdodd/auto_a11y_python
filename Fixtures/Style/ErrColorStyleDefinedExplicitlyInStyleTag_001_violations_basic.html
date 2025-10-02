@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrColorStyleDefinedExplicitlyInStyleTag - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrColorStyleDefinedExplicitlyInStyleTag_001_violations_basic",
+    "issueId": "ErrColorStyleDefinedExplicitlyInStyleTag",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Background or text colors defined in style tag without corresponding pair",
+    "wcag": "1.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .warning-text {
+            color: red;
+            /* Missing background-color definition */
+        }
+
+        .notification-box {
+            background-color: yellow;
+            /* Missing color (text color) definition */
+        }
+
+        .error-message {
+            color: white;
+            /* Background-color missing - white text may be invisible on light backgrounds */
+        }
+    </style>
+</head>
+<body>
+    <h1>System Messages</h1>
+
+    <main>
+        <section>
+            <h2>Warnings</h2>
+
+            <p class="warning-text"
+               data-expected-violation="true"
+               data-violation-reason="Text color red defined without background-color. If user has custom background color, red text may have insufficient contrast. Users with custom stylesheets may get unreadable text. Color must be paired with background-color to ensure contrast. Violates WCAG 1.4.3 Contrast Minimum by not ensuring sufficient contrast in all scenarios">
+                Warning: This action cannot be undone.
+            </p>
+        </section>
+
+        <section>
+            <h2>Notifications</h2>
+
+            <div class="notification-box"
+                 data-expected-violation="true"
+                 data-violation-reason="Background-color yellow defined without explicit text color. If user has custom text color, it may not contrast with yellow background. Users with dark text preferences may get poor contrast. Background-color must be paired with color to ensure readability. Violates WCAG 1.4.3 Contrast Minimum by not guaranteeing sufficient text contrast">
+                <p>New message received</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Errors</h2>
+
+            <span class="error-message"
+                  data-expected-violation="true"
+                  data-violation-reason="White text color defined without background-color. White text invisible on light backgrounds. Users with light background preferences can't read text. Text color must specify corresponding background-color. Violates WCAG 1.4.3 Contrast Minimum by not ensuring text is visible against all background colors">
+                Error: Connection timeout
+            </span>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

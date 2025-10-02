@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFormLandmarkAccessibleNameIsBlank - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkAccessibleNameIsBlank_002_correct_with_name",
+    "issueId": "ErrFormLandmarkAccessibleNameIsBlank",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Form landmarks with proper accessible names",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>User Forms</h1>
+
+    <main>
+        <section>
+            <h2 id="searchLabel">Search Products</h2>
+
+            <form aria-labelledby="searchLabel"
+                  data-expected-pass="true"
+                  data-pass-reason="Form landmark has aria-labelledby pointing to element with content. Screen readers announce 'Search Products form' providing description. Form has clear accessible name. Users can distinguish this form from others by name. Referenced element contains meaningful text. Complies with WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value by having non-blank accessible name">
+                <label for="search1">Search:</label>
+                <input type="search" id="search1" name="q">
+                <button type="submit">Go</button>
+            </form>
+        </section>
+
+        <section>
+            <form aria-label="Newsletter Signup"
+                  data-expected-pass="true"
+                  data-pass-reason="Form landmark has aria-label with descriptive text. Screen readers announce 'Newsletter Signup form' with accessible name. Form has clear label identifying its purpose. Users navigating by landmarks can identify form. Aria-label provides meaningful information. Meets WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value by using non-blank accessible name">
+                <label for="email1">Email:</label>
+                <input type="email" id="email1" name="email">
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+
+        <section>
+            <div id="commentLabel">Leave a Comment</div>
+
+            <form aria-labelledby="commentLabel"
+                  data-expected-pass="true"
+                  data-pass-reason="Form landmark has aria-labelledby pointing to element with meaningful text. Screen readers announce 'Leave a Comment form' describing purpose. Form has accessible name helping users understand context. Users can determine form function from name. Referenced element contains descriptive content. Complies with WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value by having meaningful accessible name">
+                <label for="comment">Comment:</label>
+                <textarea id="comment" name="comment"></textarea>
+                <button type="submit">Post</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

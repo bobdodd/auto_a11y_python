@@ -3,52 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration - Required Not Indicated</title>
+    <title>forms_WarnRequiredNotIndicated - Warnings</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "forms_WarnRequiredNotIndicated_001_violations_basic",
     "issueId": "forms_WarnRequiredNotIndicated",
     "expectedViolationCount": 3,
     "expectedPassCount": 0,
-    "description": "Required fields without clear visual or programmatic indication",
+    "description": "Required form fields without indication",
     "wcag": "3.3.2",
     "impact": "Medium"
 }
     </script>
 </head>
 <body>
-    <h1>Create Account</h1>
+    <h1>Registration Form</h1>
 
-    <form>
-        <div data-expected-violation="true"
-             data-violation-id="forms_WarnRequiredNotIndicated"
-             data-violation-reason="Username field is required but lacks required attribute and visual indicator">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username">
-        </div>
+    <main>
+        <form>
+            <section>
+                <h2>Account Information</h2>
 
-        <div data-expected-violation="true"
-             data-violation-id="forms_WarnRequiredNotIndicated"
-             data-violation-reason="Email field required but not indicated with aria-required or visual marker">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email">
-        </div>
+                <label for="username">Username</label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       data-expected-violation="true"
+                       data-violation-reason="Required field has no visual or programmatic indication it's required. Screen readers don't announce field is required. Users may skip field not knowing it's mandatory. No asterisk, text, or aria-required attribute. Users discover requirement only on form submission error. Warning for WCAG 3.3.2 Labels or Instructions - indicate required fields with visual marker and aria-required or required attribute">
+            </section>
 
-        <div data-expected-violation="true"
-             data-violation-id="forms_WarnRequiredNotIndicated"
-             data-violation-reason="Password field lacks both programmatic and visual required indication">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password">
-        </div>
+            <section>
+                <h2>Contact Details</h2>
 
-        <div>
-            <label for="phone">Phone (Optional)</label>
-            <input type="tel" id="phone" name="phone">
-        </div>
+                <label for="email">Email Address</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       data-expected-violation="true"
+                       data-violation-reason="Required email field lacks required indication. Screen readers don't announce mandatory status. Users may submit incomplete form. No visual or programmatic required indicator. Users only learn it's required from validation error. Warning for WCAG 3.3.2 Labels or Instructions - mark required fields visually and programmatically">
+            </section>
 
-        <button type="submit">Register</button>
-    </form>
+            <section>
+                <h2>Password</h2>
 
-    <p>Note: Users won't know which fields are required until they try to submit.</p>
+                <label for="password">Password</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       data-expected-violation="true"
+                       data-violation-reason="Required password field not marked as required. Screen readers don't indicate field is mandatory. Users may leave field blank unknowingly. No required attribute or aria-required. Users find out on error after submission. Warning for WCAG 3.3.2 Labels or Instructions - indicate required status with visual and programmatic markers">
+
+                <button type="submit">Register</button>
+            </section>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
 </body>
 </html>

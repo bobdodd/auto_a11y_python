@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method",
+    "issueId": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Form landmarks with single labeling method",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>User Forms</h1>
+
+    <main>
+        <section>
+            <h2 id="searchHeading">Product Search</h2>
+
+            <form aria-labelledby="searchHeading"
+                  data-expected-pass="true"
+                  data-pass-reason="Form landmark uses only aria-labelledby attribute without aria-label. Screen readers clearly use 'Product Search' from referenced heading. No conflicting accessible name attributes. Code is clear about labeling method. One labeling method eliminates confusion. Complies with WCAG 4.1.2 Name, Role, Value by using single accessible name method">
+                <label for="search1">Search:</label>
+                <input type="search" id="search1" name="q">
+                <button type="submit">Go</button>
+            </form>
+        </section>
+
+        <section>
+            <form aria-label="Support Contact Form"
+                  data-expected-pass="true"
+                  data-pass-reason="Form landmark uses only aria-label attribute without aria-labelledby. Screen readers clearly announce 'Support Contact Form' as accessible name. No redundant naming attributes. Code clearly shows labeling approach. Single method provides clarity. Meets WCAG 4.1.2 Name, Role, Value by using one accessible name method without conflicts">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+
+                <label for="message">Message:</label>
+                <textarea id="message" name="message"></textarea>
+
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

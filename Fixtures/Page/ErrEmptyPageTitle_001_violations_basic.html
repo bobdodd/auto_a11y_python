@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyPageTitle_001_violations_basic",
+    "issueId": "ErrEmptyPageTitle",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page with empty title element",
+    "wcag": "2.4.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrEmptyPageTitle"
+      data-violation-reason="Title element exists but is empty, providing no information about page content">
+    <h1>Product Catalog</h1>
+    <p>Browse our extensive product catalog with thousands of items.</p>
+    <nav>
+        <ul>
+            <li><a href="#electronics">Electronics</a></li>
+            <li><a href="#clothing">Clothing</a></li>
+            <li><a href="#books">Books</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

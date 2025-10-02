@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoPageTitle_001_violations_basic",
+    "issueId": "ErrNoPageTitle",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page with no title element in document head",
+    "wcag": "2.4.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrNoPageTitle"
+      data-violation-reason="Page has no title element, screen readers announce 'Untitled document'">
+    <h1>Welcome to Our Website</h1>
+    <p>This page is missing a title element in the head section.</p>
+    <p>Users cannot identify this page in browser tabs, bookmarks, or history.</p>
+</body>
+</html>

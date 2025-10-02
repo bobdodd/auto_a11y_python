@@ -149,6 +149,10 @@
                 <div class="card-header">
                     <h5 class="mb-0">Individual Test Status</h5>
                     <small class="text-muted">Tests are automatically enabled/disabled based on fixture results</small>
+                    <div class="alert alert-info mt-2 mb-0" role="alert">
+                        <i class="bi bi-info-circle"></i> <strong>Note:</strong> Each error code may have multiple fixtures (e.g., violations and correct usage examples).
+                        A test is only enabled if <strong>all</strong> fixtures for that code pass.
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -160,8 +164,8 @@
                                 <tr>
                                     <th style="width: 25%;">Error Code</th>
                                     <th style="width: 10%;">Status</th>
-                                    <th style="width: 30%;" class="d-none d-md-table-cell">Fixture Path</th>
-                                    <th style="width: 20%;" class="d-none d-lg-table-cell">Notes</th>
+                                    <th style="width: 15%;" class="d-none d-md-table-cell">Fixtures</th>
+                                    <th style="width: 25%;" class="d-none d-lg-table-cell">Notes</th>
                                     <th style="width: 15%;" class="d-none d-sm-table-cell">Tested At</th>
                                 </tr>
                             </thead>
@@ -315,31 +319,36 @@ function updateTestTable(statuses) {
     let html = '';
     for (const [errorCode, status] of Object.entries(statuses)) {
         const success = status.success;
-        const statusBadge = success 
-            ? '<span class="badge bg-success">✓ Passed</span>' 
+        const statusBadge = success
+            ? '<span class="badge bg-success">✓ All Pass</span>'
             : '<span class="badge bg-danger">✗ Failed</span>';
-        
-        const notes = status.notes && status.notes.length > 0 
-            ? status.notes.join(', ') 
+
+        // Show fixture count and pass/fail ratio
+        const fixtureInfo = status.total_fixtures
+            ? `${status.passed_fixtures || 0}/${status.total_fixtures}`
+            : (status.fixture_path || '-');
+
+        const notes = status.notes && status.notes.length > 0
+            ? status.notes.join('<br>')
+            : (success ? 'All fixtures passed' : '-');
+
+        const testedAt = status.tested_at
+            ? new Date(status.tested_at).toLocaleString()
             : '-';
-        
-        const testedAt = status.tested_at 
-            ? new Date(status.tested_at).toLocaleString() 
-            : '-';
-        
+
         const rowClass = success ? '' : 'table-warning';
-        
+
         html += `
             <tr class="${rowClass}">
                 <td style="word-break: break-word;"><code>${errorCode}</code></td>
                 <td>${statusBadge}</td>
-                <td class="d-none d-md-table-cell" style="word-break: break-word;"><small>${status.fixture_path || '-'}</small></td>
+                <td class="d-none d-md-table-cell" style="word-break: break-word;"><small>${fixtureInfo}</small></td>
                 <td class="d-none d-lg-table-cell" style="word-break: break-word;"><small>${notes}</small></td>
                 <td class="d-none d-sm-table-cell text-nowrap"><small>${testedAt}</small></td>
             </tr>
         `;
     }
-    
+
     tbody.innerHTML = html;
 }
 

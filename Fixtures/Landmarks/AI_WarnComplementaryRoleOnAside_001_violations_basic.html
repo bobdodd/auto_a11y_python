@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnComplementaryRoleOnAside - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnComplementaryRoleOnAside_001_violations_basic",
+    "issueId": "AI_WarnComplementaryRoleOnAside",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Aside elements with explicit role='complementary' redundantly",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Main Content</h1>
+
+    <main>
+        <article>
+            <h2>Article Title</h2>
+            <p>Main article content goes here.</p>
+
+            <aside role="complementary"
+                   data-expected-violation="true"
+                   data-violation-reason="Aside element has explicit role='complementary' which is redundant. HTML5 aside element already provides complementary landmark semantics. Redundant ARIA is unnecessary and adds code clutter. Native HTML semantics should be preferred over explicit ARIA. Warning for WCAG 4.1.2 Name, Role, Value - remove redundant role='complementary' from aside element">
+                <h3>Related Links</h3>
+                <ul>
+                    <li><a href="/related1">Related Article 1</a></li>
+                    <li><a href="/related2">Related Article 2</a></li>
+                </ul>
+            </aside>
+        </article>
+
+        <aside role="complementary"
+               data-expected-violation="true"
+               data-violation-reason="Aside element with redundant role='complementary'. Aside already has implicit complementary role in HTML5. Explicit ARIA role is not needed. Developers should rely on native semantics. Screen readers recognize aside automatically. Warning for WCAG 4.1.2 Name, Role, Value - remove unnecessary role='complementary' from aside">
+            <h2>Sidebar Content</h2>
+            <p>Additional information and resources.</p>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

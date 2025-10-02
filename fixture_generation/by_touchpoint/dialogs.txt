@@ -1,0 +1,122 @@
+# DIALOGS Touchpoint
+
+Total issues: 7
+
+================================================================================
+
+## AI_ErrDialogWithoutARIA
+
+✨ New fixtures needed
+
+ID: AI_ErrDialogWithoutARIA
+Type: Error
+Impact: High
+WCAG: 2.1.1, 4.1.2, 2.4.3
+Touchpoint: dialogs
+Description: {element_tag} element "{element_text}" appears to be a dialog/modal but lacks proper ARIA markup
+Why it matters: Without proper ARIA attributes, screen readers cannot announce the dialog's purpose, state, or provide proper navigation
+Who it affects: Screen reader users, keyboard users who need focus management
+How to fix: Add role="dialog", aria-modal="true", aria-label or aria-labelledby, and implement focus trap
+
+================================================================================
+
+## AI_ErrModalFocusTrap
+
+✨ New fixtures needed
+
+ID: AI_ErrModalFocusTrap
+Type: Error
+Impact: High
+WCAG: 2.1.2, 2.4.3
+Touchpoint: dialogs
+Description: Modal/dialog "{element_text}" does not properly trap focus
+Why it matters: Without focus trapping, keyboard users can navigate outside the modal while it's open, causing confusion
+Who it affects: Keyboard users, screen reader users
+How to fix: Implement focus trap to keep focus within modal while open, and return focus to trigger element on close
+
+================================================================================
+
+## ErrModalMissingClose
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Dialogs and Modals/ErrModalMissingClose.html
+
+ID: ErrModalMissingClose
+Type: Error
+Impact: High
+WCAG: 2.1.2 No Keyboard Trap (Level A)
+Touchpoint: dialogs
+Description: Modal dialog has no way to close it
+Why it matters: Users become trapped in the modal with no way to return to the main content.
+Who it affects: All users, especially keyboard users who cannot click outside to close.
+How to fix: Provide at least one clear way to close modals (close button, escape key, cancel button).
+
+================================================================================
+
+## ErrModalMissingHeading
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrModalMissingHeading.html
+
+ID: ErrModalMissingHeading
+Type: Error
+Impact: Medium
+WCAG: 2.4.6 Headings and Labels (Level AA)
+Touchpoint: dialogs
+Description: Modal dialog lacks a heading to identify its purpose
+Why it matters: Without headings, users don't know the purpose or context of the modal content.
+Who it affects: Screen reader users who need to understand modal purpose, users with cognitive disabilities.
+How to fix: Add a heading (h1-h6) at the beginning of modal content that clearly identifies its purpose.
+
+================================================================================
+
+## ErrModalWithoutEscape
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Dialogs and Modals/ErrModalWithoutEscape.html
+
+ID: ErrModalWithoutEscape
+Type: Error
+Impact: High
+WCAG: 2.1.2 No Keyboard Trap (Level A)
+Touchpoint: dialogs
+Description: Modal cannot be closed using the Escape key
+Why it matters: Escape key is the expected keyboard shortcut for closing modals; without it, keyboard users may become trapped.
+Who it affects: Keyboard users who expect standard modal behavior, power users who rely on keyboard shortcuts.
+How to fix: Implement Escape key handler to close modals, ensure it works even when focus is within modal content.
+
+================================================================================
+
+## WarnModalMissingAriaModal
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Dialogs and Modals/WarnModalMissingAriaModal.html
+
+ID: WarnModalMissingAriaModal
+Type: Warning
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: dialogs
+Description: Modal dialog missing aria-modal attribute
+Why it matters: aria-modal helps assistive technologies understand modal boundaries.
+Who it affects: Screen reader users navigating modal content.
+How to fix: Add aria-modal="true" to modal containers.
+
+================================================================================
+
+## AI_ErrDialogWithoutARIA
+
+✨ New fixtures needed
+
+ID: AI_ErrDialogWithoutARIA
+Type: Error
+Impact: High
+WCAG: 2.1.1, 4.1.2, 2.4.3
+Touchpoint: dialogs
+Description: {element_tag} element "{element_text}" appears to be a dialog/modal but lacks proper ARIA markup
+Why it matters: Without proper ARIA attributes, screen readers cannot announce the dialog's purpose, state, or provide proper navigation
+Who it affects: Screen reader users, keyboard users who need focus management
+How to fix: Add role="dialog", aria-modal="true", aria-label or aria-labelledby, and implement focus trap
+
+================================================================================
+

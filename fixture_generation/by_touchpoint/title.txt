@@ -1,0 +1,150 @@
+# TITLE Touchpoint
+
+Total issues: 9
+
+================================================================================
+
+## ErrEmptyTitleAttr
+
+✨ New fixtures needed
+
+ID: ErrEmptyTitleAttr
+Type: Error
+Impact: Low
+WCAG: 3.3.2
+Touchpoint: title
+Description: Empty title attribute
+Why it matters: Empty titles provide no information
+Who it affects: Users expecting tooltip information
+How to fix: Remove empty title attributes
+
+================================================================================
+
+## ErrIframeWithNoTitleAttr
+
+✨ New fixtures needed
+
+ID: ErrIframeWithNoTitleAttr
+Type: Error
+Impact: High
+WCAG: 2.4.1 Bypass Blocks, 4.1.2 Name, Role, Value
+Touchpoint: title
+Description: Iframe element is missing the required title attribute
+Why it matters: Iframes embed external content like videos, maps, or forms within your page. Without a title attribute, screen reader users hear only "iframe" with no indication of what content it contains. This is like having a door with no label - users don't know what's behind it. They must enter the iframe and explore its content to understand its purpose, which is time-consuming and may be confusing if the iframe content lacks context. For pages with multiple iframes, users cannot distinguish between them or decide which ones are worth exploring.
+Who it affects: Screen reader users who need to understand what each iframe contains before deciding whether to interact with it, keyboard users navigating through iframes who need context about embedded content, users with cognitive disabilities who need clear labeling of all page regions, and users on slow connections who may experience delays loading iframe content
+How to fix: Add a title attribute to every iframe that concisely describes its content or purpose (e.g., title="YouTube video: Product demonstration", title="Google Maps: Office location", title="Payment form"). The title should be unique if there are multiple iframes. Keep it brief but descriptive enough that users understand what the iframe contains without having to enter it. For decorative iframes (rare), you can use title="" and add tabindex="-1" to remove it from tab order.
+
+================================================================================
+
+## ErrTitleAttrFound
+
+✨ New fixtures needed
+
+ID: ErrTitleAttrFound
+Type: Error
+Impact: Low
+WCAG: 3.3.2, 4.1.2
+Touchpoint: title
+Description: Title attribute used for important information
+Why it matters: Title attributes are not reliably accessible
+Who it affects: Mobile users, keyboard users, some screen readers
+How to fix: Use visible text or proper labels instead
+
+================================================================================
+
+## WarnIframeTitleNotDescriptive
+
+✨ New fixtures needed
+
+ID: WarnIframeTitleNotDescriptive
+Type: Warning
+Impact: Medium
+WCAG: 2.4.1 Bypass Blocks (Level A), 4.1.2 Name, Role, Value (Level A)
+Touchpoint: title
+Description: Iframe has a title attribute but it's generic or not descriptive (e.g., "iframe", "frame", "embedded content")
+Why it matters: Generic iframe titles like "iframe" or "embedded" provide no useful information about the embedded content. Screen reader users hear these unhelpful titles and must enter the iframe to understand what it contains. With multiple iframes, users cannot distinguish between them or determine which ones are worth exploring. This wastes time and creates confusion, especially if iframes contain important functionality like payment forms or videos.
+Who it affects: Screen reader users trying to understand and navigate between multiple iframes, keyboard users who encounter iframes in tab order, users with cognitive disabilities who need clear labeling of all content regions, and users trying to navigate efficiently through complex pages
+How to fix: Replace generic titles with descriptive ones that explain the iframe's content or purpose. Use specific descriptions like title="YouTube video: Product demo", title="Customer feedback form", title="Live chat support", or title="Interactive map of office locations". Each iframe title should be unique if there are multiple iframes. Avoid redundant words like "iframe" in the title since the element type is already announced.
+
+================================================================================
+
+## WarnMultipleTitleElements
+
+✨ New fixtures needed
+
+ID: WarnMultipleTitleElements
+Type: Warning
+Impact: Medium
+WCAG: 2.4.2 Page Titled (Level A)
+Touchpoint: title
+Description: {count} <title> elements found in the document head, which may cause unpredictable behavior
+Why it matters: Having {count} title elements causes browsers to choose unpredictably between them, creating inconsistent page identification. Different browsers and assistive technologies may choose different titles from the {count} available, creating an inconsistent experience. SEO is negatively affected as search engines may index the wrong title.
+Who it affects: All users seeing inconsistent titles in browser tabs, screen reader users who may hear different titles than what's visually displayed, users bookmarking pages with incorrect titles
+How to fix: Remove {count-1} duplicate <title> elements, keeping only one in the document head. Check for scripts that might be adding titles dynamically. Ensure your CMS or framework isn't creating duplicate titles.
+
+================================================================================
+
+## WarnPageTitleTooLong
+
+✨ New fixtures needed
+
+ID: WarnPageTitleTooLong
+Type: Warning
+Impact: Low
+WCAG: 2.4.2 Page Titled (Level A)
+Touchpoint: title
+Description: Page title is {length} characters long, exceeding the recommended 60 character limit
+Why it matters: The title "{title}" with {length} characters will get cut off in browser tabs (typically around 30 characters) and search engine results (typically 50-60 characters), losing important information. The most important information might be at the end and never seen. Screen reader users have to listen to lengthy titles repeatedly.
+Who it affects: Users with multiple tabs open who see truncated titles, users searching for content who can't see full titles in results, screen reader users who must listen to long titles repeatedly, mobile users with even less space for title display
+How to fix: Shorten the title from {length} to under 60 characters. Place the most important, unique information first. Remove unnecessary words like "Welcome to" or "This page contains". Test how titles appear in browser tabs and search results to ensure key information is visible.
+
+================================================================================
+
+## WarnPageTitleTooShort
+
+✨ New fixtures needed
+
+ID: WarnPageTitleTooShort
+Type: Warning
+Impact: Low
+WCAG: 2.4.2 Page Titled (Level A)
+Touchpoint: title
+Description: Page title "{found}" is only {length} characters, potentially not descriptive enough
+Why it matters: The title "{found}" with only {length} characters doesn't provide enough context, especially when users have multiple tabs open or are browsing history. Users can't distinguish between different sites with the same generic titles. Screen reader users hearing page titles announced need more descriptive information to understand where they are.
+Who it affects: Users with multiple browser tabs who need to distinguish between pages, screen reader users who rely on descriptive titles for context, users browsing history or bookmarks, users with cognitive disabilities who need clear page identification
+How to fix: Expand "{found}" to be more descriptive by including the site name and page purpose. Aim for 20-60 characters that clearly describe the page content. Ensure each page has a unique, descriptive title that makes sense out of context.
+
+================================================================================
+
+## WarnTitleAttrFound
+
+✨ New fixtures needed
+
+ID: WarnTitleAttrFound
+Type: Warning
+Impact: Low
+WCAG: 3.3.2 Labels or Instructions (Level A), 4.1.2 Name, Role, Value (Level A)
+Touchpoint: title
+Description: Title attribute is being used on an element, which has significant accessibility limitations
+Why it matters: Title attributes are problematic for accessibility: they don't appear on mobile devices or touch screens, keyboard users cannot access them without a mouse, screen readers handle them inconsistently (some ignore them, some read them), they disappear quickly making them hard to read for users with motor or cognitive disabilities, they cannot be styled or resized for users with low vision, and they're not translated by browser translation tools. Using title attributes for important information excludes many users from accessing that content.
+Who it affects: Mobile and touch screen users who never see title tooltips, keyboard-only users who cannot hover to trigger tooltips, screen reader users who may not hear title content reliably, users with motor disabilities who cannot hover precisely, users with cognitive disabilities who need more time to read, users with low vision who cannot resize tooltip text, and users relying on translation tools
+How to fix: Replace title attributes with visible, persistent text that all users can access. For form fields, use visible <label> elements or aria-label. For links and buttons, ensure the visible text is descriptive. For abbreviations, provide the full text on first use. For supplementary information, use visible helper text, details/summary elements, or clickable info icons. Only use title attributes for progressive enhancement where the information duplicates visible content. Never rely on title alone for important information.
+
+================================================================================
+
+## ErrEmptyTitleAttr
+
+✨ New fixtures needed
+
+ID: ErrEmptyTitleAttr
+Type: Error
+Impact: Low
+WCAG: 3.3.2
+Touchpoint: title
+Description: Empty title attribute
+Why it matters: Empty titles provide no information
+Who it affects: Users expecting tooltip information
+How to fix: Remove empty title attributes
+
+================================================================================
+

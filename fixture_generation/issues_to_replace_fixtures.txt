@@ -1,0 +1,2406 @@
+# Issues with Old Fixtures to Replace
+
+Total: 141 issues
+
+Note: These have simple old-style fixtures that need enhancement
+
+================================================================================
+
+## DiscoFormOnPage
+
+Existing fixtures:
+  - Fixtures/Forms/DiscoFormOnPage.html
+
+ID: DiscoFormOnPage
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: forms
+Description: Form detected on page - needs manual testing
+Why it matters: Forms need comprehensive accessibility testing
+Who it affects: All users with disabilities
+How to fix: Manually test form with keyboard and screen reader
+
+================================================================================
+
+## DiscoFoundInlineSvg
+
+Existing fixtures:
+  - Fixtures/Images/DiscoFoundInlineSvg.html
+
+ID: DiscoFoundInlineSvg
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: svg
+Description: Inline SVG element detected that requires manual review to determine appropriate accessibility implementation based on its purpose and complexity
+Why it matters: SVG elements serve diverse purposes from simple icons to complex interactive visualizations, each requiring different accessibility approaches. A decorative border needs different treatment than a data chart, which differs from an interactive map or scientific simulation. Automated tools cannot determine SVG purpose, whether it's decorative or informative, static or interactive, or if existing accessibility features adequately support user needs.
+Who it affects: Blind and low vision users using screen readers who need text alternatives for graphics or keyboard access to interactive elements, users with motor disabilities who require keyboard navigation for interactive SVG controls, users with cognitive disabilities who benefit from clear labeling and predictable interaction patterns.
+How to fix: Evaluate the SVG's purpose and complexity - for simple images ensure there is a role="img", use <title> for alt text with aria-labelledby on the SVG referencing an ID on the <title> (a workaround for some browsers), for decorative graphics use aria-hidden="true", for data visualizations provide <title> and <desc> plus consider adjacent detailed text alternatives, for interactive content ensure all controls are keyboard accessible with proper ARIA labels and focus management, for complex simulations provide instructions and state change announcements, and test with screen readers to verify the experience matches visual functionality.
+
+================================================================================
+
+## DiscoFoundSvgImage
+
+Existing fixtures:
+  - Fixtures/Images/DiscoFoundSvgImage.html
+
+ID: DiscoFoundSvgImage
+Type: Discovery
+Impact: N/A
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: Images
+Description: SVG element with role="img" detected that requires manual review to verify appropriate text alternatives are provided
+Why it matters: SVG elements with role="img" are explicitly marked as images and treated as a single graphic by assistive technologies, requiring appropriate text alternatives. While the role="img" indicates developer awareness of accessibility needs, manual review is needed to verify that any aria-label, aria-labelledby, or internal <title> elements adequately describe the image's content or function, and that the description is appropriate for the SVG's context and purpose.
+Who it affects: Blind and low vision users using screen readers who depend on text alternatives to understand image content.
+How to fix: Verify the SVG with role="img" has appropriate accessible names through aria-label or aria-labelledby attributes, ensure any <title> or <desc> elements inside the SVG are properly referenced if used for labeling, confirm decorative SVGs are hidden with aria-hidden="true" rather than given role="img", check that the text alternative accurately describes the SVG's meaning in context, and test with screen readers to ensure the image is announced with meaningful information
+
+================================================================================
+
+## DiscoHeadingWithID
+
+Existing fixtures:
+  - Fixtures/Headings/DiscoHeadingWithID.html
+
+ID: DiscoHeadingWithID
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: headings
+Description: Heading element has an ID attribute that may be used for in-page navigation
+Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
+Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
+How to fix: Ensure that the ID attribute is referenced and its use is valid.
+
+================================================================================
+
+## ErrAltOnElementThatDoesntTakeIt
+
+Existing fixtures:
+  - Fixtures/Images/ErrAltOnElementThatDoesntTakeIt.html
+
+ID: ErrAltOnElementThatDoesntTakeIt
+Type: Error
+Impact: Low
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: Images
+Description: Alt attribute placed on HTML elements that don't support it (such as div, span, p, or other non-image elements), making the alternative text inaccessible to assistive technologies
+Why it matters: The alt attribute is only valid on specific elements (<img>, <area>, <input type="image">) and is ignored when placed on other elements. Screen readers will not announce this misplaced alt text, meaning any important information it contains is completely lost to users who rely on assistive technologies. This often occurs when developers attempt to add accessibility features but use incorrect techniques.
+Who it affects: Blind and low vision users using screen readers who cannot access the alternative text content placed in invalid locations, users with cognitive disabilities who may be missing explanatory text, keyboard users who may not receive important contextual information, and users of assistive technologies that rely on proper semantic HTML markup
+How to fix: Remove alt attributes from non-supporting elements and use appropriate alternatives - for background images in CSS use role="img" with aria-label, for clickable elements use aria-label or visually hidden text, for decorative elements ensure they're properly hidden with aria-hidden="true", and verify that actual <img> elements are used for content images that need alternative text
+
+================================================================================
+
+## ErrAltTooLong
+
+Existing fixtures:
+  - Fixtures/Images/ErrAltTooLong.html
+
+ID: ErrAltTooLong
+Type: Error
+Impact: Medium
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: Alt text exceeds 150 characters, making it difficult for screen reader users to process
+Why it matters: Excessively long alt text creates a poor listening experience and may indicate that complex information should be presented differently.
+Who it affects: Screen reader users who must listen to lengthy descriptions, users with cognitive disabilities who may struggle with verbose content.
+How to fix: Limit alt text to 150 characters or less, use longdesc or aria-describedby for complex images, provide detailed descriptions in adjacent text content.
+
+================================================================================
+
+## ErrAriaLabelMayNotBeFoundByVoiceControl
+
+Existing fixtures:
+  - Fixtures/Forms/ErrAriaLabelMayNotBeFoundByVoiceControl.html
+
+ID: ErrAriaLabelMayNotBeFoundByVoiceControl
+Type: Error
+Impact: Medium
+WCAG: 2.5.3
+Touchpoint: aria
+Description: aria-label doesn't match visible text
+Why it matters: Voice control users can't activate element
+Who it affects: Voice control users
+How to fix: Ensure aria-label includes visible text
+
+================================================================================
+
+## ErrAutoStartTimers
+
+Existing fixtures:
+  - Fixtures/Timing/ErrAutoStartTimers.html
+
+ID: ErrAutoStartTimers
+Type: Error
+Impact: High
+WCAG: 2.2.2 Pause, Stop, Hide (Level A)
+Touchpoint: animation
+Description: Timer starts automatically without user control to pause or stop
+Why it matters: Auto-starting timers can create stress and barriers for users who need more time to complete tasks or read content.
+Who it affects: Users with cognitive disabilities, users with reading disabilities, users with motor impairments who need more time, screen reader users.
+How to fix: Provide controls to pause, stop, or extend time limits, avoid auto-starting timers unless essential, allow users to control timing of content updates.
+
+================================================================================
+
+## ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Banner landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrButtonNoVisibleFocus
+
+Existing fixtures:
+  - Fixtures/Buttons/ErrButtonNoVisibleFocus.html
+
+ID: ErrButtonNoVisibleFocus
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button lacks visible focus indicator when focused
+Why it matters: Keyboard users need visible focus indicators to know which element is currently selected. Without clear focus indication on buttons, users cannot tell which button will be activated when they press Enter or Space, leading to errors and inability to use the interface effectively.
+Who it affects: Users with motor disabilities using keyboard navigation, users who cannot use a mouse, power users who prefer keyboard navigation, and users of assistive technologies
+How to fix: Ensure buttons have a clearly visible focus indicator with at least 3:1 contrast against the background. The indicator should be at least 2 pixels thick and not rely on color alone. Never remove focus indicators without providing an alternative. Consider using :focus-visible for refined focus management.
+
+================================================================================
+
+## ErrButtonTextLowContrast
+
+Existing fixtures:
+  - Fixtures/Buttons/ErrButtonTextLowContrast.html
+
+ID: ErrButtonTextLowContrast
+Type: Error
+Impact: High
+WCAG: 1.4.3 Contrast (Minimum)
+Touchpoint: buttons
+Description: Button text has insufficient color contrast with button background
+Why it matters: Users with low vision, color blindness, or viewing the page in bright sunlight may not be able to read button labels if contrast is insufficient. This prevents users from understanding button purpose and can make critical functions inaccessible. Buttons are action triggers, so being unable to read them can prevent task completion.
+Who it affects: Users with low vision, color blindness, age-related vision changes, and anyone viewing content in poor lighting conditions or on low-quality displays
+How to fix: Ensure button text has at least 4.5:1 contrast ratio with the button background for normal text, or 3:1 for large text (18pt or 14pt bold). For Level AAA compliance, use 7:1 for normal text. Test in different states (hover, focus, active) as contrast requirements apply to all states. Avoid using color alone to indicate button state.
+
+================================================================================
+
+## ErrColorStyleDefinedExplicitlyInElement
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/ErrColorStyleDefinedExplicitlyInElement.html
+
+ID: ErrColorStyleDefinedExplicitlyInElement
+Type: Error
+Impact: Low
+WCAG: 1.4.3
+Touchpoint: color
+Description: Color-related styles defined inline
+Why it matters: Harder to maintain consistent color scheme
+Who it affects: Users needing high contrast modes
+How to fix: Use CSS classes instead of inline styles
+
+================================================================================
+
+## ErrColorStyleDefinedExplicitlyInStyleTag
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/ErrColorStyleDefinedExplicitlyInStyleTag.html
+
+ID: ErrColorStyleDefinedExplicitlyInStyleTag
+Type: Error
+Impact: Low
+WCAG: 1.4.3
+Touchpoint: color
+Description: Color-related styles defined in style tag
+Why it matters: Embedded color styles harder to override for user preferences
+Who it affects: Users with custom stylesheets, high contrast mode users
+How to fix: Use external stylesheets for better maintainability
+
+================================================================================
+
+## ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Complementary landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods may cause confusion
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Contentinfo landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrContentObscuring
+
+Existing fixtures:
+  - Fixtures/Focus/ErrContentObscuring.html
+
+ID: ErrContentObscuring
+Type: Error
+Impact: High
+WCAG: 2.4.3 Focus Order (Level A), 2.1.2 No Keyboard Trap (Level A)
+Touchpoint: focus_management
+Description: Content is obscured by other elements preventing interaction
+Why it matters: When content is covered by other elements, users cannot access or interact with it, creating complete barriers to functionality.
+Who it affects: All users, particularly keyboard users who cannot use mouse to work around layout issues, screen reader users who may not know content is obscured.
+How to fix: Fix z-index and positioning issues, ensure modals and overlays don't cover content inappropriately, test that all content remains accessible.
+
+================================================================================
+
+## ErrDivMapMissingAttributes
+
+Existing fixtures:
+  - Fixtures/Maps/ErrDivMapMissingAttributes.html
+
+ID: ErrDivMapMissingAttributes
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: maps
+Description: Map container div is missing required accessibility attributes
+Why it matters: Maps without proper accessibility attributes are completely inaccessible to screen reader users who cannot perceive the visual information.
+Who it affects: Blind and low vision users, users who rely on screen readers to understand map content and functionality.
+How to fix: Add appropriate ARIA labels and descriptions, provide text alternatives for map information, ensure all map controls are keyboard accessible.
+
+================================================================================
+
+## ErrDuplicateLabelForBannerLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForBannerLandmark.html
+
+ID: ErrDuplicateLabelForBannerLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple banner landmarks have the same label
+Why it matters: Users cannot distinguish between different banners
+Who it affects: Screen reader users
+How to fix: Only one banner should typically exist per page
+
+================================================================================
+
+## ErrDuplicateLabelForComplementaryLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForComplementaryLandmark.html
+
+ID: ErrDuplicateLabelForComplementaryLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple complementary landmarks have the same label
+Why it matters: Users cannot distinguish between different complementary sections
+Who it affects: Screen reader users
+How to fix: Provide unique labels for each complementary landmark
+
+================================================================================
+
+## ErrDuplicateLabelForContentinfoLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForContentinfoLandmark.html
+
+ID: ErrDuplicateLabelForContentinfoLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple contentinfo landmarks have the same label
+Why it matters: Users cannot distinguish between different footer areas
+Who it affects: Screen reader users
+How to fix: Typically only one contentinfo should exist per page
+
+================================================================================
+
+## ErrDuplicateLabelForFormLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForFormLandmark.html
+
+ID: ErrDuplicateLabelForFormLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple form landmarks have the same label
+Why it matters: Users cannot distinguish between different forms
+Who it affects: Screen reader users
+How to fix: Provide unique labels for each form
+
+================================================================================
+
+## ErrDuplicateLabelForNavLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForNavLandmark.html
+
+ID: ErrDuplicateLabelForNavLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple navigation landmarks have the same label
+Why it matters: Users cannot distinguish between different navigation areas
+Who it affects: Screen reader users
+How to fix: Provide unique labels like "Main navigation" and "Footer navigation"
+
+================================================================================
+
+## ErrDuplicateLabelForRegionLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForRegionLandmark.html
+
+ID: ErrDuplicateLabelForRegionLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple region landmarks have the same label
+Why it matters: Users cannot distinguish between different regions
+Who it affects: Screen reader users
+How to fix: Provide unique labels for each region
+
+================================================================================
+
+## ErrDuplicateLabelForSearchLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForSearchLandmark.html
+
+ID: ErrDuplicateLabelForSearchLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple search landmarks have the same label
+Why it matters: Users cannot distinguish between different search areas
+Who it affects: Screen reader users
+How to fix: Provide unique labels for each search landmark
+
+================================================================================
+
+## ErrEmptyAriaLabelOnField
+
+Existing fixtures:
+  - Fixtures/Forms/ErrEmptyAriaLabelOnField.html
+
+ID: ErrEmptyAriaLabelOnField
+Type: Error
+Impact: High
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Form field has empty aria-label attribute
+Why it matters: Empty labels provide no information about the field
+Who it affects: Screen reader users
+How to fix: Add descriptive text to aria-label or use visible label
+
+================================================================================
+
+## ErrEmptyAriaLabelledByOnField
+
+Existing fixtures:
+  - Fixtures/Forms/ErrEmptyAriaLabelledByOnField.html
+
+ID: ErrEmptyAriaLabelledByOnField
+Type: Error
+Impact: High
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Form field has empty aria-labelledby attribute
+Why it matters: Empty labelledby provides no field description
+Who it affects: Screen reader users
+How to fix: Reference valid element IDs or use direct labeling
+
+================================================================================
+
+## ErrEmptyHeading
+
+Existing fixtures:
+  - Fixtures/Headings/ErrEmptyHeading.html
+
+ID: ErrEmptyHeading
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
+Touchpoint: headings
+Description: Heading element contains only whitespace or special characters: "{text}"
+Why it matters: This heading contains only "{text}" which provides no meaningful content. Empty headings disrupt document structure and navigation. Screen reader users rely on headings to understand page organization and navigate efficiently using heading shortcuts. An empty heading creates a navigation point with no information, confusing users about the page structure.
+Who it affects: Screen reader users who navigate by headings and find a heading containing only "{text}", users with cognitive disabilities who rely on clear structure to understand content organization, and users of assistive technologies that generate page outlines
+How to fix: Either replace "{text}" with meaningful text content that describes the section, or remove the empty heading element entirely if it serves no structural purpose. Never use headings for visual spacing - use CSS margin/padding instead.
+
+================================================================================
+
+## ErrEmptyLabel
+
+Existing fixtures:
+  - Fixtures/Forms/ErrEmptyLabel.html
+
+ID: ErrEmptyLabel
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships (Level A), 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Label element exists but contains no text
+Why it matters: Empty labels provide no information about the associated form control, making forms impossible to complete correctly.
+Who it affects: Screen reader users who cannot identify form fields, users with cognitive disabilities who need clear labels.
+How to fix: Add descriptive text to all label elements that clearly identifies the purpose of the associated form control.
+
+================================================================================
+
+## ErrEmptyList
+
+Existing fixtures:
+  - Fixtures/Lists/ErrEmptyList.html
+
+ID: ErrEmptyList
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: lists
+Description: List element (ul, ol, dl) contains no list items
+Why it matters: Empty lists create confusion about document structure and may indicate missing content or markup errors.
+Who it affects: Screen reader users who encounter empty list announcements, all users missing potentially important content.
+How to fix: Remove empty list elements or populate them with appropriate list items, ensure lists are only used for actual list content.
+
+================================================================================
+
+## ErrEmptyPageTitle
+
+Existing fixtures:
+  - Fixtures/Semantic/ErrEmptyPageTitle.html
+
+ID: ErrEmptyPageTitle
+Type: Error
+Impact: High
+WCAG: 2.4.2
+Touchpoint: page
+Description: Page title element is empty
+Why it matters: Empty titles provide no information about page content
+Who it affects: Screen reader users, users with cognitive disabilities
+How to fix: Add descriptive text to title element
+
+================================================================================
+
+## ErrFakeListImplementation
+
+Existing fixtures:
+  - Fixtures/Lists/ErrFakeListImplementation.html
+
+ID: ErrFakeListImplementation
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: lists
+Description: Visual list created without proper list markup (using br tags, dashes, or bullets)
+Why it matters: Fake lists don't convey proper structure to assistive technologies, preventing users from understanding relationships between items.
+Who it affects: Screen reader users who cannot navigate lists properly, users who rely on structural navigation.
+How to fix: Use proper ul/ol elements with li items for lists, avoid using visual characters or br tags to simulate list appearance.
+
+================================================================================
+
+## ErrFielLabelledBySomethingNotALabel
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFielLabelledBySomethingNotALabel.html
+
+ID: ErrFielLabelledBySomethingNotALabel
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Field is labeled by an element that is not a proper label
+Why it matters: Non-label elements may not provide appropriate semantic relationships
+Who it affects: Screen reader users
+How to fix: Use proper <label> elements or appropriate ARIA labeling
+
+================================================================================
+
+## ErrFieldAriaRefDoesNotExist
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFieldAriaRefDoesNotExist.html
+
+ID: ErrFieldAriaRefDoesNotExist
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: forms
+Description: aria-labelledby references non-existent element ID '{found}'
+Why it matters: The aria-labelledby attribute references '{found}' but no element with id="{found}" exists on the page. This broken reference means the field has no accessible label for screen readers.
+Who it affects: Screen reader users who receive no label for this field
+How to fix: Either create an element with id="{found}" to serve as the label, fix the ID reference to point to an existing element, or use a different labeling method like a <label> element
+
+================================================================================
+
+## ErrFieldLabelledUsinAriaLabel
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFieldLabelledUsinAriaLabel.html
+
+ID: ErrFieldLabelledUsinAriaLabel
+Type: Error
+Impact: Medium
+WCAG: 3.3.2
+Touchpoint: forms
+Description: Field labeled using aria-label instead of visible label
+Why it matters: Visible labels benefit all users, not just screen reader users
+Who it affects: Users with cognitive disabilities, all users
+How to fix: Use visible <label> elements instead of aria-label when possible
+
+================================================================================
+
+## ErrFieldReferenceDoesNotExist
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFieldReferenceDoesNotExist.html
+
+ID: ErrFieldReferenceDoesNotExist
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Label for attribute references non-existent field
+Why it matters: Label is not associated with any form field
+Who it affects: Screen reader users
+How to fix: Fix the for/id relationship
+
+================================================================================
+
+## ErrFormAriaLabelledByIsBlank
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFormAriaLabelledByIsBlank.html
+
+ID: ErrFormAriaLabelledByIsBlank
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: landmarks
+Description: Form aria-labelledby references blank or empty element
+Why it matters: No accessible name is provided
+Who it affects: Screen reader users
+How to fix: Reference element with actual text content
+
+================================================================================
+
+## ErrFormAriaLabelledByReferenceDIsHidden
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDIsHidden.html
+
+ID: ErrFormAriaLabelledByReferenceDIsHidden
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: landmarks
+Description: Form aria-labelledby references hidden element
+Why it matters: Hidden elements may not provide accessible names
+Who it affects: Screen reader users
+How to fix: Reference visible elements only
+
+================================================================================
+
+## ErrFormAriaLabelledByReferenceDoesNotExist
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDoesNotExist.html
+
+ID: ErrFormAriaLabelledByReferenceDoesNotExist
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: forms
+Description: Form aria-labelledby references non-existent element
+Why it matters: Broken reference provides no accessible name
+Who it affects: Screen reader users
+How to fix: Fix ID reference or use different labeling method
+
+================================================================================
+
+## ErrFormEmptyHasNoChildNodes
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFormEmptyHasNoChildNodes.html
+
+ID: ErrFormEmptyHasNoChildNodes
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Form element is completely empty with no child nodes
+Why it matters: Empty forms serve no purpose and confuse assistive technology users
+Who it affects: Screen reader users, keyboard users
+How to fix: Remove empty form elements or add appropriate form controls
+
+================================================================================
+
+## ErrFormEmptyHasNoInteractiveElements
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFormEmptyHasNoInteractiveElements.html
+
+ID: ErrFormEmptyHasNoInteractiveElements
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Form has content but no interactive elements
+Why it matters: Forms without inputs cannot be used for their intended purpose
+Who it affects: All users
+How to fix: Add appropriate input fields, buttons, or other form controls
+
+================================================================================
+
+## ErrFormLandmarkAccessibleNameIsBlank
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrFormLandmarkAccessibleNameIsBlank.html
+
+ID: ErrFormLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: High
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Form landmark has blank accessible name
+Why it matters: Forms need clear identification
+Who it affects: Screen reader users
+How to fix: Add meaningful label describing form purpose
+
+================================================================================
+
+## ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Form landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrFormUsesAriaLabelInsteadOfVisibleElement
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFormUsesAriaLabelInsteadOfVisibleElement.html
+
+ID: ErrFormUsesAriaLabelInsteadOfVisibleElement
+Type: Error
+Impact: Medium
+WCAG: 2.5.3, 3.3.2
+Touchpoint: forms
+Description: Form uses aria-label instead of visible heading or label
+Why it matters: Visible labels benefit all users
+Who it affects: All users, especially those with cognitive disabilities
+How to fix: Use visible heading with aria-labelledby
+
+================================================================================
+
+## ErrFormUsesTitleAttribute
+
+Existing fixtures:
+  - Fixtures/Forms/ErrFormUsesTitleAttribute.html
+
+ID: ErrFormUsesTitleAttribute
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: forms
+Description: Form uses title attribute for labeling
+Why it matters: Title attributes are not reliably accessible
+Who it affects: Screen reader users, mobile users
+How to fix: Use aria-label or aria-labelledby instead
+
+================================================================================
+
+## ErrFoundAriaLevelButNoRoleAppliedAtAll
+
+Existing fixtures:
+  - Fixtures/ARIA/ErrFoundAriaLevelButNoRoleAppliedAtAll.html
+
+ID: ErrFoundAriaLevelButNoRoleAppliedAtAll
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: headings
+Description: aria-level attribute without role="heading"
+Why it matters: aria-level only works with heading role
+Who it affects: Screen reader users
+How to fix: Add role="heading" or use native heading element
+
+================================================================================
+
+## ErrHeaderMissingScope
+
+Existing fixtures:
+  - Fixtures/Tables/ErrHeaderMissingScope.html
+
+ID: ErrHeaderMissingScope
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: semantic_structure
+Description: Table header (th) element missing scope attribute
+Why it matters: Without scope attributes, screen readers cannot properly associate headers with data cells, making tables difficult to understand.
+Who it affects: Screen reader users navigating complex tables, users who rely on proper table semantics for comprehension.
+How to fix: Add scope="col" for column headers and scope="row" for row headers to all th elements.
+
+================================================================================
+
+## ErrImageAltContainsHTML
+
+Existing fixtures:
+  - Fixtures/Images/ErrImageAltContainsHTML.html
+
+ID: ErrImageAltContainsHTML
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: Images
+Description: Image's alternative text contains HTML markup tags
+Why it matters: HTML in alt text is not parsed, so screen readers will read the HTML markup as literal characters. Users will hear angle brackets announced as "less than" or "greater than" and tag names spelled out, creating a confusing experience. For example, alt="<b>Team Photo</b>" would be read as "less than b greater than Team Photo less than slash b greater than".
+Who it affects: Blind and low vision users using screen readers who will hear nonsense characters and words interspersed with the actual alt text, making it difficult or impossible to understand the image content
+How to fix: Remove all HTML markup from alt attributes and use only plain text. If formatting or structure is important to convey, describe it in words rather than using markup (e.g., instead of "<em>Important</em>" use "Important, emphasized").
+
+================================================================================
+
+## ErrImageWithEmptyAlt
+
+Existing fixtures:
+  - Fixtures/Images/ErrImageWithEmptyAlt.html
+
+ID: ErrImageWithEmptyAlt
+Type: Error
+Impact: Medium
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: Images
+Description: Image alt attribute contains only whitespace characters (spaces, tabs, line breaks), providing no accessible name
+Why it matters: Whitespace-only alt attributes fail to provide any accessible name for the image, causing screen readers to announce unhelpful fallback information like the image filename or "unlabeled graphic". Unlike properly empty alt="" which signals decorative content, whitespace alt text creates ambiguity - users cannot determine if they're missing important information or if the image is decorative.
+Who it affects: Blind and low vision users relying on screen readers who cannot determine the image's purpose or content, users with cognitive disabilities who depend on clear labeling to understand page content, and users of voice control software who cannot reference images without accessible names
+How to fix: Determine the image's purpose and apply appropriate alt text - for informative images add descriptive alternative text that conveys the same information, for decorative images use alt="" (no spaces) to properly mark them as decorative, for functional images describe the action or destination not the appearance, and remove any whitespace-only alt attributes that serve as ineffective placeholders
+
+================================================================================
+
+## ErrImageWithImgFileExtensionAlt
+
+Existing fixtures:
+  - Fixtures/Images/ErrImageWithImgFileExtensionAlt.html
+
+ID: ErrImageWithImgFileExtensionAlt
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: Images
+Description: Alt text contains image filename with file extension (e.g., "photo.jpg", "IMG_1234.png", "banner.gif"), providing no meaningful description of the image content
+Why it matters: Filenames rarely describe image content meaningfully and often contain technical identifiers, underscores, hyphens, or numbers that create a poor listening experience when announced by screen readers. Users hear cryptic strings like "DSC underscore zero zero four two dot jay peg" instead of learning what the image actually shows, forcing them to guess at important visual information or miss it entirely.
+Who it affects: Blind and low vision users using screen readers who need meaningful descriptions to understand visual content, users with cognitive disabilities who rely on clear, descriptive text to process information, users in low-bandwidth situations where images don't load and only alt text is displayed, and search engine users who rely on descriptive alt text for finding relevant content
+How to fix: Replace the filename with descriptive text that conveys the image's information or purpose (change alt="hero-banner-2.jpg" to alt="Students collaborating in the campus library"), focus on what the image communicates rather than technical details, ensure the description makes sense when read in context with surrounding content, and avoid including file extensions or technical metadata in alt attributes
+
+================================================================================
+
+## ErrImageWithNoAlt
+
+Existing fixtures:
+  - Fixtures/Images/ErrImageWithNoAlt.html
+
+ID: ErrImageWithNoAlt
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: Images
+Description: Images are missing alternative text attributes, preventing assistive technologies from conveying their content or purpose to users
+Why it matters: Screen readers cannot describe image content to users who are blind or have low vision, creating information barriers that may prevent understanding of essential content, navigation, or task completion. This also affects users with cognitive disabilities who benefit from text alternatives and users on slow connections where images fail to load.
+Who it affects: Blind users using screen readers, users with low vision using screen readers with magnification, users with cognitive disabilities who rely on text alternatives, voice control users who need text labels to reference elements, and users on slow internet connections
+How to fix: Add descriptive alt attributes for informative images (alt="Sales chart showing 40% increase"), use empty alt attributes for decorative images (alt=""), describe the function for interactive images (alt="Search" not alt="magnifying glass icon"), and provide detailed descriptions via aria-describedby for complex images like charts or diagrams.
+
+================================================================================
+
+## ErrImageWithURLAsAlt
+
+Existing fixtures:
+  - Fixtures/Images/ErrImageWithURLAsAlt.html
+
+ID: ErrImageWithURLAsAlt
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: Images
+Description: Alt attribute contains a URL (starting with http://, https://, www., or file://) instead of descriptive text about the image content
+Why it matters: URLs provide no meaningful information about what an image shows or its purpose on the page. Screen reader users hear lengthy, difficult-to-parse web addresses being spelled out character by character or in chunks like "h-t-t-p-colon-slash-slash-w-w-w-dot", creating a frustrating experience that conveys nothing about the actual image content. This often happens when image source URLs are mistakenly copied into alt attributes.
+Who it affects: Blind and low vision users using screen readers who need meaningful descriptions instead of technical URLs, users with cognitive disabilities who cannot process or remember long URL strings to understand image content, users in low-bandwidth situations where only alt text displays when images fail to load, and voice control users who cannot effectively reference images labeled with URLs
+How to fix: Replace the URL with descriptive text that conveys what the image shows or its function (change alt="https://example.com/images/team-photo.jpg" to alt="Marketing team at annual conference"), focus on describing the image content rather than its location or technical details, ensure the description makes sense in the page context, and never use the image's web address as its alternative text
+
+================================================================================
+
+## ErrIncorrectHeadingLevel
+
+Existing fixtures:
+  - Fixtures/Headings/ErrIncorrectHeadingLevel.html
+
+ID: ErrIncorrectHeadingLevel
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: headings
+Description: Heading level used incorrectly based on visual appearance rather than document structure
+Why it matters: Incorrect heading levels break the document outline and make it difficult to understand content hierarchy.
+Who it affects: Screen reader users navigating by headings, users who rely on proper document structure.
+How to fix: Use heading levels to convey document structure (h1 > h2 > h3), not for visual styling; use CSS for appearance.
+
+================================================================================
+
+## ErrIncorrectlyFormattedPrimaryLang
+
+Existing fixtures:
+  - Fixtures/Language/ErrIncorrectlyFormattedPrimaryLang.html
+
+ID: ErrIncorrectlyFormattedPrimaryLang
+Type: Error
+Impact: Medium
+WCAG: 3.1.1
+Touchpoint: language
+Description: Language code incorrectly formatted
+Why it matters: Malformed codes may not work properly
+Who it affects: Screen reader users
+How to fix: Use correct format: "en-US" or "en"
+
+================================================================================
+
+## ErrInfiniteAnimation
+
+Existing fixtures:
+  - Fixtures/Animation/ErrInfiniteAnimation.html
+
+ID: ErrInfiniteAnimation
+Type: Error
+Impact: High
+WCAG: 2.2.2 Pause, Stop, Hide (Level A)
+Touchpoint: animation
+Description: Animation runs infinitely without pause controls
+Why it matters: Continuous animations can trigger seizures, cause distraction, and make content unusable for many users.
+Who it affects: Users with vestibular disorders, users with ADHD, users with photosensitive epilepsy, users with cognitive disabilities.
+How to fix: Provide pause/stop controls for all animations, respect prefers-reduced-motion settings, limit animation duration.
+
+================================================================================
+
+## ErrInsufficientContrast
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/ErrInsufficientContrast.html
+
+ID: ErrInsufficientContrast
+Type: Error
+Impact: High
+WCAG: 1.4.3 Contrast (Minimum) (Level AA)
+Touchpoint: colors_contrast
+Description: Text does not meet WCAG contrast ratio requirements
+Why it matters: Insufficient contrast makes text unreadable for users with low vision or in challenging lighting conditions.
+Who it affects: Users with low vision, users with color blindness, aging users, all users in bright sunlight or glare.
+How to fix: Ensure 4.5:1 contrast ratio for normal text, 3:1 for large text (18pt+), use color contrast analyzers to verify.
+
+================================================================================
+
+## ErrInvalidGenericLinkName
+
+Existing fixtures:
+  - Fixtures/Links/ErrInvalidGenericLinkName.html
+
+ID: ErrInvalidGenericLinkName
+Type: Error
+Impact: High
+WCAG: 2.4.4 Link Purpose (In Context) (Level A)
+Touchpoint: links
+Description: Link text is generic and provides no information about destination
+Why it matters: Generic link text like "click here" provides no context when links are reviewed out of context.
+Who it affects: Screen reader users navigating by links, users with cognitive disabilities who need clear link purposes.
+How to fix: Use descriptive link text that explains the destination or action, avoid generic phrases like "click here" or "read more".
+
+================================================================================
+
+## ErrLabelContainsMultipleFields
+
+Existing fixtures:
+  - Fixtures/Forms/ErrLabelContainsMultipleFields.html
+
+ID: ErrLabelContainsMultipleFields
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Single label contains {count} form fields
+Why it matters: A label containing {count} fields creates ambiguity about which field it describes. Screen readers will associate this label with all {count} fields, making it unclear which field is which.
+Who it affects: Screen reader users who need clear field identification, users with cognitive disabilities who need simple relationships
+How to fix: Split the label so each of the {count} fields has its own dedicated label. Use fieldset and legend for grouped fields if they're related.
+
+================================================================================
+
+## ErrLabelMismatchOfAccessibleNameAndLabelText
+
+Existing fixtures:
+  - Fixtures/Forms/ErrLabelMismatchOfAccessibleNameAndLabelText.html
+
+ID: ErrLabelMismatchOfAccessibleNameAndLabelText
+Type: Error
+Impact: Medium
+WCAG: 2.5.3
+Touchpoint: forms
+Description: Accessible name doesn't match visible label
+Why it matters: Confusing for voice control users
+Who it affects: Voice control users
+How to fix: Make accessible name match visible text
+
+================================================================================
+
+## ErrLargeTextContrastAA
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/ErrLargeTextContrastAA.html
+
+ID: ErrLargeTextContrastAA
+Type: Error
+Impact: High
+WCAG: 1.4.3 Contrast (Minimum)
+Touchpoint: color
+Description: Large text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This large text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AA requirements. Large text (24px+ or 18.66px+ bold) requires a minimum contrast ratio of 3:1 to pass Level AA. The foreground color ({fg}) against background ({bg}) doesn't provide enough distinction.
+Who it affects: Users with low vision, color blindness, or age-related vision changes who struggle to distinguish text with insufficient contrast, even when the text is larger
+How to fix: Current contrast is {ratio}:1, but WCAG Level AA requires at least 3:1 for large text. To fix, adjust the foreground color from {fg} or the background from {bg}. Consider using #949494 or darker on white background for large text.
+
+================================================================================
+
+## ErrLargeTextContrastAAA
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/ErrLargeTextContrastAAA.html
+
+ID: ErrLargeTextContrastAAA
+Type: Error
+Impact: High
+WCAG: 1.4.6 Contrast (Enhanced)
+Touchpoint: color
+Description: Large text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This large text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AAA enhanced requirements. Large text (24px+ or 18.66px+ bold) requires a minimum contrast ratio of 4.5:1 to pass Level AAA for enhanced accessibility.
+Who it affects: Users with moderate visual impairments who benefit from enhanced contrast even for large text, ensuring optimal readability in all conditions
+How to fix: Current contrast is {ratio}:1, but WCAG Level AAA requires at least 4.5:1 for large text. To fix, adjust colors to achieve higher contrast, such as #767676 or darker on white background for large text at Level AAA.
+
+================================================================================
+
+## ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Main landmark has both aria-label and aria-labelledby attributes
+Why it matters: Conflicting labeling methods may cause confusion
+Who it affects: Screen reader users
+How to fix: Use only one labeling method - either aria-label or aria-labelledby
+
+================================================================================
+
+## ErrMapAriaHidden
+
+Existing fixtures:
+  - Fixtures/ARIA/ErrMapAriaHidden.html
+
+ID: ErrMapAriaHidden
+Type: Error
+Impact: High
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: aria
+Description: Map element hidden from assistive technologies with aria-hidden
+Why it matters: Hiding maps completely removes access to important geographic or spatial information for screen reader users.
+Who it affects: Blind and low vision users who need text alternatives for map information.
+How to fix: Remove aria-hidden from maps, provide appropriate text alternatives and accessible controls instead.
+
+================================================================================
+
+## ErrMapMissingTitle
+
+Existing fixtures:
+  - Fixtures/Maps/ErrMapMissingTitle.html
+
+ID: ErrMapMissingTitle
+Type: Error
+Impact: Medium
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: maps
+Description: Map iframe missing title attribute
+Why it matters: Without titles, screen reader users don't know what the embedded map contains or represents.
+Who it affects: Screen reader users who need to understand embedded content purpose.
+How to fix: Add descriptive title attribute to map iframes (e.g., title="Map showing office location").
+
+================================================================================
+
+## ErrMissingAccessibleName
+
+Existing fixtures:
+  - Fixtures/Accessible Names/ErrMissingAccessibleName.html
+
+ID: ErrMissingAccessibleName
+Type: Error
+Impact: High
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: accessible_names
+Description: Interactive element has no accessible name
+Why it matters: Without accessible names, screen reader users cannot identify or interact with controls.
+Who it affects: Screen reader users who cannot identify unnamed controls, voice control users who cannot target elements.
+How to fix: Add aria-label, aria-labelledby, or visible text labels to all interactive elements.
+
+================================================================================
+
+## ErrMissingCloseButton
+
+Existing fixtures:
+  - Fixtures/Buttons/ErrMissingCloseButton.html
+
+ID: ErrMissingCloseButton
+Type: Error
+Impact: High
+WCAG: 2.1.2 No Keyboard Trap (Level A)
+Touchpoint: buttons
+Description: Modal or dialog missing close button
+Why it matters: Without a close button, users can become trapped in modals with no way to return to main content.
+Who it affects: Keyboard users who cannot use escape key, screen reader users who need explicit close controls.
+How to fix: Add visible close button to all modals and dialogs, ensure it's keyboard accessible and properly labeled.
+
+================================================================================
+
+## ErrMissingDocumentType
+
+Existing fixtures:
+  - Fixtures/Documents/ErrMissingDocumentType.html
+
+ID: ErrMissingDocumentType
+Type: Error
+Impact: Medium
+WCAG: 4.1.1 Parsing (Level A)
+Touchpoint: documents
+Description: HTML document missing DOCTYPE declaration
+Why it matters: Missing DOCTYPE can cause browsers to render in quirks mode, leading to unpredictable behavior and accessibility issues.
+Who it affects: All users due to potential rendering issues, assistive technology users affected by parsing errors.
+How to fix: Add <!DOCTYPE html> as the first line of all HTML documents.
+
+================================================================================
+
+## ErrMissingTabindex
+
+Existing fixtures:
+  - Fixtures/Keyboard/ErrMissingTabindex.html
+
+ID: ErrMissingTabindex
+Type: Error
+Impact: High
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Interactive element not keyboard accessible due to missing tabindex
+Why it matters: Elements that should be interactive but lack keyboard access create complete barriers for non-mouse users.
+Who it affects: Keyboard users, screen reader users, users with motor disabilities who cannot use a mouse.
+How to fix: Add tabindex="0" to custom interactive elements, or use native interactive HTML elements that are keyboard accessible by default.
+
+================================================================================
+
+## ErrModalMissingClose
+
+Existing fixtures:
+  - Fixtures/Dialogs and Modals/ErrModalMissingClose.html
+
+ID: ErrModalMissingClose
+Type: Error
+Impact: High
+WCAG: 2.1.2 No Keyboard Trap (Level A)
+Touchpoint: dialogs
+Description: Modal dialog has no way to close it
+Why it matters: Users become trapped in the modal with no way to return to the main content.
+Who it affects: All users, especially keyboard users who cannot click outside to close.
+How to fix: Provide at least one clear way to close modals (close button, escape key, cancel button).
+
+================================================================================
+
+## ErrModalMissingHeading
+
+Existing fixtures:
+  - Fixtures/Headings/ErrModalMissingHeading.html
+
+ID: ErrModalMissingHeading
+Type: Error
+Impact: Medium
+WCAG: 2.4.6 Headings and Labels (Level AA)
+Touchpoint: dialogs
+Description: Modal dialog lacks a heading to identify its purpose
+Why it matters: Without headings, users don't know the purpose or context of the modal content.
+Who it affects: Screen reader users who need to understand modal purpose, users with cognitive disabilities.
+How to fix: Add a heading (h1-h6) at the beginning of modal content that clearly identifies its purpose.
+
+================================================================================
+
+## ErrModalWithoutEscape
+
+Existing fixtures:
+  - Fixtures/Dialogs and Modals/ErrModalWithoutEscape.html
+
+ID: ErrModalWithoutEscape
+Type: Error
+Impact: High
+WCAG: 2.1.2 No Keyboard Trap (Level A)
+Touchpoint: dialogs
+Description: Modal cannot be closed using the Escape key
+Why it matters: Escape key is the expected keyboard shortcut for closing modals; without it, keyboard users may become trapped.
+Who it affects: Keyboard users who expect standard modal behavior, power users who rely on keyboard shortcuts.
+How to fix: Implement Escape key handler to close modals, ensure it works even when focus is within modal content.
+
+================================================================================
+
+## ErrMouseOnlyHandler
+
+Existing fixtures:
+  - Fixtures/Event Handlng/ErrMouseOnlyHandler.html
+
+ID: ErrMouseOnlyHandler
+Type: Error
+Impact: High
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: event_handling
+Description: Interactive functionality only available through mouse events
+Why it matters: Mouse-only interactions exclude users who cannot use a pointing device.
+Who it affects: Keyboard users, screen reader users, users with motor disabilities, mobile device users.
+How to fix: Provide keyboard equivalents for all mouse interactions, use click events that work with keyboard, add proper keyboard event handlers.
+
+================================================================================
+
+## ErrMultipleH1
+
+Existing fixtures:
+  - Fixtures/Headings/ErrMultipleH1.html
+
+ID: ErrMultipleH1
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: headings
+Description: Page contains {count} h1 elements instead of just one
+Why it matters: Having {count} h1 elements creates confusion about the page's main topic. Each h1 represents a primary heading, and multiple h1s suggest multiple main topics, breaking the document hierarchy. Screen readers users won't know which h1 represents the actual page topic.
+Who it affects: Screen reader users who expect a single h1 to identify the page topic, users navigating by headings who see multiple "top level" items, SEO and search engines that look for a single main topic
+How to fix: Keep only one h1 that represents the main page topic. Change the other {count-1} h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
+
+================================================================================
+
+## ErrMultiplePageTitles
+
+Existing fixtures:
+  - Fixtures/Semantic/ErrMultiplePageTitles.html
+
+ID: ErrMultiplePageTitles
+Type: Error
+Impact: Low
+WCAG: 2.4.2
+Touchpoint: page
+Description: Multiple title elements found in document
+Why it matters: Multiple titles may confuse assistive technologies
+Who it affects: Screen reader users
+How to fix: Use only one title element per page
+
+================================================================================
+
+## ErrNativeVideoMissingControls
+
+Existing fixtures:
+  - Fixtures/Media/ErrNativeVideoMissingControls.html
+
+ID: ErrNativeVideoMissingControls
+Type: Error
+Impact: High
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: media
+Description: Native HTML5 video element missing controls attribute
+Why it matters: Without controls, users cannot play, pause, or adjust video playback.
+Who it affects: All users who need to control video playback, especially keyboard and screen reader users.
+How to fix: Add controls attribute to all video elements, or provide custom accessible controls.
+
+================================================================================
+
+## ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Navigation landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrNoAlt
+
+Existing fixtures:
+  - Fixtures/Images/ErrNoAlt.html
+
+ID: ErrNoAlt
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: Image missing alt attribute entirely
+Why it matters: Without alt attributes, screen readers cannot convey any information about images to users.
+Who it affects: Blind and low vision users using screen readers, users with images disabled.
+How to fix: Add alt attribute to all img elements; use alt="" for decorative images, descriptive text for informative images.
+
+================================================================================
+
+## ErrNoFocusIndicator
+
+Existing fixtures:
+  - Fixtures/Keyboard/ErrNoFocusIndicator.html
+
+ID: ErrNoFocusIndicator
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible (Level AA)
+Touchpoint: focus
+Description: Interactive element has no visible focus indicator when focused, making keyboard navigation impossible to track
+Why it matters: Focus indicators show keyboard users where they are on the page - without them, it's like navigating in the dark. Users cannot see which element will be activated when they press Enter or Space, making it impossible to navigate confidently. They might activate the wrong control, skip important content, or become completely lost on the page. This is especially critical for forms where activating the wrong button could submit incomplete data or cancel an operation.
+Who it affects: Keyboard users who need to see their current position, users with attention or memory disabilities who lose track of focus position, users with low vision who need clear visual indicators, users with motor disabilities who need to carefully track navigation, and any user who temporarily cannot use a mouse
+How to fix: Ensure all interactive elements have a visible focus indicator using CSS :focus styles. Add outline, border, background color, or box-shadow changes. Make focus indicators clearly visible with sufficient color contrast (3:1 minimum). Never use outline: none without providing an alternative indicator. Consider using :focus-visible for keyboard-only focus styles. Test by tabbing through your entire page to ensure every interactive element shows focus clearly.
+
+================================================================================
+
+## ErrNoH1
+
+Existing fixtures:
+  - Fixtures/Headings/ErrNoH1.html
+
+ID: ErrNoH1
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: headings
+Description: Page has no h1 heading
+Why it matters: H1 headings identify the main topic of a page and are crucial for document structure.
+Who it affects: Screen reader users who navigate by headings, users who rely on document outlines.
+How to fix: Add exactly one h1 heading that describes the main content or purpose of the page.
+
+================================================================================
+
+## ErrNoLabel
+
+Existing fixtures:
+  - Fixtures/Forms/ErrNoLabel.html
+
+ID: ErrNoLabel
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships (Level A), 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Form input has no associated label
+Why it matters: Without labels, users don't know what information to enter in form fields.
+Who it affects: Screen reader users who cannot identify form fields, users with cognitive disabilities.
+How to fix: Add label elements with for attribute, or use aria-label/aria-labelledby for each form input.
+
+================================================================================
+
+## ErrNoPageTitle
+
+Existing fixtures:
+  - Fixtures/Semantic/ErrNoPageTitle.html
+
+ID: ErrNoPageTitle
+Type: Error
+Impact: High
+WCAG: 2.4.2 Page Titled
+Touchpoint: page
+Description: Page has no <title> element in the document head
+Why it matters: The page title is the first thing screen reader users hear when a page loads, and it appears in browser tabs, bookmarks, and search results. Without a title, users cannot identify the page in their browser history, distinguish between multiple open tabs, or understand what page they're on when arriving from a link. Screen reader users announcing "Untitled document" have no context about where they are. This is like opening a book with no title on the cover or spine - you don't know what you're reading until you dive into the content. The title is critical for orientation and navigation.
+Who it affects: Screen reader users who rely on titles for page identification and orientation, users with cognitive disabilities who need clear page identification, users managing multiple browser tabs who need to distinguish between pages, users with memory issues using browser history to return to pages, and all users when bookmarking or sharing pages
+How to fix: Add a <title> element within the <head> section of your HTML. Create descriptive, unique titles that identify both the page content and the site. Use a consistent pattern like "Page Topic - Site Name". Put the unique page information first since it's most important. Keep titles concise (under 60 characters) but descriptive. Avoid generic titles like "Home" or "Page 1". The title should make sense when read out of context in a list of bookmarks or search results.
+
+================================================================================
+
+## ErrNoReducedMotionSupport
+
+Existing fixtures:
+  - Fixtures/Animation/ErrNoReducedMotionSupport.html
+
+ID: ErrNoReducedMotionSupport
+Type: Error
+Impact: High
+WCAG: 2.3.3 Animation from Interactions (Level AAA)
+Touchpoint: animation
+Description: Animations do not respect prefers-reduced-motion setting
+Why it matters: Users with vestibular disorders can experience nausea, dizziness, or seizures from motion.
+Who it affects: Users with vestibular disorders, users with motion sensitivity, users with ADHD.
+How to fix: Use CSS @media (prefers-reduced-motion: reduce) to disable or reduce animations, provide animation toggle controls.
+
+================================================================================
+
+## ErrNonInteractiveZeroTabindex
+
+Existing fixtures:
+  - Fixtures/Keyboard/ErrNonInteractiveZeroTabindex.html
+
+ID: ErrNonInteractiveZeroTabindex
+Type: Error
+Impact: Medium
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Non-interactive element has tabindex="0" making it keyboard focusable
+Why it matters: Adding keyboard focus to non-interactive elements confuses users and clutters keyboard navigation.
+Who it affects: Keyboard users encountering unexpected tab stops, screen reader users hearing non-actionable elements.
+How to fix: Remove tabindex="0" from non-interactive elements, only make elements focusable if they have functionality.
+
+================================================================================
+
+## ErrOrphanLabelWithNoId
+
+Existing fixtures:
+  - Fixtures/Forms/ErrOrphanLabelWithNoId.html
+
+ID: ErrOrphanLabelWithNoId
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Label element exists but has no for attribute
+Why it matters: Label is not programmatically associated with any field
+Who it affects: Screen reader users
+How to fix: Add for attribute pointing to field ID
+
+================================================================================
+
+## ErrOutlineIsNoneOnInteractiveElement
+
+Existing fixtures:
+  - Fixtures/Focus/ErrOutlineIsNoneOnInteractiveElement.html
+
+ID: ErrOutlineIsNoneOnInteractiveElement
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible
+Touchpoint: focus
+Description: Interactive element has CSS outline:none removing the default focus indicator
+Why it matters: People with mobility disabilities use keyboard or keyboard-alternate devices to navigate rather than a mouse. Visible focus indicators are essential as they perform the same function as a mouse cursor. Without focus indicators, users cannot tell where they are on the page or when interactive elements are focused. This makes keyboard navigation impossible and can completely prevent access to functionality.
+Who it affects: Sighted users with motor disabilities navigating with keyboard or keyboard-alternate devices, users who prefer keyboard navigation for efficiency, users with temporary injuries preventing mouse use, and users of assistive technologies that rely on keyboard navigation
+How to fix: Never use outline:none without providing an alternative visible focus indicator. The focus indicator must be clearly visible with at least 3:1 contrast ratio with the background, be at least 2 pixels thick, and ideally be offset from the element to maximize visibility. Consider using CSS :focus-visible for better control over when focus indicators appear.
+
+================================================================================
+
+## ErrPlaceholderAsLabel
+
+Existing fixtures:
+  - Fixtures/Forms/ErrPlaceholderAsLabel.html
+
+ID: ErrPlaceholderAsLabel
+Type: Error
+Impact: High
+WCAG: 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Placeholder attribute used as the only label for form field
+Why it matters: Placeholder text disappears when users start typing, leaving no persistent label for reference.
+Who it affects: Users with cognitive disabilities, users who need to review form data, screen reader users.
+How to fix: Add proper label elements or aria-label, use placeholder only for supplementary hints or examples.
+
+================================================================================
+
+## ErrPositiveTabindex
+
+Existing fixtures:
+  - Fixtures/Keyboard/ErrPositiveTabindex.html
+
+ID: ErrPositiveTabindex
+Type: Error
+Impact: High
+WCAG: 2.4.3 Focus Order
+Touchpoint: focus
+Description: Element uses a positive tabindex value (greater than 0)
+Why it matters: Positive tabindex values override the natural tab order of the page, creating an unpredictable navigation experience. When you use tabindex="1" or higher, that element jumps to the front of the tab order, regardless of where it appears visually. This breaks the expected top-to-bottom, left-to-right flow that keyboard users rely on. Users might tab from the header straight to a random form field in the middle of the page, then jump to the footer, then back to the navigation. This confusing order makes it easy to miss content, difficult to predict where focus will go next, and nearly impossible to maintain as the page evolves.
+Who it affects: Keyboard users who expect logical, predictable navigation order, screen reader users who rely on consistent focus flow, users with motor disabilities who need efficient keyboard navigation, users with cognitive disabilities who are confused by unpredictable focus movement, and developers maintaining the code who must manage complex tabindex values
+How to fix: Remove positive tabindex values and use only tabindex="0" (adds element to natural tab order) or tabindex="-1" (removes from tab order but allows programmatic focus). Let the DOM order determine tab order - if elements need to be reached in a different order, rearrange them in the HTML. If visual order must differ from DOM order for design reasons, consider using CSS Grid or Flexbox with the order property, but be cautious as this can still cause accessibility issues.
+
+================================================================================
+
+## ErrRedundantAlt
+
+Existing fixtures:
+  - Fixtures/Images/ErrRedundantAlt.html
+
+ID: ErrRedundantAlt
+Type: Error
+Impact: Low
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: Alt text contains redundant words like "image of" or "picture of"
+Why it matters: Screen readers already announce images as images, so these phrases create redundant announcements.
+Who it affects: Screen reader users who hear repetitive "image image of" announcements.
+How to fix: Remove "image of", "picture of", "graphic of" from alt text; describe the content directly.
+
+================================================================================
+
+## ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Region landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrSVGNoAccessibleName
+
+Existing fixtures:
+  - Fixtures/Images/ErrSVGNoAccessibleName.html
+
+ID: ErrSVGNoAccessibleName
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: SVG image lacks accessible name through title, aria-label, or aria-labelledby
+Why it matters: Without accessible names, SVG content is invisible to screen reader users.
+Who it affects: Blind and low vision users using screen readers.
+How to fix: Add <title> element with aria-labelledby, or use role="img" with aria-label for simple SVGs.
+
+================================================================================
+
+## ErrSkippedHeadingLevel
+
+Existing fixtures:
+  - Fixtures/Headings/ErrSkippedHeadingLevel.html
+
+ID: ErrSkippedHeadingLevel
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships
+Touchpoint: headings
+Description: Heading levels are not in sequential order - jumped from h{skippedFrom} to h{skippedTo}, skipping intermediate level(s)
+Why it matters: Heading levels create a hierarchical outline of your content, like nested bullet points. Jumping from h{skippedFrom} to h{skippedTo} breaks this logical structure. It's like having chapter {skippedFrom}, then jumping to section {skippedTo} without the intermediate section. Screen reader users navigating by headings will be confused about the relationship between sections - is the h{skippedTo} a subsection of something that's missing? This broken hierarchy makes it hard to understand how content is organized and can cause users to think content is missing or that they've accidentally skipped something.
+Who it affects: Screen reader users navigating by heading structure who rely on levels to understand content relationships, users with cognitive disabilities who need logical, predictable content organization, users of assistive technology that generates document outlines, and developers or content authors maintaining the page who need to understand the intended structure
+How to fix: Insert an h{expectedLevel} heading between the h{skippedFrom} and h{skippedTo}, or change the h{skippedTo} to h{expectedLevel} to maintain sequential order. After h{skippedFrom}, use h{expectedLevel} for the next level. Don't skip levels when going down the hierarchy. If you need a heading to look smaller visually, use CSS to style it rather than choosing a lower heading level. The heading level should reflect the content's logical structure, not its visual appearance.
+
+================================================================================
+
+## ErrSmallText
+
+Existing fixtures:
+  - Fixtures/Typography/ErrSmallText.html
+
+ID: ErrSmallText
+Type: Error
+Impact: Medium
+WCAG: 1.4.4 Resize text (Level AA)
+Touchpoint: typography
+Description: Text is too small to read comfortably (less than 12px)
+Why it matters: Small text is difficult to read, especially for users with low vision or on mobile devices.
+Who it affects: Users with low vision, aging users, mobile device users, users with reading disabilities.
+How to fix: Use minimum 14px (preferably 16px) for body text, ensure text can be zoomed to 200% without loss of functionality.
+
+================================================================================
+
+## ErrSvgImageNoLabel
+
+Existing fixtures:
+  - Fixtures/Images/ErrSvgImageNoLabel.html
+
+ID: ErrSvgImageNoLabel
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: Images
+Description: SVG image element lacks accessible text alternatives, making it invisible to screen reader users
+Why it matters: SVG images without proper labeling are completely inaccessible to screen reader users - they are either skipped entirely or announced as "graphic" with no indication of what they represent. Unlike HTML img elements that can use alt attributes, SVGs require different techniques for accessibility. Without proper labeling, users miss important visual information, icons, charts, logos, or interactive graphics that may be essential for understanding or using the page.
+Who it affects: Blind and low vision users using screen readers who cannot perceive any information about unlabeled SVG content, users with cognitive disabilities who benefit from text descriptions of complex graphics, keyboard users who may encounter interactive SVGs without understanding their purpose, and users of assistive technologies that need text alternatives for all visual content
+How to fix: For simple SVGs, add role="img" and aria-label with descriptive text. For complex SVGs, use <title> as the first child element and reference it with aria-labelledby. For decorative SVGs, use aria-hidden="true" to hide from assistive technologies. For inline SVGs containing text, ensure text is in actual text elements not paths. For interactive SVGs, provide appropriate ARIA labels for all interactive elements. Always test with screen readers to verify SVGs are properly announced.
+
+================================================================================
+
+## ErrTabOrderViolation
+
+Existing fixtures:
+  - Fixtures/Keyboard/ErrTabOrderViolation.html
+
+ID: ErrTabOrderViolation
+Type: Error
+Impact: High
+WCAG: 2.4.3 Focus Order (Level A)
+Touchpoint: keyboard_navigation
+Description: Tab order does not follow logical reading order
+Why it matters: Illogical tab order confuses users and makes interfaces difficult to navigate efficiently.
+Who it affects: Keyboard users, screen reader users, users with cognitive disabilities.
+How to fix: Ensure DOM order matches visual order, avoid positive tabindex values, test tab order manually.
+
+================================================================================
+
+## ErrTableNoColumnHeaders
+
+Existing fixtures:
+  - Fixtures/Tables/ErrTableNoColumnHeaders.html
+
+ID: ErrTableNoColumnHeaders
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: tables
+Description: Data table has no column headers (th elements)
+Why it matters: Without headers, screen reader users cannot understand what each column represents when navigating cells.
+Who it affects: Screen reader users navigating tables, users who need to understand data relationships.
+How to fix: Use <th> elements for column headers in first row, add scope="col" to clarify header relationships.
+
+================================================================================
+
+## ErrTextContrastAA
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/ErrTextContrastAA.html
+
+ID: ErrTextContrastAA
+Type: Error
+Impact: High
+WCAG: 1.4.3 Contrast (Minimum)
+Touchpoint: color
+Description: Text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This text with a contrast ratio of {ratio}:1 does not meet WCAG Level AA requirements. Normal text requires a minimum contrast ratio of 4.5:1 to pass Level AA. The foreground color ({fg}) against the background ({bg}) doesn't provide enough distinction for users with visual impairments.
+Who it affects: Users with low vision who need higher contrast to distinguish text, users with color blindness, older users experiencing age-related vision changes, and users viewing content in bright sunlight or on low-quality displays
+How to fix: Current contrast is {ratio}:1, but WCAG Level AA requires at least 4.5:1 for normal text ({fontSize}px). To fix, darken the foreground color from {fg} or lighten the background from {bg}. Consider using #595959 or darker on white background, or #FFFFFF on backgrounds darker than #767676.
+
+================================================================================
+
+## ErrTextContrastAAA
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/ErrTextContrastAAA.html
+
+ID: ErrTextContrastAAA
+Type: Error
+Impact: High
+WCAG: 1.4.6 Contrast (Enhanced)
+Touchpoint: color
+Description: Text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This text with a contrast ratio of {ratio}:1 does not meet WCAG Level AAA enhanced requirements. Normal text requires a minimum contrast ratio of 7:1 to pass Level AAA. The foreground color ({fg}) against the background ({bg}) doesn't provide optimal distinction for maximum accessibility.
+Who it affects: Users with moderate visual impairments, including those with low vision, color blindness, or contrast sensitivity who benefit from enhanced contrast for optimal readability
+How to fix: Current contrast is {ratio}:1, but WCAG Level AAA requires at least 7:1 for normal text ({fontSize}px). To fix, use high contrast combinations like #333333 or darker on white background, or white text on backgrounds darker than #565656.
+
+================================================================================
+
+## ErrTitleAsOnlyLabel
+
+Existing fixtures:
+  - Fixtures/Forms/ErrTitleAsOnlyLabel.html
+
+ID: ErrTitleAsOnlyLabel
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A), 1.3.1 Info and Relationships (Level A), 4.1.2 Name, Role, Value (Level A)
+Touchpoint: forms
+Description: Form element is using title attribute as its only accessible label, which is insufficient for accessibility
+Why it matters: When title is the only labeling mechanism for a form field, many users cannot determine what information to enter. Title attributes are not announced by screen readers when navigating forms in normal mode, don't appear on mobile devices, cannot be accessed by keyboard users, and disappear too quickly for many users to read. This makes the form field essentially unlabeled for a large portion of users, preventing them from completing forms successfully.
+Who it affects: Screen reader users who won't hear the field's purpose when navigating the form, mobile users who cannot see title tooltips at all, keyboard users who cannot hover to see the tooltip, users with motor disabilities who struggle with precise hovering, users with cognitive disabilities who need persistent labels as memory aids, and voice control users who cannot reference fields without visible labels
+How to fix: Add a proper visible <label> element associated with the form field using the 'for' attribute. If space is limited, use placeholder text in addition to (not instead of) a label. For complex layouts, consider using aria-labelledby to reference existing visible text. If you must use aria-label, ensure it's descriptive and consider adding visible text for sighted users. Never rely solely on title attributes for labeling form fields - they should only supplement proper labels, not replace them.
+
+================================================================================
+
+## ErrUnlabelledField
+
+Existing fixtures:
+  - Fixtures/Forms/ErrUnlabelledField.html
+
+ID: ErrUnlabelledField
+Type: Error
+Impact: High
+WCAG: 3.3.2 Labels or Instructions (Level A), 4.1.2 Name, Role, Value (Level A)
+Touchpoint: forms
+Description: Form input element lacks an accessible name through <label>, aria-label, aria-labelledby, or other labeling methods, leaving the field's purpose undefined for assistive technologies
+Why it matters: Without labels, users cannot determine what information to enter, leading to form errors, abandoned transactions, and inability to complete critical tasks. Screen readers announce only the field type like "edit" or "combo box" without context, forcing users to guess based on surrounding content that may not be programmatically associated. This creates barriers for independent form completion and may result in users submitting incorrect information or being unable to proceed.
+Who it affects: Blind and low vision users using screen readers who hear no field description when navigating forms, users with cognitive disabilities who need clear labels to understand what information is required, users with motor disabilities using voice control who cannot reference unlabeled fields by name, mobile users where placeholder text may disappear on focus, and users who rely on browser autofill features that depend on proper field labeling
+How to fix: Add explicit <label> elements with for attribute matching the input's id (preferred method), use aria-label for simple labels when visual text isn't needed, implement aria-labelledby to reference existing visible text, ensure placeholder text is not the only labeling method as it disappears on input, wrap inputs and label text together for implicit association, and verify all form controls including select elements, textareas, and custom widgets have accessible names
+
+================================================================================
+
+## ErrVideoIframeMissingTitle
+
+Existing fixtures:
+  - Fixtures/IFrames/ErrVideoIframeMissingTitle.html
+  - Fixtures/Media/ErrVideoIframeMissingTitle.html
+
+ID: ErrVideoIframeMissingTitle
+Type: Error
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: iframes
+Description: Video iframe lacks title attribute
+Why it matters: Without titles, screen reader users don't know what video content is embedded.
+Who it affects: Screen reader users who need to understand embedded content.
+How to fix: Add descriptive title attribute to video iframes describing the video content.
+
+================================================================================
+
+## InfoFieldLabelledUsingAriaLabel
+
+Existing fixtures:
+  - Fixtures/Forms/InfoFieldLabelledUsingAriaLabel.html
+
+ID: InfoFieldLabelledUsingAriaLabel
+Type: Info
+Impact: N/A
+WCAG: 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Field is labeled using aria-label="{found}", which is valid but may have usability considerations
+Why it matters: While aria-label="{found}" is a valid way to label this form field, it has limitations: the label "{found}" is not visible on screen which can confuse sighted users, voice control users cannot reference the field by the visible text "{found}", the label won't be automatically translated by browser translation tools, and users with cognitive disabilities benefit from visible labels as memory aids.
+Who it affects: Sighted users who can't see "{found}" as a label, voice control users who can't say "click {found}", users relying on browser translation, users with cognitive disabilities who benefit from persistent visible labels
+How to fix: Consider if a visible label showing "{found}" would better serve all users. If space permits, use a visible <label> element with the text "{found}". If aria-label must be used, ensure "{found}" is clear and descriptive. Consider adding visible helper text or placeholder text to provide visual context.
+
+================================================================================
+
+## InfoHeadingNearLengthLimit
+
+Existing fixtures:
+  - Fixtures/Headings/InfoHeadingNearLengthLimit.html
+
+ID: InfoHeadingNearLengthLimit
+Type: Info
+Impact: Low
+WCAG: 2.4.6 Headings and Labels (Level AA)
+Touchpoint: headings
+Description: Heading approaching recommended length limit
+Why it matters: Very long headings are difficult to scan and understand quickly.
+Who it affects: Users with cognitive disabilities, users scanning content.
+How to fix: Consider shortening headings to be more concise while maintaining clarity.
+
+================================================================================
+
+## InfoNoColorSchemeSupport
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/InfoNoColorSchemeSupport.html
+
+ID: InfoNoColorSchemeSupport
+Type: Info
+Impact: Low
+WCAG: 1.4.3 Contrast (Minimum) (Level AA)
+Touchpoint: colors_contrast
+Description: Site doesn't support OS color scheme preferences
+Why it matters: Supporting user color preferences improves readability and reduces eye strain.
+Who it affects: Users who prefer dark mode, users with light sensitivity.
+How to fix: Implement CSS prefers-color-scheme media query to support dark/light mode preferences.
+
+================================================================================
+
+## InfoNoContrastSupport
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/InfoNoContrastSupport.html
+
+ID: InfoNoContrastSupport
+Type: Info
+Impact: Low
+WCAG: 1.4.3 Contrast (Minimum) (Level AA)
+Touchpoint: colors_contrast
+Description: Site doesn't support high contrast mode
+Why it matters: High contrast mode helps users with low vision read content more easily.
+Who it affects: Users with low vision, users in bright lighting conditions.
+How to fix: Test site in high contrast mode, ensure it remains usable, consider high contrast stylesheet option.
+
+================================================================================
+
+## WarnAnchorTargetTabindex
+
+Existing fixtures:
+  - Fixtures/Links/WarnAnchorTargetTabindex.html
+
+ID: WarnAnchorTargetTabindex
+Type: Warning
+Impact: Low
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: links
+Description: Anchor target element has unnecessary tabindex
+Why it matters: Elements that are link targets don't need tabindex; adding it may create confusion.
+Who it affects: Keyboard users encountering unexpected tab stops.
+How to fix: Remove tabindex from elements that are only link targets, not interactive controls.
+
+================================================================================
+
+## WarnButtonGenericText
+
+Existing fixtures:
+  - Fixtures/Buttons/WarnButtonGenericText.html
+
+ID: WarnButtonGenericText
+Type: Warning
+Impact: Medium
+WCAG: 2.4.6 Headings and Labels
+Touchpoint: buttons
+Description: Button uses generic text like "Click here", "Submit", or "OK" without context
+Why it matters: Screen reader users often navigate by pulling up a list of all buttons on a page. Generic button text provides no information about what the button does when heard out of context. Users cannot determine the button's purpose without additional exploration, slowing navigation and potentially causing errors.
+Who it affects: Screen reader users navigating by buttons list, users with cognitive disabilities who need clear labels, and screen magnifier users who may not see surrounding context
+How to fix: Use descriptive button text that explains the action (e.g., "Submit registration form" instead of "Submit", "Download PDF report" instead of "Download"). The button text should make sense when read in isolation. If visual design constraints require short text, use aria-label to provide a more descriptive accessible name.
+
+================================================================================
+
+## WarnColorOnlyLink
+
+Existing fixtures:
+  - Fixtures/Links/WarnColorOnlyLink.html
+
+ID: WarnColorOnlyLink
+Type: Warning
+Impact: Medium
+WCAG: 1.4.1 Use of Color (Level A)
+Touchpoint: colors_contrast
+Description: Link distinguished only by color without underline or other indicator
+Why it matters: Users who cannot perceive color differences cannot identify links in text.
+Who it affects: Colorblind users, users with low vision, users of monochrome displays.
+How to fix: Add underlines to links, use other visual indicators beyond color, ensure 3:1 contrast with surrounding text.
+
+================================================================================
+
+## WarnColorRelatedStyleDefinedExplicitlyInElement
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/WarnColorRelatedStyleDefinedExplicitlyInElement.html
+
+ID: WarnColorRelatedStyleDefinedExplicitlyInElement
+Type: Warning
+Impact: Low
+WCAG: 1.4.3 Contrast (Minimum), 1.4.8 Visual Presentation
+Touchpoint: color
+Description: Color-related CSS properties found in inline style attributes on HTML elements
+Why it matters: Inline color styles bypass user stylesheets and browser extensions that help users with visual disabilities customize colors for better readability. Users who need high contrast, inverted colors, or specific color schemes cannot easily override inline styles. This also makes it difficult to implement dark mode, maintain consistent theming, or allow user color preferences.
+Who it affects: Users with low vision who need high contrast or specific color combinations, users with color blindness who need to adjust problematic color pairs, users with dyslexia who benefit from specific background colors, users with light sensitivity who need dark themes, and users who rely on browser extensions for color customization
+How to fix: Move color-related styles (color, background-color, border-color, etc.) to external CSS files using classes. This allows users to override styles with their own stylesheets, enables easier theme switching, improves maintainability, and supports user preference media queries like prefers-color-scheme. Use CSS custom properties (variables) for colors to make customization even easier.
+
+================================================================================
+
+## WarnColorRelatedStyleDefinedExplicitlyInStyleTag
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/WarnColorRelatedStyleDefinedExplicitlyInStyleTag.html
+
+ID: WarnColorRelatedStyleDefinedExplicitlyInStyleTag
+Type: Warning
+Impact: Low
+WCAG: 1.4.3 Contrast (Minimum), 1.4.8 Visual Presentation
+Touchpoint: color
+Description: Color-related CSS found in <style> tags within the HTML document instead of external stylesheets
+Why it matters: Embedded styles in <style> tags are harder for users to override than external stylesheets and may not be cached efficiently. Users with visual disabilities who need custom color schemes must use more aggressive CSS overrides. This approach also makes it difficult to maintain consistent theming across pages and prevents users from disabling styles entirely if needed.
+Who it affects: Users with low vision requiring custom color schemes, users with photosensitivity needing to modify bright colors, users with color blindness who need to adjust color combinations, and users who benefit from consistent, predictable styling across pages
+How to fix: Move color styles to external CSS files linked with <link> tags. Organize colors using CSS custom properties for easy theming. Implement user preference support with @media (prefers-color-scheme) and similar queries. Consider providing theme switcher functionality. Ensure your external stylesheets are properly cached for performance.
+
+================================================================================
+
+## WarnComplementaryLandmarkHasNoLabel
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnComplementaryLandmarkHasNoLabel.html
+
+ID: WarnComplementaryLandmarkHasNoLabel
+Type: Warning
+Impact: Low
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Complementary landmark lacks a label
+Why it matters: Hard to distinguish multiple complementary sections
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby to identify the purpose
+
+================================================================================
+
+## WarnContentInfoLandmarkHasNoLabel
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnContentInfoLandmarkHasNoLabel.html
+
+ID: WarnContentInfoLandmarkHasNoLabel
+Type: Warning
+Impact: Low
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Contentinfo landmark lacks a label
+Why it matters: May be harder to identify purpose
+Who it affects: Screen reader users
+How to fix: Add descriptive label if multiple contentinfo exist
+
+================================================================================
+
+## WarnFieldLabelledByElementThatIsNotALabel
+
+Existing fixtures:
+  - Fixtures/Forms/WarnFieldLabelledByElementThatIsNotALabel.html
+
+ID: WarnFieldLabelledByElementThatIsNotALabel
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Field labeled by element '{found}' that is not semantically a label
+Why it matters: The element with ID '{found}' is being used as a label but is not a <label> element. While this can work, non-label elements may not convey proper semantic meaning or behave as users expect.
+Who it affects: Screen reader users who may not receive proper label semantics
+How to fix: Consider using a proper <label> element, or ensure the element '{found}' contains appropriate descriptive text for the field
+
+================================================================================
+
+## WarnFieldLabelledByMultipleElements
+
+Existing fixtures:
+  - Fixtures/Forms/WarnFieldLabelledByMultipleElements.html
+
+ID: WarnFieldLabelledByMultipleElements
+Type: Warning
+Impact: Low
+WCAG: 3.3.2
+Touchpoint: forms
+Description: Field is labeled by {count} elements via aria-labelledby
+Why it matters: When {count} elements label a field, they will be concatenated together. The order and combination may not make sense or could be confusing when read as a single label.
+Who it affects: Screen reader users who hear all {count} labels concatenated together
+How to fix: Review the {count} labeling elements to ensure they make sense when read together in order. Consider if a single, clear label would be better.
+
+================================================================================
+
+## WarnFormHasNoLabel
+
+Existing fixtures:
+  - Fixtures/Forms/WarnFormHasNoLabel.html
+
+ID: WarnFormHasNoLabel
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
+Touchpoint: forms
+Description: Form element has no accessible name to describe its purpose
+Why it matters: When a form lacks an accessible name, screen reader users hear only "form" without knowing what the form does - is it a search form, login form, contact form, or something else? Users navigating by landmarks or forms need to understand each form's purpose to decide whether to interact with it. This is especially important on pages with multiple forms. Without proper labeling, users might fill out the wrong form, skip important forms, or waste time exploring forms to understand their purpose.
+Who it affects: Screen reader users navigating by forms or landmarks who need to identify form purposes, users with cognitive disabilities who need clear labels to understand what each form does, and keyboard users who tab through forms and need context about what they're interacting with
+How to fix: Add an accessible name to the form element using aria-label (e.g., aria-label="Contact form") or aria-labelledby to reference a visible heading. If the form has a visible heading immediately before it, use aria-labelledby to point to that heading's ID. For search forms, "Search" is usually sufficient. The label should clearly indicate the form's purpose and be unique if there are multiple forms on the page.
+
+================================================================================
+
+## WarnFormHasNoLabelSoIsNotLandmark
+
+Existing fixtures:
+  - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark.html
+
+ID: WarnFormHasNoLabelSoIsNotLandmark
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Form element lacks label so is not exposed as landmark
+Why it matters: Forms without accessible names are not landmarks
+Who it affects: Screen reader users navigating by landmarks
+How to fix: Add aria-label or aria-labelledby to make it a landmark
+
+================================================================================
+
+## WarnFormLandmarkAccessibleNameUsesForm
+
+Existing fixtures:
+  - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm.html
+
+ID: WarnFormLandmarkAccessibleNameUsesForm
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: forms
+Description: Form landmark uses generic term "form" in label
+Why it matters: Generic labels don't describe purpose
+Who it affects: Screen reader users
+How to fix: Use descriptive labels like "Contact form" or "Search form"
+
+================================================================================
+
+## WarnGenericAccessibleName
+
+Existing fixtures:
+  - Fixtures/Accessible Names/WarnGenericAccessibleName.html
+
+ID: WarnGenericAccessibleName
+Type: Warning
+Impact: Medium
+WCAG: 2.4.6 Headings and Labels (Level AA)
+Touchpoint: accessible_names
+Description: Element has generic accessible name that doesn't describe its purpose
+Why it matters: Generic names like "button" or "link" don't help users understand element purpose.
+Who it affects: Screen reader users, voice control users.
+How to fix: Provide descriptive accessible names that explain the element's specific purpose.
+
+================================================================================
+
+## WarnGenericDocumentLinkText
+
+Existing fixtures:
+  - Fixtures/Links/WarnGenericDocumentLinkText.html
+
+ID: WarnGenericDocumentLinkText
+Type: Warning
+Impact: Medium
+WCAG: 2.4.4 Link Purpose (In Context) (Level A)
+Touchpoint: documents
+Description: Document link uses generic text like "PDF" without describing content
+Why it matters: Users need to know what document they're downloading, not just its format.
+Who it affects: All users, especially screen reader users reviewing links.
+How to fix: Include document title and format in link text (e.g., "Annual Report 2023 (PDF, 2MB)").
+
+================================================================================
+
+## WarnGenericLinkNoImprovement
+
+Existing fixtures:
+  - Fixtures/Links/WarnGenericLinkNoImprovement.html
+
+ID: WarnGenericLinkNoImprovement
+Type: Warning
+Impact: Medium
+WCAG: 2.4.4 Link Purpose (In Context) (Level A)
+Touchpoint: links
+Description: Generic link text with no surrounding context to clarify purpose
+Why it matters: Generic links without context force users to explore further to understand destinations.
+Who it affects: Screen reader users navigating by links, users with cognitive disabilities.
+How to fix: Rewrite link text to be descriptive, or ensure surrounding text provides clear context.
+
+================================================================================
+
+## WarnHeadingInsideDisplayNone
+
+Existing fixtures:
+  - Fixtures/Headings/WarnHeadingInsideDisplayNone.html
+
+ID: WarnHeadingInsideDisplayNone
+Type: Warning
+Impact: Low
+WCAG: 1.3.1
+Touchpoint: headings
+Description: Heading is hidden with display:none
+Why it matters: Hidden headings may affect document structure
+Who it affects: Screen reader users (varies by implementation)
+How to fix: Remove unused headings or make them visible
+
+================================================================================
+
+## WarnHeadingOver60CharsLong
+
+Existing fixtures:
+  - Fixtures/Headings/WarnHeadingOver60CharsLong.html
+
+ID: WarnHeadingOver60CharsLong
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: headings
+Description: Heading text is {length} characters long: "{headingText}"
+Why it matters: This heading has {length} characters. Long headings are harder to scan quickly, more difficult to understand at a glance, and can overwhelm users. Screen reader users hearing the full heading text may struggle to grasp the main point. Long headings also cause layout issues on mobile devices and in navigation menus.
+Who it affects: Users with cognitive disabilities who benefit from concise, clear headings, screen reader users who must listen to the entire heading, users scanning the page quickly for information, and mobile users with limited screen space
+How to fix: Shorten the heading to under 60 characters while preserving its meaning. Current: "{headingText}" - Consider breaking into a shorter heading with explanatory text below, or focus on the key message. Use descriptive but concise language.
+
+================================================================================
+
+## WarnHighTabindex
+
+Existing fixtures:
+  - Fixtures/Keyboard/WarnHighTabindex.html
+
+ID: WarnHighTabindex
+Type: Warning
+Impact: Medium
+WCAG: 2.4.3 Focus Order (Level A)
+Touchpoint: keyboard_navigation
+Description: Very high tabindex value used (over 10)
+Why it matters: High tabindex values indicate attempts to control tab order that likely create confusing navigation.
+Who it affects: Keyboard users experiencing unexpected tab order.
+How to fix: Remove positive tabindex values, restructure DOM for natural tab order.
+
+================================================================================
+
+## WarnItalicText
+
+Existing fixtures:
+  - Fixtures/Typography/WarnItalicText.html
+
+ID: WarnItalicText
+Type: Warning
+Impact: Low
+WCAG: 1.4.8 Visual Presentation (Level AAA)
+Touchpoint: typography
+Description: Italic text used extensively which can reduce readability
+Why it matters: Italic text is harder to read, especially for users with dyslexia.
+Who it affects: Users with dyslexia, users with low vision.
+How to fix: Limit italic text to short emphasis, use bold for stronger emphasis.
+
+================================================================================
+
+## WarnLinkLooksLikeButton
+
+Existing fixtures:
+  - Fixtures/Links/WarnLinkLooksLikeButton.html
+
+ID: WarnLinkLooksLikeButton
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships
+Touchpoint: links
+Description: Link is styled to look like a button but uses anchor element
+Why it matters: Links and buttons have different behaviors - links navigate to new locations while buttons trigger actions. When links look like buttons, users may have incorrect expectations about what will happen. Keyboard users expect Space key to activate buttons but it doesn't work on links.
+Who it affects: Keyboard users who expect button behavior, screen reader users who hear it announced as a link but see it as a button, and users with cognitive disabilities who rely on consistent interactions
+How to fix: If the element performs an action (submit form, open dialog), use a button element. If it navigates to a new URL, keep it as a link but consider whether button styling is appropriate. Ensure keyboard behavior matches the element type.
+
+================================================================================
+
+## WarnLongAnimation
+
+Existing fixtures:
+  - Fixtures/Animation/WarnLongAnimation.html
+
+ID: WarnLongAnimation
+Type: Warning
+Impact: Medium
+WCAG: 2.2.2 Pause, Stop, Hide (Level A)
+Touchpoint: animation
+Description: Animation duration exceeds 5 seconds
+Why it matters: Long animations can be distracting and may need user controls.
+Who it affects: Users with attention disorders, users with cognitive disabilities.
+How to fix: Shorten animation duration or provide pause/stop controls.
+
+================================================================================
+
+## WarnMissingAriaLabelledby
+
+Existing fixtures:
+  - Fixtures/Forms/WarnMissingAriaLabelledby.html
+
+ID: WarnMissingAriaLabelledby
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: forms
+Description: Form field could benefit from aria-labelledby for complex labeling
+Why it matters: Complex forms may need multiple labels or descriptions for clarity.
+Who it affects: Screen reader users needing additional context.
+How to fix: Use aria-labelledby to associate multiple labels or aria-describedby for help text.
+
+================================================================================
+
+## WarnMissingAriaModal
+
+Existing fixtures:
+  - Fixtures/Dialogs and Modals/WarnMissingAriaModal.html
+
+ID: WarnMissingAriaModal
+Type: Warning
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: aria
+Description: Modal dialog missing aria-modal="true"
+Why it matters: Without aria-modal, screen readers may not properly constrain navigation to the modal.
+Who it affects: Screen reader users who may navigate outside the modal accidentally.
+How to fix: Add aria-modal="true" to modal containers along with proper focus management.
+
+================================================================================
+
+## WarnMissingDocumentMetadata
+
+Existing fixtures:
+  - Fixtures/Documents/WarnMissingDocumentMetadata.html
+
+ID: WarnMissingDocumentMetadata
+Type: Warning
+Impact: Low
+WCAG: 2.4.2 Page Titled (Level A)
+Touchpoint: documents
+Description: Document links missing metadata about file type or size
+Why it matters: Users need to know document details before downloading.
+Who it affects: Users on slow connections, mobile users with data limits.
+How to fix: Include file type and size in link text or adjacent text.
+
+================================================================================
+
+## WarnMissingNegativeTabindex
+
+Existing fixtures:
+  - Fixtures/Keyboard/WarnMissingNegativeTabindex.html
+
+ID: WarnMissingNegativeTabindex
+Type: Warning
+Impact: Low
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Element that should be removed from tab order lacks negative tabindex
+Why it matters: Some elements need to be programmatically focusable but not in tab order.
+Who it affects: Keyboard users encountering unnecessary tab stops.
+How to fix: Add tabindex="-1" to elements that should be focusable by script but not keyboard.
+
+================================================================================
+
+## WarnModalMissingAriaModal
+
+Existing fixtures:
+  - Fixtures/Dialogs and Modals/WarnModalMissingAriaModal.html
+
+ID: WarnModalMissingAriaModal
+Type: Warning
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: dialogs
+Description: Modal dialog missing aria-modal attribute
+Why it matters: aria-modal helps assistive technologies understand modal boundaries.
+Who it affects: Screen reader users navigating modal content.
+How to fix: Add aria-modal="true" to modal containers.
+
+================================================================================
+
+## WarnModalNoFocusableElements
+
+Existing fixtures:
+  - Fixtures/Keyboard/WarnModalNoFocusableElements.html
+
+ID: WarnModalNoFocusableElements
+Type: Warning
+Impact: High
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Modal has no focusable elements
+Why it matters: Modals without focusable elements trap keyboard focus with no actions available.
+Who it affects: Keyboard users unable to interact with modal.
+How to fix: Ensure modals contain at least one focusable element (close button, form fields, etc.).
+
+================================================================================
+
+## WarnNegativeTabindex
+
+Existing fixtures:
+  - Fixtures/Keyboard/WarnNegativeTabindex.html
+
+ID: WarnNegativeTabindex
+Type: Warning
+Impact: Low
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Interactive element has negative tabindex
+Why it matters: Negative tabindex removes elements from keyboard navigation, potentially making them inaccessible.
+Who it affects: Keyboard users who cannot reach the element.
+How to fix: Use tabindex="0" for keyboard-accessible elements, only use -1 for programmatic focus.
+
+================================================================================
+
+## WarnSVGNoRole
+
+Existing fixtures:
+  - Fixtures/Images/WarnSVGNoRole.html
+
+ID: WarnSVGNoRole
+Type: Warning
+Impact: Low
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: SVG missing appropriate role attribute
+Why it matters: SVGs need proper roles to be correctly interpreted by assistive technologies.
+Who it affects: Screen reader users.
+How to fix: Add role="img" for informative SVGs, use aria-hidden="true" for decorative ones.
+
+================================================================================
+
+## WarnSvgPositiveTabindex
+
+Existing fixtures:
+  - Fixtures/Images/WarnSvgPositiveTabindex.html
+
+ID: WarnSvgPositiveTabindex
+Type: Warning
+Impact: Medium
+WCAG: 2.4.3 Focus Order (Level A)
+Touchpoint: images
+Description: SVG element has positive tabindex disrupting tab order
+Why it matters: SVGs typically shouldn't be in tab order unless interactive.
+Who it affects: Keyboard users experiencing confusing navigation.
+How to fix: Remove tabindex from non-interactive SVGs, use tabindex="0" only for interactive SVGs.
+
+================================================================================
+
+## WarnVisualHierarchy
+
+Existing fixtures:
+  - Fixtures/Headings/WarnVisualHierarchy.html
+
+ID: WarnVisualHierarchy
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: semantic_structure
+Description: Visual hierarchy doesn't match semantic structure
+Why it matters: Mismatch between visual and semantic structure confuses understanding.
+Who it affects: Screen reader users, users with cognitive disabilities.
+How to fix: Ensure visual presentation matches HTML semantic structure.
+
+================================================================================
+
+## DiscoFoundSvgImage
+
+Existing fixtures:
+  - Fixtures/Images/DiscoFoundSvgImage.html
+
+ID: DiscoFoundSvgImage
+Type: Discovery
+Impact: N/A
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: Images
+Description: SVG element with role="img" detected that requires manual review to verify appropriate text alternatives are provided
+Why it matters: SVG elements with role="img" are explicitly marked as images and treated as a single graphic by assistive technologies, requiring appropriate text alternatives. While the role="img" indicates developer awareness of accessibility needs, manual review is needed to verify that any aria-label, aria-labelledby, or internal <title> elements adequately describe the image's content or function, and that the description is appropriate for the SVG's context and purpose.
+Who it affects: Blind and low vision users using screen readers who depend on text alternatives to understand image content.
+How to fix: Verify the SVG with role="img" has appropriate accessible names through aria-label or aria-labelledby attributes, ensure any <title> or <desc> elements inside the SVG are properly referenced if used for labeling, confirm decorative SVGs are hidden with aria-hidden="true" rather than given role="img", check that the text alternative accurately describes the SVG's meaning in context, and test with screen readers to ensure the image is announced with meaningful information
+
+================================================================================
+
+## DiscoHeadingWithID
+
+Existing fixtures:
+  - Fixtures/Headings/DiscoHeadingWithID.html
+
+ID: DiscoHeadingWithID
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: headings
+Description: Heading element has an ID attribute that may be used for in-page navigation
+Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
+Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
+How to fix: Ensure that the ID attribute is referenced and its use is valid.
+
+================================================================================
+
+## WarnVisualHierarchy
+
+Existing fixtures:
+  - Fixtures/Headings/WarnVisualHierarchy.html
+
+ID: WarnVisualHierarchy
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: semantic_structure
+Description: Visual hierarchy doesn't match semantic structure
+Why it matters: Mismatch between visual and semantic structure confuses understanding.
+Who it affects: Screen reader users, users with cognitive disabilities.
+How to fix: Ensure visual presentation matches HTML semantic structure.
+
+================================================================================
+
+## ErrAriaLabelMayNotBeFoundByVoiceControl
+
+Existing fixtures:
+  - Fixtures/Forms/ErrAriaLabelMayNotBeFoundByVoiceControl.html
+
+ID: ErrAriaLabelMayNotBeFoundByVoiceControl
+Type: Error
+Impact: Medium
+WCAG: 2.5.3
+Touchpoint: aria
+Description: aria-label doesn't match visible text
+Why it matters: Voice control users can't activate element
+Who it affects: Voice control users
+How to fix: Ensure aria-label includes visible text
+
+================================================================================
+
+## ErrColorStyleDefinedExplicitlyInElement
+
+Existing fixtures:
+  - Fixtures/Colors and Contrast/ErrColorStyleDefinedExplicitlyInElement.html
+
+ID: ErrColorStyleDefinedExplicitlyInElement
+Type: Error
+Impact: Low
+WCAG: 1.4.3
+Touchpoint: color
+Description: Color-related styles defined inline
+Why it matters: Harder to maintain consistent color scheme
+Who it affects: Users needing high contrast modes
+How to fix: Use CSS classes instead of inline styles
+
+================================================================================
+
+## ErrEmptyPageTitle
+
+Existing fixtures:
+  - Fixtures/Semantic/ErrEmptyPageTitle.html
+
+ID: ErrEmptyPageTitle
+Type: Error
+Impact: High
+WCAG: 2.4.2
+Touchpoint: page
+Description: Page title element is empty
+Why it matters: Empty titles provide no information about page content
+Who it affects: Screen reader users, users with cognitive disabilities
+How to fix: Add descriptive text to title element
+
+================================================================================
+
+## DiscoFoundInlineSvg
+
+Existing fixtures:
+  - Fixtures/Images/DiscoFoundInlineSvg.html
+
+ID: DiscoFoundInlineSvg
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: svg
+Description: Inline SVG element detected that requires manual review to determine appropriate accessibility implementation based on its purpose and complexity
+Why it matters: SVG elements serve diverse purposes from simple icons to complex interactive visualizations, each requiring different accessibility approaches. A decorative border needs different treatment than a data chart, which differs from an interactive map or scientific simulation. Automated tools cannot determine SVG purpose, whether it's decorative or informative, static or interactive, or if existing accessibility features adequately support user needs.
+Who it affects: Blind and low vision users using screen readers who need text alternatives for graphics or keyboard access to interactive elements, users with motor disabilities who require keyboard navigation for interactive SVG controls, users with cognitive disabilities who benefit from clear labeling and predictable interaction patterns.
+How to fix: Evaluate the SVG's purpose and complexity - for simple images ensure there is a role="img", use <title> for alt text with aria-labelledby on the SVG referencing an ID on the <title> (a workaround for some browsers), for decorative graphics use aria-hidden="true", for data visualizations provide <title> and <desc> plus consider adjacent detailed text alternatives, for interactive content ensure all controls are keyboard accessible with proper ARIA labels and focus management, for complex simulations provide instructions and state change announcements, and test with screen readers to verify the experience matches visual functionality.
+
+================================================================================
+

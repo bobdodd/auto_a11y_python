@@ -1,0 +1,217 @@
+# FOCUS Touchpoint
+
+Total issues: 13
+
+================================================================================
+
+## AI_ErrMissingFocusIndicator
+
+✨ New fixtures needed
+
+ID: AI_ErrMissingFocusIndicator
+Type: Error
+Impact: High
+WCAG: 2.4.7
+Touchpoint: focus
+Description: Interactive element lacks visible focus indicator
+Why it matters: Users can't see which element has keyboard focus
+Who it affects: Keyboard users, users with attention or memory issues
+How to fix: Add CSS :focus styles with visible outline, border, or background change
+
+================================================================================
+
+## ErrInvalidTabindex
+
+✨ New fixtures needed
+
+ID: ErrInvalidTabindex
+Type: Error
+Impact: High
+WCAG: 2.4.3 Focus Order (Level A)
+Touchpoint: focus
+Description: Element has a tabindex attribute with an invalid value (non-numeric or decimal)
+Why it matters: Invalid tabindex values are ignored by browsers, potentially making interactive elements unreachable by keyboard or creating unpredictable focus behavior. This can completely block keyboard users from accessing functionality. The element might be skipped during tabbing, receive focus unexpectedly, or behave differently across browsers.
+Who it affects: Keyboard users who cannot reach or interact with the element, screen reader users who may miss important interactive controls, users with motor disabilities relying on keyboard navigation, and users who cannot use a mouse
+How to fix: Use only valid integer values for tabindex: "0" to include in natural tab order, "-1" to remove from tab order but allow programmatic focus, or remove the tabindex attribute entirely if the element shouldn't be focusable. Never use decimal values (1.5), text ("first"), or empty values (tabindex="").
+
+================================================================================
+
+## ErrNegativeTabindex
+
+✨ New fixtures needed
+
+ID: ErrNegativeTabindex
+Type: Error
+Impact: Medium
+WCAG: 2.4.3
+Touchpoint: focus
+Description: Negative tabindex on interactive element
+Why it matters: Element removed from tab order
+Who it affects: Keyboard users
+How to fix: Use tabindex="0" for interactive elements
+
+================================================================================
+
+## ErrNoFocusIndicator
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/ErrNoFocusIndicator.html
+
+ID: ErrNoFocusIndicator
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible (Level AA)
+Touchpoint: focus
+Description: Interactive element has no visible focus indicator when focused, making keyboard navigation impossible to track
+Why it matters: Focus indicators show keyboard users where they are on the page - without them, it's like navigating in the dark. Users cannot see which element will be activated when they press Enter or Space, making it impossible to navigate confidently. They might activate the wrong control, skip important content, or become completely lost on the page. This is especially critical for forms where activating the wrong button could submit incomplete data or cancel an operation.
+Who it affects: Keyboard users who need to see their current position, users with attention or memory disabilities who lose track of focus position, users with low vision who need clear visual indicators, users with motor disabilities who need to carefully track navigation, and any user who temporarily cannot use a mouse
+How to fix: Ensure all interactive elements have a visible focus indicator using CSS :focus styles. Add outline, border, background color, or box-shadow changes. Make focus indicators clearly visible with sufficient color contrast (3:1 minimum). Never use outline: none without providing an alternative indicator. Consider using :focus-visible for keyboard-only focus styles. Test by tabbing through your entire page to ensure every interactive element shows focus clearly.
+
+================================================================================
+
+## ErrNoOutlineOffsetDefined
+
+✨ New fixtures needed
+
+ID: ErrNoOutlineOffsetDefined
+Type: Error
+Impact: Medium
+WCAG: 2.4.7
+Touchpoint: focus
+Description: No outline offset defined for focus
+Why it matters: Focus indicator may be hard to see
+Who it affects: Keyboard users
+How to fix: Add outline-offset for better visibility
+
+================================================================================
+
+## ErrOutlineIsNoneOnInteractiveElement
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Focus/ErrOutlineIsNoneOnInteractiveElement.html
+
+ID: ErrOutlineIsNoneOnInteractiveElement
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible
+Touchpoint: focus
+Description: Interactive element has CSS outline:none removing the default focus indicator
+Why it matters: People with mobility disabilities use keyboard or keyboard-alternate devices to navigate rather than a mouse. Visible focus indicators are essential as they perform the same function as a mouse cursor. Without focus indicators, users cannot tell where they are on the page or when interactive elements are focused. This makes keyboard navigation impossible and can completely prevent access to functionality.
+Who it affects: Sighted users with motor disabilities navigating with keyboard or keyboard-alternate devices, users who prefer keyboard navigation for efficiency, users with temporary injuries preventing mouse use, and users of assistive technologies that rely on keyboard navigation
+How to fix: Never use outline:none without providing an alternative visible focus indicator. The focus indicator must be clearly visible with at least 3:1 contrast ratio with the background, be at least 2 pixels thick, and ideally be offset from the element to maximize visibility. Consider using CSS :focus-visible for better control over when focus indicators appear.
+
+================================================================================
+
+## ErrPositiveTabindex
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/ErrPositiveTabindex.html
+
+ID: ErrPositiveTabindex
+Type: Error
+Impact: High
+WCAG: 2.4.3 Focus Order
+Touchpoint: focus
+Description: Element uses a positive tabindex value (greater than 0)
+Why it matters: Positive tabindex values override the natural tab order of the page, creating an unpredictable navigation experience. When you use tabindex="1" or higher, that element jumps to the front of the tab order, regardless of where it appears visually. This breaks the expected top-to-bottom, left-to-right flow that keyboard users rely on. Users might tab from the header straight to a random form field in the middle of the page, then jump to the footer, then back to the navigation. This confusing order makes it easy to miss content, difficult to predict where focus will go next, and nearly impossible to maintain as the page evolves.
+Who it affects: Keyboard users who expect logical, predictable navigation order, screen reader users who rely on consistent focus flow, users with motor disabilities who need efficient keyboard navigation, users with cognitive disabilities who are confused by unpredictable focus movement, and developers maintaining the code who must manage complex tabindex values
+How to fix: Remove positive tabindex values and use only tabindex="0" (adds element to natural tab order) or tabindex="-1" (removes from tab order but allows programmatic focus). Let the DOM order determine tab order - if elements need to be reached in a different order, rearrange them in the HTML. If visual order must differ from DOM order for design reasons, consider using CSS Grid or Flexbox with the order property, but be cautious as this can still cause accessibility issues.
+
+================================================================================
+
+## ErrTTabindexOnNonInteractiveElement
+
+✨ New fixtures needed
+
+ID: ErrTTabindexOnNonInteractiveElement
+Type: Error
+Impact: Medium
+WCAG: 2.4.3
+Touchpoint: focus
+Description: Tabindex attribute on non-interactive element
+Why it matters: Non-interactive elements should not be in tab order unless they serve a specific purpose
+Who it affects: Keyboard users
+How to fix: Remove tabindex from non-interactive elements or make them properly interactive
+
+================================================================================
+
+## ErrTabindexOfZeroOnNonInteractiveElement
+
+✨ New fixtures needed
+
+ID: ErrTabindexOfZeroOnNonInteractiveElement
+Type: Error
+Impact: Low
+WCAG: 2.4.3
+Touchpoint: focus
+Description: tabindex="0" on non-interactive element
+Why it matters: Non-interactive elements in tab order
+Who it affects: Keyboard users
+How to fix: Remove tabindex from non-interactive elements
+
+================================================================================
+
+## ErrTransparentFocusIndicator
+
+✨ New fixtures needed
+
+ID: ErrTransparentFocusIndicator
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible (Level AA)
+Touchpoint: focus
+Description: Focus indicator uses transparent or nearly transparent color, making it effectively invisible
+Why it matters: A transparent focus indicator is functionally the same as no focus indicator - users cannot see where keyboard focus is located. This might occur from using rgba with 0 or very low alpha values, setting outline-color to transparent, or using colors that match the background. The focus indicator exists technically but provides no practical benefit to users trying to navigate.
+Who it affects: Keyboard users who need visible focus indicators to navigate, users with low vision who need clear visual cues, users with color blindness who may already struggle with certain color combinations, and users with cognitive disabilities who need obvious focus indicators
+How to fix: Use opaque colors with sufficient contrast for focus indicators. Replace transparent outlines with visible colors, ensure at least 3:1 contrast ratio between focus indicator and background, use solid colors or high alpha values (0.7 or higher) for rgba colors. Test focus indicators on different backgrounds across your site. Consider using box-shadow or background changes as additional focus indicators.
+
+================================================================================
+
+## ErrWrongTabindexForInteractiveElement
+
+✨ New fixtures needed
+
+ID: ErrWrongTabindexForInteractiveElement
+Type: Error
+Impact: Medium
+WCAG: 2.4.3
+Touchpoint: focus
+Description: Inappropriate tabindex on interactive element
+Why it matters: Tab order doesn't match visual order
+Who it affects: Keyboard users
+How to fix: Let natural tab order work, avoid tabindex
+
+================================================================================
+
+## WarnZeroOutlineOffset
+
+✨ New fixtures needed
+
+ID: WarnZeroOutlineOffset
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7
+Touchpoint: focus
+Description: Outline offset is set to zero
+Why it matters: Focus indicator touches element edge
+Who it affects: Keyboard users with low vision
+How to fix: Use positive outline-offset value
+
+================================================================================
+
+## AI_ErrMissingFocusIndicator
+
+✨ New fixtures needed
+
+ID: AI_ErrMissingFocusIndicator
+Type: Error
+Impact: High
+WCAG: 2.4.7
+Touchpoint: focus
+Description: Interactive element lacks visible focus indicator
+Why it matters: Users can't see which element has keyboard focus
+Who it affects: Keyboard users, users with attention or memory issues
+How to fix: Add CSS :focus styles with visible outline, border, or background change
+
+================================================================================
+

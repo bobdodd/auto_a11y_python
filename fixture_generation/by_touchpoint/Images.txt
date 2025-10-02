@@ -1,0 +1,108 @@
+# IMAGES Touchpoint
+
+Total issues: 6
+
+================================================================================
+
+## ErrAltTooLong
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Images/ErrAltTooLong.html
+
+ID: ErrAltTooLong
+Type: Error
+Impact: Medium
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: Alt text exceeds 150 characters, making it difficult for screen reader users to process
+Why it matters: Excessively long alt text creates a poor listening experience and may indicate that complex information should be presented differently.
+Who it affects: Screen reader users who must listen to lengthy descriptions, users with cognitive disabilities who may struggle with verbose content.
+How to fix: Limit alt text to 150 characters or less, use longdesc or aria-describedby for complex images, provide detailed descriptions in adjacent text content.
+
+================================================================================
+
+## ErrNoAlt
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Images/ErrNoAlt.html
+
+ID: ErrNoAlt
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: Image missing alt attribute entirely
+Why it matters: Without alt attributes, screen readers cannot convey any information about images to users.
+Who it affects: Blind and low vision users using screen readers, users with images disabled.
+How to fix: Add alt attribute to all img elements; use alt="" for decorative images, descriptive text for informative images.
+
+================================================================================
+
+## ErrRedundantAlt
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Images/ErrRedundantAlt.html
+
+ID: ErrRedundantAlt
+Type: Error
+Impact: Low
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: Alt text contains redundant words like "image of" or "picture of"
+Why it matters: Screen readers already announce images as images, so these phrases create redundant announcements.
+Who it affects: Screen reader users who hear repetitive "image image of" announcements.
+How to fix: Remove "image of", "picture of", "graphic of" from alt text; describe the content directly.
+
+================================================================================
+
+## ErrSVGNoAccessibleName
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Images/ErrSVGNoAccessibleName.html
+
+ID: ErrSVGNoAccessibleName
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: SVG image lacks accessible name through title, aria-label, or aria-labelledby
+Why it matters: Without accessible names, SVG content is invisible to screen reader users.
+Who it affects: Blind and low vision users using screen readers.
+How to fix: Add <title> element with aria-labelledby, or use role="img" with aria-label for simple SVGs.
+
+================================================================================
+
+## WarnSVGNoRole
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Images/WarnSVGNoRole.html
+
+ID: WarnSVGNoRole
+Type: Warning
+Impact: Low
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: images
+Description: SVG missing appropriate role attribute
+Why it matters: SVGs need proper roles to be correctly interpreted by assistive technologies.
+Who it affects: Screen reader users.
+How to fix: Add role="img" for informative SVGs, use aria-hidden="true" for decorative ones.
+
+================================================================================
+
+## WarnSvgPositiveTabindex
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Images/WarnSvgPositiveTabindex.html
+
+ID: WarnSvgPositiveTabindex
+Type: Warning
+Impact: Medium
+WCAG: 2.4.3 Focus Order (Level A)
+Touchpoint: images
+Description: SVG element has positive tabindex disrupting tab order
+Why it matters: SVGs typically shouldn't be in tab order unless interactive.
+Who it affects: Keyboard users experiencing confusing navigation.
+How to fix: Remove tabindex from non-interactive SVGs, use tabindex="0" only for interactive SVGs.
+
+================================================================================
+

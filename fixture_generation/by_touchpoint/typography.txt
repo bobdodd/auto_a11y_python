@@ -1,0 +1,88 @@
+# TYPOGRAPHY Touchpoint
+
+Total issues: 5
+
+================================================================================
+
+## ErrSmallText
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Typography/ErrSmallText.html
+
+ID: ErrSmallText
+Type: Error
+Impact: Medium
+WCAG: 1.4.4 Resize text (Level AA)
+Touchpoint: typography
+Description: Text is too small to read comfortably (less than 12px)
+Why it matters: Small text is difficult to read, especially for users with low vision or on mobile devices.
+Who it affects: Users with low vision, aging users, mobile device users, users with reading disabilities.
+How to fix: Use minimum 14px (preferably 16px) for body text, ensure text can be zoomed to 200% without loss of functionality.
+
+================================================================================
+
+## WarnItalicText
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Typography/WarnItalicText.html
+
+ID: WarnItalicText
+Type: Warning
+Impact: Low
+WCAG: 1.4.8 Visual Presentation (Level AAA)
+Touchpoint: typography
+Description: Italic text used extensively which can reduce readability
+Why it matters: Italic text is harder to read, especially for users with dyslexia.
+Who it affects: Users with dyslexia, users with low vision.
+How to fix: Limit italic text to short emphasis, use bold for stronger emphasis.
+
+================================================================================
+
+## WarnJustifiedText
+
+✨ New fixtures needed
+
+ID: WarnJustifiedText
+Type: Warning
+Impact: Medium
+WCAG: 1.4.8 Visual Presentation (Level AAA)
+Touchpoint: typography
+Description: Text uses full justification affecting readability
+Why it matters: Justified text creates uneven spacing that makes reading difficult.
+Who it affects: Users with dyslexia, users with cognitive disabilities.
+How to fix: Use left-aligned text for body content, avoid full justification.
+
+================================================================================
+
+## WarnRightAlignedText
+
+✨ New fixtures needed
+
+ID: WarnRightAlignedText
+Type: Warning
+Impact: Low
+WCAG: 1.4.8 Visual Presentation (Level AAA)
+Touchpoint: typography
+Description: Body text is right-aligned affecting readability
+Why it matters: Right-aligned text is difficult to read for extended content.
+Who it affects: Users with dyslexia, users with reading disabilities.
+How to fix: Use left alignment for body text in left-to-right languages.
+
+================================================================================
+
+## WarnSmallLineHeight
+
+✨ New fixtures needed
+
+ID: WarnSmallLineHeight
+Type: Warning
+Impact: Medium
+WCAG: 1.4.12 Text Spacing (Level AA)
+Touchpoint: typography
+Description: Line height less than 1.5 times font size
+Why it matters: Tight line spacing makes text difficult to read and track.
+Who it affects: Users with dyslexia, users with low vision.
+How to fix: Set line-height to at least 1.5 for body text.
+
+================================================================================
+

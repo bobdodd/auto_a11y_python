@@ -1,0 +1,55 @@
+# TABLES Touchpoint
+
+Total issues: 3
+
+================================================================================
+
+## ErrTableMissingCaption
+
+✨ New fixtures needed
+
+ID: ErrTableMissingCaption
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: tables
+Description: Data table lacks caption element to describe its content
+Why it matters: Without captions, users may not understand the table's purpose or content before navigating through it.
+Who it affects: Screen reader users who need table context, users with cognitive disabilities.
+How to fix: Add <caption> element as first child of table describing what data the table contains.
+
+================================================================================
+
+## ErrTableNoColumnHeaders
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Tables/ErrTableNoColumnHeaders.html
+
+ID: ErrTableNoColumnHeaders
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: tables
+Description: Data table has no column headers (th elements)
+Why it matters: Without headers, screen reader users cannot understand what each column represents when navigating cells.
+Who it affects: Screen reader users navigating tables, users who need to understand data relationships.
+How to fix: Use <th> elements for column headers in first row, add scope="col" to clarify header relationships.
+
+================================================================================
+
+## WarnTableMissingThead
+
+✨ New fixtures needed
+
+ID: WarnTableMissingThead
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: tables
+Description: Table missing thead element for headers
+Why it matters: Thead helps screen readers distinguish headers from data rows.
+Who it affects: Screen reader users navigating tables.
+How to fix: Wrap header rows in thead element, data rows in tbody.
+
+================================================================================
+

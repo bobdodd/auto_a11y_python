@@ -1,0 +1,125 @@
+# KEYBOARD_NAVIGATION Touchpoint
+
+Total issues: 7
+
+================================================================================
+
+## ErrMissingTabindex
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/ErrMissingTabindex.html
+
+ID: ErrMissingTabindex
+Type: Error
+Impact: High
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Interactive element not keyboard accessible due to missing tabindex
+Why it matters: Elements that should be interactive but lack keyboard access create complete barriers for non-mouse users.
+Who it affects: Keyboard users, screen reader users, users with motor disabilities who cannot use a mouse.
+How to fix: Add tabindex="0" to custom interactive elements, or use native interactive HTML elements that are keyboard accessible by default.
+
+================================================================================
+
+## ErrNonInteractiveZeroTabindex
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/ErrNonInteractiveZeroTabindex.html
+
+ID: ErrNonInteractiveZeroTabindex
+Type: Error
+Impact: Medium
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Non-interactive element has tabindex="0" making it keyboard focusable
+Why it matters: Adding keyboard focus to non-interactive elements confuses users and clutters keyboard navigation.
+Who it affects: Keyboard users encountering unexpected tab stops, screen reader users hearing non-actionable elements.
+How to fix: Remove tabindex="0" from non-interactive elements, only make elements focusable if they have functionality.
+
+================================================================================
+
+## ErrTabOrderViolation
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/ErrTabOrderViolation.html
+
+ID: ErrTabOrderViolation
+Type: Error
+Impact: High
+WCAG: 2.4.3 Focus Order (Level A)
+Touchpoint: keyboard_navigation
+Description: Tab order does not follow logical reading order
+Why it matters: Illogical tab order confuses users and makes interfaces difficult to navigate efficiently.
+Who it affects: Keyboard users, screen reader users, users with cognitive disabilities.
+How to fix: Ensure DOM order matches visual order, avoid positive tabindex values, test tab order manually.
+
+================================================================================
+
+## WarnHighTabindex
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/WarnHighTabindex.html
+
+ID: WarnHighTabindex
+Type: Warning
+Impact: Medium
+WCAG: 2.4.3 Focus Order (Level A)
+Touchpoint: keyboard_navigation
+Description: Very high tabindex value used (over 10)
+Why it matters: High tabindex values indicate attempts to control tab order that likely create confusing navigation.
+Who it affects: Keyboard users experiencing unexpected tab order.
+How to fix: Remove positive tabindex values, restructure DOM for natural tab order.
+
+================================================================================
+
+## WarnMissingNegativeTabindex
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/WarnMissingNegativeTabindex.html
+
+ID: WarnMissingNegativeTabindex
+Type: Warning
+Impact: Low
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Element that should be removed from tab order lacks negative tabindex
+Why it matters: Some elements need to be programmatically focusable but not in tab order.
+Who it affects: Keyboard users encountering unnecessary tab stops.
+How to fix: Add tabindex="-1" to elements that should be focusable by script but not keyboard.
+
+================================================================================
+
+## WarnModalNoFocusableElements
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/WarnModalNoFocusableElements.html
+
+ID: WarnModalNoFocusableElements
+Type: Warning
+Impact: High
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Modal has no focusable elements
+Why it matters: Modals without focusable elements trap keyboard focus with no actions available.
+Who it affects: Keyboard users unable to interact with modal.
+How to fix: Ensure modals contain at least one focusable element (close button, form fields, etc.).
+
+================================================================================
+
+## WarnNegativeTabindex
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/WarnNegativeTabindex.html
+
+ID: WarnNegativeTabindex
+Type: Warning
+Impact: Low
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: keyboard_navigation
+Description: Interactive element has negative tabindex
+Why it matters: Negative tabindex removes elements from keyboard navigation, potentially making them inaccessible.
+Who it affects: Keyboard users who cannot reach the element.
+How to fix: Use tabindex="0" for keyboard-accessible elements, only use -1 for programmatic focus.
+
+================================================================================
+

@@ -1,0 +1,74 @@
+# ARIA Touchpoint
+
+Total issues: 4
+
+================================================================================
+
+## ErrAriaLabelMayNotBeFoundByVoiceControl
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrAriaLabelMayNotBeFoundByVoiceControl.html
+
+ID: ErrAriaLabelMayNotBeFoundByVoiceControl
+Type: Error
+Impact: Medium
+WCAG: 2.5.3
+Touchpoint: aria
+Description: aria-label doesn't match visible text
+Why it matters: Voice control users can't activate element
+Who it affects: Voice control users
+How to fix: Ensure aria-label includes visible text
+
+================================================================================
+
+## ErrMapAriaHidden
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/ARIA/ErrMapAriaHidden.html
+
+ID: ErrMapAriaHidden
+Type: Error
+Impact: High
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: aria
+Description: Map element hidden from assistive technologies with aria-hidden
+Why it matters: Hiding maps completely removes access to important geographic or spatial information for screen reader users.
+Who it affects: Blind and low vision users who need text alternatives for map information.
+How to fix: Remove aria-hidden from maps, provide appropriate text alternatives and accessible controls instead.
+
+================================================================================
+
+## WarnMissingAriaModal
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Dialogs and Modals/WarnMissingAriaModal.html
+
+ID: WarnMissingAriaModal
+Type: Warning
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: aria
+Description: Modal dialog missing aria-modal="true"
+Why it matters: Without aria-modal, screen readers may not properly constrain navigation to the modal.
+Who it affects: Screen reader users who may navigate outside the modal accidentally.
+How to fix: Add aria-modal="true" to modal containers along with proper focus management.
+
+================================================================================
+
+## ErrAriaLabelMayNotBeFoundByVoiceControl
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrAriaLabelMayNotBeFoundByVoiceControl.html
+
+ID: ErrAriaLabelMayNotBeFoundByVoiceControl
+Type: Error
+Impact: Medium
+WCAG: 2.5.3
+Touchpoint: aria
+Description: aria-label doesn't match visible text
+Why it matters: Voice control users can't activate element
+Who it affects: Voice control users
+How to fix: Ensure aria-label includes visible text
+
+================================================================================
+

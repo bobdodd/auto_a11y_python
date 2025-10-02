@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnBannerRoleOnHeader - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnBannerRoleOnHeader_001_violations_basic",
+    "issueId": "AI_WarnBannerRoleOnHeader",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Header elements with explicit role='banner' redundantly",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header role="banner"
+            data-expected-violation="true"
+            data-violation-reason="Header element has explicit role='banner' which is redundant. HTML5 header element already provides banner semantics when used as direct child of body. Redundant ARIA is unnecessary and can confuse developers. HTML semantics should be preferred over explicit ARIA roles. Warning for WCAG 4.1.2 Name, Role, Value - remove redundant role='banner' from header element">
+        <h1>Company Name</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Welcome</h2>
+            <p>Welcome to our website.</p>
+        </section>
+
+        <article>
+            <header role="banner"
+                    data-expected-violation="true"
+                    data-violation-reason="Nested header element with role='banner' incorrectly applied. Header inside article/section should not have banner role. Only one banner per page (typically top-level header). Misuse of banner role creates confusion for screen reader users. Warning for WCAG 4.1.2 Name, Role, Value - remove inappropriate role='banner' from nested header">
+                <h2>Article Title</h2>
+                <p>Published on January 1, 2024</p>
+            </header>
+            <p>Article content goes here.</p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

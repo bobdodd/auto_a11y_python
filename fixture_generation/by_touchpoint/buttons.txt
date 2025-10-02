@@ -1,0 +1,106 @@
+# BUTTONS Touchpoint
+
+Total issues: 6
+
+================================================================================
+
+## AI_ErrNonSemanticButton
+
+✨ New fixtures needed
+
+ID: AI_ErrNonSemanticButton
+Type: Error
+Impact: High
+WCAG: 2.1.1, 4.1.2
+Touchpoint: buttons
+Description: Clickable {element_tag} element "{element_text}" is not a semantic button
+Why it matters: Non-semantic buttons are not keyboard accessible and invisible to screen readers
+Who it affects: Keyboard users, screen reader users
+How to fix: Replace {element_tag} with <button> element or add role="button" and tabindex="0"
+
+================================================================================
+
+## ErrButtonNoVisibleFocus
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Buttons/ErrButtonNoVisibleFocus.html
+
+ID: ErrButtonNoVisibleFocus
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button lacks visible focus indicator when focused
+Why it matters: Keyboard users need visible focus indicators to know which element is currently selected. Without clear focus indication on buttons, users cannot tell which button will be activated when they press Enter or Space, leading to errors and inability to use the interface effectively.
+Who it affects: Users with motor disabilities using keyboard navigation, users who cannot use a mouse, power users who prefer keyboard navigation, and users of assistive technologies
+How to fix: Ensure buttons have a clearly visible focus indicator with at least 3:1 contrast against the background. The indicator should be at least 2 pixels thick and not rely on color alone. Never remove focus indicators without providing an alternative. Consider using :focus-visible for refined focus management.
+
+================================================================================
+
+## ErrButtonTextLowContrast
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Buttons/ErrButtonTextLowContrast.html
+
+ID: ErrButtonTextLowContrast
+Type: Error
+Impact: High
+WCAG: 1.4.3 Contrast (Minimum)
+Touchpoint: buttons
+Description: Button text has insufficient color contrast with button background
+Why it matters: Users with low vision, color blindness, or viewing the page in bright sunlight may not be able to read button labels if contrast is insufficient. This prevents users from understanding button purpose and can make critical functions inaccessible. Buttons are action triggers, so being unable to read them can prevent task completion.
+Who it affects: Users with low vision, color blindness, age-related vision changes, and anyone viewing content in poor lighting conditions or on low-quality displays
+How to fix: Ensure button text has at least 4.5:1 contrast ratio with the button background for normal text, or 3:1 for large text (18pt or 14pt bold). For Level AAA compliance, use 7:1 for normal text. Test in different states (hover, focus, active) as contrast requirements apply to all states. Avoid using color alone to indicate button state.
+
+================================================================================
+
+## ErrMissingCloseButton
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Buttons/ErrMissingCloseButton.html
+
+ID: ErrMissingCloseButton
+Type: Error
+Impact: High
+WCAG: 2.1.2 No Keyboard Trap (Level A)
+Touchpoint: buttons
+Description: Modal or dialog missing close button
+Why it matters: Without a close button, users can become trapped in modals with no way to return to main content.
+Who it affects: Keyboard users who cannot use escape key, screen reader users who need explicit close controls.
+How to fix: Add visible close button to all modals and dialogs, ensure it's keyboard accessible and properly labeled.
+
+================================================================================
+
+## WarnButtonGenericText
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Buttons/WarnButtonGenericText.html
+
+ID: WarnButtonGenericText
+Type: Warning
+Impact: Medium
+WCAG: 2.4.6 Headings and Labels
+Touchpoint: buttons
+Description: Button uses generic text like "Click here", "Submit", or "OK" without context
+Why it matters: Screen reader users often navigate by pulling up a list of all buttons on a page. Generic button text provides no information about what the button does when heard out of context. Users cannot determine the button's purpose without additional exploration, slowing navigation and potentially causing errors.
+Who it affects: Screen reader users navigating by buttons list, users with cognitive disabilities who need clear labels, and screen magnifier users who may not see surrounding context
+How to fix: Use descriptive button text that explains the action (e.g., "Submit registration form" instead of "Submit", "Download PDF report" instead of "Download"). The button text should make sense when read in isolation. If visual design constraints require short text, use aria-label to provide a more descriptive accessible name.
+
+================================================================================
+
+## AI_ErrNonSemanticButton
+
+✨ New fixtures needed
+
+ID: AI_ErrNonSemanticButton
+Type: Error
+Impact: High
+WCAG: 2.1.1, 4.1.2
+Touchpoint: buttons
+Description: Clickable {element_tag} element "{element_text}" is not a semantic button
+Why it matters: Non-semantic buttons are not keyboard accessible and invisible to screen readers
+Who it affects: Keyboard users, screen reader users
+How to fix: Replace {element_tag} with <button> element or add role="button" and tabindex="0"
+
+================================================================================
+

@@ -1,0 +1,159 @@
+# COLOR Touchpoint
+
+Total issues: 9
+
+================================================================================
+
+## ErrColorStyleDefinedExplicitlyInElement
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Colors and Contrast/ErrColorStyleDefinedExplicitlyInElement.html
+
+ID: ErrColorStyleDefinedExplicitlyInElement
+Type: Error
+Impact: Low
+WCAG: 1.4.3
+Touchpoint: color
+Description: Color-related styles defined inline
+Why it matters: Harder to maintain consistent color scheme
+Who it affects: Users needing high contrast modes
+How to fix: Use CSS classes instead of inline styles
+
+================================================================================
+
+## ErrColorStyleDefinedExplicitlyInStyleTag
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Colors and Contrast/ErrColorStyleDefinedExplicitlyInStyleTag.html
+
+ID: ErrColorStyleDefinedExplicitlyInStyleTag
+Type: Error
+Impact: Low
+WCAG: 1.4.3
+Touchpoint: color
+Description: Color-related styles defined in style tag
+Why it matters: Embedded color styles harder to override for user preferences
+Who it affects: Users with custom stylesheets, high contrast mode users
+How to fix: Use external stylesheets for better maintainability
+
+================================================================================
+
+## ErrLargeTextContrastAA
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Colors and Contrast/ErrLargeTextContrastAA.html
+
+ID: ErrLargeTextContrastAA
+Type: Error
+Impact: High
+WCAG: 1.4.3 Contrast (Minimum)
+Touchpoint: color
+Description: Large text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This large text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AA requirements. Large text (24px+ or 18.66px+ bold) requires a minimum contrast ratio of 3:1 to pass Level AA. The foreground color ({fg}) against background ({bg}) doesn't provide enough distinction.
+Who it affects: Users with low vision, color blindness, or age-related vision changes who struggle to distinguish text with insufficient contrast, even when the text is larger
+How to fix: Current contrast is {ratio}:1, but WCAG Level AA requires at least 3:1 for large text. To fix, adjust the foreground color from {fg} or the background from {bg}. Consider using #949494 or darker on white background for large text.
+
+================================================================================
+
+## ErrLargeTextContrastAAA
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Colors and Contrast/ErrLargeTextContrastAAA.html
+
+ID: ErrLargeTextContrastAAA
+Type: Error
+Impact: High
+WCAG: 1.4.6 Contrast (Enhanced)
+Touchpoint: color
+Description: Large text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This large text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AAA enhanced requirements. Large text (24px+ or 18.66px+ bold) requires a minimum contrast ratio of 4.5:1 to pass Level AAA for enhanced accessibility.
+Who it affects: Users with moderate visual impairments who benefit from enhanced contrast even for large text, ensuring optimal readability in all conditions
+How to fix: Current contrast is {ratio}:1, but WCAG Level AAA requires at least 4.5:1 for large text. To fix, adjust colors to achieve higher contrast, such as #767676 or darker on white background for large text at Level AAA.
+
+================================================================================
+
+## ErrTextContrastAA
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Colors and Contrast/ErrTextContrastAA.html
+
+ID: ErrTextContrastAA
+Type: Error
+Impact: High
+WCAG: 1.4.3 Contrast (Minimum)
+Touchpoint: color
+Description: Text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This text with a contrast ratio of {ratio}:1 does not meet WCAG Level AA requirements. Normal text requires a minimum contrast ratio of 4.5:1 to pass Level AA. The foreground color ({fg}) against the background ({bg}) doesn't provide enough distinction for users with visual impairments.
+Who it affects: Users with low vision who need higher contrast to distinguish text, users with color blindness, older users experiencing age-related vision changes, and users viewing content in bright sunlight or on low-quality displays
+How to fix: Current contrast is {ratio}:1, but WCAG Level AA requires at least 4.5:1 for normal text ({fontSize}px). To fix, darken the foreground color from {fg} or lighten the background from {bg}. Consider using #595959 or darker on white background, or #FFFFFF on backgrounds darker than #767676.
+
+================================================================================
+
+## ErrTextContrastAAA
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Colors and Contrast/ErrTextContrastAAA.html
+
+ID: ErrTextContrastAAA
+Type: Error
+Impact: High
+WCAG: 1.4.6 Contrast (Enhanced)
+Touchpoint: color
+Description: Text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})
+Why it matters: This text with a contrast ratio of {ratio}:1 does not meet WCAG Level AAA enhanced requirements. Normal text requires a minimum contrast ratio of 7:1 to pass Level AAA. The foreground color ({fg}) against the background ({bg}) doesn't provide optimal distinction for maximum accessibility.
+Who it affects: Users with moderate visual impairments, including those with low vision, color blindness, or contrast sensitivity who benefit from enhanced contrast for optimal readability
+How to fix: Current contrast is {ratio}:1, but WCAG Level AAA requires at least 7:1 for normal text ({fontSize}px). To fix, use high contrast combinations like #333333 or darker on white background, or white text on backgrounds darker than #565656.
+
+================================================================================
+
+## WarnColorRelatedStyleDefinedExplicitlyInElement
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Colors and Contrast/WarnColorRelatedStyleDefinedExplicitlyInElement.html
+
+ID: WarnColorRelatedStyleDefinedExplicitlyInElement
+Type: Warning
+Impact: Low
+WCAG: 1.4.3 Contrast (Minimum), 1.4.8 Visual Presentation
+Touchpoint: color
+Description: Color-related CSS properties found in inline style attributes on HTML elements
+Why it matters: Inline color styles bypass user stylesheets and browser extensions that help users with visual disabilities customize colors for better readability. Users who need high contrast, inverted colors, or specific color schemes cannot easily override inline styles. This also makes it difficult to implement dark mode, maintain consistent theming, or allow user color preferences.
+Who it affects: Users with low vision who need high contrast or specific color combinations, users with color blindness who need to adjust problematic color pairs, users with dyslexia who benefit from specific background colors, users with light sensitivity who need dark themes, and users who rely on browser extensions for color customization
+How to fix: Move color-related styles (color, background-color, border-color, etc.) to external CSS files using classes. This allows users to override styles with their own stylesheets, enables easier theme switching, improves maintainability, and supports user preference media queries like prefers-color-scheme. Use CSS custom properties (variables) for colors to make customization even easier.
+
+================================================================================
+
+## WarnColorRelatedStyleDefinedExplicitlyInStyleTag
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Colors and Contrast/WarnColorRelatedStyleDefinedExplicitlyInStyleTag.html
+
+ID: WarnColorRelatedStyleDefinedExplicitlyInStyleTag
+Type: Warning
+Impact: Low
+WCAG: 1.4.3 Contrast (Minimum), 1.4.8 Visual Presentation
+Touchpoint: color
+Description: Color-related CSS found in <style> tags within the HTML document instead of external stylesheets
+Why it matters: Embedded styles in <style> tags are harder for users to override than external stylesheets and may not be cached efficiently. Users with visual disabilities who need custom color schemes must use more aggressive CSS overrides. This approach also makes it difficult to maintain consistent theming across pages and prevents users from disabling styles entirely if needed.
+Who it affects: Users with low vision requiring custom color schemes, users with photosensitivity needing to modify bright colors, users with color blindness who need to adjust color combinations, and users who benefit from consistent, predictable styling across pages
+How to fix: Move color styles to external CSS files linked with <link> tags. Organize colors using CSS custom properties for easy theming. Implement user preference support with @media (prefers-color-scheme) and similar queries. Consider providing theme switcher functionality. Ensure your external stylesheets are properly cached for performance.
+
+================================================================================
+
+## ErrColorStyleDefinedExplicitlyInElement
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Colors and Contrast/ErrColorStyleDefinedExplicitlyInElement.html
+
+ID: ErrColorStyleDefinedExplicitlyInElement
+Type: Error
+Impact: Low
+WCAG: 1.4.3
+Touchpoint: color
+Description: Color-related styles defined inline
+Why it matters: Harder to maintain consistent color scheme
+Who it affects: Users needing high contrast modes
+How to fix: Use CSS classes instead of inline styles
+
+================================================================================
+

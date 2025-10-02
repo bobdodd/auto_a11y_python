@@ -1,0 +1,1065 @@
+# LANDMARKS Touchpoint
+
+Total issues: 65
+
+================================================================================
+
+## ErrBannerLandmarkAccessibleNameIsBlank
+
+✨ New fixtures needed
+
+ID: ErrBannerLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Banner landmark has blank accessible name
+Why it matters: Multiple banners need labels to distinguish them
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby
+
+================================================================================
+
+## ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Banner landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrBannerLandmarkMayNotBeChildOfAnotherLandmark
+
+✨ New fixtures needed
+
+ID: ErrBannerLandmarkMayNotBeChildOfAnotherLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Banner landmark nested inside another landmark
+Why it matters: Invalid nesting breaks page structure
+Who it affects: Screen reader users
+How to fix: Move banner to top level
+
+================================================================================
+
+## ErrComplementaryLandmarkAccessibleNameIsBlank
+
+✨ New fixtures needed
+
+ID: ErrComplementaryLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Complementary landmark has blank accessible name
+Why it matters: Empty labels provide no information
+Who it affects: Screen reader users
+How to fix: Add meaningful label text
+
+================================================================================
+
+## ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Complementary landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods may cause confusion
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark
+
+✨ New fixtures needed
+
+ID: ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Complementary landmark is nested inside another landmark
+Why it matters: Invalid nesting breaks landmark structure
+Who it affects: Screen reader users
+How to fix: Move complementary landmark outside of other landmarks
+
+================================================================================
+
+## ErrCompletelyEmptyNavLandmark
+
+✨ New fixtures needed
+
+ID: ErrCompletelyEmptyNavLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Navigation landmark contains no content
+Why it matters: Empty navigation serves no purpose
+Who it affects: All users
+How to fix: Add navigation content or remove empty landmark
+
+================================================================================
+
+## ErrContentInfoLandmarkAccessibleNameIsBlank
+
+✨ New fixtures needed
+
+ID: ErrContentInfoLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Contentinfo landmark has blank accessible name
+Why it matters: Blank labels provide no information
+Who it affects: Screen reader users
+How to fix: Add meaningful label text
+
+================================================================================
+
+## ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Contentinfo landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark
+
+✨ New fixtures needed
+
+ID: ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Contentinfo landmark is nested inside another landmark
+Why it matters: Invalid nesting breaks landmark structure
+Who it affects: Screen reader users
+How to fix: Move contentinfo to top level
+
+================================================================================
+
+## ErrDuplicateLabelForBannerLandmark
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForBannerLandmark.html
+
+ID: ErrDuplicateLabelForBannerLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple banner landmarks have the same label
+Why it matters: Users cannot distinguish between different banners
+Who it affects: Screen reader users
+How to fix: Only one banner should typically exist per page
+
+================================================================================
+
+## ErrDuplicateLabelForComplementaryLandmark
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForComplementaryLandmark.html
+
+ID: ErrDuplicateLabelForComplementaryLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple complementary landmarks have the same label
+Why it matters: Users cannot distinguish between different complementary sections
+Who it affects: Screen reader users
+How to fix: Provide unique labels for each complementary landmark
+
+================================================================================
+
+## ErrDuplicateLabelForContentinfoLandmark
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForContentinfoLandmark.html
+
+ID: ErrDuplicateLabelForContentinfoLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple contentinfo landmarks have the same label
+Why it matters: Users cannot distinguish between different footer areas
+Who it affects: Screen reader users
+How to fix: Typically only one contentinfo should exist per page
+
+================================================================================
+
+## ErrDuplicateLabelForFormLandmark
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForFormLandmark.html
+
+ID: ErrDuplicateLabelForFormLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple form landmarks have the same label
+Why it matters: Users cannot distinguish between different forms
+Who it affects: Screen reader users
+How to fix: Provide unique labels for each form
+
+================================================================================
+
+## ErrDuplicateLabelForNavLandmark
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForNavLandmark.html
+
+ID: ErrDuplicateLabelForNavLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple navigation landmarks have the same label
+Why it matters: Users cannot distinguish between different navigation areas
+Who it affects: Screen reader users
+How to fix: Provide unique labels like "Main navigation" and "Footer navigation"
+
+================================================================================
+
+## ErrDuplicateLabelForRegionLandmark
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForRegionLandmark.html
+
+ID: ErrDuplicateLabelForRegionLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple region landmarks have the same label
+Why it matters: Users cannot distinguish between different regions
+Who it affects: Screen reader users
+How to fix: Provide unique labels for each region
+
+================================================================================
+
+## ErrDuplicateLabelForSearchLandmark
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForSearchLandmark.html
+
+ID: ErrDuplicateLabelForSearchLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple search landmarks have the same label
+Why it matters: Users cannot distinguish between different search areas
+Who it affects: Screen reader users
+How to fix: Provide unique labels for each search landmark
+
+================================================================================
+
+## ErrDuplicateLandmarkWithoutName
+
+✨ New fixtures needed
+
+ID: ErrDuplicateLandmarkWithoutName
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Multiple landmarks of the same type without distinguishing accessible names
+Why it matters: When multiple navigation or other landmarks exist without unique names, screen reader users cannot distinguish between them.
+Who it affects: Screen reader users who navigate by landmarks, keyboard users who use landmark navigation shortcuts.
+How to fix: Add aria-label or aria-labelledby to distinguish multiple landmarks of the same type (e.g., "Main navigation" vs "Footer navigation").
+
+================================================================================
+
+## ErrElementNotContainedInALandmark
+
+✨ New fixtures needed
+
+ID: ErrElementNotContainedInALandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Content exists outside of any landmark
+Why it matters: Content may be missed when navigating by landmarks
+Who it affects: Screen reader users using landmark navigation
+How to fix: Ensure all content is within appropriate landmarks
+
+================================================================================
+
+## ErrFormAriaLabelledByIsBlank
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormAriaLabelledByIsBlank.html
+
+ID: ErrFormAriaLabelledByIsBlank
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: landmarks
+Description: Form aria-labelledby references blank or empty element
+Why it matters: No accessible name is provided
+Who it affects: Screen reader users
+How to fix: Reference element with actual text content
+
+================================================================================
+
+## ErrFormAriaLabelledByReferenceDIsHidden
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDIsHidden.html
+
+ID: ErrFormAriaLabelledByReferenceDIsHidden
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: landmarks
+Description: Form aria-labelledby references hidden element
+Why it matters: Hidden elements may not provide accessible names
+Who it affects: Screen reader users
+How to fix: Reference visible elements only
+
+================================================================================
+
+## ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading
+
+✨ New fixtures needed
+
+ID: ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading
+Type: Error
+Impact: Low
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Form aria-labelledby doesn't reference a heading element
+Why it matters: Best practice is to reference headings for form landmarks
+Who it affects: Screen reader users
+How to fix: Reference a heading element when possible
+
+================================================================================
+
+## ErrFormLandmarkAccessibleNameIsBlank
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrFormLandmarkAccessibleNameIsBlank.html
+
+ID: ErrFormLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: High
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Form landmark has blank accessible name
+Why it matters: Forms need clear identification
+Who it affects: Screen reader users
+How to fix: Add meaningful label describing form purpose
+
+================================================================================
+
+## ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Form landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Main landmark has both aria-label and aria-labelledby attributes
+Why it matters: Conflicting labeling methods may cause confusion
+Who it affects: Screen reader users
+How to fix: Use only one labeling method - either aria-label or aria-labelledby
+
+================================================================================
+
+## ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost
+
+✨ New fixtures needed
+
+ID: ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost
+Type: Error
+Impact: Medium
+WCAG: 2.4.3
+Touchpoint: landmarks
+Description: Main landmark has tabindex="0" which is inappropriate
+Why it matters: Landmarks should not be in the tab order
+Who it affects: Keyboard users
+How to fix: Remove tabindex or use tabindex="-1" if programmatic focus is needed
+
+================================================================================
+
+## ErrMainLandmarkIsHidden
+
+✨ New fixtures needed
+
+ID: ErrMainLandmarkIsHidden
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Main landmark is hidden from view
+Why it matters: Hidden main content defeats the purpose of the landmark
+Who it affects: All users
+How to fix: Ensure main landmark is visible or remove if not needed
+
+================================================================================
+
+## ErrMainLandmarkMayNotbeChildOfAnotherLandmark
+
+✨ New fixtures needed
+
+ID: ErrMainLandmarkMayNotbeChildOfAnotherLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Main landmark nested inside another landmark
+Why it matters: Invalid landmark nesting breaks structure
+Who it affects: Screen reader users
+How to fix: Move main outside of other landmarks
+
+================================================================================
+
+## ErrMissingMainLandmark
+
+✨ New fixtures needed
+
+ID: ErrMissingMainLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Page missing main landmark for primary content
+Why it matters: Without a main landmark, screen reader users cannot quickly navigate to the primary content area.
+Who it affects: Screen reader users who navigate by landmarks, keyboard users using landmark navigation.
+How to fix: Add <main> element or role="main" to identify the primary content area of each page.
+
+================================================================================
+
+## ErrMultipleBannerLandmarks
+
+✨ New fixtures needed
+
+ID: ErrMultipleBannerLandmarks
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Multiple banner landmarks found
+Why it matters: Multiple headers confuse page structure
+Who it affects: Screen reader users
+How to fix: Use only one banner landmark
+
+================================================================================
+
+## ErrMultipleContentinfoLandmarks
+
+✨ New fixtures needed
+
+ID: ErrMultipleContentinfoLandmarks
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Multiple contentinfo landmarks found
+Why it matters: Multiple footers confuse page structure
+Who it affects: Screen reader users
+How to fix: Use only one contentinfo landmark
+
+================================================================================
+
+## ErrMultipleMainLandmarks
+
+✨ New fixtures needed
+
+ID: ErrMultipleMainLandmarks
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships
+Touchpoint: landmarks
+Description: Multiple main landmark regions found on the page
+Why it matters: The main landmark should contain THE primary content of the page - having multiple main landmarks is like having multiple "Chapter 1" sections in a book. It confuses the page structure and defeats the purpose of landmarks. Screen reader users expecting to jump to the main content won't know which landmark contains the actual primary content. They might land in the wrong section, miss important content, or have to check multiple "main" areas. This ambiguity makes the landmark system unreliable and forces users back to linear navigation.
+Who it affects: Screen reader users relying on the main landmark to skip to primary content, keyboard users using landmark navigation extensions, users with cognitive disabilities who need clear, unambiguous page structure, and developers trying to understand the intended page structure
+How to fix: Use only one <main> element or role="main" per page. Identify which content is truly the primary, unique content for that page and wrap only that in the main landmark. If you have multiple important sections, use other appropriate landmarks (article, section) or headings to structure them within the single main landmark. The main should contain all unique page content but exclude repeated elements like headers, navigation, and footers.
+
+================================================================================
+
+## ErrNavLandmarkAccessibleNameIsBlank
+
+✨ New fixtures needed
+
+ID: ErrNavLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Navigation landmark has blank accessible name
+Why it matters: Multiple nav areas need labels
+Who it affects: Screen reader users
+How to fix: Add aria-label like "Main navigation" or "Footer navigation"
+
+================================================================================
+
+## ErrNavLandmarkContainsOnlyWhiteSpace
+
+✨ New fixtures needed
+
+ID: ErrNavLandmarkContainsOnlyWhiteSpace
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Navigation landmark contains only whitespace
+Why it matters: Whitespace-only navigation is not functional
+Who it affects: All users
+How to fix: Add navigation links or remove the landmark
+
+================================================================================
+
+## ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Navigation landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## ErrNestedNavLandmarks
+
+✨ New fixtures needed
+
+ID: ErrNestedNavLandmarks
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Navigation landmarks are nested
+Why it matters: Confusing navigation structure
+Who it affects: Screen reader users
+How to fix: Flatten navigation structure
+
+================================================================================
+
+## ErrNoBannerLandmarkOnPage
+
+✨ New fixtures needed
+
+ID: ErrNoBannerLandmarkOnPage
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
+Touchpoint: landmarks
+Description: Page is missing a banner landmark to identify the site header region
+Why it matters: The banner landmark identifies the site header which typically contains the site logo, main navigation, and search functionality. This content appears consistently across pages and users expect to find it at the top. Without proper banner markup, screen reader users cannot quickly jump to the header area using landmark navigation shortcuts. They must instead navigate through all content linearly or guess where the header content begins and ends. This makes it difficult to access primary navigation or return to the site homepage via the logo link, tasks that sighted users can do instantly by looking at the top of the page.
+Who it affects: Screen reader users who use landmark navigation to quickly access site navigation and branding, keyboard users who want to efficiently navigate to header elements, users with cognitive disabilities who rely on consistent page structure to orient themselves, and users with low vision using screen magnifiers who need to quickly locate navigation elements
+How to fix: Use the HTML5 <header> element for your site header (it has an implicit role of banner when it's not nested inside article, aside, main, nav, or section elements). Alternatively, add role="banner" to the container holding your header content. There should typically be only one banner landmark per page at the top level. Include site-wide content like logo, primary navigation, and site search within the banner landmark.
+
+================================================================================
+
+## ErrNoMainLandmark
+
+✨ New fixtures needed
+
+ID: ErrNoMainLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
+Touchpoint: landmarks
+Description: Page is missing a main landmark region to identify the primary content area
+Why it matters: Screen reader users rely on landmarks to understand page layout and quickly navigate to important sections. The main landmark allows users to skip repeated content like headers and navigation to jump directly to the unique page content. Without it, users must navigate through all repeated elements on every page, which is time-consuming and frustrating. The main landmark should contain all content that is unique to the page, including the h1 heading.
+Who it affects: Blind and low vision users using screen readers who navigate by landmarks, users with motor disabilities who need efficient keyboard navigation to skip repeated content, and users with cognitive disabilities who benefit from clear page structure
+How to fix: Add a <main> element around the primary content area, or use role="main" on an appropriate container element. Ensure there is only one main landmark per page, position it as a top-level landmark (not nested inside other landmarks), and include all unique page content within it, including the h1 heading. The main landmark should not include repeated content like site headers, navigation, or footers.
+
+================================================================================
+
+## ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+
+ID: ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: landmarks
+Description: Region landmark has both aria-label and aria-labelledby
+Why it matters: Conflicting labeling methods
+Who it affects: Screen reader users
+How to fix: Use only one labeling method
+
+================================================================================
+
+## RegionLandmarkAccessibleNameIsBlank
+
+✨ New fixtures needed
+
+ID: RegionLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Region landmark has blank accessible name
+Why it matters: Blank labels provide no information
+Who it affects: Screen reader users
+How to fix: Add meaningful label text
+
+================================================================================
+
+## WarnBannerLandmarkAccessibleNameUsesBanner
+
+✨ New fixtures needed
+
+ID: WarnBannerLandmarkAccessibleNameUsesBanner
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Banner landmark uses generic term "banner" in label
+Why it matters: Redundant labeling
+Who it affects: Screen reader users
+How to fix: Use descriptive label or rely on implicit role
+
+================================================================================
+
+## WarnComplementaryLandmarkAccessibleNameUsesComplementary
+
+✨ New fixtures needed
+
+ID: WarnComplementaryLandmarkAccessibleNameUsesComplementary
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Complementary landmark label uses generic term "complementary"
+Why it matters: Generic labels don't describe specific content
+Who it affects: Screen reader users
+How to fix: Use descriptive labels like "Related articles" or "Sidebar"
+
+================================================================================
+
+## WarnComplementaryLandmarkHasNoLabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnComplementaryLandmarkHasNoLabel.html
+
+ID: WarnComplementaryLandmarkHasNoLabel
+Type: Warning
+Impact: Low
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Complementary landmark lacks a label
+Why it matters: Hard to distinguish multiple complementary sections
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby to identify the purpose
+
+================================================================================
+
+## WarnContentInfoLandmarkHasNoLabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnContentInfoLandmarkHasNoLabel.html
+
+ID: WarnContentInfoLandmarkHasNoLabel
+Type: Warning
+Impact: Low
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Contentinfo landmark lacks a label
+Why it matters: May be harder to identify purpose
+Who it affects: Screen reader users
+How to fix: Add descriptive label if multiple contentinfo exist
+
+================================================================================
+
+## WarnContentOutsideLandmarks
+
+✨ New fixtures needed
+
+ID: WarnContentOutsideLandmarks
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Content exists outside of landmark regions
+Why it matters: Content outside landmarks is harder to find and navigate for screen reader users.
+Who it affects: Screen reader users who navigate by landmarks.
+How to fix: Ensure all content is within appropriate landmarks (header, nav, main, footer, aside).
+
+================================================================================
+
+## WarnContentinfoLandmarkAccessibleNameUsesContentinfo
+
+✨ New fixtures needed
+
+ID: WarnContentinfoLandmarkAccessibleNameUsesContentinfo
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Contentinfo landmark uses generic term "contentinfo" in label
+Why it matters: Redundant labeling
+Who it affects: Screen reader users
+How to fix: Use descriptive label or rely on implicit role
+
+================================================================================
+
+## WarnElementNotInLandmark
+
+✨ New fixtures needed
+
+ID: WarnElementNotInLandmark
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Important content found outside of any landmark region, making it harder for screen reader users to find and navigate to
+Why it matters: Landmarks create a navigable structure for your page, like a table of contents. Content outside landmarks is like having chapters missing from the table of contents - users may never find it when navigating by landmarks. Screen reader users often jump between landmarks to quickly scan page structure, and content outside landmarks requires them to read through the entire page linearly to discover it. This particularly affects users who are familiar with your site and want to quickly navigate to specific content areas.
+Who it affects: Screen reader users who navigate by landmarks to efficiently explore pages, keyboard users using browser extensions for landmark navigation, users with cognitive disabilities who rely on consistent page structure, and power users who use landmarks for quick navigation
+How to fix: Ensure all meaningful content is contained within appropriate landmark regions. Typically: use <header> or role="banner" for site headers, <nav> or role="navigation" for navigation menus, <main> or role="main" for primary content, <aside> or role="complementary" for sidebar content, <footer> or role="contentinfo" for footers. Decorative content or spacers can remain outside landmarks. Review your page structure to ensure no important content is orphaned outside the landmark structure.
+
+================================================================================
+
+## WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy
+
+✨ New fixtures needed
+
+ID: WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Landmark has heading but uses different element for label
+Why it matters: Confusing when heading doesn't match landmark label
+Who it affects: Screen reader users
+How to fix: Use the heading as the landmark label
+
+================================================================================
+
+## WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark
+
+✨ New fixtures needed
+
+ID: WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Heading inside landmark doesn't label the landmark
+Why it matters: Missed opportunity for clear landmark labeling
+Who it affects: Screen reader users
+How to fix: Consider using heading as landmark label via aria-labelledby
+
+================================================================================
+
+## WarnMissingBannerLandmark
+
+✨ New fixtures needed
+
+ID: WarnMissingBannerLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Page missing banner landmark for header content
+Why it matters: Banner landmark helps users quickly navigate to page header/branding.
+Who it affects: Screen reader users navigating by landmarks.
+How to fix: Use <header> element or role="banner" for page header content.
+
+================================================================================
+
+## WarnMissingContentinfoLandmark
+
+✨ New fixtures needed
+
+ID: WarnMissingContentinfoLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Page missing contentinfo landmark for footer
+Why it matters: Contentinfo landmark helps users find footer information like copyright and links.
+Who it affects: Screen reader users navigating by landmarks.
+How to fix: Use <footer> element or role="contentinfo" for page footer.
+
+================================================================================
+
+## WarnMultipleBannerLandmarksButNotAllHaveLabels
+
+✨ New fixtures needed
+
+ID: WarnMultipleBannerLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple banner landmarks exist but not all have labels
+Why it matters: Inconsistent labeling makes navigation difficult
+Who it affects: Screen reader users
+How to fix: Ensure all banner landmarks have labels or reduce to single banner
+
+================================================================================
+
+## WarnMultipleComplementaryLandmarksButNotAllHaveLabels
+
+✨ New fixtures needed
+
+ID: WarnMultipleComplementaryLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple complementary landmarks but not all labeled
+Why it matters: Inconsistent labeling makes navigation difficult
+Who it affects: Screen reader users
+How to fix: Ensure all complementary landmarks have unique labels
+
+================================================================================
+
+## WarnMultipleContentInfoLandmarksButNotAllHaveLabels
+
+✨ New fixtures needed
+
+ID: WarnMultipleContentInfoLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple contentinfo landmarks exist but not all have labels
+Why it matters: Inconsistent labeling makes navigation difficult
+Who it affects: Screen reader users
+How to fix: Ensure all contentinfo landmarks have labels or reduce to single contentinfo
+
+================================================================================
+
+## WarnMultipleNavLandmarksButNotAllHaveLabels
+
+✨ New fixtures needed
+
+ID: WarnMultipleNavLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple navigation landmarks but not all labeled
+Why it matters: Users cannot distinguish between navigation areas
+Who it affects: Screen reader users
+How to fix: Label all navigation landmarks uniquely
+
+================================================================================
+
+## WarnMultipleNavNeedsLabel
+
+✨ New fixtures needed
+
+ID: WarnMultipleNavNeedsLabel
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Multiple navigation landmarks found without distinguishing labels
+Why it matters: When a page has multiple navigation areas (main menu, footer links, breadcrumbs, sidebar navigation), users need to distinguish between them. Without unique labels, screen reader users hear "navigation" multiple times with no indication of which navigation area they're entering. This creates confusion about which menu contains the desired links and requires users to explore each navigation to understand its purpose.
+Who it affects: Screen reader users who need to distinguish between different navigation areas, keyboard users navigating between multiple menus, users with cognitive disabilities who need clear labeling, and frequent users who want to quickly access specific navigation areas
+How to fix: Add unique aria-label attributes to each <nav> element or role="navigation" container. Use descriptive labels like aria-label="Main menu", aria-label="Footer links", aria-label="Breadcrumb", aria-label="Related articles". The labels should clearly indicate the purpose or location of each navigation. Test with screen readers to ensure each navigation is announced with its unique label.
+
+================================================================================
+
+## WarnMultipleRegionLandmarksButNotAllHaveLabels
+
+✨ New fixtures needed
+
+ID: WarnMultipleRegionLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple region landmarks but not all labeled
+Why it matters: Regions without labels are not exposed as landmarks
+Who it affects: Screen reader users
+How to fix: Ensure all regions have labels or use different elements
+
+================================================================================
+
+## WarnNavLandmarkAccessibleNameUsesNavigation
+
+✨ New fixtures needed
+
+ID: WarnNavLandmarkAccessibleNameUsesNavigation
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Navigation landmark uses generic term "navigation" in label
+Why it matters: Generic labels don't describe specific purpose
+Who it affects: Screen reader users
+How to fix: Use more descriptive labels like "Product categories" or "User account menu"
+
+================================================================================
+
+## WarnNavLandmarkHasNoLabel
+
+✨ New fixtures needed
+
+ID: WarnNavLandmarkHasNoLabel
+Type: Warning
+Impact: Low
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Navigation landmark lacks label
+Why it matters: Hard to distinguish multiple navigation areas
+Who it affects: Screen reader users
+How to fix: Add descriptive aria-label
+
+================================================================================
+
+## WarnNoBannerLandmark
+
+✨ New fixtures needed
+
+ID: WarnNoBannerLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A), 2.4.1 Bypass Blocks (Level A)
+Touchpoint: landmarks
+Description: Page is missing a banner landmark to identify the header/masthead region
+Why it matters: The banner landmark identifies the site header containing the logo, primary navigation, and other site-wide content. Without it, screen reader users cannot quickly jump to the header area using landmark navigation. They must read through content linearly to find navigation and branding elements. This is especially frustrating when users want to access the main navigation or return to the homepage via the logo.
+Who it affects: Screen reader users who navigate by landmarks to quickly access header content, keyboard users with assistive technology looking for navigation, users with cognitive disabilities who rely on consistent page structure, and users who frequently need to access header elements like search or main navigation
+How to fix: Use the HTML5 <header> element at the page level (not within article, aside, main, nav, or section) as it has an implicit banner role. Alternatively, add role="banner" to your header container. Include site-wide elements like logo, primary navigation, site search, and utility navigation within the banner. Ensure only one banner landmark exists per page at the top level.
+
+================================================================================
+
+## WarnNoContentinfoLandmark
+
+✨ New fixtures needed
+
+ID: WarnNoContentinfoLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
+Touchpoint: landmarks
+Description: Page is missing a contentinfo landmark to identify the footer region
+Why it matters: The contentinfo landmark (typically a footer) contains important information about the page or site such as copyright notices, privacy policies, contact information, and site maps. Screen reader users rely on landmarks to quickly navigate to these common elements without having to read through the entire page. When the footer lacks proper landmark markup, users must search manually through the content to find this information, which is inefficient and may cause them to miss important legal notices or helpful links. The contentinfo landmark provides a consistent, predictable way to access this supplementary information across all pages.
+Who it affects: Screen reader users who navigate by landmarks to quickly find footer information, keyboard users who want to efficiently skip to footer content, users with cognitive disabilities who rely on consistent page structure, and users who need to frequently access footer links like privacy policies or contact information
+How to fix: Use the HTML5 <footer> element for your page footer (it has an implicit role of contentinfo when it's not nested inside article, aside, main, nav, or section elements). Alternatively, add role="contentinfo" to the container holding your footer content. Ensure there's only one contentinfo landmark per page at the top level. The footer should contain information about the page or site, not primary content.
+
+================================================================================
+
+## WarnNoNavigationLandmark
+
+✨ New fixtures needed
+
+ID: WarnNoNavigationLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
+Touchpoint: landmarks
+Description: Page has no navigation landmarks to identify navigation regions
+Why it matters: Navigation landmarks identify areas containing navigation links, allowing users to quickly jump to menus without reading through other content. Most web pages have multiple navigation areas (main menu, footer links, sidebar navigation, breadcrumbs) but without proper markup, these are just lists of links mixed with other content. Screen reader users must hunt for navigation areas or listen to all links to find what they need. Navigation landmarks make these areas immediately discoverable and allow users to skip between different navigation regions efficiently.
+Who it affects: Screen reader users who use landmarks to find navigation menus quickly, keyboard users navigating complex sites with multiple menus, users with cognitive disabilities who need clear identification of navigation areas, and users with motor disabilities who need to minimize unnecessary navigation
+How to fix: Wrap navigation areas in <nav> elements or add role="navigation" to containers with navigation links. If you have multiple navigation areas, label each one with aria-label to distinguish them (e.g., aria-label="Main navigation", aria-label="Footer links", aria-label="Breadcrumb"). Not every group of links needs to be a navigation landmark - use it for major navigation blocks that users would want to find quickly.
+
+================================================================================
+
+## WarnRegionLandmarkAccessibleNameUsesNavigation
+
+✨ New fixtures needed
+
+ID: WarnRegionLandmarkAccessibleNameUsesNavigation
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Region landmark incorrectly uses "navigation" in its label
+Why it matters: Confusing landmark type and purpose
+Who it affects: Screen reader users
+How to fix: Use appropriate label or change to nav landmark
+
+================================================================================
+
+## WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark
+
+✨ New fixtures needed
+
+ID: WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Region landmark lacks required label to be considered a landmark
+Why it matters: Regions without labels are not exposed as landmarks
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby, or use a different landmark type
+
+================================================================================
+
+## ErrBannerLandmarkAccessibleNameIsBlank
+
+✨ New fixtures needed
+
+ID: ErrBannerLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Banner landmark has blank accessible name
+Why it matters: Multiple banners need labels to distinguish them
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby
+
+================================================================================
+

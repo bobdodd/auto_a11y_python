@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnMixedLanguage - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnMixedLanguage_001_violations_basic",
+    "issueId": "AI_WarnMixedLanguage",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Mixed language content without proper language declarations",
+    "wcag": "3.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Welcome to Our Website</h1>
+
+    <p data-expected-violation="true"
+       data-violation-id="AI_WarnMixedLanguage"
+       data-violation-reason="Contains French phrase without lang attribute">
+        The restaurant serves excellent cuisine. Their specialty is the coq au vin.
+    </p>
+
+    <p data-expected-violation="true"
+       data-violation-id="AI_WarnMixedLanguage"
+       data-violation-reason="Contains Spanish phrase without lang attribute">
+        Welcome to our casa. We hope you enjoy your stay at our hacienda.
+    </p>
+
+    <blockquote data-expected-violation="true"
+                data-violation-id="AI_WarnMixedLanguage"
+                data-violation-reason="Quote in German without lang attribute">
+        As the philosopher said, "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt."
+    </blockquote>
+</body>
+</html>

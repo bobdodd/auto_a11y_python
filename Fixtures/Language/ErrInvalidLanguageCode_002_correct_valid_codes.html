@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInvalidLanguageCode - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInvalidLanguageCode_002_correct_valid_codes",
+    "issueId": "ErrInvalidLanguageCode",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Valid ISO 639 language codes",
+    "wcag": "3.1.1, 3.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="HTML has valid lang='en' ISO 639-1 code">
+    <h1>Welcome to Our Website</h1>
+
+    <p lang="en-US"
+       data-expected-pass="true"
+       data-pass-reason="Valid ISO 639-1 code with BCP 47 region qualifier">
+        This paragraph uses a valid language code with regional variant.
+    </p>
+
+    <p lang="es"
+       data-expected-pass="true"
+       data-pass-reason="Valid ISO 639-1 code for Spanish">
+        Este párrafo tiene un código de idioma válido.
+    </p>
+
+    <p lang="de"
+       data-expected-pass="true"
+       data-pass-reason="Valid ISO 639-1 code for German">
+        Dieser Absatz hat einen gültigen Sprachcode.
+    </p>
+
+    <p lang="fr">
+        Ce paragraphe a un code de langue valide.
+    </p>
+</body>
+</html>

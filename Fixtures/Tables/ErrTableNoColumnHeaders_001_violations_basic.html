@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTableNoColumnHeaders - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTableNoColumnHeaders_001_violations_basic",
+    "issueId": "ErrTableNoColumnHeaders",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Data tables with no column headers (th elements)",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Tables Without Column Headers</h1>
+
+    <main>
+        <section>
+            <h2>Employee Data</h2>
+            <table data-expected-violation="true"
+                   data-violation-id="ErrTableNoColumnHeaders"
+                   data-violation-reason="Table uses td elements for headers instead of th elements">
+                <caption>Employee List</caption>
+                <tr>
+                    <td>Name</td>
+                    <td>Department</td>
+                    <td>Salary</td>
+                </tr>
+                <tr>
+                    <td>John Smith</td>
+                    <td>Engineering</td>
+                    <td>$80,000</td>
+                </tr>
+                <tr>
+                    <td>Jane Doe</td>
+                    <td>Marketing</td>
+                    <td>$75,000</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Sales Report</h2>
+            <table data-expected-violation="true"
+                   data-violation-id="ErrTableNoColumnHeaders"
+                   data-violation-reason="Data table has no th elements, screen readers cannot identify column headers">
+                <caption>Monthly Sales</caption>
+                <tr>
+                    <td>Month</td>
+                    <td>Revenue</td>
+                </tr>
+                <tr>
+                    <td>January</td>
+                    <td>$50,000</td>
+                </tr>
+                <tr>
+                    <td>February</td>
+                    <td>$60,000</td>
+                </tr>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

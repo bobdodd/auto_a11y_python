@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Missing title element -->
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMissingPageTitle_001_violations_basic",
+    "issueId": "AI_ErrMissingPageTitle",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page missing title element or has empty/generic title",
+    "wcag": "2.4.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="AI_ErrMissingPageTitle"
+      data-violation-reason="Page lacks title element in head. Screen readers cannot announce page title, and browser tabs/bookmarks show no descriptive text. Users cannot identify page purpose">
+    <h1>Contact Us</h1>
+
+    <main>
+        <p>Get in touch with our team.</p>
+
+        <form>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message"></textarea>
+
+            <button type="submit">Send</button>
+        </form>
+    </main>
+</body>
+</html>

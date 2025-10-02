@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrIframeWithoutTitle - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrIframeWithoutTitle_002_correct_with_title",
+    "issueId": "AI_ErrIframeWithoutTitle",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Iframes with descriptive title attributes",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Dashboard - Correct Usage</h1>
+
+    <main>
+        <!-- Iframe with descriptive title - CORRECT -->
+        <iframe src="https://example.com/widget"
+                width="600"
+                height="400"
+                title="Sales performance widget"
+                data-expected-pass="true"
+                data-pass-reason="Iframe has descriptive title attribute. Screen readers announce 'Sales performance widget' allowing users to understand frame content before entering">
+        </iframe>
+
+        <!-- Iframe with specific title - CORRECT -->
+        <iframe src="https://example.com/analytics"
+                width="600"
+                height="400"
+                title="Real-time analytics dashboard"
+                data-expected-pass="true"
+                data-pass-reason="Iframe has clear, specific title describing analytics content. Users can make informed decision about navigating into frame">
+        </iframe>
+
+        <!-- Iframe with context-specific title - CORRECT -->
+        <iframe src="https://example.com/map"
+                width="600"
+                height="400"
+                title="Store location map"
+                data-expected-pass="true"
+                data-pass-reason="Iframe title 'Store location map' clearly describes purpose and content. Screen reader users understand frame contains interactive map">
+        </iframe>
+    </main>
+</body>
+</html>

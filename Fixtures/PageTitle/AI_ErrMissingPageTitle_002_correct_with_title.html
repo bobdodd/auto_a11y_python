@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Descriptive title element - CORRECT -->
+    <title>Contact Us - Customer Support - CompanyName</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMissingPageTitle_002_correct_with_title",
+    "issueId": "AI_ErrMissingPageTitle",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Page with descriptive, unique title",
+    "wcag": "2.4.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Page has descriptive title element that identifies page purpose (Contact Us), section (Customer Support), and site (CompanyName). Screen readers announce title when page loads, browser tabs show clear text, and bookmarks are meaningful">
+    <h1>Contact Us</h1>
+
+    <main>
+        <p>Get in touch with our team.</p>
+
+        <form>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message"></textarea>
+
+            <button type="submit">Send</button>
+        </form>
+    </main>
+</body>
+</html>

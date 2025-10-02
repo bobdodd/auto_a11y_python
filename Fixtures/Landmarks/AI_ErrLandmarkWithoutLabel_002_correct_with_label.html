@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrLandmarkWithoutLabel - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrLandmarkWithoutLabel_002_correct_with_label",
+    "issueId": "AI_ErrLandmarkWithoutLabel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Multiple landmarks with proper distinguishing labels",
+    "wcag": "2.4.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Company Portal - Correct Usage</h1>
+
+    <!-- Multiple navigation landmarks with labels - CORRECT -->
+    <nav aria-label="Main navigation"
+         data-expected-pass="true"
+         data-pass-reason="First navigation landmark has aria-label='Main navigation'. Screen readers distinguish this from other navigation landmarks on page">
+        <h2>Main Navigation</h2>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Welcome</h1>
+        <p>Welcome to our company portal.</p>
+    </main>
+
+    <nav aria-label="Utility navigation"
+         data-expected-pass="true"
+         data-pass-reason="Second navigation landmark has aria-label='Utility navigation'. Screen readers clearly announce purpose, distinguishing from main navigation">
+        <h2>Utility Links</h2>
+        <ul>
+            <li><a href="/settings">Settings</a></li>
+            <li><a href="/help">Help</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Multiple complementary landmarks with labels - CORRECT -->
+    <aside aria-labelledby="updates-heading"
+           data-expected-pass="true"
+           data-pass-reason="Multiple complementary landmarks use aria-labelledby to reference heading IDs. Screen readers announce distinct labels when navigating by landmark">
+        <h2 id="updates-heading">Recent Updates</h2>
+        <ul>
+            <li>Update 1</li>
+            <li>Update 2</li>
+        </ul>
+    </aside>
+
+    <aside aria-labelledby="quicklinks-heading">
+        <h2 id="quicklinks-heading">Quick Links</h2>
+        <ul>
+            <li><a href="/link1">Link 1</a></li>
+            <li><a href="/link2">Link 2</a></li>
+        </ul>
+    </aside>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrIframeWithoutTitle - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrIframeWithoutTitle_001_violations_basic",
+    "issueId": "AI_ErrIframeWithoutTitle",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Iframes lacking title attribute for context",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <main>
+        <!-- Iframe without title -->
+        <iframe src="https://example.com/widget"
+                width="600"
+                height="400"
+                data-expected-violation="true"
+                data-violation-id="AI_ErrIframeWithoutTitle"
+                data-violation-reason="Iframe lacks title attribute. Screen readers cannot inform users of iframe content or purpose before entering frame">
+        </iframe>
+
+        <!-- Iframe with empty title -->
+        <iframe src="https://example.com/analytics"
+                width="600"
+                height="400"
+                title=""
+                data-expected-violation="true"
+                data-violation-id="AI_ErrIframeWithoutTitle"
+                data-violation-reason="Iframe has empty title attribute. Screen readers cannot describe frame content to users">
+        </iframe>
+
+        <!-- Iframe with generic title -->
+        <iframe src="https://example.com/map"
+                width="600"
+                height="400"
+                title="iframe"
+                data-expected-violation="true"
+                data-violation-id="AI_ErrIframeWithoutTitle"
+                data-violation-reason="Iframe has generic 'iframe' title that doesn't describe content. Users cannot determine frame purpose from title alone">
+        </iframe>
+    </main>
+</body>
+</html>

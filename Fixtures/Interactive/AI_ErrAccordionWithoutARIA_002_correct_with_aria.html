@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrAccordionWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrAccordionWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrAccordionWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Accordion pattern with proper ARIA attributes",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .accordion-panel { display: none; padding: 10px; border: 1px solid #ccc; }
+        .accordion-panel.active { display: block; }
+        .accordion-button { width: 100%; text-align: left; padding: 10px; border: 1px solid #ccc; background: #f0f0f0; cursor: pointer; }
+    </style>
+    <script>
+        function toggleAccordion(button) {
+            const panel = document.getElementById(button.getAttribute('aria-controls'));
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+            button.setAttribute('aria-expanded', !isExpanded);
+            panel.classList.toggle('active');
+        }
+    </script>
+</head>
+<body>
+    <h1>Frequently Asked Questions</h1>
+
+    <main>
+        <section data-expected-pass="true"
+                 data-pass-reason="Accordion implemented with proper ARIA attributes. Buttons have aria-expanded indicating state. Panels have role='region' and aria-labelledby. Screen readers announce collapsed/expanded state. Users know if content is hidden or visible. Aria-controls establishes relationship between button and panel. Complies with WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value by implementing complete accordion ARIA pattern">
+            <h2>Shipping Information</h2>
+
+            <button class="accordion-button"
+                    aria-expanded="false"
+                    aria-controls="shipping-panel-1"
+                    id="shipping-button-1"
+                    onclick="toggleAccordion(this)">
+                What are the shipping options?
+            </button>
+            <div class="accordion-panel"
+                 id="shipping-panel-1"
+                 role="region"
+                 aria-labelledby="shipping-button-1">
+                <p>We offer standard shipping (5-7 business days), express shipping (2-3 business days), and overnight shipping.</p>
+            </div>
+
+            <button class="accordion-button"
+                    aria-expanded="false"
+                    aria-controls="shipping-panel-2"
+                    id="shipping-button-2"
+                    onclick="toggleAccordion(this)">
+                How much does shipping cost?
+            </button>
+            <div class="accordion-panel"
+                 id="shipping-panel-2"
+                 role="region"
+                 aria-labelledby="shipping-button-2">
+                <p>Shipping costs vary based on your location and selected shipping method. Standard shipping is free for orders over $50.</p>
+            </div>
+        </section>
+
+        <section data-expected-pass="true"
+                 data-pass-reason="Accordion has complete ARIA implementation. Aria-expanded on buttons communicates state changes. Role='region' on panels with aria-labelledby. Screen readers identify accordion pattern correctly. Users with assistive technology get collapsed/expanded information. Programmatic relationship via aria-controls. Meets WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value by fully implementing accordion ARIA semantics">
+            <h2>Returns Policy</h2>
+
+            <button class="accordion-button"
+                    aria-expanded="false"
+                    aria-controls="returns-panel-1"
+                    id="returns-button-1"
+                    onclick="toggleAccordion(this)">
+                What is your return policy?
+            </button>
+            <div class="accordion-panel"
+                 id="returns-panel-1"
+                 role="region"
+                 aria-labelledby="returns-button-1">
+                <p>We accept returns within 30 days of purchase. Items must be unused and in original packaging.</p>
+            </div>
+
+            <button class="accordion-button"
+                    aria-expanded="false"
+                    aria-controls="returns-panel-2"
+                    id="returns-button-2"
+                    onclick="toggleAccordion(this)">
+                How do I initiate a return?
+            </button>
+            <div class="accordion-panel"
+                 id="returns-panel-2"
+                 role="region"
+                 aria-labelledby="returns-button-2">
+                <p>Contact our customer service team with your order number to receive a return authorization and shipping label.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

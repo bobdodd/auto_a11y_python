@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrDropdownWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrDropdownWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrDropdownWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Custom dropdown menus without proper ARIA attributes",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-toggle { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; min-width: 150px; z-index: 1000; }
+        .dropdown-menu.active { display: block; }
+        .dropdown-item { padding: 10px; display: block; color: black; text-decoration: none; cursor: pointer; }
+        .dropdown-item:hover { background: #f0f0f0; }
+    </style>
+    <script>
+        function toggleDropdown(button) {
+            const menu = button.nextElementSibling;
+            menu.classList.toggle('active');
+        }
+    </script>
+</head>
+<body>
+    <h1>User Menu</h1>
+
+    <main>
+        <section data-expected-violation="true"
+                 data-violation-reason="Custom dropdown implemented without ARIA attributes. Button lacks aria-haspopup and aria-expanded. Menu has no role='menu' or aria-labelledby. Menu items lack role='menuitem'. Screen readers don't announce dropdown state or menu relationship. Users don't know menu is collapsed or expanded. Keyboard navigation broken without proper ARIA. Violates WCAG 4.1.2 Name, Role, Value by missing dropdown ARIA pattern">
+            <h2>Account Actions</h2>
+
+            <div class="dropdown">
+                <button class="dropdown-toggle" onclick="toggleDropdown(this)">
+                    Account
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/profile">Profile</a>
+                    <a class="dropdown-item" href="/settings">Settings</a>
+                    <a class="dropdown-item" href="/logout">Logout</a>
+                </div>
+            </div>
+        </section>
+
+        <section data-expected-violation="true"
+                 data-violation-reason="Dropdown menu without ARIA implementation. Toggle button missing aria-haspopup='true' and aria-expanded state. Menu lacks role='menu' and relationship to button. Items don't have role='menuitem'. Screen readers can't identify dropdown pattern. Users with assistive technology miss menu state information. Keyboard users lack proper focus management. Violates WCAG 4.1.2 Name, Role, Value by not implementing dropdown ARIA semantics">
+            <h2>Language Selection</h2>
+
+            <div class="dropdown">
+                <button class="dropdown-toggle" onclick="toggleDropdown(this)">
+                    Language
+                </button>
+                <div class="dropdown-menu">
+                    <span class="dropdown-item" onclick="alert('English selected')">English</span>
+                    <span class="dropdown-item" onclick="alert('Spanish selected')">Spanish</span>
+                    <span class="dropdown-item" onclick="alert('French selected')">French</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

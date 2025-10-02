@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Ambiguous Link Text</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrAmbiguousLinkText_001_violations_basic",
+    "issueId": "AI_ErrAmbiguousLinkText",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Links with ambiguous text that doesn't make sense out of context",
+    "wcag": "2.4.4",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Products</h1>
+
+    <div class="product">
+        <h2>Wireless Mouse</h2>
+        <p>Ergonomic design with 6 buttons</p>
+        <a href="mouse.html"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrAmbiguousLinkText"
+           data-violation-reason="'Details' is ambiguous without context">Details</a>
+    </div>
+
+    <div class="product">
+        <h2>Mechanical Keyboard</h2>
+        <p>RGB backlit with Cherry MX switches</p>
+        <a href="keyboard.html"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrAmbiguousLinkText"
+           data-violation-reason="'More' doesn't indicate what it's about">More</a>
+    </div>
+
+    <div class="article">
+        <h2>10 Productivity Tips</h2>
+        <p>Boost your workflow with these tips...</p>
+        <a href="article1.html"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrAmbiguousLinkText"
+           data-violation-reason="'This' is meaningless out of context">This</a>
+    </div>
+
+    <div class="article">
+        <h2>Remote Work Best Practices</h2>
+        <p>How to stay productive from home...</p>
+        <a href="article2.html"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrAmbiguousLinkText"
+           data-violation-reason="'Link' doesn't describe destination">Link</a>
+    </div>
+</body>
+</html>

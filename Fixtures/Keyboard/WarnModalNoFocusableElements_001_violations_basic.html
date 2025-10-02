@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Modal Without Focusable Elements</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnModalNoFocusableElements_001_violations_basic",
+    "issueId": "WarnModalNoFocusableElements",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Modal dialog with no focusable elements, trapping keyboard users",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal {
+            display: block;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <h1>Page Content</h1>
+    <button>Open Modal</button>
+
+    <div class="modal-backdrop"></div>
+    <div class="modal"
+         role="dialog"
+         aria-labelledby="modal-title"
+         data-expected-violation="true"
+         data-violation-id="WarnModalNoFocusableElements"
+         data-violation-reason="Modal has no focusable elements, keyboard users trapped">
+        <h2 id="modal-title">Information</h2>
+        <p>This is an important message that you must acknowledge.</p>
+        <p>Unfortunately, there are no buttons or focusable elements to interact with.</p>
+    </div>
+</body>
+</html>

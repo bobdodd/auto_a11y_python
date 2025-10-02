@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Links Styled As Buttons</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkLooksLikeButton_001_violations_basic",
+    "issueId": "WarnLinkLooksLikeButton",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Links styled to look like buttons causing confusion",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .button-style {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Actions</h1>
+
+    <a href="submit.php"
+       class="button-style"
+       data-expected-violation="true"
+       data-violation-id="WarnLinkLooksLikeButton"
+       data-violation-reason="Link styled as button, but Space key won't activate">
+        Submit Form
+    </a>
+
+    <a href="delete.php"
+       class="button-style"
+       data-expected-violation="true"
+       data-violation-id="WarnLinkLooksLikeButton"
+       data-violation-reason="Action link styled as button, semantic mismatch">
+        Delete Account
+    </a>
+</body>
+</html>

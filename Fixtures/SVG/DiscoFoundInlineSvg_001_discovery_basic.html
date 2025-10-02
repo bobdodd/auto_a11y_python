@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inline SVG Examples - Discovery Needed</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoFoundInlineSvg_001_discovery_basic",
+    "issueId": "DiscoFoundInlineSvg",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Inline SVG elements detected that require manual review",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <p>Welcome to your dashboard. Below are your statistics:</p>
+
+    <!-- Simple icon SVG - needs review for proper accessibility -->
+    <div data-requires-review="true"
+         data-review-reason="SVG icon requires review: determine if decorative (aria-hidden) or informative (needs role and title)">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/>
+        </svg>
+        Task completed
+    </div>
+
+    <!-- Data visualization SVG - needs review for complex accessibility -->
+    <div data-requires-review="true"
+         data-review-reason="SVG chart requires review: needs title, desc, and text alternative for data">
+        <h2>Sales Performance</h2>
+        <svg width="400" height="200" viewBox="0 0 400 200">
+            <rect x="50" y="150" width="40" height="50" fill="#4CAF50"/>
+            <rect x="110" y="120" width="40" height="80" fill="#4CAF50"/>
+            <rect x="170" y="80" width="40" height="120" fill="#4CAF50"/>
+            <rect x="230" y="100" width="40" height="100" fill="#4CAF50"/>
+            <line x1="40" y1="200" x2="280" y2="200" stroke="black" stroke-width="2"/>
+            <line x1="40" y1="50" x2="40" y2="200" stroke="black" stroke-width="2"/>
+        </svg>
+    </div>
+
+    <!-- Decorative SVG - needs review to confirm it should be hidden -->
+    <div data-requires-review="true"
+         data-review-reason="SVG decoration requires review: confirm if purely decorative and should have aria-hidden">
+        <svg width="200" height="100" viewBox="0 0 200 100">
+            <rect width="200" height="100" fill="url(#grad1)"/>
+            <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+
+    <!-- Interactive SVG - needs review for keyboard accessibility -->
+    <div data-requires-review="true"
+         data-review-reason="Interactive SVG requires review: ensure keyboard accessibility, focus management, and state announcements">
+        <p>Click the shapes to toggle their color:</p>
+        <svg width="300" height="200" viewBox="0 0 300 200">
+            <circle cx="75" cy="75" r="50" fill="#2196F3" onclick="this.setAttribute('fill', this.getAttribute('fill')==='#2196F3' ? '#FF5722' : '#2196F3')"/>
+            <rect x="150" y="25" width="100" height="100" fill="#4CAF50" onclick="this.setAttribute('fill', this.getAttribute('fill')==='#4CAF50' ? '#9C27B0' : '#4CAF50')"/>
+        </svg>
+    </div>
+</body>
+</html>

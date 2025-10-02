@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentInfo Landmark Single Labeling Method - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method",
+        "issueId": "ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 4,
+        "description": "ContentInfo landmarks using only one labeling method (aria-label OR aria-labelledby, not both)",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>ContentInfo Landmark Single Labeling Method - Correct</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Proper ARIA Attribute Usage</h2>
+            <p>Each landmark should use exactly one labeling method: either aria-label OR aria-labelledby, never both. This ensures clarity and follows WCAG 4.1.2 compliance.</p>
+        </article>
+    </main>
+
+    <footer role="contentinfo"
+            aria-label="Main site footer"
+            data-expected-pass="true"
+            data-pass-reason="ContentInfo landmark uses only aria-label for accessible name, clear and unambiguous labeling method">
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+        <nav aria-label="Footer navigation">
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a> |
+            <a href="/accessibility">Accessibility Statement</a>
+        </nav>
+    </footer>
+
+    <div role="contentinfo"
+         aria-labelledby="contact-heading"
+         data-expected-pass="true"
+         data-pass-reason="ContentInfo landmark uses only aria-labelledby to reference visible heading, provides clear accessible name without ambiguity">
+        <h2 id="contact-heading">Contact Information</h2>
+        <address>
+            <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+            <p>Phone: <a href="tel:+15551234567">(555) 123-4567</a></p>
+            <p>Address: 123 Main Street, Suite 100, City, ST 12345</p>
+        </address>
+    </div>
+
+    <div role="contentinfo"
+         aria-label="Social media links"
+         data-expected-pass="true"
+         data-pass-reason="ContentInfo landmark uses only aria-label, single clear labeling method without conflicting attributes">
+        <h2>Connect With Us</h2>
+        <nav aria-label="Social media">
+            <a href="https://twitter.com/example">Twitter</a>
+            <a href="https://facebook.com/example">Facebook</a>
+            <a href="https://linkedin.com/company/example">LinkedIn</a>
+            <a href="https://instagram.com/example">Instagram</a>
+        </nav>
+    </div>
+
+    <footer data-expected-pass="true"
+            data-pass-reason="Single unlabeled contentinfo landmark (footer element) is acceptable when only one exists on page, no labeling attributes needed">
+        <p>Newsletter Signup</p>
+        <form>
+            <label for="newsletter-email">Email address:</label>
+            <input type="email" id="newsletter-email" name="email" required>
+            <button type="submit">Subscribe</button>
+        </form>
+        <p><small>We respect your privacy and will never share your email.</small></p>
+    </footer>
+
+    <p style="margin: 2rem;"><strong>Best Practice:</strong> Use aria-labelledby when you have a visible heading that describes the landmark. Use aria-label when you need a label but don't have a suitable visible element to reference. Never use both on the same element.</p>
+</body>
+</html>

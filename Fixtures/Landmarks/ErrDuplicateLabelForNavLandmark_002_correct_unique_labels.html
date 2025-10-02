@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Landmarks with Unique Labels - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrDuplicateLabelForNavLandmark_002_correct_unique_labels",
+        "issueId": "ErrDuplicateLabelForNavLandmark",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 4,
+        "description": "Navigation landmarks with unique accessible names for clear distinction",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Navigation Landmarks with Unique Labels - Correct</h1>
+
+        <nav aria-label="Main navigation"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark has unique accessible name 'Main navigation', distinct from other nav landmarks on page">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <nav aria-label="User account"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark has unique accessible name 'User account', clearly distinguishable from main navigation">
+            <ul>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <li><a href="/cart">Cart</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Complete Guide to Web Accessibility</h2>
+            <p>This comprehensive guide covers all aspects of creating accessible websites.</p>
+
+            <nav aria-label="Article table of contents"
+                 data-expected-pass="true"
+                 data-pass-reason="Navigation landmark has unique accessible name 'Article table of contents', helps users identify in-page navigation">
+                <h3>Contents</h3>
+                <ul>
+                    <li><a href="#introduction">Introduction</a></li>
+                    <li><a href="#wcag">WCAG Guidelines</a></li>
+                    <li><a href="#testing">Testing Methods</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                </ul>
+            </nav>
+
+            <p>Main article content continues here...</p>
+        </article>
+    </main>
+
+    <footer>
+        <nav aria-label="Footer links"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark has unique accessible name 'Footer links', screen reader users can immediately identify this as footer navigation">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/accessibility">Accessibility Statement</a></li>
+                <li><a href="/sitemap">Site Map</a></li>
+            </ul>
+        </nav>
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+    </footer>
+
+    <p style="margin: 2rem;"><strong>Best Practice Examples:</strong></p>
+    <ul>
+        <li><strong>Main navigation</strong> - Primary site navigation in header</li>
+        <li><strong>User account</strong> - Login, profile, cart links</li>
+        <li><strong>Article table of contents</strong> - In-page section links</li>
+        <li><strong>Footer links</strong> - Legal and sitemap navigation</li>
+        <li><strong>Breadcrumb navigation</strong> - Hierarchical page location</li>
+        <li><strong>Sidebar navigation</strong> - Section-specific links</li>
+    </ul>
+</body>
+</html>

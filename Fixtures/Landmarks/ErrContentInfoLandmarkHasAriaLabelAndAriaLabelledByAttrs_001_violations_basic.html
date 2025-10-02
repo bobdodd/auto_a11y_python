@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentInfo Landmark Conflicting ARIA Attributes - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic",
+        "issueId": "ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "ContentInfo landmarks with both aria-label and aria-labelledby attributes",
+        "wcag": "4.1.2",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>ContentInfo Landmark Conflicting ARIA Attributes - Violations</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding ARIA Attribute Conflicts</h2>
+            <p>When an element has both aria-label and aria-labelledby, the aria-labelledby takes precedence. However, having both attributes creates confusion and violates WCAG 4.1.2 (Name, Role, Value).</p>
+        </article>
+    </main>
+
+    <footer role="contentinfo"
+            aria-label="Main site footer"
+            aria-labelledby="footer-heading"
+            data-expected-violation="true"
+            data-violation-id="ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+            data-violation-reason="ContentInfo landmark has both aria-label and aria-labelledby, creating ambiguity. Only aria-labelledby will be used, making aria-label redundant and confusing">
+        <h2 id="footer-heading">Company Information</h2>
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+        <nav aria-label="Footer navigation">
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a>
+        </nav>
+    </footer>
+
+    <div role="contentinfo"
+         aria-label="Contact footer section"
+         aria-labelledby="contact-footer-heading empty-element"
+         data-expected-violation="true"
+         data-violation-id="ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+         data-violation-reason="ContentInfo landmark has both aria-label and aria-labelledby attributes, only one should be used. This creates confusion about which labeling method is intended">
+        <h2 id="contact-footer-heading">Contact Us</h2>
+        <span id="empty-element"></span>
+        <address>
+            <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+            <p>Phone: (555) 123-4567</p>
+        </address>
+    </div>
+
+    <div role="contentinfo"
+         aria-labelledby="social-heading"
+         aria-label="Social media footer"
+         data-expected-violation="true"
+         data-violation-id="ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs"
+         data-violation-reason="ContentInfo landmark specifies both aria-labelledby and aria-label. The aria-labelledby takes precedence, making aria-label unnecessary and violating best practices">
+        <h2 id="social-heading">Follow Us</h2>
+        <ul>
+            <li><a href="https://twitter.com/example">Twitter</a></li>
+            <li><a href="https://facebook.com/example">Facebook</a></li>
+            <li><a href="https://linkedin.com/company/example">LinkedIn</a></li>
+        </ul>
+    </div>
+
+    <p style="margin: 2rem;">Using both aria-label and aria-labelledby on the same element creates ambiguity and violates WCAG 4.1.2. While aria-labelledby takes precedence, having both attributes suggests unclear intent and makes code harder to maintain.</p>
+</body>
+</html>

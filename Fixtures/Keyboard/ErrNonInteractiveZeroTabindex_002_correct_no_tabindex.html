@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Non-Interactive Elements Without Tabindex</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNonInteractiveZeroTabindex_002_correct_no_tabindex",
+    "issueId": "ErrNonInteractiveZeroTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Non-interactive elements properly not in tab order",
+    "wcag": "2.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Article Content</h1>
+
+    <p data-expected-pass="true"
+       data-pass-reason="Regular paragraph without tabindex, not focusable">
+        This is a regular paragraph that is correctly not in the tab order.
+    </p>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Non-interactive div without tabindex">
+        <h2>Section Title</h2>
+        <p>Section content that is not interactive.</p>
+    </div>
+
+    <span data-expected-pass="true"
+          data-pass-reason="Static text without tabindex">
+        Important notice
+    </span>
+
+    <a href="#content">Skip to content</a>
+</body>
+</html>

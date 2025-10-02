@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Non-Interactive Elements With Tabindex Zero</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNonInteractiveZeroTabindex_001_violations_basic",
+    "issueId": "ErrNonInteractiveZeroTabindex",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Non-interactive elements made focusable with tabindex=0",
+    "wcag": "2.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Article Content</h1>
+
+    <p tabindex="0"
+       data-expected-violation="true"
+       data-violation-id="ErrNonInteractiveZeroTabindex"
+       data-violation-reason="Static paragraph with tabindex=0 adds unnecessary tab stop">
+        This is a regular paragraph that has been made focusable unnecessarily.
+    </p>
+
+    <div tabindex="0"
+         data-expected-violation="true"
+         data-violation-id="ErrNonInteractiveZeroTabindex"
+         data-violation-reason="Non-interactive div with tabindex=0 clutters keyboard navigation">
+        <h2>Section Title</h2>
+        <p>Section content that is not interactive.</p>
+    </div>
+
+    <span tabindex="0"
+          data-expected-violation="true"
+          data-violation-id="ErrNonInteractiveZeroTabindex"
+          data-violation-reason="Static text span with tabindex=0 creates confusion">
+        Important notice
+    </span>
+
+    <a href="#content">Skip to content</a>
+</body>
+</html>

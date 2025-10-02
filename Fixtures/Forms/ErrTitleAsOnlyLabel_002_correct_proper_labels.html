@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Proper Labels, Title As Supplement</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTitleAsOnlyLabel_002_correct_proper_labels",
+    "issueId": "ErrTitleAsOnlyLabel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Form fields with proper labels, title as optional supplement",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Search</h1>
+    <form>
+        <label for="search-term"
+               data-expected-pass="true"
+               data-pass-reason="Visible label element, title optional">Search Term</label>
+        <input type="text"
+               id="search-term"
+               title="Enter keywords to search">
+
+        <label for="category"
+               data-expected-pass="true"
+               data-pass-reason="Label element provides accessible name">Category</label>
+        <select id="category" title="Filter by category">
+            <option>All</option>
+            <option>Products</option>
+            <option>Services</option>
+        </select>
+
+        <input type="checkbox"
+               id="archived"
+               data-expected-pass="true"
+               data-pass-reason="Label element associates text with checkbox"
+               title="Check to include archived results">
+        <label for="archived">Include archived items</label>
+
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

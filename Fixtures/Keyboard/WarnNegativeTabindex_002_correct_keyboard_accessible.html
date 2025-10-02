@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Interactive Elements Keyboard Accessible</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNegativeTabindex_002_correct_keyboard_accessible",
+    "issueId": "WarnNegativeTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Interactive elements properly accessible via keyboard",
+    "wcag": "2.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Actions</h1>
+
+    <button data-expected-pass="true"
+            data-pass-reason="Interactive button in natural tab order">
+        Save Document
+    </button>
+
+    <a href="#settings"
+       data-expected-pass="true"
+       data-pass-reason="Link accessible via keyboard">
+        Settings
+    </a>
+
+    <input type="checkbox"
+           id="terms"
+           data-expected-pass="true"
+           data-pass-reason="Form control in tab order">
+    <label for="terms">I accept the terms</label>
+
+    <div id="modal-content"
+         tabindex="-1"
+         data-expected-pass="true"
+         data-pass-reason="Container with tabindex=-1 for programmatic focus only, appropriate use">
+        <h2>Modal Dialog</h2>
+        <p>This container is focusable by script but not in tab order.</p>
+    </div>
+</body>
+</html>

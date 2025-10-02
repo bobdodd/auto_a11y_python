@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnColorRelatedStyleDefinedExplicitlyInStyleTag - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorRelatedStyleDefinedExplicitlyInStyleTag_002_correct_css_variables",
+    "issueId": "WarnColorRelatedStyleDefinedExplicitlyInStyleTag",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Colors defined using CSS custom properties (variables)",
+    "wcag": "1.4.3, 1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        :root {
+            --notification-text: #333333;
+            --notification-bg: #ffffcc;
+            --error-color: #cc0000;
+            --success-bg: #00ff00;
+            --success-border: #008800;
+        }
+
+        .notification {
+            color: var(--notification-text);
+            background-color: var(--notification-bg);
+        }
+
+        .error-text {
+            color: var(--error-color);
+        }
+
+        .success-box {
+            background-color: var(--success-bg);
+            border-color: var(--success-border);
+        }
+    </style>
+</head>
+<body>
+    <h1>System Messages</h1>
+
+    <main>
+        <section>
+            <h2>Notifications</h2>
+
+            <div class="notification"
+                 data-expected-pass="true"
+                 data-pass-reason="Colors defined using CSS custom properties (variables) instead of hard-coded values. Makes theme switching and dark mode easy to implement. Users with custom color preferences can override CSS variables. Flexible color system enables accessibility features. Complies with WCAG 1.4.3 Contrast and 1.4.8 Visual Presentation best practices - CSS variables enable easy theming and user customization">
+                <p>You have 3 new messages.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Error Messages</h2>
+
+            <p class="error-text"
+               data-expected-pass="true"
+               data-pass-reason="Error color uses CSS variable not hard-coded value. Variable-based colors enable theme switching easily. Users who need high contrast can adjust CSS variables globally. Colors adapt to user preferences and system settings. Meets WCAG 1.4.3 and 1.4.8 best practices - CSS variables enable flexible color schemes that adapt to accessibility needs">
+                Error: Invalid input detected.
+            </p>
+        </section>
+
+        <section>
+            <h2>Success Confirmation</h2>
+
+            <div class="success-box"
+                 data-expected-pass="true"
+                 data-pass-reason="Success colors use CSS variables instead of hard-coded values. Variable-based approach supports dark mode and high contrast mode. Users with color vision deficiencies can customize colors by overriding variables. Enhanced theme flexibility. Complies with WCAG 1.4.3 Contrast and 1.4.8 Visual Presentation - CSS custom properties preferred over hard-coded colors for accessibility">
+                <p>Your changes have been saved successfully!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

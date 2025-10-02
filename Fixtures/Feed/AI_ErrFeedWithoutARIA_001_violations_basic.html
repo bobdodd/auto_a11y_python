@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrFeedWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrFeedWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrFeedWithoutARIA",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Feed/stream components lacking proper ARIA feed pattern",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .feed {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .feed-item {
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+        }
+        .feed-item:last-child {
+            border-bottom: none;
+        }
+        .feed-author {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        .feed-time {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .feed-content {
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Social Feed</h1>
+
+    <main>
+        <!-- Feed without ARIA feed pattern -->
+        <div class="feed"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrFeedWithoutARIA"
+             data-violation-reason="Feed lacks role='feed', items lack role='article', and no aria-busy or aria-setsize/aria-posinset. Screen readers cannot identify as dynamic feed or navigate efficiently with reading mode">
+            <div class="feed-item">
+                <div class="feed-author">John Smith</div>
+                <div class="feed-time">2 hours ago</div>
+                <div class="feed-content">
+                    Just finished an amazing hike! The views were spectacular.
+                </div>
+            </div>
+            <div class="feed-item">
+                <div class="feed-author">Jane Doe</div>
+                <div class="feed-time">3 hours ago</div>
+                <div class="feed-content">
+                    Excited to announce the launch of our new product!
+                </div>
+            </div>
+            <div class="feed-item">
+                <div class="feed-author">Bob Johnson</div>
+                <div class="feed-time">5 hours ago</div>
+                <div class="feed-content">
+                    Great meeting with the team today. Looking forward to what's next!
+                </div>
+            </div>
+        </div>
+
+        <button onclick="loadMore()">Load More</button>
+    </main>
+
+    <script>
+        function loadMore() {
+            // Load more feed items
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrAlertWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrAlertWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrAlertWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Alert dialogs and banners with proper ARIA markup",
+    "wcag": "4.1.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <h1>System Messages - Correct Usage</h1>
+
+    <main>
+        <!-- Success alert with role="status" - CORRECT -->
+        <div class="alert alert-success"
+             role="status"
+             aria-live="polite"
+             aria-atomic="true"
+             data-expected-pass="true"
+             data-pass-reason="Success alert uses role='status' and aria-live='polite'. Screen readers announce message without interrupting user activity">
+            <strong>Success!</strong> Your changes have been saved.
+        </div>
+
+        <!-- Error alert with role="alert" - CORRECT -->
+        <div class="alert alert-error"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true"
+             data-expected-pass="true"
+             data-pass-reason="Error alert uses role='alert' and aria-live='assertive'. Critical error message immediately announced to screen reader users">
+            <strong>Error!</strong> Unable to save changes. Please try again.
+        </div>
+
+        <!-- Warning alert with role="alert" - CORRECT -->
+        <div class="alert alert-warning"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true"
+             data-expected-pass="true"
+             data-pass-reason="Warning alert uses role='alert' with aria-live='assertive' and aria-atomic='true'. Important warning immediately and completely announced to assistive technology">
+            <strong>Warning!</strong> Your session will expire in 5 minutes.
+        </div>
+    </main>
+</body>
+</html>

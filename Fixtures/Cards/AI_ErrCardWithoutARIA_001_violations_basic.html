@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrCardWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrCardWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrCardWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Card components lacking proper semantic structure and ARIA",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem;
+            width: 300px;
+        }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: #f0f0f0;
+            margin-bottom: 1rem;
+        }
+        .card-content {
+            margin-bottom: 1rem;
+        }
+        .card-action {
+            padding: 0.5rem 1rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Catalog</h1>
+
+    <main>
+        <!-- Card without semantic structure -->
+        <div class="card"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrCardWithoutARIA"
+             data-violation-reason="Card uses divs without semantic HTML (article) or ARIA landmarks. Screen readers cannot identify card structure or navigate card sections effectively">
+            <div class="card-image" style="background-image: url('laptop.jpg')"></div>
+            <div class="card-title">Laptop Computer</div>
+            <div class="card-content">
+                High-performance laptop with 16GB RAM and 512GB SSD. Perfect for work and entertainment.
+            </div>
+            <div class="card-price">$999.99</div>
+            <button class="card-action">Add to Cart</button>
+        </div>
+
+        <!-- Clickable card without proper semantics -->
+        <div class="card"
+             onclick="viewProduct()"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrCardWithoutARIA"
+             data-violation-reason="Entire card is clickable but lacks button/link role and keyboard accessibility. Screen readers cannot identify as interactive or navigate with keyboard">
+            <div class="card-image" style="background-image: url('phone.jpg')"></div>
+            <div class="card-title">Smartphone</div>
+            <div class="card-content">
+                Latest smartphone with advanced camera and 5G connectivity.
+            </div>
+            <div class="card-price">$799.99</div>
+        </div>
+    </main>
+
+    <script>
+        function viewProduct() {
+            window.location.href = '/product';
+        }
+    </script>
+</body>
+</html>

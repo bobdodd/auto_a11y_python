@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrFeedWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrFeedWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrFeedWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Feed/stream components with proper ARIA feed pattern",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .feed {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .feed-item {
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+        }
+        .feed-item:last-child {
+            border-bottom: none;
+        }
+        .feed-item:focus {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+        .feed-author {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        .feed-time {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .feed-content {
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Social Feed - Correct Usage</h1>
+
+    <main>
+        <!-- Feed with proper ARIA feed pattern - CORRECT -->
+        <div class="feed"
+             role="feed"
+             aria-label="Social media feed"
+             aria-busy="false"
+             data-expected-pass="true"
+             data-pass-reason="Feed uses role='feed' with aria-label and aria-busy. Items have role='article' with aria-posinset and aria-setsize. Screen readers can navigate efficiently in reading mode and track position in feed">
+            <article class="feed-item"
+                     role="article"
+                     aria-posinset="1"
+                     aria-setsize="3"
+                     aria-labelledby="author1"
+                     tabindex="0">
+                <div id="author1" class="feed-author">John Smith</div>
+                <div class="feed-time">
+                    <time datetime="2024-01-15T14:00:00">2 hours ago</time>
+                </div>
+                <div class="feed-content">
+                    Just finished an amazing hike! The views were spectacular.
+                </div>
+            </article>
+
+            <article class="feed-item"
+                     role="article"
+                     aria-posinset="2"
+                     aria-setsize="3"
+                     aria-labelledby="author2"
+                     tabindex="0">
+                <div id="author2" class="feed-author">Jane Doe</div>
+                <div class="feed-time">
+                    <time datetime="2024-01-15T13:00:00">3 hours ago</time>
+                </div>
+                <div class="feed-content">
+                    Excited to announce the launch of our new product!
+                </div>
+            </article>
+
+            <article class="feed-item"
+                     role="article"
+                     aria-posinset="3"
+                     aria-setsize="3"
+                     aria-labelledby="author3"
+                     tabindex="0">
+                <div id="author3" class="feed-author">Bob Johnson</div>
+                <div class="feed-time">
+                    <time datetime="2024-01-15T11:00:00">5 hours ago</time>
+                </div>
+                <div class="feed-content">
+                    Great meeting with the team today. Looking forward to what's next!
+                </div>
+            </article>
+        </div>
+
+        <button onclick="loadMore()" aria-controls="feed">Load More</button>
+    </main>
+
+    <script>
+        function loadMore() {
+            const feed = document.querySelector('[role="feed"]');
+            feed.setAttribute('aria-busy', 'true');
+
+            // Simulate loading
+            setTimeout(() => {
+                // Add new items and update aria-setsize
+                feed.setAttribute('aria-busy', 'false');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

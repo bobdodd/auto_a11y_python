@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLargeTextContrastAAA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLargeTextContrastAAA_001_violations_basic",
+    "issueId": "ErrLargeTextContrastAAA",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Large text not meeting WCAG AAA contrast ratio (4.5:1)",
+    "wcag": "1.4.6",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Large text is 18pt+ (24px+) or 14pt+ bold (18.66px+) */
+        .large-heading {
+            font-size: 28px;
+            color: #767676; /* 4.5:1 contrast with white - needs 4.5:1 for AAA */
+            background: white;
+        }
+        .large-bold {
+            font-size: 20px;
+            font-weight: bold;
+            color: #949494; /* ~2.8:1 contrast - fails AAA */
+            background: white;
+        }
+        .large-price {
+            font-size: 32px;
+            color: #959595; /* ~2.8:1 contrast - fails AAA */
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Special Offers</h1>
+
+    <main>
+        <!-- Large heading with insufficient AAA contrast - VIOLATION -->
+        <h2 class="large-heading"
+            data-expected-violation="true"
+            data-violation-id="ErrLargeTextContrastAAA"
+            data-violation-reason="Large heading text has ~4.5:1 contrast. Meets AA but fails AAA requirement of 4.5:1 for large text. Users with low vision or color blindness struggle to read. Poor visibility in bright sunlight or glare conditions">
+            Summer Sale Event
+        </h2>
+
+        <section>
+            <!-- Large bold text with low contrast - VIOLATION -->
+            <p class="large-bold"
+               data-expected-violation="true"
+               data-violation-id="ErrLargeTextContrastAAA"
+               data-violation-reason="Large bold text has only ~2.8:1 contrast ratio. Fails both AA (3:1) and AAA (4.5:1) requirements. Severely impacts readability for users with low vision. Text difficult to distinguish from background. Aging users and users in challenging lighting cannot read text">
+                Limited Time: 50% Off All Items
+            </p>
+        </section>
+
+        <section>
+            <!-- Large price with insufficient contrast - VIOLATION -->
+            <div class="large-price"
+                 data-expected-violation="true"
+                 data-violation-id="ErrLargeTextContrastAAA"
+                 data-violation-reason="Large price text has ~2.8:1 contrast. Does not meet AAA standard of 4.5:1 for large text. Users with color vision deficiencies cannot read pricing. Poor contrast affects users with low vision. Critical information inaccessible to many users">
+                $19.99
+            </div>
+            <p>Regular price: $39.99</p>
+        </section>
+    </main>
+</body>
+</html>

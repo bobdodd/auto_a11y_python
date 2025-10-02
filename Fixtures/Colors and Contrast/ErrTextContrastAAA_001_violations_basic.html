@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTextContrastAAA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTextContrastAAA_001_violations_basic",
+    "issueId": "ErrTextContrastAAA",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Normal text not meeting WCAG AAA contrast ratio (7:1)",
+    "wcag": "1.4.6",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Normal text requires 7:1 for AAA (4.5:1 for AA) */
+        .body-text {
+            font-size: 16px;
+            color: #767676; /* 4.5:1 contrast - meets AA but fails AAA */
+            background: white;
+        }
+        .label-text {
+            font-size: 14px;
+            color: #888888; /* ~3.5:1 contrast - fails both AA and AAA */
+            background: white;
+        }
+        .caption-text {
+            font-size: 12px;
+            color: #999999; /* ~2.8:1 contrast - fails both AA and AAA */
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Privacy Policy</h1>
+
+    <main>
+        <!-- Normal text with AA but not AAA contrast - VIOLATION -->
+        <p class="body-text"
+           data-expected-violation="true"
+           data-violation-id="ErrTextContrastAAA"
+           data-violation-reason="Body text has 4.5:1 contrast. Meets AA minimum but fails AAA requirement of 7:1 for normal text. Users with low vision or moderate color blindness may struggle. Reduced readability in non-ideal viewing conditions. Does not meet highest accessibility standard">
+            We collect and process your personal data in accordance with applicable privacy laws. Your information is stored securely and used only for the purposes outlined in this policy.
+        </p>
+
+        <section>
+            <!-- Label with poor contrast - VIOLATION -->
+            <div>
+                <span class="label-text"
+                      data-expected-violation="true"
+                      data-violation-id="ErrTextContrastAAA"
+                      data-violation-reason="Label text has only ~3.5:1 contrast. Fails AA requirement of 4.5:1 and AAA requirement of 7:1. Severely impacts users with low vision. Text difficult to read for users with color vision deficiencies. Poor accessibility for all users in challenging lighting">
+                    Last Updated:
+                </span>
+                January 15, 2025
+            </div>
+        </section>
+
+        <section>
+            <!-- Caption with very low contrast - VIOLATION -->
+            <figure>
+                <img src="data-flow.png" alt="Diagram showing how user data flows through our systems">
+                <figcaption class="caption-text"
+                            data-expected-violation="true"
+                            data-violation-id="ErrTextContrastAAA"
+                            data-violation-reason="Caption text has only ~2.8:1 contrast ratio. Fails both AA (4.5:1) and AAA (7:1) requirements. Caption nearly invisible to users with low vision. Users with color blindness cannot read caption. Critical image description inaccessible">
+                    Figure 1: Data flow diagram showing collection, processing, and storage
+                </figcaption>
+            </figure>
+        </section>
+    </main>
+</body>
+</html>

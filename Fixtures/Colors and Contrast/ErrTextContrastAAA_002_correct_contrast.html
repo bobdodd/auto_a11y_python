@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTextContrastAAA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTextContrastAAA_002_correct_contrast",
+    "issueId": "ErrTextContrastAAA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Normal text meeting WCAG AAA contrast ratio (7:1 or higher)",
+    "wcag": "1.4.6",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Normal text requires 7:1 for AAA */
+        .body-text {
+            font-size: 16px;
+            color: #595959; /* 7:1 contrast - meets AAA */
+            background: white;
+        }
+        .label-text {
+            font-size: 14px;
+            color: #4a4a4a; /* ~9:1 contrast - exceeds AAA */
+            background: white;
+        }
+        .caption-text {
+            font-size: 12px;
+            color: #333333; /* ~12.6:1 contrast - far exceeds AAA */
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Privacy Policy</h1>
+
+    <main>
+        <!-- Normal text with AAA contrast - CORRECT -->
+        <p class="body-text"
+           data-expected-pass="true"
+           data-pass-reason="Body text has 7:1 contrast ratio. Meets AAA requirement for normal text. Users with low vision can read easily. Good readability for users with color blindness. Excellent accessibility in all viewing conditions. Meets highest WCAG standard">
+            We collect and process your personal data in accordance with applicable privacy laws. Your information is stored securely and used only for the purposes outlined in this policy.
+        </p>
+
+        <section>
+            <!-- Label with excellent contrast - CORRECT -->
+            <div>
+                <span class="label-text"
+                      data-expected-pass="true"
+                      data-pass-reason="Label text has ~9:1 contrast. Exceeds AAA requirement of 7:1. Excellent readability for users with low vision. Clear text for users with color vision deficiencies. Accessible in all lighting conditions including bright sunlight">
+                    Last Updated:
+                </span>
+                January 15, 2025
+            </div>
+        </section>
+
+        <section>
+            <!-- Caption with very high contrast - CORRECT -->
+            <figure>
+                <img src="data-flow.png" alt="Diagram showing how user data flows through our systems">
+                <figcaption class="caption-text"
+                            data-expected-pass="true"
+                            data-pass-reason="Caption text has ~12.6:1 contrast ratio. Far exceeds AAA requirement of 7:1. Caption highly visible to all users including those with low vision. Excellent accessibility for users with color blindness. Critical image description accessible to everyone">
+                    Figure 1: Data flow diagram showing collection, processing, and storage
+                </figcaption>
+            </figure>
+        </section>
+    </main>
+</body>
+</html>

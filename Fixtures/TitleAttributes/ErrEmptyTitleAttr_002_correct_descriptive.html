@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrEmptyTitleAttr - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyTitleAttr_002_correct_descriptive",
+    "issueId": "ErrEmptyTitleAttr",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Elements without empty title attributes",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Catalog</h1>
+
+    <main>
+        <section>
+            <!-- Link without title attribute - CORRECT -->
+            <p data-expected-pass="true"
+               data-pass-reason="Link has no title attribute. Link text 'new products' is self-explanatory. No empty or meaningless attributes. Clean markup. Screen readers announce link text clearly">
+                Check out our
+                <a href="/new-products">new products</a>
+                this week.
+            </p>
+        </section>
+
+        <section>
+            <!-- Image without title attribute - CORRECT -->
+            <img src="product.jpg"
+                 alt="Wireless headphones"
+                 data-expected-pass="true"
+                 data-pass-reason="Image has meaningful alt text without empty title. Alt text provides complete description. No unnecessary attributes. Screen readers announce alt text clearly. Proper semantic markup">
+
+            <!-- Abbreviation with visible expansion - CORRECT -->
+            <p data-expected-pass="true"
+               data-pass-reason="Abbreviation expanded in visible text on first use. No need for title attribute. All users can read 'gigabytes'. Screen readers announce complete information. Accessible to mobile users who cannot hover">
+                Available in 128 gigabytes (GB) and 256GB capacities.
+            </p>
+        </section>
+
+        <section>
+            <h2>Specifications</h2>
+            <ul>
+                <li>Battery Life: 30 hours</li>
+                <li>Bluetooth 5.0</li>
+                <li>Active Noise Cancellation</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

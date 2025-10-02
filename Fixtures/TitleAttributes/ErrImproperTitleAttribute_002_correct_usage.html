@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImproperTitleAttribute - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImproperTitleAttribute_002_correct_usage",
+    "issueId": "ErrImproperTitleAttribute",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Proper form field labeling without improper title use",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .help-text {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contact Form</h1>
+
+    <main>
+        <form>
+            <!-- No title on container - CORRECT -->
+            <div data-expected-pass="true"
+                 data-pass-reason="Container div has no title attribute. Uses proper semantic markup with label and input. All users can access form fields. No reliance on tooltips for critical information">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name">
+            </div>
+
+            <!-- Label without redundant title - CORRECT -->
+            <div data-expected-pass="true"
+                 data-pass-reason="Label element without redundant title. Visible label text is clear and sufficient. Screen readers announce label once. Clean, efficient markup. No duplicate information">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email">
+            </div>
+
+            <!-- Visible help text instead of title - CORRECT -->
+            <div data-expected-pass="true"
+                 data-pass-reason="Format instructions provided as visible helper text. All users can see format requirements. Mobile users have access to instructions. Keyboard users can read without hover. Proper use of aria-describedby for association">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" aria-describedby="phone-format">
+                <div id="phone-format" class="help-text">
+                    Format: (123) 456-7890
+                </div>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+</body>
+</html>

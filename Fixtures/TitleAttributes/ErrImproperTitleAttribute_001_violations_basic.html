@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImproperTitleAttribute - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImproperTitleAttribute_001_violations_basic",
+    "issueId": "ErrImproperTitleAttribute",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Improper use of title attributes",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form</h1>
+
+    <main>
+        <form>
+            <!-- Title on non-interactive element - VIOLATION -->
+            <div title="This is the name section"
+                 data-expected-violation="true"
+                 data-violation-id="ErrImproperTitleAttribute"
+                 data-violation-reason="Title attribute on non-interactive div element. Div is not focusable so title cannot be accessed. Mobile users cannot see tooltip. Keyboard users cannot trigger hover. Improper use of title on container element">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name">
+            </div>
+
+            <!-- Title duplicating visible label - VIOLATION -->
+            <div>
+                <label for="email"
+                       title="Email Address"
+                       data-expected-violation="true"
+                       data-violation-id="ErrImproperTitleAttribute"
+                       data-violation-reason="Title attribute duplicates visible label text. Redundant information adds no value. Screen readers may announce label twice. Unnecessary markup. Should remove redundant title">
+                    Email Address:
+                </label>
+                <input type="email" id="email" name="email">
+            </div>
+
+            <!-- Title on span with important information - VIOLATION -->
+            <div>
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone">
+                <span title="Format: (123) 456-7890"
+                      data-expected-violation="true"
+                      data-violation-id="ErrImproperTitleAttribute"
+                      data-violation-reason="Title on non-focusable span element. Format instructions only in tooltip. Mobile users cannot see format requirements. Keyboard users cannot access critical information. Should use visible text for instructions">
+                    9
+                </span>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+</body>
+</html>

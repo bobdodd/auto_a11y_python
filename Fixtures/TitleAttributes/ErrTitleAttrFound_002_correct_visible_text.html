@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTitleAttrFound - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTitleAttrFound_002_correct_visible_text",
+    "issueId": "ErrTitleAttrFound",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Important information provided as visible text instead of title attributes",
+    "wcag": "3.3.2, 4.1.2",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .help-text {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Registration</h1>
+
+    <main>
+        <form>
+            <!-- Visible label instead of title - CORRECT -->
+            <div class="form-group"
+                 data-expected-pass="true"
+                 data-pass-reason="Form field uses visible label element. All users can see and access the label. Mobile users see the label text. Screen readers announce label consistently. No reliance on title attribute for critical information">
+                <label for="username">Username:</label>
+                <input type="text"
+                       id="username"
+                       name="username">
+            </div>
+
+            <!-- Visible helper text instead of title - CORRECT -->
+            <div class="form-group"
+                 data-expected-pass="true"
+                 data-pass-reason="Password requirements shown as visible helper text. Mobile and touch screen users can read requirements. Always visible without needing hover. Users with cognitive disabilities have time to read. Can be resized by users with low vision. Translated by browser tools">
+                <label for="password">Password:</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       aria-describedby="password-requirements">
+                <div id="password-requirements" class="help-text">
+                    Must be at least 8 characters with one uppercase letter, one number, and one special character
+                </div>
+            </div>
+
+            <!-- Descriptive link text instead of title - CORRECT -->
+            <p data-expected-pass="true"
+               data-pass-reason="Important information provided as visible text. Legal agreement details accessible to all users. Text persistent and doesn't disappear. Can be resized for better readability. Properly translated by browser tools. All users understand terms before registering">
+                By registering you agree to our
+                <a href="/terms">Terms and Conditions</a>
+                which govern your use of our service.
+            </p>
+
+            <button type="submit">Register</button>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNoBannerLandmarkOnPage - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoBannerLandmarkOnPage_001_violations_basic",
+    "issueId": "ErrNoBannerLandmarkOnPage",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page without banner landmark for header",
+    "wcag": "1.3.1, 2.4.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .site-header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrNoBannerLandmarkOnPage"
+      data-violation-reason="Page lacks banner landmark. Screen reader users cannot use landmark navigation to jump to the header. Site logo, primary navigation, and search are not grouped in an identifiable banner region. Users with cognitive disabilities cannot rely on consistent page structure. Keyboard users cannot efficiently navigate to header elements">
+    <!-- Header without banner landmark - VIOLATION -->
+    <div class="site-header">
+        <div class="logo">TechCorp Solutions</div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <h1>Welcome to TechCorp Solutions</h1>
+        <p>We provide innovative technology solutions for modern businesses.</p>
+
+        <section>
+            <h2>Our Services</h2>
+            <ul>
+                <li>Cloud Infrastructure</li>
+                <li>Software Development</li>
+                <li>IT Consulting</li>
+                <li>Cybersecurity</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TechCorp Solutions. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTitleAttrFound - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTitleAttrFound_001_violations_basic",
+    "issueId": "ErrTitleAttrFound",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Title attributes used for important information",
+    "wcag": "3.3.2, 4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>User Registration</h1>
+
+    <main>
+        <form>
+            <!-- Title attribute as only label - VIOLATION -->
+            <div>
+                <input type="text"
+                       name="username"
+                       title="Enter your username"
+                       data-expected-violation="true"
+                       data-violation-id="ErrTitleAttrFound"
+                       data-violation-reason="Form field relies on title attribute for labeling. Mobile users cannot see the tooltip. Keyboard users cannot access title without mouse hover. Screen readers may not announce title consistently. Critical information hidden from many users">
+            </div>
+
+            <!-- Title attribute with important instructions - VIOLATION -->
+            <div>
+                <label for="password">Password:</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       title="Must be at least 8 characters with one uppercase letter, one number, and one special character"
+                       data-expected-violation="true"
+                       data-violation-id="ErrTitleAttrFound"
+                       data-violation-reason="Password requirements only in title attribute. Mobile and touch screen users never see requirements. Users with motor disabilities cannot hover to see tooltip. Screen readers may ignore or inconsistently announce title. Important validation criteria inaccessible">
+            </div>
+
+            <!-- Link with title as only context - VIOLATION -->
+            <p>
+                Read more
+                <a href="/terms"
+                   title="Terms and Conditions - By registering you agree to our terms of service"
+                   data-expected-violation="true"
+                   data-violation-id="ErrTitleAttrFound"
+                   data-violation-reason="Important legal information in title attribute. Tooltip disappears quickly for users with cognitive disabilities. Cannot be resized for low vision users. Not translated by browser translation tools. Critical agreement terms hidden from many users">
+                    here
+                </a>
+            </p>
+
+            <button type="submit">Register</button>
+        </form>
+    </main>
+</body>
+</html>

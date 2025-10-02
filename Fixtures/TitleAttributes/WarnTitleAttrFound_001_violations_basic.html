@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnTitleAttrFound - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnTitleAttrFound_001_violations_basic",
+    "issueId": "WarnTitleAttrFound",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Title attributes with accessibility limitations",
+    "wcag": "3.3.2, 4.1.2",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        abbr {
+            text-decoration: underline dotted;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Features</h1>
+
+    <main>
+        <section>
+            <h2>Technical Specifications</h2>
+            <!-- Abbreviation with title only - VIOLATION -->
+            <p data-expected-violation="true"
+               data-violation-id="WarnTitleAttrFound"
+               data-violation-reason="Abbreviation expansion only in title attribute. Mobile users cannot access expansion. Keyboard users cannot trigger tooltip. Screen readers inconsistently announce abbreviations. Users with motor disabilities cannot hover precisely. Definition inaccessible to many users">
+                Our server supports up to 64GB of <abbr title="Random Access Memory">RAM</abbr> and
+                includes <abbr title="Solid State Drive">SSD</abbr> storage options.
+            </p>
+        </section>
+
+        <section>
+            <h2>Available Actions</h2>
+            <!-- Icon button with title only - VIOLATION -->
+            <button title="Delete this item"
+                    data-expected-violation="true"
+                    data-violation-id="WarnTitleAttrFound"
+                    data-violation-reason="Icon button relies on title for accessible name. Screen readers may not announce title reliably. Mobile users have no way to understand button purpose. Touch screen users cannot hover to see title. Button function unclear without accessible text">
+                
+            </button>
+
+            <button title="Edit this item"
+                    data-expected-violation="true"
+                    data-violation-id="WarnTitleAttrFound"
+                    data-violation-reason="Edit button using title attribute for labeling. Title not accessible on mobile devices. Keyboard users cannot read title without mouse. Screen readers handle titles inconsistently. Visual-only icon insufficient for accessibility">
+                
+            </button>
+        </section>
+
+        <section>
+            <h2>System Requirements</h2>
+            <p>Minimum specifications for optimal performance.</p>
+        </section>
+    </main>
+</body>
+</html>

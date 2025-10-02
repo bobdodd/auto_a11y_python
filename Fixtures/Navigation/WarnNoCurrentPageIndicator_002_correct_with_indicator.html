@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNoCurrentPageIndicator - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNoCurrentPageIndicator_002_correct_with_indicator",
+    "issueId": "WarnNoCurrentPageIndicator",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Navigation with aria-current and visual indicator for current page",
+    "wcag": "2.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            padding: 1rem;
+            background: #f0f0f0;
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+        }
+        nav a[aria-current="page"] {
+            font-weight: bold;
+            color: #0066cc;
+            border-bottom: 3px solid #0066cc;
+        }
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar-nav a {
+            display: block;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: #333;
+        }
+        .sidebar-nav a[aria-current="page"] {
+            background: #e3f2fd;
+            font-weight: bold;
+            color: #0066cc;
+            border-left: 4px solid #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Products Page</h1>
+
+    <header>
+        <!-- Primary navigation with aria-current and styling - CORRECT -->
+        <nav data-expected-pass="true"
+             data-pass-reason="Navigation includes aria-current='page' on Products link. Screen readers announce 'Products, current page'. Visual styling (bold, blue, underline) clearly indicates active page. Users with cognitive disabilities can easily see their location. Both programmatic and visual indication present">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/products" aria-current="page">Products</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div style="display: flex; gap: 2rem;">
+            <!-- Sidebar navigation with aria-current and styling - CORRECT -->
+            <aside>
+                <nav class="sidebar-nav"
+                     data-expected-pass="true"
+                     data-pass-reason="Sidebar navigation includes aria-current='page' on Hardware link. Screen readers announce current category selection. Visual styling (background color, bold, left border) highlights active page. Users understand their location within product categories">
+                    <h2>Product Categories</h2>
+                    <ul>
+                        <li><a href="/products/software">Software</a></li>
+                        <li><a href="/products/hardware" aria-current="page">Hardware</a></li>
+                        <li><a href="/products/services">Services</a></li>
+                        <li><a href="/products/support">Support</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <article>
+                <h2>Hardware Products</h2>
+                <p>Browse our selection of high-quality hardware products.</p>
+                <ul>
+                    <li>Servers</li>
+                    <li>Workstations</li>
+                    <li>Networking Equipment</li>
+                    <li>Storage Solutions</li>
+                </ul>
+            </article>
+        </div>
+    </main>
+</body>
+</html>

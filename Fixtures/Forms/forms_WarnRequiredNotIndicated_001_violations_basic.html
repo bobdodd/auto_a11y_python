@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - Required Not Indicated</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "forms_WarnRequiredNotIndicated_001_violations_basic",
+    "issueId": "forms_WarnRequiredNotIndicated",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Required fields without clear visual or programmatic indication",
+    "wcag": "3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Create Account</h1>
+
+    <form>
+        <div data-expected-violation="true"
+             data-violation-id="forms_WarnRequiredNotIndicated"
+             data-violation-reason="Username field is required but lacks required attribute and visual indicator">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username">
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="forms_WarnRequiredNotIndicated"
+             data-violation-reason="Email field required but not indicated with aria-required or visual marker">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="forms_WarnRequiredNotIndicated"
+             data-violation-reason="Password field lacks both programmatic and visual required indication">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+        </div>
+
+        <div>
+            <label for="phone">Phone (Optional)</label>
+            <input type="tel" id="phone" name="phone">
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <p>Note: Users won't know which fields are required until they try to submit.</p>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferences - With Fieldsets</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "forms_WarnNoFieldset_002_correct_with_fieldsets",
+    "issueId": "forms_WarnNoFieldset",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Radio button and checkbox groups properly wrapped in fieldsets with legends",
+    "wcag": "1.3.1, 3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Account Preferences</h1>
+
+    <form>
+        <fieldset data-expected-pass="true"
+                  data-pass-reason="Radio group properly wrapped in fieldset with legend, screen readers announce group context">
+            <legend>Contact method</legend>
+            <div>
+                <input type="radio" id="email" name="contact" value="email">
+                <label for="email">Email</label>
+            </div>
+            <div>
+                <input type="radio" id="phone" name="contact" value="phone">
+                <label for="phone">Phone</label>
+            </div>
+            <div>
+                <input type="radio" id="mail" name="contact" value="mail">
+                <label for="mail">Mail</label>
+            </div>
+        </fieldset>
+
+        <fieldset data-expected-pass="true"
+                  data-pass-reason="Checkbox group has fieldset and legend, providing clear grouping and context">
+            <legend>Notifications</legend>
+            <div>
+                <input type="checkbox" id="updates" name="notifications" value="updates">
+                <label for="updates">Product updates</label>
+            </div>
+            <div>
+                <input type="checkbox" id="offers" name="notifications" value="offers">
+                <label for="offers">Special offers</label>
+            </div>
+            <div>
+                <input type="checkbox" id="news" name="notifications" value="news">
+                <label for="news">Newsletter</label>
+            </div>
+        </fieldset>
+
+        <button type="submit">Save Preferences</button>
+    </form>
+</body>
+</html>

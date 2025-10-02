@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 291 files
-- **Issues With Enhanced Fixtures:** 144
+- **Total Enhanced Fixtures Created:** 295 files
+- **Issues With Enhanced Fixtures:** 146
 - **Touchpoints Completed:** 32 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%)
-- **Touchpoints In Progress:** 2 (Forms 78%, Landmarks 6%)
-- **Issues Still Needing Fixtures:** 170
+- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 6%)
+- **Issues Still Needing Fixtures:** 168
 
 ## Completed Fixtures by Touchpoint
 
@@ -133,7 +133,7 @@ This document tracks the progress of generating comprehensive test fixtures for 
 
 **Total:** 43 fixture files
 
-### 📝 Forms Touchpoint (35/45 issues - 78% complete)
+### 📝 Forms Touchpoint (37/45 issues - 82% complete)
 
 1. **ErrEmptyLabel** - Empty label elements (2 fixtures)
 2. **ErrEmptyAriaLabelOnField** - Empty aria-label (2 fixtures)
@@ -174,11 +174,13 @@ This document tracks the progress of generating comprehensive test fixtures for 
 37. **forms_ErrInputMissingLabel** - Input elements without labels (2 fixtures)
 38. **forms_ErrNoButtonText** - Buttons without accessible text (2 fixtures)
 39. **forms_WarnGenericButtonText** - Buttons with generic non-descriptive text (2 fixtures)
+40. **forms_WarnNoFieldset** - Radio/checkbox groups without fieldset (2 fixtures)
+41. **forms_WarnRequiredNotIndicated** - Required fields not clearly indicated (2 fixtures)
 
-**Total:** 70 fixture files
+**Total:** 74 fixture files
 
-#### ⏳ Remaining Issues (10)
-Major gaps: validation messages, select/option issues, fieldset warnings (duplicates)
+#### ⏳ Remaining Issues (8)
+Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/forms_WarnNoFieldset, WarnMissingRequiredIndication/forms_WarnRequiredNotIndicated)
 
 ### 🔗 Links Touchpoint (8/8 unique issues - 100% COMPLETE)
 

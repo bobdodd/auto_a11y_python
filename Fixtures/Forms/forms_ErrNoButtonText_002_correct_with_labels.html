@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Accessible Buttons</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "forms_ErrNoButtonText_002_correct_with_labels",
+    "issueId": "forms_ErrNoButtonText",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with proper accessible text via aria-label or visible text",
+    "wcag": "2.4.6, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .icon-only { font-size: 1.5em; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>User Dashboard</h1>
+
+    <div>
+        <button class="icon-only" aria-label="Settings"
+                data-expected-pass="true"
+                data-pass-reason="Button has aria-label providing accessible text 'Settings'">
+            ⚙️
+        </button>
+
+        <button class="icon-only" aria-label="Delete"
+                data-expected-pass="true"
+                data-pass-reason="Delete button properly labeled with aria-label, screen readers announce 'Delete button'">
+            🗑️
+        </button>
+
+        <button class="icon-only" aria-label="Edit profile"
+                data-expected-pass="true"
+                data-pass-reason="Edit button has descriptive aria-label specifying the action">
+            ✏️
+        </button>
+    </div>
+
+    <p>Best practice: Always provide accessible text for icon buttons using aria-label or visually hidden text.</p>
+</body>
+</html>

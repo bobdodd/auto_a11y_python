@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnZeroOutlineOffset - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnZeroOutlineOffset_001_violations_basic",
+    "issueId": "WarnZeroOutlineOffset",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Focus outlines with outline-offset: 0",
+    "wcag": "2.4.7",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .zero-offset-button:focus {
+            outline: 2px solid blue;
+            outline-offset: 0;
+        }
+
+        .zero-offset-link:focus {
+            outline: 3px solid orange;
+            outline-offset: 0px;
+        }
+
+        .zero-offset-input:focus {
+            outline: 2px solid green;
+            outline-offset: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Elements</h1>
+
+    <main>
+        <section>
+            <h2>Buttons</h2>
+
+            <button class="zero-offset-button"
+                    data-expected-violation="true"
+                    data-violation-reason="Custom focus outline has outline-offset: 0 making outline sit directly on element edge. Zero offset reduces visual clarity of focus indicator. Outline has no breathing room from button. Users with low vision may find focus harder to perceive. Non-zero offset improves visibility. Warning for WCAG 2.4.7 Focus Visible - use positive outline-offset value for better visibility">
+                Click Me
+            </button>
+        </section>
+
+        <section>
+            <h2>Links</h2>
+
+            <a href="/page1" class="zero-offset-link"
+               data-expected-violation="true"
+               data-violation-reason="Custom focus outline uses outline-offset: 0px removing separation from link. Zero offset makes outline touch link text reducing clarity. No visual space between text and focus indicator. Users may have difficulty perceiving focus state. Positive offset improves visibility. Warning for WCAG 2.4.7 Focus Visible - use positive outline-offset for clearer focus indication">
+                Go to Page 1
+            </a>
+        </section>
+
+        <section>
+            <h2>Form Fields</h2>
+
+            <form>
+                <label for="email">Email:</label>
+                <input type="email"
+                       id="email"
+                       class="zero-offset-input"
+                       data-expected-violation="true"
+                       data-violation-reason="Custom focus outline has outline-offset: 0 causing outline to hug field border. Zero offset reduces focus indicator visibility. Outline sits directly on field edge with no separation. Users with low vision may struggle to see focus state. Positive offset enhances visibility. Warning for WCAG 2.4.7 Focus Visible - use positive outline-offset value to improve focus visibility">
+
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

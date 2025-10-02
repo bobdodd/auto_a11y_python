@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnVisualHierarchy - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnVisualHierarchy_001_violations_basic",
+    "issueId": "WarnVisualHierarchy",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Heading hierarchy skipped or out of order",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Document Structure</h1>
+
+    <main>
+        <section data-expected-violation="true"
+                 data-violation-reason="Section skips from h1 directly to h3 without h2. Heading hierarchy should not skip levels. Screen reader users navigating by headings expect logical structure. Skipped heading levels create confusion about content organization. Users may miss content sections. Warning for WCAG 1.3.1 Info and Relationships and 2.4.6 Headings and Labels - use sequential heading levels">
+            <h3>First Section</h3>
+            <p>This section incorrectly uses h3 after h1 main heading.</p>
+        </section>
+
+        <section data-expected-violation="true"
+                 data-violation-reason="Section jumps from h3 to h5 skipping h4. Heading hierarchy has gaps. Screen readers rely on heading structure for navigation. Users navigating by heading level may miss content. Logical document structure broken. Warning for WCAG 1.3.1 Info and Relationships and 2.4.6 Headings and Labels - maintain sequential heading hierarchy without skipping levels">
+            <h5>Subsection Detail</h5>
+            <p>This subsection skips h4 level creating hierarchy gap.</p>
+        </section>
+
+        <section>
+            <h2>Second Section</h2>
+            <p>Content for second major section.</p>
+
+            <div data-expected-violation="true"
+                 data-violation-reason="After h2, next heading is h6 skipping h3, h4, h5. Multiple heading levels skipped. Screen reader users navigating by levels can't find intermediate content. Document structure appears illogical. Users confused about content organization. Warning for WCAG 1.3.1 Info and Relationships and 2.4.6 Headings and Labels - increment heading levels by one, do not skip multiple levels">
+                <h6>Deep Subsection</h6>
+                <p>This heading skips three levels from h2 to h6.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>forms_DiscoNoSubmitButton - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "forms_DiscoNoSubmitButton_001_violations_basic",
+    "issueId": "forms_DiscoNoSubmitButton",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Forms without submit buttons",
+    "wcag": "3.2.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>User Forms</h1>
+
+    <main>
+        <section>
+            <h2>Newsletter Signup</h2>
+
+            <form data-expected-violation="true"
+                  data-violation-reason="Form has no submit button. Users can't submit form using standard methods. Keyboard users can't easily trigger form submission. Form may rely on JavaScript automatic submission which is problematic. Users don't have clear way to complete form. Violates WCAG 3.2.2 On Input by not providing explicit submit mechanism">
+                <label for="email1">Email Address:</label>
+                <input type="email" id="email1" name="email">
+            </form>
+        </section>
+
+        <section>
+            <h2>Search Form</h2>
+
+            <form data-expected-violation="true"
+                  data-violation-reason="Search form lacks submit button. Users must press Enter to submit which isn't obvious. Keyboard-only users may not know how to search. No visual affordance for form submission. Mobile users can't submit without on-screen keyboard. Violates WCAG 3.2.2 On Input by not providing clear submit mechanism that works for all users">
+                <label for="search">Search:</label>
+                <input type="search" id="search" name="q">
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnNavigationRoleOnNav - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnNavigationRoleOnNav_002_correct_no_role",
+    "issueId": "AI_WarnNavigationRoleOnNav",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Nav elements without redundant role='navigation'",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Company Name</h1>
+
+        <nav aria-label="Main navigation"
+             data-expected-pass="true"
+             data-pass-reason="Nav element without explicit role='navigation' relies on native HTML5 semantics. Nav automatically provides navigation landmark role. No redundant ARIA needed. HTML5 semantic elements preferred. Screen readers recognize nav as navigation landmark automatically. Clean code without unnecessary attributes. Complies with WCAG 4.1.2 Name, Role, Value - using native HTML semantics instead of redundant ARIA role">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Welcome</h2>
+            <p>Main content goes here.</p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+
+        <nav aria-label="Footer navigation"
+             data-expected-pass="true"
+             data-pass-reason="Nav element relies on implicit navigation role from HTML5. No explicit role='navigation' attribute needed. Native semantics provide proper landmark. Screen readers automatically announce nav as navigation region. Cleaner code without redundant ARIA. Best practice for HTML5 semantic elements. Meets WCAG 4.1.2 Name, Role, Value - using native element semantics">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/sitemap">Sitemap</a></li>
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>

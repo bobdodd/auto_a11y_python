@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnMainRoleOnMain - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnMainRoleOnMain_002_correct_no_role",
+    "issueId": "AI_WarnMainRoleOnMain",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Main element without redundant role='main'",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Company Name</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main data-expected-pass="true"
+          data-pass-reason="Main element without explicit role='main' relies on native HTML5 semantics. Main automatically provides main landmark role. No redundant ARIA needed. HTML5 semantic elements preferred. Screen readers recognize main as primary content landmark automatically. Clean code without unnecessary attributes. Complies with WCAG 4.1.2 Name, Role, Value - using native HTML semantics instead of redundant ARIA role">
+        <article>
+            <h2>Welcome to Our Website</h2>
+            <p>This is the main content area of the page.</p>
+            <p>All primary content should be contained within the main element.</p>
+        </article>
+
+        <section>
+            <h2>Featured Products</h2>
+            <ul>
+                <li>Product 1</li>
+                <li>Product 2</li>
+                <li>Product 3</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

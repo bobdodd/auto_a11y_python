@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnListRoleOnList - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnListRoleOnList_001_violations_basic",
+    "issueId": "AI_WarnListRoleOnList",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "List elements with explicit role='list' redundantly",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Features</h1>
+
+    <main>
+        <section>
+            <h2>Key Features</h2>
+
+            <ul role="list"
+                data-expected-violation="true"
+                data-violation-reason="Unordered list (ul) element has explicit role='list' which is redundant. HTML5 ul element already provides list semantics. Redundant ARIA is unnecessary and adds code clutter. Native HTML semantics should be preferred over explicit ARIA. Warning for WCAG 4.1.2 Name, Role, Value - remove redundant role='list' from ul element">
+                <li>High performance processor</li>
+                <li>Extended battery life</li>
+                <li>Crystal clear display</li>
+                <li>Advanced security features</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Setup Instructions</h2>
+
+            <ol role="list"
+                data-expected-violation="true"
+                data-violation-reason="Ordered list (ol) element with redundant role='list'. HTML5 ol already has implicit list role. Explicit ARIA role is not needed. Developers should rely on native semantics. Screen readers recognize ol as list automatically. Warning for WCAG 4.1.2 Name, Role, Value - remove unnecessary role='list' from ol">
+                <li>Unbox the product carefully</li>
+                <li>Connect power adapter</li>
+                <li>Press power button to start</li>
+                <li>Follow on-screen setup wizard</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Technical Specifications</h2>
+
+            <dl role="list"
+                data-expected-violation="true"
+                data-violation-reason="Definition list (dl) element with role='list' inappropriately applied. While dl is a list type, it has specific definition list semantics that differ from generic list role. Using role='list' obscures the term-definition relationship. Native dl semantics should be preserved. Warning for WCAG 4.1.2 Name, Role, Value - remove inappropriate role='list' from dl element">
+                <dt>Processor</dt>
+                <dd>Quad-core 2.4 GHz</dd>
+
+                <dt>Memory</dt>
+                <dd>16 GB RAM</dd>
+
+                <dt>Storage</dt>
+                <dd>512 GB SSD</dd>
+            </dl>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

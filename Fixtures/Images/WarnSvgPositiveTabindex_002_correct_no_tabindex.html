@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: SVG Without Disruptive Tabindex</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnSvgPositiveTabindex_002_correct_no_tabindex",
+    "issueId": "WarnSvgPositiveTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "SVG elements without positive tabindex or with appropriate tabindex=0 for interactive SVGs",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Interactive Page</h1>
+
+    <a href="#home">Home</a>
+
+    <svg width="50" height="50"
+         role="img"
+         aria-label="Decorative icon"
+         data-expected-pass="true"
+         data-pass-reason="Non-interactive SVG has no tabindex">
+        <circle cx="25" cy="25" r="20" fill="blue"/>
+    </svg>
+
+    <a href="#about">About</a>
+
+    <svg width="100" height="50"
+         role="button"
+         aria-label="Toggle menu"
+         tabindex="0"
+         data-expected-pass="true"
+         data-pass-reason="Interactive SVG uses tabindex=0 not positive value">
+        <rect width="100" height="50" fill="green"/>
+    </svg>
+
+    <svg width="30" height="30"
+         role="img"
+         aria-label="Info icon"
+         tabindex="-1"
+         data-expected-pass="true"
+         data-pass-reason="SVG uses tabindex=-1 to remove from tab order">
+        <circle cx="15" cy="15" r="12" fill="orange"/>
+    </svg>
+
+    <a href="#contact">Contact</a>
+</body>
+</html>

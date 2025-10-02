@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Alt Text Appropriately Concise</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAltTooLong_002_correct_concise",
+    "issueId": "ErrAltTooLong",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Images with alt text under 150 characters, detailed description in surrounding text",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Scientific Research</h1>
+
+    <figure>
+        <img src="chart.png"
+             alt="Bar chart comparing three treatment methodologies over five years"
+             data-expected-pass="true"
+             data-pass-reason="Alt text is 65 characters, detailed description in figcaption">
+        <figcaption>
+            This chart presents results from our longitudinal study comparing three treatment
+            methodologies across multiple demographic groups. Each bar shows statistical
+            significance markers and confidence intervals. Color-coded categories represent
+            age ranges from 18 to 65 years old.
+        </figcaption>
+    </figure>
+
+    <figure>
+        <img src="infographic.jpg"
+             alt="Photosynthesis process diagram showing light and carbon reactions"
+             data-expected-pass="true"
+             data-pass-reason="Alt text is 66 characters, detailed description in adjacent text">
+        <figcaption>
+            This infographic details the step-by-step process of photosynthesis.
+            Light-dependent reactions occur in thylakoid membranes, while the Calvin
+            cycle takes place in the stroma. Arrows show the flow of electrons, protons,
+            and carbon dioxide through the various stages.
+        </figcaption>
+    </figure>
+</body>
+</html>

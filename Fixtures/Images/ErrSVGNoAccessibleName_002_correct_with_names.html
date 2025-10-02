@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: SVG With Accessible Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrSVGNoAccessibleName_002_correct_with_names",
+    "issueId": "ErrSVGNoAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "SVG elements with proper accessible names",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <svg width="100" height="100"
+         role="img"
+         aria-labelledby="circle-title"
+         data-expected-pass="true"
+         data-pass-reason="SVG has title element and aria-labelledby">
+        <title id="circle-title">Blue circle indicator</title>
+        <circle cx="50" cy="50" r="40" fill="blue"/>
+    </svg>
+
+    <svg width="24" height="24" viewBox="0 0 24 24"
+         role="img"
+         aria-label="Menu icon"
+         data-expected-pass="true"
+         data-pass-reason="Icon SVG has role=img and aria-label">
+        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+    </svg>
+
+    <svg width="200" height="100"
+         role="img"
+         aria-label="Sales chart showing growth"
+         data-expected-pass="true"
+         data-pass-reason="SVG has role=img and aria-label">
+        <rect width="200" height="100" fill="green"/>
+        <text x="50" y="50" fill="white">Chart</text>
+    </svg>
+
+    <svg width="50" height="50"
+         aria-hidden="true"
+         data-expected-pass="true"
+         data-pass-reason="Decorative SVG hidden from assistive tech">
+        <circle cx="25" cy="25" r="20" fill="red"/>
+    </svg>
+</body>
+</html>

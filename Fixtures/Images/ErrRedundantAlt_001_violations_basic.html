@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Redundant Alt Text</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrRedundantAlt_001_violations_basic",
+    "issueId": "ErrRedundantAlt",
+    "expectedViolationCount": 6,
+    "expectedPassCount": 0,
+    "description": "Images with alt text containing redundant phrases like 'image of' or 'picture of'",
+    "wcag": "1.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Gallery</h1>
+
+    <img src="sunset.jpg"
+         alt="Image of a sunset over the ocean"
+         data-expected-violation="true"
+         data-violation-id="ErrRedundantAlt"
+         data-violation-reason="Contains redundant phrase 'Image of'">
+
+    <img src="cat.jpg"
+         alt="Picture of a cat sleeping on a couch"
+         data-expected-violation="true"
+         data-violation-id="ErrRedundantAlt"
+         data-violation-reason="Contains redundant phrase 'Picture of'">
+
+    <img src="graph.png"
+         alt="Graphic of sales data for Q4"
+         data-expected-violation="true"
+         data-violation-id="ErrRedundantAlt"
+         data-violation-reason="Contains redundant phrase 'Graphic of'">
+
+    <img src="photo.jpg"
+         alt="Photo of team members at conference"
+         data-expected-violation="true"
+         data-violation-id="ErrRedundantAlt"
+         data-violation-reason="Contains redundant phrase 'Photo of'">
+
+    <img src="icon.svg"
+         alt="Icon depicting a shopping cart"
+         data-expected-violation="true"
+         data-violation-id="ErrRedundantAlt"
+         data-violation-reason="Contains redundant phrase 'Icon depicting'">
+
+    <img src="screenshot.png"
+         alt="Screenshot showing the login page"
+         data-expected-violation="true"
+         data-violation-id="ErrRedundantAlt"
+         data-violation-reason="Contains redundant phrase 'Screenshot showing'">
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrAutocompleteWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrAutocompleteWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrAutocompleteWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Autocomplete/combobox components lacking proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .autocomplete {
+            position: relative;
+            width: 300px;
+        }
+        .autocomplete input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+        }
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ccc;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .suggestion-item {
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>City Search</h1>
+
+    <main>
+        <!-- Autocomplete without ARIA -->
+        <div class="autocomplete"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrAutocompleteWithoutARIA"
+             data-violation-reason="Autocomplete lacks role='combobox', aria-autocomplete, aria-expanded, and aria-controls. Screen readers cannot understand relationship between input and suggestions">
+            <label for="city1">Select a city:</label>
+            <input type="text"
+                   id="city1"
+                   placeholder="Type to search...">
+            <div id="suggestions1" class="suggestions">
+                <div class="suggestion-item">San Francisco</div>
+                <div class="suggestion-item">Seattle</div>
+                <div class="suggestion-item">San Diego</div>
+            </div>
+        </div>
+
+        <!-- Autocomplete with list but no ARIA -->
+        <div class="autocomplete"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrAutocompleteWithoutARIA"
+             data-violation-reason="Combobox missing role='combobox', aria-owns, and aria-activedescendant. Suggestions list lacks role='listbox' and items lack role='option'. Not navigable by keyboard or screen readers">
+            <label for="country1">Select a country:</label>
+            <input type="text"
+                   id="country1"
+                   placeholder="Type to search...">
+            <ul id="country-list" class="suggestions">
+                <li class="suggestion-item">United States</li>
+                <li class="suggestion-item">United Kingdom</li>
+                <li class="suggestion-item">Canada</li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        // Basic show/hide logic
+        document.getElementById('city1').addEventListener('focus', () => {
+            document.getElementById('suggestions1').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

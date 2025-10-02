@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrSearchWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrSearchWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrSearchWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Search functionality with proper ARIA and semantic markup",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .search-form {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .search-input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+        }
+        .search-button {
+            padding: 0.5rem 1rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Catalog - Correct Usage</h1>
+
+    <main>
+        <!-- Search with role="search" and proper labels - CORRECT -->
+        <div role="search"
+             data-expected-pass="true"
+             data-pass-reason="Search form wrapped in role='search' landmark. Screen readers identify this as site search functionality and can navigate directly to it">
+            <form class="search-form">
+                <label for="product-search" class="visually-hidden">Search products</label>
+                <input type="search"
+                       id="product-search"
+                       class="search-input"
+                       placeholder="Search products..."
+                       aria-label="Search products">
+                <button type="submit" class="search-button" aria-label="Submit search">=</button>
+            </form>
+        </div>
+
+        <!-- Search landmark with enhanced ARIA - CORRECT -->
+        <search data-expected-pass="true"
+                data-pass-reason="Uses HTML5 search element creating implicit search landmark. Input has type='search' and aria-label. Button has aria-label for icon. Fully accessible to assistive technologies">
+            <form class="search-form">
+                <label for="item-search" class="visually-hidden">Search items</label>
+                <input type="search"
+                       id="item-search"
+                       class="search-input"
+                       placeholder="Find items..."
+                       aria-label="Search items">
+                <button type="submit" class="search-button" aria-label="Search">Search</button>
+            </form>
+        </search>
+    </main>
+
+    <style>
+        .visually-hidden {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+    </style>
+</body>
+</html>

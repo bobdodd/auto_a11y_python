@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrNotificationWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrNotificationWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrNotificationWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Notification components with proper ARIA markup",
+    "wcag": "4.1.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .notification {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>User Dashboard - Correct Usage</h1>
+
+    <main>
+        <!-- Success notification with role="status" - CORRECT -->
+        <div id="success-notification"
+             class="notification success"
+             role="status"
+             aria-live="polite"
+             aria-atomic="true"
+             data-expected-pass="true"
+             data-pass-reason="Success notification uses role='status' and aria-live='polite'. Screen readers announce the message without interrupting user activity">
+            Settings saved successfully!
+        </div>
+
+        <!-- Error notification with role="alert" - CORRECT -->
+        <div id="error-notification"
+             class="notification error"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true"
+             data-expected-pass="true"
+             data-pass-reason="Error notification uses role='alert' and aria-live='assertive'. Critical error is announced immediately to screen reader users">
+            Error: Unable to process request.
+        </div>
+
+        <!-- Info notification with aria-live - CORRECT -->
+        <div id="info-notification"
+             class="notification info"
+             role="status"
+             aria-live="polite"
+             aria-atomic="true"
+             data-expected-pass="true"
+             data-pass-reason="Information notification has role='status' and aria-live='polite' with aria-atomic='true'. Updates announced completely to assistive technology">
+            New messages available.
+        </div>
+
+        <button onclick="showSuccess()">Save Settings</button>
+        <button onclick="showError()">Trigger Error</button>
+        <button onclick="showInfo()">Check Messages</button>
+    </main>
+
+    <script>
+        function showSuccess() {
+            const notification = document.getElementById('success-notification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        function showError() {
+            document.getElementById('error-notification').style.display = 'block';
+        }
+
+        function showInfo() {
+            document.getElementById('info-notification').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

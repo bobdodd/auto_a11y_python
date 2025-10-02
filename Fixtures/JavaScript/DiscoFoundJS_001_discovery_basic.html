@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form - JavaScript Dependent</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoFoundJS_001_discovery_basic",
+    "issueId": "DiscoFoundJS",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "JavaScript detected that requires review for progressive enhancement",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Us</h1>
+
+    <div data-requires-review="true"
+         data-review-reason="Form validation relies entirely on JavaScript, verify it works without JS or has fallback">
+        <form id="contact-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message"></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
+    <div data-requires-review="true"
+         data-review-reason="Dynamic content loading via JavaScript, ensure content is accessible without JS">
+        <h2>Recent Articles</h2>
+        <div id="articles-container">
+            <p>Loading articles...</p>
+        </div>
+    </div>
+
+    <div data-requires-review="true"
+         data-review-reason="Toggle functionality requires JavaScript, verify fallback state is accessible">
+        <button id="theme-toggle">Toggle Dark Mode</button>
+    </div>
+
+    <script>
+        // Form validation
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            if (!name || !email) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            alert('Form submitted!');
+        });
+
+        // Dynamic content loading
+        setTimeout(() => {
+            document.getElementById('articles-container').innerHTML = `
+                <ul>
+                    <li><a href="/article1">Understanding Accessibility</a></li>
+                    <li><a href="/article2">Progressive Enhancement</a></li>
+                </ul>
+            `;
+        }, 1000);
+
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.body.style.background =
+                document.body.style.background === 'black' ? 'white' : 'black';
+            document.body.style.color =
+                document.body.style.color === 'white' ? 'black' : 'white';
+        });
+    </script>
+</body>
+</html>

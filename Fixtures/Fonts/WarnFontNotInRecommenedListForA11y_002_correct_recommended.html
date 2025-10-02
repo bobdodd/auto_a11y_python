@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post - Recommended Fonts</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFontNotInRecommenedListForA11y_002_correct_recommended",
+    "issueId": "WarnFontNotInRecommenedListForA11y",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Fonts from recommended accessibility list",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        body {
+            font-family: 'Verdana', 'Arial', 'Helvetica', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Uses Verdana and Arial, both recommended accessible fonts with good character distinction and readability">
+    <h1>The Future of Web Development</h1>
+
+    <article>
+        <p>Web development continues to evolve rapidly, with new frameworks and tools emerging every year. Developers must balance innovation with accessibility to create inclusive experiences.</p>
+
+        <p>When building modern web applications, it's essential to consider not just the technical implementation, but also how users with different abilities will interact with the content.</p>
+
+        <p>Progressive enhancement, semantic HTML, and ARIA attributes all play crucial roles in making web content accessible to everyone, regardless of their device or assistive technology.</p>
+    </article>
+</body>
+</html>

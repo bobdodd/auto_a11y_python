@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrFlashingContent - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrFlashingContent_001_violations_basic",
+    "issueId": "AI_ErrFlashingContent",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Content flashing more than 3 times per second",
+    "wcag": "2.3.1",
+    "impact": "Critical"
+}
+    </script>
+    <style>
+        .rapid-flash {
+            width: 200px;
+            height: 200px;
+            animation: flash 0.1s infinite;
+        }
+        @keyframes flash {
+            0%, 49% { background: red; }
+            50%, 100% { background: blue; }
+        }
+        .strobe-text {
+            font-size: 2rem;
+            animation: strobe 0.15s infinite;
+        }
+        @keyframes strobe {
+            0%, 49% { color: yellow; background: black; }
+            50%, 100% { color: black; background: yellow; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Alert System</h1>
+
+    <main>
+        <!-- Rapidly flashing element -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrFlashingContent"
+             data-violation-reason="Element flashes 10 times per second (0.1s interval), exceeding 3 flashes/second threshold. Can trigger photosensitive seizures in users with epilepsy">
+            <h2>Critical Alert</h2>
+            <div class="rapid-flash"></div>
+            <p>System error detected!</p>
+        </div>
+
+        <!-- Strobing text -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrFlashingContent"
+             data-violation-reason="Text strobes between high contrast colors at 6.67 times/second (0.15s interval). Dangerous for users with photosensitive epilepsy and can cause seizures">
+            <p class="strobe-text">WARNING: IMMEDIATE ACTION REQUIRED</p>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMotionWithoutControl - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMotionWithoutControl_001_violations_basic",
+    "issueId": "AI_ErrMotionWithoutControl",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Animated content without pause/stop controls",
+    "wcag": "2.2.2, 2.3.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .carousel {
+            width: 600px;
+            height: 400px;
+            background: #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+        .carousel-slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            animation: slide 3s infinite;
+        }
+        @keyframes slide {
+            0%, 33% { opacity: 1; transform: translateX(0); }
+            34%, 100% { opacity: 0; transform: translateX(-100%); }
+        }
+        .parallax {
+            height: 400px;
+            background-image: url('background.jpg');
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Featured Content</h1>
+
+    <main>
+        <!-- Auto-rotating carousel without controls -->
+        <div class="carousel"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrMotionWithoutControl"
+             data-violation-reason="Carousel auto-rotates continuously without pause/stop button. Users with vestibular disorders, attention deficits, or photosensitive epilepsy may experience discomfort or inability to read content">
+            <div class="carousel-slide" style="background: #ff6b6b;">Slide 1</div>
+            <div class="carousel-slide" style="background: #4ecdc4; animation-delay: 3s;">Slide 2</div>
+            <div class="carousel-slide" style="background: #45b7d1; animation-delay: 6s;">Slide 3</div>
+        </div>
+
+        <!-- Parallax scrolling effect without disable option -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrMotionWithoutControl"
+             data-violation-reason="Parallax scrolling effect cannot be disabled. Users with vestibular disorders may experience dizziness, nausea, or disorientation from motion effects">
+            <h2>Parallax Section</h2>
+            <div class="parallax"></div>
+            <p>Content with parallax scrolling effect that moves at different speeds.</p>
+        </div>
+    </main>
+</body>
+</html>

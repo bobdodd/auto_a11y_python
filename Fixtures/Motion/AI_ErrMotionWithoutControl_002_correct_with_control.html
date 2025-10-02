@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMotionWithoutControl - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMotionWithoutControl_002_correct_with_control",
+    "issueId": "AI_ErrMotionWithoutControl",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Animated content with pause/stop controls and motion preferences",
+    "wcag": "2.2.2, 2.3.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .carousel {
+            width: 600px;
+            height: 400px;
+            background: #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+        .carousel-slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        .carousel:not(.paused) .carousel-slide {
+            animation: slide 3s infinite;
+        }
+        @keyframes slide {
+            0%, 33% { opacity: 1; transform: translateX(0); }
+            34%, 100% { opacity: 0; transform: translateX(-100%); }
+        }
+        .carousel-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        .parallax {
+            height: 400px;
+            background-image: url('background.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 2rem 0;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .carousel-slide {
+                animation: none !important;
+            }
+            .parallax {
+                background-attachment: scroll;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Featured Content - Correct Usage</h1>
+
+    <main>
+        <!-- Carousel with pause/play controls - CORRECT -->
+        <div class="carousel"
+             id="carousel"
+             data-expected-pass="true"
+             data-pass-reason="Carousel has pause/play button allowing users to stop animation. Respects prefers-reduced-motion setting. Users with vestibular disorders can pause motion, and those needing more time can stop auto-rotation to read content">
+            <div class="carousel-slide" style="background: #ff6b6b;">Slide 1</div>
+            <div class="carousel-slide" style="background: #4ecdc4; animation-delay: 3s;">Slide 2</div>
+            <div class="carousel-slide" style="background: #45b7d1; animation-delay: 6s;">Slide 3</div>
+            <div class="carousel-controls">
+                <button onclick="toggleCarousel()" id="pauseBtn" aria-label="Pause carousel">Pause</button>
+            </div>
+        </div>
+
+        <!-- Parallax with motion preference support - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Parallax effect respects prefers-reduced-motion media query. Users with vestibular disorders who enable reduced motion setting will see static background instead of parallax effect">
+            <h2>Parallax Section</h2>
+            <div class="parallax"></div>
+            <p>Content with parallax effect that respects user motion preferences and becomes static when reduced motion is preferred.</p>
+        </div>
+    </main>
+
+    <script>
+        function toggleCarousel() {
+            const carousel = document.getElementById('carousel');
+            const btn = document.getElementById('pauseBtn');
+            const isPaused = carousel.classList.toggle('paused');
+            btn.textContent = isPaused ? 'Play' : 'Pause';
+            btn.setAttribute('aria-label', isPaused ? 'Play carousel' : 'Pause carousel');
+        }
+    </script>
+</body>
+</html>

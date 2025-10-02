@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrAutoplayMedia - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrAutoplayMedia_001_violations_basic",
+    "issueId": "AI_ErrAutoplayMedia",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Media that autoplays without user control",
+    "wcag": "1.4.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Welcome to Our Site</h1>
+
+    <main>
+        <!-- Auto-playing video -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrAutoplayMedia"
+             data-violation-reason="Video autoplays on page load. Users with screen readers cannot hear audio descriptions over video sound. Users with cognitive disabilities may be distracted by unexpected audio">
+            <h2>Featured Video</h2>
+            <video width="640" height="360" autoplay loop>
+                <source src="promo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Auto-playing background audio -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrAutoplayMedia"
+             data-violation-reason="Audio autoplays immediately without user control. Screen reader users cannot hear their assistive technology over background music. No mechanism to pause audio within 3 seconds">
+            <h2>Experience</h2>
+            <audio autoplay loop>
+                <source src="background-music.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <p>Enjoy our immersive audio experience as you browse.</p>
+        </div>
+    </main>
+</body>
+</html>

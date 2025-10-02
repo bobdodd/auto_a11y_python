@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTimeLimitNoWarning - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTimeLimitNoWarning_002_correct_with_warning",
+    "issueId": "AI_ErrTimeLimitNoWarning",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Session timeout with advance warning and extension option",
+    "wcag": "2.2.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .timeout-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 2px solid #333;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Page warns user 20 seconds before timeout and provides option to extend session. Users with disabilities who need more time can continue working. Meets WCAG requirement for adjustable timing">
+    <h1>Purchase Form - Correct Usage</h1>
+
+    <main>
+        <form id="purchaseForm">
+            <h2>Complete Your Purchase</h2>
+            <p>Please fill out the form below to complete your order.</p>
+
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="address">Shipping Address:</label>
+            <textarea id="address" name="address" required></textarea>
+
+            <label for="card">Card Number:</label>
+            <input type="text" id="card" name="card" required>
+
+            <label for="expiry">Expiry Date:</label>
+            <input type="text" id="expiry" name="expiry" required>
+
+            <label for="cvv">CVV:</label>
+            <input type="text" id="cvv" name="cvv" required>
+
+            <button type="submit">Complete Purchase</button>
+        </form>
+
+        <p>Session time remaining: <span id="timeLeft">60</span> seconds</p>
+    </main>
+
+    <div class="modal-overlay" id="overlay"></div>
+    <div class="timeout-modal" id="timeoutModal" role="alertdialog" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+        <h2 id="modalTitle">Session Timeout Warning</h2>
+        <p id="modalDesc">Your session will expire in <span id="warningTime">20</span> seconds. Would you like to extend your session?</p>
+        <button onclick="extendSession()" autofocus>Extend Session</button>
+        <button onclick="logout()">Logout Now</button>
+    </div>
+
+    <script>
+        let timeLeft = 60;
+        let warningShown = false;
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timeLeft').textContent = timeLeft;
+
+            // Show warning at 20 seconds
+            if (timeLeft === 20 && !warningShown) {
+                showWarning();
+                warningShown = true;
+            }
+
+            // Update warning countdown
+            if (timeLeft <= 20 && timeLeft > 0) {
+                document.getElementById('warningTime').textContent = timeLeft;
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                logout();
+            }
+        }, 1000);
+
+        function showWarning() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('timeoutModal').style.display = 'block';
+            document.querySelector('#timeoutModal button').focus();
+        }
+
+        function extendSession() {
+            timeLeft = 60;
+            warningShown = false;
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('timeoutModal').style.display = 'none';
+        }
+
+        function logout() {
+            clearInterval(timer);
+            alert('Session expired. Redirecting to home page...');
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrAutoplayMedia - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrAutoplayMedia_002_correct_user_control",
+    "issueId": "AI_ErrAutoplayMedia",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Media requiring user interaction to play",
+    "wcag": "1.4.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Welcome to Our Site - Correct Usage</h1>
+
+    <main>
+        <!-- Video with user controls, no autoplay - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Video does not autoplay. User must click play button to start. Screen reader users can hear audio descriptions without interference. Users control when media starts">
+            <h2>Featured Video</h2>
+            <video width="640" height="360" controls>
+                <source src="promo.mp4" type="video/mp4">
+                <track kind="captions" src="promo-en.vtt" srclang="en" label="English" default>
+                Your browser does not support the video tag.
+            </video>
+            <p><button onclick="document.querySelector('video').play()">Play Video</button></p>
+        </div>
+
+        <!-- Audio with explicit play button - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Audio does not autoplay. User must explicitly click button to start playback. Screen reader users can navigate page without background audio interference. Meets user control requirement">
+            <h2>Experience</h2>
+            <p>Click below to enjoy our audio experience:</p>
+            <audio id="bgAudio" controls>
+                <source src="background-music.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <p>
+                <button onclick="document.getElementById('bgAudio').play()">Play Background Music</button>
+                <button onclick="document.getElementById('bgAudio').pause()">Pause Music</button>
+            </p>
+        </div>
+    </main>
+</body>
+</html>

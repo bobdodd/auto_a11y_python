@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrAudioWithoutTranscript - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrAudioWithoutTranscript_001_violations_basic",
+    "issueId": "AI_ErrAudioWithoutTranscript",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Audio content without text transcript or alternative",
+    "wcag": "1.2.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Podcast Episodes</h1>
+
+    <main>
+        <!-- Audio without transcript -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrAudioWithoutTranscript"
+             data-violation-reason="Audio element with no text transcript or alternative. Deaf users and users in quiet environments cannot access audio content">
+            <h2>Episode 1: Introduction to Accessibility</h2>
+            <audio controls>
+                <source src="episode1.mp3" type="audio/mpeg">
+                <source src="episode1.ogg" type="audio/ogg">
+                Your browser does not support the audio element.
+            </audio>
+            <p>Published: January 15, 2024</p>
+        </div>
+
+        <!-- Audio with description but no transcript -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrAudioWithoutTranscript"
+             data-violation-reason="Audio player has descriptive text but no text transcript or caption file. Summary is not equivalent to full transcript for deaf users">
+            <h2>Episode 2: WCAG Guidelines</h2>
+            <audio controls>
+                <source src="episode2.mp3" type="audio/mpeg">
+            </audio>
+            <p>In this episode, we discuss the Web Content Accessibility Guidelines and their importance for creating inclusive web experiences.</p>
+        </div>
+    </main>
+</body>
+</html>

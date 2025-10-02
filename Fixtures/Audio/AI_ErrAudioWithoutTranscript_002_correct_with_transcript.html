@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrAudioWithoutTranscript - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrAudioWithoutTranscript_002_correct_with_transcript",
+    "issueId": "AI_ErrAudioWithoutTranscript",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Audio content with proper text transcript",
+    "wcag": "1.2.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .transcript {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin-top: 1rem;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Podcast Episodes - Correct Usage</h1>
+
+    <main>
+        <!-- Audio with inline transcript - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Audio element accompanied by complete text transcript below. Makes audio content fully accessible to deaf users and those who cannot play audio">
+            <h2>Episode 1: Introduction to Accessibility</h2>
+            <audio controls aria-describedby="transcript1">
+                <source src="episode1.mp3" type="audio/mpeg">
+                <source src="episode1.ogg" type="audio/ogg">
+                Your browser does not support the audio element.
+            </audio>
+            <div id="transcript1" class="transcript">
+                <h3>Transcript</h3>
+                <p><strong>Host:</strong> Welcome to our podcast on web accessibility. Today we'll explore why accessibility matters and how it benefits everyone.</p>
+                <p><strong>Guest:</strong> Thanks for having me. Accessibility isn't just about complianceit's about creating a better web experience for all users.</p>
+                <p><strong>Host:</strong> That's exactly right. Let's dive into the fundamentals...</p>
+            </div>
+        </div>
+
+        <!-- Audio with linked transcript - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Audio player provides link to full text transcript. Deaf users can access complete audio content via separate transcript page">
+            <h2>Episode 2: WCAG Guidelines</h2>
+            <audio controls>
+                <source src="episode2.mp3" type="audio/mpeg">
+            </audio>
+            <p><a href="episode2-transcript.html">Read full transcript</a> | <a href="episode2-transcript.txt" download>Download transcript (TXT)</a></p>
+            <p>In this episode, we discuss the Web Content Accessibility Guidelines and their importance for creating inclusive web experiences.</p>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrPaginationWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrPaginationWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrPaginationWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Pagination controls with proper ARIA markup",
+    "wcag": "2.4.8, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .pagination {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0;
+        }
+        .pagination a {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ccc;
+            text-decoration: none;
+        }
+        .current {
+            background: #007bff;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: 1px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Results - Correct Usage</h1>
+
+    <main>
+        <p>Showing results 1-10 of 250</p>
+
+        <!-- Pagination with proper ARIA - CORRECT -->
+        <nav aria-label="Pagination"
+             data-expected-pass="true"
+             data-pass-reason="Pagination wrapped in nav with aria-label='Pagination' and uses aria-current='page' on current page. Screen readers announce pagination navigation and current page clearly">
+            <ul class="pagination">
+                <li><a href="?page=1" aria-label="Go to previous page">Previous</a></li>
+                <li><a href="?page=1" aria-label="Go to page 1">1</a></li>
+                <li><span class="current" aria-current="page" aria-label="Page 2, current page">2</span></li>
+                <li><a href="?page=3" aria-label="Go to page 3">3</a></li>
+                <li><a href="?page=4" aria-label="Go to page 4">4</a></li>
+                <li><a href="?page=5" aria-label="Go to page 5">5</a></li>
+                <li><a href="?page=3" aria-label="Go to next page">Next</a></li>
+            </ul>
+        </nav>
+
+        <!-- Pagination with enhanced ARIA - CORRECT -->
+        <nav aria-label="Search results pages"
+             data-expected-pass="true"
+             data-pass-reason="Pagination uses nav with descriptive aria-label and aria-current='page'. All links have aria-label attributes for context, making navigation clear for assistive technology">
+            <div class="pagination">
+                <a href="?page=1" aria-label="Go to first page">« First</a>
+                <a href="?page=1" aria-label="Go to page 1">1</a>
+                <span class="current" aria-current="page">2</span>
+                <a href="?page=3" aria-label="Go to page 3">3</a>
+                <a href="?page=25" aria-label="Go to last page, page 25">Last »</a>
+            </div>
+        </nav>
+    </main>
+</body>
+</html>

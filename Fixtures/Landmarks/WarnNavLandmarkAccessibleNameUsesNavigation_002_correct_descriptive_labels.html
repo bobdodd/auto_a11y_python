@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNavLandmarkAccessibleNameUsesNavigation - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNavLandmarkAccessibleNameUsesNavigation_002_correct_descriptive_labels",
+    "issueId": "WarnNavLandmarkAccessibleNameUsesNavigation",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Navigation landmarks with descriptive labels without redundancy",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation Landmarks With Descriptive Labels - Correct Usage</h1>
+
+    <!-- Nav with descriptive label - CORRECT -->
+    <nav aria-label="Main menu"
+         data-expected-pass="true"
+         data-pass-reason="Navigation landmark uses descriptive label 'Main menu' that identifies purpose without redundantly using the word 'navigation'">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here. All navigation landmarks use descriptive, non-redundant labels.</p>
+    </main>
+
+    <!-- Nav with purpose-based label - CORRECT -->
+    <nav aria-label="Product categories"
+         data-expected-pass="true"
+         data-pass-reason="Navigation landmark has clear, specific label describing its content without using 'navigation'. Screen readers announce 'Product categories navigation' avoiding redundancy">
+        <ul>
+            <li><a href="/products/software">Software</a></li>
+            <li><a href="/products/hardware">Hardware</a></li>
+        </ul>
+    </nav>
+
+    <!-- Nav with location-based label - CORRECT -->
+    <div role="navigation"
+         aria-label="Footer links"
+         data-expected-pass="true"
+         data-pass-reason="Navigation landmark uses descriptive label 'Footer links' that identifies its location and purpose without redundant 'navigation' terminology">
+        <ul>
+            <li><a href="/help">Help</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/privacy">Privacy</a></li>
+        </ul>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+    </footer>
+</body>
+</html>

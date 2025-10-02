@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMapAriaHidden - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMapAriaHidden_002_correct_accessible_maps",
+    "issueId": "ErrMapAriaHidden",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Map elements accessible to assistive technologies without aria-hidden",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Accessible Image Maps</h1>
+
+    <main>
+        <section>
+            <h2>Store Locations</h2>
+            <p>Find our stores near you:</p>
+            <map name="store-map"
+                 data-expected-pass="true"
+                 data-pass-reason="Map element accessible to screen readers with no aria-hidden">
+                <area shape="rect" coords="0,0,100,100" href="/store-1" alt="Store 1: Downtown Location">
+                <area shape="rect" coords="100,0,200,100" href="/store-2" alt="Store 2: Suburb Location">
+            </map>
+            <img src="store-locations.png" usemap="#store-map" alt="Map of store locations">
+        </section>
+
+        <section>
+            <h2>Campus Map</h2>
+            <div data-expected-pass="true"
+                 data-pass-reason="Container doesn't hide the image map, it remains accessible">
+                <map name="campus-map">
+                    <area shape="circle" coords="50,50,40" href="/building-a" alt="Building A: Main Administration">
+                    <area shape="circle" coords="150,50,40" href="/building-b" alt="Building B: Science Center">
+                </map>
+                <img src="campus.png" usemap="#campus-map" alt="University campus map">
+            </div>
+        </section>
+
+        <section>
+            <h2>Interactive Map</h2>
+            <map name="interactive-map"
+                 data-expected-pass="true"
+                 data-pass-reason="Image map accessible with descriptive alt text for each area">
+                <area shape="poly" coords="10,10,50,10,30,50" href="/region-1" alt="Region 1: Northern District">
+                <area shape="poly" coords="60,10,100,10,80,50" href="/region-2" alt="Region 2: Southern District">
+            </map>
+            <img src="regions.png" usemap="#interactive-map" alt="Regional map with clickable areas">
+        </section>
+    </main>
+</body>
+</html>

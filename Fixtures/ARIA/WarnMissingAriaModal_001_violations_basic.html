@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaModal - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaModal_001_violations_basic",
+    "issueId": "WarnMissingAriaModal",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Modal dialogs missing aria-modal attribute",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Modals Without aria-modal</h1>
+
+    <main>
+        <section>
+            <h2>Confirmation Dialog</h2>
+            <div role="dialog"
+                 aria-labelledby="confirm-title"
+                 data-expected-violation="true"
+                 data-violation-id="WarnMissingAriaModal"
+                 data-violation-reason="Dialog has role='dialog' but missing aria-modal='true'">
+                <h2 id="confirm-title">Confirm Action</h2>
+                <p>Are you sure you want to proceed?</p>
+                <button>Yes</button>
+                <button>No</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Alert Dialog</h2>
+            <div role="alertdialog"
+                 aria-labelledby="alert-title"
+                 data-expected-violation="true"
+                 data-violation-id="WarnMissingAriaModal"
+                 data-violation-reason="Alert dialog missing aria-modal='true', screen readers may navigate outside">
+                <h2 id="alert-title">Warning</h2>
+                <p>This action cannot be undone.</p>
+                <button>Understood</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Form Dialog</h2>
+            <div role="dialog"
+                 aria-labelledby="form-title"
+                 aria-describedby="form-desc"
+                 data-expected-violation="true"
+                 data-violation-id="WarnMissingAriaModal"
+                 data-violation-reason="Form dialog without aria-modal may confuse screen reader users">
+                <h2 id="form-title">Enter Details</h2>
+                <p id="form-desc">Please complete the form below.</p>
+                <form>
+                    <label for="dialog-name">Name:</label>
+                    <input type="text" id="dialog-name">
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

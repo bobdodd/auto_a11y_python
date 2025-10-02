@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAriaLabelMayNotBeFoundByVoiceControl - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAriaLabelMayNotBeFoundByVoiceControl_001_violations_basic",
+    "issueId": "ErrAriaLabelMayNotBeFoundByVoiceControl",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Elements where aria-label doesn't match visible text for voice control",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: aria-label Mismatches Visible Text</h1>
+
+    <main>
+        <section>
+            <h2>Navigation Button</h2>
+            <button aria-label="Go to next page"
+                    data-expected-violation="true"
+                    data-violation-id="ErrAriaLabelMayNotBeFoundByVoiceControl"
+                    data-violation-reason="Visible text is 'Continue' but aria-label is 'Go to next page' - voice command 'click Continue' won't work">
+                Continue
+            </button>
+        </section>
+
+        <section>
+            <h2>Search Link</h2>
+            <a href="/search"
+               aria-label="Perform a search on the website"
+               data-expected-violation="true"
+               data-violation-id="ErrAriaLabelMayNotBeFoundByVoiceControl"
+               data-violation-reason="Visible text is 'Search' but aria-label doesn't contain it - voice command 'click Search' won't work">
+                Search
+            </a>
+        </section>
+
+        <section>
+            <h2>Submit Form</h2>
+            <button type="submit"
+                    aria-label="Send your message"
+                    data-expected-violation="true"
+                    data-violation-id="ErrAriaLabelMayNotBeFoundByVoiceControl"
+                    data-violation-reason="Visible text is 'Submit' but aria-label is completely different">
+                Submit
+            </button>
+        </section>
+
+        <section>
+            <h2>Close Dialog</h2>
+            <button aria-label="Dismiss dialog"
+                    data-expected-violation="true"
+                    data-violation-id="ErrAriaLabelMayNotBeFoundByVoiceControl"
+                    data-violation-reason="Visible text is 'Close' but aria-label doesn't include it">
+                Close
+            </button>
+        </section>
+    </main>
+</body>
+</html>

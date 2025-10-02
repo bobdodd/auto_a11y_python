@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 461 files
-- **Issues With Enhanced Fixtures:** 227
+- **Total Enhanced Fixtures Created:** 469 files
+- **Issues With Enhanced Fixtures:** 231
 - **Touchpoints Completed:** 34 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%, Landmarks - 100%, Forms - 100%)
-- **Touchpoints In Progress:** 6 (Navigation - 4 issues, Interactive AI - 4 issues, Focus AI - 1 issue, Dialogs AI - 1 issue, Structure AI - 1 issue, Buttons AI - 1 issue)
-- **Issues Still Needing Fixtures:** 87
+- **Touchpoints In Progress:** 10 (Navigation - 4 issues, Interactive AI - 4 issues, Focus AI - 1 issue, Dialogs AI - 1 issue, Structure AI - 1 issue, Buttons AI - 1 issue, SkipLinks AI - 1 issue, LiveRegions AI - 1 issue, Status AI - 1 issue, Errors AI - 1 issue)
+- **Issues Still Needing Fixtures:** 83
 
 ## Completed Fixtures by Touchpoint
 
@@ -579,5 +579,29 @@ For each issue, we aim to create:
 ### 🔘 Buttons AI Touchpoint (1 issue - In Progress)
 
 1. **AI_ErrNonSemanticButton** - Clickable elements that are not semantic buttons (WCAG 2.1.1, 4.1.2) (2 fixtures)
+
+**Total:** 2 fixture files
+
+### 🔗 SkipLinks AI Touchpoint (1 issue - In Progress)
+
+1. **AI_ErrMissingSkipLink** - Pages with navigation blocks lacking skip links (WCAG 2.4.1) (2 fixtures)
+
+**Total:** 2 fixture files
+
+### 📢 LiveRegions AI Touchpoint (1 issue - In Progress)
+
+1. **AI_ErrMissingLiveRegion** - Dynamic content updates not announced to screen readers (WCAG 4.1.3) (2 fixtures)
+
+**Total:** 2 fixture files
+
+### ⏳ Status AI Touchpoint (1 issue - In Progress)
+
+1. **AI_ErrLoadingStateNotAnnounced** - Loading states not announced to assistive technology (WCAG 4.1.3) (2 fixtures)
+
+**Total:** 2 fixture files
+
+### ⚠️ Errors AI Touchpoint (1 issue - In Progress)
+
+1. **AI_ErrFormErrorNotAnnounced** - Form validation errors not announced to screen readers (WCAG 3.3.1, 4.1.3) (2 fixtures)
 
 **Total:** 2 fixture files

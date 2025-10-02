@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMissingLiveRegion - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMissingLiveRegion_002_correct_with_aria",
+    "issueId": "AI_ErrMissingLiveRegion",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Dynamic content with proper ARIA live regions",
+    "wcag": "4.1.3",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Shopping Cart - Correct Usage</h1>
+
+    <main>
+        <!-- Message area with polite live region - CORRECT -->
+        <div id="message"
+             role="status"
+             aria-live="polite"
+             aria-atomic="true"
+             data-expected-pass="true"
+             data-pass-reason="Message area uses role='status' and aria-live='polite' to announce updates to screen readers without interrupting user activity">
+        </div>
+
+        <button onclick="addItem()">Add Item</button>
+
+        <!-- Cart count with live region - CORRECT -->
+        <div role="status"
+             aria-live="polite"
+             data-expected-pass="true"
+             data-pass-reason="Cart count uses aria-live='polite' to announce quantity changes. Screen reader users receive updates when items are added">
+            Items in cart: <span id="cart-count">0</span>
+        </div>
+
+        <!-- Notification area with assertive live region - CORRECT -->
+        <div id="notifications"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true"
+             data-expected-pass="true"
+             data-pass-reason="Notification area uses role='alert' and aria-live='assertive' for critical time-sensitive messages. Immediately announced to screen readers">
+        </div>
+    </main>
+
+    <script>
+        let count = 0;
+
+        function addItem() {
+            count++;
+            document.getElementById('cart-count').textContent = count;
+            document.getElementById('message').textContent = 'Item added successfully!';
+
+            setTimeout(() => {
+                document.getElementById('notifications').textContent = 'Sale ends in 5 minutes!';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

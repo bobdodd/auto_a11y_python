@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMissingLiveRegion - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMissingLiveRegion_001_violations_basic",
+    "issueId": "AI_ErrMissingLiveRegion",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Dynamic content updates not announced to screen readers",
+    "wcag": "4.1.3",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+
+    <main>
+        <!-- Message area without live region -->
+        <div id="message"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrMissingLiveRegion"
+             data-violation-reason="Message area updated dynamically but lacks aria-live attribute. Screen reader users are not notified of status changes">
+        </div>
+
+        <button onclick="addItem()">Add Item</button>
+
+        <!-- Cart count without live region -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrMissingLiveRegion"
+             data-violation-reason="Cart count updated dynamically without aria-live. Users relying on screen readers miss important quantity updates">
+            Items in cart: <span id="cart-count">0</span>
+        </div>
+
+        <!-- Notification area without live region -->
+        <div id="notifications"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrMissingLiveRegion"
+             data-violation-reason="Notification area displays time-sensitive alerts but lacks aria-live='assertive'. Critical updates not announced to assistive technology users">
+        </div>
+    </main>
+
+    <script>
+        let count = 0;
+
+        function addItem() {
+            count++;
+            document.getElementById('cart-count').textContent = count;
+            document.getElementById('message').textContent = 'Item added successfully!';
+
+            setTimeout(() => {
+                document.getElementById('notifications').textContent = 'Sale ends in 5 minutes!';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrLoadingStateNotAnnounced - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrLoadingStateNotAnnounced_002_correct_with_status",
+    "issueId": "AI_ErrLoadingStateNotAnnounced",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Loading states properly announced with ARIA",
+    "wcag": "4.1.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .visually-hidden {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Dashboard - Correct Usage</h1>
+
+    <main>
+        <!-- Loading spinner with status announcement - CORRECT -->
+        <button onclick="loadData1()"
+                aria-describedby="status1"
+                data-expected-pass="true"
+                data-pass-reason="Button connected to live region via aria-describedby. Status changes announced to screen readers with role='status' and aria-live='polite'">
+            Load Data
+        </button>
+        <div id="spinner1" class="spinner" aria-hidden="true"></div>
+        <div id="status1" role="status" aria-live="polite" aria-atomic="true"></div>
+        <div id="content1"></div>
+
+        <!-- Progress indicator with proper announcement - CORRECT -->
+        <button onclick="loadData2()"
+                aria-describedby="status2"
+                data-expected-pass="true"
+                data-pass-reason="Loading state announced via role='status' and aria-live='polite'. Screen reader users are informed of loading progress and completion">
+            Refresh Content
+        </button>
+        <div id="status2" role="status" aria-live="polite" aria-atomic="true"></div>
+        <div id="content2"></div>
+    </main>
+
+    <script>
+        function loadData1() {
+            const spinner = document.getElementById('spinner1');
+            const status = document.getElementById('status1');
+
+            spinner.style.display = 'block';
+            status.textContent = 'Loading data, please wait...';
+
+            setTimeout(() => {
+                spinner.style.display = 'none';
+                status.textContent = 'Data loaded successfully!';
+                document.getElementById('content1').textContent = 'Data loaded successfully!';
+            }, 2000);
+        }
+
+        function loadData2() {
+            const status = document.getElementById('status2');
+
+            status.textContent = 'Refreshing content, please wait...';
+
+            setTimeout(() => {
+                status.textContent = 'Content refreshed successfully!';
+                document.getElementById('content2').textContent = 'Content refreshed!';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

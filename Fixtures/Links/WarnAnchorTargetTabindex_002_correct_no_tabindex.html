@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnAnchorTargetTabindex - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnAnchorTargetTabindex_002_correct_no_tabindex",
+    "issueId": "WarnAnchorTargetTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Anchor target elements without unnecessary tabindex attributes",
+    "wcag": "2.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Proper Anchor Targets</h1>
+
+    <nav>
+        <ul>
+            <li><a href="#section1">Jump to Section 1</a></li>
+            <li><a href="#section2">Jump to Section 2</a></li>
+            <li><a href="#section3">Jump to Section 3</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2 id="section1"
+                data-expected-pass="true"
+                data-pass-reason="Heading anchor target has no unnecessary tabindex">Section 1: Introduction</h2>
+            <p>This heading is a link target and correctly has no tabindex attribute.</p>
+        </section>
+
+        <section>
+            <h2 id="section2"
+                data-expected-pass="true"
+                data-pass-reason="Heading anchor target correctly omits tabindex">Section 2: Details</h2>
+            <p>This heading is a link target without any tabindex attribute, which is correct.</p>
+        </section>
+
+        <section>
+            <div id="section3"
+                 data-expected-pass="true"
+                 data-pass-reason="Non-interactive anchor target has no tabindex">
+                <h2>Section 3: Conclusion</h2>
+                <p>This div is used as an anchor target and correctly has no tabindex.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

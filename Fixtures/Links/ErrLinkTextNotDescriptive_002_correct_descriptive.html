@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkTextNotDescriptive - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkTextNotDescriptive_002_correct_descriptive",
+    "issueId": "ErrLinkTextNotDescriptive",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Links with descriptive text that clearly indicates destination",
+    "wcag": "2.4.4",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Descriptive Link Text</h1>
+
+    <main>
+        <section>
+            <h2>Product Information</h2>
+            <p>Our new laptop has amazing features.
+            <a href="specs.html"
+               data-expected-pass="true"
+               data-pass-reason="Link text clearly describes the destination">View laptop specifications</a></p>
+        </section>
+
+        <section>
+            <h2>Annual Report</h2>
+            <p>We've published our financial results for 2024.
+            <a href="report-2024.pdf"
+               data-expected-pass="true"
+               data-pass-reason="Link text describes the specific document">Download 2024 annual financial report (PDF)</a></p>
+        </section>
+
+        <section>
+            <h2>Services Offered</h2>
+            <p>We provide comprehensive consulting services.
+            <a href="services.html"
+               data-expected-pass="true"
+               data-pass-reason="Link text describes what page user will visit">Learn about our consulting services</a></p>
+        </section>
+
+        <section>
+            <h2>Download Section</h2>
+            <p>Get the latest version of our software.
+            <a href="software-v2.zip"
+               data-expected-pass="true"
+               data-pass-reason="Link text specifies what is being downloaded">Download Software version 2.0 (ZIP, 45MB)</a></p>
+        </section>
+
+        <section>
+            <h2>Contact Information</h2>
+            <p>Questions? Get in touch with us.
+            <a href="contact.html"
+               data-expected-pass="true"
+               data-pass-reason="Link text describes the action and destination">Visit our contact page</a></p>
+        </section>
+    </main>
+</body>
+</html>

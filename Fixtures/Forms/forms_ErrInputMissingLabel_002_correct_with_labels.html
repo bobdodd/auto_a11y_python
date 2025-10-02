@@ -3,48 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search - With Input Labels</title>
+    <title>forms_ErrInputMissingLabel - Correct Usage</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "forms_ErrInputMissingLabel_002_correct_with_labels",
     "issueId": "forms_ErrInputMissingLabel",
     "expectedViolationCount": 0,
     "expectedPassCount": 3,
-    "description": "Form input elements with proper label associations",
+    "description": "Input fields with proper accessible labels",
     "wcag": "1.3.1, 3.3.2, 4.1.2",
     "impact": "High"
 }
     </script>
 </head>
 <body>
-    <h1>Product Search</h1>
+    <h1>Registration Form</h1>
 
-    <form>
-        <div data-expected-pass="true"
-             data-pass-reason="Search input has proper label element with for/id association">
-            <label for="search">Search Products</label>
-            <input type="text" id="search" name="search" placeholder="e.g., laptops, books">
-            <button type="submit">Go</button>
-        </div>
+    <main>
+        <form>
+            <section>
+                <h2>Account Information</h2>
 
-        <h2>Filters</h2>
+                <label for="username">Username:</label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       data-expected-pass="true"
+                       data-pass-reason="Text input has proper label element with for attribute linking to field id. Screen readers announce 'Username:' followed by field type. Users know what information to enter. Field purpose is clear. Blind users can complete form. Complies with WCAG 1.3.1 Info and Relationships, 3.3.2 Labels or Instructions, and 4.1.2 Name, Role, Value by providing accessible name for input">
+            </section>
 
-        <fieldset>
-            <legend>Price Range</legend>
-            <div data-expected-pass="true"
-                 data-pass-reason="Minimum price input has proper label association">
-                <label for="min-price">Minimum Price ($)</label>
-                <input type="number" id="min-price" name="min-price" placeholder="0">
-            </div>
-            to
-            <div data-expected-pass="true"
-                 data-pass-reason="Maximum price input properly labeled, screen readers announce 'Maximum Price'">
-                <label for="max-price">Maximum Price ($)</label>
-                <input type="number" id="max-price" name="max-price" placeholder="1000">
-            </div>
-        </fieldset>
+            <section>
+                <h2>Personal Details</h2>
 
-        <button type="submit">Apply Filters</button>
-    </form>
+                <label for="email">Email Address:</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       placeholder="you@example.com"
+                       data-expected-pass="true"
+                       data-pass-reason="Email input has proper label element plus placeholder for format hint. Screen readers announce 'Email Address:' as persistent accessible name. Placeholder provides additional help without replacing label. Field has clear accessible name that doesn't disappear. Users maintain context while filling. Meets WCAG 1.3.1 Info and Relationships, 3.3.2 Labels or Instructions, and 4.1.2 Name, Role, Value by using proper label for input">
+            </section>
+
+            <section>
+                <h2>Password</h2>
+
+                <label for="password">Password:</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       data-expected-pass="true"
+                       data-pass-reason="Password input has proper label element with for attribute. Screen readers announce 'Password:' describing field purpose. Users know field requirements. Field has accessible name. Blind users understand what password is for. Complies with WCAG 1.3.1 Info and Relationships, 3.3.2 Labels or Instructions, and 4.1.2 Name, Role, Value by providing accessible label for input">
+
+                <button type="submit">Register</button>
+            </section>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
 </body>
 </html>

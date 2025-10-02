@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complementary Landmark Descriptive Labels - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "WarnComplementaryLandmarkAccessibleNameUsesComplementary_002_correct_descriptive_labels",
+        "issueId": "WarnComplementaryLandmarkAccessibleNameUsesComplementary",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 4,
+        "description": "Complementary landmarks with descriptive labels or no label when appropriate",
+        "wcag": "2.4.6",
+        "impact": "Low"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Complementary Landmark Descriptive Labels - Correct</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Web Accessibility Best Practices</h2>
+            <p>Learn how to create accessible complementary sections with meaningful labels.</p>
+
+            <aside aria-label="Related articles"
+                   data-expected-pass="true"
+                   data-pass-reason="Complementary landmark uses descriptive label 'Related articles' that explains content without using the word 'complementary'">
+                <h3>Further Reading</h3>
+                <ul>
+                    <li><a href="/intro-aria">Introduction to ARIA</a></li>
+                    <li><a href="/semantic-html">Semantic HTML Guide</a></li>
+                    <li><a href="/testing">Accessibility Testing</a></li>
+                </ul>
+            </aside>
+        </article>
+
+        <aside role="complementary"
+               aria-label="Quick navigation"
+               data-expected-pass="true"
+               data-pass-reason="Complementary landmark has descriptive label explaining purpose without redundant use of 'complementary' term">
+            <h3>Jump To</h3>
+            <ul>
+                <li><a href="/user-guide">User Guide</a></li>
+                <li><a href="/faq">Frequently Asked Questions</a></li>
+                <li><a href="/support">Technical Support</a></li>
+            </ul>
+        </aside>
+
+        <div role="complementary"
+             aria-label="Newsletter subscription"
+             data-expected-pass="true"
+             data-pass-reason="Complementary landmark label describes specific content purpose, not the landmark type">
+            <h3>Stay Updated</h3>
+            <p>Get the latest news and updates delivered to your inbox.</p>
+            <form>
+                <label for="email">Email address:</label>
+                <input type="email" id="email" name="email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+
+        <aside data-expected-pass="true"
+               data-pass-reason="Single unlabeled complementary landmark is acceptable when only one exists on page">
+            <h3>About the Author</h3>
+            <p>Jane Doe is a web accessibility specialist with 10 years of experience in inclusive design.</p>
+        </aside>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+    </footer>
+
+    <hr>
+
+    <p><strong>Best Practice:</strong> Use labels that describe what the complementary section contains (e.g., "Related articles", "Quick navigation", "Newsletter subscription") rather than using the generic term "complementary" or "complementary section".</p>
+
+    <details>
+        <summary>Good vs. Bad Label Examples</summary>
+        <p><strong>Good labels:</strong></p>
+        <ul>
+            <li>aria-label="Related articles"</li>
+            <li>aria-label="Quick navigation"</li>
+            <li>aria-label="Newsletter subscription"</li>
+            <li>aria-label="Author biography"</li>
+        </ul>
+        <p><strong>Avoid these labels:</strong></p>
+        <ul>
+            <li>aria-label="Complementary" (redundant)</li>
+            <li>aria-label="Complementary content" (redundant)</li>
+            <li>aria-label="Complementary section" (redundant)</li>
+        </ul>
+    </details>
+</body>
+</html>

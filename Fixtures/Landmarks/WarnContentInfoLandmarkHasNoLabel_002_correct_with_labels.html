@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentInfo Landmark Proper Labeling - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "WarnContentInfoLandmarkHasNoLabel_002_correct_with_labels",
+        "issueId": "WarnContentInfoLandmarkHasNoLabel",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 2,
+        "description": "ContentInfo landmarks with labels when multiple exist, or single without label",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Low"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>ContentInfo Landmark Proper Labeling - Correct</h1>
+        <nav aria-label="Primary navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding ContentInfo Labeling</h2>
+            <p>This page demonstrates proper labeling when multiple contentinfo landmarks exist (rare pattern).</p>
+        </article>
+    </main>
+
+    <footer aria-label="Main site footer"
+            data-expected-pass="true"
+            data-pass-reason="ContentInfo landmark has descriptive label when multiple footer sections exist on page">
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+        <nav aria-label="Legal links">
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a> |
+            <a href="/accessibility">Accessibility Statement</a>
+        </nav>
+    </footer>
+
+    <div role="contentinfo"
+         aria-labelledby="contact-heading"
+         data-expected-pass="true"
+         data-pass-reason="ContentInfo landmark labeled via aria-labelledby, helps users distinguish from main footer">
+        <h2 id="contact-heading">Contact Information</h2>
+        <address>
+            <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+            <p>Phone: <a href="tel:+15551234567">(555) 123-4567</a></p>
+            <p>Address: 123 Main Street, City, ST 12345</p>
+        </address>
+    </div>
+
+    <hr>
+
+    <h2>Single ContentInfo Landmark Example (Most Common)</h2>
+    <p>In the vast majority of cases, pages have only one contentinfo landmark (footer), which doesn't require a label:</p>
+
+    <footer>
+        <nav aria-label="Footer links">
+            <a href="/privacy">Privacy</a> |
+            <a href="/terms">Terms</a> |
+            <a href="/sitemap">Sitemap</a>
+        </nav>
+        <p>© 2025 Example Corporation</p>
+        <p><strong>Note:</strong> This single contentinfo landmark doesn't require a label - this is the standard pattern.</p>
+    </footer>
+
+    <hr>
+
+    <p><strong>Best Practice:</strong> Most pages should have exactly one contentinfo landmark (footer element), which doesn't need a label. If multiple contentinfo landmarks are necessary (very rare), provide each with a unique aria-label or aria-labelledby. However, consider whether complementary landmarks might be more appropriate for additional footer-like content.</p>
+</body>
+</html>

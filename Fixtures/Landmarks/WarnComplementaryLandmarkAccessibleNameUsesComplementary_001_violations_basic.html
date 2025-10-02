@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complementary Landmark Generic Label - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "WarnComplementaryLandmarkAccessibleNameUsesComplementary_001_violations_basic",
+        "issueId": "WarnComplementaryLandmarkAccessibleNameUsesComplementary",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Complementary landmarks using generic term 'complementary' in accessible name",
+        "wcag": "2.4.6",
+        "impact": "Low"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Complementary Landmark Generic Label - Violations</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Main Article Content</h2>
+            <p>Understanding how generic landmark labels create redundancy.</p>
+
+            <aside aria-label="Complementary content"
+                   data-expected-violation="true"
+                   data-violation-id="WarnComplementaryLandmarkAccessibleNameUsesComplementary"
+                   data-violation-reason="Complementary landmark label uses generic term 'complementary'. Screen readers announce 'Complementary content complementary', which is redundant">
+                <h3>Related Articles</h3>
+                <ul>
+                    <li><a href="/article1">Article 1</a></li>
+                    <li><a href="/article2">Article 2</a></li>
+                </ul>
+            </aside>
+        </article>
+
+        <aside role="complementary"
+               aria-label="Complementary section"
+               data-expected-violation="true"
+               data-violation-id="WarnComplementaryLandmarkAccessibleNameUsesComplementary"
+               data-violation-reason="Complementary landmark label contains word 'complementary'. Results in redundant announcement 'Complementary section complementary'">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="/guide">User Guide</a></li>
+                <li><a href="/faq">FAQ</a></li>
+            </ul>
+        </aside>
+
+        <div role="complementary"
+             aria-label="Complementary information"
+             data-expected-violation="true"
+             data-violation-id="WarnComplementaryLandmarkAccessibleNameUsesComplementary"
+             data-violation-reason="Complementary landmark label includes 'complementary'. Screen readers announce role twice, once from label and once from landmark type">
+            <h3>Newsletter</h3>
+            <form>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p>Avoid using the landmark type in labels. Describe what the complementary content contains, not that it's "complementary".</p>
+    </footer>
+</body>
+</html>

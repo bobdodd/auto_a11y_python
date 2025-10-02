@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkTextNotDescriptive - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkTextNotDescriptive_001_violations_basic",
+    "issueId": "ErrLinkTextNotDescriptive",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Links with non-descriptive text that doesn't indicate destination",
+    "wcag": "2.4.4",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Non-Descriptive Link Text</h1>
+
+    <main>
+        <section>
+            <h2>Product Information</h2>
+            <p>Our new laptop has amazing features.
+            <a href="specs.html"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkTextNotDescriptive"
+               data-violation-reason="Link text 'click here' provides no context about destination">click here</a>
+            to learn more.</p>
+        </section>
+
+        <section>
+            <h2>Annual Report</h2>
+            <p>We've published our financial results for 2024.
+            <a href="report-2024.pdf"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkTextNotDescriptive"
+               data-violation-reason="Link text 'read more' is generic and doesn't describe the document">read more</a></p>
+        </section>
+
+        <section>
+            <h2>Services Offered</h2>
+            <p>We provide comprehensive consulting services.
+            <a href="services.html"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkTextNotDescriptive"
+               data-violation-reason="Link text 'here' is meaningless out of context">here</a></p>
+        </section>
+
+        <section>
+            <h2>Download Section</h2>
+            <p>Get the latest version of our software.
+            <a href="software-v2.zip"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkTextNotDescriptive"
+               data-violation-reason="Link text 'download' doesn't specify what is being downloaded">download</a></p>
+        </section>
+
+        <section>
+            <h2>Contact Information</h2>
+            <p>Questions? Get in touch with us by visiting our contact page.
+            <a href="contact.html"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkTextNotDescriptive"
+               data-violation-reason="Link text 'link' is extremely generic">link</a></p>
+        </section>
+    </main>
+</body>
+</html>

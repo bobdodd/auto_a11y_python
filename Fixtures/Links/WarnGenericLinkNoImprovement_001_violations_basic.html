@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnGenericLinkNoImprovement - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnGenericLinkNoImprovement_001_violations_basic",
+    "issueId": "WarnGenericLinkNoImprovement",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Generic link text without sufficient surrounding context",
+    "wcag": "2.4.4",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Generic Links Without Context</h1>
+
+    <main>
+        <section>
+            <h2>Product Features</h2>
+            <ul>
+                <li>
+                    <a href="feature1.html"
+                       data-expected-violation="true"
+                       data-violation-id="WarnGenericLinkNoImprovement"
+                       data-violation-reason="Generic 'More info' in list without additional context">More info</a>
+                </li>
+                <li>
+                    <a href="feature2.html"
+                       data-expected-violation="true"
+                       data-violation-id="WarnGenericLinkNoImprovement"
+                       data-violation-reason="Generic 'More info' in list without additional context">More info</a>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Articles</h2>
+            <div>
+                <a href="article1.html"
+                   data-expected-violation="true"
+                   data-violation-id="WarnGenericLinkNoImprovement"
+                   data-violation-reason="Generic 'Read more' with no descriptive text nearby">Read more</a>
+            </div>
+            <div>
+                <a href="article2.html"
+                   data-expected-violation="true"
+                   data-violation-id="WarnGenericLinkNoImprovement"
+                   data-violation-reason="Generic 'Read more' with no descriptive text nearby">Read more</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

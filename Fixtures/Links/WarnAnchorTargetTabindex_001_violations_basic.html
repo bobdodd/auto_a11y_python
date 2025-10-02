@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnAnchorTargetTabindex - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnAnchorTargetTabindex_001_violations_basic",
+    "issueId": "WarnAnchorTargetTabindex",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Anchor target elements with unnecessary tabindex attributes",
+    "wcag": "2.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Unnecessary Tabindex on Anchor Targets</h1>
+
+    <nav>
+        <ul>
+            <li><a href="#section1">Jump to Section 1</a></li>
+            <li><a href="#section2">Jump to Section 2</a></li>
+            <li><a href="#section3">Jump to Section 3</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2 id="section1"
+                tabindex="0"
+                data-expected-violation="true"
+                data-violation-id="WarnAnchorTargetTabindex"
+                data-violation-reason="Heading is only a link target, doesn't need tabindex">Section 1: Introduction</h2>
+            <p>This heading has an unnecessary tabindex since it's just an anchor target.</p>
+        </section>
+
+        <section>
+            <h2 id="section2"
+                tabindex="-1"
+                data-expected-violation="true"
+                data-violation-id="WarnAnchorTargetTabindex"
+                data-violation-reason="Heading is only a link target, tabindex=-1 is unnecessary">Section 2: Details</h2>
+            <p>This heading has tabindex="-1" which is unnecessary for a simple anchor target.</p>
+        </section>
+
+        <section>
+            <div id="section3"
+                 tabindex="0"
+                 data-expected-violation="true"
+                 data-violation-id="WarnAnchorTargetTabindex"
+                 data-violation-reason="Non-interactive element used as link target doesn't need tabindex">
+                <h2>Section 3: Conclusion</h2>
+                <p>This div wrapper has tabindex but is only used as an anchor target.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

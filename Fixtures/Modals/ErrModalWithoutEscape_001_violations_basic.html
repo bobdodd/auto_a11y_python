@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrModalWithoutEscape - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrModalWithoutEscape_001_violations_basic",
+    "issueId": "ErrModalWithoutEscape",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Modal dialogs without Escape key handler",
+    "wcag": "2.1.1, 2.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 2px solid black;
+            z-index: 1000;
+        }
+        .modal.active { display: block; }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .overlay.active { display: block; }
+    </style>
+</head>
+<body>
+    <h1>Modal Examples</h1>
+
+    <main>
+        <section>
+            <h2>Alert Modal</h2>
+            <button onclick="document.getElementById('alertModal').classList.add('active'); document.getElementById('overlay1').classList.add('active');">Show Alert</button>
+
+            <div class="overlay" id="overlay1"></div>
+            <div class="modal" id="alertModal" role="dialog" aria-labelledby="alertTitle"
+                 data-expected-violation="true"
+                 data-violation-reason="Modal dialog has no Escape key handler. Users expect Escape to close modals per standard UI patterns. Keyboard users trapped with no way to dismiss dialog without using close button. Screen reader users may try Escape key and nothing happens. Creates keyboard trap for users who can't easily navigate to close button. Violates WCAG 2.1.1 Keyboard and 2.1.2 No Keyboard Trap by not providing standard keyboard escape mechanism">
+                <h2 id="alertTitle">Important Alert</h2>
+                <p>This is an important message that requires your attention.</p>
+                <button onclick="document.getElementById('alertModal').classList.remove('active'); document.getElementById('overlay1').classList.remove('active');">Close</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Form Modal</h2>
+            <button onclick="document.getElementById('formModal').classList.add('active'); document.getElementById('overlay2').classList.add('active');">Show Form</button>
+
+            <div class="overlay" id="overlay2"></div>
+            <div class="modal" id="formModal" role="dialog" aria-labelledby="formTitle"
+                 data-expected-violation="true"
+                 data-violation-reason="Modal dialog lacks Escape key handling. Standard keyboard pattern for modals includes Escape to dismiss. Users who open modal by mistake can't quickly exit without tabbing to close button. Screen readers announce dialog but no standard exit method. Keyboard-only users may get stuck. Violates WCAG 2.1.1 Keyboard by not supporting standard keyboard interaction and 2.1.2 No Keyboard Trap by not providing keyboard escape mechanism">
+                <h2 id="formTitle">Contact Form</h2>
+                <form>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name">
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+
+                    <button type="submit">Submit</button>
+                    <button type="button" onclick="document.getElementById('formModal').classList.remove('active'); document.getElementById('overlay2').classList.remove('active');">Cancel</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

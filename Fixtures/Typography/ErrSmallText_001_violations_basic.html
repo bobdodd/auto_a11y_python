@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrSmallText - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrSmallText_001_violations_basic",
+    "issueId": "ErrSmallText",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Text sized below 16px minimum",
+    "wcag": "1.4.4, 1.4.12",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .tiny-text {
+            font-size: 10px;
+        }
+
+        .very-small-text {
+            font-size: 12px;
+        }
+
+        .below-minimum {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <section>
+            <h2>Product Description</h2>
+
+            <p class="tiny-text"
+               data-expected-violation="true"
+               data-violation-reason="Body text uses font-size: 10px which is far below 16px minimum. Text is extremely difficult to read for users with low vision. Users must zoom page to read content. Many users with visual impairments cannot read text this small. Fails to meet minimum readable size. Violates WCAG 1.4.4 Resize Text and 1.4.12 Text Spacing by using font size that is too small for comfortable reading">
+                This product features advanced technology and premium materials. Perfect for professional use in demanding environments. Includes comprehensive warranty and support.
+            </p>
+        </section>
+
+        <section>
+            <h2>Terms and Conditions</h2>
+
+            <p class="very-small-text"
+               data-expected-violation="true"
+               data-violation-reason="Legal text uses font-size: 12px which is below 16px minimum. Text is hard to read especially for older users and those with low vision. Forces users to zoom to read important legal information. Small text creates accessibility barrier. Fails readable size guidelines. Violates WCAG 1.4.4 Resize Text and 1.4.12 Text Spacing by not meeting minimum font size for accessibility">
+                By purchasing this product, you agree to our terms of service and privacy policy. Returns accepted within 30 days. Warranty valid for one year from purchase date. See full terms on our website.
+            </p>
+        </section>
+
+        <section>
+            <h2>Product Specifications</h2>
+
+            <ul class="below-minimum"
+                data-expected-violation="true"
+                data-violation-reason="Specification text uses font-size: 14px which is below 16px recommended minimum. Text is smaller than comfortable reading size. Users with low vision struggle to read content. Must zoom to view comfortably. Fails to meet accessible font size standards. Violates WCAG 1.4.4 Resize Text and 1.4.12 Text Spacing by using font size below minimum threshold">
+                <li>Weight: 2.5 pounds</li>
+                <li>Dimensions: 12 x 8 x 3 inches</li>
+                <li>Material: Aluminum alloy</li>
+                <li>Color: Space gray</li>
+                <li>Battery life: 10 hours</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

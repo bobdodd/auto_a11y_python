@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNoOutlineOffsetDefined - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoOutlineOffsetDefined_002_correct_with_offset",
+    "issueId": "ErrNoOutlineOffsetDefined",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Focus outlines with proper outline-offset",
+    "wcag": "2.4.7",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .custom-button-2:focus {
+            outline: 2px solid blue;
+            outline-offset: 2px;
+        }
+
+        .custom-link-2:focus {
+            outline: 3px solid orange;
+            outline-offset: 3px;
+        }
+
+        .custom-input-2:focus {
+            outline: 2px solid green;
+            outline-offset: 1px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Elements</h1>
+
+    <main>
+        <section>
+            <h2>Buttons</h2>
+
+            <button class="custom-button-2"
+                    data-expected-pass="true"
+                    data-pass-reason="Custom focus outline includes outline-offset: 2px property. Outline has visual breathing room from button edge. Focus indicator clearly visible with separation from element. Users with low vision can easily see focus state. Enhanced visibility compared to outline without offset. Complies with WCAG 2.4.7 Focus Visible by making focus indicator highly visible with proper spacing">
+                Click Me
+            </button>
+        </section>
+
+        <section>
+            <h2>Links</h2>
+
+            <a href="/page1" class="custom-link-2"
+               data-expected-pass="true"
+               data-pass-reason="Custom focus outline includes outline-offset: 3px property. Outline has clear spacing from link text. Focus indicator highly visible with separation. Users can easily perceive focus state. Better visibility than outline touching element. Meets WCAG 2.4.7 Focus Visible by optimizing focus indicator visibility with offset">
+                Go to Page 1
+            </a>
+        </section>
+
+        <section>
+            <h2>Form Fields</h2>
+
+            <form>
+                <label for="email">Email:</label>
+                <input type="email"
+                       id="email"
+                       class="custom-input-2"
+                       data-expected-pass="true"
+                       data-pass-reason="Custom focus outline includes outline-offset: 1px property. Outline has visual separation from field border. Focus indicator clearly distinguishable from field edge. Users with low vision can easily see focus state. Enhanced visibility with proper offset. Complies with WCAG 2.4.7 Focus Visible by ensuring focus indicator has sufficient visibility through spacing">
+
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

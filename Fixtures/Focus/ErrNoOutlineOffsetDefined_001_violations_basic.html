@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNoOutlineOffsetDefined - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoOutlineOffsetDefined_001_violations_basic",
+    "issueId": "ErrNoOutlineOffsetDefined",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Focus outlines without outline-offset defined",
+    "wcag": "2.4.7",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .custom-button-1:focus {
+            outline: 2px solid blue;
+            /* Missing outline-offset - outline hugs edge of element */
+        }
+
+        .custom-link-1:focus {
+            outline: 3px solid orange;
+            /* No outline-offset specified - reduces visibility */
+        }
+
+        .custom-input-1:focus {
+            outline: 2px solid green;
+            /* outline-offset not defined - harder to see */
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Elements</h1>
+
+    <main>
+        <section>
+            <h2>Buttons</h2>
+
+            <button class="custom-button-1"
+                    data-expected-violation="true"
+                    data-violation-reason="Custom focus outline defined without outline-offset property. Outline sits directly against button edge making focus harder to distinguish. No visual breathing room between element and focus indicator. Users with low vision may struggle to see focus state. Reduced visibility compared to outline with offset. Violates WCAG 2.4.7 Focus Visible by not making focus indicator sufficiently visible">
+                Click Me
+            </button>
+        </section>
+
+        <section>
+            <h2>Links</h2>
+
+            <a href="/page1" class="custom-link-1"
+               data-expected-violation="true"
+               data-violation-reason="Custom focus outline without outline-offset property. Outline directly touches link text reducing visual clarity. No spacing between text and focus indicator. Users may have difficulty perceiving focus state. Less visible than outline with proper offset. Violates WCAG 2.4.7 Focus Visible by reducing focus indicator visibility">
+                Go to Page 1
+            </a>
+        </section>
+
+        <section>
+            <h2>Form Fields</h2>
+
+            <form>
+                <label for="email">Email:</label>
+                <input type="email"
+                       id="email"
+                       class="custom-input-1"
+                       data-expected-violation="true"
+                       data-violation-reason="Custom focus outline defined but no outline-offset specified. Outline hugs field border making focus harder to perceive. No visual separation between field edge and focus indicator. Users with low vision may miss focus state. Reduced focus visibility. Violates WCAG 2.4.7 Focus Visible by not optimizing focus indicator visibility with offset">
+
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

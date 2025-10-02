@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrSmallText - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrSmallText_002_correct_readable_size",
+    "issueId": "ErrSmallText",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Text sized at or above 16px minimum",
+    "wcag": "1.4.4, 1.4.12",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .readable-text {
+            font-size: 16px;
+        }
+
+        .comfortable-text {
+            font-size: 18px;
+        }
+
+        .large-text {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <section>
+            <h2>Product Description</h2>
+
+            <p class="readable-text"
+               data-expected-pass="true"
+               data-pass-reason="Body text uses font-size: 16px which meets minimum readable size. Text is comfortable to read for users with low vision. No zooming required to read content. Meets accessible font size standards. Users can read comfortably without strain. Complies with WCAG 1.4.4 Resize Text and 1.4.12 Text Spacing by using font size at minimum accessible threshold">
+                This product features advanced technology and premium materials. Perfect for professional use in demanding environments. Includes comprehensive warranty and support.
+            </p>
+        </section>
+
+        <section>
+            <h2>Terms and Conditions</h2>
+
+            <p class="comfortable-text"
+               data-expected-pass="true"
+               data-pass-reason="Legal text uses font-size: 18px which exceeds 16px minimum. Text is easy to read for users with low vision and older users. No accessibility barriers to reading important legal information. Comfortable reading size. Exceeds minimum standards. Meets WCAG 1.4.4 Resize Text and 1.4.12 Text Spacing by using font size above minimum for enhanced readability">
+                By purchasing this product, you agree to our terms of service and privacy policy. Returns accepted within 30 days. Warranty valid for one year from purchase date. See full terms on our website.
+            </p>
+        </section>
+
+        <section>
+            <h2>Product Specifications</h2>
+
+            <ul class="large-text"
+                data-expected-pass="true"
+                data-pass-reason="Specification text uses font-size: 20px which is well above 16px minimum. Text is highly readable for all users including those with low vision. Comfortable reading without zooming. Exceeds accessible font size guidelines. Easy to read specifications. Complies with WCAG 1.4.4 Resize Text and 1.4.12 Text Spacing by using generous font size for excellent accessibility">
+                <li>Weight: 2.5 pounds</li>
+                <li>Dimensions: 12 x 8 x 3 inches</li>
+                <li>Material: Aluminum alloy</li>
+                <li>Color: Space gray</li>
+                <li>Battery life: 10 hours</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

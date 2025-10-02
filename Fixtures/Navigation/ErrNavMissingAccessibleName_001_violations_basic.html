@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNavMissingAccessibleName - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNavMissingAccessibleName_001_violations_basic",
+    "issueId": "ErrNavMissingAccessibleName",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Multiple nav landmarks without accessible names",
+    "wcag": "2.4.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Website with Multiple Navigation Regions</h1>
+
+    <header>
+        <nav data-expected-violation="true"
+             data-violation-reason="First nav landmark has no aria-label or aria-labelledby. When multiple nav landmarks exist, each must have unique accessible name. Screen readers announce 'navigation' without description. Users navigating by landmarks can't distinguish between nav regions. Creates confusion about which nav contains what content. Violates WCAG 2.4.1 Bypass Blocks and 4.1.2 Name, Role, Value by not providing accessible name for landmark">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <aside>
+        <nav data-expected-violation="true"
+             data-violation-reason="Second nav landmark also lacks accessible name. Screen readers announce generic 'navigation' without identifying content. Users can't tell if this is primary, secondary, or utility navigation. Multiple unlabeled nav landmarks create major usability barrier for landmark navigation. Violates WCAG 2.4.1 by making bypass mechanisms unclear and 4.1.2 by not providing accessible name">
+            <ul>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/resources">Resources</a></li>
+                <li><a href="/support">Support</a></li>
+                <li><a href="/docs">Documentation</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <section>
+            <h2>Page Content</h2>
+            <p>Main content area with multiple unlabeled navigation regions.</p>
+        </section>
+    </main>
+
+    <footer>
+        <nav data-expected-violation="true"
+             data-violation-reason="Third nav landmark has no accessible name. Screen readers list three 'navigation' landmarks with no way to distinguish them. Users navigating by landmarks hear same announcement for each. Impossible to know which nav is footer navigation vs header vs sidebar. Violates WCAG 2.4.1 Bypass Blocks and 4.1.2 Name, Role, Value by not uniquely identifying navigation regions when multiple exist">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/sitemap">Sitemap</a></li>
+            </ul>
+        </nav>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

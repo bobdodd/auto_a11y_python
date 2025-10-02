@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Landmark Nested in Other Landmarks - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMainLandmarkMayNotbeChildOfAnotherLandmark_001_violations_basic",
+        "issueId": "ErrMainLandmarkMayNotbeChildOfAnotherLandmark",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Main landmarks incorrectly nested inside other landmarks",
+        "wcag": "1.3.1",
+        "impact": "High"
+    }
+    </script>
+</head>
+<body>
+    <h1>Main Landmark Nested in Other Landmarks - Violations</h1>
+
+    <div role="complementary"
+         aria-label="Sidebar">
+        <h2>Sidebar Content</h2>
+
+        <main data-expected-violation="true"
+              data-violation-id="ErrMainLandmarkMayNotbeChildOfAnotherLandmark"
+              data-violation-reason="Main landmark is nested inside complementary landmark, violating landmark hierarchy rules. Main must be at top level">
+            <h3>Article Content</h3>
+            <p>This main landmark is incorrectly nested inside a complementary landmark.</p>
+            <p>Main landmarks must be top-level landmarks, not children of other landmarks.</p>
+        </main>
+    </div>
+
+    <section role="region" aria-label="Featured content">
+        <h2>Featured Section</h2>
+
+        <div role="main"
+             data-expected-violation="true"
+             data-violation-id="ErrMainLandmarkMayNotbeChildOfAnotherLandmark"
+             data-violation-reason="Main landmark is nested inside region landmark, breaking proper landmark structure. Main cannot be a child of region">
+            <h3>Primary Information</h3>
+            <p>The main landmark here is nested inside a region landmark, which is invalid.</p>
+        </div>
+    </section>
+
+    <nav aria-label="Primary navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+
+        <main data-expected-violation="true"
+              data-violation-id="ErrMainLandmarkMayNotbeChildOfAnotherLandmark"
+              data-violation-reason="Main landmark is nested inside navigation landmark, which is invalid. Main must not be a child of nav">
+            <h3>Welcome Content</h3>
+            <p>Nesting main inside navigation breaks the landmark hierarchy.</p>
+            <p>Navigation should contain links, not the main content area.</p>
+        </main>
+    </nav>
+
+    <footer>
+        <p>Main landmarks must be top-level landmarks, not nested inside banner, navigation, complementary, contentinfo, region, or any other landmark.</p>
+    </footer>
+</body>
+</html>

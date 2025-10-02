@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden Main Landmark - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMainLandmarkIsHidden_001_violations_basic",
+        "issueId": "ErrMainLandmarkIsHidden",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Main landmarks hidden from view via CSS or aria-hidden",
+        "wcag": "1.3.1",
+        "impact": "High"
+    }
+    </script>
+    <style>
+        .hidden-display {
+            display: none;
+        }
+        .hidden-visibility {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hidden Main Landmark - Violations</h1>
+    </header>
+
+    <main class="hidden-display"
+          data-expected-violation="true"
+          data-violation-id="ErrMainLandmarkIsHidden"
+          data-violation-reason="Main landmark is hidden with display:none, making primary content inaccessible to all users including screen readers">
+        <h2>Primary Content</h2>
+        <p>This main content is completely hidden with display: none.</p>
+        <p>Users cannot access this content at all.</p>
+    </main>
+
+    <div role="main"
+         class="hidden-visibility"
+         data-expected-violation="true"
+         data-violation-id="ErrMainLandmarkIsHidden"
+         data-violation-reason="Main landmark is hidden with visibility:hidden, making primary content invisible and inaccessible to all users">
+        <h2>Important Information</h2>
+        <p>This main content is hidden with visibility: hidden.</p>
+        <p>The content takes up space but is invisible and inaccessible.</p>
+    </div>
+
+    <main aria-hidden="true"
+          data-expected-violation="true"
+          data-violation-id="ErrMainLandmarkIsHidden"
+          data-violation-reason="Main landmark has aria-hidden='true', hiding primary content from screen readers while potentially visible to sighted users">
+        <h2>Article Content</h2>
+        <p>This main content has aria-hidden="true" which hides it from assistive technology.</p>
+        <p>Hiding the main landmark defeats its purpose of marking the primary content area.</p>
+        <article>
+            <h3>Article Title</h3>
+            <p>Article text that screen readers cannot access.</p>
+        </article>
+    </main>
+
+    <footer>
+        <p>Visible content here</p>
+        <p>Hiding the main landmark defeats the fundamental purpose of having a main content area. The primary content should always be accessible to all users.</p>
+    </footer>
+</body>
+</html>

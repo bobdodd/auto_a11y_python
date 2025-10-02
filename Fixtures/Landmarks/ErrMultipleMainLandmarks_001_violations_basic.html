@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Main Landmarks - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMultipleMainLandmarks_001_violations_basic",
+        "issueId": "ErrMultipleMainLandmarks",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Page with multiple main landmarks without unique labels",
+        "wcag": "1.3.1",
+        "impact": "High"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Multiple Main Landmarks - Violations</h1>
+        <nav aria-label="Primary navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+        </nav>
+    </header>
+
+    <main data-expected-violation="true"
+          data-violation-id="ErrMultipleMainLandmarks"
+          data-violation-reason="Multiple unlabeled main landmarks exist on page. First main landmark conflicts with other main landmarks, screen reader users don't know which contains the primary content">
+        <h2>Article Section</h2>
+        <article>
+            <h3>Featured Article</h3>
+            <p>This is one of three main landmarks on the page.</p>
+            <p>Screen reader users navigating by landmarks won't know which main contains the actual primary content.</p>
+        </article>
+    </main>
+
+    <div role="main"
+         data-expected-violation="true"
+         data-violation-id="ErrMultipleMainLandmarks"
+         data-violation-reason="Second unlabeled main landmark. Multiple main regions defeat the purpose of identifying THE primary content area">
+        <h2>Product Catalog</h2>
+        <p>Is this the primary content? Or was the article section above?</p>
+        <p>The ambiguity makes landmark navigation unreliable.</p>
+    </div>
+
+    <main data-expected-violation="true"
+          data-violation-id="ErrMultipleMainLandmarks"
+          data-violation-reason="Third main landmark without unique label. Having multiple 'primary' content areas is contradictory and confusing">
+        <h2>User Dashboard</h2>
+        <p>With three main landmarks, users must check each one to find what they're looking for.</p>
+        <p>This defeats the efficiency that landmarks are meant to provide.</p>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p>Pages should have exactly ONE main landmark identifying THE primary content. Multiple main landmarks defeat the purpose and confuse navigation.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Banner Landmarks - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMultipleBannerLandmarks_001_violations_basic",
+        "issueId": "ErrMultipleBannerLandmarks",
+        "expectedViolationCount": 2,
+        "expectedPassCount": 0,
+        "description": "Page with multiple banner landmarks without unique labels",
+        "wcag": "1.3.1",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <h1>Multiple Banner Landmarks - Violations</h1>
+
+    <header data-expected-violation="true"
+            data-violation-id="ErrMultipleBannerLandmarks"
+            data-violation-reason="Multiple banner landmarks exist on page without unique labels. First unlabeled banner landmark conflicts with second banner">
+        <h2>Company Website</h2>
+        <nav aria-label="Primary navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/products">Products</a>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding Banner Landmarks</h2>
+            <p>Typically, a page should have only one banner landmark (the site header). If multiple banner landmarks exist without unique labels, screen reader users cannot distinguish between them.</p>
+            <p>Best practice: Use only one banner per page, or provide unique aria-label/aria-labelledby for each.</p>
+        </article>
+    </main>
+
+    <div role="banner"
+         data-expected-violation="true"
+         data-violation-id="ErrMultipleBannerLandmarks"
+         data-violation-reason="Second unlabeled banner landmark on page. Multiple banners without unique accessible names confuse landmark navigation">
+        <h2>Promotional Header</h2>
+        <p>Special offer: 50% off this weekend!</p>
+        <button>Shop Now</button>
+    </div>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p>Pages should typically have only one banner landmark. If multiple exist (uncommon), each must have a unique accessible name via aria-label or aria-labelledby.</p>
+    </footer>
+</body>
+</html>

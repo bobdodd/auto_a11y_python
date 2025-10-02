@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 335 files
-- **Issues With Enhanced Fixtures:** 166
+- **Total Enhanced Fixtures Created:** 351 files
+- **Issues With Enhanced Fixtures:** 174
 - **Touchpoints Completed:** 32 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%)
-- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 37%)
-- **Issues Still Needing Fixtures:** 148
+- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 49%)
+- **Issues Still Needing Fixtures:** 140
 
 ## Completed Fixtures by Touchpoint
 
@@ -220,7 +220,7 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 
 **Total:** 4 fixture files
 
-### 🏛️ Landmarks Touchpoint (24/65 issues - 37% complete)
+### 🏛️ Landmarks Touchpoint (32/65 issues - 49% complete)
 
 1. **ErrCompletelyEmptyNavLandmark** - Empty navigation landmarks (2 fixtures)
 2. **ErrBannerLandmarkMayNotBeChildOfAnotherLandmark** - Banner nested in other landmarks (2 fixtures)
@@ -244,11 +244,18 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 20. **ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs** - Complementary with conflicting ARIA attributes (2 fixtures)
 21. **ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs** - Main with conflicting ARIA attributes (2 fixtures)
 22. **ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs** - Region with conflicting ARIA attributes (2 fixtures)
+23. **ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost** - Main with inappropriate tabindex (2 fixtures)
+24. **ErrMainLandmarkIsHidden** - Main landmark hidden from view (2 fixtures)
+25. **ErrMainLandmarkMayNotbeChildOfAnotherLandmark** - Main nested in other landmarks (2 fixtures)
+26. **ErrMissingMainLandmark** - Page without main landmark (2 fixtures)
+27. **ErrMultipleBannerLandmarks** - Multiple banner landmarks (2 fixtures)
+28. **ErrMultipleContentinfoLandmarks** - Multiple contentinfo landmarks (2 fixtures)
+29. **ErrMultipleMainLandmarks** - Multiple main landmarks (2 fixtures)
 
-**Total:** 48 fixture files
+**Total:** 64 fixture files
 
-#### ⏳ Remaining Issues (41)
-Major gaps: navigation conflicting attributes, main landmark duplication, form/nav labeling issues
+#### ⏳ Remaining Issues (33)
+Major gaps: navigation conflicting attributes, nav/form aria labeling issues, landmark nesting restrictions
 
 ### 🎨 Colors and Contrast Touchpoint (4/4 issues - 100% COMPLETE)
 

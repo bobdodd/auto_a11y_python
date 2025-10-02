@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single ContentInfo Landmark - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMultipleContentinfoLandmarks_002_correct_single_footer",
+        "issueId": "ErrMultipleContentinfoLandmarks",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 2,
+        "description": "Pages with single contentinfo or multiple with unique labels",
+        "wcag": "1.3.1",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Single ContentInfo Landmark - Correct</h1>
+        <nav aria-label="Primary navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Welcome to Our Website</h2>
+            <p>This page follows the most common and recommended pattern: a single contentinfo landmark (footer) for site-wide footer information.</p>
+            <p>This provides a clear, unambiguous footer section that screen reader users can easily navigate to.</p>
+        </article>
+
+        <section>
+            <h3>When to Use ContentInfo</h3>
+            <p>The contentinfo landmark (footer element) should contain:</p>
+            <ul>
+                <li>Copyright information</li>
+                <li>Legal links (Privacy Policy, Terms of Service)</li>
+                <li>Contact information</li>
+                <li>Site-wide footer navigation</li>
+                <li>Social media links</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer data-expected-pass="true"
+            data-pass-reason="Page has only one contentinfo landmark, the most common and recommended pattern. No label needed when only one footer exists">
+        <nav aria-label="Footer links">
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a> |
+            <a href="/accessibility">Accessibility Statement</a> |
+            <a href="/sitemap">Site Map</a>
+        </nav>
+
+        <address>
+            <p>Contact: <a href="mailto:info@example.com">info@example.com</a></p>
+            <p>Phone: <a href="tel:+15551234567">(555) 123-4567</a></p>
+        </address>
+
+        <div>
+            <h3>Connect With Us</h3>
+            <a href="https://twitter.com/example">Twitter</a>
+            <a href="https://facebook.com/example">Facebook</a>
+            <a href="https://linkedin.com/company/example">LinkedIn</a>
+        </div>
+
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+    </footer>
+
+    <hr>
+
+    <p data-expected-pass="true"
+       data-pass-reason="Single contentinfo landmark per page is strongly recommended. Multiple contentinfo landmarks are very rare and usually indicate a structural issue">
+        <strong>Best Practice:</strong> Use exactly one contentinfo landmark (footer) per page. Multiple contentinfo landmarks are almost never appropriate. If you need multiple footer-like sections, consider using complementary landmarks or regular section elements instead.
+    </p>
+</body>
+</html>

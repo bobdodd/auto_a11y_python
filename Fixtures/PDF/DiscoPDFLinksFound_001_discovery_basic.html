@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - PDF Links Requiring Review</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoPDFLinksFound_001_discovery_basic",
+    "issueId": "DiscoPDFLinksFound",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Links to PDF documents detected that require manual review",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Company Resources</h1>
+
+    <h2>Annual Reports</h2>
+
+    <div data-requires-review="true"
+         data-review-reason="PDF link requires review: verify PDF is tagged/accessible, link text should indicate PDF format">
+        <a href="/documents/annual-report-2024.pdf">2024 Annual Report</a>
+    </div>
+
+    <div data-requires-review="true"
+         data-review-reason="PDF link requires review: ensure PDF accessibility, check if hreflang needed for non-English PDFs">
+        <a href="/documents/financial-statement.pdf">Download Financial Statement</a>
+    </div>
+
+    <h2>Product Documentation</h2>
+
+    <div data-requires-review="true"
+         data-review-reason="PDF link requires review: consider providing HTML alternative, verify PDF has proper structure">
+        <p>For detailed specifications, see our <a href="/specs/product-manual.pdf">product manual</a>.</p>
+    </div>
+
+    <div data-requires-review="true"
+         data-review-reason="PDF link in different language requires hreflang attribute and language indication in link text">
+        <a href="/documents/guide-fr.pdf">Guide d'utilisation</a>
+    </div>
+
+    <h2>Forms</h2>
+
+    <div data-requires-review="true"
+         data-review-reason="PDF form requires review: fillable forms need accessibility, consider providing HTML form alternative">
+        <a href="/forms/application.pdf">Application Form (PDF)</a>
+    </div>
+</body>
+</html>

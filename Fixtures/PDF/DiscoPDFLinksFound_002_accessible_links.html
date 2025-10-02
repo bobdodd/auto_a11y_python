@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - Accessible PDF Links</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoPDFLinksFound_002_accessible_links",
+    "issueId": "DiscoPDFLinksFound",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "PDF links with proper accessibility indicators",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Company Resources</h1>
+
+    <h2>Annual Reports</h2>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Link text clearly indicates PDF format, allowing users to make informed decisions">
+        <a href="/documents/annual-report-2024.pdf">2024 Annual Report (PDF, 2.5 MB)</a>
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Link provides file format and size info, with HTML alternative offered">
+        <p>
+            <a href="/documents/financial-statement.pdf">Financial Statement (PDF, 1.8 MB)</a>
+            <br>
+            <a href="/financial-statement.html">View HTML version</a>
+        </p>
+    </div>
+
+    <h2>Product Documentation</h2>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Link indicates PDF format with file size, helping users decide before downloading">
+        <p>For detailed specifications, see our <a href="/specs/product-manual.pdf">product manual (PDF, 5.2 MB)</a>.</p>
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Non-English PDF link has hreflang attribute and language indicated in link text">
+        <a href="/documents/guide-fr.pdf" hreflang="fr">Guide d'utilisation (PDF en français, 3.1 MB)</a>
+    </div>
+
+    <h2>Forms</h2>
+
+    <div data-expected-pass="true"
+         data-pass-reason="PDF form link clearly labeled with format, size, and HTML alternative provided">
+        <p>
+            <a href="/forms/application.pdf">Application Form (PDF, 850 KB)</a>
+            <br>
+            <em>Note: This PDF has been tagged for accessibility. Prefer our <a href="/forms/application.html">online HTML form</a> for the best experience.</em>
+        </p>
+    </div>
+</body>
+</html>

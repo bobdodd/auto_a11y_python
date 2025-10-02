@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- HTML element with lang attribute - CORRECT -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMissingLangAttribute - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMissingLangAttribute_002_correct_with_lang",
+    "issueId": "AI_ErrMissingLangAttribute",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "HTML element with proper lang attribute",
+    "wcag": "3.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="HTML element has lang='en' attribute. Screen readers can determine page is in English and use correct pronunciation rules, improving comprehension for all users">
+    <h1>Welcome to Our Website</h1>
+
+    <main>
+        <p>We are excited to have you here. Explore our products and services to find what you need.</p>
+
+        <h2>About Us</h2>
+        <p>Founded in 2020, we have been serving customers worldwide with dedication and quality.</p>
+
+        <!-- Foreign language content with lang attribute -->
+        <blockquote lang="es">
+            <p>Hola, bienvenidos a nuestro sitio web.</p>
+        </blockquote>
+
+        <h2>Contact Information</h2>
+        <p>Email: contact@example.com</p>
+        <p>Phone: (555) 123-4567</p>
+    </main>
+</body>
+</html>

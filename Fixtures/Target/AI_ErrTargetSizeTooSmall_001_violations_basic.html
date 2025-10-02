@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTargetSizeTooSmall - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTargetSizeTooSmall_001_violations_basic",
+    "issueId": "AI_ErrTargetSizeTooSmall",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Touch targets smaller than 44x44 pixels",
+    "wcag": "2.5.5",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .small-button {
+            padding: 2px 4px;
+            font-size: 10px;
+            margin: 2px;
+        }
+        .tiny-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            text-align: center;
+            line-height: 16px;
+            cursor: pointer;
+            margin: 2px;
+        }
+        .small-link {
+            font-size: 10px;
+            padding: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Toolbar</h1>
+
+    <main>
+        <!-- Small buttons -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrTargetSizeTooSmall"
+             data-violation-reason="Buttons are smaller than 44x44px minimum touch target size. Users with motor impairments or using touch screens will have difficulty accurately tapping buttons">
+            <button class="small-button">Edit</button>
+            <button class="small-button">Delete</button>
+            <button class="small-button">Share</button>
+            <button class="small-button">Save</button>
+        </div>
+
+        <!-- Tiny icon buttons -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrTargetSizeTooSmall"
+             data-violation-reason="Icon buttons are only 16x16px, far below the 44x44px requirement. Extremely difficult to tap accurately on touch devices, especially for users with tremors or limited dexterity">
+            <span class="tiny-icon" onclick="like()">e</span>
+            <span class="tiny-icon" onclick="comment()">=¬</span>
+            <span class="tiny-icon" onclick="share()">4</span>
+            <span class="tiny-icon" onclick="bookmark()">=</span>
+        </div>
+
+        <!-- Small text links -->
+        <p data-expected-violation="true"
+           data-violation-id="AI_ErrTargetSizeTooSmall"
+           data-violation-reason="Text links have minimal padding resulting in touch targets smaller than 44x44px. Mobile users and users with motor impairments will struggle to tap links accurately">
+            <a href="#" class="small-link">Terms</a> |
+            <a href="#" class="small-link">Privacy</a> |
+            <a href="#" class="small-link">Contact</a>
+        </p>
+    </main>
+
+    <script>
+        function like() {}
+        function comment() {}
+        function share() {}
+        function bookmark() {}
+    </script>
+</body>
+</html>

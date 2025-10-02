@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTextSpacingIssue - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTextSpacingIssue_002_correct_spacing",
+    "issueId": "AI_ErrTextSpacingIssue",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Text spacing that accommodates user adjustments",
+    "wcag": "1.4.12",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .flexible-container {
+            min-height: 60px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 1rem 0;
+        }
+        .readable-spacing {
+            line-height: 1.5;
+            letter-spacing: 0.05em;
+            word-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Information - Correct Usage</h1>
+
+    <main>
+        <!-- Flexible container that accommodates spacing changes - CORRECT -->
+        <div class="flexible-container"
+             data-expected-pass="true"
+             data-pass-reason="Container uses min-height instead of fixed height and no overflow:hidden. Content expands when users increase text spacing for readability, ensuring no content is clipped">
+            <h2>Limited Edition Laptop</h2>
+            <p>This premium laptop features cutting-edge technology and exceptional performance for demanding users.</p>
+        </div>
+
+        <!-- Proper spacing that accommodates adjustments - CORRECT -->
+        <div class="readable-spacing"
+             data-expected-pass="true"
+             data-pass-reason="Text has adequate line-height (1.5) and positive letter/word spacing. Layout accommodates WCAG text spacing requirements: 1.5x line-height, 0.12x letter spacing, 0.16x word spacing, 2x paragraph spacing">
+            <h2>Special Offer</h2>
+            <p>Get 20% off on all purchases this week. Limited time offer. Don't miss out on this amazing deal. Shop now and save big on your favorite products.</p>
+
+            <p>Our flexible layout ensures that users who need to increase text spacing for readability can do so without losing content or breaking the design.</p>
+        </div>
+    </main>
+</body>
+</html>

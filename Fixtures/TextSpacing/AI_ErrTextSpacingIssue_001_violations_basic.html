@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTextSpacingIssue - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTextSpacingIssue_001_violations_basic",
+    "issueId": "AI_ErrTextSpacingIssue",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Text spacing that breaks or clips content when adjusted",
+    "wcag": "1.4.12",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .fixed-height {
+            height: 60px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 1rem 0;
+        }
+        .tight-spacing {
+            line-height: 1;
+            letter-spacing: -0.05em;
+            word-spacing: -0.1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <!-- Fixed height container that clips with increased spacing -->
+        <div class="fixed-height"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrTextSpacingIssue"
+             data-violation-reason="Container has fixed height with overflow:hidden. When users increase text spacing for readability, content gets clipped and becomes inaccessible">
+            <h2>Limited Edition Laptop</h2>
+            <p>This premium laptop features cutting-edge technology and exceptional performance for demanding users.</p>
+        </div>
+
+        <!-- Tight spacing that doesn't accommodate adjustments -->
+        <div class="tight-spacing"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrTextSpacingIssue"
+             data-violation-reason="Text has extremely tight line-height (1) and negative letter/word spacing. Users with dyslexia or low vision who increase spacing for readability will experience layout issues">
+            <h2>Special Offer</h2>
+            <p>Get 20% off on all purchases this week. Limited time offer. Don't miss out on this amazing deal. Shop now and save big on your favorite products.</p>
+        </div>
+    </main>
+</body>
+</html>

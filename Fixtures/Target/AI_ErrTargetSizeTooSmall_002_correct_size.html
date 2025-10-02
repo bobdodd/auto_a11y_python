@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTargetSizeTooSmall - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTargetSizeTooSmall_002_correct_size",
+    "issueId": "AI_ErrTargetSizeTooSmall",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Touch targets meeting 44x44 pixel minimum size",
+    "wcag": "2.5.5",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .adequate-button {
+            padding: 12px 24px;
+            font-size: 16px;
+            margin: 4px;
+            min-width: 44px;
+            min-height: 44px;
+        }
+        .icon-button {
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 4px;
+            font-size: 20px;
+        }
+        .accessible-link {
+            padding: 12px 16px;
+            display: inline-block;
+            margin: 4px;
+            min-height: 44px;
+            line-height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Toolbar - Correct Usage</h1>
+
+    <main>
+        <!-- Adequate sized buttons - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Buttons meet 44x44px minimum touch target size with adequate padding. Users with motor impairments and touch screen users can easily and accurately tap buttons">
+            <button class="adequate-button">Edit</button>
+            <button class="adequate-button">Delete</button>
+            <button class="adequate-button">Share</button>
+            <button class="adequate-button">Save</button>
+        </div>
+
+        <!-- Properly sized icon buttons - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Icon buttons are 44x44px meeting WCAG requirement. Touch targets are large enough for users with tremors or limited dexterity to tap accurately on touch devices">
+            <button class="icon-button" onclick="like()" aria-label="Like">e</button>
+            <button class="icon-button" onclick="comment()" aria-label="Comment">=¬</button>
+            <button class="icon-button" onclick="share()" aria-label="Share">4</button>
+            <button class="icon-button" onclick="bookmark()" aria-label="Bookmark">=</button>
+        </div>
+
+        <!-- Accessible text links - CORRECT -->
+        <nav data-expected-pass="true"
+             data-pass-reason="Text links have adequate padding creating touch targets that meet 44x44px minimum. Mobile users and users with motor impairments can easily tap links without accidental activation of adjacent links">
+            <a href="#" class="accessible-link">Terms of Service</a>
+            <a href="#" class="accessible-link">Privacy Policy</a>
+            <a href="#" class="accessible-link">Contact Us</a>
+        </nav>
+    </main>
+
+    <script>
+        function like() {}
+        function comment() {}
+        function share() {}
+        function bookmark() {}
+    </script>
+</body>
+</html>

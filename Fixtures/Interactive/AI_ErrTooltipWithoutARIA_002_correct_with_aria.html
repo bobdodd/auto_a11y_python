@@ -10,88 +10,65 @@
     "issueId": "AI_ErrTooltipWithoutARIA",
     "expectedViolationCount": 0,
     "expectedPassCount": 2,
-    "description": "Tooltip elements with proper ARIA markup, relationships, and keyboard support",
-    "wcag": "1.3.1, 4.1.2",
+    "description": "Tooltip patterns with proper ARIA attributes",
+    "wcag": "4.1.2",
     "impact": "Medium"
 }
     </script>
+    <style>
+        .tooltip-trigger { position: relative; border-bottom: 1px dashed #333; cursor: help; }
+        .tooltip { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 5px 10px; border-radius: 4px; white-space: nowrap; z-index: 1000; }
+        .tooltip-trigger:hover .tooltip,
+        .tooltip-trigger:focus .tooltip { display: block; }
+    </style>
 </head>
 <body>
-    <h1>Form with Help Icons - Correct Usage</h1>
+    <h1>Product Information</h1>
 
     <main>
-        <form>
-            <!-- Tooltip with proper ARIA - CORRECT -->
-            <div class="field"
-                 data-expected-pass="true"
-                 data-pass-reason="Tooltip uses role='tooltip', linked via aria-describedby, keyboard accessible with focus/blur events, and Escape key dismisses it">
-                <label for="username2">Username</label>
-                <input type="text"
-                       id="username2"
-                       name="username"
-                       aria-describedby="tip1">
-                <button type="button"
-                        class="help-icon"
-                        aria-label="Help for username"
-                        onfocus="accessibleShowTooltip('tip1')"
-                        onblur="accessibleHideTooltip('tip1')"
-                        onmouseover="accessibleShowTooltip('tip1')"
-                        onmouseout="accessibleHideTooltip('tip1')">
-                    ?
-                </button>
-                <div id="tip1"
-                     role="tooltip"
-                     style="display:none;">
-                    Choose a unique username with 6-20 characters
-                </div>
-            </div>
+        <section>
+            <h2>Features</h2>
 
-            <!-- Tooltip with keyboard and screen reader support - CORRECT -->
-            <div class="field"
-                 data-expected-pass="true"
-                 data-pass-reason="Complete tooltip pattern with role='tooltip', aria-describedby linking to input, keyboard focus support, and programmatic show/hide">
-                <label for="password2">Password</label>
-                <input type="text"
-                       id="password2"
-                       name="password"
-                       aria-describedby="tip2">
-                <button type="button"
-                        class="help-icon"
-                        aria-label="Help for password"
-                        onfocus="accessibleShowTooltip('tip2')"
-                        onblur="accessibleHideTooltip('tip2')"
-                        onmouseover="accessibleShowTooltip('tip2')"
-                        onmouseout="accessibleHideTooltip('tip2')">
-                    ?
-                </button>
-                <div id="tip2"
-                     role="tooltip"
-                     style="display:none;">
-                    Must contain uppercase, lowercase, number, and symbol
-                </div>
-            </div>
+            <p data-expected-pass="true"
+               data-pass-reason="Tooltip implemented with proper ARIA attributes. Trigger element has aria-describedby linking to tooltip. Tooltip has role='tooltip' and unique ID. Screen readers identify tooltip relationship and announce content. Users get tooltip content via aria-describedby. Keyboard users access tooltip on focus. Complies with WCAG 4.1.2 Name, Role, Value by implementing complete tooltip ARIA pattern">
+                Our product includes
+                <span class="tooltip-trigger"
+                      tabindex="0"
+                      aria-describedby="security-tooltip">
+                    advanced security
+                    <span class="tooltip"
+                          role="tooltip"
+                          id="security-tooltip">
+                        256-bit encryption with multi-factor authentication
+                    </span>
+                </span>
+                features.
+            </p>
+        </section>
 
-            <button type="submit">Submit</button>
-        </form>
+        <section>
+            <h2>Specifications</h2>
+
+            <p data-expected-pass="true"
+               data-pass-reason="Tooltip pattern with complete ARIA implementation. Aria-describedby links trigger to tooltip content. Tooltip has role='tooltip' with proper ID. Screen readers announce additional tooltip information. Users with assistive technology receive tooltip content. Keyboard-only users trigger tooltip via focus. Meets WCAG 4.1.2 Name, Role, Value by fully implementing tooltip ARIA semantics">
+                Battery life up to
+                <span class="tooltip-trigger"
+                      tabindex="0"
+                      aria-describedby="battery-tooltip">
+                    10 hours
+                    <span class="tooltip"
+                          role="tooltip"
+                          id="battery-tooltip">
+                        Based on typical usage patterns. May vary with intensive applications.
+                    </span>
+                </span>
+                of continuous use.
+            </p>
+        </section>
     </main>
 
-    <script>
-        function accessibleShowTooltip(id) {
-            document.getElementById(id).style.display = 'block';
-        }
-
-        function accessibleHideTooltip(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        // Allow Escape key to dismiss tooltips
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('[role="tooltip"]').forEach(tip => {
-                    tip.style.display = 'none';
-                });
-            }
-        });
-    </script>
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
 </body>
 </html>

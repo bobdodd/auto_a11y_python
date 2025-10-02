@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnAutoplayWithoutControl - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnAutoplayWithoutControl_001_violations_basic",
+    "issueId": "AI_WarnAutoplayWithoutControl",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Autoplaying media without pause/stop controls",
+    "wcag": "1.4.2, 2.2.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Welcome Page</h1>
+
+    <main>
+        <section data-expected-violation="true"
+                 data-violation-reason="Video autoplays without visible pause or stop control. Users can't easily stop autoplay affecting concentration. Screen reader users distracted by audio. Users with cognitive disabilities overwhelmed by movement. No mechanism to pause within 3 seconds. Warning for WCAG 1.4.2 Audio Control and 2.2.2 Pause, Stop, Hide - provide pause/stop control for autoplaying media">
+            <h2>Product Demo</h2>
+
+            <video autoplay loop muted width="640" height="360">
+                <source src="demo-video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+
+            <p>Watch our product in action!</p>
+        </section>
+
+        <section data-expected-violation="true"
+                 data-violation-reason="Audio autoplays without pause control mechanism. Background audio distracts users trying to use screen readers. Users can't stop audio interfering with page content. No pause button provided. Audio plays longer than 3 seconds without control. Warning for WCAG 1.4.2 Audio Control and 2.2.2 Pause, Stop, Hide - autoplaying audio must have pause/stop control available">
+            <h2>Background Music</h2>
+
+            <audio autoplay loop>
+                <source src="background-music.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+
+            <p>Enjoy our ambient background music while browsing.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

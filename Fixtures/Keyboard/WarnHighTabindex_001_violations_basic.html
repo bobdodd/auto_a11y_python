@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Very High Tabindex Values</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnHighTabindex_001_violations_basic",
+    "issueId": "WarnHighTabindex",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements with tabindex values over 10 indicating tab order manipulation",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation</h1>
+
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+
+    <button tabindex="100"
+            data-expected-violation="true"
+            data-violation-id="WarnHighTabindex"
+            data-violation-reason="Very high tabindex=100 indicates forced tab order">
+        Important Action
+    </button>
+
+    <a href="#services">Services</a>
+
+    <input type="text"
+           placeholder="Search"
+           tabindex="50"
+           data-expected-violation="true"
+           data-violation-id="WarnHighTabindex"
+           data-violation-reason="High tabindex=50 disrupts natural tab order">
+
+    <a href="#contact">Contact</a>
+
+    <button tabindex="999"
+            data-expected-violation="true"
+            data-violation-id="WarnHighTabindex"
+            data-violation-reason="Extremely high tabindex=999">
+        Submit
+    </button>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Related Fields Without Fieldset</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNoFieldset_001_violations_basic",
+    "issueId": "WarnNoFieldset",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Related radio buttons not grouped in fieldset",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Preferences</h1>
+    <form data-expected-violation="true"
+          data-violation-id="WarnNoFieldset"
+          data-violation-reason="Related radio buttons not grouped with fieldset">
+        <p>Preferred contact method:</p>
+        <input type="radio" name="contact" id="email-opt" value="email">
+        <label for="email-opt">Email</label>
+
+        <input type="radio" name="contact" id="phone-opt" value="phone">
+        <label for="phone-opt">Phone</label>
+
+        <input type="radio" name="contact" id="mail-opt" value="mail">
+        <label for="mail-opt">Mail</label>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

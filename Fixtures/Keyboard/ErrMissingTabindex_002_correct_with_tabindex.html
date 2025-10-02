@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Custom Interactive Elements With Tabindex</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingTabindex_002_correct_with_tabindex",
+    "issueId": "ErrMissingTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Custom interactive elements with proper keyboard accessibility",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .custom-button {
+            padding: 10px 20px;
+            background: #0066cc;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Custom Controls</h1>
+
+    <div class="custom-button"
+         onclick="alert('clicked')"
+         role="button"
+         tabindex="0"
+         data-expected-pass="true"
+         data-pass-reason="Has role=button with tabindex=0, keyboard accessible">
+        Save Changes
+    </div>
+
+    <span onclick="window.location='#section1'"
+          role="link"
+          tabindex="0"
+          data-expected-pass="true"
+          data-pass-reason="Has role=link with tabindex=0, keyboard accessible">
+        Jump to Section 1
+    </span>
+
+    <button type="button"
+            aria-label="Toggle menu"
+            data-expected-pass="true"
+            data-pass-reason="Native button element is keyboard accessible by default">
+        ☰
+    </button>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Proper Labels With Optional Placeholder</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPlaceholderAsLabel_002_correct_with_labels",
+    "issueId": "ErrPlaceholderAsLabel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Form fields with proper labels, placeholder as supplementary hint",
+    "wcag": "3.3.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form</h1>
+    <form>
+        <label for="name"
+               data-expected-pass="true"
+               data-pass-reason="Visible label persists, placeholder provides example">Full Name</label>
+        <input type="text"
+               id="name"
+               placeholder="e.g., John Smith">
+
+        <label for="email"
+               data-expected-pass="true"
+               data-pass-reason="Label element provides persistent label">Email Address</label>
+        <input type="email"
+               id="email"
+               placeholder="email@example.com">
+
+        <label for="message"
+               data-expected-pass="true"
+               data-pass-reason="Label persists while placeholder shows hint">Message</label>
+        <textarea id="message"
+                  placeholder="Enter your message here (optional hint)"></textarea>
+
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>

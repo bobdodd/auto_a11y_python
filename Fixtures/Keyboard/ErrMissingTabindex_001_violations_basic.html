@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Missing Tabindex on Custom Interactive Elements</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingTabindex_001_violations_basic",
+    "issueId": "ErrMissingTabindex",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Custom interactive elements without tabindex, not keyboard accessible",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .custom-button {
+            padding: 10px 20px;
+            background: #0066cc;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Custom Controls</h1>
+
+    <div class="custom-button"
+         onclick="alert('clicked')"
+         role="button"
+         data-expected-violation="true"
+         data-violation-id="ErrMissingTabindex"
+         data-violation-reason="Has role=button but no tabindex, not keyboard accessible">
+        Save Changes
+    </div>
+
+    <span onclick="window.location='#section1'"
+          role="link"
+          data-expected-violation="true"
+          data-violation-id="ErrMissingTabindex"
+          data-violation-reason="Has role=link but no tabindex, not keyboard accessible">
+        Jump to Section 1
+    </span>
+
+    <div onclick="toggleMenu()"
+         role="button"
+         aria-label="Toggle menu"
+         data-expected-violation="true"
+         data-violation-id="ErrMissingTabindex"
+         data-violation-reason="Interactive element with role=button but no tabindex">
+        ☰
+    </div>
+</body>
+</html>

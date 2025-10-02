@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Title Attribute As Only Label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTitleAsOnlyLabel_001_violations_basic",
+    "issueId": "ErrTitleAsOnlyLabel",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Form fields using title attribute as only labeling mechanism",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Search</h1>
+    <form>
+        <input type="text"
+               title="Search term"
+               data-expected-violation="true"
+               data-violation-id="ErrTitleAsOnlyLabel"
+               data-violation-reason="Title attribute is only label, not reliably accessible">
+
+        <select title="Category"
+                data-expected-violation="true"
+                data-violation-id="ErrTitleAsOnlyLabel"
+                data-violation-reason="Title as only label, inaccessible on mobile">
+            <option>All</option>
+            <option>Products</option>
+            <option>Services</option>
+        </select>
+
+        <input type="checkbox"
+               title="Include archived items"
+               data-expected-violation="true"
+               data-violation-id="ErrTitleAsOnlyLabel"
+               data-violation-reason="Title attribute insufficient for labeling">
+
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

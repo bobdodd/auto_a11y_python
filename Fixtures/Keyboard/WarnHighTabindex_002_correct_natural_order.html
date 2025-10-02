@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Natural Tab Order Without High Tabindex</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnHighTabindex_002_correct_natural_order",
+    "issueId": "WarnHighTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 6,
+    "description": "Elements following natural tab order without positive tabindex values",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation</h1>
+
+    <a href="#home"
+       data-expected-pass="true"
+       data-pass-reason="No tabindex, natural tab order">Home</a>
+    <a href="#about"
+       data-expected-pass="true"
+       data-pass-reason="No tabindex, natural tab order">About</a>
+
+    <button data-expected-pass="true"
+            data-pass-reason="No tabindex, natural tab order">
+        Important Action
+    </button>
+
+    <a href="#services"
+       data-expected-pass="true"
+       data-pass-reason="No tabindex, natural tab order">Services</a>
+
+    <input type="text"
+           placeholder="Search"
+           data-expected-pass="true"
+           data-pass-reason="No tabindex, natural tab order">
+
+    <a href="#contact"
+       data-expected-pass="true"
+       data-pass-reason="No tabindex, natural tab order">Contact</a>
+</body>
+</html>

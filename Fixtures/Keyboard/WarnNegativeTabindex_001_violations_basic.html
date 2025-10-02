@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Interactive Elements With Negative Tabindex</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNegativeTabindex_001_violations_basic",
+    "issueId": "WarnNegativeTabindex",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Interactive elements removed from tab order with tabindex=-1",
+    "wcag": "2.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Actions</h1>
+
+    <button tabindex="-1"
+            data-expected-violation="true"
+            data-violation-id="WarnNegativeTabindex"
+            data-violation-reason="Interactive button removed from keyboard navigation">
+        Save Document
+    </button>
+
+    <a href="#settings"
+       tabindex="-1"
+       data-expected-violation="true"
+       data-violation-id="WarnNegativeTabindex"
+       data-violation-reason="Link removed from tab order, not keyboard accessible">
+        Settings
+    </a>
+
+    <input type="checkbox"
+           id="terms"
+           tabindex="-1"
+           data-expected-violation="true"
+           data-violation-id="WarnNegativeTabindex"
+           data-violation-reason="Form control removed from keyboard navigation">
+    <label for="terms">I accept the terms</label>
+</body>
+</html>

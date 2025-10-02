@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Placeholder As Only Label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPlaceholderAsLabel_001_violations_basic",
+    "issueId": "ErrPlaceholderAsLabel",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Form fields using placeholder as the only labeling mechanism",
+    "wcag": "3.3.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form</h1>
+    <form>
+        <input type="text"
+               placeholder="Your Name"
+               data-expected-violation="true"
+               data-violation-id="ErrPlaceholderAsLabel"
+               data-violation-reason="Placeholder is only label, disappears when typing">
+
+        <input type="email"
+               placeholder="email@example.com"
+               data-expected-violation="true"
+               data-violation-id="ErrPlaceholderAsLabel"
+               data-violation-reason="Placeholder as only label, no persistent label">
+
+        <textarea placeholder="Enter your message here"
+                  data-expected-violation="true"
+                  data-violation-id="ErrPlaceholderAsLabel"
+                  data-violation-reason="Placeholder disappears on input, no visible label"></textarea>
+
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>

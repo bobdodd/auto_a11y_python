@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrDuplicateNavNames - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDuplicateNavNames_001_violations_basic",
+    "issueId": "ErrDuplicateNavNames",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Multiple nav landmarks with identical accessible names",
+    "wcag": "2.4.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <nav aria-label="Main Navigation"
+             data-expected-violation="true"
+             data-violation-reason="First nav landmark has aria-label 'Main Navigation' which is duplicated. Screen reader users navigating by landmarks hear 'Main Navigation' twice with no way to distinguish them. Creates confusion about which nav contains what content. Users can't efficiently jump between landmarks. Violates WCAG 2.4.1 Bypass Blocks and 4.1.2 Name, Role, Value by not providing unique labels">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <aside>
+        <nav aria-label="Main Navigation"
+             data-expected-violation="true"
+             data-violation-reason="Second nav landmark also has aria-label 'Main Navigation' creating duplicate. Screen readers can't differentiate between the two nav regions. Users navigating by landmarks get confused which one to use. No way to tell if this is primary or secondary navigation. Violates WCAG 2.4.1 by making bypass mechanisms unclear and 4.1.2 by not providing unique accessible names">
+            <ul>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/resources">Resources</a></li>
+                <li><a href="/support">Support</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <section>
+            <h1>Page Content</h1>
+            <p>Main content area with multiple navigation regions that need unique labels.</p>
+        </section>
+    </main>
+
+    <footer>
+        <nav aria-label="Main Navigation"
+             data-expected-violation="true"
+             data-violation-reason="Third nav landmark also has aria-label 'Main Navigation' creating triple duplicate. Screen readers announce three identical 'Main Navigation' landmarks. Impossible for users to know which nav contains footer links vs header links vs sidebar links. Major usability barrier for landmark navigation. Violates WCAG 2.4.1 Bypass Blocks and 4.1.2 Name, Role, Value by not uniquely identifying navigation regions">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

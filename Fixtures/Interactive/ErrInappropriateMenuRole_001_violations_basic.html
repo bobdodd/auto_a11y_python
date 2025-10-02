@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInappropriateMenuRole - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInappropriateMenuRole_001_violations_basic",
+    "issueId": "ErrInappropriateMenuRole",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Menu role used inappropriately for navigation lists",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Website Navigation</h1>
+
+    <header>
+        <nav>
+            <ul role="menu"
+                data-expected-violation="true"
+                data-violation-reason="Site navigation uses role='menu' which is inappropriate. Menu role is for application menus (like File, Edit, View in desktop apps) not website navigation. Screen readers expect keyboard interaction patterns: arrow keys, not tab. Users get confused by wrong interaction model. Navigation links should use list semantics not menu. Violates WCAG 4.1.2 Name, Role, Value by misrepresenting navigation as application menu">
+                <li role="menuitem"><a href="/">Home</a></li>
+                <li role="menuitem"><a href="/about">About</a></li>
+                <li role="menuitem"><a href="/services">Services</a></li>
+                <li role="menuitem"><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Product Categories</h2>
+
+            <ul role="menu"
+                data-expected-violation="true"
+                data-violation-reason="Product category links use role='menu' incorrectly. Menu role implies application menu behavior with arrow key navigation. These are regular website links not app-style menu items. Screen readers expect menuitem children to trigger actions not navigate pages. Wrong semantic creates confusion about interaction. Violates WCAG 4.1.2 by using menu role for non-menu content">
+                <li role="menuitem"><a href="/products/laptops">Laptops</a></li>
+                <li role="menuitem"><a href="/products/desktops">Desktops</a></li>
+                <li role="menuitem"><a href="/products/tablets">Tablets</a></li>
+                <li role="menuitem"><a href="/products/accessories">Accessories</a></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Quick Links</h2>
+
+            <div role="menubar"
+                 data-expected-violation="true"
+                 data-violation-reason="Quick links section uses role='menubar' which is for application menu bars. Menubar implies File/Edit/View style menu with arrow key navigation and submenus. These are simple website links not application menu structure. Screen readers expect menubar to contain menu items with popups. Wrong role confuses assistive technology about content type. Violates WCAG 4.1.2 Name, Role, Value by misusing application role for website navigation">
+                <a href="/help" role="menuitem">Help</a>
+                <a href="/support" role="menuitem">Support</a>
+                <a href="/faq" role="menuitem">FAQ</a>
+                <a href="/docs" role="menuitem">Documentation</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

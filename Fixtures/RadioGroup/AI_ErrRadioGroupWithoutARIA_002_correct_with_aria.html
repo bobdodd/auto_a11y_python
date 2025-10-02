@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrRadioGroupWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrRadioGroupWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrRadioGroupWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Radio button groups with proper ARIA markup and semantic HTML",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .radio-group {
+            margin: 1rem 0;
+        }
+        .custom-radio {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            cursor: pointer;
+        }
+        .custom-radio:focus-within {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+        .radio-indicator {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #666;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .radio-indicator.selected::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #007bff;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Payment Method - Correct Usage</h1>
+
+    <main>
+        <!-- Custom radio group with proper ARIA - CORRECT -->
+        <div class="radio-group"
+             role="radiogroup"
+             aria-labelledby="payment-label"
+             data-expected-pass="true"
+             data-pass-reason="Radio group has role='radiogroup' with aria-labelledby. Items have role='radio', aria-checked state, and tabindex for keyboard navigation. Arrow keys move between options">
+            <div id="payment-label" class="group-label">Choose payment method:</div>
+            <div class="custom-radio"
+                 role="radio"
+                 aria-checked="false"
+                 tabindex="0"
+                 onclick="selectPayment(this)"
+                 onkeydown="handleRadioKeydown(event, this)">
+                <div class="radio-indicator"></div>
+                <span>Credit Card</span>
+            </div>
+            <div class="custom-radio"
+                 role="radio"
+                 aria-checked="false"
+                 tabindex="-1"
+                 onclick="selectPayment(this)"
+                 onkeydown="handleRadioKeydown(event, this)">
+                <div class="radio-indicator"></div>
+                <span>Debit Card</span>
+            </div>
+            <div class="custom-radio"
+                 role="radio"
+                 aria-checked="false"
+                 tabindex="-1"
+                 onclick="selectPayment(this)"
+                 onkeydown="handleRadioKeydown(event, this)">
+                <div class="radio-indicator"></div>
+                <span>PayPal</span>
+            </div>
+        </div>
+
+        <!-- Native radio buttons with proper grouping - CORRECT -->
+        <fieldset class="radio-group"
+                  data-expected-pass="true"
+                  data-pass-reason="Radio inputs wrapped in fieldset with legend for group label. Each input has associated label via for/id. Screen readers announce group context and individual options">
+            <legend>Select shipping speed:</legend>
+            <div>
+                <input type="radio" id="standard" name="shipping" value="standard">
+                <label for="standard">Standard (5-7 days)</label>
+            </div>
+            <div>
+                <input type="radio" id="express" name="shipping" value="express">
+                <label for="express">Express (2-3 days)</label>
+            </div>
+            <div>
+                <input type="radio" id="overnight" name="shipping" value="overnight">
+                <label for="overnight">Overnight</label>
+            </div>
+        </fieldset>
+    </main>
+
+    <script>
+        function selectPayment(element) {
+            const group = element.parentElement;
+            const radios = group.querySelectorAll('[role="radio"]');
+
+            // Deselect all
+            radios.forEach(radio => {
+                radio.setAttribute('aria-checked', 'false');
+                radio.setAttribute('tabindex', '-1');
+                radio.querySelector('.radio-indicator').classList.remove('selected');
+            });
+
+            // Select clicked
+            element.setAttribute('aria-checked', 'true');
+            element.setAttribute('tabindex', '0');
+            element.querySelector('.radio-indicator').classList.add('selected');
+            element.focus();
+        }
+
+        function handleRadioKeydown(event, element) {
+            const group = element.parentElement;
+            const radios = Array.from(group.querySelectorAll('[role="radio"]'));
+            const currentIndex = radios.indexOf(element);
+
+            if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+                event.preventDefault();
+                const nextIndex = (currentIndex + 1) % radios.length;
+                selectPayment(radios[nextIndex]);
+            } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+                event.preventDefault();
+                const prevIndex = (currentIndex - 1 + radios.length) % radios.length;
+                selectPayment(radios[prevIndex]);
+            } else if (event.key === ' ' || event.key === 'Enter') {
+                event.preventDefault();
+                selectPayment(element);
+            }
+        }
+    </script>
+</body>
+</html>

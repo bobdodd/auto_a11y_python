@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrDatePickerWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrDatePickerWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrDatePickerWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Date picker widgets lacking proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .datepicker-container {
+            margin: 1rem 0;
+        }
+        .calendar {
+            border: 1px solid #ccc;
+            width: 280px;
+            padding: 1rem;
+            display: none;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .day {
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+        }
+        .day:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Appointment Booking</h1>
+
+    <main>
+        <!-- Date picker without ARIA -->
+        <div class="datepicker-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrDatePickerWithoutARIA"
+             data-violation-reason="Date picker lacks role='dialog', calendar grid lacks role='grid', cells lack role='gridcell', and no aria-label. Screen readers cannot navigate calendar or understand date structure">
+            <label>Select appointment date:</label>
+            <input type="text" id="date-input" placeholder="MM/DD/YYYY" onclick="showCalendar()">
+            <div id="calendar" class="calendar">
+                <div class="calendar-header">
+                    <button onclick="prevMonth()">&lt;</button>
+                    <span id="month-year">January 2024</span>
+                    <button onclick="nextMonth()">&gt;</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="day">1</div>
+                    <div class="day">2</div>
+                    <div class="day">3</div>
+                    <div class="day">4</div>
+                    <div class="day">5</div>
+                    <div class="day">6</div>
+                    <div class="day">7</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Date picker with separate dropdowns but no grouping -->
+        <div class="datepicker-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrDatePickerWithoutARIA"
+             data-violation-reason="Date components (month/day/year) lack fieldset/legend grouping and proper labels. Screen readers cannot determine relationship between dropdowns or overall purpose">
+            <div>Birth date:</div>
+            <select id="month">
+                <option>January</option>
+                <option>February</option>
+            </select>
+            <select id="day">
+                <option>1</option>
+                <option>2</option>
+            </select>
+            <select id="year">
+                <option>2024</option>
+                <option>2023</option>
+            </select>
+        </div>
+    </main>
+
+    <script>
+        function showCalendar() {
+            document.getElementById('calendar').style.display = 'block';
+        }
+        function prevMonth() {}
+        function nextMonth() {}
+    </script>
+</body>
+</html>

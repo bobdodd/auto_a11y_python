@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrToggleWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrToggleWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrToggleWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Toggle switches lacking proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .toggle-container {
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+        }
+        .toggle-switch {
+            width: 50px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .toggle-slider {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.2s;
+        }
+        .toggle-switch.on {
+            background: #007bff;
+        }
+        .toggle-switch.on .toggle-slider {
+            left: 28px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Settings</h1>
+
+    <main>
+        <!-- Toggle switch without ARIA -->
+        <div class="toggle-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrToggleWithoutARIA"
+             data-violation-reason="Toggle switch lacks role='switch' and aria-checked state. Screen readers cannot identify as toggle switch or announce on/off state">
+            <div class="toggle-switch" onclick="toggleSwitch(this)">
+                <div class="toggle-slider"></div>
+            </div>
+            <span>Dark mode</span>
+        </div>
+
+        <!-- Toggle with div but no keyboard access -->
+        <div class="toggle-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrToggleWithoutARIA"
+             data-violation-reason="Toggle switch lacks keyboard accessibility (no tabindex), role='switch', and aria-checked. Not accessible via keyboard and state not announced to screen readers">
+            <div class="toggle-switch" onclick="toggleSwitch(this)">
+                <div class="toggle-slider"></div>
+            </div>
+            <span>Email notifications</span>
+        </div>
+    </main>
+
+    <script>
+        function toggleSwitch(element) {
+            element.classList.toggle('on');
+        }
+    </script>
+</body>
+</html>

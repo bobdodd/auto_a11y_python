@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrCheckboxGroupWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrCheckboxGroupWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrCheckboxGroupWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Checkbox groups with proper ARIA markup and semantic HTML",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .checkbox-group {
+            margin: 1rem 0;
+        }
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            cursor: pointer;
+        }
+        .custom-checkbox:focus-within {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+        .checkbox-indicator {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #666;
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .checkbox-indicator.checked::after {
+            content: '';
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Newsletter Preferences - Correct Usage</h1>
+
+    <main>
+        <!-- Custom checkbox group with proper ARIA - CORRECT -->
+        <div class="checkbox-group"
+             role="group"
+             aria-labelledby="topics-label"
+             data-expected-pass="true"
+             data-pass-reason="Checkbox group has role='group' with aria-labelledby. Items have role='checkbox', aria-checked state, and tabindex for keyboard access. Space key toggles checked state">
+            <div id="topics-label" class="group-label">Select topics of interest:</div>
+            <div class="custom-checkbox"
+                 role="checkbox"
+                 aria-checked="false"
+                 aria-label="Technology News"
+                 tabindex="0"
+                 onclick="toggleCustomCheckbox(this)"
+                 onkeydown="handleCheckboxKeydown(event, this)">
+                <div class="checkbox-indicator"></div>
+                <span>Technology News</span>
+            </div>
+            <div class="custom-checkbox"
+                 role="checkbox"
+                 aria-checked="false"
+                 aria-label="Product Updates"
+                 tabindex="0"
+                 onclick="toggleCustomCheckbox(this)"
+                 onkeydown="handleCheckboxKeydown(event, this)">
+                <div class="checkbox-indicator"></div>
+                <span>Product Updates</span>
+            </div>
+            <div class="custom-checkbox"
+                 role="checkbox"
+                 aria-checked="false"
+                 aria-label="Special Offers"
+                 tabindex="0"
+                 onclick="toggleCustomCheckbox(this)"
+                 onkeydown="handleCheckboxKeydown(event, this)">
+                <div class="checkbox-indicator"></div>
+                <span>Special Offers</span>
+            </div>
+        </div>
+
+        <!-- Native checkboxes with proper grouping - CORRECT -->
+        <fieldset class="checkbox-group"
+                  data-expected-pass="true"
+                  data-pass-reason="Checkboxes wrapped in fieldset with legend for group label. Each checkbox has associated label via for/id. Screen readers announce group context and individual checkbox purposes">
+            <legend>Account settings:</legend>
+            <div>
+                <input type="checkbox" id="notifications" name="notifications">
+                <label for="notifications">Email notifications</label>
+            </div>
+            <div>
+                <input type="checkbox" id="newsletter" name="newsletter">
+                <label for="newsletter">Weekly newsletter</label>
+            </div>
+            <div>
+                <input type="checkbox" id="sms" name="sms">
+                <label for="sms">SMS alerts</label>
+            </div>
+        </fieldset>
+    </main>
+
+    <script>
+        function toggleCustomCheckbox(element) {
+            const isChecked = element.getAttribute('aria-checked') === 'true';
+            element.setAttribute('aria-checked', !isChecked);
+
+            const indicator = element.querySelector('.checkbox-indicator');
+            if (isChecked) {
+                indicator.classList.remove('checked');
+            } else {
+                indicator.classList.add('checked');
+            }
+        }
+
+        function handleCheckboxKeydown(event, element) {
+            if (event.key === ' ' || event.key === 'Enter') {
+                event.preventDefault();
+                toggleCustomCheckbox(element);
+            }
+        }
+    </script>
+</body>
+</html>

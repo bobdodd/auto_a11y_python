@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInappropriateMenuRole - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInappropriateMenuRole_002_correct_list_navigation",
+    "issueId": "ErrInappropriateMenuRole",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Proper use of list semantics for navigation",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Website Navigation</h1>
+
+    <header>
+        <nav>
+            <ul data-expected-pass="true"
+                data-pass-reason="Site navigation uses semantic ul element without menu role. Screen readers announce list with number of items. Users can tab through links as expected for web navigation. No menu role means no wrong interaction expectations. List semantics are appropriate for navigation links. Complies with WCAG 4.1.2 Name, Role, Value by using correct semantic HTML for website navigation">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Product Categories</h2>
+
+            <ul data-expected-pass="true"
+                data-pass-reason="Product category links use standard ul element. Screen readers announce 'list 4 items' giving users context. Tab key navigates through links as expected for website. No application menu roles to cause confusion. Proper semantic HTML for link lists. Meets WCAG 4.1.2 by using appropriate roles for web content not application menus">
+                <li><a href="/products/laptops">Laptops</a></li>
+                <li><a href="/products/desktops">Desktops</a></li>
+                <li><a href="/products/tablets">Tablets</a></li>
+                <li><a href="/products/accessories">Accessories</a></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Quick Links</h2>
+
+            <div data-expected-pass="true"
+                 data-pass-reason="Quick links section uses plain div without menubar role. Links are regular anchor elements with correct semantics. Screen readers don't expect application menu behavior. Users can tab through links normally. No confusing menu/menubar roles for simple website links. Complies with WCAG 4.1.2 Name, Role, Value by not misusing application menu roles for website navigation">
+                <a href="/help">Help</a>
+                <a href="/support">Support</a>
+                <a href="/faq">FAQ</a>
+                <a href="/docs">Documentation</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

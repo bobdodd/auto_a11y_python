@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAltOnElementThatDoesntTakeIt - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAltOnElementThatDoesntTakeIt_002_correct_no_alt",
+    "issueId": "ErrAltOnElementThatDoesntTakeIt",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Proper use of alt only on img elements",
+    "wcag": "4.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation Menu</h1>
+
+    <main>
+        <section>
+            <h2>Main Content</h2>
+
+            <div class="logo-container"
+                 data-expected-pass="true"
+                 data-pass-reason="Div element correctly has no alt attribute. HTML is valid. Div uses text content or child img element for content. Screen readers process div's text content normally. No invalid attributes. Complies with WCAG 4.1.1 Parsing by using only valid attributes">
+                <strong>Welcome to Our Website</strong>
+            </div>
+
+            <p data-expected-pass="true"
+               data-pass-reason="Paragraph element correctly has no alt attribute. Alt is reserved for img, area, and input type='image' only. HTML is valid. Screen readers read paragraph text content properly. No attribute misuse. Complies with WCAG 4.1.1 by following HTML specification">
+                Please read our important announcement below.
+            </p>
+
+            <span class="icon"
+                  data-expected-pass="true"
+                  data-pass-reason="Span element correctly has no alt attribute and uses aria-label for accessible name. Screen readers announce 'Star icon' from aria-label. HTML is valid. Proper way to label non-image content. No invalid attributes. Meets WCAG 4.1.1 Parsing requirements"
+                  aria-label="Star icon">
+                
+            </span>
+
+            <a href="/products"
+               data-expected-pass="true"
+               data-pass-reason="Link element correctly has no alt attribute and uses text content for accessible name. Screen readers announce 'Products' from link text. HTML is valid. Links don't use alt, only img inside links use alt. Proper markup. Complies with WCAG 4.1.1 by using correct attributes">
+                Products
+            </a>
+
+            <button data-expected-pass="true"
+                    data-pass-reason="Button element correctly has no alt attribute and uses text content for accessible name. Screen readers announce 'Submit' from button text. HTML is valid. Buttons use text content or aria-label, never alt. No invalid attributes. Meets WCAG 4.1.1 Parsing by following HTML standards"
+                    type="submit">
+                Submit
+            </button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

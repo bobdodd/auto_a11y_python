@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAltOnElementThatDoesntTakeIt - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAltOnElementThatDoesntTakeIt_001_violations_basic",
+    "issueId": "ErrAltOnElementThatDoesntTakeIt",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Alt attributes on elements that don't support them",
+    "wcag": "4.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation Menu</h1>
+
+    <main>
+        <section>
+            <h2>Main Content</h2>
+
+            <div data-expected-violation="true"
+                 data-violation-reason="Div element has alt attribute which is invalid HTML. Only img, area, and input type='image' elements accept alt. Browsers ignore invalid attributes but HTML validator fails. Screen readers don't process alt on div. Adds confusion to code maintenance. Violates WCAG 4.1.1 Parsing by using invalid attribute on wrong element type"
+                 alt="Company Logo">
+                <strong>Welcome to Our Website</strong>
+            </div>
+
+            <p data-expected-violation="true"
+               data-violation-reason="Paragraph element has alt attribute which is not allowed. Alt is only valid on img, area, and input type='image'. HTML is invalid. Screen readers ignore alt on p element. May confuse developers expecting alt to provide description. Violates WCAG 4.1.1 by using attribute on unsupported element"
+               alt="Important announcement">
+                Please read our important announcement below.
+            </p>
+
+            <span data-expected-violation="true"
+                  data-violation-reason="Span element with alt attribute is invalid HTML. Screen readers don't recognize alt on span. Only image-related elements (img, area, input type='image') support alt. Creates invalid markup. May mislead developers about element's purpose. Violates WCAG 4.1.1 Parsing requirements for valid HTML"
+                  alt="Icon">
+                
+            </span>
+
+            <a href="/products"
+               data-expected-violation="true"
+               data-violation-reason="Link element has alt attribute which is not valid. Links use text content or aria-label for accessible names, not alt. Alt is specifically for images within links. HTML validator flags this as error. Screen readers ignore alt on anchor. Violates WCAG 4.1.1 by misusing attributes on wrong element type"
+               alt="View Products">
+                Products
+            </a>
+
+            <button data-expected-violation="true"
+                    data-violation-reason="Button element with alt attribute is invalid HTML. Buttons use text content or aria-label for names, not alt. Alt attribute is ignored by browsers on button elements. Invalid markup fails HTML validation. Developers may incorrectly think alt provides button label. Violates WCAG 4.1.1 Parsing by using attributes on unsupported elements"
+                    alt="Submit Form">
+                Submit
+            </button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

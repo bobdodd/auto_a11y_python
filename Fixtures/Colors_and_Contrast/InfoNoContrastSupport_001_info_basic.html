@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - No High Contrast Support</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "InfoNoContrastSupport_001_info_basic",
+    "issueId": "InfoNoContrastSupport",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Site doesn't support high contrast mode",
+    "wcag": "1.4.3",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin: 20px;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body data-info="true"
+      data-info-reason="Site doesn't test or adapt for OS high contrast mode, which may cause usability issues for low vision users">
+    <h1>User Dashboard</h1>
+
+    <div class="card">
+        <h2>Account Overview</h2>
+        <p>Welcome back! You have 3 new notifications.</p>
+        <button>View Notifications</button>
+    </div>
+
+    <div class="card">
+        <h2>Recent Activity</h2>
+        <ul>
+            <li>Logged in from new device</li>
+            <li>Updated profile settings</li>
+            <li>Completed security review</li>
+        </ul>
+    </div>
+</body>
+</html>

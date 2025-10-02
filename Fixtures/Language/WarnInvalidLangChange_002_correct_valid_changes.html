@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multilingual Blog - Valid Lang Changes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInvalidLangChange_002_correct_valid_changes",
+    "issueId": "WarnInvalidLangChange",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Proper language changes using valid ISO 639-1 codes",
+    "wcag": "3.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>International News Blog</h1>
+
+    <p>This blog features content in multiple languages with proper language declarations.</p>
+
+    <blockquote lang="fr"
+                data-expected-pass="true"
+                data-pass-reason="lang='fr' is valid ISO 639-1 code for French, enabling proper pronunciation">
+        <p>La vie est belle et pleine de surprises.</p>
+        <cite>— Proverbe français</cite>
+    </blockquote>
+
+    <article lang="es"
+             data-expected-pass="true"
+             data-pass-reason="lang='es' is valid ISO 639-1 code for Spanish, screen readers will use Spanish pronunciation">
+        <h2>Título del Artículo</h2>
+        <p>El arte es la expresión del alma más profunda del ser humano.</p>
+    </article>
+
+    <section lang="de"
+             data-expected-pass="true"
+             data-pass-reason="lang='de' is valid ISO 639-1 code for German, enabling correct German pronunciation">
+        <h3>Deutsche Überschrift</h3>
+        <p>Die Musik ist die universelle Sprache der Menschheit.</p>
+    </section>
+</body>
+</html>

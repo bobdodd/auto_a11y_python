@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website - Proper Lang Codes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnEmptyLangAttribute_002_correct_with_codes",
+    "issueId": "WarnEmptyLangAttribute",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Lang attributes with valid language codes without whitespace",
+    "wcag": "3.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="HTML element has valid lang='en' with no whitespace, properly identifying English">
+    <h1>Company Website</h1>
+
+    <p>This page properly declares lang="en" without any whitespace issues.</p>
+
+    <article lang="fr"
+             data-expected-pass="true"
+             data-pass-reason="Article has valid lang='fr' code for French, properly formatted">
+        <h2>Dernières Mises à Jour</h2>
+        <p>Cet article a un code de langue français correctement formaté.</p>
+    </article>
+
+    <section lang="de"
+             data-expected-pass="true"
+             data-pass-reason="Section has valid lang='de' code for German, no whitespace issues">
+        <h3>Wichtiger Hinweis</h3>
+        <p>Dieser Abschnitt hat einen korrekt formatierten deutschen Sprachcode.</p>
+    </section>
+</body>
+</html>

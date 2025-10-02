@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multilingual Blog - Invalid Lang Changes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInvalidLangChange_001_violations_basic",
+    "issueId": "WarnInvalidLangChange",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Language changes with invalid or unrecognized language codes",
+    "wcag": "3.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>International News Blog</h1>
+
+    <p>This blog features content in multiple languages, but uses invalid language codes.</p>
+
+    <blockquote lang="fre"
+                data-expected-violation="true"
+                data-violation-id="WarnInvalidLangChange"
+                data-violation-reason="lang='fre' is not a valid ISO 639-1 code, should be 'fr' for French">
+        <p>La vie est belle et pleine de surprises.</p>
+        <cite>— Proverbe français</cite>
+    </blockquote>
+
+    <article lang="Spanish"
+             data-expected-violation="true"
+             data-violation-id="WarnInvalidLangChange"
+             data-violation-reason="lang='Spanish' uses full language name instead of ISO code, should be 'es'">
+        <h2>Título del Artículo</h2>
+        <p>El arte es la expresión del alma más profunda del ser humano.</p>
+    </article>
+
+    <section lang="ger"
+             data-expected-violation="true"
+             data-violation-id="WarnInvalidLangChange"
+             data-violation-reason="lang='ger' is ISO 639-2 code, should use ISO 639-1 code 'de' for German">
+        <h3>Deutsche Überschrift</h3>
+        <p>Die Musik ist die universelle Sprache der Menschheit.</p>
+    </section>
+</body>
+</html>

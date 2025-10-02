@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-XYZ">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XHTML - Invalid xml:lang Region</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrRegionQualifierForPrimaryXmlLangNotRecognized_001_violations_basic",
+    "issueId": "ErrRegionQualifierForPrimaryXmlLangNotRecognized",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Invalid region qualifiers in xml:lang attributes",
+    "wcag": "3.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrRegionQualifierForPrimaryXmlLangNotRecognized"
+      data-violation-reason="xml:lang='en-XYZ' uses invalid region code 'XYZ' which is not a valid ISO 3166-1 code">
+    <h1>XHTML Technical Documentation</h1>
+
+    <p>This XHTML document uses an invalid region qualifier "XYZ" in the xml:lang attribute.</p>
+
+    <section lang="es-MX" xml:lang="es-MEX"
+             data-expected-violation="true"
+             data-violation-id="ErrRegionQualifierForPrimaryXmlLangNotRecognized"
+             data-violation-reason="xml:lang='es-MEX' uses 'MEX' which is not a valid ISO 3166-1 alpha-2 code, should be 'MX'">
+        <h2>Sección en Español</h2>
+        <p>Esta sección usa "MEX" en xml:lang en lugar del código ISO correcto "MX".</p>
+    </section>
+
+    <div lang="de-DE" xml:lang="de-DEU"
+         data-expected-violation="true"
+         data-violation-id="ErrRegionQualifierForPrimaryXmlLangNotRecognized"
+         data-violation-reason="xml:lang='de-DEU' uses 'DEU' which is not a valid ISO 3166-1 alpha-2 code, should be 'DE'">
+        <h3>Deutsche Inhalte</h3>
+        <p>Dieser Abschnitt verwendet "DEU" anstelle des korrekten ISO-Codes "DE".</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International Links - Invalid Hreflang Regions</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrRegionQualifierForHreflangUnrecognized_001_violations_basic",
+    "issueId": "ErrRegionQualifierForHreflangUnrecognized",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links with invalid region qualifiers in hreflang attributes",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Regional Documentation</h1>
+
+    <p>Access regional variants of our documentation (with invalid region codes):</p>
+
+    <nav>
+        <ul>
+            <li data-expected-violation="true"
+                data-violation-id="ErrRegionQualifierForHreflangUnrecognized"
+                data-violation-reason="hreflang='en-USA' uses 'USA' which is not a valid ISO 3166-1 alpha-2 code, should be 'US'">
+                <a href="/docs/en-us/" hreflang="en-USA">English (USA)</a>
+            </li>
+            <li data-expected-violation="true"
+                data-violation-id="ErrRegionQualifierForHreflangUnrecognized"
+                data-violation-reason="hreflang='es-ESP' uses 'ESP' which is not a valid ISO 3166-1 alpha-2 code, should be 'ES'">
+                <a href="/docs/es-es/" hreflang="es-ESP">Spanish (España)</a>
+            </li>
+            <li data-expected-violation="true"
+                data-violation-id="ErrRegionQualifierForHreflangUnrecognized"
+                data-violation-reason="hreflang='fr-FRA' uses 'FRA' which is not a valid ISO 3166-1 alpha-2 code, should be 'FR'">
+                <a href="/docs/fr-fr/" hreflang="fr-FRA">French (France)</a>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>

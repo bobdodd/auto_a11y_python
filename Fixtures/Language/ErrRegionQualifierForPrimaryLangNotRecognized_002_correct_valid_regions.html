@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Content - Valid Region Codes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrRegionQualifierForPrimaryLangNotRecognized_002_correct_valid_regions",
+    "issueId": "ErrRegionQualifierForPrimaryLangNotRecognized",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Valid ISO 3166-1 alpha-2 region codes in lang attributes",
+    "wcag": "3.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="lang='en-US' uses valid ISO 3166-1 alpha-2 code 'US' for United States">
+    <h1>Global Content</h1>
+
+    <p>This page properly uses "en-US" with the valid ISO 3166-1 region code for United States.</p>
+
+    <article lang="es-MX"
+             data-expected-pass="true"
+             data-pass-reason="lang='es-MX' uses valid ISO 3166-1 alpha-2 code 'MX' for Mexico">
+        <h2>Contenido en Español</h2>
+        <p>Este artículo usa correctamente "MX" como código ISO para México.</p>
+    </article>
+
+    <section lang="fr-FR"
+             data-expected-pass="true"
+             data-pass-reason="lang='fr-FR' uses valid ISO 3166-1 alpha-2 code 'FR' for France">
+        <h2>Contenu en Français</h2>
+        <p>Cette section utilise correctement "FR" comme code ISO pour la France.</p>
+    </section>
+</body>
+</html>

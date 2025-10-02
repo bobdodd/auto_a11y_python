@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XHTML - Recognized xml:lang Codes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrPrimaryXmlLangUnrecognized_002_correct_recognized_codes",
+    "issueId": "ErrPrimaryXmlLangUnrecognized",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "XHTML with valid ISO 639 xml:lang codes",
+    "wcag": "3.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="xml:lang='en' is a valid ISO 639-1 code for English">
+    <h1>XHTML Document</h1>
+
+    <p>This XHTML document has a valid xml:lang code "en" on the root element.</p>
+
+    <div lang="de" xml:lang="de"
+         data-expected-pass="true"
+         data-pass-reason="xml:lang='de' is a valid ISO 639-1 code for German">
+        <h2>Deutsche Sektion</h2>
+        <p>Dieser Abschnitt verwendet gültige deutsche Sprachcodes.</p>
+    </div>
+
+    <blockquote lang="ru" xml:lang="ru"
+                data-expected-pass="true"
+                data-pass-reason="xml:lang='ru' is a valid ISO 639-1 code for Russian">
+        <p>Этот блок цитаты использует действительный код русского языка.</p>
+    </blockquote>
+</body>
+</html>

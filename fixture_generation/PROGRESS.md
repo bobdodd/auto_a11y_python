@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 121 files
-- **Issues With Enhanced Fixtures:** 58
+- **Total Enhanced Fixtures Created:** 129 files
+- **Issues With Enhanced Fixtures:** 62
 - **Touchpoints Completed:** 4 (Images - 100%, Links - 78%, ARIA - 75%, Focus Management - 100%)
-- **Touchpoints In Progress:** 3 (Headings 91%, Forms 40%, Buttons 67%)
-- **Issues Still Needing Fixtures:** 256
+- **Touchpoints In Progress:** 4 (Headings 91%, Forms 40%, Buttons 67%, Landmarks 6%)
+- **Issues Still Needing Fixtures:** 252
 
 ## Completed Fixtures by Touchpoint
 
@@ -210,6 +210,18 @@ Major gaps: validation messages, input types, dropdown/select issues, required f
 2. **WarnNoCursorPointer** - Clickable elements without pointer cursor (2 fixtures)
 
 **Total:** 4 fixture files
+
+### 🏛️ Landmarks Touchpoint (4/65 issues - 6% complete)
+
+1. **ErrCompletelyEmptyNavLandmark** - Empty navigation landmarks (2 fixtures)
+2. **ErrBannerLandmarkMayNotBeChildOfAnotherLandmark** - Banner nested in other landmarks (2 fixtures)
+3. **ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark** - Complementary nested in other landmarks (2 fixtures)
+4. **ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark** - Contentinfo nested in other landmarks (2 fixtures)
+
+**Total:** 8 fixture files
+
+#### ⏳ Remaining Issues (61)
+Major gaps: landmark labeling, duplicate landmarks, main/nav/region issues
 
 ## Fixture Quality Metrics
 

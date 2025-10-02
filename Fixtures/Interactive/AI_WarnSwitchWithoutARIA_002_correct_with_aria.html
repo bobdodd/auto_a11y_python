@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnSwitchWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnSwitchWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_WarnSwitchWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Custom toggle switches with complete ARIA implementation",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .switch-container { margin: 20px 0; display: flex; align-items: center; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; cursor: pointer; }
+        .switch-track { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 24px; transition: 0.3s; }
+        .switch-thumb { position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.3s; }
+        .switch[aria-checked="true"] .switch-track { background-color: #2196F3; }
+        .switch[aria-checked="true"] .switch-thumb { transform: translateX(26px); }
+        .switch-label { margin-left: 10px; }
+        .switch:focus { outline: 2px solid #2196F3; outline-offset: 2px; }
+    </style>
+    <script>
+        function toggleSwitch(element) {
+            const isChecked = element.getAttribute('aria-checked') === 'true';
+            element.setAttribute('aria-checked', !isChecked);
+        }
+
+        function handleKeydown(event, element) {
+            if (event.key === ' ' || event.key === 'Enter') {
+                toggleSwitch(element);
+                event.preventDefault();
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Settings</h1>
+
+    <main>
+        <section data-expected-pass="true"
+                 data-pass-reason="Custom toggle switch implemented with complete ARIA attributes. Switch has role='switch' identifying control type. aria-checked='false' indicates current off state. aria-label provides accessible name. tabindex='0' enables keyboard focus. Screen readers announce as 'Enable email notifications switch, not checked'. Space/Enter keys toggle state. Focus indicator visible. Complies with WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value - complete switch ARIA pattern">
+            <h2>Notification Preferences</h2>
+
+            <div class="switch-container">
+                <div class="switch"
+                     role="switch"
+                     aria-checked="false"
+                     aria-label="Enable email notifications"
+                     tabindex="0"
+                     onclick="toggleSwitch(this)"
+                     onkeydown="handleKeydown(event, this)">
+                    <div class="switch-track">
+                        <div class="switch-thumb"></div>
+                    </div>
+                </div>
+                <span class="switch-label">Enable email notifications</span>
+            </div>
+
+            <div class="switch-container">
+                <div class="switch"
+                     role="switch"
+                     aria-checked="true"
+                     aria-labelledby="dark-mode-label"
+                     tabindex="0"
+                     onclick="toggleSwitch(this)"
+                     onkeydown="handleKeydown(event, this)"
+                     data-expected-pass="true"
+                     data-pass-reason="Switch with full ARIA implementation. role='switch' defines control semantics. aria-checked='true' indicates current on state. aria-labelledby links to visible label. Keyboard accessible via tabindex. Space/Enter toggle state. Screen readers announce 'Enable dark mode switch, checked'. Focus visible with outline. Meets WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value - proper custom switch implementation">
+                    <div class="switch-track">
+                        <div class="switch-thumb"></div>
+                    </div>
+                </div>
+                <span class="switch-label" id="dark-mode-label">Enable dark mode</span>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

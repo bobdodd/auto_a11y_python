@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnGenericDocumentLinkText - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnGenericDocumentLinkText_001_violations_basic",
+    "issueId": "WarnGenericDocumentLinkText",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Document links with generic text like 'PDF', 'document'",
+    "wcag": "2.4.4, 2.4.9",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Resource Downloads</h1>
+
+    <main>
+        <section>
+            <h2>Annual Report</h2>
+            <p>Our company's financial performance for the year.</p>
+            <a href="/reports/annual-2023.pdf"
+               data-expected-violation="true"
+               data-violation-reason="Link text is generic 'PDF' without describing document content. Screen reader users navigating by links hear 'PDF' multiple times. Users don't know what document contains. Link purpose unclear out of context. Generic text requires surrounding context to understand. Warning for WCAG 2.4.4 Link Purpose In Context and 2.4.9 Link Purpose Link Only - use descriptive text like 'Annual Report 2023 PDF'">
+                PDF
+            </a>
+        </section>
+
+        <section>
+            <h2>User Guide</h2>
+            <p>Instructions for using our product effectively.</p>
+            <a href="/docs/user-guide.pdf"
+               data-expected-violation="true"
+               data-violation-reason="Link text is generic 'Download document' without specific content description. Screen reader link list shows multiple 'Download document' entries. Users can't distinguish between different documents. Link purpose ambiguous without reading surrounding paragraph. Generic link text reduces navigation efficiency. Warning for WCAG 2.4.4 and 2.4.9 - link text should describe specific document like 'Download User Guide PDF'">
+                Download document
+            </a>
+        </section>
+
+        <section>
+            <h2>Technical Specifications</h2>
+            <p>Detailed technical information about product features and capabilities.</p>
+            <a href="/specs/technical-specs-v2.pdf"
+               data-expected-violation="true"
+               data-violation-reason="Link text is generic 'Click here' which is meaningless out of context. Screen reader users browsing links hear multiple 'Click here' with no information. Users must read surrounding text to understand link destination. Link purpose completely unclear when listed alone. Generic text is worst practice for link accessibility. Warning for WCAG 2.4.4 Link Purpose In Context and 2.4.9 Link Purpose Link Only - use descriptive text like 'Technical Specifications PDF'">
+                Click here
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

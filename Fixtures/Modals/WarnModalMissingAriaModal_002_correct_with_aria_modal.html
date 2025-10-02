@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnModalMissingAriaModal - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnModalMissingAriaModal_002_correct_with_aria_modal",
+    "issueId": "WarnModalMissingAriaModal",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Modal dialogs with aria-modal attribute",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 2px solid black;
+            z-index: 1000;
+        }
+        .modal.active { display: block; }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .overlay.active { display: block; }
+    </style>
+</head>
+<body>
+    <h1>Modal Dialog Examples</h1>
+
+    <main>
+        <section>
+            <h2>Confirmation Dialog</h2>
+            <button onclick="document.getElementById('confirmModal').classList.add('active'); document.getElementById('overlay1').classList.add('active');">Delete Item</button>
+
+            <div class="overlay" id="overlay1"></div>
+            <div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle"
+                 data-expected-pass="true"
+                 data-pass-reason="Modal dialog has role='dialog' and aria-modal='true' attribute. Screen readers understand this is modal dialog with restricted context. Assistive technology knows to limit navigation to modal content. Users stay focused on modal without confusion. Modal behavior fully communicated with proper semantics. Complies with WCAG 4.1.2 Name, Role, Value - aria-modal='true' indicates modal nature to assistive technology">
+                <h2 id="confirmTitle">Confirm Deletion</h2>
+                <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+                <button onclick="document.getElementById('confirmModal').classList.remove('active'); document.getElementById('overlay1').classList.remove('active');">Cancel</button>
+                <button onclick="document.getElementById('confirmModal').classList.remove('active'); document.getElementById('overlay1').classList.remove('active');">Delete</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Information Dialog</h2>
+            <button onclick="document.getElementById('infoModal').classList.add('active'); document.getElementById('overlay2').classList.add('active');">Show Info</button>
+
+            <div class="overlay" id="overlay2"></div>
+            <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoTitle"
+                 data-expected-pass="true"
+                 data-pass-reason="Modal dialog uses role='dialog' with aria-modal='true' attribute. Screen readers fully understand this is modal dialog. Assistive technology restricts navigation to modal content appropriately. Users understand focus context clearly. Complete modal semantics with aria-modal. Meets WCAG 4.1.2 Name, Role, Value - aria-modal='true' clarifies modal behavior for all assistive technology">
+                <h2 id="infoTitle">Important Information</h2>
+                <p>This application requires JavaScript to be enabled for full functionality. Please enable JavaScript in your browser settings.</p>
+                <button onclick="document.getElementById('infoModal').classList.remove('active'); document.getElementById('overlay2').classList.remove('active');">Close</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

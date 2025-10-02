@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Buttons Without Text</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "forms_ErrNoButtonText_001_violations_basic",
+    "issueId": "forms_ErrNoButtonText",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons lacking accessible text content or labels",
+    "wcag": "2.4.6, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .icon-only { font-size: 1.5em; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>User Dashboard</h1>
+
+    <div>
+        <button class="icon-only"
+                data-expected-violation="true"
+                data-violation-id="forms_ErrNoButtonText"
+                data-violation-reason="Button has no text content or aria-label, screen readers announce only 'button'">
+            ⚙️
+        </button>
+
+        <button class="icon-only"
+                data-expected-violation="true"
+                data-violation-id="forms_ErrNoButtonText"
+                data-violation-reason="Delete button has only emoji, no accessible text for screen readers">
+            🗑️
+        </button>
+
+        <button class="icon-only"
+                data-expected-violation="true"
+                data-violation-id="forms_ErrNoButtonText"
+                data-violation-reason="Edit button lacks accessible label, users cannot determine its purpose">
+            ✏️
+        </button>
+    </div>
+
+    <p>Note: Icon-only buttons need accessible text via aria-label or visually hidden text.</p>
+</body>
+</html>

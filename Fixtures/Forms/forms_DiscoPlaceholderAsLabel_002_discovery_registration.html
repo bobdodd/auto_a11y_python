@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - Placeholder Only</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "forms_DiscoPlaceholderAsLabel_002_discovery_registration",
+    "issueId": "forms_DiscoPlaceholderAsLabel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Complex registration form relying solely on placeholders for field identification",
+    "wcag": "N/A",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Create Account</h1>
+
+    <form>
+        <div>
+            <input type="text" id="firstname" name="firstname" placeholder="First Name">
+        </div>
+
+        <div>
+            <input type="text" id="lastname" name="lastname" placeholder="Last Name">
+        </div>
+
+        <div>
+            <input type="email" id="email" name="email" placeholder="Email Address">
+        </div>
+
+        <div>
+            <input type="password" id="password" name="password" placeholder="Password (8+ characters)">
+        </div>
+
+        <div>
+            <input type="password" id="confirm" name="confirm" placeholder="Confirm Password">
+        </div>
+
+        <div>
+            <input type="tel" id="phone" name="phone" placeholder="Phone Number (Optional)">
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <p><strong>Discovery Issue:</strong> This complex form relies entirely on placeholders. Additional concerns:</p>
+    <ul>
+        <li>Password requirements shown only in placeholder (disappears when typing)</li>
+        <li>Multiple similar fields (passwords) become indistinguishable when filled</li>
+        <li>Optional fields indicated only in placeholder</li>
+        <li>Users switching between fields may forget their purpose</li>
+        <li>Reviewing form before submission is difficult</li>
+    </ul>
+
+    <p><strong>Recommendation:</strong> Add visible labels and use placeholders only for format examples.</p>
+</body>
+</html>

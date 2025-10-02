@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnGenericDocumentLinkText - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnGenericDocumentLinkText_002_correct_descriptive_text",
+    "issueId": "WarnGenericDocumentLinkText",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Document links with descriptive text indicating content",
+    "wcag": "2.4.4, 2.4.9",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Resource Downloads</h1>
+
+    <main>
+        <section>
+            <h2>Annual Report</h2>
+            <p>Our company's financial performance for the year.</p>
+            <a href="/reports/annual-2023.pdf"
+               data-expected-pass="true"
+               data-pass-reason="Link text is descriptive 'Annual Report 2023 (PDF)' clearly indicating document content and format. Screen reader users navigating by links understand what each document contains. Users know link purpose without surrounding context. Link text is self-descriptive. Efficient navigation for all users. Complies with WCAG 2.4.4 Link Purpose In Context and 2.4.9 Link Purpose Link Only - descriptive link text improves accessibility">
+                Annual Report 2023 (PDF)
+            </a>
+        </section>
+
+        <section>
+            <h2>User Guide</h2>
+            <p>Instructions for using our product effectively.</p>
+            <a href="/docs/user-guide.pdf"
+               data-expected-pass="true"
+               data-pass-reason="Link text is specific 'User Guide PDF' describing exact document content. Screen reader link list shows distinct entries for each document. Users can easily distinguish between different documents. Link purpose clear without reading surrounding text. Descriptive link text improves navigation. Meets WCAG 2.4.4 and 2.4.9 - specific link text enables efficient navigation and clarity">
+                User Guide (PDF)
+            </a>
+        </section>
+
+        <section>
+            <h2>Technical Specifications</h2>
+            <p>Detailed technical information about product features and capabilities.</p>
+            <a href="/specs/technical-specs-v2.pdf"
+               data-expected-pass="true"
+               data-pass-reason="Link text is descriptive 'Technical Specifications PDF' clearly indicating document content. Screen reader users browsing links understand destination without context. Users know what document contains from link text alone. Link purpose completely clear when listed independently. Descriptive text is best practice for accessibility. Complies with WCAG 2.4.4 Link Purpose In Context and 2.4.9 Link Purpose Link Only - self-descriptive link text improves usability">
+                Technical Specifications (PDF, 2.5 MB)
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

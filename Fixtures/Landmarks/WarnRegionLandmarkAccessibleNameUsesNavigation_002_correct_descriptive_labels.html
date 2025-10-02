@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnRegionLandmarkAccessibleNameUsesNavigation - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnRegionLandmarkAccessibleNameUsesNavigation_002_correct_descriptive_labels",
+    "issueId": "WarnRegionLandmarkAccessibleNameUsesNavigation",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Region landmarks with specific descriptive names",
+    "wcag": "2.4.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Page Layout</h1>
+
+    <header>
+        <h2>Site Header</h2>
+    </header>
+
+    <main>
+        <section role="region" aria-label="Quick Links"
+                 data-expected-pass="true"
+                 data-pass-reason="Region landmark uses specific descriptive label 'Quick Links' without navigation terminology. Screen readers announce 'Quick Links region' which is clearly distinct from nav landmark. Users understand this is region not navigation. Descriptive label identifies region's specific purpose. Clear distinction between landmark types. Complies with WCAG 2.4.1 Bypass Blocks - descriptive label without confusing navigation terminology">
+            <h2>Quick Links</h2>
+            <ul>
+                <li><a href="/page1">Page 1</a></li>
+                <li><a href="/page2">Page 2</a></li>
+            </ul>
+        </section>
+
+        <section role="region" aria-label="Related Content"
+                 data-expected-pass="true"
+                 data-pass-reason="Region landmark has specific descriptive name 'Related Content'. Screen readers clearly distinguish from nav element. No navigation terminology in accessible name. Users understand region's purpose without confusion. Descriptive label identifies content type. Meets WCAG 2.4.1 Bypass Blocks - specific descriptive label avoids navigation terminology">
+            <h2>Related Content</h2>
+            <p>Explore these related articles and resources for more information.</p>
+        </section>
+
+        <section role="region" aria-label="Additional Resources"
+                 data-expected-pass="true"
+                 data-pass-reason="Region landmark uses descriptive label 'Additional Resources' without navigation terminology. Screen readers announce clearly as region not nav. Users can distinguish between region and navigation landmarks. Specific name describes region content. No confusion with nav landmark. Complies with WCAG 2.4.1 Bypass Blocks - region landmarks use descriptive labels without navigation terminology">
+            <h2>Additional Resources</h2>
+            <p>Find more tools and information in our resource center.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnItalicText - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnItalicText_001_violations_basic",
+    "issueId": "WarnItalicText",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Large blocks of italic text reducing readability",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .all-italic {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Article Content</h1>
+
+    <main>
+        <section>
+            <h2>Introduction</h2>
+
+            <p class="all-italic"
+               data-expected-violation="true"
+               data-violation-reason="Entire paragraph uses italic text which reduces readability. Italic text is harder to read than normal text especially for users with dyslexia or low vision. Long passages of italics strain eyes. Users with reading difficulties struggle more with slanted text. Italics should be used sparingly for emphasis. Warning for WCAG 1.4.8 Visual Presentation - avoid using italic for body text, reserve for short emphasis">
+                Welcome to our comprehensive guide on web accessibility best practices. In this document, we will explore various techniques and strategies for creating inclusive web experiences. Our goal is to help you understand the importance of accessibility and provide practical guidance for implementation. This information is critical for developers, designers, and content creators who want to build better websites.
+            </p>
+        </section>
+
+        <section>
+            <h2>Main Content</h2>
+
+            <div class="all-italic"
+                 data-expected-violation="true"
+                 data-violation-reason="Multiple paragraphs of body text in italic format reducing readability significantly. Extended italic text is difficult for users with dyslexia to process. Users with low vision find italic harder to distinguish. Reading speed decreases with italic body text. Eye strain increases with prolonged italic reading. Warning for WCAG 1.4.8 Visual Presentation - use regular text for body content, italics only for brief emphasis">
+                <p>The principles of accessible design extend beyond just technical implementation. They encompass a holistic approach to user experience that considers diverse user needs and capabilities.</p>
+
+                <p>When creating accessible content, it's essential to think about users who may have visual, auditory, motor, or cognitive disabilities. Each of these user groups has unique requirements that must be addressed.</p>
+
+                <p>By following established guidelines and testing with real users, we can create web experiences that work well for everyone regardless of their abilities or the technologies they use to access content.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Conclusion</h2>
+
+            <p class="all-italic"
+               data-expected-violation="true"
+               data-violation-reason="Concluding paragraph entirely in italic text reducing accessibility. Italic text slows reading speed for users with dyslexia and cognitive disabilities. Users with low vision struggle to read slanted letterforms. Italics create visual fatigue especially in longer text blocks. Body text should use regular font style. Warning for WCAG 1.4.8 Visual Presentation - reserve italic styling for short phrases requiring emphasis not body paragraphs">
+                In conclusion, web accessibility is not just a technical requirement but a fundamental aspect of creating an inclusive digital world. By implementing these practices consistently, we can ensure that our websites serve all users effectively and provide equal access to information and functionality for everyone.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

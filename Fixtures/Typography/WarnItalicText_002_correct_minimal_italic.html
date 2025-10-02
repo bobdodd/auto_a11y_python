@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnItalicText - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnItalicText_002_correct_minimal_italic",
+    "issueId": "WarnItalicText",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Regular text with minimal italic for emphasis only",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Article Content</h1>
+
+    <main>
+        <section>
+            <h2>Introduction</h2>
+
+            <p data-expected-pass="true"
+               data-pass-reason="Paragraph uses regular text with italic only for emphasis word. Regular text is highly readable for users with dyslexia and low vision. Normal font style reduces eye strain. Users with reading difficulties can process text easily. Italic used sparingly for emphasis only. Complies with WCAG 1.4.8 Visual Presentation - body text uses regular style, italic reserved for brief emphasis">
+                Welcome to our comprehensive guide on web accessibility best practices. In this document, we will explore various techniques and strategies for creating <em>inclusive</em> web experiences. Our goal is to help you understand the importance of accessibility and provide practical guidance for implementation. This information is critical for developers, designers, and content creators who want to build better websites.
+            </p>
+        </section>
+
+        <section>
+            <h2>Main Content</h2>
+
+            <div data-expected-pass="true"
+                 data-pass-reason="Multiple paragraphs use regular text format maintaining readability. Regular text is easy for users with dyslexia to process. Users with low vision can distinguish letterforms clearly. Reading speed optimal with normal text style. No eye strain from extended reading. Meets WCAG 1.4.8 Visual Presentation - body content uses regular text, italic used minimally for emphasis phrases only">
+                <p>The principles of accessible design extend beyond just technical implementation. They encompass a holistic approach to user experience that considers diverse user needs and capabilities.</p>
+
+                <p>When creating accessible content, it's essential to think about users who may have visual, auditory, motor, or cognitive disabilities. Each of these user groups has <em>unique requirements</em> that must be addressed.</p>
+
+                <p>By following established guidelines and testing with real users, we can create web experiences that work well for everyone regardless of their abilities or the technologies they use to access content.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Conclusion</h2>
+
+            <p data-expected-pass="true"
+               data-pass-reason="Concluding paragraph uses regular text maintaining accessibility. Regular text provides optimal reading speed for users with dyslexia and cognitive disabilities. Users with low vision can read normal letterforms easily. Regular font style prevents visual fatigue. Body text properly uses normal styling. Complies with WCAG 1.4.8 Visual Presentation - body paragraphs use regular text, italic styling reserved for short emphasis phrases">
+                In conclusion, web accessibility is not just a technical requirement but a <em>fundamental aspect</em> of creating an inclusive digital world. By implementing these practices consistently, we can ensure that our websites serve all users effectively and provide equal access to information and functionality for everyone.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

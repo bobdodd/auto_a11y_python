@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnRegionLandmarkAccessibleNameUsesNavigation - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnRegionLandmarkAccessibleNameUsesNavigation_001_violations_basic",
+    "issueId": "WarnRegionLandmarkAccessibleNameUsesNavigation",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Region landmarks with generic 'navigation' in name",
+    "wcag": "2.4.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Page Layout</h1>
+
+    <header>
+        <h2>Site Header</h2>
+    </header>
+
+    <main>
+        <section role="region" aria-label="Navigation Links"
+                 data-expected-violation="true"
+                 data-violation-reason="Region landmark uses generic 'Navigation' in accessible name. Screen readers announce 'Navigation Links region' which sounds like nav landmark. Users may confuse region with navigation landmark. Generic 'navigation' term doesn't describe region's specific purpose. Region should have more descriptive label. Warning for WCAG 2.4.1 Bypass Blocks - use descriptive label that doesn't sound like nav landmark">
+            <h2>Quick Links</h2>
+            <ul>
+                <li><a href="/page1">Page 1</a></li>
+                <li><a href="/page2">Page 2</a></li>
+            </ul>
+        </section>
+
+        <section role="region" aria-label="Site Navigation"
+                 data-expected-violation="true"
+                 data-violation-reason="Region landmark has 'Site Navigation' as accessible name. Screen readers may confuse with nav element since name includes 'navigation'. Users expect 'navigation' to indicate nav landmark not region. Generic terminology reduces clarity of landmark types. Should use more specific descriptive label. Warning for WCAG 2.4.1 Bypass Blocks - avoid navigation terminology for region landmarks">
+            <h2>Related Content</h2>
+            <p>Explore these related articles and resources for more information.</p>
+        </section>
+
+        <section role="region" aria-label="Navigation Menu"
+                 data-expected-violation="true"
+                 data-violation-reason="Region landmark uses 'Navigation Menu' in accessible name. Term 'navigation' makes region sound like nav landmark. Screen reader users may be confused about landmark type. Generic name doesn't distinguish region from actual navigation. More specific descriptive label needed. Warning for WCAG 2.4.1 Bypass Blocks - region landmarks should not use navigation terminology in labels">
+            <h2>Additional Resources</h2>
+            <p>Find more tools and information in our resource center.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

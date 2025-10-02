@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAriaLabelMayNotBeFoundByVoiceControl - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAriaLabelMayNotBeFoundByVoiceControl_002_correct_matching_labels",
+    "issueId": "ErrAriaLabelMayNotBeFoundByVoiceControl",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Elements where aria-label includes visible text for voice control",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: aria-label Includes Visible Text</h1>
+
+    <main>
+        <section>
+            <h2>Navigation Button</h2>
+            <button aria-label="Continue to next page"
+                    data-expected-pass="true"
+                    data-pass-reason="aria-label includes visible text 'Continue' so voice command works">
+                Continue
+            </button>
+        </section>
+
+        <section>
+            <h2>Search Link</h2>
+            <a href="/search"
+               aria-label="Search the website"
+               data-expected-pass="true"
+               data-pass-reason="aria-label includes visible text 'Search' so voice command works">
+                Search
+            </a>
+        </section>
+
+        <section>
+            <h2>Submit Form</h2>
+            <button type="submit"
+                    data-expected-pass="true"
+                    data-pass-reason="No aria-label override, visible text 'Submit' used directly">
+                Submit
+            </button>
+        </section>
+
+        <section>
+            <h2>Close Dialog</h2>
+            <button aria-label="Close dialog"
+                    data-expected-pass="true"
+                    data-pass-reason="aria-label includes visible text 'Close' so voice command works">
+                Close
+            </button>
+        </section>
+    </main>
+</body>
+</html>

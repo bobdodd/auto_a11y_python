@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrEmptyHeading - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrEmptyHeading_002_correct_with_content",
+    "issueId": "AI_ErrEmptyHeading",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Headings with meaningful text content",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Proper Heading Content</h1>
+
+    <main>
+        <section>
+            <h2 data-expected-pass="true"
+                data-pass-reason="Heading has meaningful text content">Section Introduction</h2>
+            <p>This section has a proper h2 heading with descriptive text.</p>
+        </section>
+
+        <section>
+            <h3 data-expected-pass="true"
+                data-pass-reason="Heading has clear descriptive text">Subsection Details</h3>
+            <p>This section has a proper h3 heading.</p>
+        </section>
+
+        <section>
+            <h4 data-expected-pass="true"
+                data-pass-reason="Heading contains meaningful content with whitespace properly trimmed">
+                Important Information
+            </h4>
+            <p>This section has a proper h4 heading (whitespace around text is acceptable).</p>
+        </section>
+
+        <section>
+            <h5 data-expected-pass="true"
+                data-pass-reason="Heading with icon has visible text label">
+                <span aria-hidden="true">★</span> Featured Content
+            </h5>
+            <p>This section has a proper h5 heading with a decorative icon and text.</p>
+        </section>
+
+        <section>
+            <h6 data-expected-pass="true"
+                data-pass-reason="Heading has accessible name via aria-label when content is icon-only"
+                aria-label="Settings">
+                <span aria-hidden="true">⚙️</span>
+            </h6>
+            <p>This section has a proper h6 heading with icon and aria-label for accessibility.</p>
+        </section>
+    </main>
+</body>
+</html>

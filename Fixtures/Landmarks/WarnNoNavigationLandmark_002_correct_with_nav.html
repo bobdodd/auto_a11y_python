@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNoNavigationLandmark - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNoNavigationLandmark_002_correct_with_nav",
+    "issueId": "WarnNoNavigationLandmark",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Page with proper navigation landmarks",
+    "wcag": "1.3.1, 2.4.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <header role="banner">
+        <h1>Company Website</h1>
+        <!-- Main navigation with proper landmark - CORRECT -->
+        <nav aria-label="Main"
+             data-expected-pass="true"
+             data-pass-reason="Page has primary navigation landmark. Navigation landmarks help users quickly locate and access site navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/services">Services</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>This page has proper navigation landmarks for all navigation sections.</p>
+
+        <article>
+            <h3>Article Title</h3>
+            <p>Article content goes here.</p>
+
+            <!-- Article navigation with proper landmark - CORRECT -->
+            <nav aria-label="Article sections"
+                 data-expected-pass="true"
+                 data-pass-reason="Article navigation properly marked with nav landmark and descriptive label, making it easy for screen reader users to navigate within the article">
+                <a href="#section1">Section 1</a>
+                <a href="#section2">Section 2</a>
+                <a href="#section3">Section 3</a>
+            </nav>
+        </article>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+        <!-- Footer navigation with proper landmark - CORRECT -->
+        <nav aria-label="Footer"
+             data-expected-pass="true"
+             data-pass-reason="Footer navigation properly marked with nav landmark, allowing users to easily find legal and utility links">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/sitemap">Sitemap</a>
+        </nav>
+    </footer>
+</body>
+</html>

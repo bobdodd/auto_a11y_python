@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegionLandmarkAccessibleNameIsBlank - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "RegionLandmarkAccessibleNameIsBlank_002_correct_with_labels",
+    "issueId": "RegionLandmarkAccessibleNameIsBlank",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Region landmarks with meaningful accessible names",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Region Landmarks with Meaningful Names - Correct Usage</h1>
+
+    <main>
+        <h2>Main Content</h2>
+
+        <!-- Region with descriptive aria-label - CORRECT -->
+        <div role="region"
+             aria-label="Featured articles"
+             data-expected-pass="true"
+             data-pass-reason="Region landmark has meaningful aria-label attribute. Region landmarks require descriptive accessible names to help users understand their purpose">
+            <h3>Featured Content</h3>
+            <p>This region has a clear, descriptive label.</p>
+        </div>
+
+        <!-- Region with aria-labelledby referencing meaningful heading - CORRECT -->
+        <section role="region"
+                 aria-labelledby="resources-heading"
+                 data-expected-pass="true"
+                 data-pass-reason="Region landmark references element with meaningful text via aria-labelledby, providing clear accessible name">
+            <h3 id="resources-heading">Important Resources</h3>
+            <p>Important information with proper heading reference.</p>
+        </section>
+
+        <!-- Region with descriptive title attribute - CORRECT -->
+        <div role="region"
+             aria-label="Customer testimonials"
+             data-expected-pass="true"
+             data-pass-reason="Region landmark has descriptive aria-label that clearly identifies the section's purpose for screen reader users">
+            <h3>Special Section</h3>
+            <p>This region has a meaningful label describing its content.</p>
+        </div>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

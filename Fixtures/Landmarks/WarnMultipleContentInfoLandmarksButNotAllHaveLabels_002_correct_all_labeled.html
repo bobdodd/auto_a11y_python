@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMultipleContentInfoLandmarksButNotAllHaveLabels - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMultipleContentInfoLandmarksButNotAllHaveLabels_002_correct_all_labeled",
+    "issueId": "WarnMultipleContentInfoLandmarksButNotAllHaveLabels",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Multiple contentinfo landmarks all consistently labeled",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple ContentInfo Landmarks All Labeled - Correct Usage</h1>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here. All contentinfo landmarks on this page have unique, descriptive labels.</p>
+    </main>
+
+    <!-- First contentinfo with label - CORRECT -->
+    <footer role="contentinfo"
+            aria-label="Main footer"
+            data-expected-pass="true"
+            data-pass-reason="Contentinfo landmark has unique label. When multiple contentinfo landmarks exist, all should be labeled consistently">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+        <nav aria-label="Footer navigation">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+        </nav>
+    </footer>
+
+    <!-- Second contentinfo WITH label - CORRECT -->
+    <div role="contentinfo"
+         aria-label="Additional footer information"
+         data-expected-pass="true"
+         data-pass-reason="Second contentinfo landmark properly labeled. Consistent labeling allows screen reader users to easily distinguish between different footer areas">
+        <p>Additional footer information with proper labeling.</p>
+        <p>Contact: info@example.com</p>
+    </div>
+
+    <!-- Third contentinfo WITH label - CORRECT -->
+    <footer role="contentinfo"
+            aria-label="Secondary footer"
+            data-expected-pass="true"
+            data-pass-reason="Third contentinfo landmark has descriptive label. All contentinfo landmarks have consistent, unique labels for clear identification">
+        <p>Secondary footer section with clear labeling.</p>
+        <p>Location: 123 Main St, City, State</p>
+    </footer>
+</body>
+</html>

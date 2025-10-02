@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrEmptyList - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyList_002_correct_with_items",
+    "issueId": "ErrEmptyList",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "List elements with proper list items",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Lists With Items</h1>
+
+    <main>
+        <section>
+            <h2>Unordered List With Items</h2>
+            <ul data-expected-pass="true"
+                data-pass-reason="Unordered list contains li elements">
+                <li>First item</li>
+                <li>Second item</li>
+                <li>Third item</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Ordered List With Items</h2>
+            <ol data-expected-pass="true"
+                data-pass-reason="Ordered list contains li elements">
+                <li>Step one</li>
+                <li>Step two</li>
+                <li>Step three</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Definition List With Terms</h2>
+            <dl data-expected-pass="true"
+                data-pass-reason="Definition list contains dt and dd elements">
+                <dt>HTML</dt>
+                <dd>HyperText Markup Language</dd>
+                <dt>CSS</dt>
+                <dd>Cascading Style Sheets</dd>
+            </dl>
+        </section>
+    </main>
+</body>
+</html>

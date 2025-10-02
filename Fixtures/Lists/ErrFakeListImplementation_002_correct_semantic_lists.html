@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFakeListImplementation - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFakeListImplementation_002_correct_semantic_lists",
+    "issueId": "ErrFakeListImplementation",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Proper semantic list markup",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Proper Semantic Lists</h1>
+
+    <main>
+        <section>
+            <h2>Proper Unordered List</h2>
+            <ul data-expected-pass="true"
+                data-pass-reason="Uses proper ul/li markup for list structure">
+                <li>First item</li>
+                <li>Second item</li>
+                <li>Third item</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Proper Ordered List</h2>
+            <ol data-expected-pass="true"
+                data-pass-reason="Uses proper ol/li markup for numbered list">
+                <li>Item one</li>
+                <li>Item two</li>
+                <li>Item three</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Proper List with Semantic Markup</h2>
+            <ul data-expected-pass="true"
+                data-pass-reason="Uses proper semantic list markup with li elements">
+                <li>Apple</li>
+                <li>Orange</li>
+                <li>Banana</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

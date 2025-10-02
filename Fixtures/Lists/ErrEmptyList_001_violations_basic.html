@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrEmptyList - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyList_001_violations_basic",
+    "issueId": "ErrEmptyList",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "List elements with no list items",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Empty Lists</h1>
+
+    <main>
+        <section>
+            <h2>Empty Unordered List</h2>
+            <ul data-expected-violation="true"
+                data-violation-id="ErrEmptyList"
+                data-violation-reason="Unordered list contains no li elements">
+            </ul>
+            <p>The list above is empty.</p>
+        </section>
+
+        <section>
+            <h2>Empty Ordered List</h2>
+            <ol data-expected-violation="true"
+                data-violation-id="ErrEmptyList"
+                data-violation-reason="Ordered list contains no li elements">
+            </ol>
+            <p>The list above is empty.</p>
+        </section>
+
+        <section>
+            <h2>Empty Definition List</h2>
+            <dl data-expected-violation="true"
+                data-violation-id="ErrEmptyList"
+                data-violation-reason="Definition list contains no dt/dd elements">
+            </dl>
+            <p>The definition list above is empty.</p>
+        </section>
+    </main>
+</body>
+</html>

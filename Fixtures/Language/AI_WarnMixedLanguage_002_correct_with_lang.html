@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnMixedLanguage - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnMixedLanguage_002_correct_with_lang",
+    "issueId": "AI_WarnMixedLanguage",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Mixed language content with proper language declarations",
+    "wcag": "3.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Welcome to Our Website</h1>
+
+    <p data-expected-pass="true"
+       data-pass-reason="French phrase has proper lang='fr' attribute">
+        The restaurant serves excellent cuisine. Their specialty is the <span lang="fr">coq au vin</span>.
+    </p>
+
+    <p data-expected-pass="true"
+       data-pass-reason="Spanish words have proper lang='es' attributes">
+        Welcome to our <span lang="es">casa</span>. We hope you enjoy your stay at our <span lang="es">hacienda</span>.
+    </p>
+
+    <blockquote lang="de"
+                data-expected-pass="true"
+                data-pass-reason="German quote has lang='de' attribute on blockquote">
+        As the philosopher said, "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt."
+    </blockquote>
+</body>
+</html>

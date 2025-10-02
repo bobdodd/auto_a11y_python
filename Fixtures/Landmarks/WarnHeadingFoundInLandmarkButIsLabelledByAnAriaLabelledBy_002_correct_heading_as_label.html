@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy_002_correct_heading_as_label",
+    "issueId": "WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Landmarks properly using their headings as labels",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Landmarks Using Headings as Labels - Correct Usage</h1>
+
+    <main>
+        <h2>Main Content</h2>
+
+        <!-- Navigation using its heading as label - CORRECT -->
+        <nav aria-labelledby="nav-heading"
+             data-expected-pass="true"
+             data-pass-reason="Navigation landmark uses aria-labelledby to reference its own h3 heading, ensuring visible heading matches announced landmark label">
+            <h3 id="nav-heading">Site Navigation</h3>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/services">Services</a>
+        </nav>
+
+        <!-- Region using its heading as label - CORRECT -->
+        <section role="region"
+                 aria-labelledby="region-heading"
+                 data-expected-pass="true"
+                 data-pass-reason="Region landmark properly uses aria-labelledby to reference its h3 heading, creating consistency between visual and accessible naming">
+            <h3 id="region-heading">Featured Content</h3>
+            <p>This section correctly uses its heading as the landmark label.</p>
+            <p>Screen reader users hear the same name as sighted users see.</p>
+        </section>
+
+        <!-- Complementary using its heading as label - CORRECT -->
+        <aside role="complementary"
+               aria-labelledby="aside-heading"
+               data-expected-pass="true"
+               data-pass-reason="Complementary landmark references its h3 heading via aria-labelledby, ensuring heading and landmark label match for all users">
+            <h3 id="aside-heading">Related Articles</h3>
+            <p>Additional information and resources.</p>
+            <p>The heading serves as both visual indicator and landmark label.</p>
+        </aside>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

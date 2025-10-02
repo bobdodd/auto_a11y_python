@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithImgFileExtensionAlt - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithImgFileExtensionAlt_002_correct_descriptive",
+    "issueId": "ErrImageWithImgFileExtensionAlt",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Image alt text with descriptive content, no file extensions",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Gallery</h1>
+    <main>
+        <section>
+            <article data-expected-pass="true"
+                     data-pass-reason="Alt text describes image content without file extension. Screen readers announce 'Black professional widget with chrome finish' which is meaningful. No technical filename details. Blind users understand product appearance. Descriptive text alternative instead of file format. Complies with WCAG 1.1.1 by providing proper content description">
+                <img src="widget-pro.jpg" alt="Black professional widget with chrome finish">
+                <h3>Professional Widget</h3>
+                <p>$299.99</p>
+            </article>
+            <article data-expected-pass="true"
+                     data-pass-reason="Alt text is descriptive without file extension. Screen readers read 'Compact smart gadget with LED display' providing useful information. No .png or filename mentioned. Users learn about product features. Proper text alternative for visual content. Meets WCAG 1.1.1 Non-text Content requirements">
+                <img src="gadget.png" alt="Compact smart gadget with LED display">
+                <h3>Smart Gadget</h3>
+                <p>$199.99</p>
+            </article>
+            <article data-expected-pass="true"
+                     data-pass-reason="Alt text describes tool without file extension. Screen readers announce 'Red multi-tool with folding implements' which is descriptive. No .gif or technical details. Blind users understand what tool looks like. Meaningful description instead of filename. Complies with WCAG 1.1.1 by providing accessible text alternative">
+                <img src="tool.gif" alt="Red multi-tool with folding implements">
+                <h3>Multi-Tool</h3>
+                <p>$149.99</p>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

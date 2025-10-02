@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithImgFileExtensionAlt - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithImgFileExtensionAlt_001_violations_basic",
+    "issueId": "ErrImageWithImgFileExtensionAlt",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Image alt text containing file extensions",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Gallery</h1>
+    <main>
+        <section>
+            <article>
+                <img src="widget-pro.jpg" alt="widget-pro.jpg"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithImgFileExtensionAlt"
+                     data-violation-reason="Alt text is filename with .jpg extension. Screen readers announce 'widget dash pro dot jay peg' which is not descriptive. File extension provides no information about image content. Users don't need technical details. Should describe what image shows, not file format. Violates WCAG 1.1.1 by failing to provide meaningful text alternative">
+                <h3>Professional Widget</h3>
+                <p>$299.99</p>
+            </article>
+            <article>
+                <img src="gadget.png" alt="gadget.png"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithImgFileExtensionAlt"
+                     data-violation-reason="Alt text includes .png file extension. Screen readers read 'gadget dot p n g' which is technical filename, not description. Blind users get no useful information about product. File format is irrelevant to content. Fails WCAG 1.1.1 by using filename instead of descriptive text">
+                <h3>Smart Gadget</h3>
+                <p>$199.99</p>
+            </article>
+            <article>
+                <img src="tool.gif" alt="tool.gif"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithImgFileExtensionAlt"
+                     data-violation-reason="Alt text is filename with .gif extension. Screen readers announce 'tool dot g i f' which is unhelpful. Users hear file format instead of what image depicts. Extension provides no accessibility value. Should describe the actual tool shown. Violates WCAG 1.1.1 Non-text Content requirements">
+                <h3>Multi-Tool</h3>
+                <p>$149.99</p>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

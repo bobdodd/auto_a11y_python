@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Descriptive Link Text</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInvalidGenericLinkName_002_correct_descriptive",
+    "issueId": "ErrInvalidGenericLinkName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 6,
+    "description": "Links with descriptive, meaningful text",
+    "wcag": "2.4.4",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Resources</h1>
+
+    <p><a href="report.pdf"
+          data-expected-pass="true"
+          data-pass-reason="Descriptive text explains what will be downloaded">Download 2024 annual report (PDF)</a></p>
+
+    <p><a href="services.html"
+          data-expected-pass="true"
+          data-pass-reason="Descriptive text explains destination">Read about our consulting services</a></p>
+
+    <p><a href="contact.html"
+          data-expected-pass="true"
+          data-pass-reason="Descriptive text explains link purpose">Contact us by phone or email</a></p>
+
+    <p><a href="terms.html"
+          data-expected-pass="true"
+          data-pass-reason="Descriptive text identifies content">View terms and conditions</a></p>
+
+    <p><a href="resources.html"
+          data-expected-pass="true"
+          data-pass-reason="Descriptive text describes resources">Browse developer documentation</a></p>
+
+    <p><a href="product.html"
+          data-expected-pass="true"
+          data-pass-reason="Descriptive text identifies product">View wireless keyboard specifications</a></p>
+</body>
+</html>

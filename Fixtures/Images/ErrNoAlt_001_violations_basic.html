@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Images Missing Alt Attribute</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoAlt_001_violations_basic",
+    "issueId": "ErrNoAlt",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Images missing alt attribute entirely",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Gallery</h1>
+
+    <img src="product1.jpg"
+         data-expected-violation="true"
+         data-violation-id="ErrNoAlt"
+         data-violation-reason="Image has no alt attribute">
+
+    <p>Product description goes here.</p>
+
+    <img src="product2.jpg"
+         title="Product 2"
+         data-expected-violation="true"
+         data-violation-id="ErrNoAlt"
+         data-violation-reason="Title is not a substitute for alt attribute">
+
+    <figure>
+        <img src="diagram.png"
+             data-expected-violation="true"
+             data-violation-id="ErrNoAlt"
+             data-violation-reason="Image in figure has no alt attribute">
+        <figcaption>Technical diagram</figcaption>
+    </figure>
+</body>
+</html>

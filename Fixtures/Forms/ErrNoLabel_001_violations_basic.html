@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Form Inputs Without Labels</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoLabel_001_violations_basic",
+    "issueId": "ErrNoLabel",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Form inputs without any associated label or accessible name",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Registration Form</h1>
+    <form>
+        <div>
+            <span>Username</span>
+            <input type="text"
+                   data-expected-violation="true"
+                   data-violation-id="ErrNoLabel"
+                   data-violation-reason="Input has no label element, aria-label, or aria-labelledby">
+        </div>
+
+        <div>
+            Email:
+            <input type="email"
+                   data-expected-violation="true"
+                   data-violation-id="ErrNoLabel"
+                   data-violation-reason="Text adjacent to input is not a label">
+        </div>
+
+        <div>
+            <input type="password"
+                   placeholder="Password"
+                   data-expected-violation="true"
+                   data-violation-id="ErrNoLabel"
+                   data-violation-reason="Placeholder is not a substitute for a label">
+        </div>
+
+        <select data-expected-violation="true"
+                data-violation-id="ErrNoLabel"
+                data-violation-reason="Select dropdown has no label">
+            <option>Select country</option>
+            <option>USA</option>
+            <option>Canada</option>
+        </select>
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

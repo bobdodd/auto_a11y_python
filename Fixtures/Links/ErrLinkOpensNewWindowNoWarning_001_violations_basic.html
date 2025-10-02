@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Links Opening New Window Without Warning</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkOpensNewWindowNoWarning_001_violations_basic",
+    "issueId": "ErrLinkOpensNewWindowNoWarning",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links with target=_blank without warning users",
+    "wcag": "3.2.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>External Resources</h1>
+
+    <p>Read the <a href="https://example.com/report.pdf"
+                    target="_blank"
+                    data-expected-violation="true"
+                    data-violation-id="ErrLinkOpensNewWindowNoWarning"
+                    data-violation-reason="target=_blank with no warning">full report</a></p>
+
+    <p>Visit <a href="https://partner-site.com"
+                 target="_blank"
+                 data-expected-violation="true"
+                 data-violation-id="ErrLinkOpensNewWindowNoWarning"
+                 data-violation-reason="Opens in new window without indication">our partner website</a></p>
+
+    <p>Download <a href="/docs/guide.pdf"
+                    target="_blank"
+                    data-expected-violation="true"
+                    data-violation-id="ErrLinkOpensNewWindowNoWarning"
+                    data-violation-reason="New window behavior not communicated">user guide</a></p>
+</body>
+</html>

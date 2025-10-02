@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Links Without Text</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrLinkWithoutText_001_violations_basic",
+    "issueId": "AI_ErrLinkWithoutText",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Link elements with no accessible text",
+    "wcag": "2.4.4",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation</h1>
+
+    <nav>
+        <a href="home.html"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrLinkWithoutText"
+           data-violation-reason="Link element is completely empty"></a>
+
+        <a href="profile.html"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrLinkWithoutText"
+           data-violation-reason="Link contains only whitespace">   </a>
+
+        <a href="settings.html"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrLinkWithoutText"
+           data-violation-reason="Link contains image without alt attribute">
+            <img src="icon.png">
+        </a>
+
+        <a href="help.html"
+           data-expected-violation="true"
+           data-violation-id="AI_ErrLinkWithoutText"
+           data-violation-reason="Link contains span with aria-hidden=true hiding all text">
+            <span aria-hidden="true">Help</span>
+        </a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Single Label Contains Multiple Fields</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelContainsMultipleFields_001_violations_basic",
+    "issueId": "ErrLabelContainsMultipleFields",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Label elements containing multiple form fields causing ambiguity",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Date Range Form</h1>
+    <form>
+        <label data-expected-violation="true"
+               data-violation-id="ErrLabelContainsMultipleFields"
+               data-violation-reason="Single label wraps two input fields">
+            Date Range:
+            <input type="date" placeholder="Start date">
+            to
+            <input type="date" placeholder="End date">
+        </label>
+
+        <label data-expected-violation="true"
+               data-violation-id="ErrLabelContainsMultipleFields"
+               data-violation-reason="Single label contains phone number parts">
+            Phone:
+            <input type="text" size="3" maxlength="3" placeholder="555">
+            <input type="text" size="3" maxlength="3" placeholder="123">
+            <input type="text" size="4" maxlength="4" placeholder="4567">
+        </label>
+
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

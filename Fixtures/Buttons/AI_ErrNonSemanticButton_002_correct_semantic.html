@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Proper Semantic Buttons</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrNonSemanticButton_002_correct_semantic",
+    "issueId": "AI_ErrNonSemanticButton",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons using proper semantic elements or ARIA",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .styled-button {
+            padding: 10px 20px;
+            background: #0066cc;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Actions</h1>
+
+    <button class="styled-button"
+            data-expected-pass="true"
+            data-pass-reason="Uses semantic button element">Submit Form</button>
+
+    <button type="button"
+            class="styled-button"
+            data-expected-pass="true"
+            data-pass-reason="Semantic button with explicit type">Save Changes</button>
+
+    <div role="button"
+         tabindex="0"
+         class="styled-button"
+         data-expected-pass="true"
+         data-pass-reason="Div with role=button and tabindex=0 for keyboard access">Delete Item</div>
+</body>
+</html>

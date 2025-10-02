@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Links With New Window Warning</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkOpensNewWindowNoWarning_002_correct_with_warning",
+    "issueId": "ErrLinkOpensNewWindowNoWarning",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Links opening new windows with proper warning to users",
+    "wcag": "3.2.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>External Resources</h1>
+
+    <p>Read the <a href="https://example.com/report.pdf"
+                    target="_blank"
+                    rel="noopener"
+                    data-expected-pass="true"
+                    data-pass-reason="Warning text in link indicates new window">full report (opens in new window)</a></p>
+
+    <p>Visit <a href="https://partner-site.com"
+                 target="_blank"
+                 rel="noopener"
+                 aria-label="Our partner website, opens in new window"
+                 data-expected-pass="true"
+                 data-pass-reason="aria-label includes new window warning">our partner website</a>
+       <span class="sr-only">(opens in new window)</span></p>
+
+    <p>Download <a href="/docs/guide.pdf"
+                    target="_blank"
+                    rel="noopener"
+                    data-expected-pass="true"
+                    data-pass-reason="Visible icon and text indicate new window behavior">
+        user guide
+        <svg role="img" aria-label="opens in new window" width="16" height="16" viewBox="0 0 16 16">
+            <path d="M14 2H9v1h3.3L7 8.3l.7.7L13 3.7V7h1V2z"/>
+            <path d="M12 14H2V4h5V3H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V9h-1v5z"/>
+        </svg>
+    </a></p>
+</body>
+</html>

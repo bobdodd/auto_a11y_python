@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark_002_correct_heading_labels",
+    "issueId": "WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Landmarks labeled using their internal headings via aria-labelledby",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Headings Used as Landmark Labels - Correct Usage</h1>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Content here.</p>
+    </main>
+
+    <!-- Nav labeled by its heading - CORRECT -->
+    <nav aria-labelledby="nav-heading"
+         data-expected-pass="true"
+         data-pass-reason="Navigation landmark uses aria-labelledby to reference its heading. This creates consistency between visual and programmatic labels">
+        <h3 id="nav-heading">Main Navigation</h3>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+
+    <!-- Aside labeled by its heading - CORRECT -->
+    <aside aria-labelledby="articles-heading"
+           data-expected-pass="true"
+           data-pass-reason="Complementary landmark references its heading with aria-labelledby. Screen readers announce the same text that sighted users see">
+        <h3 id="articles-heading">Related Articles</h3>
+        <ul>
+            <li><a href="/article1">Article 1</a></li>
+            <li><a href="/article2">Article 2</a></li>
+        </ul>
+    </aside>
+
+    <!-- Region labeled by its heading - CORRECT -->
+    <section role="region"
+             aria-labelledby="announcements-heading"
+             data-expected-pass="true"
+             data-pass-reason="Region landmark uses aria-labelledby to reference heading. This ensures consistency between visual presentation and screen reader announcements">
+        <h3 id="announcements-heading">Announcements</h3>
+        <p>Latest announcements and updates here.</p>
+    </section>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+    </footer>
+</body>
+</html>

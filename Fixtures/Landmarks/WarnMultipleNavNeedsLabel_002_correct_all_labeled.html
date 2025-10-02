@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMultipleNavNeedsLabel - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMultipleNavNeedsLabel_002_correct_all_labeled",
+    "issueId": "WarnMultipleNavNeedsLabel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Multiple navigation landmarks all with unique distinguishing labels",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Navigation Landmarks With Unique Labels - Correct Usage</h1>
+
+    <!-- First nav with label - CORRECT -->
+    <nav aria-label="Main menu"
+         data-expected-pass="true"
+         data-pass-reason="Navigation landmark has unique label 'Main menu' that distinguishes it from other navigation areas on the page">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here. All navigation landmarks have unique, descriptive labels.</p>
+    </main>
+
+    <!-- Second nav with unique label - CORRECT -->
+    <nav aria-label="Product categories"
+         data-expected-pass="true"
+         data-pass-reason="Second navigation landmark properly labeled. Users can distinguish this navigation from others by its unique label">
+        <ul>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/pricing">Pricing</a></li>
+        </ul>
+    </nav>
+
+    <aside role="complementary" aria-label="Sidebar">
+        <h3>Sidebar Content</h3>
+        
+        <!-- Third nav with descriptive label - CORRECT -->
+        <nav aria-label="Related links"
+             data-expected-pass="true"
+             data-pass-reason="Third navigation landmark has clear label. Screen readers announce each navigation with its unique purpose">
+            <h4>Related Pages</h4>
+            <ul>
+                <li><a href="/related1">Related Page 1</a></li>
+                <li><a href="/related2">Related Page 2</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Fourth nav with unique label - CORRECT -->
+    <div role="navigation"
+         aria-label="Footer links"
+         data-expected-pass="true"
+         data-pass-reason="Navigation using role='navigation' has descriptive label. All navigation landmarks have unique labels for efficient navigation">
+        <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+    </footer>
+</body>
+</html>

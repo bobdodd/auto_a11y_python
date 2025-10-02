@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark_001_violations_basic",
+    "issueId": "WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Region landmarks without labels that are not exposed as landmarks",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Region Landmarks Without Labels Test</h1>
+
+    <main>
+        <h2>Main Content</h2>
+
+        <!-- Region without label -->
+        <div role="region"
+             data-expected-violation="true"
+             data-violation-id="WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark"
+             data-violation-reason="Region landmark has no accessible name. Regions require aria-label or aria-labelledby to be exposed as landmarks. Without a label, this region is not discoverable via landmark navigation">
+            <h3>Featured Content</h3>
+            <p>This region has no label and won't be announced as a landmark.</p>
+        </div>
+
+        <!-- Another region without label -->
+        <section role="region"
+                 data-expected-violation="true"
+                 data-violation-id="WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark"
+                 data-violation-reason="Section with role='region' lacks required accessible name. Region landmarks must have aria-label or aria-labelledby to function as landmarks">
+            <h3>Important Information</h3>
+            <p>Without a label, this is just a section, not a landmark.</p>
+        </section>
+
+        <!-- Third unlabeled region -->
+        <div role="region"
+             data-expected-violation="true"
+             data-violation-id="WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark"
+             data-violation-reason="Region role applied but no label provided. Screen reader users cannot navigate to this region using landmark shortcuts because it lacks the required accessible name">
+            <h3>Special Section</h3>
+            <p>This content won't be exposed as a navigable landmark.</p>
+        </div>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexOfZeroOnNonInteractiveElement - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexOfZeroOnNonInteractiveElement_002_correct_usage",
+    "issueId": "ErrTabindexOfZeroOnNonInteractiveElement",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Proper use of tabindex on interactive elements only",
+    "wcag": "2.4.3, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Blog Post</h1>
+
+    <main data-expected-pass="true"
+          data-pass-reason="Non-interactive elements (divs, spans, paragraphs) have no tabindex='0'. Only naturally interactive elements or custom widgets with proper ARIA roles should have tabindex='0'. Keyboard users tab only to operable elements. Clear and logical tab order. No confusion about element purpose. Meets WCAG 2.4.3 focus order and 4.1.2 name/role/value. If programmatic focus needed, use tabindex='-1' which doesn't add to tab sequence">
+        <article>
+            <h2>Latest News</h2>
+
+            <div>
+                <p>Welcome to our blog where we share insights about web development.</p>
+            </div>
+
+            <span>Important information here</span>
+
+            <p>
+                This paragraph discusses accessibility best practices and proper
+                semantic HTML usage for inclusive web development.
+            </p>
+
+            <!-- Interactive elements can have tabindex="0" -->
+            <button tabindex="0">Read More</button>
+            <a href="/article" tabindex="0">Full Article</a>
+
+            <!-- Custom widget example (if needed) -->
+            <div role="button" tabindex="0" aria-label="Show comments">
+                Comments
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Blog Site. All rights reserved.</p>
+    </footer>
+</body>
+</html>

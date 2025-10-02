@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTTabindexOnNonInteractiveElement - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTTabindexOnNonInteractiveElement_001_violations_basic",
+    "issueId": "ErrTTabindexOnNonInteractiveElement",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Non-interactive elements with tabindex making them keyboard focusable",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Article Page</h1>
+
+    <main>
+        <article>
+            <h2 tabindex="0"
+                data-expected-violation="true"
+                data-violation-id="ErrTTabindexOnNonInteractiveElement"
+                data-violation-reason="Heading has tabindex='0' making it keyboard focusable. Headings are not interactive elements. Adding to tab order confuses keyboard users who expect only interactive elements. No action possible on focus. Creates unnecessary tab stop. Violates WCAG 2.4.3 by disrupting logical focus order with non-interactive element">
+                Understanding Accessibility
+            </h2>
+
+            <p tabindex="1"
+               data-expected-violation="true"
+               data-violation-id="ErrTTabindexOnNonInteractiveElement"
+               data-violation-reason="Paragraph has tabindex='1' making it focusable and disrupting tab order. Paragraphs are not interactive. Positive tabindex also breaks natural order. Keyboard users tab to text that has no function. Adds confusion and extra keystrokes. Fails WCAG 2.4.3 by adding non-interactive element to focus sequence">
+                Web accessibility ensures that websites and applications work for everyone,
+                including people with disabilities who use assistive technologies.
+            </p>
+
+            <div tabindex="0"
+                 data-expected-violation="true"
+                 data-violation-id="ErrTTabindexOnNonInteractiveElement"
+                 data-violation-reason="Div has tabindex='0' without interactive role or purpose. Generic container should not be in tab order. Keyboard users stop on element with no action available. Creates confusion about expected behavior. Should use semantic interactive elements or add appropriate ARIA role if truly interactive. Violates WCAG 2.4.3 by including non-functional element in focus order">
+                <h3>Key Principles</h3>
+                <ul>
+                    <li>Perceivable content</li>
+                    <li>Operable interface</li>
+                    <li>Understandable information</li>
+                    <li>Robust implementation</li>
+                </ul>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Accessibility Guide. All rights reserved.</p>
+    </footer>
+</body>
+</html>

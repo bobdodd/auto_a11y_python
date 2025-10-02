@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexOfZeroOnNonInteractiveElement - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexOfZeroOnNonInteractiveElement_001_violations_basic",
+    "issueId": "ErrTabindexOfZeroOnNonInteractiveElement",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Non-interactive elements with tabindex=0",
+    "wcag": "2.4.3, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Blog Post</h1>
+
+    <main>
+        <article>
+            <h2>Latest News</h2>
+
+            <div tabindex="0"
+                 data-expected-violation="true"
+                 data-violation-id="ErrTabindexOfZeroOnNonInteractiveElement"
+                 data-violation-reason="Div has tabindex='0' without being interactive. Adds container to tab order unnecessarily. Keyboard users stop on element expecting interaction but none available. Creates confusion about purpose. If programmatic focus needed, use tabindex='-1'. Violates WCAG 2.4.3 by polluting focus order and 4.1.2 by creating ambiguous role">
+                <p>Welcome to our blog where we share insights about web development.</p>
+            </div>
+
+            <span tabindex="0"
+                  data-expected-violation="true"
+                  data-violation-id="ErrTabindexOfZeroOnNonInteractiveElement"
+                  data-violation-reason="Span has tabindex='0' making inline text focusable. Spans are not interactive elements. Adds pointless tab stop. Keyboard users expect only buttons, links, form controls to be focusable. No indication of purpose when focused. Fails WCAG 2.4.3 by breaking focus order expectations and 4.1.2 by lacking proper role">
+                Important information here
+            </span>
+
+            <p tabindex="0"
+               data-expected-violation="true"
+               data-violation-id="ErrTabindexOfZeroOnNonInteractiveElement"
+               data-violation-reason="Paragraph has tabindex='0' adding it to tab sequence. Paragraphs are content, not controls. Keyboard users waste keystrokes tabbing through text. No action possible when focused. If element needs focus for JavaScript, should have appropriate ARIA role. Violates WCAG 2.4.3 by including non-interactive content in focus order">
+                This paragraph discusses accessibility best practices and proper
+                semantic HTML usage for inclusive web development.
+            </p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Blog Site. All rights reserved.</p>
+    </footer>
+</body>
+</html>

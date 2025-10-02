@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTTabindexOnNonInteractiveElement - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTTabindexOnNonInteractiveElement_002_correct_usage",
+    "issueId": "ErrTTabindexOnNonInteractiveElement",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Only interactive elements in tab order",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Article Page</h1>
+
+    <main data-expected-pass="true"
+          data-pass-reason="Non-interactive elements (headings, paragraphs, divs) have no tabindex. Only interactive elements like buttons and links are focusable. Keyboard users tab only to elements they can activate. Logical and efficient tab order. No unnecessary tab stops. Complies with WCAG 2.4.3 by maintaining proper focus order. Note: tabindex='-1' can be used for programmatic focus without adding to tab sequence">
+        <article>
+            <h2>Understanding Accessibility</h2>
+
+            <p>
+                Web accessibility ensures that websites and applications work for everyone,
+                including people with disabilities who use assistive technologies.
+            </p>
+
+            <div>
+                <h3>Key Principles</h3>
+                <ul>
+                    <li>Perceivable content</li>
+                    <li>Operable interface</li>
+                    <li>Understandable information</li>
+                    <li>Robust implementation</li>
+                </ul>
+            </div>
+
+            <button>Learn More</button>
+            <a href="/resources">Additional Resources</a>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Accessibility Guide. All rights reserved.</p>
+    </footer>
+</body>
+</html>

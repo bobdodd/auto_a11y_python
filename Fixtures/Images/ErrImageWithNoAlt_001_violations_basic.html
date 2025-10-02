@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithNoAlt - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithNoAlt_001_violations_basic",
+    "issueId": "ErrImageWithNoAlt",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Images completely missing alt attribute",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Online Store</h1>
+
+    <main>
+        <section>
+            <h2>Featured Product</h2>
+
+            <article>
+                <img src="laptop-pro.jpg"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithNoAlt"
+                     data-violation-reason="Image has no alt attribute at all. Screen readers will announce the filename 'laptop-pro.jpg' which is not descriptive. HTML specification requires alt attribute on all img elements. Missing alt is worse than empty alt (alt='') because screen readers may read the filename or src URL. Blind users get no useful information about product. Violates WCAG 1.1.1 Non-text Content by completely lacking text alternative">
+                <h3>Professional Laptop</h3>
+                <p>High-performance laptop for business use. $1,499.99</p>
+                <button>Add to Cart</button>
+            </article>
+        </section>
+
+        <section>
+            <h2>Customer Testimonial</h2>
+
+            <blockquote>
+                <img src="customer-photo.jpg"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithNoAlt"
+                     data-violation-reason="Customer photo completely missing alt attribute. Screen readers cannot identify the person or context. HTML validator will flag this as error. Users miss visual credibility cue that photo provides. File path may be announced instead of meaningful description. Fails WCAG 1.1.1 by omitting required text alternative">
+                <p>"This company provides excellent service and quality products!"</p>
+                <cite>- Jane Smith, CEO</cite>
+            </blockquote>
+        </section>
+
+        <section>
+            <h2>Company Logo</h2>
+
+            <div class="logo-container">
+                <img src="company-logo.svg"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithNoAlt"
+                     data-violation-reason="Logo image missing alt attribute entirely. Screen readers cannot announce company name or logo purpose. Logo is important for brand identity but inaccessible to blind users. Missing alt means HTML is invalid. Should have alt text with company name. Violates WCAG 1.1.1 by failing to provide text alternative for non-text content">
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Online Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

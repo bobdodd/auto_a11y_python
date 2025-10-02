@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageAltContainsHTML - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageAltContainsHTML_001_violations_basic",
+    "issueId": "ErrImageAltContainsHTML",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Image alt text containing HTML tags",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Catalog</h1>
+
+    <main>
+        <section>
+            <h2>Featured Items</h2>
+
+            <article>
+                <img src="premium-widget.jpg"
+                     alt="<strong>Premium</strong> Widget - Best Seller!"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageAltContainsHTML"
+                     data-violation-reason="Alt text contains HTML tags '<strong>Premium</strong>'. Screen readers will literally read 'less than strong greater than Premium less than slash strong greater than' which is confusing. HTML tags are not rendered in alt text, they're read as literal characters. Users hear code instead of description. Alt text should be plain text only. Violates WCAG 1.1.1 by providing confusing text alternative">
+                <h3>Premium Widget</h3>
+                <p>Our most popular product. $299.99</p>
+                <button>Buy Now</button>
+            </article>
+
+            <article>
+                <img src="standard-widget.jpg"
+                     alt="Standard Widget<br>Affordable Option"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageAltContainsHTML"
+                     data-violation-reason="Alt text contains <br> tag for line break. Screen readers announce 'less than b r greater than' as literal text. HTML markup does not work in alt attributes. Line breaks are not rendered, just read as code. Makes alt text incomprehensible. Fails WCAG 1.1.1 by creating unusable text alternative">
+                <h3>Standard Widget</h3>
+                <p>Great value for everyday use. $99.99</p>
+                <button>Buy Now</button>
+            </article>
+
+            <article>
+                <img src="deluxe-widget.jpg"
+                     alt="Deluxe Widget &mdash; <em>Limited Edition</em>"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageAltContainsHTML"
+                     data-violation-reason="Alt text contains HTML entity &mdash; and <em> tag. Screen readers read 'ampersand mdash semicolon less than e m greater than' literally. HTML entities and tags are not processed in alt text. Users hear technical markup instead of meaningful description. Creates confusing and inaccessible text alternative. Violates WCAG 1.1.1 with poor text alternative quality">
+                <h3>Deluxe Widget</h3>
+                <p>Exclusive limited edition model. $599.99</p>
+                <button>Buy Now</button>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Product Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithNoAlt - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithNoAlt_002_correct_with_alt",
+    "issueId": "ErrImageWithNoAlt",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Images with proper alt attributes",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Online Store</h1>
+
+    <main>
+        <section>
+            <h2>Featured Product</h2>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Image has proper alt attribute with descriptive text. Screen readers announce 'Silver professional laptop with keyboard and display' instead of filename. HTML is valid with required alt attribute present. Blind users understand what product looks like through text description. Complies with WCAG 1.1.1 by providing text alternative for non-text content">
+                <img src="laptop-pro.jpg"
+                     alt="Silver professional laptop with keyboard and display">
+                <h3>Professional Laptop</h3>
+                <p>High-performance laptop for business use. $1,499.99</p>
+                <button>Add to Cart</button>
+            </article>
+        </section>
+
+        <section>
+            <h2>Customer Testimonial</h2>
+
+            <blockquote data-expected-pass="true"
+                        data-pass-reason="Customer photo has descriptive alt attribute. Screen readers announce 'Smiling businesswoman in professional attire' giving context. HTML is valid. Blind users get same credibility cue as sighted users through description. Text alternative provides equivalent information. Meets WCAG 1.1.1 Non-text Content requirements">
+                <img src="customer-photo.jpg"
+                     alt="Smiling businesswoman in professional attire">
+                <p>"This company provides excellent service and quality products!"</p>
+                <cite>- Jane Smith, CEO</cite>
+            </blockquote>
+        </section>
+
+        <section>
+            <h2>Company Logo</h2>
+
+            <div class="logo-container"
+                 data-expected-pass="true"
+                 data-pass-reason="Logo has alt attribute with company name. Screen readers announce 'Online Store Company Logo' making brand identity accessible. HTML is valid with required alt present. Blind users know what logo represents. Proper text alternative for graphical content. Complies with WCAG 1.1.1 by providing meaningful text for non-text content">
+                <img src="company-logo.svg"
+                     alt="Online Store Company Logo">
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Online Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

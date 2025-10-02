@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post - No Color Scheme Support</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "InfoNoColorSchemeSupport_001_info_basic",
+    "issueId": "InfoNoColorSchemeSupport",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Site doesn't support OS color scheme preferences",
+    "wcag": "1.4.3",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body data-info="true"
+      data-info-reason="Site uses fixed light theme without prefers-color-scheme media query, users cannot leverage OS dark mode preferences">
+    <h1>Understanding Web Accessibility</h1>
+
+    <article>
+        <p>Web accessibility ensures that websites are usable by everyone, including people with disabilities. This includes visual, auditory, motor, and cognitive accessibility considerations.</p>
+
+        <p>Color scheme preferences are an important part of visual accessibility, allowing users to choose between light and dark themes based on their environment and visual comfort needs.</p>
+
+        <h2>Key Principles</h2>
+        <ul>
+            <li>Perceivable: Information must be presentable in ways users can perceive</li>
+            <li>Operable: Interface components must be operable by all users</li>
+            <li>Understandable: Information and operation must be understandable</li>
+            <li>Robust: Content must work with current and future technologies</li>
+        </ul>
+    </article>
+</body>
+</html>

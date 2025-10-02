@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrCardWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrCardWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrCardWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Card components with proper semantic HTML and ARIA",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem;
+            width: 300px;
+        }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: #f0f0f0;
+            margin-bottom: 1rem;
+        }
+        .card-content {
+            margin-bottom: 1rem;
+        }
+        .card-action {
+            padding: 0.5rem 1rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .clickable-card {
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .clickable-card:focus {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Catalog - Correct Usage</h1>
+
+    <main>
+        <!-- Card with semantic HTML - CORRECT -->
+        <article class="card"
+                 data-expected-pass="true"
+                 data-pass-reason="Card uses semantic article element with proper heading hierarchy. Screen readers identify card structure and can navigate sections. Image has alt text">
+            <img src="laptop.jpg"
+                 alt="Silver laptop computer"
+                 class="card-image">
+            <h2 class="card-title">Laptop Computer</h2>
+            <div class="card-content">
+                High-performance laptop with 16GB RAM and 512GB SSD. Perfect for work and entertainment.
+            </div>
+            <div class="card-price" aria-label="Price">$999.99</div>
+            <button class="card-action" aria-label="Add Laptop Computer to cart">Add to Cart</button>
+        </article>
+
+        <!-- Clickable card with proper link - CORRECT -->
+        <article class="card"
+                 data-expected-pass="true"
+                 data-pass-reason="Card uses semantic article wrapped in link with aria-label describing destination. Keyboard accessible and screen readers announce as link with clear purpose">
+            <a href="/product/smartphone"
+               class="clickable-card"
+               aria-label="View Smartphone product details">
+                <img src="phone.jpg"
+                     alt="Modern smartphone with edge-to-edge display"
+                     class="card-image">
+                <h2 class="card-title">Smartphone</h2>
+                <div class="card-content">
+                    Latest smartphone with advanced camera and 5G connectivity.
+                </div>
+                <div class="card-price" aria-label="Price">$799.99</div>
+            </a>
+        </article>
+    </main>
+</body>
+</html>

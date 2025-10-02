@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMeterWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrMeterWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrMeterWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Meter/gauge indicators lacking proper ARIA markup",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .meter-container {
+            margin: 1rem 0;
+        }
+        .meter-bar {
+            width: 300px;
+            height: 30px;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4caf50, #ffeb3b, #f44336);
+            transition: width 0.3s;
+        }
+        .meter-label {
+            margin-bottom: 0.5rem;
+        }
+        .meter-value {
+            margin-top: 0.5rem;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>System Status</h1>
+
+    <main>
+        <!-- Custom meter without ARIA -->
+        <div class="meter-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrMeterWithoutARIA"
+             data-violation-reason="Meter lacks role='meter' or role='progressbar', aria-valuenow, aria-valuemin, aria-valuemax, and aria-label. Screen readers cannot announce measurement value or context">
+            <div class="meter-label">CPU Usage</div>
+            <div class="meter-bar">
+                <div class="meter-fill" style="width: 75%"></div>
+            </div>
+            <div class="meter-value">75%</div>
+        </div>
+
+        <!-- Gauge without semantic meter element -->
+        <div class="meter-container"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrMeterWithoutARIA"
+             data-violation-reason="Visual gauge lacks role='meter' and ARIA value properties. Screen readers cannot determine measurement type, current value, or acceptable range">
+            <div class="meter-label">Disk Space</div>
+            <div class="meter-bar">
+                <div class="meter-fill" style="width: 45%"></div>
+            </div>
+            <div class="meter-value">45 GB / 100 GB</div>
+        </div>
+    </main>
+</body>
+</html>

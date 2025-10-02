@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnBannerRoleOnHeader - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnBannerRoleOnHeader_002_correct_no_role",
+    "issueId": "AI_WarnBannerRoleOnHeader",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Header elements without redundant role='banner'",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header data-expected-pass="true"
+            data-pass-reason="Header element without explicit role='banner' relies on native HTML5 semantics. Header as direct child of body implicitly provides banner landmark. No redundant ARIA. Clean HTML semantics preferred. Screen readers recognize header as banner automatically. Complies with WCAG 4.1.2 Name, Role, Value - using native HTML semantics instead of redundant ARIA role">
+        <h1>Company Name</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Welcome</h2>
+            <p>Welcome to our website.</p>
+        </section>
+
+        <article>
+            <header data-expected-pass="true"
+                    data-pass-reason="Nested header element without role='banner' correctly used. Header inside article provides sectioning context not banner landmark. No inappropriate banner role. Proper use of header for article metadata. Screen readers understand header is scoped to article not page. Meets WCAG 4.1.2 Name, Role, Value - nested header without incorrect banner role">
+                <h2>Article Title</h2>
+                <p>Published on January 1, 2024</p>
+            </header>
+            <p>Article content goes here.</p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

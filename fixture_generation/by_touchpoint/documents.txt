@@ -1,0 +1,57 @@
+# DOCUMENTS Touchpoint
+
+Total issues: 3
+
+================================================================================
+
+## ErrMissingDocumentType
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Documents/ErrMissingDocumentType.html
+
+ID: ErrMissingDocumentType
+Type: Error
+Impact: Medium
+WCAG: 4.1.1 Parsing (Level A)
+Touchpoint: documents
+Description: HTML document missing DOCTYPE declaration
+Why it matters: Missing DOCTYPE can cause browsers to render in quirks mode, leading to unpredictable behavior and accessibility issues.
+Who it affects: All users due to potential rendering issues, assistive technology users affected by parsing errors.
+How to fix: Add <!DOCTYPE html> as the first line of all HTML documents.
+
+================================================================================
+
+## WarnGenericDocumentLinkText
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Links/WarnGenericDocumentLinkText.html
+
+ID: WarnGenericDocumentLinkText
+Type: Warning
+Impact: Medium
+WCAG: 2.4.4 Link Purpose (In Context) (Level A)
+Touchpoint: documents
+Description: Document link uses generic text like "PDF" without describing content
+Why it matters: Users need to know what document they're downloading, not just its format.
+Who it affects: All users, especially screen reader users reviewing links.
+How to fix: Include document title and format in link text (e.g., "Annual Report 2023 (PDF, 2MB)").
+
+================================================================================
+
+## WarnMissingDocumentMetadata
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Documents/WarnMissingDocumentMetadata.html
+
+ID: WarnMissingDocumentMetadata
+Type: Warning
+Impact: Low
+WCAG: 2.4.2 Page Titled (Level A)
+Touchpoint: documents
+Description: Document links missing metadata about file type or size
+Why it matters: Users need to know document details before downloading.
+Who it affects: Users on slow connections, mobile users with data limits.
+How to fix: Include file type and size in link text or adjacent text.
+
+================================================================================
+

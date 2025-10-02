@@ -1,0 +1,54 @@
+# MODALS Touchpoint
+
+Total issues: 3
+
+================================================================================
+
+## AI_WarnModalMissingLabel
+
+✨ New fixtures needed
+
+ID: AI_WarnModalMissingLabel
+Type: Warning
+Impact: High
+WCAG: 4.1.2
+Touchpoint: modals
+Description: Modal dialog lacks accessible name or description
+Why it matters: Screen readers won't announce what the dialog is for
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby to the dialog element
+
+================================================================================
+
+## AI_WarnModalWithoutFocusTrap
+
+✨ New fixtures needed
+
+ID: AI_WarnModalWithoutFocusTrap
+Type: Warning
+Impact: High
+WCAG: 2.1.2, 2.4.3
+Touchpoint: modals
+Description: Modal dialog doesn't trap focus within the dialog
+Why it matters: Keyboard users can tab out of the modal into the page behind it
+Who it affects: Keyboard users, screen reader users
+How to fix: Implement focus trap that keeps tab navigation within the modal
+
+================================================================================
+
+## AI_WarnModalMissingLabel
+
+✨ New fixtures needed
+
+ID: AI_WarnModalMissingLabel
+Type: Warning
+Impact: High
+WCAG: 4.1.2
+Touchpoint: modals
+Description: Modal dialog lacks accessible name or description
+Why it matters: Screen readers won't announce what the dialog is for
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby to the dialog element
+
+================================================================================
+

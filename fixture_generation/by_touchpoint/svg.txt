@@ -1,0 +1,40 @@
+# SVG Touchpoint
+
+Total issues: 2
+
+================================================================================
+
+## DiscoFoundInlineSvg
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Images/DiscoFoundInlineSvg.html
+
+ID: DiscoFoundInlineSvg
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: svg
+Description: Inline SVG element detected that requires manual review to determine appropriate accessibility implementation based on its purpose and complexity
+Why it matters: SVG elements serve diverse purposes from simple icons to complex interactive visualizations, each requiring different accessibility approaches. A decorative border needs different treatment than a data chart, which differs from an interactive map or scientific simulation. Automated tools cannot determine SVG purpose, whether it's decorative or informative, static or interactive, or if existing accessibility features adequately support user needs.
+Who it affects: Blind and low vision users using screen readers who need text alternatives for graphics or keyboard access to interactive elements, users with motor disabilities who require keyboard navigation for interactive SVG controls, users with cognitive disabilities who benefit from clear labeling and predictable interaction patterns.
+How to fix: Evaluate the SVG's purpose and complexity - for simple images ensure there is a role="img", use <title> for alt text with aria-labelledby on the SVG referencing an ID on the <title> (a workaround for some browsers), for decorative graphics use aria-hidden="true", for data visualizations provide <title> and <desc> plus consider adjacent detailed text alternatives, for interactive content ensure all controls are keyboard accessible with proper ARIA labels and focus management, for complex simulations provide instructions and state change announcements, and test with screen readers to verify the experience matches visual functionality.
+
+================================================================================
+
+## DiscoFoundInlineSvg
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Images/DiscoFoundInlineSvg.html
+
+ID: DiscoFoundInlineSvg
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: svg
+Description: Inline SVG element detected that requires manual review to determine appropriate accessibility implementation based on its purpose and complexity
+Why it matters: SVG elements serve diverse purposes from simple icons to complex interactive visualizations, each requiring different accessibility approaches. A decorative border needs different treatment than a data chart, which differs from an interactive map or scientific simulation. Automated tools cannot determine SVG purpose, whether it's decorative or informative, static or interactive, or if existing accessibility features adequately support user needs.
+Who it affects: Blind and low vision users using screen readers who need text alternatives for graphics or keyboard access to interactive elements, users with motor disabilities who require keyboard navigation for interactive SVG controls, users with cognitive disabilities who benefit from clear labeling and predictable interaction patterns.
+How to fix: Evaluate the SVG's purpose and complexity - for simple images ensure there is a role="img", use <title> for alt text with aria-labelledby on the SVG referencing an ID on the <title> (a workaround for some browsers), for decorative graphics use aria-hidden="true", for data visualizations provide <title> and <desc> plus consider adjacent detailed text alternatives, for interactive content ensure all controls are keyboard accessible with proper ARIA labels and focus management, for complex simulations provide instructions and state change announcements, and test with screen readers to verify the experience matches visual functionality.
+
+================================================================================
+

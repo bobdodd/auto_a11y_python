@@ -1,0 +1,23 @@
+# EVENT_HANDLING Touchpoint
+
+Total issues: 1
+
+================================================================================
+
+## ErrMouseOnlyHandler
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Event Handlng/ErrMouseOnlyHandler.html
+
+ID: ErrMouseOnlyHandler
+Type: Error
+Impact: High
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: event_handling
+Description: Interactive functionality only available through mouse events
+Why it matters: Mouse-only interactions exclude users who cannot use a pointing device.
+Who it affects: Keyboard users, screen reader users, users with motor disabilities, mobile device users.
+How to fix: Provide keyboard equivalents for all mouse interactions, use click events that work with keyboard, add proper keyboard event handlers.
+
+================================================================================
+

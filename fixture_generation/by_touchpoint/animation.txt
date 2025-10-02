@@ -1,0 +1,90 @@
+# ANIMATION Touchpoint
+
+Total issues: 5
+
+================================================================================
+
+## ErrAutoStartTimers
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Timing/ErrAutoStartTimers.html
+
+ID: ErrAutoStartTimers
+Type: Error
+Impact: High
+WCAG: 2.2.2 Pause, Stop, Hide (Level A)
+Touchpoint: animation
+Description: Timer starts automatically without user control to pause or stop
+Why it matters: Auto-starting timers can create stress and barriers for users who need more time to complete tasks or read content.
+Who it affects: Users with cognitive disabilities, users with reading disabilities, users with motor impairments who need more time, screen reader users.
+How to fix: Provide controls to pause, stop, or extend time limits, avoid auto-starting timers unless essential, allow users to control timing of content updates.
+
+================================================================================
+
+## ErrInfiniteAnimation
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Animation/ErrInfiniteAnimation.html
+
+ID: ErrInfiniteAnimation
+Type: Error
+Impact: High
+WCAG: 2.2.2 Pause, Stop, Hide (Level A)
+Touchpoint: animation
+Description: Animation runs infinitely without pause controls
+Why it matters: Continuous animations can trigger seizures, cause distraction, and make content unusable for many users.
+Who it affects: Users with vestibular disorders, users with ADHD, users with photosensitive epilepsy, users with cognitive disabilities.
+How to fix: Provide pause/stop controls for all animations, respect prefers-reduced-motion settings, limit animation duration.
+
+================================================================================
+
+## ErrNoReducedMotionSupport
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Animation/ErrNoReducedMotionSupport.html
+
+ID: ErrNoReducedMotionSupport
+Type: Error
+Impact: High
+WCAG: 2.3.3 Animation from Interactions (Level AAA)
+Touchpoint: animation
+Description: Animations do not respect prefers-reduced-motion setting
+Why it matters: Users with vestibular disorders can experience nausea, dizziness, or seizures from motion.
+Who it affects: Users with vestibular disorders, users with motion sensitivity, users with ADHD.
+How to fix: Use CSS @media (prefers-reduced-motion: reduce) to disable or reduce animations, provide animation toggle controls.
+
+================================================================================
+
+## WarnFastInterval
+
+✨ New fixtures needed
+
+ID: WarnFastInterval
+Type: Warning
+Impact: Medium
+WCAG: 2.2.2 Pause, Stop, Hide (Level A)
+Touchpoint: animation
+Description: JavaScript interval running faster than once per second
+Why it matters: Rapid updates can be distracting and difficult to process.
+Who it affects: Users with cognitive disabilities, users with attention disorders.
+How to fix: Slow down update intervals, provide pause controls for rapid updates.
+
+================================================================================
+
+## WarnLongAnimation
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Animation/WarnLongAnimation.html
+
+ID: WarnLongAnimation
+Type: Warning
+Impact: Medium
+WCAG: 2.2.2 Pause, Stop, Hide (Level A)
+Touchpoint: animation
+Description: Animation duration exceeds 5 seconds
+Why it matters: Long animations can be distracting and may need user controls.
+Who it affects: Users with attention disorders, users with cognitive disabilities.
+How to fix: Shorten animation duration or provide pause/stop controls.
+
+================================================================================
+

@@ -1,0 +1,39 @@
+# MEDIA Touchpoint
+
+Total issues: 2
+
+================================================================================
+
+## ErrNativeVideoMissingControls
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Media/ErrNativeVideoMissingControls.html
+
+ID: ErrNativeVideoMissingControls
+Type: Error
+Impact: High
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: media
+Description: Native HTML5 video element missing controls attribute
+Why it matters: Without controls, users cannot play, pause, or adjust video playback.
+Who it affects: All users who need to control video playback, especially keyboard and screen reader users.
+How to fix: Add controls attribute to all video elements, or provide custom accessible controls.
+
+================================================================================
+
+## WarnVideoAutoplay
+
+✨ New fixtures needed
+
+ID: WarnVideoAutoplay
+Type: Warning
+Impact: Medium
+WCAG: 1.4.2 Audio Control (Level A)
+Touchpoint: media
+Description: Video set to autoplay which may distract users
+Why it matters: Autoplay video can be disruptive and use bandwidth unexpectedly.
+Who it affects: Users with cognitive disabilities, users on limited data plans.
+How to fix: Remove autoplay or mute autoplaying videos, provide clear play controls.
+
+================================================================================
+

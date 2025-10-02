@@ -1,0 +1,375 @@
+# LANGUAGE Touchpoint
+
+Total issues: 23
+
+================================================================================
+
+## AI_WarnMixedLanguage
+
+✨ New fixtures needed
+
+ID: AI_WarnMixedLanguage
+Type: Warning
+Impact: Medium
+WCAG: 3.1.2
+Touchpoint: language
+Description: Mixed language content detected without proper language declarations
+Why it matters: Screen readers may pronounce text incorrectly without language declarations
+Who it affects: Screen reader users who speak multiple languages
+How to fix: Add lang attributes to elements containing different languages
+
+================================================================================
+
+## ErrElementLangEmpty
+
+✨ New fixtures needed
+
+ID: ErrElementLangEmpty
+Type: Error
+Impact: Medium
+WCAG: 3.1.2
+Touchpoint: language
+Description: Element has empty lang attribute
+Why it matters: Empty lang on elements provides no language change information
+Who it affects: Screen reader users
+How to fix: Add valid language code or remove empty lang attribute
+
+================================================================================
+
+## ErrElementPrimaryLangNotRecognized
+
+✨ New fixtures needed
+
+ID: ErrElementPrimaryLangNotRecognized
+Type: Error
+Impact: Medium
+WCAG: 3.1.1, 3.1.2
+Touchpoint: language
+Description: Element has unrecognized language code
+Why it matters: Language changes won't be announced properly
+Who it affects: Screen reader users
+How to fix: Use valid language codes
+
+================================================================================
+
+## ErrElementRegionQualifierNotRecognized
+
+✨ New fixtures needed
+
+ID: ErrElementRegionQualifierNotRecognized
+Type: Error
+Impact: Low
+WCAG: 3.1.2
+Touchpoint: language
+Description: Element lang attribute has unrecognized region qualifier
+Why it matters: Invalid region codes may affect pronunciation
+Who it affects: Screen reader users
+How to fix: Use valid ISO 3166-1 region codes
+
+================================================================================
+
+## ErrEmptyLangAttr
+
+✨ New fixtures needed
+
+ID: ErrEmptyLangAttr
+Type: Error
+Impact: High
+WCAG: 3.1.1
+Touchpoint: language
+Description: Lang attribute is empty
+Why it matters: Empty lang provides no language information
+Who it affects: Screen reader users
+How to fix: Add valid language code to lang attribute
+
+================================================================================
+
+## ErrEmptyLanguageAttribute
+
+✨ New fixtures needed
+
+ID: ErrEmptyLanguageAttribute
+Type: Error
+Impact: High
+WCAG: 3.1.1 Language of Page (Level A)
+Touchpoint: language
+Description: HTML element has a lang attribute present but with no value (lang=""), preventing screen readers from determining the page language
+Why it matters: An empty lang attribute is worse than no lang attribute because it explicitly tells assistive technologies there's no language specified, potentially causing screen readers to use incorrect pronunciation rules or fail to switch language synthesizers. This can make content completely unintelligible when read aloud.
+Who it affects: Blind and low vision users using screen readers who need proper language identification for correct pronunciation, multilingual users who rely on automatic language switching in assistive technologies, users with dyslexia using reading tools that depend on language settings, and users of translation services
+How to fix: Add a valid language code to the lang attribute (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. For the HTML element, always specify the primary document language. If the language is truly unknown, remove the lang attribute entirely rather than leaving it empty.
+
+================================================================================
+
+## ErrEmptyXmlLangAttr
+
+✨ New fixtures needed
+
+ID: ErrEmptyXmlLangAttr
+Type: Error
+Impact: High
+WCAG: 3.1.1
+Touchpoint: language
+Description: xml:lang attribute is empty
+Why it matters: Empty xml:lang provides no language information
+Who it affects: Screen reader users using XML/XHTML parsers
+How to fix: Add valid language code to xml:lang attribute
+
+================================================================================
+
+## ErrHreflangAttrEmpty
+
+✨ New fixtures needed
+
+ID: ErrHreflangAttrEmpty
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: hreflang attribute is empty on link
+Why it matters: Empty hreflang provides no language information for the linked resource
+Who it affects: Screen reader users, search engines
+How to fix: Add valid language code or remove empty hreflang attribute
+
+================================================================================
+
+## ErrHreflangNotOnLink
+
+✨ New fixtures needed
+
+ID: ErrHreflangNotOnLink
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: hreflang attribute on non-link element
+Why it matters: hreflang only works on links
+Who it affects: Screen reader users
+How to fix: Move hreflang to anchor elements only
+
+================================================================================
+
+## ErrIncorrectlyFormattedPrimaryLang
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrIncorrectlyFormattedPrimaryLang.html
+
+ID: ErrIncorrectlyFormattedPrimaryLang
+Type: Error
+Impact: Medium
+WCAG: 3.1.1
+Touchpoint: language
+Description: Language code incorrectly formatted
+Why it matters: Malformed codes may not work properly
+Who it affects: Screen reader users
+How to fix: Use correct format: "en-US" or "en"
+
+================================================================================
+
+## ErrInvalidLanguageCode
+
+✨ New fixtures needed
+
+ID: ErrInvalidLanguageCode
+Type: Error
+Impact: High
+WCAG: 3.1.1 Language of Page (Level A), 3.1.2 Language of Parts (Level AA)
+Touchpoint: language
+Description: Language attribute contains invalid code '{found}' that doesn't conform to ISO 639 standards
+Why it matters: The language code '{found}' is not recognized as a valid ISO 639 language code. This prevents assistive technologies from properly processing content, causing screen readers to mispronounce words, use incorrect inflection patterns, or fail to switch language engines. This can make content difficult or impossible to understand when read aloud, especially if the content is in a non-English language but gets read with English pronunciation rules.
+Who it affects: Blind and low vision users relying on screen readers for accurate pronunciation, multilingual users who need proper language identification for comprehension, users with reading disabilities using text-to-speech tools, and international users accessing content in multiple languages
+How to fix: Replace '{found}' with a valid ISO 639-1 or ISO 639-2 language code. If '{found}' appears to be English, use "en". Common corrections: "english" → "en", "spanish" → "es", "french" → "fr", "deutsch" → "de", "eng" → "en". For regional variants use BCP 47 format (e.g., "en-US", "en-GB", "es-MX"). Check the official ISO 639 registry for the correct code.
+
+================================================================================
+
+## ErrNoPageLanguage
+
+✨ New fixtures needed
+
+ID: ErrNoPageLanguage
+Type: Error
+Impact: High
+WCAG: 3.1.1 Language of Page (Level A)
+Touchpoint: language
+Description: HTML element is missing the lang attribute, preventing assistive technologies from determining the primary language of the page
+Why it matters: Without a declared language, screen readers cannot determine which pronunciation rules and voice synthesizer to use, often defaulting to the user's system language which may be incorrect. This causes mispronunciation, incorrect inflection, and can make content unintelligible, especially for pages in languages different from the user's default settings.
+Who it affects: Blind and low vision users using screen readers who need correct pronunciation for comprehension, international users accessing content in different languages, users with dyslexia or reading disabilities using assistive reading tools, and users of automatic translation services
+How to fix: Add the lang attribute to the <html> element with the appropriate language code (e.g., <html lang="en"> for English, <html lang="fr"> for French). Use ISO 639-1 two-letter codes for modern languages. For XHTML, also include xml:lang with the same value. Ensure the declared language matches the actual primary language of your content. For multilingual pages, use the language that represents the majority of the content.
+
+================================================================================
+
+## ErrNoPrimaryLangAttr
+
+✨ New fixtures needed
+
+ID: ErrNoPrimaryLangAttr
+Type: Error
+Impact: High
+WCAG: 3.1.1 Language of Page
+Touchpoint: language
+Description: HTML element is missing the required lang attribute to identify the page's primary language
+Why it matters: Both assistive technologies and browsers render text more accurately when the language is identified. Screen readers need to know which language pronunciation rules to use - without this, they may mispronounce words, use wrong inflections, or attempt to read content in the wrong language entirely. This can make content completely incomprehensible. Visual browsers need language information to display characters and scripts correctly, and search engines use it for proper indexing.
+Who it affects: Screen reader users who may hear garbled pronunciation if the page language doesn't match their assistive technology's default language, users relying on automatic translation tools, users of voice assistants, and users with dyslexia using reading assistance tools
+How to fix: Add the lang attribute to the html element with the appropriate ISO 639-1 language code (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). If the page uses multiple languages equally, use the language that appears first or is used for navigation.
+
+================================================================================
+
+## ErrPrimaryHrefLangNotRecognized
+
+✨ New fixtures needed
+
+ID: ErrPrimaryHrefLangNotRecognized
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: hreflang language code not recognized
+Why it matters: Invalid hreflang codes provide incorrect information about linked resources
+Who it affects: Screen reader users, search engines
+How to fix: Use valid ISO 639-1 language codes
+
+================================================================================
+
+## ErrPrimaryLangAndXmlLangMismatch
+
+✨ New fixtures needed
+
+ID: ErrPrimaryLangAndXmlLangMismatch
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: lang and xml:lang attributes don't match
+Why it matters: Conflicting language information
+Who it affects: Screen reader users
+How to fix: Ensure both attributes have same value
+
+================================================================================
+
+## ErrPrimaryLangUnrecognized
+
+✨ New fixtures needed
+
+ID: ErrPrimaryLangUnrecognized
+Type: Error
+Impact: High
+WCAG: 3.1.1
+Touchpoint: language
+Description: Language code not recognized
+Why it matters: Invalid language codes prevent proper pronunciation
+Who it affects: Screen reader users
+How to fix: Use valid ISO 639-1 language codes
+
+================================================================================
+
+## ErrPrimaryXmlLangUnrecognized
+
+✨ New fixtures needed
+
+ID: ErrPrimaryXmlLangUnrecognized
+Type: Error
+Impact: High
+WCAG: 3.1.1
+Touchpoint: language
+Description: xml:lang language code not recognized
+Why it matters: Invalid xml:lang codes prevent proper pronunciation
+Who it affects: Screen reader users in XML/XHTML contexts
+How to fix: Use valid ISO 639-1 language codes
+
+================================================================================
+
+## ErrRegionQualifierForHreflangUnrecognized
+
+✨ New fixtures needed
+
+ID: ErrRegionQualifierForHreflangUnrecognized
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: hreflang region qualifier not recognized
+Why it matters: Invalid region codes in hreflang attributes
+Who it affects: Screen reader users, search engines
+How to fix: Use valid ISO 3166-1 region codes
+
+================================================================================
+
+## ErrRegionQualifierForPrimaryLangNotRecognized
+
+✨ New fixtures needed
+
+ID: ErrRegionQualifierForPrimaryLangNotRecognized
+Type: Error
+Impact: Medium
+WCAG: 3.1.1
+Touchpoint: language
+Description: Region qualifier in primary language code not recognized (e.g., "en-XY")
+Why it matters: Invalid region codes may cause incorrect pronunciation
+Who it affects: Screen reader users
+How to fix: Use valid ISO 3166-1 region codes like "en-US", "en-GB"
+
+================================================================================
+
+## ErrRegionQualifierForPrimaryXmlLangNotRecognized
+
+✨ New fixtures needed
+
+ID: ErrRegionQualifierForPrimaryXmlLangNotRecognized
+Type: Error
+Impact: Medium
+WCAG: 3.1.1
+Touchpoint: language
+Description: Region qualifier in xml:lang not recognized
+Why it matters: Invalid region codes in xml:lang may cause issues
+Who it affects: Screen reader users
+How to fix: Use valid ISO 3166-1 region codes
+
+================================================================================
+
+## WarnEmptyLangAttribute
+
+✨ New fixtures needed
+
+ID: WarnEmptyLangAttribute
+Type: Warning
+Impact: Medium
+WCAG: 3.1.1 Language of Page (Level A)
+Touchpoint: language
+Description: Language attribute exists but appears to be empty or contains only whitespace
+Why it matters: An empty or whitespace-only lang attribute is ambiguous - it's unclear if the language is truly unknown or if this is an error. Screen readers may use fallback behavior that doesn't match the actual content language. This is less severe than a completely empty lang="" but still prevents proper language identification. Browsers and assistive technologies cannot determine the intended language for pronunciation and processing.
+Who it affects: Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech
+How to fix: Either add a valid language code to the attribute (e.g., lang="en") or remove the attribute entirely if the language is unknown. Check for common causes like template variables that didn't populate, CMS configuration issues, or JavaScript that clears lang attributes. Ensure any whitespace is removed and a valid ISO 639 language code is provided.
+
+================================================================================
+
+## WarnInvalidLangChange
+
+✨ New fixtures needed
+
+ID: WarnInvalidLangChange
+Type: Warning
+Impact: Medium
+WCAG: 3.1.2 Language of Parts (Level AA)
+Touchpoint: language
+Description: Language change indicated but with invalid or unrecognized language code
+Why it matters: Invalid language codes on content sections prevent screen readers from switching language processors correctly. This can cause content in foreign languages to be pronounced using the wrong language rules, making it incomprehensible. For example, French text might be read with English pronunciation rules. Users expect language changes to be handled smoothly, and invalid codes break this functionality.
+Who it affects: Multilingual screen reader users who need proper language switching, users reading content in multiple languages, users with reading disabilities using assistive tools, and users relying on proper pronunciation for comprehension
+How to fix: Verify all lang attributes on elements use valid ISO 639 language codes. Common fixes include correcting typos ("fre" → "fr"), using standard codes instead of full names ("French" → "fr"), and ensuring region codes are properly formatted ("en-us" → "en-US"). Test with screen readers to ensure language changes are announced and pronounced correctly.
+
+================================================================================
+
+## AI_WarnMixedLanguage
+
+✨ New fixtures needed
+
+ID: AI_WarnMixedLanguage
+Type: Warning
+Impact: Medium
+WCAG: 3.1.2
+Touchpoint: language
+Description: Mixed language content detected without proper language declarations
+Why it matters: Screen readers may pronounce text incorrectly without language declarations
+Who it affects: Screen reader users who speak multiple languages
+How to fix: Add lang attributes to elements containing different languages
+
+================================================================================
+

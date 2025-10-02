@@ -1,0 +1,73 @@
+# SEMANTIC_STRUCTURE Touchpoint
+
+Total issues: 4
+
+================================================================================
+
+## ErrHeaderMissingScope
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Tables/ErrHeaderMissingScope.html
+
+ID: ErrHeaderMissingScope
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: semantic_structure
+Description: Table header (th) element missing scope attribute
+Why it matters: Without scope attributes, screen readers cannot properly associate headers with data cells, making tables difficult to understand.
+Who it affects: Screen reader users navigating complex tables, users who rely on proper table semantics for comprehension.
+How to fix: Add scope="col" for column headers and scope="row" for row headers to all th elements.
+
+================================================================================
+
+## ErrImproperTitleAttribute
+
+✨ New fixtures needed
+
+ID: ErrImproperTitleAttribute
+Type: Error
+Impact: Low
+WCAG: 3.3.2 Labels or Instructions (Level A)
+Touchpoint: semantic_structure
+Description: Title attribute used improperly as primary labeling mechanism
+Why it matters: Title attributes are not reliably announced by all assistive technologies and should not be the only way to provide essential information.
+Who it affects: Screen reader users who may not receive title attribute content, mobile users who cannot hover to see tooltips.
+How to fix: Use proper labeling techniques (label elements, aria-label) instead of relying on title attributes for essential information.
+
+================================================================================
+
+## WarnVisualHierarchy
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/WarnVisualHierarchy.html
+
+ID: WarnVisualHierarchy
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: semantic_structure
+Description: Visual hierarchy doesn't match semantic structure
+Why it matters: Mismatch between visual and semantic structure confuses understanding.
+Who it affects: Screen reader users, users with cognitive disabilities.
+How to fix: Ensure visual presentation matches HTML semantic structure.
+
+================================================================================
+
+## WarnVisualHierarchy
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/WarnVisualHierarchy.html
+
+ID: WarnVisualHierarchy
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: semantic_structure
+Description: Visual hierarchy doesn't match semantic structure
+Why it matters: Mismatch between visual and semantic structure confuses understanding.
+Who it affects: Screen reader users, users with cognitive disabilities.
+How to fix: Ensure visual presentation matches HTML semantic structure.
+
+================================================================================
+

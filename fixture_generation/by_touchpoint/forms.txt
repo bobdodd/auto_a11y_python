@@ -1,0 +1,753 @@
+# FORMS Touchpoint
+
+Total issues: 45
+
+================================================================================
+
+## AI_ErrDropdownWithoutARIA
+
+✨ New fixtures needed
+
+ID: AI_ErrDropdownWithoutARIA
+Type: Error
+Impact: High
+WCAG: 2.1.1, 4.1.2, 1.3.1
+Touchpoint: forms
+Description: Dropdown menu "{element_text}" lacks proper ARIA markup
+Why it matters: Without aria-expanded, aria-haspopup, and proper roles, users cannot understand the dropdown's state or navigate it properly
+Who it affects: Screen reader users, keyboard users
+How to fix: Add aria-haspopup="true", aria-expanded state, and role="menu" with role="menuitem" for options
+
+================================================================================
+
+## AI_ErrMissingInteractiveRole
+
+✨ New fixtures needed
+
+ID: AI_ErrMissingInteractiveRole
+Type: Error
+Impact: High
+WCAG: 4.1.2
+Touchpoint: forms
+Description: Interactive {element_tag} element lacks appropriate ARIA role
+Why it matters: Screen readers won't announce this as an interactive control
+Who it affects: Screen reader users
+How to fix: Add appropriate ARIA role (button, link, checkbox, etc.) to the element
+
+================================================================================
+
+## AI_ErrToggleWithoutState
+
+✨ New fixtures needed
+
+ID: AI_ErrToggleWithoutState
+Type: Error
+Impact: High
+WCAG: 4.1.2
+Touchpoint: forms
+Description: Toggle button doesn't indicate its state (expanded/collapsed)
+Why it matters: Users don't know the current state of the control
+Who it affects: Screen reader users, cognitive disability users
+How to fix: Add aria-expanded="true/false" and update it when state changes
+
+================================================================================
+
+## DiscoFormOnPage
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/DiscoFormOnPage.html
+
+ID: DiscoFormOnPage
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: forms
+Description: Form detected on page - needs manual testing
+Why it matters: Forms need comprehensive accessibility testing
+Who it affects: All users with disabilities
+How to fix: Manually test form with keyboard and screen reader
+
+================================================================================
+
+## DiscoFormPage
+
+✨ New fixtures needed
+
+ID: DiscoFormPage
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: forms
+Description: Page contains forms - needs comprehensive accessibility review
+Why it matters: Forms are critical interaction points requiring thorough testing
+Who it affects: All users with disabilities
+How to fix: Manually test all forms with keyboard and screen reader
+
+================================================================================
+
+## ErrEmptyAriaLabelOnField
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrEmptyAriaLabelOnField.html
+
+ID: ErrEmptyAriaLabelOnField
+Type: Error
+Impact: High
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Form field has empty aria-label attribute
+Why it matters: Empty labels provide no information about the field
+Who it affects: Screen reader users
+How to fix: Add descriptive text to aria-label or use visible label
+
+================================================================================
+
+## ErrEmptyAriaLabelledByOnField
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrEmptyAriaLabelledByOnField.html
+
+ID: ErrEmptyAriaLabelledByOnField
+Type: Error
+Impact: High
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Form field has empty aria-labelledby attribute
+Why it matters: Empty labelledby provides no field description
+Who it affects: Screen reader users
+How to fix: Reference valid element IDs or use direct labeling
+
+================================================================================
+
+## ErrEmptyLabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrEmptyLabel.html
+
+ID: ErrEmptyLabel
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships (Level A), 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Label element exists but contains no text
+Why it matters: Empty labels provide no information about the associated form control, making forms impossible to complete correctly.
+Who it affects: Screen reader users who cannot identify form fields, users with cognitive disabilities who need clear labels.
+How to fix: Add descriptive text to all label elements that clearly identifies the purpose of the associated form control.
+
+================================================================================
+
+## ErrFielLabelledBySomethingNotALabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFielLabelledBySomethingNotALabel.html
+
+ID: ErrFielLabelledBySomethingNotALabel
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Field is labeled by an element that is not a proper label
+Why it matters: Non-label elements may not provide appropriate semantic relationships
+Who it affects: Screen reader users
+How to fix: Use proper <label> elements or appropriate ARIA labeling
+
+================================================================================
+
+## ErrFieldAriaRefDoesNotExist
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFieldAriaRefDoesNotExist.html
+
+ID: ErrFieldAriaRefDoesNotExist
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: forms
+Description: aria-labelledby references non-existent element ID '{found}'
+Why it matters: The aria-labelledby attribute references '{found}' but no element with id="{found}" exists on the page. This broken reference means the field has no accessible label for screen readers.
+Who it affects: Screen reader users who receive no label for this field
+How to fix: Either create an element with id="{found}" to serve as the label, fix the ID reference to point to an existing element, or use a different labeling method like a <label> element
+
+================================================================================
+
+## ErrFieldLabelledUsinAriaLabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFieldLabelledUsinAriaLabel.html
+
+ID: ErrFieldLabelledUsinAriaLabel
+Type: Error
+Impact: Medium
+WCAG: 3.3.2
+Touchpoint: forms
+Description: Field labeled using aria-label instead of visible label
+Why it matters: Visible labels benefit all users, not just screen reader users
+Who it affects: Users with cognitive disabilities, all users
+How to fix: Use visible <label> elements instead of aria-label when possible
+
+================================================================================
+
+## ErrFieldReferenceDoesNotExist
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFieldReferenceDoesNotExist.html
+
+ID: ErrFieldReferenceDoesNotExist
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Label for attribute references non-existent field
+Why it matters: Label is not associated with any form field
+Who it affects: Screen reader users
+How to fix: Fix the for/id relationship
+
+================================================================================
+
+## ErrFormAriaLabelledByReferenceDoesNotExist
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDoesNotExist.html
+
+ID: ErrFormAriaLabelledByReferenceDoesNotExist
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: forms
+Description: Form aria-labelledby references non-existent element
+Why it matters: Broken reference provides no accessible name
+Who it affects: Screen reader users
+How to fix: Fix ID reference or use different labeling method
+
+================================================================================
+
+## ErrFormEmptyHasNoChildNodes
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormEmptyHasNoChildNodes.html
+
+ID: ErrFormEmptyHasNoChildNodes
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Form element is completely empty with no child nodes
+Why it matters: Empty forms serve no purpose and confuse assistive technology users
+Who it affects: Screen reader users, keyboard users
+How to fix: Remove empty form elements or add appropriate form controls
+
+================================================================================
+
+## ErrFormEmptyHasNoInteractiveElements
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormEmptyHasNoInteractiveElements.html
+
+ID: ErrFormEmptyHasNoInteractiveElements
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Form has content but no interactive elements
+Why it matters: Forms without inputs cannot be used for their intended purpose
+Who it affects: All users
+How to fix: Add appropriate input fields, buttons, or other form controls
+
+================================================================================
+
+## ErrFormUsesAriaLabelInsteadOfVisibleElement
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormUsesAriaLabelInsteadOfVisibleElement.html
+
+ID: ErrFormUsesAriaLabelInsteadOfVisibleElement
+Type: Error
+Impact: Medium
+WCAG: 2.5.3, 3.3.2
+Touchpoint: forms
+Description: Form uses aria-label instead of visible heading or label
+Why it matters: Visible labels benefit all users
+Who it affects: All users, especially those with cognitive disabilities
+How to fix: Use visible heading with aria-labelledby
+
+================================================================================
+
+## ErrFormUsesTitleAttribute
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormUsesTitleAttribute.html
+
+ID: ErrFormUsesTitleAttribute
+Type: Error
+Impact: Medium
+WCAG: 4.1.2
+Touchpoint: forms
+Description: Form uses title attribute for labeling
+Why it matters: Title attributes are not reliably accessible
+Who it affects: Screen reader users, mobile users
+How to fix: Use aria-label or aria-labelledby instead
+
+================================================================================
+
+## ErrLabelContainsMultipleFields
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrLabelContainsMultipleFields.html
+
+ID: ErrLabelContainsMultipleFields
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Single label contains {count} form fields
+Why it matters: A label containing {count} fields creates ambiguity about which field it describes. Screen readers will associate this label with all {count} fields, making it unclear which field is which.
+Who it affects: Screen reader users who need clear field identification, users with cognitive disabilities who need simple relationships
+How to fix: Split the label so each of the {count} fields has its own dedicated label. Use fieldset and legend for grouped fields if they're related.
+
+================================================================================
+
+## ErrLabelMismatchOfAccessibleNameAndLabelText
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrLabelMismatchOfAccessibleNameAndLabelText.html
+
+ID: ErrLabelMismatchOfAccessibleNameAndLabelText
+Type: Error
+Impact: Medium
+WCAG: 2.5.3
+Touchpoint: forms
+Description: Accessible name doesn't match visible label
+Why it matters: Confusing for voice control users
+Who it affects: Voice control users
+How to fix: Make accessible name match visible text
+
+================================================================================
+
+## ErrNoLabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrNoLabel.html
+
+ID: ErrNoLabel
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships (Level A), 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Form input has no associated label
+Why it matters: Without labels, users don't know what information to enter in form fields.
+Who it affects: Screen reader users who cannot identify form fields, users with cognitive disabilities.
+How to fix: Add label elements with for attribute, or use aria-label/aria-labelledby for each form input.
+
+================================================================================
+
+## ErrOrphanLabelWithNoId
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrOrphanLabelWithNoId.html
+
+ID: ErrOrphanLabelWithNoId
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Label element exists but has no for attribute
+Why it matters: Label is not programmatically associated with any field
+Who it affects: Screen reader users
+How to fix: Add for attribute pointing to field ID
+
+================================================================================
+
+## ErrPlaceholderAsLabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrPlaceholderAsLabel.html
+
+ID: ErrPlaceholderAsLabel
+Type: Error
+Impact: High
+WCAG: 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Placeholder attribute used as the only label for form field
+Why it matters: Placeholder text disappears when users start typing, leaving no persistent label for reference.
+Who it affects: Users with cognitive disabilities, users who need to review form data, screen reader users.
+How to fix: Add proper label elements or aria-label, use placeholder only for supplementary hints or examples.
+
+================================================================================
+
+## ErrTitleAsOnlyLabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrTitleAsOnlyLabel.html
+
+ID: ErrTitleAsOnlyLabel
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A), 1.3.1 Info and Relationships (Level A), 4.1.2 Name, Role, Value (Level A)
+Touchpoint: forms
+Description: Form element is using title attribute as its only accessible label, which is insufficient for accessibility
+Why it matters: When title is the only labeling mechanism for a form field, many users cannot determine what information to enter. Title attributes are not announced by screen readers when navigating forms in normal mode, don't appear on mobile devices, cannot be accessed by keyboard users, and disappear too quickly for many users to read. This makes the form field essentially unlabeled for a large portion of users, preventing them from completing forms successfully.
+Who it affects: Screen reader users who won't hear the field's purpose when navigating the form, mobile users who cannot see title tooltips at all, keyboard users who cannot hover to see the tooltip, users with motor disabilities who struggle with precise hovering, users with cognitive disabilities who need persistent labels as memory aids, and voice control users who cannot reference fields without visible labels
+How to fix: Add a proper visible <label> element associated with the form field using the 'for' attribute. If space is limited, use placeholder text in addition to (not instead of) a label. For complex layouts, consider using aria-labelledby to reference existing visible text. If you must use aria-label, ensure it's descriptive and consider adding visible text for sighted users. Never rely solely on title attributes for labeling form fields - they should only supplement proper labels, not replace them.
+
+================================================================================
+
+## ErrUnlabelledField
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrUnlabelledField.html
+
+ID: ErrUnlabelledField
+Type: Error
+Impact: High
+WCAG: 3.3.2 Labels or Instructions (Level A), 4.1.2 Name, Role, Value (Level A)
+Touchpoint: forms
+Description: Form input element lacks an accessible name through <label>, aria-label, aria-labelledby, or other labeling methods, leaving the field's purpose undefined for assistive technologies
+Why it matters: Without labels, users cannot determine what information to enter, leading to form errors, abandoned transactions, and inability to complete critical tasks. Screen readers announce only the field type like "edit" or "combo box" without context, forcing users to guess based on surrounding content that may not be programmatically associated. This creates barriers for independent form completion and may result in users submitting incorrect information or being unable to proceed.
+Who it affects: Blind and low vision users using screen readers who hear no field description when navigating forms, users with cognitive disabilities who need clear labels to understand what information is required, users with motor disabilities using voice control who cannot reference unlabeled fields by name, mobile users where placeholder text may disappear on focus, and users who rely on browser autofill features that depend on proper field labeling
+How to fix: Add explicit <label> elements with for attribute matching the input's id (preferred method), use aria-label for simple labels when visual text isn't needed, implement aria-labelledby to reference existing visible text, ensure placeholder text is not the only labeling method as it disappears on input, wrap inputs and label text together for implicit association, and verify all form controls including select elements, textareas, and custom widgets have accessible names
+
+================================================================================
+
+## InfoFieldLabelledUsingAriaLabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/InfoFieldLabelledUsingAriaLabel.html
+
+ID: InfoFieldLabelledUsingAriaLabel
+Type: Info
+Impact: N/A
+WCAG: 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Field is labeled using aria-label="{found}", which is valid but may have usability considerations
+Why it matters: While aria-label="{found}" is a valid way to label this form field, it has limitations: the label "{found}" is not visible on screen which can confuse sighted users, voice control users cannot reference the field by the visible text "{found}", the label won't be automatically translated by browser translation tools, and users with cognitive disabilities benefit from visible labels as memory aids.
+Who it affects: Sighted users who can't see "{found}" as a label, voice control users who can't say "click {found}", users relying on browser translation, users with cognitive disabilities who benefit from persistent visible labels
+How to fix: Consider if a visible label showing "{found}" would better serve all users. If space permits, use a visible <label> element with the text "{found}". If aria-label must be used, ensure "{found}" is clear and descriptive. Consider adding visible helper text or placeholder text to provide visual context.
+
+================================================================================
+
+## WarnFieldLabelledByElementThatIsNotALabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnFieldLabelledByElementThatIsNotALabel.html
+
+ID: WarnFieldLabelledByElementThatIsNotALabel
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Field labeled by element '{found}' that is not semantically a label
+Why it matters: The element with ID '{found}' is being used as a label but is not a <label> element. While this can work, non-label elements may not convey proper semantic meaning or behave as users expect.
+Who it affects: Screen reader users who may not receive proper label semantics
+How to fix: Consider using a proper <label> element, or ensure the element '{found}' contains appropriate descriptive text for the field
+
+================================================================================
+
+## WarnFieldLabelledByMultipleElements
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnFieldLabelledByMultipleElements.html
+
+ID: WarnFieldLabelledByMultipleElements
+Type: Warning
+Impact: Low
+WCAG: 3.3.2
+Touchpoint: forms
+Description: Field is labeled by {count} elements via aria-labelledby
+Why it matters: When {count} elements label a field, they will be concatenated together. The order and combination may not make sense or could be confusing when read as a single label.
+Who it affects: Screen reader users who hear all {count} labels concatenated together
+How to fix: Review the {count} labeling elements to ensure they make sense when read together in order. Consider if a single, clear label would be better.
+
+================================================================================
+
+## WarnFormHasNoLabel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnFormHasNoLabel.html
+
+ID: WarnFormHasNoLabel
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
+Touchpoint: forms
+Description: Form element has no accessible name to describe its purpose
+Why it matters: When a form lacks an accessible name, screen reader users hear only "form" without knowing what the form does - is it a search form, login form, contact form, or something else? Users navigating by landmarks or forms need to understand each form's purpose to decide whether to interact with it. This is especially important on pages with multiple forms. Without proper labeling, users might fill out the wrong form, skip important forms, or waste time exploring forms to understand their purpose.
+Who it affects: Screen reader users navigating by forms or landmarks who need to identify form purposes, users with cognitive disabilities who need clear labels to understand what each form does, and keyboard users who tab through forms and need context about what they're interacting with
+How to fix: Add an accessible name to the form element using aria-label (e.g., aria-label="Contact form") or aria-labelledby to reference a visible heading. If the form has a visible heading immediately before it, use aria-labelledby to point to that heading's ID. For search forms, "Search" is usually sufficient. The label should clearly indicate the form's purpose and be unique if there are multiple forms on the page.
+
+================================================================================
+
+## WarnFormHasNoLabelSoIsNotLandmark
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark.html
+
+ID: WarnFormHasNoLabelSoIsNotLandmark
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: forms
+Description: Form element lacks label so is not exposed as landmark
+Why it matters: Forms without accessible names are not landmarks
+Who it affects: Screen reader users navigating by landmarks
+How to fix: Add aria-label or aria-labelledby to make it a landmark
+
+================================================================================
+
+## WarnFormLandmarkAccessibleNameUsesForm
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm.html
+
+ID: WarnFormLandmarkAccessibleNameUsesForm
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: forms
+Description: Form landmark uses generic term "form" in label
+Why it matters: Generic labels don't describe purpose
+Who it affects: Screen reader users
+How to fix: Use descriptive labels like "Contact form" or "Search form"
+
+================================================================================
+
+## WarnMissingAriaLabelledby
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnMissingAriaLabelledby.html
+
+ID: WarnMissingAriaLabelledby
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: forms
+Description: Form field could benefit from aria-labelledby for complex labeling
+Why it matters: Complex forms may need multiple labels or descriptions for clarity.
+Who it affects: Screen reader users needing additional context.
+How to fix: Use aria-labelledby to associate multiple labels or aria-describedby for help text.
+
+================================================================================
+
+## WarnMissingRequiredIndication
+
+✨ New fixtures needed
+
+ID: WarnMissingRequiredIndication
+Type: Warning
+Impact: Medium
+WCAG: 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Required form fields not clearly indicated
+Why it matters: Users need to know which fields are required before submitting forms.
+Who it affects: All users, especially those using screen readers.
+How to fix: Mark required fields with aria-required="true" and visual indicators.
+
+================================================================================
+
+## WarnModalMissingAriaLabelledby
+
+✨ New fixtures needed
+
+ID: WarnModalMissingAriaLabelledby
+Type: Warning
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: forms
+Description: Modal lacks aria-labelledby pointing to its heading
+Why it matters: Screen readers need to announce the modal's title when it opens.
+Who it affects: Screen reader users who need modal context.
+How to fix: Add aria-labelledby pointing to the modal's heading element.
+
+================================================================================
+
+## WarnNoFieldset
+
+✨ New fixtures needed
+
+ID: WarnNoFieldset
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: forms
+Description: Related form fields not grouped with fieldset
+Why it matters: Fieldsets help users understand relationships between form controls.
+Who it affects: Screen reader users, users with cognitive disabilities.
+How to fix: Use fieldset and legend elements to group related form fields like radio buttons.
+
+================================================================================
+
+## WarnNoLegend
+
+✨ New fixtures needed
+
+ID: WarnNoLegend
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: forms
+Description: Fieldset missing legend element
+Why it matters: Legends provide context for grouped form fields.
+Who it affects: Screen reader users who need group labels.
+How to fix: Add legend as first child of fieldset to label the group.
+
+================================================================================
+
+## WarnUnlabelledForm
+
+✨ New fixtures needed
+
+ID: WarnUnlabelledForm
+Type: Warning
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: forms
+Description: Form element lacks accessible name
+Why it matters: Forms need names to help users understand their purpose.
+Who it affects: Screen reader users.
+How to fix: Add aria-label or aria-labelledby to form elements.
+
+================================================================================
+
+## WarnUnlabelledRegion
+
+✨ New fixtures needed
+
+ID: WarnUnlabelledRegion
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: forms
+Description: Region landmark lacks accessible name
+Why it matters: Named regions help users understand content structure.
+Who it affects: Screen reader users navigating by landmarks.
+How to fix: Add aria-label or aria-labelledby to region landmarks.
+
+================================================================================
+
+## forms_DiscoNoSubmitButton
+
+✨ New fixtures needed
+
+ID: forms_DiscoNoSubmitButton
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: forms
+Description: Form lacks submit button
+Why it matters: Users may not know how to submit the form
+Who it affects: Everyone
+How to fix: Ensure form has clear submit mechanism
+
+================================================================================
+
+## forms_DiscoPlaceholderAsLabel
+
+✨ New fixtures needed
+
+ID: forms_DiscoPlaceholderAsLabel
+Type: Discovery
+Impact: Medium
+WCAG: N/A
+Touchpoint: forms
+Description: Placeholders cannot be labels as they do not always appear
+Why it matters: Placeholder text disappears when typing
+Who it affects: Users with memory/cognitive issues, screen reader users
+How to fix: Use proper labels, at most placeholder for examples only
+
+================================================================================
+
+## forms_ErrInputMissingLabel
+
+✨ New fixtures needed
+
+ID: forms_ErrInputMissingLabel
+Type: Error
+Impact: High
+WCAG: 1.3.1, 3.3.2, 4.1.2
+Touchpoint: forms
+Description: Form input element is missing an associated label
+Why it matters: Users cannot determine the purpose of the input field
+Who it affects: Screen reader users, voice control users, users with cognitive disabilities
+How to fix: Add a <label> element with matching for/id attributes
+
+================================================================================
+
+## forms_ErrNoButtonText
+
+✨ New fixtures needed
+
+ID: forms_ErrNoButtonText
+Type: Error
+Impact: High
+WCAG: 2.4.6, 4.1.2
+Touchpoint: forms
+Description: Button has no accessible text
+Why it matters: Users cannot determine button purpose
+Who it affects: Screen reader users, voice control users
+How to fix: Add text content, aria-label, or aria-labelledby to button
+
+================================================================================
+
+## forms_WarnGenericButtonText
+
+✨ New fixtures needed
+
+ID: forms_WarnGenericButtonText
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: forms
+Description: Button has generic text "{text}"
+Why it matters: The button text "{text}" doesn't describe what the button does. When screen reader users navigate by buttons or hear buttons out of context, "{text}" provides no information about the button's purpose or action.
+Who it affects: Screen reader users navigating by buttons who hear "{text}" without context, users with cognitive disabilities who need clear action labels
+How to fix: Change "{text}" to describe the specific action, like "Submit registration", "Save changes", or "Search products" instead of just "{text}"
+
+================================================================================
+
+## forms_WarnNoFieldset
+
+✨ New fixtures needed
+
+ID: forms_WarnNoFieldset
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 3.3.2
+Touchpoint: forms
+Description: Radio/checkbox group lacks fieldset and legend
+Why it matters: Group relationship is not clear
+Who it affects: Screen reader users
+How to fix: Wrap related inputs in fieldset with legend
+
+================================================================================
+
+## forms_WarnRequiredNotIndicated
+
+✨ New fixtures needed
+
+ID: forms_WarnRequiredNotIndicated
+Type: Warning
+Impact: Medium
+WCAG: 3.3.2
+Touchpoint: forms
+Description: Required field not clearly indicated
+Why it matters: Users don't know which fields are mandatory
+Who it affects: All users, especially those with cognitive disabilities
+How to fix: Add required attribute and visual indication
+
+================================================================================
+
+## AI_ErrDropdownWithoutARIA
+
+✨ New fixtures needed
+
+ID: AI_ErrDropdownWithoutARIA
+Type: Error
+Impact: High
+WCAG: 2.1.1, 4.1.2, 1.3.1
+Touchpoint: forms
+Description: Dropdown menu "{element_text}" lacks proper ARIA markup
+Why it matters: Without aria-expanded, aria-haspopup, and proper roles, users cannot understand the dropdown's state or navigate it properly
+Who it affects: Screen reader users, keyboard users
+How to fix: Add aria-haspopup="true", aria-expanded state, and role="menu" with role="menuitem" for options
+
+================================================================================
+

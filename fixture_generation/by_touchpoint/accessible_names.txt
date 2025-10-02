@@ -1,0 +1,40 @@
+# ACCESSIBLE_NAMES Touchpoint
+
+Total issues: 2
+
+================================================================================
+
+## ErrMissingAccessibleName
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Accessible Names/ErrMissingAccessibleName.html
+
+ID: ErrMissingAccessibleName
+Type: Error
+Impact: High
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: accessible_names
+Description: Interactive element has no accessible name
+Why it matters: Without accessible names, screen reader users cannot identify or interact with controls.
+Who it affects: Screen reader users who cannot identify unnamed controls, voice control users who cannot target elements.
+How to fix: Add aria-label, aria-labelledby, or visible text labels to all interactive elements.
+
+================================================================================
+
+## WarnGenericAccessibleName
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Accessible Names/WarnGenericAccessibleName.html
+
+ID: WarnGenericAccessibleName
+Type: Warning
+Impact: Medium
+WCAG: 2.4.6 Headings and Labels (Level AA)
+Touchpoint: accessible_names
+Description: Element has generic accessible name that doesn't describe its purpose
+Why it matters: Generic names like "button" or "link" don't help users understand element purpose.
+Who it affects: Screen reader users, voice control users.
+How to fix: Provide descriptive accessible names that explain the element's specific purpose.
+
+================================================================================
+

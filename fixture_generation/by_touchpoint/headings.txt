@@ -1,0 +1,369 @@
+# HEADINGS Touchpoint
+
+Total issues: 22
+
+================================================================================
+
+## AI_ErrEmptyHeading
+
+✨ New fixtures needed
+
+ID: AI_ErrEmptyHeading
+Type: Error
+Impact: High
+WCAG: 1.3.1, 2.4.6
+Touchpoint: headings
+Description: Heading element {element_tag} at level {heading_level} is empty or contains no text
+Why it matters: Empty headings break document structure and confuse screen reader users who navigate by headings
+Who it affects: Screen reader users, users who navigate by headings
+How to fix: Remove empty heading or add meaningful text content
+
+================================================================================
+
+## AI_ErrHeadingLevelMismatch
+
+✨ New fixtures needed
+
+ID: AI_ErrHeadingLevelMismatch
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.1
+Touchpoint: headings
+Description: Heading level {current_level} doesn't match visual hierarchy (should be level {suggested_level})
+Why it matters: Incorrect heading levels create confusing document structure for screen reader users
+Who it affects: Screen reader users, users who navigate by headings
+How to fix: Adjust heading level to match the visual hierarchy of the page
+
+================================================================================
+
+## AI_ErrSkippedHeading
+
+✨ New fixtures needed
+
+ID: AI_ErrSkippedHeading
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: headings
+Description: Heading level skipped from h{current_level} to h{next_level}
+Why it matters: Skipped heading levels break the logical document structure and make navigation difficult
+Who it affects: Screen reader users, users who navigate by headings
+How to fix: Use sequential heading levels without skipping (h1, h2, h3, not h1, h3)
+
+================================================================================
+
+## AI_ErrVisualHeadingNotMarked
+
+✨ New fixtures needed
+
+ID: AI_ErrVisualHeadingNotMarked
+Type: Error
+Impact: High
+WCAG: 1.3.1, 2.4.1, 2.4.6
+Touchpoint: headings
+Description: Text "{visual_text}" appears visually as a heading but is not marked up with proper heading tags
+Why it matters: Screen reader users won't recognize this text as a heading, breaking navigation and document structure
+Who it affects: Screen reader users, users who navigate by headings
+How to fix: Use appropriate HTML heading tags (h1-h6) for text that serves as headings
+
+================================================================================
+
+## DiscoHeadingWithID
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/DiscoHeadingWithID.html
+
+ID: DiscoHeadingWithID
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: headings
+Description: Heading element has an ID attribute that may be used for in-page navigation
+Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
+Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
+How to fix: Ensure that the ID attribute is referenced and its use is valid.
+
+================================================================================
+
+## ErrEmptyHeading
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrEmptyHeading.html
+
+ID: ErrEmptyHeading
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
+Touchpoint: headings
+Description: Heading element contains only whitespace or special characters: "{text}"
+Why it matters: This heading contains only "{text}" which provides no meaningful content. Empty headings disrupt document structure and navigation. Screen reader users rely on headings to understand page organization and navigate efficiently using heading shortcuts. An empty heading creates a navigation point with no information, confusing users about the page structure.
+Who it affects: Screen reader users who navigate by headings and find a heading containing only "{text}", users with cognitive disabilities who rely on clear structure to understand content organization, and users of assistive technologies that generate page outlines
+How to fix: Either replace "{text}" with meaningful text content that describes the section, or remove the empty heading element entirely if it serves no structural purpose. Never use headings for visual spacing - use CSS margin/padding instead.
+
+================================================================================
+
+## ErrFoundAriaLevelButNoRoleAppliedAtAll
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/ARIA/ErrFoundAriaLevelButNoRoleAppliedAtAll.html
+
+ID: ErrFoundAriaLevelButNoRoleAppliedAtAll
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: headings
+Description: aria-level attribute without role="heading"
+Why it matters: aria-level only works with heading role
+Who it affects: Screen reader users
+How to fix: Add role="heading" or use native heading element
+
+================================================================================
+
+## ErrFoundAriaLevelButRoleIsNotHeading
+
+✨ New fixtures needed
+
+ID: ErrFoundAriaLevelButRoleIsNotHeading
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: headings
+Description: aria-level on element without heading role
+Why it matters: aria-level requires heading role to work
+Who it affects: Screen reader users
+How to fix: Add role="heading" or remove aria-level
+
+================================================================================
+
+## ErrIncorrectHeadingLevel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrIncorrectHeadingLevel.html
+
+ID: ErrIncorrectHeadingLevel
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: headings
+Description: Heading level used incorrectly based on visual appearance rather than document structure
+Why it matters: Incorrect heading levels break the document outline and make it difficult to understand content hierarchy.
+Who it affects: Screen reader users navigating by headings, users who rely on proper document structure.
+How to fix: Use heading levels to convey document structure (h1 > h2 > h3), not for visual styling; use CSS for appearance.
+
+================================================================================
+
+## ErrInvalidAriaLevel
+
+✨ New fixtures needed
+
+ID: ErrInvalidAriaLevel
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 4.1.2
+Touchpoint: headings
+Description: Invalid aria-level value (not 1-6)
+Why it matters: Invalid levels break heading hierarchy
+Who it affects: Screen reader users
+How to fix: Use aria-level values 1 through 6 only
+
+================================================================================
+
+## ErrMultipleH1
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrMultipleH1.html
+
+ID: ErrMultipleH1
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: headings
+Description: Page contains {count} h1 elements instead of just one
+Why it matters: Having {count} h1 elements creates confusion about the page's main topic. Each h1 represents a primary heading, and multiple h1s suggest multiple main topics, breaking the document hierarchy. Screen readers users won't know which h1 represents the actual page topic.
+Who it affects: Screen reader users who expect a single h1 to identify the page topic, users navigating by headings who see multiple "top level" items, SEO and search engines that look for a single main topic
+How to fix: Keep only one h1 that represents the main page topic. Change the other {count-1} h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
+
+================================================================================
+
+## ErrNoH1
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrNoH1.html
+
+ID: ErrNoH1
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: headings
+Description: Page has no h1 heading
+Why it matters: H1 headings identify the main topic of a page and are crucial for document structure.
+Who it affects: Screen reader users who navigate by headings, users who rely on document outlines.
+How to fix: Add exactly one h1 heading that describes the main content or purpose of the page.
+
+================================================================================
+
+## ErrNoHeadingsOnPage
+
+✨ New fixtures needed
+
+ID: ErrNoHeadingsOnPage
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
+Touchpoint: headings
+Description: No heading elements (h1-h6) found anywhere on the page
+Why it matters: Headings create the structural outline of your content, like a table of contents. They allow users to understand how information is organized and navigate directly to sections of interest. Without any headings, screen reader users cannot use heading navigation shortcuts (one of their primary navigation methods) and must read through all content linearly. This is like forcing someone to read an entire book without chapter titles or section breaks. Users cannot skim content, jump to relevant sections, or understand the information hierarchy. For users with cognitive disabilities, the lack of visual structure makes content overwhelming and hard to process.
+Who it affects: Screen reader users who lose a critical navigation method and cannot understand content structure, users with cognitive disabilities who need clear visual organization to process information, users with attention disorders who rely on headings to focus on relevant sections, and users with reading disabilities who use headings to break content into manageable chunks
+How to fix: Add semantic heading elements (h1-h6) to structure your content. Start with one h1 that describes the main page topic. Use h2 for major sections, h3 for subsections, and so on. Don't skip levels (e.g., h1 to h3). Ensure headings describe the content that follows them. Never use headings just for visual styling - they must represent actual content structure. If you need large text without semantic meaning, use CSS instead.
+
+================================================================================
+
+## ErrRoleOfHeadingButNoLevelGiven
+
+✨ New fixtures needed
+
+ID: ErrRoleOfHeadingButNoLevelGiven
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 4.1.2
+Touchpoint: headings
+Description: role="heading" without aria-level
+Why it matters: Heading level is undefined
+Who it affects: Screen reader users
+How to fix: Add aria-level attribute with value 1-6
+
+================================================================================
+
+## ErrSkippedHeadingLevel
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrSkippedHeadingLevel.html
+
+ID: ErrSkippedHeadingLevel
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships
+Touchpoint: headings
+Description: Heading levels are not in sequential order - jumped from h{skippedFrom} to h{skippedTo}, skipping intermediate level(s)
+Why it matters: Heading levels create a hierarchical outline of your content, like nested bullet points. Jumping from h{skippedFrom} to h{skippedTo} breaks this logical structure. It's like having chapter {skippedFrom}, then jumping to section {skippedTo} without the intermediate section. Screen reader users navigating by headings will be confused about the relationship between sections - is the h{skippedTo} a subsection of something that's missing? This broken hierarchy makes it hard to understand how content is organized and can cause users to think content is missing or that they've accidentally skipped something.
+Who it affects: Screen reader users navigating by heading structure who rely on levels to understand content relationships, users with cognitive disabilities who need logical, predictable content organization, users of assistive technology that generates document outlines, and developers or content authors maintaining the page who need to understand the intended structure
+How to fix: Insert an h{expectedLevel} heading between the h{skippedFrom} and h{skippedTo}, or change the h{skippedTo} to h{expectedLevel} to maintain sequential order. After h{skippedFrom}, use h{expectedLevel} for the next level. Don't skip levels when going down the hierarchy. If you need a heading to look smaller visually, use CSS to style it rather than choosing a lower heading level. The heading level should reflect the content's logical structure, not its visual appearance.
+
+================================================================================
+
+## InfoHeadingNearLengthLimit
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/InfoHeadingNearLengthLimit.html
+
+ID: InfoHeadingNearLengthLimit
+Type: Info
+Impact: Low
+WCAG: 2.4.6 Headings and Labels (Level AA)
+Touchpoint: headings
+Description: Heading approaching recommended length limit
+Why it matters: Very long headings are difficult to scan and understand quickly.
+Who it affects: Users with cognitive disabilities, users scanning content.
+How to fix: Consider shortening headings to be more concise while maintaining clarity.
+
+================================================================================
+
+## VisibleHeadingDoesNotMatchA11yName
+
+✨ New fixtures needed
+
+ID: VisibleHeadingDoesNotMatchA11yName
+Type: Warning
+Impact: Medium
+WCAG: 2.5.3
+Touchpoint: headings
+Description: Visible heading text doesn't match its accessible name
+Why it matters: Voice control users may not be able to reference the heading by its visible text
+Who it affects: Voice control users, screen reader users
+How to fix: Ensure visible text matches or is contained within the accessible name
+
+================================================================================
+
+## WarnHeadingInsideDisplayNone
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/WarnHeadingInsideDisplayNone.html
+
+ID: WarnHeadingInsideDisplayNone
+Type: Warning
+Impact: Low
+WCAG: 1.3.1
+Touchpoint: headings
+Description: Heading is hidden with display:none
+Why it matters: Hidden headings may affect document structure
+Who it affects: Screen reader users (varies by implementation)
+How to fix: Remove unused headings or make them visible
+
+================================================================================
+
+## WarnHeadingOver60CharsLong
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/WarnHeadingOver60CharsLong.html
+
+ID: WarnHeadingOver60CharsLong
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: headings
+Description: Heading text is {length} characters long: "{headingText}"
+Why it matters: This heading has {length} characters. Long headings are harder to scan quickly, more difficult to understand at a glance, and can overwhelm users. Screen reader users hearing the full heading text may struggle to grasp the main point. Long headings also cause layout issues on mobile devices and in navigation menus.
+Who it affects: Users with cognitive disabilities who benefit from concise, clear headings, screen reader users who must listen to the entire heading, users scanning the page quickly for information, and mobile users with limited screen space
+How to fix: Shorten the heading to under 60 characters while preserving its meaning. Current: "{headingText}" - Consider breaking into a shorter heading with explanatory text below, or focus on the key message. Use descriptive but concise language.
+
+================================================================================
+
+## WarnNoH1
+
+✨ New fixtures needed
+
+ID: WarnNoH1
+Type: Warning
+Impact: High
+WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
+Touchpoint: headings
+Description: Page is missing an h1 element to identify the main topic
+Why it matters: The h1 is the most important heading on a page - it tells users what the page is about, similar to a chapter title in a book. Screen reader users often navigate directly to the h1 first to understand the page purpose. Without it, users must guess the page topic from other cues like the title or URL. The h1 also establishes the starting point for the heading hierarchy. Search engines use the h1 to understand page content, and browser extensions that generate page outlines will be missing the top level. Think of the h1 as answering "What is this page about?" - without it, users lack this fundamental context.
+Who it affects: Screen reader users who jump to the h1 to understand page purpose, users with cognitive disabilities who need clear indication of page topic, SEO and users finding your content through search engines, users of browser tools that generate page outlines or tables of contents
+How to fix: Add exactly one h1 element that describes the main topic or purpose of the page. It should be unique to that page (not the same site-wide). Place it at the beginning of your main content, typically inside the main landmark. The h1 text should make sense if read in isolation and match user expectations based on how they arrived at the page. Don't use the site name as the h1 - use the specific page topic.
+
+================================================================================
+
+## DiscoHeadingWithID
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/DiscoHeadingWithID.html
+
+ID: DiscoHeadingWithID
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: headings
+Description: Heading element has an ID attribute that may be used for in-page navigation
+Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
+Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
+How to fix: Ensure that the ID attribute is referenced and its use is valid.
+
+================================================================================
+
+## AI_ErrEmptyHeading
+
+✨ New fixtures needed
+
+ID: AI_ErrEmptyHeading
+Type: Error
+Impact: High
+WCAG: 1.3.1, 2.4.6
+Touchpoint: headings
+Description: Heading element {element_tag} at level {heading_level} is empty or contains no text
+Why it matters: Empty headings break document structure and confuse screen reader users who navigate by headings
+Who it affects: Screen reader users, users who navigate by headings
+How to fix: Remove empty heading or add meaningful text content
+
+================================================================================
+

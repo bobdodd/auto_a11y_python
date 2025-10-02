@@ -1,0 +1,40 @@
+# MAPS Touchpoint
+
+Total issues: 2
+
+================================================================================
+
+## ErrDivMapMissingAttributes
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Maps/ErrDivMapMissingAttributes.html
+
+ID: ErrDivMapMissingAttributes
+Type: Error
+Impact: High
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: maps
+Description: Map container div is missing required accessibility attributes
+Why it matters: Maps without proper accessibility attributes are completely inaccessible to screen reader users who cannot perceive the visual information.
+Who it affects: Blind and low vision users, users who rely on screen readers to understand map content and functionality.
+How to fix: Add appropriate ARIA labels and descriptions, provide text alternatives for map information, ensure all map controls are keyboard accessible.
+
+================================================================================
+
+## ErrMapMissingTitle
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Maps/ErrMapMissingTitle.html
+
+ID: ErrMapMissingTitle
+Type: Error
+Impact: Medium
+WCAG: 1.1.1 Non-text Content (Level A)
+Touchpoint: maps
+Description: Map iframe missing title attribute
+Why it matters: Without titles, screen reader users don't know what the embedded map contains or represents.
+Who it affects: Screen reader users who need to understand embedded content purpose.
+How to fix: Add descriptive title attribute to map iframes (e.g., title="Map showing office location").
+
+================================================================================
+

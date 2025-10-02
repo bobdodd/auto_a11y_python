@@ -1,0 +1,39 @@
+# FOCUS_MANAGEMENT Touchpoint
+
+Total issues: 2
+
+================================================================================
+
+## ErrContentObscuring
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Focus/ErrContentObscuring.html
+
+ID: ErrContentObscuring
+Type: Error
+Impact: High
+WCAG: 2.4.3 Focus Order (Level A), 2.1.2 No Keyboard Trap (Level A)
+Touchpoint: focus_management
+Description: Content is obscured by other elements preventing interaction
+Why it matters: When content is covered by other elements, users cannot access or interact with it, creating complete barriers to functionality.
+Who it affects: All users, particularly keyboard users who cannot use mouse to work around layout issues, screen reader users who may not know content is obscured.
+How to fix: Fix z-index and positioning issues, ensure modals and overlays don't cover content inappropriately, test that all content remains accessible.
+
+================================================================================
+
+## WarnNoCursorPointer
+
+✨ New fixtures needed
+
+ID: WarnNoCursorPointer
+Type: Warning
+Impact: Low
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: focus_management
+Description: Clickable element doesn't show pointer cursor
+Why it matters: Cursor changes help users identify interactive elements.
+Who it affects: Mouse users who rely on cursor changes.
+How to fix: Add cursor: pointer CSS to all clickable elements.
+
+================================================================================
+

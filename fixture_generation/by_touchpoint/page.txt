@@ -1,0 +1,74 @@
+# PAGE Touchpoint
+
+Total issues: 4
+
+================================================================================
+
+## ErrEmptyPageTitle
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Semantic/ErrEmptyPageTitle.html
+
+ID: ErrEmptyPageTitle
+Type: Error
+Impact: High
+WCAG: 2.4.2
+Touchpoint: page
+Description: Page title element is empty
+Why it matters: Empty titles provide no information about page content
+Who it affects: Screen reader users, users with cognitive disabilities
+How to fix: Add descriptive text to title element
+
+================================================================================
+
+## ErrMultiplePageTitles
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Semantic/ErrMultiplePageTitles.html
+
+ID: ErrMultiplePageTitles
+Type: Error
+Impact: Low
+WCAG: 2.4.2
+Touchpoint: page
+Description: Multiple title elements found in document
+Why it matters: Multiple titles may confuse assistive technologies
+Who it affects: Screen reader users
+How to fix: Use only one title element per page
+
+================================================================================
+
+## ErrNoPageTitle
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Semantic/ErrNoPageTitle.html
+
+ID: ErrNoPageTitle
+Type: Error
+Impact: High
+WCAG: 2.4.2 Page Titled
+Touchpoint: page
+Description: Page has no <title> element in the document head
+Why it matters: The page title is the first thing screen reader users hear when a page loads, and it appears in browser tabs, bookmarks, and search results. Without a title, users cannot identify the page in their browser history, distinguish between multiple open tabs, or understand what page they're on when arriving from a link. Screen reader users announcing "Untitled document" have no context about where they are. This is like opening a book with no title on the cover or spine - you don't know what you're reading until you dive into the content. The title is critical for orientation and navigation.
+Who it affects: Screen reader users who rely on titles for page identification and orientation, users with cognitive disabilities who need clear page identification, users managing multiple browser tabs who need to distinguish between pages, users with memory issues using browser history to return to pages, and all users when bookmarking or sharing pages
+How to fix: Add a <title> element within the <head> section of your HTML. Create descriptive, unique titles that identify both the page content and the site. Use a consistent pattern like "Page Topic - Site Name". Put the unique page information first since it's most important. Keep titles concise (under 60 characters) but descriptive. Avoid generic titles like "Home" or "Page 1". The title should make sense when read out of context in a list of bookmarks or search results.
+
+================================================================================
+
+## ErrEmptyPageTitle
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Semantic/ErrEmptyPageTitle.html
+
+ID: ErrEmptyPageTitle
+Type: Error
+Impact: High
+WCAG: 2.4.2
+Touchpoint: page
+Description: Page title element is empty
+Why it matters: Empty titles provide no information about page content
+Who it affects: Screen reader users, users with cognitive disabilities
+How to fix: Add descriptive text to title element
+
+================================================================================
+

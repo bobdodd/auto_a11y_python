@@ -1,0 +1,70 @@
+# FONTS Touchpoint
+
+Total issues: 4
+
+================================================================================
+
+## DiscoFontFound
+
+✨ New fixtures needed
+
+ID: DiscoFontFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: fonts
+Description: Font '{found}' detected in use on the page for accessibility review
+Why it matters: Tracking font usage helps identify typography choices that may affect readability. This discovery item documents which fonts are in use so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.
+Who it affects: Users with dyslexia and dyscalculia who benefit from clear readable fonts.
+How to fix: Consider current advice on what is considered an accessible font.
+
+================================================================================
+
+## WarnFontNotInRecommenedListForA11y
+
+✨ New fixtures needed
+
+ID: WarnFontNotInRecommenedListForA11y
+Type: Warning
+Impact: Low
+WCAG: 1.4.8
+Touchpoint: fonts
+Description: Font not in recommended accessibility list
+Why it matters: Some fonts are harder to read
+Who it affects: Users with dyslexia, low vision
+How to fix: Use clear, simple fonts like Arial, Verdana
+
+================================================================================
+
+## WarnFontsizeIsBelow16px
+
+✨ New fixtures needed
+
+ID: WarnFontsizeIsBelow16px
+Type: Warning
+Impact: Medium
+WCAG: 1.4.4
+Touchpoint: fonts
+Description: Font size is {fontSize}px, below recommended 16px minimum
+Why it matters: Text at {fontSize}px is harder to read than the recommended minimum of 16px. Small text requires more effort to read and can cause eye strain, especially for extended reading.
+Who it affects: Users with low vision, older users experiencing age-related vision changes, users with reading disabilities, and anyone viewing content on small screens
+How to fix: Increase font size from {fontSize}px to at least 16px for body text. Consider using relative units (rem, em) for better scalability.
+
+================================================================================
+
+## DiscoFontFound
+
+✨ New fixtures needed
+
+ID: DiscoFontFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: fonts
+Description: Font '{found}' detected in use on the page for accessibility review
+Why it matters: Tracking font usage helps identify typography choices that may affect readability. This discovery item documents which fonts are in use so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.
+Who it affects: Users with dyslexia and dyscalculia who benefit from clear readable fonts.
+How to fix: Consider current advice on what is considered an accessible font.
+
+================================================================================
+

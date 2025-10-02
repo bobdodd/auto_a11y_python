@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNativeVideoMissingControls - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNativeVideoMissingControls_002_correct_with_controls",
+    "issueId": "ErrNativeVideoMissingControls",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "HTML5 video elements with controls attribute",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Videos With Controls</h1>
+
+    <main>
+        <section>
+            <h2>Video With Controls</h2>
+            <video src="sample-video.mp4"
+                   width="640"
+                   height="360"
+                   controls
+                   data-expected-pass="true"
+                   data-pass-reason="Video has controls attribute, users can play, pause, and adjust playback">
+            </video>
+        </section>
+
+        <section>
+            <h2>Video With Multiple Sources and Controls</h2>
+            <video width="640"
+                   height="360"
+                   controls
+                   data-expected-pass="true"
+                   data-pass-reason="Video provides controls for keyboard and screen reader users">
+                <source src="video.mp4" type="video/mp4">
+                <source src="video.webm" type="video/webm">
+                Your browser does not support the video tag.
+            </video>
+        </section>
+
+        <section>
+            <h2>Video With Controls and Captions</h2>
+            <video src="accessible-video.mp4"
+                   width="640"
+                   height="360"
+                   controls
+                   data-expected-pass="true"
+                   data-pass-reason="Video has controls allowing all users to interact with playback">
+                <track src="captions.vtt" kind="captions" srclang="en" label="English">
+            </video>
+        </section>
+    </main>
+</body>
+</html>

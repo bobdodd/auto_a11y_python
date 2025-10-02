@@ -10,63 +10,52 @@
     "issueId": "AI_ErrTooltipWithoutARIA",
     "expectedViolationCount": 2,
     "expectedPassCount": 0,
-    "description": "Tooltip elements lacking proper ARIA markup and relationships",
-    "wcag": "1.3.1, 4.1.2",
+    "description": "Tooltip patterns without proper ARIA attributes",
+    "wcag": "4.1.2",
     "impact": "Medium"
 }
     </script>
+    <style>
+        .tooltip-trigger { position: relative; border-bottom: 1px dashed #333; cursor: help; }
+        .tooltip { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 5px 10px; border-radius: 4px; white-space: nowrap; z-index: 1000; }
+        .tooltip-trigger:hover .tooltip { display: block; }
+    </style>
 </head>
 <body>
-    <h1>Form with Help Icons</h1>
+    <h1>Product Information</h1>
 
     <main>
-        <form>
-            <!-- Tooltip without ARIA -->
-            <div class="field"
-                 data-expected-violation="true"
-                 data-violation-id="AI_ErrTooltipWithoutARIA"
-                 data-violation-reason="Tooltip lacks role='tooltip', aria-describedby linking, and keyboard support. Screen readers cannot access tooltip information">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username">
-                <span class="help-icon"
-                      onmouseover="showTooltip('tip1')"
-                      onmouseout="hideTooltip('tip1')">
-                    ?
-                </span>
-                <div id="tip1" class="tooltip" style="display:none;">
-                    Choose a unique username with 6-20 characters
-                </div>
-            </div>
+        <section>
+            <h2>Features</h2>
 
-            <!-- Tooltip accessible only on hover -->
-            <div class="field"
-                 data-expected-violation="true"
-                 data-violation-id="AI_ErrTooltipWithoutARIA"
-                 data-violation-reason="Tooltip only shows on hover without role='tooltip' or aria-describedby. Not accessible to keyboard users or screen readers">
-                <label for="password">Password</label>
-                <input type="text" id="password" name="password">
-                <span class="help-icon"
-                      onmouseover="showTooltip('tip2')"
-                      onmouseout="hideTooltip('tip2')">
-                    ?
+            <p data-expected-violation="true"
+               data-violation-reason="Tooltip implemented without ARIA attributes. Trigger element lacks role='button', aria-describedby, or aria-label. Tooltip div missing role='tooltip'. Screen readers can't identify tooltip relationship. Users don't get tooltip content announced. Keyboard users can't access tooltip on focus. Violates WCAG 4.1.2 Name, Role, Value by missing tooltip ARIA pattern">
+                Our product includes
+                <span class="tooltip-trigger">
+                    advanced security
+                    <span class="tooltip">256-bit encryption with multi-factor authentication</span>
                 </span>
-                <div id="tip2" class="tooltip" style="display:none;">
-                    Must contain uppercase, lowercase, number, and symbol
-                </div>
-            </div>
+                features.
+            </p>
+        </section>
 
-            <button type="submit">Submit</button>
-        </form>
+        <section>
+            <h2>Specifications</h2>
+
+            <p data-expected-violation="true"
+               data-violation-reason="Tooltip pattern without ARIA implementation. No aria-describedby linking trigger to tooltip. Tooltip lacks role='tooltip' and proper ID. Screen readers miss additional information in tooltip. Users with assistive technology don't receive tooltip content. Keyboard-only users can't trigger tooltip. Violates WCAG 4.1.2 Name, Role, Value by not implementing tooltip ARIA semantics">
+                Battery life up to
+                <span class="tooltip-trigger">
+                    10 hours
+                    <span class="tooltip">Based on typical usage patterns. May vary with intensive applications.</span>
+                </span>
+                of continuous use.
+            </p>
+        </section>
     </main>
 
-    <script>
-        function showTooltip(id) {
-            document.getElementById(id).style.display = 'block';
-        }
-
-        function hideTooltip(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-    </script>
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
 </body>
 </html>

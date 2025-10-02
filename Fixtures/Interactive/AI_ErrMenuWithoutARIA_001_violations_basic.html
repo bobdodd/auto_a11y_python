@@ -10,60 +10,70 @@
     "issueId": "AI_ErrMenuWithoutARIA",
     "expectedViolationCount": 2,
     "expectedPassCount": 0,
-    "description": "Menu/dropdown components lacking proper ARIA markup",
-    "wcag": "2.1.1, 4.1.2",
+    "description": "Application menu pattern without proper ARIA attributes",
+    "wcag": "4.1.2",
     "impact": "High"
 }
     </script>
+    <style>
+        .menubar { display: flex; background: #333; }
+        .menu-trigger { padding: 10px 15px; color: white; background: #333; border: none; cursor: pointer; }
+        .menu-trigger:hover { background: #555; }
+        .menu-container { position: relative; }
+        .menu { display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; min-width: 150px; z-index: 1000; }
+        .menu.active { display: block; }
+        .menu-item { padding: 10px; cursor: pointer; color: black; }
+        .menu-item:hover { background: #f0f0f0; }
+    </style>
+    <script>
+        function toggleMenu(button) {
+            const menu = button.nextElementSibling;
+            menu.classList.toggle('active');
+        }
+    </script>
 </head>
 <body>
-    <h1>Application Menu</h1>
+    <h1>Application Menubar</h1>
 
     <main>
-        <!-- Dropdown menu without ARIA -->
-        <div class="menu-container"
+        <div class="menubar"
              data-expected-violation="true"
-             data-violation-id="AI_ErrMenuWithoutARIA"
-             data-violation-reason="Menu lacks role='menu', aria-haspopup, aria-expanded state. Screen readers cannot identify this as a menu or understand its state">
-            <button onclick="toggleMenu()">File</button>
-            <div id="file-menu" class="menu" style="display:none;">
-                <div onclick="newFile()">New</div>
-                <div onclick="openFile()">Open</div>
-                <div onclick="saveFile()">Save</div>
+             data-violation-reason="Application menubar implemented without ARIA attributes. Container lacks role='menubar'. Menu triggers missing aria-haspopup='true' and aria-expanded. Menus don't have role='menu'. Items lack role='menuitem'. Screen readers can't identify application menu pattern. Users expect arrow key navigation not available without ARIA. Keyboard interaction unclear. Violates WCAG 4.1.2 Name, Role, Value by missing menubar ARIA pattern">
+            <div class="menu-container">
+                <button class="menu-trigger" onclick="toggleMenu(this)">File</button>
+                <div class="menu">
+                    <div class="menu-item" onclick="alert('New')">New</div>
+                    <div class="menu-item" onclick="alert('Open')">Open</div>
+                    <div class="menu-item" onclick="alert('Save')">Save</div>
+                    <div class="menu-item" onclick="alert('Exit')">Exit</div>
+                </div>
+            </div>
+
+            <div class="menu-container">
+                <button class="menu-trigger" onclick="toggleMenu(this)">Edit</button>
+                <div class="menu">
+                    <div class="menu-item" onclick="alert('Cut')">Cut</div>
+                    <div class="menu-item" onclick="alert('Copy')">Copy</div>
+                    <div class="menu-item" onclick="alert('Paste')">Paste</div>
+                </div>
             </div>
         </div>
 
-        <!-- Context menu without proper roles -->
-        <div class="context-menu-trigger"
-             onclick="showContextMenu()"
-             data-expected-violation="true"
-             data-violation-id="AI_ErrMenuWithoutARIA"
-             data-violation-reason="Context menu missing role='menu' on container and role='menuitem' on items. No aria-haspopup or keyboard navigation support">
-            Right-click area
-            <ul id="context-menu" style="display:none;">
-                <li onclick="copy()">Copy</li>
-                <li onclick="paste()">Paste</li>
-                <li onclick="deleteItem()">Delete</li>
-            </ul>
-        </div>
+        <section data-expected-violation="true"
+                 data-violation-reason="Context menu pattern without ARIA implementation. Menu lacks role='menu' and aria-orientation. Items don't have role='menuitem' or proper keyboard handling. Screen readers can't identify this as application menu. Users miss menu semantics and expected arrow key navigation. No programmatic indication of menu structure. Violates WCAG 4.1.2 Name, Role, Value by not implementing menu ARIA semantics">
+            <h2>Context Menu Example</h2>
+            <p>Right-click here for context menu (simulated)</p>
+
+            <div class="menu" style="position: static; display: block; margin-top: 10px;">
+                <div class="menu-item" onclick="alert('Refresh')">Refresh</div>
+                <div class="menu-item" onclick="alert('Properties')">Properties</div>
+                <div class="menu-item" onclick="alert('Delete')">Delete</div>
+            </div>
+        </section>
     </main>
 
-    <script>
-        function toggleMenu() {
-            const menu = document.getElementById('file-menu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function showContextMenu() {
-            document.getElementById('context-menu').style.display = 'block';
-        }
-
-        function newFile() { alert('New file'); }
-        function openFile() { alert('Open file'); }
-        function saveFile() { alert('Save file'); }
-        function copy() { alert('Copy'); }
-        function paste() { alert('Paste'); }
-        function deleteItem() { alert('Delete'); }
-    </script>
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
 </body>
 </html>

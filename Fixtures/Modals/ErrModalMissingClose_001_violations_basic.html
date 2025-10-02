@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrModalMissingClose - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrModalMissingClose_001_violations_basic",
+    "issueId": "ErrModalMissingClose",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Modal dialog without close button",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Newsletter Signup</h1>
+
+    <main>
+        <section>
+            <h2>Stay Updated</h2>
+            <p>Subscribe to our newsletter for the latest updates and special offers.</p>
+            <button id="openModal">Subscribe Now</button>
+        </section>
+    </main>
+
+    <!-- Modal without close button - VIOLATION -->
+    <div id="subscribeModal"
+         class="modal"
+         role="dialog"
+         aria-labelledby="modalTitle"
+         aria-modal="true"
+         data-expected-violation="true"
+         data-violation-id="ErrModalMissingClose"
+         data-violation-reason="Modal dialog has no close button. Users cannot dismiss the modal without submitting the form. Keyboard users are trapped with no escape route. Users with motor impairments who accidentally open modal cannot close it. Users who change their mind have no way out except submitting or refreshing page. Violates WCAG 2.1.1 by not providing keyboard-accessible way to close. Also fails 2.1.2 No Keyboard Trap">
+        <div class="modal-content">
+            <h2 id="modalTitle">Subscribe to Our Newsletter</h2>
+            <p>Get exclusive updates, offers, and news delivered to your inbox.</p>
+
+            <form>
+                <div>
+                    <label for="modalEmail">Email Address:</label>
+                    <input type="email" id="modalEmail" name="email" required>
+                </div>
+
+                <div>
+                    <label>
+                        <input type="checkbox" name="terms" required>
+                        I agree to receive marketing emails
+                    </label>
+                </div>
+
+                <button type="submit">Subscribe</button>
+                <!-- Missing: Close button for users who don't want to subscribe -->
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal open/close logic (for demonstration)
+        const modal = document.getElementById('subscribeModal');
+        const openBtn = document.getElementById('openModal');
+
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('open');
+        });
+
+        // Problem: No close button to trigger this
+        // User is trapped in modal
+    </script>
+
+    <footer>
+        <p>&copy; 2024 Newsletter Service. All rights reserved.</p>
+    </footer>
+</body>
+</html>

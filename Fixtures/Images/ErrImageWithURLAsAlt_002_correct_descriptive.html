@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithURLAsAlt - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithURLAsAlt_002_correct_descriptive",
+    "issueId": "ErrImageWithURLAsAlt",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Images with descriptive alt text instead of URLs",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Travel Destinations</h1>
+
+    <main>
+        <section>
+            <h2>Popular Destinations</h2>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Image has descriptive alt text explaining visual content. Screen readers announce 'The Eiffel Tower at sunset with pink and orange sky' which is meaningful and descriptive. No URLs or file paths. Blind users understand what sighted users see. Text alternative provides equivalent information. Complies with WCAG 1.1.1 by describing non-text content properly">
+                <img src="paris-eiffel-tower.jpg"
+                     alt="The Eiffel Tower at sunset with pink and orange sky">
+                <h3>Paris, France</h3>
+                <p>Experience the romance and culture of Paris. See the iconic Eiffel Tower.</p>
+                <button>Learn More</button>
+            </article>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Image alt text describes the visual scene instead of file path. Screen readers announce 'Tokyo skyline at night with illuminated skyscrapers and Tokyo Tower'. Users get meaningful description of city view. No technical jargon or paths. Visual information is accessible through text. Meets WCAG 1.1.1 Non-text Content requirements">
+                <img src="tokyo-skyline.jpg"
+                     alt="Tokyo skyline at night with illuminated skyscrapers and Tokyo Tower">
+                <h3>Tokyo, Japan</h3>
+                <p>Discover the blend of tradition and modernity in Tokyo's vibrant cityscape.</p>
+                <button>Learn More</button>
+            </article>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Image uses descriptive alt text instead of filename. Screen readers announce 'Panoramic view of the Grand Canyon with layered red rock formations'. No file extension or technical details. Blind users can visualize the scene through description. Equivalent text alternative for visual content. Complies with WCAG 1.1.1 by providing meaningful description not filename">
+                <img src="grand-canyon.jpg"
+                     alt="Panoramic view of the Grand Canyon with layered red rock formations">
+                <h3>Grand Canyon, USA</h3>
+                <p>Marvel at one of the world's most spectacular natural wonders.</p>
+                <button>Learn More</button>
+            </article>
+        </section>
+
+        <section>
+            <h2>Plan Your Trip</h2>
+            <p>
+                Browse our curated selection of world-class destinations and start planning
+                your next adventure today.
+            </p>
+            <!-- Best practice: Alt text should describe what you see, not where the file is stored -->
+            <!-- Never use URLs, file paths, or filenames as alt text -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Travel Agency. All rights reserved.</p>
+    </footer>
+</body>
+</html>

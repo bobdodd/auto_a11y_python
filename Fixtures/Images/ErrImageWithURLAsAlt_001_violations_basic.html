@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithURLAsAlt - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithURLAsAlt_001_violations_basic",
+    "issueId": "ErrImageWithURLAsAlt",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Images using URLs or file paths as alt text",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Travel Destinations</h1>
+
+    <main>
+        <section>
+            <h2>Popular Destinations</h2>
+
+            <article>
+                <img src="paris-eiffel-tower.jpg"
+                     alt="https://cdn.example.com/images/paris-eiffel-tower.jpg"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithURLAsAlt"
+                     data-violation-reason="Image alt text is a URL. Screen readers announce the entire URL which is meaningless to users. Sighted users see the Eiffel Tower but blind users hear 'https://cdn.example.com/images/paris-eiffel-tower.jpg' which provides no useful information. This is a common mistake from copying image URLs. Violates WCAG 1.1.1 by failing to provide meaningful text alternative">
+                <h3>Paris, France</h3>
+                <p>Experience the romance and culture of Paris. See the iconic Eiffel Tower.</p>
+                <button>Learn More</button>
+            </article>
+
+            <article>
+                <img src="tokyo-skyline.jpg"
+                     alt="/assets/images/destinations/tokyo-skyline.jpg"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithURLAsAlt"
+                     data-violation-reason="Image uses file path as alt text. Screen readers read out '/assets/images/destinations/tokyo-skyline.jpg' which is technical jargon, not description. Users cannot understand what the image shows. File paths are for developers, not alt text. Blind users get no useful information. Fails WCAG 1.1.1 Non-text Content by using technical path instead of description">
+                <h3>Tokyo, Japan</h3>
+                <p>Discover the blend of tradition and modernity in Tokyo's vibrant cityscape.</p>
+                <button>Learn More</button>
+            </article>
+
+            <article>
+                <img src="grand-canyon.jpg"
+                     alt="grand-canyon.jpg"
+                     data-expected-violation="true"
+                     data-violation-id="ErrImageWithURLAsAlt"
+                     data-violation-reason="Image alt text is just the filename. Screen readers announce 'grand-canyon.jpg' which includes file extension. While filename gives a hint, it's not descriptive and includes technical suffix. Users don't need to know file format. Should describe the visual content, not the file. Violates WCAG 1.1.1 by using filename instead of meaningful description">
+                <h3>Grand Canyon, USA</h3>
+                <p>Marvel at one of the world's most spectacular natural wonders.</p>
+                <button>Learn More</button>
+            </article>
+        </section>
+
+        <section>
+            <h2>Plan Your Trip</h2>
+            <p>
+                Browse our curated selection of world-class destinations and start planning
+                your next adventure today.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Travel Agency. All rights reserved.</p>
+    </footer>
+</body>
+</html>

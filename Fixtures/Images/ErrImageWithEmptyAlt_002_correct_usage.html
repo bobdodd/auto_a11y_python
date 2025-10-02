@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithEmptyAlt - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithEmptyAlt_002_correct_usage",
+    "issueId": "ErrImageWithEmptyAlt",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Informative images with descriptive alt text",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Catalog</h1>
+
+    <main>
+        <section>
+            <h2>Featured Products</h2>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Product image has descriptive alt text explaining what the image shows. Screen reader users hear 'Silver laptop with thin profile and backlit keyboard on white background' and understand the product appearance. Visual information is conveyed through text alternative. Complies with WCAG 1.1.1 by providing equivalent text for non-text content">
+                <img src="premium-laptop.jpg"
+                     alt="Silver laptop with thin profile and backlit keyboard on white background">
+                <h3>Premium Laptop</h3>
+                <p>High-performance laptop for professionals. $1,299.99</p>
+                <button>Add to Cart</button>
+            </article>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Product image with clear descriptive alt text. Screen readers announce 'Black ergonomic wireless mouse with side buttons and scroll wheel'. Blind users can understand product features and appearance. Text alternative provides equivalent information to visual content. Meets WCAG 1.1.1 Non-text Content requirements">
+                <img src="wireless-mouse.jpg"
+                     alt="Black ergonomic wireless mouse with side buttons and scroll wheel">
+                <h3>Wireless Mouse</h3>
+                <p>Ergonomic wireless mouse with precision tracking. $29.99</p>
+                <button>Add to Cart</button>
+            </article>
+        </section>
+
+        <section>
+            <h2>Customer Testimonials</h2>
+
+            <article data-expected-pass="true"
+                     data-pass-reason="Customer photo with descriptive alt text. Screen readers announce 'Professional woman in business attire smiling at camera'. Blind users get context about the testimonial source. Visual credibility cues are conveyed through text. Fully accessible to assistive technology users. Complies with WCAG 1.1.1 by describing non-text content">
+                <img src="customer-sarah.jpg"
+                     alt="Professional woman in business attire smiling at camera">
+                <blockquote>
+                    <p>"This company's products have transformed my workflow. Highly recommended!"</p>
+                    <cite>- Sarah Johnson, Marketing Director</cite>
+                </blockquote>
+            </article>
+        </section>
+
+        <section>
+            <h2>Our Commitment</h2>
+            <p>
+                We believe in delivering quality products that meet the needs of all users.
+                Browse our selection and experience the difference.
+            </p>
+            <!-- Note: Purely decorative images (like background patterns) should use alt="" -->
+            <!-- Only informative images need descriptive alt text -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Product Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

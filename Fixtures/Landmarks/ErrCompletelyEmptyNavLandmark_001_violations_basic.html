@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrCompletelyEmptyNavLandmark - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrCompletelyEmptyNavLandmark_001_violations_basic",
+    "issueId": "ErrCompletelyEmptyNavLandmark",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Navigation landmarks that are completely empty with no content",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Empty Navigation Landmarks</h1>
+
+    <nav data-expected-violation="true"
+         data-violation-id="ErrCompletelyEmptyNavLandmark"
+         data-violation-reason="Navigation landmark is completely empty with no child elements">
+    </nav>
+
+    <main>
+        <h2>Content Section</h2>
+        <p>Main content area</p>
+
+        <nav data-expected-violation="true"
+             data-violation-id="ErrCompletelyEmptyNavLandmark"
+             data-violation-reason="Navigation landmark contains no navigation content">
+        </nav>
+    </main>
+
+    <div role="navigation"
+         data-expected-violation="true"
+         data-violation-id="ErrCompletelyEmptyNavLandmark"
+         data-violation-reason="ARIA navigation role applied but element is empty">
+    </div>
+</body>
+</html>

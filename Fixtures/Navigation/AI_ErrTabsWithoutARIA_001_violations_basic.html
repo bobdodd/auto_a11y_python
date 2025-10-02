@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTabsWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrTabsWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrTabsWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Tab interface elements lacking proper ARIA roles and relationships",
+    "wcag": "2.1.1, 4.1.2, 1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Details</h1>
+
+    <main>
+        <!-- Tabs without ARIA roles -->
+        <div class="tabs"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrTabsWithoutARIA"
+             data-violation-reason="Tab interface lacks proper ARIA roles (tablist, tab, tabpanel), aria-selected state, and aria-controls linking tabs to panels. Screen readers cannot understand tab structure">
+            <div class="tab-headers">
+                <span class="tab active" onclick="showTab(0)">Description</span>
+                <span class="tab" onclick="showTab(1)">Specifications</span>
+                <span class="tab" onclick="showTab(2)">Reviews</span>
+            </div>
+            <div class="tab-content">
+                <div class="panel" style="display:block;">
+                    <p>Product description goes here...</p>
+                </div>
+                <div class="panel" style="display:none;">
+                    <p>Technical specifications...</p>
+                </div>
+                <div class="panel" style="display:none;">
+                    <p>Customer reviews...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs using divs without keyboard support -->
+        <div class="tab-widget"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrTabsWithoutARIA"
+             data-violation-reason="Tabs use non-interactive div elements without button role, tabindex, or keyboard event handlers. Missing aria-selected and aria-controls prevents proper screen reader announcement">
+            <div class="tab-list">
+                <div class="tab-item" onclick="activateTab(0)">Overview</div>
+                <div class="tab-item" onclick="activateTab(1)">Features</div>
+                <div class="tab-item" onclick="activateTab(2)">Pricing</div>
+            </div>
+            <div class="content-area">
+                <div class="content-panel">
+                    <h3>Overview</h3>
+                    <p>Product overview content...</p>
+                </div>
+                <div class="content-panel" hidden>
+                    <h3>Features</h3>
+                    <p>Feature list...</p>
+                </div>
+                <div class="content-panel" hidden>
+                    <h3>Pricing</h3>
+                    <p>Pricing information...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showTab(index) {
+            const panels = document.querySelectorAll('.tabs .panel');
+            const tabs = document.querySelectorAll('.tabs .tab');
+            panels.forEach((p, i) => p.style.display = i === index ? 'block' : 'none');
+            tabs.forEach((t, i) => t.classList.toggle('active', i === index));
+        }
+
+        function activateTab(index) {
+            const panels = document.querySelectorAll('.content-panel');
+            panels.forEach((p, i) => p.hidden = i !== index);
+        }
+    </script>
+</body>
+</html>

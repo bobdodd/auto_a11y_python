@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Landmark Proper Accessible Names - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrMainLandmarkAccessibleNameIsBlank_002_correct_with_labels",
+        "issueId": "ErrMainLandmarkAccessibleNameIsBlank",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "Main landmarks with proper accessible names for distinguishing multiple main content regions",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "High"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Main Landmark Proper Accessible Names - Correct</h1>
+        <nav aria-label="Primary navigation">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/products">Products</a>
+        </nav>
+    </header>
+
+    <div role="main"
+         aria-label="Product catalog"
+         data-expected-pass="true"
+         data-pass-reason="Main landmark has descriptive aria-label, screen readers announce 'Product catalog main' to help users identify this content area">
+        <h2>Featured Products</h2>
+        <article>
+            <h3>Product 1</h3>
+            <p>Description of product 1.</p>
+        </article>
+        <article>
+            <h3>Product 2</h3>
+            <p>Description of product 2.</p>
+        </article>
+    </div>
+
+    <main aria-labelledby="search-heading"
+          data-expected-pass="true"
+          data-pass-reason="Main landmark references meaningful heading via aria-labelledby, providing clear accessible name for search results section">
+        <h2 id="search-heading">Search Results</h2>
+        <p>Found 15 results for your query.</p>
+        <ul>
+            <li><a href="/result1">Result 1</a></li>
+            <li><a href="/result2">Result 2</a></li>
+            <li><a href="/result3">Result 3</a></li>
+        </ul>
+    </main>
+
+    <div role="main"
+         aria-label="Shopping cart summary"
+         data-expected-pass="true"
+         data-pass-reason="Main landmark has specific aria-label identifying cart section, helps screen reader users navigate between multiple main content areas">
+        <h2>Your Cart</h2>
+        <p>3 items in cart</p>
+        <ul>
+            <li>Item 1 - $19.99</li>
+            <li>Item 2 - $29.99</li>
+            <li>Item 3 - $39.99</li>
+        </ul>
+        <p>Total: $89.97</p>
+    </div>
+
+    <footer>
+        <p>This page demonstrates proper labeling of main landmarks. While most pages have only one main landmark (which doesn't require a label), pages with multiple main content areas must label each uniquely.</p>
+        <p>Note: Having multiple main landmarks is uncommon but may occur in complex applications or split-view interfaces.</p>
+    </footer>
+</body>
+</html>

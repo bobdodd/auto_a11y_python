@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnVideoWithoutTranscript - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnVideoWithoutTranscript_001_violations_basic",
+    "issueId": "AI_WarnVideoWithoutTranscript",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Video content without text transcript alternative",
+    "wcag": "1.2.3, 1.2.8",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Educational Videos</h1>
+
+    <main>
+        <section>
+            <h2>Introduction to Web Accessibility</h2>
+
+            <video width="640"
+                   height="360"
+                   controls
+                   data-expected-violation="true"
+                   data-violation-reason="Video with audio content but no text transcript provided. While captions may be available, no separate text transcript accessible to all users. Deaf-blind users cannot access captions. Users who prefer reading over watching cannot access content efficiently. No searchable text version of content. Transcript provides alternative way to consume information. Violates WCAG 1.2.8 Media Alternative (Prerecorded) - multimedia should provide text transcript as alternative">
+                <source src="intro-to-a11y.mp4" type="video/mp4">
+                <track kind="captions" src="intro-to-a11y.vtt" srclang="en" label="English" default>
+                Your browser does not support the video tag.
+            </video>
+
+            <p>Learn the fundamentals of web accessibility in this 10-minute video.</p>
+        </section>
+
+        <section>
+            <h2>ARIA Best Practices</h2>
+
+            <video width="640"
+                   height="360"
+                   controls
+                   data-expected-violation="true"
+                   data-violation-reason="Video without accompanying transcript. Captions help but transcript offers additional benefits. No text alternative for users who cannot or prefer not to watch video. Transcript enables searching, skimming, and easy reference. Screen reader users with slow braille displays benefit from transcript. SEO benefits from text transcript. Missing accessible alternative format. Violates WCAG 1.2.3 Audio Description or Media Alternative and 1.2.8 Media Alternative - video needs text transcript">
+                <source src="aria-best-practices.mp4" type="video/mp4">
+                <track kind="captions" src="aria-best-practices.vtt" srclang="en" label="English" default>
+                Your browser does not support the video tag.
+            </video>
+
+            <p>Discover best practices for implementing ARIA attributes correctly.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

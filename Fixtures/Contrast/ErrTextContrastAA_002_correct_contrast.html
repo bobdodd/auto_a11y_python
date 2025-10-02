@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTextContrastAA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTextContrastAA_002_correct_contrast",
+    "issueId": "ErrTextContrastAA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Normal text with sufficient AA contrast",
+    "wcag": "1.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .good-contrast-gray {
+            color: #595959;
+            background: #ffffff;
+            /* Contrast ratio: 7.0:1 - exceeds 4.5:1 requirement */
+        }
+
+        .good-contrast-blue {
+            color: #0056b3;
+            background: #ffffff;
+            /* Contrast ratio: 8.2:1 - exceeds 4.5:1 requirement */
+        }
+
+        .good-contrast-green {
+            color: #2d6a2f;
+            background: #ffffff;
+            /* Contrast ratio: 7.5:1 - exceeds 4.5:1 requirement */
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <section>
+            <h2>Premium Widget Features</h2>
+
+            <p class="good-contrast-gray"
+               data-expected-pass="true"
+               data-pass-reason="Text has 7.0:1 contrast ratio, exceeding WCAG AA requirement of 4.5:1 for normal text. Low vision users can easily read this text. Users with color blindness can distinguish text from background. Sufficient contrast ensures readability for users with mild to moderate vision impairments. Complies with WCAG 1.4.3 Contrast (Minimum) and exceeds AAA level (7:1)">
+                This widget includes advanced features designed for professional use.
+                The lightweight aluminum construction ensures durability while maintaining
+                portability. Perfect for on-the-go productivity.
+            </p>
+        </section>
+
+        <section>
+            <h2>Technical Specifications</h2>
+
+            <p class="good-contrast-blue"
+               data-expected-pass="true"
+               data-pass-reason="Text has 8.2:1 contrast ratio, well above 4.5:1 minimum. Blue text on white background provides excellent readability. Users with color vision deficiencies can clearly see this text. Strong contrast ensures accessibility for all users including those with low vision. Meets WCAG 1.4.3 and exceeds AAA requirements">
+                Dimensions: 12" x 8" x 2" | Weight: 2.5 lbs | Battery Life: Up to 10 hours |
+                Connectivity: Wi-Fi 6, Bluetooth 5.0 | Storage: 256GB SSD | Memory: 16GB RAM
+            </p>
+        </section>
+
+        <section>
+            <h2>Customer Reviews</h2>
+
+            <blockquote class="good-contrast-green"
+                        data-expected-pass="true"
+                        data-pass-reason="Text has 7.5:1 contrast ratio, exceeding 4.5:1 requirement. Dark green on white provides excellent visibility. Users with red-green color blindness can read this text easily. High contrast ensures accessibility for users with various vision impairments. Complies with WCAG 1.4.3 Contrast (Minimum) at AAA level">
+                "This product exceeded my expectations. The quality is outstanding and
+                it works exactly as advertised. I've been using it daily for three months
+                and couldn't be happier with my purchase."
+                <cite>- Alex Thompson</cite>
+            </blockquote>
+        </section>
+
+        <section>
+            <h2>Warranty Information</h2>
+            <p>All products come with a 1-year manufacturer warranty covering defects in materials and workmanship.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Product Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

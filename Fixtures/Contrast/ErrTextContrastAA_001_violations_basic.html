@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTextContrastAA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTextContrastAA_001_violations_basic",
+    "issueId": "ErrTextContrastAA",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Normal text with insufficient color contrast below AA standard",
+    "wcag": "1.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .low-contrast-gray {
+            color: #767676;
+            background: #ffffff;
+            /* Contrast ratio: 4.54:1 - below 4.5:1 requirement */
+        }
+
+        .low-contrast-blue {
+            color: #4a8fcc;
+            background: #ffffff;
+            /* Contrast ratio: 3.2:1 - below 4.5:1 requirement */
+        }
+
+        .low-contrast-green {
+            color: #6fbf73;
+            background: #ffffff;
+            /* Contrast ratio: 2.8:1 - below 4.5:1 requirement */
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <section>
+            <h2>Premium Widget Features</h2>
+
+            <p class="low-contrast-gray"
+               data-expected-violation="true"
+               data-violation-id="ErrTextContrastAA"
+               data-violation-reason="Text has 4.54:1 contrast ratio, below WCAG AA requirement of 4.5:1 for normal text. Users with low vision cannot easily read this text. Users with color blindness struggle to distinguish text from background. Older users and those with mild vision impairments have difficulty reading. Violates WCAG 1.4.3 Contrast (Minimum) by failing to meet minimum contrast threshold">
+                This widget includes advanced features designed for professional use.
+                The lightweight aluminum construction ensures durability while maintaining
+                portability. Perfect for on-the-go productivity.
+            </p>
+        </section>
+
+        <section>
+            <h2>Technical Specifications</h2>
+
+            <p class="low-contrast-blue"
+               data-expected-violation="true"
+               data-violation-id="ErrTextContrastAA"
+               data-violation-reason="Text has 3.2:1 contrast ratio, significantly below 4.5:1 requirement. Low vision users cannot read this blue text on white background. Text is nearly invisible to users with certain types of color blindness. Insufficient contrast makes reading extremely difficult. Fails WCAG 1.4.3 by providing inadequate visual contrast">
+                Dimensions: 12" x 8" x 2" | Weight: 2.5 lbs | Battery Life: Up to 10 hours |
+                Connectivity: Wi-Fi 6, Bluetooth 5.0 | Storage: 256GB SSD | Memory: 16GB RAM
+            </p>
+        </section>
+
+        <section>
+            <h2>Customer Reviews</h2>
+
+            <blockquote class="low-contrast-green"
+                        data-expected-violation="true"
+                        data-violation-id="ErrTextContrastAA"
+                        data-violation-reason="Text has 2.8:1 contrast ratio, far below 4.5:1 minimum. Green text on white is particularly problematic for users with red-green color blindness. Low vision users cannot distinguish this text. Poor contrast creates accessibility barrier for significant portion of users. Violates WCAG 1.4.3 Contrast (Minimum) requirement">
+                "This product exceeded my expectations. The quality is outstanding and
+                it works exactly as advertised. I've been using it daily for three months
+                and couldn't be happier with my purchase."
+                <cite>- Alex Thompson</cite>
+            </blockquote>
+        </section>
+
+        <section>
+            <h2>Warranty Information</h2>
+            <p>All products come with a 1-year manufacturer warranty covering defects in materials and workmanship.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Product Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

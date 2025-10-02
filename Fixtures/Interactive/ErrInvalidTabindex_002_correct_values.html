@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInvalidTabindex - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInvalidTabindex_002_correct_values",
+    "issueId": "ErrInvalidTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Elements with valid tabindex attribute values",
+    "wcag": "2.4.3, 4.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form</h1>
+
+    <main>
+        <form data-expected-pass="true"
+              data-pass-reason="All tabindex values are valid integers. HTML specification allows: positive integers (1, 2, etc), zero (0), or negative integers (-1, -2, etc). All values follow proper syntax with single integer. Browsers can correctly parse and apply tab order. Predictable keyboard navigation behavior. Complies with WCAG 4.1.1 by using valid HTML and 2.4.3 by maintaining proper focus order. Note: While valid, best practice is to avoid positive tabindex values">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text"
+                       id="name"
+                       name="name">
+                <!-- No tabindex = uses default (0) - valid -->
+            </div>
+
+            <div>
+                <label for="email">Email:</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       tabindex="0">
+                <!-- tabindex="0" = explicit default - valid -->
+            </div>
+
+            <div>
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+
+            <div>
+                <label for="message">Message:</label>
+                <textarea id="message"
+                          name="message"
+                          rows="4">
+                </textarea>
+            </div>
+
+            <!-- Skip link example with valid negative tabindex -->
+            <div id="helpPanel" tabindex="-1" style="display:none;">
+                <h2>Form Help</h2>
+                <p>Fill out all required fields and click Submit.</p>
+            </div>
+            <!-- tabindex="-1" = can receive programmatic focus but not tab - valid -->
+
+            <div>
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Contact Form. All rights reserved.</p>
+    </footer>
+</body>
+</html>

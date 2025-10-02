@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Invalid aria-level Values</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInvalidAriaLevel_001_violations_basic",
+    "issueId": "ErrInvalidAriaLevel",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Heading elements with invalid aria-level values (not 1-6)",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1>User Guide</h1>
+
+        <div role="heading"
+             aria-level="0"
+             data-expected-violation="true"
+             data-violation-id="ErrInvalidAriaLevel"
+             data-violation-reason="aria-level=0 is invalid (must be 1-6)">Chapter One</div>
+
+        <div role="heading"
+             aria-level="7"
+             data-expected-violation="true"
+             data-violation-id="ErrInvalidAriaLevel"
+             data-violation-reason="aria-level=7 is invalid (must be 1-6)">Subsection</div>
+
+        <div role="heading"
+             aria-level="-1"
+             data-expected-violation="true"
+             data-violation-id="ErrInvalidAriaLevel"
+             data-violation-reason="aria-level=-1 is invalid (must be 1-6)">Another Section</div>
+
+        <div role="heading"
+             aria-level="abc"
+             data-expected-violation="true"
+             data-violation-id="ErrInvalidAriaLevel"
+             data-violation-reason="aria-level=abc is invalid (must be numeric 1-6)">Final Section</div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

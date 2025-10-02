@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Missing H1</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoH1_001_violations_basic",
+    "issueId": "ErrNoH1",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page with no h1 heading element",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrNoH1"
+      data-violation-reason="Page has no h1 element">
+    <header>
+        <h2>Company Name</h2>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Welcome to Our Website</h2>
+        <p>This page demonstrates a common error: starting with an h2 instead of an h1.</p>
+
+        <h3>About Our Services</h3>
+        <p>We provide various services to help you succeed.</p>
+
+        <h3>Contact Information</h3>
+        <p>Get in touch with us today.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

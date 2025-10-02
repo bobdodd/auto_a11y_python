@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Long Headings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnHeadingOver60CharsLong_001_violations_basic",
+    "issueId": "WarnHeadingOver60CharsLong",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Headings exceeding 60 characters in length",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1>Documentation Portal</h1>
+
+        <h2 data-expected-violation="true"
+            data-violation-id="WarnHeadingOver60CharsLong"
+            data-violation-reason="Heading is 95 characters long">This is an Extremely Long Heading That Goes On and On Without Being Concise and Makes It Very Hard</h2>
+        <p>The heading above is too long and should be shortened.</p>
+
+        <h3 data-expected-violation="true"
+            data-violation-id="WarnHeadingOver60CharsLong"
+            data-violation-reason="Heading is 105 characters long">Understanding the Complete Process of Implementation, Configuration, Deployment and Maintenance for the Entire System</h3>
+        <p>This heading should also be more concise.</p>
+
+        <h2>Short Heading</h2>
+        <p>This heading is appropriately concise.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

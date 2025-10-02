@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct Heading Levels with CSS Styling</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrIncorrectHeadingLevel_002_correct_css_styled",
+    "issueId": "ErrIncorrectHeadingLevel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Proper heading levels styled with CSS for visual appearance",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* CSS styling independent of semantic level */
+        h2.large {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        h3.small {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1 data-expected-pass="true"
+            data-pass-reason="Correct semantic h1">Product Documentation</h1>
+
+        <h2 class="large"
+            data-expected-pass="true"
+            data-pass-reason="Correct semantic h2 with CSS for large size">Introduction</h2>
+        <p>This is an h2 styled with CSS to look larger.</p>
+
+        <h3 class="small"
+            data-expected-pass="true"
+            data-pass-reason="Correct semantic h3 with CSS for small size">Detail Section</h3>
+        <p>This is an h3 styled with CSS to look smaller.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

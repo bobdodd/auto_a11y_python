@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Headings with ID attributes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoHeadingWithID_001_discovery_basic",
+    "issueId": "DiscoHeadingWithID",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Discovery of headings with ID attributes for navigation",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1 id="main-title"
+            data-expected-pass="true"
+            data-pass-reason="Heading with ID for potential navigation">Getting Started Guide</h1>
+        <p>This guide will help you get started quickly.</p>
+
+        <h2 id="installation"
+            data-expected-pass="true"
+            data-pass-reason="Heading with ID for section navigation">Installation</h2>
+        <p>Follow these steps to install the software.</p>
+
+        <h3 id="prerequisites"
+            data-expected-pass="true"
+            data-pass-reason="Heading with ID for deep linking">Prerequisites</h3>
+        <p>You'll need the following before starting.</p>
+
+        <h2>Configuration</h2>
+        <p>This heading has no ID attribute.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

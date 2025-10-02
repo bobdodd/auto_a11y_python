@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Elements With Negative Tabindex For Programmatic Focus</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingNegativeTabindex_002_correct_with_tabindex",
+    "issueId": "WarnMissingNegativeTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Elements properly configured with tabindex=-1 for script-based focus",
+    "wcag": "2.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Document</h1>
+
+    <nav>
+        <a href="#main">Skip to main content</a>
+    </nav>
+
+    <main id="main"
+          tabindex="-1"
+          data-expected-pass="true"
+          data-pass-reason="Skip link target has tabindex=-1, can receive programmatic focus">
+        <h2>Main Content</h2>
+        <p>This is the main content area that skip links jump to. With tabindex=-1, it can receive focus from the skip link without being in the normal tab order.</p>
+    </main>
+
+    <div id="notification-container"
+         tabindex="-1"
+         role="status"
+         aria-live="polite"
+         data-expected-pass="true"
+         data-pass-reason="Notification container has tabindex=-1 for programmatic focus">
+        <p>New notifications will appear here and can receive focus via JavaScript.</p>
+    </div>
+
+    <p>Other page content...</p>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Modal With Close Button</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingCloseButton_002_correct_with_close",
+    "issueId": "ErrMissingCloseButton",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Modal dialog with accessible close button",
+    "wcag": "2.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Page Content</h1>
+    <button>Show Alert</button>
+
+    <div class="backdrop"></div>
+    <div class="modal"
+         role="alertdialog"
+         aria-labelledby="alert-title"
+         data-expected-pass="true"
+         data-pass-reason="Modal has accessible close button, no keyboard trap">
+        <button class="close-button" aria-label="Close dialog">×</button>
+        <h2 id="alert-title">Important Notice</h2>
+        <p>Your session is about to expire. Please save your work.</p>
+        <button>Save Now</button>
+    </div>
+</body>
+</html>

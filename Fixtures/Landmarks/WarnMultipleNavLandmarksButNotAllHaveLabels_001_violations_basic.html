@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMultipleNavLandmarksButNotAllHaveLabels - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMultipleNavLandmarksButNotAllHaveLabels_001_violations_basic",
+    "issueId": "WarnMultipleNavLandmarksButNotAllHaveLabels",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Multiple navigation landmarks with inconsistent labeling",
+    "wcag": "1.3.1, 2.4.6",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Navigation Landmarks with Inconsistent Labels Test</h1>
+
+    <!-- First nav with label -->
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>Page content here.</p>
+
+        <!-- Second nav WITHOUT label -->
+        <nav data-expected-violation="true"
+             data-violation-id="WarnMultipleNavLandmarksButNotAllHaveLabels"
+             data-violation-reason="Multiple navigation landmarks exist but this one has no label. Inconsistent labeling makes it difficult for screen reader users to distinguish between different navigation areas">
+            <h3>Related Articles</h3>
+            <ul>
+                <li><a href="/article1">Article 1</a></li>
+                <li><a href="/article2">Article 2</a></li>
+            </ul>
+        </nav>
+    </main>
+
+    <!-- Third nav WITHOUT label -->
+    <nav data-expected-violation="true"
+         data-violation-id="WarnMultipleNavLandmarksButNotAllHaveLabels"
+         data-violation-reason="Third navigation landmark without label while first nav has a label. All navigation landmarks should have consistent labeling when multiple exist">
+        <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+        </ul>
+    </nav>
+
+    <!-- Fourth nav WITHOUT label -->
+    <div role="navigation"
+         data-expected-violation="true"
+         data-violation-id="WarnMultipleNavLandmarksButNotAllHaveLabels"
+         data-violation-reason="Navigation landmark using role='navigation' lacks label. When multiple navigation landmarks exist, all should be labeled to help users distinguish between them">
+        <ul>
+            <li><a href="/help">Help</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

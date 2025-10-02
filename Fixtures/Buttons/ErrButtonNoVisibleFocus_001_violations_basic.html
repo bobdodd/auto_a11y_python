@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonNoVisibleFocus - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonNoVisibleFocus_001_violations_basic",
+    "issueId": "ErrButtonNoVisibleFocus",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with no visible focus indicator or outline:none",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .no-focus-outline:focus {
+            outline: none;
+        }
+
+        .invisible-focus:focus {
+            outline: 1px solid white;
+        }
+
+        .low-contrast-focus:focus {
+            outline: 1px solid #f0f0f0;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Buttons Without Visible Focus</h1>
+
+    <main>
+        <section>
+            <h2>Button with Outline Removed</h2>
+            <button class="no-focus-outline"
+                    data-expected-violation="true"
+                    data-violation-id="ErrButtonNoVisibleFocus"
+                    data-violation-reason="Button has outline:none with no alternative focus indicator">
+                Submit Form
+            </button>
+            <p>This button removes the focus outline without providing an alternative.</p>
+        </section>
+
+        <section style="background: white; padding: 20px;">
+            <h2>Button with Invisible Focus (white on white)</h2>
+            <button class="invisible-focus"
+                    data-expected-violation="true"
+                    data-violation-id="ErrButtonNoVisibleFocus"
+                    data-violation-reason="Button focus indicator has no contrast (white on white)">
+                Save Changes
+            </button>
+            <p>This button's focus outline is white on a white background.</p>
+        </section>
+
+        <section style="background: white; padding: 20px;">
+            <h2>Button with Very Low Contrast Focus</h2>
+            <button class="low-contrast-focus"
+                    data-expected-violation="true"
+                    data-violation-id="ErrButtonNoVisibleFocus"
+                    data-violation-reason="Button focus indicator has insufficient contrast (less than 3:1)">
+                Delete Item
+            </button>
+            <p>This button's focus outline is very light gray on white background.</p>
+        </section>
+    </main>
+</body>
+</html>

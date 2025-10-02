@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrWrongTabindexForInteractiveElement - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrWrongTabindexForInteractiveElement_002_correct_natural_tabindex",
+    "issueId": "ErrWrongTabindexForInteractiveElement",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Interactive elements with natural keyboard accessibility",
+    "wcag": "2.1.1, 2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation and Actions</h1>
+
+    <main>
+        <section>
+            <h2>Primary Actions</h2>
+
+            <button data-expected-pass="true"
+                    data-pass-reason="Button has no tabindex attribute so uses natural tab order (0). Keyboard-only users can reach button by tabbing. Interactive element is keyboard accessible by default. Natural focusability preserved. Users can activate button via keyboard. Complies with WCAG 2.1.1 Keyboard by maintaining keyboard access to interactive element">
+                Submit Form
+            </button>
+        </section>
+
+        <section>
+            <h2>Navigation Links</h2>
+
+            <a href="/products"
+               data-expected-pass="true"
+               data-pass-reason="Link has no tabindex attribute so uses natural keyboard accessibility. Keyboard users can navigate to this link by tabbing. Links are keyboard accessible by default. Natural tab order maintained. Users can access linked content via keyboard. Meets WCAG 2.1.1 Keyboard and 2.4.3 Focus Order by preserving natural keyboard access">
+                View Products
+            </a>
+        </section>
+
+        <section>
+            <h2>Form Fields</h2>
+
+            <form>
+                <label for="email">Email:</label>
+                <input type="email"
+                       id="email"
+                       data-expected-pass="true"
+                       data-pass-reason="Input field has no tabindex attribute so maintains natural keyboard access. Keyboard users can enter data in this field. Form inputs are naturally keyboard accessible. Natural focusability preserved. Users can complete form via keyboard. Complies with WCAG 2.1.1 Keyboard by maintaining keyboard access to interactive form control">
+
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

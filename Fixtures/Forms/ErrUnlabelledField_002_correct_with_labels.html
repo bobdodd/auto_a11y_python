@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrUnlabelledField - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrUnlabelledField_002_correct_with_labels",
+    "issueId": "ErrUnlabelledField",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Form fields with proper accessible labels",
+    "wcag": "1.3.1, 3.3.2, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form</h1>
+
+    <main>
+        <form>
+            <section>
+                <h2>Personal Information</h2>
+
+                <label for="fullname">Full Name:</label>
+                <input type="text"
+                       id="fullname"
+                       name="fullname"
+                       data-expected-pass="true"
+                       data-pass-reason="Text input has proper label element with for attribute linking to field id. Screen readers announce 'Full Name:' followed by field type. Users know what information to enter. Field purpose is clear. Blind users can complete form. Complies with WCAG 1.3.1 Info and Relationships, 3.3.2 Labels or Instructions, and 4.1.2 Name, Role, Value by providing accessible name">
+            </section>
+
+            <section>
+                <h2>Contact Details</h2>
+
+                <label for="email">Email Address:</label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       placeholder="you@example.com"
+                       data-expected-pass="true"
+                       data-pass-reason="Email input has proper label element plus placeholder for format hint. Screen readers announce 'Email Address:' as persistent accessible name. Placeholder provides additional help without replacing label. Field has clear accessible name that doesn't disappear. Users maintain context while filling. Meets WCAG 1.3.1 Info and Relationships, 3.3.2 Labels or Instructions, and 4.1.2 Name, Role, Value by using proper label">
+            </section>
+
+            <section>
+                <h2>Preferences</h2>
+
+                <label for="country">Country:</label>
+                <select id="country"
+                        name="country"
+                        data-expected-pass="true"
+                        data-pass-reason="Select dropdown has proper label element with for attribute. Screen readers announce 'Country:' followed by combobox role. Users understand field purpose. Dropdown is properly labeled. Blind users know what to choose. Complies with WCAG 1.3.1 Info and Relationships, 3.3.2 Labels or Instructions, and 4.1.2 Name, Role, Value by providing accessible name">
+                    <option value="">Choose...</option>
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                    <option value="uk">United Kingdom</option>
+                </select>
+            </section>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

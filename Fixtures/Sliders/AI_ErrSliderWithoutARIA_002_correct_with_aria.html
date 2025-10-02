@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrSliderWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrSliderWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrSliderWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Slider controls with proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .slider-container {
+            margin: 2rem 0;
+        }
+        .custom-slider {
+            width: 300px;
+            height: 40px;
+            background: #ddd;
+            position: relative;
+        }
+        .slider-thumb {
+            width: 20px;
+            height: 40px;
+            background: #007bff;
+            position: absolute;
+            left: 50%;
+            cursor: grab;
+        }
+        .slider-thumb:focus {
+            outline: 3px solid #0056b3;
+            outline-offset: 2px;
+        }
+        .slider-value {
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Volume Control - Correct Usage</h1>
+
+    <main>
+        <!-- Custom slider with proper ARIA - CORRECT -->
+        <div class="slider-container"
+             data-expected-pass="true"
+             data-pass-reason="Custom slider has role='slider' with aria-valuenow, aria-valuemin, aria-valuemax, aria-label, and tabindex='0'. Fully keyboard accessible with arrow keys and announced by screen readers">
+            <label id="volume-label">Volume:</label>
+            <div class="custom-slider">
+                <div class="slider-thumb"
+                     id="volume-thumb"
+                     role="slider"
+                     tabindex="0"
+                     aria-label="Volume"
+                     aria-labelledby="volume-label"
+                     aria-valuenow="50"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     aria-valuetext="50 percent"></div>
+            </div>
+            <div class="slider-value">Value: <span id="volume-value">50</span></div>
+        </div>
+
+        <!-- Native range input with proper labeling - CORRECT -->
+        <div class="slider-container"
+             data-expected-pass="true"
+             data-pass-reason="Range input has associated label via aria-labelledby and aria-valuetext for meaningful value description. Screen readers announce purpose and current value clearly">
+            <label for="brightness" id="brightness-label">Brightness:</label>
+            <input type="range"
+                   id="brightness"
+                   min="0"
+                   max="100"
+                   value="75"
+                   aria-labelledby="brightness-label"
+                   aria-valuetext="75 percent"
+                   onchange="updateBrightnessValue(this)">
+            <div class="slider-value">Brightness: <span id="brightness-value">75</span>%</div>
+        </div>
+    </main>
+
+    <script>
+        const thumb = document.getElementById('volume-thumb');
+        const valueSpan = document.getElementById('volume-value');
+
+        // Keyboard support for custom slider
+        thumb.addEventListener('keydown', (e) => {
+            let value = parseInt(thumb.getAttribute('aria-valuenow'));
+
+            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                value = Math.min(value + 5, 100);
+                updateThumbValue(value);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                value = Math.max(value - 5, 0);
+                updateThumbValue(value);
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                updateThumbValue(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                updateThumbValue(100);
+            }
+        });
+
+        // Mouse support
+        let isDragging = false;
+        const slider = thumb.parentElement;
+
+        thumb.addEventListener('mousedown', () => {
+            isDragging = true;
+            thumb.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const rect = slider.getBoundingClientRect();
+                const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+                const percent = Math.round((x / rect.width) * 100);
+                updateThumbValue(percent);
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            thumb.style.cursor = 'grab';
+        });
+
+        function updateThumbValue(value) {
+            thumb.style.left = value + '%';
+            thumb.setAttribute('aria-valuenow', value);
+            thumb.setAttribute('aria-valuetext', value + ' percent');
+            valueSpan.textContent = value;
+        }
+
+        function updateBrightnessValue(input) {
+            document.getElementById('brightness-value').textContent = input.value;
+            input.setAttribute('aria-valuetext', input.value + ' percent');
+        }
+    </script>
+</body>
+</html>

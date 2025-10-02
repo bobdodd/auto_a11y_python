@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnVideoWithoutCaptions - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnVideoWithoutCaptions_001_violations_basic",
+    "issueId": "AI_WarnVideoWithoutCaptions",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Video content without captions or subtitles",
+    "wcag": "1.2.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Video Library</h1>
+
+    <main>
+        <section>
+            <h2>Product Demo</h2>
+
+            <video width="640"
+                   height="360"
+                   controls
+                   data-expected-violation="true"
+                   data-violation-reason="Video element without track element for captions. No captions or subtitles provided for spoken content and important sounds. Deaf and hard of hearing users cannot access audio information. Users in sound-sensitive environments cannot understand content. Violates WCAG 1.2.2 Captions (Prerecorded) - prerecorded video must have synchronized captions for audio content">
+                <source src="product-demo.mp4" type="video/mp4">
+                <source src="product-demo.webm" type="video/webm">
+                Your browser does not support the video tag.
+            </video>
+
+            <p>Watch our comprehensive product demonstration showing all key features.</p>
+        </section>
+
+        <section>
+            <h2>Customer Testimonial</h2>
+
+            <video width="640"
+                   height="360"
+                   controls
+                   data-expected-violation="true"
+                   data-violation-reason="Video with spoken content but no caption track. Customer testimonial contains important spoken information not accessible to deaf users. No text alternative for audio content. Users cannot enable captions even if desired. Missing track element with kind='captions' or kind='subtitles'. Violates WCAG 1.2.2 Captions (Prerecorded) - all prerecorded multimedia must provide captions">
+                <source src="testimonial.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+
+            <p>Hear from our satisfied customer about their experience.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

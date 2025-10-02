@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnVideoWithoutTranscript - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnVideoWithoutTranscript_002_correct_with_transcript",
+    "issueId": "AI_WarnVideoWithoutTranscript",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Video content with complete text transcripts",
+    "wcag": "1.2.3, 1.2.8",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .transcript {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .transcript h3 {
+            margin-top: 0;
+        }
+        .transcript-content {
+            line-height: 1.6;
+        }
+        .download-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #2196F3;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Educational Videos</h1>
+
+    <main>
+        <section data-expected-pass="true"
+                 data-pass-reason="Video includes both captions and complete text transcript. Transcript provides full text alternative for all audio and visual content. Deaf-blind users can access transcript via braille display. Users who prefer reading can access content without watching video. Transcript is searchable and easy to reference. Link to downloadable transcript provided. Complies with WCAG 1.2.3 Audio Description or Media Alternative and 1.2.8 Media Alternative (Prerecorded) - multimedia with comprehensive text alternative">
+            <h2>Introduction to Web Accessibility</h2>
+
+            <video width="640" height="360" controls>
+                <source src="intro-to-a11y.mp4" type="video/mp4">
+                <track kind="captions" src="intro-to-a11y.vtt" srclang="en" label="English" default>
+                Your browser does not support the video tag.
+            </video>
+
+            <p>Learn the fundamentals of web accessibility in this 10-minute video.</p>
+
+            <div class="transcript">
+                <h3>Video Transcript</h3>
+                <div class="transcript-content">
+                    <p><strong>[00:00]</strong> Welcome to our introduction to web accessibility. I'm Sarah Chen, and today we'll cover the fundamental principles that make websites accessible to everyone.</p>
+
+                    <p><strong>[00:15]</strong> Web accessibility ensures that people with disabilities can perceive, understand, navigate, and interact with websites. This includes people who are blind, deaf, have motor disabilities, or cognitive differences.</p>
+
+                    <p><strong>[00:35]</strong> The Web Content Accessibility Guidelines, or WCAG, provide the international standard for web accessibility. WCAG is organized around four principles, often called POUR: Perceivable, Operable, Understandable, and Robust.</p>
+
+                    <p><strong>[01:00]</strong> Let's explore each principle. First, Perceivable means information must be presentable to users in ways they can perceive. This includes providing text alternatives for images, captions for videos, and ensuring sufficient color contrast.</p>
+
+                    <p><em>[Video continues with detailed explanation of WCAG principles, practical examples, and implementation guidance through 10:00]</em></p>
+                </div>
+                <a href="intro-to-a11y-transcript.pdf" class="download-link" download>Download complete transcript (PDF)</a>
+            </div>
+        </section>
+
+        <section data-expected-pass="true"
+                 data-pass-reason="Video accompanied by detailed text transcript covering all content. Transcript includes timestamps for cross-referencing with video. All spoken dialogue, visual information, and demonstrations described in text. Transcript accessible inline on page and downloadable. Users can read, search, and navigate transcript easily. Screen reader compatible transcript format. Meets WCAG 1.2.3 Audio Description or Media Alternative and 1.2.8 Media Alternative - full transcript provided as accessible alternative">
+            <h2>ARIA Best Practices</h2>
+
+            <video width="640" height="360" controls>
+                <source src="aria-best-practices.mp4" type="video/mp4">
+                <track kind="captions" src="aria-best-practices.vtt" srclang="en" label="English" default>
+                Your browser does not support the video tag.
+            </video>
+
+            <p>Discover best practices for implementing ARIA attributes correctly.</p>
+
+            <div class="transcript">
+                <h3>Video Transcript</h3>
+                <div class="transcript-content">
+                    <p><strong>[00:00]</strong> Hello, I'm Michael Rodriguez, and today we're diving deep into ARIA best practices. ARIA stands for Accessible Rich Internet Applications, and it's a powerful tool when used correctly.</p>
+
+                    <p><strong>[00:20]</strong> The first rule of ARIA is: don't use ARIA. This might sound contradictory, but what it means is that native HTML semantics should always be your first choice. For example, use a button element instead of a div with role="button".</p>
+
+                    <p><strong>[00:45]</strong> <em>[Screen shows code comparison: &lt;button&gt; vs &lt;div role="button"&gt;]</em> The native button element comes with built-in keyboard support, focus management, and semantic meaning. The div with role="button" requires you to manually implement all of this.</p>
+
+                    <p><strong>[01:15]</strong> When you do need ARIA, the second rule is: don't change native semantics unless absolutely necessary. For instance, don't put role="heading" on a button element.</p>
+
+                    <p><em>[Video continues with detailed ARIA patterns, common mistakes, and correct implementation examples through 15:00]</em></p>
+                </div>
+                <a href="aria-best-practices-transcript.txt" class="download-link" download>Download complete transcript (TXT)</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

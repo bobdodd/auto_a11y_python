@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - Hreflang on Link Elements</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrHreflangNotOnLink_002_correct_on_links",
+    "issueId": "ErrHreflangNotOnLink",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "hreflang attribute properly used on link elements",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>International Documentation</h1>
+
+    <nav>
+        <ul>
+            <li data-expected-pass="true"
+                data-pass-reason="hreflang properly used on anchor element to indicate Spanish language resource">
+                <a href="/docs/es/" hreflang="es">Spanish Documentation</a>
+            </li>
+            <li data-expected-pass="true"
+                data-pass-reason="hreflang correctly applied to link element for French version">
+                <a href="/docs/fr/" hreflang="fr">French Version</a>
+            </li>
+            <li data-expected-pass="true"
+                data-pass-reason="hreflang attribute valid on anchor linking to German documentation">
+                <a href="/docs/de/" hreflang="de">German Documentation</a>
+            </li>
+        </ul>
+    </nav>
+
+    <p>Select your preferred language from the links above.</p>
+</body>
+</html>

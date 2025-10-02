@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multilingual Resources - Proper Hreflang</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrHreflangAttrEmpty_002_correct_with_codes",
+    "issueId": "ErrHreflangAttrEmpty",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Links have valid hreflang attributes with language codes",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Documentation</h1>
+
+    <p>Access our documentation in multiple languages:</p>
+
+    <nav>
+        <ul>
+            <li data-expected-pass="true"
+                data-pass-reason="Link has valid hreflang='es' indicating Spanish language resource">
+                <a href="/docs/es/" hreflang="es">Spanish Version</a>
+            </li>
+            <li data-expected-pass="true"
+                data-pass-reason="PDF link has valid hreflang='fr' for French language document">
+                <a href="/guide-fr.pdf" hreflang="fr">French Guide (PDF)</a>
+            </li>
+            <li>
+                <a href="/docs/en/">English Version</a>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>

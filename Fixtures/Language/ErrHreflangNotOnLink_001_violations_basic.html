@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - Hreflang on Non-Link Elements</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrHreflangNotOnLink_001_violations_basic",
+    "issueId": "ErrHreflangNotOnLink",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "hreflang attribute used on non-link elements",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>International Documentation</h1>
+
+    <div hreflang="es"
+         data-expected-violation="true"
+         data-violation-id="ErrHreflangNotOnLink"
+         data-violation-reason="hreflang attribute on div element has no effect, only valid on anchor and link elements">
+        <h2>Spanish Documentation</h2>
+        <p>Documentación en español disponible.</p>
+    </div>
+
+    <span hreflang="fr"
+          data-expected-violation="true"
+          data-violation-id="ErrHreflangNotOnLink"
+          data-violation-reason="hreflang on span element is invalid, attribute only works on links">
+        French version
+    </span>
+
+    <button hreflang="de"
+            data-expected-violation="true"
+            data-violation-id="ErrHreflangNotOnLink"
+            data-violation-reason="hreflang attribute on button element is meaningless, should only be on anchor elements">
+        German Documentation
+    </button>
+
+    <p>Please use the navigation menu to access language-specific versions.</p>
+</body>
+</html>

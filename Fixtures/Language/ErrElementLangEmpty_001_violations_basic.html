@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post - Empty Element Lang Attribute</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrElementLangEmpty_001_violations_basic",
+    "issueId": "ErrElementLangEmpty",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Elements have empty lang attributes",
+    "wcag": "3.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>International Recipes</h1>
+
+    <article>
+        <h2>Italian Pasta Carbonara</h2>
+        <p>This classic Roman dish is simple yet delicious.</p>
+
+        <div lang=""
+             data-expected-violation="true"
+             data-violation-id="ErrElementLangEmpty"
+             data-violation-reason="Element has empty lang attribute, screen readers cannot determine language change">
+            <h3>Ingredients</h3>
+            <p>Spaghetti, guanciale, eggs, pecorino romano, black pepper</p>
+        </div>
+    </article>
+
+    <article>
+        <h2>French Croissants</h2>
+        <p>The perfect flaky pastry for breakfast.</p>
+
+        <blockquote lang=""
+                    data-expected-violation="true"
+                    data-violation-id="ErrElementLangEmpty"
+                    data-violation-reason="Blockquote has empty lang, preventing proper pronunciation of French content">
+            <p>Bonne chance avec vos croissants!</p>
+        </blockquote>
+    </article>
+</body>
+</html>

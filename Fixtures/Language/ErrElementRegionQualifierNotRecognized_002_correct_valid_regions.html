@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Content - Valid Region Qualifiers</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrElementRegionQualifierNotRecognized_002_correct_valid_regions",
+    "issueId": "ErrElementRegionQualifierNotRecognized",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Elements have valid ISO 3166-1 region qualifiers",
+    "wcag": "3.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>International Events</h1>
+
+    <article>
+        <h2>Spanish Conference</h2>
+
+        <div lang="es-ES"
+             data-expected-pass="true"
+             data-pass-reason="Valid ISO 3166-1 alpha-2 region code 'ES' for Spain">
+            <p>Conferencia en Madrid sobre tecnología accesible.</p>
+        </div>
+    </article>
+
+    <article>
+        <h2>English Event</h2>
+
+        <div lang="en-US"
+             data-expected-pass="true"
+             data-pass-reason="Valid ISO 3166-1 alpha-2 region code 'US' for United States">
+            <p>Technology summit in New York City.</p>
+        </div>
+    </article>
+
+    <article>
+        <h2>French Workshop</h2>
+
+        <div lang="fr-FR"
+             data-expected-pass="true"
+             data-pass-reason="Valid ISO 3166-1 alpha-2 region code 'FR' for France">
+            <p>Atelier à Paris sur l'accessibilité numérique.</p>
+        </div>
+    </article>
+</body>
+</html>

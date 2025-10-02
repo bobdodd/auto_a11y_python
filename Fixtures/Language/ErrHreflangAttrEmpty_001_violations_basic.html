@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multilingual Resources - Empty Hreflang</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrHreflangAttrEmpty_001_violations_basic",
+    "issueId": "ErrHreflangAttrEmpty",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Links have empty hreflang attributes",
+    "wcag": "3.1.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Documentation</h1>
+
+    <p>Access our documentation in multiple languages:</p>
+
+    <nav>
+        <ul>
+            <li data-expected-violation="true"
+                data-violation-id="ErrHreflangAttrEmpty"
+                data-violation-reason="Link has empty hreflang attribute, providing no language information for the linked resource">
+                <a href="/docs/es/" hreflang="">Spanish Version</a>
+            </li>
+            <li data-expected-violation="true"
+                data-violation-id="ErrHreflangAttrEmpty"
+                data-violation-reason="Empty hreflang on PDF link prevents proper language identification">
+                <a href="/guide-fr.pdf" hreflang="">French Guide (PDF)</a>
+            </li>
+            <li>
+                <a href="/docs/en/">English Version</a>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>

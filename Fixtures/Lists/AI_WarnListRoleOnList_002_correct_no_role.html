@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnListRoleOnList - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnListRoleOnList_002_correct_no_role",
+    "issueId": "AI_WarnListRoleOnList",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "List elements without redundant role='list'",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Features</h1>
+
+    <main>
+        <section>
+            <h2>Key Features</h2>
+
+            <ul data-expected-pass="true"
+                data-pass-reason="Unordered list (ul) element without explicit role='list' relies on native HTML5 semantics. Ul automatically provides list semantics. No redundant ARIA needed. HTML5 semantic elements preferred. Screen readers recognize ul as list automatically. Clean code without unnecessary attributes. Complies with WCAG 4.1.2 Name, Role, Value - using native HTML semantics instead of redundant ARIA role">
+                <li>High performance processor</li>
+                <li>Extended battery life</li>
+                <li>Crystal clear display</li>
+                <li>Advanced security features</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Setup Instructions</h2>
+
+            <ol data-expected-pass="true"
+                data-pass-reason="Ordered list (ol) element relies on implicit list role from HTML5. No explicit role='list' attribute needed. Native semantics provide proper list structure. Screen readers automatically announce ol as numbered list. Cleaner code without redundant ARIA. Best practice for HTML5 semantic elements. Meets WCAG 4.1.2 Name, Role, Value - using native element semantics">
+                <li>Unbox the product carefully</li>
+                <li>Connect power adapter</li>
+                <li>Press power button to start</li>
+                <li>Follow on-screen setup wizard</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Technical Specifications</h2>
+
+            <dl data-expected-pass="true"
+                data-pass-reason="Definition list (dl) element without role attribute preserves native definition list semantics. Html5 dl provides specific term-definition relationships. No generic role='list' needed or wanted. Screen readers announce terms and definitions with proper context. Native dl semantics richer than generic list role. Complies with WCAG 4.1.2 Name, Role, Value - using native definition list semantics">
+                <dt>Processor</dt>
+                <dd>Quad-core 2.4 GHz</dd>
+
+                <dt>Memory</dt>
+                <dd>16 GB RAM</dd>
+
+                <dt>Storage</dt>
+                <dd>512 GB SSD</dd>
+            </dl>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

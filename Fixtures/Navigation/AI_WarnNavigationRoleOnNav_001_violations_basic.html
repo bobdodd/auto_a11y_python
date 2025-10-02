@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnNavigationRoleOnNav - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnNavigationRoleOnNav_001_violations_basic",
+    "issueId": "AI_WarnNavigationRoleOnNav",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Nav elements with explicit role='navigation' redundantly",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Company Name</h1>
+
+        <nav role="navigation"
+             aria-label="Main navigation"
+             data-expected-violation="true"
+             data-violation-reason="Nav element has explicit role='navigation' which is redundant. HTML5 nav element already provides navigation landmark semantics. Redundant ARIA is unnecessary and adds code clutter. Native HTML semantics should be preferred over explicit ARIA roles. Screen readers recognize nav automatically. Warning for WCAG 4.1.2 Name, Role, Value - remove redundant role='navigation' from nav element">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Welcome</h2>
+            <p>Main content goes here.</p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+
+        <nav role="navigation"
+             aria-label="Footer navigation"
+             data-expected-violation="true"
+             data-violation-reason="Nav element with redundant role='navigation'. HTML5 nav already has implicit navigation role. Explicit ARIA role is not needed. Developers should rely on native semantics. Screen readers recognize nav as navigation landmark automatically. Warning for WCAG 4.1.2 Name, Role, Value - remove unnecessary role='navigation' from nav">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/sitemap">Sitemap</a></li>
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>

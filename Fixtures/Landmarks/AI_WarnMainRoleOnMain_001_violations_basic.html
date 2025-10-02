@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnMainRoleOnMain - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnMainRoleOnMain_001_violations_basic",
+    "issueId": "AI_WarnMainRoleOnMain",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Main element with explicit role='main' redundantly",
+    "wcag": "4.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Company Name</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main role="main"
+          data-expected-violation="true"
+          data-violation-reason="Main element has explicit role='main' which is redundant. HTML5 main element already provides main landmark semantics. Redundant ARIA is unnecessary and adds code clutter. Native HTML semantics should be preferred over explicit ARIA roles. Screen readers recognize main automatically. Warning for WCAG 4.1.2 Name, Role, Value - remove redundant role='main' from main element">
+        <article>
+            <h2>Welcome to Our Website</h2>
+            <p>This is the main content area of the page.</p>
+            <p>All primary content should be contained within the main element.</p>
+        </article>
+
+        <section>
+            <h2>Featured Products</h2>
+            <ul>
+                <li>Product 1</li>
+                <li>Product 2</li>
+                <li>Product 3</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

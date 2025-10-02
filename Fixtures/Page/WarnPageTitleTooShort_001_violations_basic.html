@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnPageTitleTooShort_001_violations_basic",
+    "issueId": "WarnPageTitleTooShort",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page title too short to be descriptive",
+    "wcag": "2.4.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnPageTitleTooShort"
+      data-violation-reason="Page title is too short (under 10 characters recommended). Doesn't provide enough context about page content. Multiple pages may have same generic title. Screen reader users cannot distinguish between pages easily. Poor search engine optimization. Users cannot identify page when reviewing browser history or bookmarks">
+    <h1>Welcome to DataFlow Analytics</h1>
+
+    <main>
+        <section>
+            <h2>Enterprise Data Solutions</h2>
+            <p>Transform your business with powerful data analytics and insights.</p>
+
+            <div class="features">
+                <article>
+                    <h3>Real-Time Analytics</h3>
+                    <p>Monitor your data as it flows through your systems.</p>
+                </article>
+
+                <article>
+                    <h3>Predictive Models</h3>
+                    <p>Forecast trends and make data-driven decisions.</p>
+                </article>
+
+                <article>
+                    <h3>Custom Dashboards</h3>
+                    <p>Visualize your data with tailored reporting tools.</p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Get Started Today</h2>
+            <p>Join thousands of companies using DataFlow for their analytics needs.</p>
+            <button>Start Free Trial</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 DataFlow Analytics. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrHeaderMissingScope - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrHeaderMissingScope_002_correct_with_scope",
+    "issueId": "ErrHeaderMissingScope",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Table headers with proper scope attributes",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sales Report</h1>
+
+    <main>
+        <!-- Table with proper scope attributes - CORRECT -->
+        <table data-expected-pass="true"
+               data-pass-reason="Table header cells have scope attribute. Screen readers correctly associate headers with data cells. Screen reader users can navigate and understand table structure. Clear header-data relationships for complex tables">
+            <caption>Quarterly Sales by Region</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Region</th>
+                    <th scope="col">Q1</th>
+                    <th scope="col">Q2</th>
+                    <th scope="col">Q3</th>
+                    <th scope="col">Q4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">North</th>
+                    <td>$125,000</td>
+                    <td>$138,500</td>
+                    <td>$142,300</td>
+                    <td>$155,000</td>
+                </tr>
+                <tr>
+                    <th scope="row">South</th>
+                    <td>$98,000</td>
+                    <td>$105,200</td>
+                    <td>$112,400</td>
+                    <td>$118,900</td>
+                </tr>
+                <tr>
+                    <th scope="row">East</th>
+                    <td>$156,000</td>
+                    <td>$168,300</td>
+                    <td>$175,500</td>
+                    <td>$182,000</td>
+                </tr>
+                <tr>
+                    <th scope="row">West</th>
+                    <td>$132,000</td>
+                    <td>$145,800</td>
+                    <td>$151,200</td>
+                    <td>$162,500</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Another table with proper scope - CORRECT -->
+        <table data-expected-pass="true"
+               data-pass-reason="Table headers include scope='col' attribute. Screen readers announce column headers correctly. Users can navigate table cells with clear header context. Proper semantic markup for assistive technologies">
+            <caption>Employee Performance Ratings</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Employee</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Smith</td>
+                    <td>Engineering</td>
+                    <td>4.5</td>
+                    <td>Exceeds Expectations</td>
+                </tr>
+                <tr>
+                    <td>Sarah Johnson</td>
+                    <td>Marketing</td>
+                    <td>4.8</td>
+                    <td>Outstanding</td>
+                </tr>
+                <tr>
+                    <td>Mike Davis</td>
+                    <td>Sales</td>
+                    <td>4.2</td>
+                    <td>Meets Expectations</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

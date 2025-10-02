@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog - Online Store</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMultipleTitleElements_002_correct_single",
+    "issueId": "WarnMultipleTitleElements",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Page with single title element",
+    "wcag": "2.4.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Page contains exactly one <title> element. Browser tab shows consistent title. Screen readers announce the page title correctly. Search engines can index the page properly. Users can identify the page when switching between tabs or windows">
+    <h1>Product Catalog</h1>
+
+    <main>
+        <p>Browse our extensive collection of products.</p>
+
+        <div class="product-grid">
+            <article>
+                <h2>Premium Laptop</h2>
+                <p>High-performance laptop for professionals.</p>
+                <p>Price: $1,299.99</p>
+                <button>Add to Cart</button>
+            </article>
+
+            <article>
+                <h2>Wireless Mouse</h2>
+                <p>Ergonomic design with precision tracking.</p>
+                <p>Price: $49.99</p>
+                <button>Add to Cart</button>
+            </article>
+
+            <article>
+                <h2>Mechanical Keyboard</h2>
+                <p>Professional-grade typing experience.</p>
+                <p>Price: $149.99</p>
+                <button>Add to Cart</button>
+            </article>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Online Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

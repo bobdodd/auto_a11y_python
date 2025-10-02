@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrHeaderMissingScope - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrHeaderMissingScope_001_violations_basic",
+    "issueId": "ErrHeaderMissingScope",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Table headers without scope attribute",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sales Report</h1>
+
+    <main>
+        <!-- Table without scope attributes - VIOLATION -->
+        <table data-expected-violation="true"
+               data-violation-id="ErrHeaderMissingScope"
+               data-violation-reason="Table header cells lack scope attribute. Screen readers cannot properly associate headers with data cells. Users with visual impairments don't know which headers apply to data. Ambiguous relationships in complex tables">
+            <caption>Quarterly Sales by Region</caption>
+            <thead>
+                <tr>
+                    <th>Region</th>
+                    <th>Q1</th>
+                    <th>Q2</th>
+                    <th>Q3</th>
+                    <th>Q4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>North</th>
+                    <td>$125,000</td>
+                    <td>$138,500</td>
+                    <td>$142,300</td>
+                    <td>$155,000</td>
+                </tr>
+                <tr>
+                    <th>South</th>
+                    <td>$98,000</td>
+                    <td>$105,200</td>
+                    <td>$112,400</td>
+                    <td>$118,900</td>
+                </tr>
+                <tr>
+                    <th>East</th>
+                    <td>$156,000</td>
+                    <td>$168,300</td>
+                    <td>$175,500</td>
+                    <td>$182,000</td>
+                </tr>
+                <tr>
+                    <th>West</th>
+                    <td>$132,000</td>
+                    <td>$145,800</td>
+                    <td>$151,200</td>
+                    <td>$162,500</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Another table without scope - VIOLATION -->
+        <table data-expected-violation="true"
+               data-violation-id="ErrHeaderMissingScope"
+               data-violation-reason="Table headers missing scope attribute. Screen reader users cannot determine header-data relationships. Difficult to navigate and understand table structure. Poor accessibility for blind users">
+            <caption>Employee Performance Ratings</caption>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Department</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Smith</td>
+                    <td>Engineering</td>
+                    <td>4.5</td>
+                    <td>Exceeds Expectations</td>
+                </tr>
+                <tr>
+                    <td>Sarah Johnson</td>
+                    <td>Marketing</td>
+                    <td>4.8</td>
+                    <td>Outstanding</td>
+                </tr>
+                <tr>
+                    <td>Mike Davis</td>
+                    <td>Sales</td>
+                    <td>4.2</td>
+                    <td>Meets Expectations</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Online Store</title>
+    <title>Product Catalog | Shop Now | Best Deals</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMultipleTitleElements_001_violations_basic",
+    "issueId": "WarnMultipleTitleElements",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page with multiple title elements",
+    "wcag": "2.4.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnMultipleTitleElements"
+      data-violation-reason="Page contains multiple <title> elements. Only the first title is typically used by browsers and screen readers. Causes confusion about the actual page title. Screen readers may announce inconsistent or incorrect page titles. Search engines may be confused about page content">
+    <h1>Product Catalog</h1>
+
+    <main>
+        <p>Browse our extensive collection of products.</p>
+
+        <div class="product-grid">
+            <article>
+                <h2>Premium Laptop</h2>
+                <p>High-performance laptop for professionals.</p>
+                <p>Price: $1,299.99</p>
+                <button>Add to Cart</button>
+            </article>
+
+            <article>
+                <h2>Wireless Mouse</h2>
+                <p>Ergonomic design with precision tracking.</p>
+                <p>Price: $49.99</p>
+                <button>Add to Cart</button>
+            </article>
+
+            <article>
+                <h2>Mechanical Keyboard</h2>
+                <p>Professional-grade typing experience.</p>
+                <p>Price: $149.99</p>
+                <button>Add to Cart</button>
+            </article>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Online Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrNativeVideoMissingControls - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNativeVideoMissingControls_001_violations_basic",
+    "issueId": "ErrNativeVideoMissingControls",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "HTML5 video elements without controls attribute",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Videos Without Controls</h1>
+
+    <main>
+        <section>
+            <h2>Video Without Controls</h2>
+            <video src="sample-video.mp4"
+                   width="640"
+                   height="360"
+                   data-expected-violation="true"
+                   data-violation-id="ErrNativeVideoMissingControls"
+                   data-violation-reason="Video element has no controls attribute, users cannot control playback">
+            </video>
+        </section>
+
+        <section>
+            <h2>Autoplaying Video Without Controls</h2>
+            <video src="promo-video.mp4"
+                   width="640"
+                   height="360"
+                   autoplay
+                   data-expected-violation="true"
+                   data-violation-id="ErrNativeVideoMissingControls"
+                   data-violation-reason="Autoplaying video lacks controls, users cannot pause or stop it">
+            </video>
+        </section>
+
+        <section>
+            <h2>Looping Video Without Controls</h2>
+            <video src="background-video.mp4"
+                   width="640"
+                   height="360"
+                   loop
+                   data-expected-violation="true"
+                   data-violation-id="ErrNativeVideoMissingControls"
+                   data-violation-reason="Looping video has no controls, keyboard users cannot interact with it">
+            </video>
+        </section>
+    </main>
+</body>
+</html>

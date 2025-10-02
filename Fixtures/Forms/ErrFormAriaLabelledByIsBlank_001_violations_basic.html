@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFormAriaLabelledByIsBlank - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormAriaLabelledByIsBlank_001_violations_basic",
+    "issueId": "ErrFormAriaLabelledByIsBlank",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Form with aria-labelledby referencing empty element",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>User Registration</h1>
+    <main>
+        <div id="formLabel"></div>
+        <form aria-labelledby="formLabel"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByIsBlank"
+              data-violation-reason="Form uses aria-labelledby pointing to empty element. Screen readers announce form with no accessible name. The referenced div has no text content. Creates unlabeled form region. Users cannot identify form purpose. Violates WCAG 1.3.1 by lacking semantic structure and 4.1.2 by missing accessible name">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </main>
+</body>
+</html>

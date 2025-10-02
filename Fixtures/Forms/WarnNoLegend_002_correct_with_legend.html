@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNoLegend - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNoLegend_002_correct_with_legend",
+    "issueId": "WarnNoLegend",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Fieldsets with proper legend elements providing group context",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Customer Survey - Correct Usage</h1>
+
+    <main>
+        <form>
+            <!-- Fieldset with legend for radio buttons - CORRECT -->
+            <fieldset data-expected-pass="true"
+                      data-pass-reason="Fieldset includes legend element providing clear group label for radio button choices">
+                <legend>Contact Preference</legend>
+                <div>
+                    <input type="radio" id="email2" name="contact" value="email">
+                    <label for="email2">Email</label>
+                </div>
+                <div>
+                    <input type="radio" id="phone2" name="contact" value="phone">
+                    <label for="phone2">Phone</label>
+                </div>
+                <div>
+                    <input type="radio" id="mail2" name="contact" value="mail">
+                    <label for="mail2">Mail</label>
+                </div>
+            </fieldset>
+
+            <!-- Fieldset with legend for checkboxes - CORRECT -->
+            <fieldset data-expected-pass="true"
+                      data-pass-reason="Fieldset properly includes legend element, screen readers announce group context before each checkbox">
+                <legend>Interests (select all that apply)</legend>
+                <div>
+                    <input type="checkbox" id="newsletter2" name="interests" value="newsletter">
+                    <label for="newsletter2">Newsletter</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="updates2" name="interests" value="updates">
+                    <label for="updates2">Product Updates</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="offers2" name="interests" value="offers">
+                    <label for="offers2">Special Offers</label>
+                </div>
+            </fieldset>
+
+            <button type="submit">Submit Survey</button>
+        </form>
+    </main>
+</body>
+</html>

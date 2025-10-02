@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Literature - Invalid Language Codes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrElementPrimaryLangNotRecognized_001_violations_basic",
+    "issueId": "ErrElementPrimaryLangNotRecognized",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements have unrecognized language codes",
+    "wcag": "3.1.1, 3.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>World Poetry Collection</h1>
+
+    <article>
+        <h2>Spanish Poetry</h2>
+
+        <div lang="spanish"
+             data-expected-violation="true"
+             data-violation-id="ErrElementPrimaryLangNotRecognized"
+             data-violation-reason="Language code 'spanish' is not a valid ISO 639 code, should be 'es'">
+            <p>El amor es la poesía de los sentidos.</p>
+        </div>
+    </article>
+
+    <article>
+        <h2>Chinese Verses</h2>
+
+        <div lang="chn"
+             data-expected-violation="true"
+             data-violation-id="ErrElementPrimaryLangNotRecognized"
+             data-violation-reason="Language code 'chn' is not valid, correct codes are 'zh' or 'zh-Hans'">
+            <p>山高水长，友谊长存。</p>
+        </div>
+    </article>
+
+    <article>
+        <h2>Arabic Poetry</h2>
+
+        <div lang="arabic"
+             data-expected-violation="true"
+             data-violation-id="ErrElementPrimaryLangNotRecognized"
+             data-violation-reason="Language code 'arabic' is invalid, should use 'ar' for Arabic">
+            <p>الحب أعمى والصداقة تغمض عينيها</p>
+        </div>
+    </article>
+</body>
+</html>

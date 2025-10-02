@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Content - Invalid Region Qualifiers</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrElementRegionQualifierNotRecognized_001_violations_basic",
+    "issueId": "ErrElementRegionQualifierNotRecognized",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements have unrecognized region qualifiers in lang attribute",
+    "wcag": "3.1.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>International Events</h1>
+
+    <article>
+        <h2>Spanish Conference</h2>
+
+        <div lang="es-ESP"
+             data-expected-violation="true"
+             data-violation-id="ErrElementRegionQualifierNotRecognized"
+             data-violation-reason="Region code 'ESP' is invalid, should use 'ES' (ISO 3166-1 alpha-2)">
+            <p>Conferencia en Madrid sobre tecnología accesible.</p>
+        </div>
+    </article>
+
+    <article>
+        <h2>English Event</h2>
+
+        <div lang="en-USA"
+             data-expected-violation="true"
+             data-violation-id="ErrElementRegionQualifierNotRecognized"
+             data-violation-reason="Region code 'USA' is invalid, should be 'US' for United States">
+            <p>Technology summit in New York City.</p>
+        </div>
+    </article>
+
+    <article>
+        <h2>French Workshop</h2>
+
+        <div lang="fr-FRA"
+             data-expected-violation="true"
+             data-violation-id="ErrElementRegionQualifierNotRecognized"
+             data-violation-reason="Region code 'FRA' is invalid three-letter code, should use 'FR'">
+            <p>Atelier à Paris sur l'accessibilité numérique.</p>
+        </div>
+    </article>
+</body>
+</html>

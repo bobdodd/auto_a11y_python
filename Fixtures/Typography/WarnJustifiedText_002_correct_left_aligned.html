@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnJustifiedText - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnJustifiedText_002_correct_left_aligned",
+    "issueId": "WarnJustifiedText",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Text using left alignment instead of justify",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .left-aligned-text {
+            text-align: left;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Company Blog</h1>
+
+    <main>
+        <article>
+            <h2>The Future of Technology</h2>
+            <!-- Left-aligned text - CORRECT -->
+            <div class="left-aligned-text"
+                 data-expected-pass="true"
+                 data-pass-reason="Text uses text-align: left with consistent word spacing. Users with dyslexia can read more easily without visual 'rivers'. Cognitive load reduced with predictable spacing. Users with low vision benefit from uniform text patterns">
+                <p>Technology continues to evolve at a rapid pace, transforming the way we live and work. From artificial intelligence to quantum computing, innovations are reshaping industries and creating new possibilities for the future.</p>
+
+                <p>Companies around the world are investing heavily in research and development to stay competitive in this fast-changing landscape. The pace of technological advancement shows no signs of slowing down.</p>
+            </div>
+        </article>
+
+        <article>
+            <h2>Sustainability Practices</h2>
+            <!-- Left-aligned text - CORRECT -->
+            <div class="left-aligned-text"
+                 data-expected-pass="true"
+                 data-pass-reason="Left-aligned text maintains consistent word spacing improving readability. People with dyslexia can track lines more easily. Even spacing supports natural reading flow. Users with attention deficits maintain better focus with uniform text">
+                <p>Environmental sustainability has become a critical priority for organizations worldwide. Implementing green practices not only helps protect our planet but also makes good business sense in the long run.</p>
+
+                <p>Reducing carbon emissions, minimizing waste, and adopting renewable energy sources are just a few ways companies can contribute to a more sustainable future for generations to come.</p>
+            </div>
+        </article>
+
+        <article>
+            <h2>Remote Work Trends</h2>
+            <!-- Left-aligned text - CORRECT -->
+            <div class="left-aligned-text"
+                 data-expected-pass="true"
+                 data-pass-reason="Text-align: left provides easier reading for users with cognitive disabilities. Consistent word spacing eliminates visual 'rivers' that disrupt comprehension. Dyslexic users read more comfortably. Left alignment is recommended best practice for accessibility">
+                <p>Remote work has transformed from a rare benefit to a standard practice in many industries. This shift has brought both opportunities and challenges as organizations adapt to distributed teams.</p>
+
+                <p>Maintaining productivity, fostering team collaboration, and ensuring work-life balance are key considerations for companies embracing remote and hybrid work models in the modern era.</p>
+            </div>
+        </article>
+    </main>
+</body>
+</html>

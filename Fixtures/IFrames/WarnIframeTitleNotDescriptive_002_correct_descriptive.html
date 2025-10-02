@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnIframeTitleNotDescriptive - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnIframeTitleNotDescriptive_002_correct_descriptive",
+    "issueId": "WarnIframeTitleNotDescriptive",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Iframes with descriptive title attributes",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <section>
+            <h2>Product Demonstration</h2>
+            <!-- Descriptive title - CORRECT -->
+            <iframe src="https://www.youtube.com/embed/demo123"
+                    title="Product demonstration video showing features and usage"
+                    data-expected-pass="true"
+                    data-pass-reason="Iframe has descriptive title explaining the content. Screen reader users understand this is a product demo video. Clear purpose and context provided. Users can distinguish this from other iframes">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Customer Reviews</h2>
+            <!-- Descriptive title - CORRECT -->
+            <iframe src="https://reviews.example.com/widget"
+                    title="Customer reviews and ratings widget"
+                    data-expected-pass="true"
+                    data-pass-reason="Iframe title clearly describes the customer reviews content. Screen reader users know what to expect. Meaningful context helps users decide whether to interact with iframe. Assistive technology users understand the purpose">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Store Locator</h2>
+            <!-- Descriptive title - CORRECT -->
+            <iframe src="https://maps.example.com/locations"
+                    title="Interactive map showing store locations near you"
+                    data-expected-pass="true"
+                    data-pass-reason="Iframe title describes the store locator map functionality. Screen reader users understand this is an interactive map. Clear description of the iframe's purpose. Users know they can find nearby store locations">
+            </iframe>
+        </section>
+    </main>
+</body>
+</html>

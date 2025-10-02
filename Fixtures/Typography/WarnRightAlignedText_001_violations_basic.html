@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnRightAlignedText - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnRightAlignedText_001_violations_basic",
+    "issueId": "WarnRightAlignedText",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Body text using text-align: right",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .right-aligned-text {
+            text-align: right;
+            max-width: 600px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Annual Report Highlights</h1>
+
+    <main>
+        <section>
+            <h2>Financial Performance</h2>
+            <!-- Right-aligned body text - VIOLATION -->
+            <div class="right-aligned-text"
+                 data-expected-violation="true"
+                 data-violation-id="WarnRightAlignedText"
+                 data-violation-reason="Body text uses text-align: right making it difficult to read. Users with dyslexia struggle with right-aligned text as it disrupts the natural left-to-right reading pattern. Ragged left edge harder to track than ragged right. Users with low vision have difficulty finding the start of each line">
+                <p>The company achieved record revenue of $2.5 billion in fiscal year 2024, representing a 15% increase over the previous year. Strong performance across all business segments contributed to this growth.</p>
+
+                <p>Operating margins improved by 3 percentage points, reflecting successful cost optimization initiatives and operational efficiencies implemented throughout the organization.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Market Expansion</h2>
+            <!-- Another right-aligned text block - VIOLATION -->
+            <div class="right-aligned-text"
+                 data-expected-violation="true"
+                 data-violation-id="WarnRightAlignedText"
+                 data-violation-reason="Right-aligned paragraph text reduces readability significantly. People with dyslexia cannot track lines effectively. Cognitive load increases as users must find the start of each line on the left. Users with attention deficits lose focus more easily">
+                <p>We successfully entered five new international markets this year, expanding our global footprint and customer base. Strategic partnerships enabled rapid market penetration and brand recognition in these regions.</p>
+
+                <p>Customer satisfaction scores reached an all-time high of 94%, demonstrating our commitment to excellence in service delivery and product quality across all markets.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Innovation Leadership</h2>
+            <!-- Third right-aligned text block - VIOLATION -->
+            <div class="right-aligned-text"
+                 data-expected-violation="true"
+                 data-violation-id="WarnRightAlignedText"
+                 data-violation-reason="Text-align: right on body text creates accessibility barriers. Dyslexic readers experience significant difficulty. Ragged left edges disrupt reading flow for all users. Screen magnification users must scroll horizontally to find line beginnings. Right alignment should be reserved for specific contexts like RTL languages">
+                <p>Investment in research and development increased by 25%, fueling innovation across our product portfolio. We launched 12 new products and secured 45 patents for groundbreaking technologies.</p>
+
+                <p>Our innovation pipeline remains robust with exciting developments in artificial intelligence, machine learning, and sustainable technology solutions planned for the coming years.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

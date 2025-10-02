@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnIframeTitleNotDescriptive - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnIframeTitleNotDescriptive_001_violations_basic",
+    "issueId": "WarnIframeTitleNotDescriptive",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Iframes with generic or non-descriptive title attributes",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <section>
+            <h2>Product Demonstration</h2>
+            <!-- Generic title "video" - VIOLATION -->
+            <iframe src="https://www.youtube.com/embed/demo123"
+                    title="video"
+                    data-expected-violation="true"
+                    data-violation-id="WarnIframeTitleNotDescriptive"
+                    data-violation-reason="Iframe has generic title 'video'. Screen reader users cannot identify the purpose or content of the iframe. Title should describe what the iframe contains. Users cannot distinguish between multiple iframes on the page">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Customer Reviews</h2>
+            <!-- Generic title "content" - VIOLATION -->
+            <iframe src="https://reviews.example.com/widget"
+                    title="content"
+                    data-expected-violation="true"
+                    data-violation-id="WarnIframeTitleNotDescriptive"
+                    data-violation-reason="Iframe title 'content' is not descriptive. Screen reader users don't know what content the iframe displays. Should specify that it shows customer reviews. Assistive technology users miss important context">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Store Locator</h2>
+            <!-- Generic title "frame" - VIOLATION -->
+            <iframe src="https://maps.example.com/locations"
+                    title="frame"
+                    data-expected-violation="true"
+                    data-violation-id="WarnIframeTitleNotDescriptive"
+                    data-violation-reason="Iframe title 'frame' is completely generic. Does not convey the purpose of the embedded map. Screen reader users cannot understand what this iframe is for. Title should describe the store locator map functionality">
+            </iframe>
+        </section>
+    </main>
+</body>
+</html>

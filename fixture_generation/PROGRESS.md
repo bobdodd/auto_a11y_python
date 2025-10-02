@@ -10,11 +10,11 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ## Summary Statistics
 
 - **Total Issues in Catalog:** 314
-- **Total Enhanced Fixtures Created:** 307 files
-- **Issues With Enhanced Fixtures:** 152
+- **Total Enhanced Fixtures Created:** 319 files
+- **Issues With Enhanced Fixtures:** 158
 - **Touchpoints Completed:** 32 (Images - 100%, Headings - 100%, Links - 100%, ARIA - 100%, Focus Management - 100%, Colors/Contrast - 100%, Lists - 100%, Buttons - 100%, Tables - 100%, IFrames - 100%, Media - 100%, Page - 100%, Animation - 100%, Accessible Names - 100%, Event Handling - 100%, Interactive - 100%, Keyboard - 100%, Maps - 100%, Timing - 100%, SVG - 100%, Visual - 100%, Structure - 100%, PDF - 100%, Title Attributes - 100%, Animations - 100%, JavaScript - 100%, Fonts - 100%, Language - 100%)
-- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 15%)
-- **Issues Still Needing Fixtures:** 162
+- **Touchpoints In Progress:** 2 (Forms 82%, Landmarks 25%)
+- **Issues Still Needing Fixtures:** 156
 
 ## Completed Fixtures by Touchpoint
 
@@ -220,7 +220,7 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 
 **Total:** 4 fixture files
 
-### 🏛️ Landmarks Touchpoint (10/65 issues - 15% complete)
+### 🏛️ Landmarks Touchpoint (16/65 issues - 25% complete)
 
 1. **ErrCompletelyEmptyNavLandmark** - Empty navigation landmarks (2 fixtures)
 2. **ErrBannerLandmarkMayNotBeChildOfAnotherLandmark** - Banner nested in other landmarks (2 fixtures)
@@ -232,11 +232,17 @@ Note: Some remaining issues are duplicates with different IDs (WarnNoFieldset/fo
 8. **ErrMainLandmarkAccessibleNameIsBlank** - Main landmarks with blank accessible names (2 fixtures)
 9. **ErrNavigationLandmarkAccessibleNameIsBlank** - Navigation landmarks with blank accessible names (2 fixtures)
 10. **ErrRegionLandmarkAccessibleNameIsBlank** - Region landmarks with blank accessible names (2 fixtures)
+11. **ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs** - ContentInfo with conflicting ARIA attributes (2 fixtures)
+12. **ErrDuplicateLabelForBannerLandmark** - Multiple banners with same label (2 fixtures)
+13. **ErrDuplicateLabelForComplementaryLandmark** - Multiple complementary with same label (2 fixtures)
+14. **ErrDuplicateLabelForContentinfoLandmark** - Multiple contentinfo with same label (2 fixtures)
+15. **ErrDuplicateLabelForNavLandmark** - Multiple navigation with same label (2 fixtures)
+16. **ErrDuplicateLabelForRegionLandmark** - Multiple region with same label (2 fixtures)
 
-**Total:** 20 fixture files
+**Total:** 32 fixture files
 
-#### ⏳ Remaining Issues (55)
-Major gaps: duplicate landmarks, landmark nesting, complementary/contentinfo location restrictions
+#### ⏳ Remaining Issues (49)
+Major gaps: more conflicting attributes, form/search landmark duplicates, main/region landmark issues
 
 ### 🎨 Colors and Contrast Touchpoint (4/4 issues - 100% COMPLETE)
 

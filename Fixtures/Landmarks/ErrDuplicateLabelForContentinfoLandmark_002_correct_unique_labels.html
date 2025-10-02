@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentInfo Landmarks with Unique Labels - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrDuplicateLabelForContentinfoLandmark_002_correct_unique_labels",
+        "issueId": "ErrDuplicateLabelForContentinfoLandmark",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 3,
+        "description": "ContentInfo landmarks with unique accessible names or single contentinfo without label",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>ContentInfo Landmarks with Unique Labels - Correct</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Proper Labeling of ContentInfo Landmarks</h2>
+            <p>If multiple contentinfo landmarks must exist (very rare pattern), each needs a unique accessible name. The most common and recommended pattern is a single footer per page.</p>
+        </article>
+    </main>
+
+    <footer role="contentinfo"
+            aria-label="Main site footer"
+            data-expected-pass="true"
+            data-pass-reason="ContentInfo landmark has unique accessible name 'Main site footer', distinct from other contentinfo regions">
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+        <nav aria-label="Legal links">
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a> |
+            <a href="/accessibility">Accessibility Statement</a>
+        </nav>
+    </footer>
+
+    <div role="contentinfo"
+         aria-label="Contact information footer"
+         data-expected-pass="true"
+         data-pass-reason="ContentInfo landmark has unique accessible name 'Contact information footer', clearly distinguishable from main footer">
+        <h2>Get In Touch</h2>
+        <address>
+            <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+            <p>Phone: <a href="tel:+15551234567">(555) 123-4567</a></p>
+            <p>Address: 123 Main Street, City, ST 12345</p>
+        </address>
+    </div>
+
+    <hr>
+    <h3>Recommended Pattern: Single ContentInfo</h3>
+    <p data-expected-pass="true"
+       data-pass-reason="Single footer element without label is the most common and recommended pattern. When only one contentinfo landmark exists, no accessible name is required.">
+        Most pages should have only one footer/contentinfo landmark, which doesn't require a label. This is demonstrated by the single footer element pattern shown above (before the additional labeled contentinfo examples).
+    </p>
+    <p><strong>Best Practice:</strong> Use a single &lt;footer&gt; element per page. If you need multiple footer-like sections, consider using complementary landmarks (&lt;aside&gt;) for supplementary sections and reserve contentinfo for the main page footer.</p>
+</body>
+</html>

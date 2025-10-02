@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate ContentInfo Landmark Labels - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrDuplicateLabelForContentinfoLandmark_001_violations_basic",
+        "issueId": "ErrDuplicateLabelForContentinfoLandmark",
+        "expectedViolationCount": 2,
+        "expectedPassCount": 0,
+        "description": "Multiple contentinfo landmarks with identical accessible names",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Duplicate ContentInfo Landmark Labels - Violations</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding ContentInfo Landmark Duplication</h2>
+            <p>Typically, a page should have only one contentinfo landmark (footer). However, if multiple contentinfo landmarks exist (uncommon pattern), they must have unique accessible names.</p>
+        </article>
+    </main>
+
+    <footer role="contentinfo"
+            aria-label="Site footer"
+            data-expected-violation="true"
+            data-violation-id="ErrDuplicateLabelForContentinfoLandmark"
+            data-violation-reason="Multiple contentinfo landmarks share the same accessible name 'Site footer', screen reader users cannot distinguish between them">
+        <p>© 2025 Example Corporation. All rights reserved.</p>
+        <nav aria-label="Legal links">
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Terms of Service</a> |
+            <a href="/accessibility">Accessibility Statement</a>
+        </nav>
+    </footer>
+
+    <div role="contentinfo"
+         aria-label="Site footer"
+         data-expected-violation="true"
+         data-violation-id="ErrDuplicateLabelForContentinfoLandmark"
+         data-violation-reason="ContentInfo landmark has duplicate accessible name 'Site footer' matching another contentinfo region, making navigation confusing for screen reader users">
+        <h2>Contact Information</h2>
+        <address>
+            <p>Email: <a href="mailto:info@example.com">info@example.com</a></p>
+            <p>Phone: <a href="tel:+15551234567">(555) 123-4567</a></p>
+        </address>
+    </div>
+
+    <p style="margin: 2rem;">Note: Having multiple contentinfo landmarks is very uncommon. Best practice is to have a single footer element per page. If multiple footer areas are needed, consider using complementary landmarks instead, or ensure each contentinfo has a unique label.</p>
+</body>
+</html>

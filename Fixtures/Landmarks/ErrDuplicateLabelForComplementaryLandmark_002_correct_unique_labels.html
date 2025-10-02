@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complementary Landmarks with Unique Labels - Correct</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrDuplicateLabelForComplementaryLandmark_002_correct_unique_labels",
+        "issueId": "ErrDuplicateLabelForComplementaryLandmark",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 4,
+        "description": "Complementary landmarks with unique accessible names or single complementary without label",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Complementary Landmarks with Unique Labels - Correct</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Proper Labeling of Multiple Complementary Landmarks</h2>
+            <p>Each complementary landmark must have a unique, descriptive accessible name so screen reader users can quickly navigate to the specific supporting content they need.</p>
+
+            <aside role="complementary"
+                   aria-label="Related articles"
+                   data-expected-pass="true"
+                   data-pass-reason="Complementary landmark has unique accessible name 'Related articles', distinct from other complementary regions">
+                <h3>Related Reading</h3>
+                <ul>
+                    <li><a href="/article1">Introduction to ARIA</a></li>
+                    <li><a href="/article2">Semantic HTML Best Practices</a></li>
+                    <li><a href="/article3">Keyboard Navigation Guide</a></li>
+                </ul>
+            </aside>
+        </article>
+
+        <aside role="complementary"
+               aria-label="Popular topics"
+               data-expected-pass="true"
+               data-pass-reason="Complementary landmark has unique accessible name 'Popular topics', clearly distinguishable from other complementary sections">
+            <h3>Trending Now</h3>
+            <ul>
+                <li><a href="/topic1">Web Accessibility Basics</a></li>
+                <li><a href="/topic2">Color Contrast Requirements</a></li>
+                <li><a href="/topic3">Screen Reader Testing</a></li>
+            </ul>
+        </aside>
+
+        <div role="complementary"
+             aria-labelledby="resources-heading"
+             data-expected-pass="true"
+             data-pass-reason="Complementary landmark references unique heading via aria-labelledby, provides distinct accessible name 'Recommended Resources'">
+            <h3 id="resources-heading">Recommended Resources</h3>
+            <ul>
+                <li><a href="/resource1">WCAG 2.1 Guidelines</a></li>
+                <li><a href="/resource2">ARIA Authoring Practices</a></li>
+                <li><a href="/resource3">Accessibility Testing Tools</a></li>
+            </ul>
+        </div>
+
+        <aside data-expected-pass="true"
+               data-pass-reason="Single unlabeled complementary landmark (aside element) is acceptable when only one exists on page, no label needed">
+            <h3>Quick Tips</h3>
+            <ul>
+                <li>Use semantic HTML elements</li>
+                <li>Provide text alternatives for images</li>
+                <li>Ensure sufficient color contrast</li>
+                <li>Test with keyboard navigation</li>
+            </ul>
+        </aside>
+    </main>
+
+    <footer>
+        <p>© 2025 Example Corporation</p>
+        <p><strong>Key Point:</strong> Each complementary landmark needs a unique label that describes its specific purpose (e.g., "Related articles", "Popular topics", "Recommended resources") rather than generic labels like "Related content" repeated multiple times.</p>
+    </footer>
+</body>
+</html>

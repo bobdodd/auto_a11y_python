@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate Navigation Landmark Labels - Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrDuplicateLabelForNavLandmark_001_violations_basic",
+        "issueId": "ErrDuplicateLabelForNavLandmark",
+        "expectedViolationCount": 3,
+        "expectedPassCount": 0,
+        "description": "Multiple navigation landmarks with identical accessible names",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Duplicate Navigation Landmark Labels - Violations</h1>
+
+        <nav aria-label="Site navigation"
+             data-expected-violation="true"
+             data-violation-id="ErrDuplicateLabelForNavLandmark"
+             data-violation-reason="Multiple navigation landmarks share the same accessible name 'Site navigation', screen reader users cannot distinguish between them">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <h2>Understanding Navigation Landmark Labels</h2>
+            <p>When multiple navigation landmarks exist on a page (common pattern for header nav, footer nav, sidebar nav, etc.), each must have a unique accessible name so screen reader users can quickly jump to the specific navigation they need.</p>
+
+            <nav aria-label="Site navigation"
+                 data-expected-violation="true"
+                 data-violation-id="ErrDuplicateLabelForNavLandmark"
+                 data-violation-reason="Navigation landmark has duplicate accessible name 'Site navigation' matching another nav on page, causing confusion for screen reader users">
+                <h3>Table of Contents</h3>
+                <ul>
+                    <li><a href="#section1">Introduction</a></li>
+                    <li><a href="#section2">Main Content</a></li>
+                    <li><a href="#section3">Conclusion</a></li>
+                </ul>
+            </nav>
+
+            <p>Main article content goes here...</p>
+        </article>
+    </main>
+
+    <footer>
+        <nav aria-label="Site navigation"
+             data-expected-violation="true"
+             data-violation-id="ErrDuplicateLabelForNavLandmark"
+             data-violation-reason="Third navigation landmark also labeled 'Site navigation', making it impossible for screen readers to meaningfully distinguish between header, in-page, and footer navigation">
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/sitemap">Site Map</a></li>
+            </ul>
+        </nav>
+        <p>© 2025 Example Corporation</p>
+    </footer>
+
+    <p style="margin: 2rem;"><strong>Impact:</strong> Screen reader users rely on unique landmark labels to quickly navigate to specific sections. When multiple navigation landmarks share the same label, users must visit each one to find the navigation they need, significantly degrading the user experience.</p>
+</body>
+</html>

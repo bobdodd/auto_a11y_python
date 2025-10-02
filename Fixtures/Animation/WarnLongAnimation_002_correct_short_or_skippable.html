@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Screen - Short Animation with Skip</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLongAnimation_002_correct_short_or_skippable",
+    "issueId": "WarnLongAnimation",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Animation is short and provides skip button",
+    "wcag": "2.2.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .loading-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+        }
+
+        .loading-screen.hidden {
+            display: none;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            animation: logo-reveal 2s ease-in-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes logo-reveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .loading-text {
+            margin-top: 30px;
+            font-size: 1.5em;
+        }
+
+        .skip-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .skip-button:hover {
+            background: #5568d3;
+        }
+
+        .main-content.hidden {
+            display: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .logo {
+                animation: none;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Animation is short (2 seconds) and provides skip button for user control">
+    <div class="loading-screen" id="loadingScreen">
+        <div class="logo"></div>
+        <div class="loading-text">Loading your experience...</div>
+        <button class="skip-button" id="skipBtn" type="button">Skip Animation</button>
+    </div>
+
+    <div class="main-content hidden" id="mainContent">
+        <h1>Welcome to Our Platform</h1>
+        <p>Thank you for your patience. Your content is ready!</p>
+    </div>
+
+    <script>
+        const loadingScreen = document.getElementById('loadingScreen');
+        const mainContent = document.getElementById('mainContent');
+        const skipBtn = document.getElementById('skipBtn');
+
+        function showMainContent() {
+            loadingScreen.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+        }
+
+        // Skip button
+        skipBtn.addEventListener('click', showMainContent);
+
+        // Auto-complete after short animation (2 seconds)
+        setTimeout(showMainContent, 2000);
+    </script>
+</body>
+</html>

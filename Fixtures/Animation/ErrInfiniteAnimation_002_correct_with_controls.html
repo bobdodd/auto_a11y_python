@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Animation - With Pause Controls</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInfiniteAnimation_002_correct_with_controls",
+    "issueId": "ErrInfiniteAnimation",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Animation with pause/stop controls and reduced motion support",
+    "wcag": "2.2.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        .spinner.paused {
+            animation-play-state: paused;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .animation-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .animation-controls button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .spinner {
+                animation: none;
+                border-top-color: #3498db;
+            }
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Animation includes pause/resume controls and respects prefers-reduced-motion settings">
+    <h1>Welcome to Our Site</h1>
+
+    <div class="animation-controls">
+        <button id="pauseBtn" type="button">Pause Animations</button>
+        <button id="stopBtn" type="button">Stop Animations</button>
+    </div>
+
+    <div class="spinner" id="spinner" role="status" aria-label="Loading"></div>
+    <p style="text-align: center;">Processing your request...</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+    <script>
+        const spinner = document.getElementById('spinner');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        let isPaused = false;
+
+        pauseBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            spinner.classList.toggle('paused');
+            pauseBtn.textContent = isPaused ? 'Resume Animations' : 'Pause Animations';
+        });
+
+        stopBtn.addEventListener('click', () => {
+            spinner.style.display = 'none';
+            pauseBtn.disabled = true;
+            stopBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>

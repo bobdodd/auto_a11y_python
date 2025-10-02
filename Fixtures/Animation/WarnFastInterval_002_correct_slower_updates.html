@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Dashboard - Reasonable Update Rate</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFastInterval_002_correct_slower_updates",
+    "issueId": "WarnFastInterval",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Updates at reasonable interval with pause controls",
+    "wcag": "2.2.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        .metric-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
+            background: white;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2196f3;
+        }
+        .metric-label {
+            color: #666;
+            margin-top: 10px;
+        }
+        .controls {
+            padding: 20px;
+            text-align: center;
+        }
+        .controls button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Updates occur at a reasonable rate (once every 2 seconds) with pause control provided">
+    <h1>Real-Time System Monitor</h1>
+
+    <div class="controls">
+        <button id="pauseBtn" type="button">Pause Updates</button>
+        <span id="status">Updates every 2 seconds</span>
+    </div>
+
+    <div class="dashboard">
+        <div class="metric-card">
+            <div class="metric-value" id="cpu">0%</div>
+            <div class="metric-label">CPU Usage</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value" id="memory">0%</div>
+            <div class="metric-label">Memory Usage</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value" id="requests">0</div>
+            <div class="metric-label">Requests/sec</div>
+        </div>
+    </div>
+
+    <script>
+        let isPaused = false;
+        let intervalId;
+
+        const pauseBtn = document.getElementById('pauseBtn');
+        const statusEl = document.getElementById('status');
+
+        function updateMetrics() {
+            if (!isPaused) {
+                document.getElementById('cpu').textContent =
+                    Math.floor(Math.random() * 100) + '%';
+                document.getElementById('memory').textContent =
+                    Math.floor(Math.random() * 100) + '%';
+                document.getElementById('requests').textContent =
+                    Math.floor(Math.random() * 1000);
+            }
+        }
+
+        pauseBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            pauseBtn.textContent = isPaused ? 'Resume Updates' : 'Pause Updates';
+            statusEl.textContent = isPaused ? 'Updates paused' : 'Updates every 2 seconds';
+        });
+
+        // Updates every 2 seconds - reasonable rate
+        intervalId = setInterval(updateMetrics, 2000);
+        updateMetrics(); // Initial update
+    </script>
+</body>
+</html>

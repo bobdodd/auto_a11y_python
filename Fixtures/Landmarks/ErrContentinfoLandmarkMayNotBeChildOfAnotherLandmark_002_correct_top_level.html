@@ -17,33 +17,44 @@
     </script>
 </head>
 <body>
-    <header>
-        <h1>Site Title</h1>
+    <header role="banner">
+        <h1>Website with Proper Landmark Structure</h1>
     </header>
 
-    <nav>
+    <nav aria-label="Main navigation">
         <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
         </ul>
     </nav>
 
     <main>
         <h2>Main Content</h2>
-        <p>Primary content area</p>
+        <p>Primary content area. The contentinfo landmark is correctly positioned at the top level of the document.</p>
+
+        <article>
+            <h3>Article Title</h3>
+            <p>Article content here. Note that article footers should NOT use role="contentinfo" - that's only for the page-level footer.</p>
+        </article>
     </main>
 
-    <article>
-        <h2>Article Title</h2>
-        <p>Article content</p>
-    </article>
+    <aside role="complementary" aria-label="Related content">
+        <h3>Sidebar Information</h3>
+        <p>Additional content that complements the main content.</p>
+    </aside>
 
-    <footer data-expected-pass="true"
-            data-pass-reason="Contentinfo landmark at top level in body, properly positioned">
-        <p>&copy; 2024 Company Name</p>
+    <!-- Contentinfo at top level - CORRECT -->
+    <footer role="contentinfo"
+            data-expected-pass="true"
+            data-pass-reason="Contentinfo landmark is correctly positioned at the top level of the document, not nested inside any other landmark. This maintains proper landmark hierarchy">
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
         <nav aria-label="Footer navigation">
-            <a href="#privacy">Privacy</a>
-            <a href="#terms">Terms</a>
+            <a href="/privacy">Privacy Policy</a>
+            <span>|</span>
+            <a href="/terms">Terms of Service</a>
+            <span>|</span>
+            <a href="/contact">Contact Us</a>
         </nav>
     </footer>
 </body>

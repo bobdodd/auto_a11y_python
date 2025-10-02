@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Page - Accessible Fonts</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoFontFound_002_accessible_fonts",
+    "issueId": "DiscoFontFound",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Fonts chosen for accessibility and readability",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+        }
+        h1 {
+            font-family: 'Verdana', 'Geneva', sans-serif;
+        }
+        .quote {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Uses system fonts and widely readable fonts (Arial, Verdana, Georgia) with good character distinction and legibility">
+    <h1>Welcome to Our Blog</h1>
+
+    <article>
+        <h2>Understanding Typography</h2>
+        <p>Typography plays a crucial role in web design and accessibility. The choice of fonts can significantly impact readability for users with various visual and cognitive needs.</p>
+
+        <blockquote class="quote">
+            "Good typography is invisible. Bad typography cannot be ignored."
+        </blockquote>
+
+        <p>When selecting fonts, consider factors such as x-height, letter spacing, and overall legibility. Fonts like Arial, Verdana, and system fonts provide excellent readability for all users.</p>
+    </article>
+</body>
+</html>

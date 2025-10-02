@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions - Small Font Size</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFontsizeIsBelow16px_001_violations_basic",
+    "issueId": "WarnFontsizeIsBelow16px",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Font size below recommended 16px minimum",
+    "wcag": "1.4.4",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .terms {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Terms and Conditions</h1>
+
+    <div class="terms"
+         data-expected-violation="true"
+         data-violation-id="WarnFontsizeIsBelow16px"
+         data-violation-reason="Body text set at 12px is below the recommended 16px minimum, making it harder to read especially for users with low vision">
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to these terms, please do not use this website.</p>
+
+        <h2>2. Use License</h2>
+        <p>Permission is granted to temporarily download one copy of the materials on our website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.</p>
+
+        <h2>3. Disclaimer</h2>
+        <p>The materials on our website are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties including, without limitation, implied warranties or conditions of merchantability.</p>
+
+        <h2>4. Limitations</h2>
+        <p>In no event shall our company or its suppliers be liable for any damages arising out of the use or inability to use the materials on our website, even if we or an authorized representative has been notified orally or in writing.</p>
+    </div>
+</body>
+</html>

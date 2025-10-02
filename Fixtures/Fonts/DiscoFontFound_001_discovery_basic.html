@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Page - Font Discovery</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoFontFound_001_discovery_basic",
+    "issueId": "DiscoFontFound",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Fonts detected requiring review for accessibility",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive;
+        }
+        h1 {
+            font-family: 'Brush Script MT', cursive;
+        }
+        .quote {
+            font-family: 'Papyrus', fantasy;
+        }
+    </style>
+</head>
+<body data-requires-review="true"
+      data-review-reason="Multiple decorative fonts detected (Comic Sans, Brush Script, Papyrus) - review for readability and accessibility">
+    <h1>Welcome to Our Blog</h1>
+
+    <article>
+        <h2>Understanding Typography</h2>
+        <p>Typography plays a crucial role in web design and accessibility. The choice of fonts can significantly impact readability for users with various visual and cognitive needs.</p>
+
+        <blockquote class="quote">
+            "Good typography is invisible. Bad typography cannot be ignored."
+        </blockquote>
+
+        <p>When selecting fonts, consider factors such as x-height, letter spacing, and overall legibility. Some fonts that may seem artistic or creative can actually create barriers for users with dyslexia or low vision.</p>
+    </article>
+</body>
+</html>

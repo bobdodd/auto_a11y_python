@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnModalMissingLabel - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_WarnModalMissingLabel_001_violations_basic",
+    "issueId": "AI_WarnModalMissingLabel",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Modal dialogs lacking accessible name or description",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.open {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Account Settings</h1>
+
+    <main>
+        <button onclick="document.getElementById('confirmModal').classList.add('open')">Delete Account</button>
+        <button onclick="document.getElementById('settingsModal').classList.add('open')">Edit Profile</button>
+
+        <!-- Modal without aria-label or aria-labelledby - VIOLATION -->
+        <div id="confirmModal" class="modal" role="dialog"
+             data-expected-violation="true"
+             data-violation-id="AI_WarnModalMissingLabel"
+             data-violation-reason="Modal dialog has role='dialog' but lacks aria-label or aria-labelledby. Screen readers cannot announce the purpose of the dialog. Users don't know what the dialog is for when it opens. Context is lost for assistive technology users">
+            <div class="modal-content">
+                <button class="close-btn" onclick="document.getElementById('confirmModal').classList.remove('open')">&times;</button>
+                <h2>Confirm Action</h2>
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                <button>Yes, Delete</button>
+                <button onclick="document.getElementById('confirmModal').classList.remove('open')">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Another modal without accessible name - VIOLATION -->
+        <div id="settingsModal" class="modal" role="dialog"
+             data-expected-violation="true"
+             data-violation-id="AI_WarnModalMissingLabel"
+             data-violation-reason="Modal dialog lacks aria-label or aria-labelledby. Screen reader users cannot determine the dialog's purpose. No accessible name provided for assistive technologies. Users with cognitive disabilities may be confused about the modal's purpose">
+            <div class="modal-content">
+                <button class="close-btn" onclick="document.getElementById('settingsModal').classList.remove('open')">&times;</button>
+                <h2>Profile Settings</h2>
+                <form>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username">
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+
+                    <button type="submit">Save Changes</button>
+                    <button type="button" onclick="document.getElementById('settingsModal').classList.remove('open')">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

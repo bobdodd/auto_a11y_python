@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoStyleAttrOnElements - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoStyleAttrOnElements_001_violations_basic",
+    "issueId": "DiscoStyleAttrOnElements",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements with inline style attributes",
+    "wcag": "N/A",
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="DiscoStyleAttrOnElements"
+      data-violation-reason="Page contains inline style attributes that may affect responsive design and prevent users with custom stylesheets from adapting content. Users who need custom styles for readability cannot override inline styles easily">
+    <h1 style="color: #333; font-size: 2.5rem; margin-bottom: 1rem;">Product Catalog</h1>
+
+    <main>
+        <!-- Multiple inline styles - Discovery finding -->
+        <div data-expected-violation="true"
+             data-violation-id="DiscoStyleAttrOnElements"
+             data-violation-reason="Card uses inline styles for layout and appearance. Users with custom stylesheets or browser extensions for accessibility cannot easily override these styles. May interfere with high contrast mode or user style preferences"
+             style="background: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;">
+            <h2 style="color: #2c3e50; font-size: 1.8rem;">Premium Widget</h2>
+            <p style="color: #666; line-height: 1.6;">The best widget money can buy with advanced features.</p>
+            <p style="font-size: 1.5rem; font-weight: bold; color: #27ae60;">$99.99</p>
+            <button style="background: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Add to Cart</button>
+        </div>
+
+        <!-- More inline styles -->
+        <div data-expected-violation="true"
+             data-violation-id="DiscoStyleAttrOnElements"
+             data-violation-reason="Alert banner uses inline styles for critical visual information. Users with high contrast mode or custom color schemes may not see intended styling. Color-blind users may miss visual cues if not supplemented with other indicators"
+             style="background: #fff3cd; border: 2px solid #ffc107; padding: 15px; margin-bottom: 20px;">
+            <p style="color: #856404; font-weight: 600; margin: 0;">Special Offer: Free shipping on orders over $50!</p>
+        </div>
+
+        <!-- Navigation with inline styles -->
+        <nav style="display: flex; gap: 1rem; padding: 1rem; background: #e9ecef;">
+            <a href="/" style="color: #007bff; text-decoration: none; padding: 0.5rem 1rem;">Home</a>
+            <a href="/products" style="color: #007bff; text-decoration: none; padding: 0.5rem 1rem;">Products</a>
+            <a href="/about" style="color: #007bff; text-decoration: none; padding: 0.5rem 1rem;">About</a>
+        </nav>
+    </main>
+</body>
+</html>

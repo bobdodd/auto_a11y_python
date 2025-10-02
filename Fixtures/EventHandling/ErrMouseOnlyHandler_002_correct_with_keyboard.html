@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Content - Keyboard Accessible Events</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_002_correct_with_keyboard",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Interactive functionality available through both mouse and keyboard",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        .dropdown-button:focus {
+            outline: 2px solid #2196F3;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:focus {
+            background-color: #ddd;
+            outline: 2px solid #2196F3;
+        }
+        .tooltip-trigger {
+            border-bottom: 1px dotted black;
+            cursor: help;
+        }
+        .tooltip-trigger:focus {
+            outline: 2px solid #2196F3;
+        }
+        .tooltip-text {
+            display: none;
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            margin-top: 5px;
+        }
+        .edit-button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Dashboard</h1>
+
+    <div class="dropdown"
+         data-expected-pass="true"
+         data-pass-reason="Dropdown works with both mouse click and keyboard Enter/Space, includes focus management">
+        <button class="dropdown-button"
+                id="dropdown-trigger"
+                aria-expanded="false"
+                aria-haspopup="true">
+            Menu
+        </button>
+        <div class="dropdown-content" id="dropdown-menu" role="menu">
+            <a href="#profile" role="menuitem">Profile</a>
+            <a href="#settings" role="menuitem">Settings</a>
+            <a href="#logout" role="menuitem">Logout</a>
+        </div>
+    </div>
+
+    <p>Focus on the
+        <span class="tooltip-trigger"
+              tabindex="0"
+              aria-describedby="tooltip"
+              data-expected-pass="true"
+              data-pass-reason="Tooltip accessible via focus, works for both mouse and keyboard users">
+            underlined text
+        </span>
+        for more information.
+        <span class="tooltip-text" id="tooltip" role="tooltip">Additional information appears here</span>
+    </p>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Edit functionality available via keyboard-accessible button, not relying on double-click">
+        <span id="editable-text">This text can be edited</span>
+        <button id="edit-button" class="edit-button">Edit</button>
+    </div>
+
+    <script>
+        // Keyboard-accessible dropdown
+        const dropdownBtn = document.getElementById('dropdown-trigger');
+        const menu = document.getElementById('dropdown-menu');
+        let menuOpen = false;
+
+        function toggleMenu() {
+            menuOpen = !menuOpen;
+            menu.style.display = menuOpen ? 'block' : 'none';
+            dropdownBtn.setAttribute('aria-expanded', menuOpen);
+        }
+
+        dropdownBtn.addEventListener('click', toggleMenu);
+        dropdownBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleMenu();
+            }
+        });
+
+        // Keyboard-accessible tooltip
+        const tooltipTrigger = document.querySelector('.tooltip-trigger');
+        const tooltipText = document.getElementById('tooltip');
+
+        function showTooltip() {
+            tooltipText.style.display = 'block';
+        }
+
+        function hideTooltip() {
+            tooltipText.style.display = 'none';
+        }
+
+        tooltipTrigger.addEventListener('mouseover', showTooltip);
+        tooltipTrigger.addEventListener('mouseout', hideTooltip);
+        tooltipTrigger.addEventListener('focus', showTooltip);
+        tooltipTrigger.addEventListener('blur', hideTooltip);
+
+        // Keyboard-accessible edit button
+        const editableText = document.getElementById('editable-text');
+        const editButton = document.getElementById('edit-button');
+
+        editButton.addEventListener('click', () => {
+            const newText = prompt('Enter new text:', editableText.textContent);
+            if (newText) editableText.textContent = newText;
+        });
+    </script>
+</body>
+</html>

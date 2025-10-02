@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrProgressBarWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrProgressBarWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrProgressBarWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Progress indicators lacking proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .progress-container {
+            width: 400px;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #007bff;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Upload</h1>
+
+    <main>
+        <!-- Progress bar without ARIA -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrProgressBarWithoutARIA"
+             data-violation-reason="Progress bar lacks role='progressbar' and ARIA attributes (aria-valuenow, aria-valuemin, aria-valuemax). Screen readers cannot announce progress status">
+            <h2>Upload Progress</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress1" style="width: 45%"></div>
+            </div>
+            <p>45% complete</p>
+        </div>
+
+        <!-- Loading indicator without role or status -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrProgressBarWithoutARIA"
+             data-violation-reason="Indeterminate progress indicator lacks role='progressbar' without value attributes or aria-busy. Screen reader users are not informed of ongoing process">
+            <h2>Processing...</h2>
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 100%; animation: pulse 1s infinite;"></div>
+            </div>
+        </div>
+
+        <button onclick="updateProgress()">Start Upload</button>
+    </main>
+
+    <script>
+        let progress = 0;
+        function updateProgress() {
+            progress = Math.min(progress + 10, 100);
+            document.getElementById('progress1').style.width = progress + '%';
+        }
+    </script>
+
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrSearchWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrSearchWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrSearchWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Search functionality lacking proper ARIA and semantic markup",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .search-form {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .search-input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+        }
+        .search-button {
+            padding: 0.5rem 1rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Catalog</h1>
+
+    <main>
+        <!-- Search without role="search" or labels -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrSearchWithoutARIA"
+             data-violation-reason="Search form lacks role='search' or search landmark. Screen readers cannot identify this as site search functionality">
+            <form class="search-form">
+                <input type="text" class="search-input" placeholder="Search products...">
+                <button type="submit" class="search-button">=</button>
+            </form>
+        </div>
+
+        <!-- Search with div instead of form -->
+        <div class="search-form"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrSearchWithoutARIA"
+             data-violation-reason="Search implemented with div without role='search', no semantic form element, and button lacks accessible label. Not identifiable as search by assistive technologies">
+            <input type="text" class="search-input" placeholder="Find items...">
+            <div class="search-button" onclick="doSearch()">Search</div>
+        </div>
+    </main>
+
+    <script>
+        function doSearch() {
+            alert('Search triggered');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrProgressBarWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrProgressBarWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrProgressBarWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Progress indicators with proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .progress-container {
+            width: 400px;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #007bff;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Upload - Correct Usage</h1>
+
+    <main>
+        <!-- Progress bar with proper ARIA - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Progress bar uses role='progressbar' with aria-valuenow, aria-valuemin, aria-valuemax, and aria-label. Screen readers announce current progress value and percentage">
+            <h2 id="progress-label">Upload Progress</h2>
+            <div class="progress-container">
+                <div class="progress-bar"
+                     id="progress1"
+                     role="progressbar"
+                     aria-valuenow="45"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     aria-labelledby="progress-label"
+                     style="width: 45%">
+                </div>
+            </div>
+            <div aria-live="polite" aria-atomic="true">
+                <span id="progress-text">45% complete</span>
+            </div>
+        </div>
+
+        <!-- Indeterminate progress with proper ARIA - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Indeterminate progress uses role='progressbar' without aria-valuenow (indicating indeterminate state) and aria-busy='true'. Screen readers announce ongoing process">
+            <h2 id="processing-label">Processing...</h2>
+            <div class="progress-container">
+                <div class="progress-bar"
+                     role="progressbar"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     aria-labelledby="processing-label"
+                     aria-busy="true"
+                     aria-label="Processing, please wait"
+                     style="width: 100%; animation: pulse 1s infinite;">
+                </div>
+            </div>
+            <div role="status" aria-live="polite">
+                Processing your request, please wait...
+            </div>
+        </div>
+
+        <button onclick="updateProgress()">Start Upload</button>
+    </main>
+
+    <script>
+        let progress = 45;
+        function updateProgress() {
+            progress = Math.min(progress + 10, 100);
+            const progressBar = document.getElementById('progress1');
+            const progressText = document.getElementById('progress-text');
+
+            progressBar.style.width = progress + '%';
+            progressBar.setAttribute('aria-valuenow', progress);
+            progressText.textContent = progress + '% complete';
+        }
+    </script>
+
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</body>
+</html>

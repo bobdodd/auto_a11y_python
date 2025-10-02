@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrAutocompleteWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrAutocompleteWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrAutocompleteWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Autocomplete/combobox components with proper ARIA markup",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .autocomplete {
+            position: relative;
+            width: 300px;
+            margin: 1rem 0;
+        }
+        .autocomplete input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+        }
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ccc;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        .suggestion-item {
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+        .suggestion-item:hover,
+        .suggestion-item[aria-selected="true"] {
+            background: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>City Search - Correct Usage</h1>
+
+    <main>
+        <!-- Autocomplete with proper ARIA - CORRECT -->
+        <div class="autocomplete"
+             data-expected-pass="true"
+             data-pass-reason="Input has role='combobox' with aria-autocomplete='list', aria-expanded to indicate state, and aria-controls linking to suggestions. Screen readers understand combobox functionality">
+            <label for="city1">Select a city:</label>
+            <input type="text"
+                   id="city1"
+                   role="combobox"
+                   aria-autocomplete="list"
+                   aria-expanded="false"
+                   aria-controls="suggestions1"
+                   aria-activedescendant=""
+                   placeholder="Type to search...">
+            <div id="suggestions1"
+                 role="listbox"
+                 class="suggestions">
+                <div role="option" id="option-sf" class="suggestion-item">San Francisco</div>
+                <div role="option" id="option-sea" class="suggestion-item">Seattle</div>
+                <div role="option" id="option-sd" class="suggestion-item">San Diego</div>
+            </div>
+        </div>
+
+        <!-- Autocomplete with enhanced ARIA - CORRECT -->
+        <div class="autocomplete"
+             data-expected-pass="true"
+             data-pass-reason="Combobox uses complete ARIA pattern: role='combobox', aria-autocomplete='list', aria-expanded state, aria-controls, and aria-activedescendant for keyboard navigation. Listbox and options have proper roles">
+            <label for="country1">Select a country:</label>
+            <input type="text"
+                   id="country1"
+                   role="combobox"
+                   aria-autocomplete="list"
+                   aria-expanded="false"
+                   aria-controls="country-list"
+                   aria-activedescendant=""
+                   aria-describedby="country-help"
+                   placeholder="Type to search...">
+            <div id="country-help" style="font-size: 0.9em; color: #666;">
+                Use arrow keys to navigate suggestions
+            </div>
+            <ul id="country-list"
+                role="listbox"
+                class="suggestions">
+                <li role="option" id="option-us" class="suggestion-item">United States</li>
+                <li role="option" id="option-uk" class="suggestion-item">United Kingdom</li>
+                <li role="option" id="option-ca" class="suggestion-item">Canada</li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        // Proper combobox behavior
+        const input1 = document.getElementById('city1');
+        const suggestions1 = document.getElementById('suggestions1');
+
+        input1.addEventListener('focus', () => {
+            input1.setAttribute('aria-expanded', 'true');
+            suggestions1.style.display = 'block';
+        });
+
+        input1.addEventListener('blur', () => {
+            setTimeout(() => {
+                input1.setAttribute('aria-expanded', 'false');
+                suggestions1.style.display = 'none';
+            }, 200);
+        });
+
+        // Add keyboard navigation for arrow keys and Enter
+        input1.addEventListener('keydown', (e) => {
+            const options = suggestions1.querySelectorAll('[role="option"]');
+            let currentIndex = Array.from(options).findIndex(opt => opt.getAttribute('aria-selected') === 'true');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                currentIndex = Math.min(currentIndex + 1, options.length - 1);
+                updateSelection(options, currentIndex, input1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                currentIndex = Math.max(currentIndex - 1, 0);
+                updateSelection(options, currentIndex, input1);
+            }
+        });
+
+        function updateSelection(options, index, input) {
+            options.forEach((opt, i) => {
+                opt.setAttribute('aria-selected', i === index ? 'true' : 'false');
+            });
+            if (options[index]) {
+                input.setAttribute('aria-activedescendant', options[index].id);
+            }
+        }
+    </script>
+</body>
+</html>

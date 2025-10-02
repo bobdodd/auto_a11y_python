@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Screen - Long Animation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLongAnimation_001_violations_basic",
+    "issueId": "WarnLongAnimation",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Animation duration exceeds 5 seconds",
+    "wcag": "2.2.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .loading-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            animation: logo-reveal 8s ease-in-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes logo-reveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) rotate(-180deg);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2) rotate(0deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .loading-text {
+            margin-top: 30px;
+            font-size: 1.5em;
+            animation: fade-pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes fade-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnLongAnimation"
+      data-violation-reason="Logo animation takes 8 seconds to complete without any skip or pause controls">
+    <div class="loading-screen">
+        <div class="logo"></div>
+        <div class="loading-text">Loading your experience...</div>
+    </div>
+
+    <h1 style="opacity: 0;">Welcome</h1>
+</body>
+</html>

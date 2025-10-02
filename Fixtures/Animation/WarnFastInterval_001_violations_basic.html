@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Dashboard - Fast Interval Updates</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFastInterval_001_violations_basic",
+    "issueId": "WarnFastInterval",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "JavaScript interval running faster than once per second",
+    "wcag": "2.2.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        .metric-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
+            background: white;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2196f3;
+        }
+        .metric-label {
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnFastInterval"
+      data-violation-reason="Content updates every 100ms (10 times per second), which is distracting and difficult to process">
+    <h1>Real-Time System Monitor</h1>
+
+    <div class="dashboard">
+        <div class="metric-card">
+            <div class="metric-value" id="cpu">0%</div>
+            <div class="metric-label">CPU Usage</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value" id="memory">0%</div>
+            <div class="metric-label">Memory Usage</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value" id="requests">0</div>
+            <div class="metric-label">Requests/sec</div>
+        </div>
+    </div>
+
+    <p>Dashboard updates 10 times per second with latest metrics.</p>
+
+    <script>
+        // Updates extremely fast - 10 times per second
+        setInterval(() => {
+            document.getElementById('cpu').textContent =
+                Math.floor(Math.random() * 100) + '%';
+            document.getElementById('memory').textContent =
+                Math.floor(Math.random() * 100) + '%';
+            document.getElementById('requests').textContent =
+                Math.floor(Math.random() * 1000);
+        }, 100); // 100ms interval - too fast!
+    </script>
+</body>
+</html>

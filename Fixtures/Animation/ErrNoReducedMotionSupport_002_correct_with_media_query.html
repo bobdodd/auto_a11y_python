@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Interface - With Reduced Motion Support</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoReducedMotionSupport_002_correct_with_media_query",
+    "issueId": "ErrNoReducedMotionSupport",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Animations respect prefers-reduced-motion setting with CSS media query",
+    "wcag": "2.3.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .hero {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            animation: slide-in 0.5s ease-out;
+        }
+
+        @keyframes slide-in {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            margin: 20px;
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Respect user's motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            .hero,
+            .card,
+            .notification {
+                animation: none;
+            }
+
+            .card {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="All animations disabled when user has prefers-reduced-motion setting enabled, preventing vestibular issues">
+    <div class="hero">
+        <h1>Welcome to Our Platform</h1>
+        <p>Experience the future of web design</p>
+    </div>
+
+    <div class="notification">
+        <strong>Alert:</strong> You have 3 new messages!
+    </div>
+
+    <div class="card">
+        <h2>Getting Started</h2>
+        <p>Follow these steps to set up your account and start using our services.</p>
+        <button>Learn More</button>
+    </div>
+
+    <div class="card">
+        <h2>Features</h2>
+        <p>Discover all the amazing features we have to offer.</p>
+        <button>Explore Features</button>
+    </div>
+</body>
+</html>

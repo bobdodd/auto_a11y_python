@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNoCurrentPageIndicator - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNoCurrentPageIndicator_001_violations_basic",
+    "issueId": "WarnNoCurrentPageIndicator",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Navigation without current page indicator",
+    "wcag": "2.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            padding: 1rem;
+            background: #f0f0f0;
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+        }
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar-nav a {
+            display: block;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Products Page</h1>
+
+    <header>
+        <!-- Primary navigation without current page indicator - VIOLATION -->
+        <nav data-expected-violation="true"
+             data-violation-id="WarnNoCurrentPageIndicator"
+             data-violation-reason="Navigation lacks aria-current='page' and visual indicator for current page. Screen reader users cannot determine which page they're on. Users with cognitive disabilities have difficulty orienting themselves. No programmatic or visual indication that 'Products' is the current page">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div style="display: flex; gap: 2rem;">
+            <!-- Sidebar navigation without current page indicator - VIOLATION -->
+            <aside>
+                <nav class="sidebar-nav"
+                     data-expected-violation="true"
+                     data-violation-id="WarnNoCurrentPageIndicator"
+                     data-violation-reason="Sidebar navigation missing aria-current='page' attribute. Screen readers cannot announce current page location. No visual styling to highlight 'Hardware' as active page. Users lose context of their location within the product categories">
+                    <h2>Product Categories</h2>
+                    <ul>
+                        <li><a href="/products/software">Software</a></li>
+                        <li><a href="/products/hardware">Hardware</a></li>
+                        <li><a href="/products/services">Services</a></li>
+                        <li><a href="/products/support">Support</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <article>
+                <h2>Hardware Products</h2>
+                <p>Browse our selection of high-quality hardware products.</p>
+                <ul>
+                    <li>Servers</li>
+                    <li>Workstations</li>
+                    <li>Networking Equipment</li>
+                    <li>Storage Solutions</li>
+                </ul>
+            </article>
+        </div>
+    </main>
+</body>
+</html>

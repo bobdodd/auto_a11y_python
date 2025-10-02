@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnColorOnlyLink - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorOnlyLink_001_violations_basic",
+    "issueId": "WarnColorOnlyLink",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links distinguished only by color without underline or other indicators",
+    "wcag": "1.4.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        a.color-only-link {
+            color: blue;
+            text-decoration: none;
+        }
+
+        .text-content {
+            color: black;
+        }
+
+        a.subtle-link {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .paragraph-text {
+            color: #333333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Links Distinguished Only By Color</h1>
+
+    <main>
+        <section>
+            <h2>Link Without Underline</h2>
+            <p class="text-content">
+                This paragraph contains
+                <a href="/page1"
+                   class="color-only-link"
+                   data-expected-violation="true"
+                   data-violation-id="WarnColorOnlyLink"
+                   data-violation-reason="Link is blue but has no underline, distinguished only by color">a link</a>
+                that is only distinguished by color.
+            </p>
+        </section>
+
+        <section>
+            <h2>Multiple Color-Only Links</h2>
+            <p class="text-content">
+                Check out
+                <a href="/about"
+                   class="color-only-link"
+                   data-expected-violation="true"
+                   data-violation-id="WarnColorOnlyLink"
+                   data-violation-reason="Link only uses color to distinguish from text, no underline">our company</a>
+                or visit
+                <a href="/products"
+                   class="color-only-link"
+                   data-expected-violation="true"
+                   data-violation-id="WarnColorOnlyLink"
+                   data-violation-reason="Link only uses color without additional visual indicator">our products page</a>.
+            </p>
+        </section>
+
+        <section>
+            <h2>Subtle Blue Link</h2>
+            <p class="paragraph-text">
+                For more information, please see the documentation. The link relies only on its blue color without any other visual indicator to distinguish it from regular text.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

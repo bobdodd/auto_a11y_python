@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrBreadcrumbsWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrBreadcrumbsWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrBreadcrumbsWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Breadcrumb navigation lacking proper ARIA markup",
+    "wcag": "2.4.8, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .breadcrumb {
+            list-style: none;
+            padding: 0;
+            display: flex;
+        }
+        .breadcrumb li {
+            margin-right: 0.5rem;
+        }
+        .breadcrumb li::after {
+            content: ">";
+            margin-left: 0.5rem;
+        }
+        .breadcrumb li:last-child::after {
+            content: "";
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Details</h1>
+
+    <main>
+        <!-- Breadcrumb without ARIA -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrBreadcrumbsWithoutARIA"
+             data-violation-reason="Breadcrumb navigation lacks nav element with aria-label='Breadcrumb'. Screen readers cannot identify this as breadcrumb navigation">
+            <ul class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/products/electronics">Electronics</a></li>
+                <li>Laptop</li>
+            </ul>
+        </div>
+
+        <!-- Breadcrumb with divs instead of semantic nav -->
+        <div class="breadcrumb"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrBreadcrumbsWithoutARIA"
+             data-violation-reason="Breadcrumb uses div elements without nav wrapper or aria-label. Not identified as navigation landmark or breadcrumb trail by assistive technologies">
+            <span><a href="/">Home</a></span> &gt;
+            <span><a href="/services">Services</a></span> &gt;
+            <span><a href="/services/web">Web Development</a></span> &gt;
+            <span>Accessibility Audit</span>
+        </div>
+
+        <h2>15-inch Laptop</h2>
+        <p>Product description and details...</p>
+    </main>
+</body>
+</html>

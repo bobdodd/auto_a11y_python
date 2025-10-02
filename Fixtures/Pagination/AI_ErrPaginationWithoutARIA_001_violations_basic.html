@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrPaginationWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrPaginationWithoutARIA_001_violations_basic",
+    "issueId": "AI_ErrPaginationWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Pagination controls lacking proper ARIA markup",
+    "wcag": "2.4.8, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .pagination {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0;
+        }
+        .pagination a {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ccc;
+            text-decoration: none;
+        }
+        .current {
+            background: #007bff;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: 1px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Results</h1>
+
+    <main>
+        <p>Showing results 1-10 of 250</p>
+
+        <!-- Pagination without nav or ARIA -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrPaginationWithoutARIA"
+             data-violation-reason="Pagination lacks nav wrapper with aria-label. Screen readers cannot identify this as pagination navigation or understand current page">
+            <ul class="pagination">
+                <li><a href="?page=1">Previous</a></li>
+                <li><a href="?page=1">1</a></li>
+                <li class="current">2</li>
+                <li><a href="?page=3">3</a></li>
+                <li><a href="?page=4">4</a></li>
+                <li><a href="?page=5">5</a></li>
+                <li><a href="?page=3">Next</a></li>
+            </ul>
+        </div>
+
+        <!-- Pagination with divs and no semantic markup -->
+        <div class="pagination"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrPaginationWithoutARIA"
+             data-violation-reason="Pagination uses divs without nav element or aria-current. No way for assistive technologies to identify current page or pagination purpose">
+            <a href="?page=1">« First</a>
+            <a href="?page=1">1</a>
+            <span class="current">2</span>
+            <a href="?page=3">3</a>
+            <a href="?page=25">Last »</a>
+        </div>
+    </main>
+</body>
+</html>

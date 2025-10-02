@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrBreadcrumbsWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrBreadcrumbsWithoutARIA_002_correct_with_aria",
+    "issueId": "AI_ErrBreadcrumbsWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Breadcrumb navigation with proper ARIA markup",
+    "wcag": "2.4.8, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .breadcrumb {
+            list-style: none;
+            padding: 0;
+            display: flex;
+        }
+        .breadcrumb li {
+            margin-right: 0.5rem;
+        }
+        .breadcrumb li::after {
+            content: ">";
+            margin-left: 0.5rem;
+        }
+        .breadcrumb li:last-child::after {
+            content: "";
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Details - Correct Usage</h1>
+
+    <main>
+        <!-- Breadcrumb with proper ARIA - CORRECT -->
+        <nav aria-label="Breadcrumb"
+             data-expected-pass="true"
+             data-pass-reason="Breadcrumb wrapped in nav element with aria-label='Breadcrumb'. Screen readers announce this as breadcrumb navigation, helping users understand page hierarchy">
+            <ol class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li><a href="/products">Products</a></li>
+                <li><a href="/products/electronics">Electronics</a></li>
+                <li aria-current="page">Laptop</li>
+            </ol>
+        </nav>
+
+        <!-- Breadcrumb with structured data - CORRECT -->
+        <nav aria-label="Breadcrumb"
+             data-expected-pass="true"
+             data-pass-reason="Breadcrumb uses nav with aria-label='Breadcrumb' and aria-current='page' on current item. Provides clear navigation context to assistive technology users">
+            <ol class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/services/web">Web Development</a></li>
+                <li aria-current="page">Accessibility Audit</li>
+            </ol>
+        </nav>
+
+        <h2>15-inch Laptop</h2>
+        <p>Product description and details...</p>
+    </main>
+</body>
+</html>

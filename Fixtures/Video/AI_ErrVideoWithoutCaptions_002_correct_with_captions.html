@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrVideoWithoutCaptions - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrVideoWithoutCaptions_002_correct_with_captions",
+    "issueId": "AI_ErrVideoWithoutCaptions",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Video content with proper captions and subtitles",
+    "wcag": "1.2.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Training Videos - Correct Usage</h1>
+
+    <main>
+        <!-- Video with English captions - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Video includes track element with kind='captions' for English. Makes audio content accessible to deaf and hard-of-hearing users">
+            <h2>Product Demo</h2>
+            <video controls width="640" height="360">
+                <source src="product-demo.mp4" type="video/mp4">
+                <source src="product-demo.webm" type="video/webm">
+                <track kind="captions"
+                       src="product-demo-en.vtt"
+                       srclang="en"
+                       label="English"
+                       default>
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Video with multiple caption languages - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Video provides caption tracks in multiple languages (English and Spanish) with kind='captions'. Supports international deaf and hard-of-hearing audience">
+            <h2>Tutorial</h2>
+            <video controls width="640" height="360" poster="tutorial-thumb.jpg">
+                <source src="tutorial.mp4" type="video/mp4">
+                <track kind="captions"
+                       src="tutorial-en.vtt"
+                       srclang="en"
+                       label="English"
+                       default>
+                <track kind="captions"
+                       src="tutorial-es.vtt"
+                       srclang="es"
+                       label="Español">
+            </video>
+        </div>
+
+        <!-- Video with captions and subtitles - CORRECT -->
+        <div data-expected-pass="true"
+             data-pass-reason="Video includes both captions (for deaf users with dialogue and sound effects) and subtitles (for translation). Comprehensive accessibility for diverse users">
+            <h2>Introduction Video</h2>
+            <video controls width="640" height="360">
+                <source src="intro.mp4" type="video/mp4">
+                <track kind="captions"
+                       src="intro-captions-en.vtt"
+                       srclang="en"
+                       label="English Captions"
+                       default>
+                <track kind="subtitles"
+                       src="intro-subtitles-fr.vtt"
+                       srclang="fr"
+                       label="French Subtitles">
+            </video>
+            <p><a href="intro-transcript.html">Full text transcript available</a></p>
+        </div>
+    </main>
+</body>
+</html>

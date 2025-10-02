@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrVideoWithoutCaptions - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrVideoWithoutCaptions_001_violations_basic",
+    "issueId": "AI_ErrVideoWithoutCaptions",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Video content without captions or subtitles",
+    "wcag": "1.2.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Training Videos</h1>
+
+    <main>
+        <!-- Video without any caption tracks -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrVideoWithoutCaptions"
+             data-violation-reason="Video element lacks track elements for captions. Deaf and hard-of-hearing users cannot access audio content">
+            <h2>Product Demo</h2>
+            <video controls width="640" height="360">
+                <source src="product-demo.mp4" type="video/mp4">
+                <source src="product-demo.webm" type="video/webm">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Video with only thumbnail, no captions -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrVideoWithoutCaptions"
+             data-violation-reason="Video has poster attribute but no caption track. Users who are deaf or hard-of-hearing cannot access spoken dialogue and audio information">
+            <h2>Tutorial</h2>
+            <video controls width="640" height="360" poster="tutorial-thumb.jpg">
+                <source src="tutorial.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <!-- Embedded video without captions -->
+        <div data-expected-violation="true"
+             data-violation-id="AI_ErrVideoWithoutCaptions"
+             data-violation-reason="iframe video embed provides no caption mechanism. Third-party videos should have captions enabled or link to captioned version">
+            <h2>Introduction Video</h2>
+            <iframe width="640"
+                    height="360"
+                    src="https://example.com/embed/intro-video"
+                    title="Introduction Video"
+                    frameborder="0">
+            </iframe>
+        </div>
+    </main>
+</body>
+</html>

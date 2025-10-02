@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrToggleWithoutState - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrToggleWithoutState_001_violations_basic",
+    "issueId": "AI_ErrToggleWithoutState",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Toggle buttons without aria-expanded or aria-pressed state",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Toggles Without State Indication</h1>
+
+    <main>
+        <section>
+            <h2>Menu Toggle</h2>
+            <button data-expected-violation="true"
+                    data-violation-id="AI_ErrToggleWithoutState"
+                    data-violation-reason="Toggle button doesn't indicate whether menu is expanded or collapsed">
+                Toggle Menu
+            </button>
+            <div id="menu" style="display: none;">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+            </div>
+        </section>
+
+        <section>
+            <h2>Accordion Section</h2>
+            <button data-expected-violation="true"
+                    data-violation-id="AI_ErrToggleWithoutState"
+                    data-violation-reason="Accordion toggle doesn't indicate expanded/collapsed state">
+                Section Details
+            </button>
+            <div style="display: none;">
+                <p>Hidden accordion content</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Dark Mode Toggle</h2>
+            <button data-expected-violation="true"
+                    data-violation-id="AI_ErrToggleWithoutState"
+                    data-violation-reason="Toggle doesn't indicate whether dark mode is on or off">
+                Dark Mode
+            </button>
+        </section>
+
+        <section>
+            <h2>Dropdown Toggle</h2>
+            <button data-expected-violation="true"
+                    data-violation-id="AI_ErrToggleWithoutState"
+                    data-violation-reason="Dropdown toggle doesn't indicate whether options are visible">
+                Show Options
+            </button>
+            <ul style="display: none;">
+                <li>Option 1</li>
+                <li>Option 2</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

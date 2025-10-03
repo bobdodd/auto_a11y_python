@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambiguous Tab Order - Header and Main Content Overlap</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+        }
+        .nav-right {
+            display: flex;
+            gap: 15px;
+        }
+        .nav-right a {
+            color: white;
+            text-decoration: none;
+        }
+        main {
+            padding: 20px;
+        }
+        /* Main heading positioned close to header - creates 6-10px vertical overlap */
+        h1 {
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">MySite</div>
+        <nav class="nav-right">
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="#lang">Español</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- This h1 has tabindex making it focusable -->
+        <!-- It's positioned left (x=20) but slightly below header links (y difference ~8px) -->
+        <h1 tabindex="0">Welcome to Our Site</h1>
+        <p>Some content here...</p>
+        <a href="#content">Skip to content</a>
+    </main>
+
+    <p><strong>Test scenario:</strong> The h1 "Welcome" appears left-aligned but slightly overlaps vertically with header "Español" link (6-10px difference). This is ambiguous - they might be considered same row or different layout regions.</p>
+    <p><strong>Expected result:</strong> WARNING (not ERROR) - manual verification needed</p>
+</body>
+</html>

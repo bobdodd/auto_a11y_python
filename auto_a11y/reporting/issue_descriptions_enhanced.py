@@ -613,13 +613,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Provide unique labels for each search landmark"
         },
         'ErrDuplicateLandmarkWithoutName': {
-            'title': "Multiple landmarks of the same type without distinguishing accessible names",
-            'what': "Multiple landmarks of the same type without distinguishing accessible names",
-            'why': "When multiple navigation or other landmarks exist without unique names, screen reader users cannot distinguish between them.",
-            'who': "Screen reader users who navigate by landmarks, keyboard users who use landmark navigation shortcuts.",
+            'title': "Found {totalCount} {role} landmarks - this one lacks unique accessible name",
+            'what': "Found {totalCount} <{element}> elements with role=\"{role}\" on this page, but this instance lacks a unique accessible name to distinguish it from the others",
+            'why': "When multiple {role} landmarks exist without unique names, screen reader users cannot distinguish between them. Screen readers announce landmarks by type and name - without unique names, users hear the same announcement for each {role} landmark, making it impossible to know which one leads where.",
+            'who': "Screen reader users who navigate by landmarks (a common navigation strategy), keyboard users who use landmark navigation shortcuts.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.3.1'],
-            'remediation': "Add aria-label or aria-labelledby to distinguish multiple landmarks of the same type (e.g., \"Main navigation\" vs \"Footer navigation\")."
+            'remediation': "Add unique aria-label attributes to each {role} landmark to distinguish them. For example, if you have multiple navigation landmarks, use aria-label=\"Main navigation\" for one and aria-label=\"Footer navigation\" for another. The labels should describe the purpose or location of each landmark so users can quickly identify which one they want."
         },
         'ErrDuplicateNavNames': {
             'title': "Multiple navigation elements have identical accessible names",
@@ -1225,13 +1225,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add <main> element or role=\"main\" to identify the primary content area of each page."
         },
         'ErrMissingTabindex': {
-            'title': "Interactive element not keyboard accessible due to missing tabindex",
-            'what': "Interactive element not keyboard accessible due to missing tabindex",
-            'why': "Elements that should be interactive but lack keyboard access create complete barriers for non-mouse users.",
-            'who': "Keyboard users, screen reader users, users with motor disabilities who cannot use a mouse.",
+            'title': "<{elementTag}> with event handler not keyboard accessible - missing tabindex",
+            'what': "This <{elementTag}> element has a mouse event handler (onclick, onmousedown, etc.) but lacks tabindex, making it completely inaccessible to keyboard users",
+            'why': "Non-interactive elements like <div> and <span> are not focusable by default. Adding mouse event handlers without tabindex=\"0\" creates a complete barrier - keyboard users cannot focus the element, cannot activate it with Enter/Space, and screen readers may not announce it as interactive. This is a critical accessibility failure.",
+            'who': "Keyboard users who cannot use a mouse, screen reader users navigating by Tab key, users with motor disabilities who rely on keyboard navigation, voice control users.",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.1.1'],
-            'remediation': "Add tabindex=\"0\" to custom interactive elements, or use native interactive HTML elements that are keyboard accessible by default."
+            'wcag': ['2.1.1 Keyboard', '2.1.3 Keyboard (No Exception)'],
+            'remediation': "Option 1 (Recommended): Replace the <{elementTag}> with a semantic <button> element, which is keyboard accessible by default and provides proper semantics. Option 2: Add tabindex=\"0\" to make it focusable, AND add a keyboard event handler (onkeydown/onkeyup) to handle Enter and Space keys. Option 3: Add role=\"button\" AND tabindex=\"0\" AND keyboard event handlers. Native HTML buttons are strongly preferred as they provide all accessibility features automatically."
         },
         'ErrModalMissingClose': {
             'title': "Modal dialog has no way to close it",
@@ -1666,13 +1666,22 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Remove tabindex from non-interactive elements or make them properly interactive"
         },
         'ErrTabOrderViolation': {
-            'title': "Tab order does not follow logical reading order",
-            'what': "Tab order does not follow logical reading order",
-            'why': "Illogical tab order confuses users and makes interfaces difficult to navigate efficiently.",
-            'who': "Keyboard users, screen reader users, users with cognitive disabilities.",
+            'title': "Tab order diverges: <{currentElement.tag}> visually left of previous element but tabs after it",
+            'what': "The <{currentElement.tag}> at position ({currentElement.position.x}, {currentElement.position.y}) appears visually to the LEFT of the previous element <{previousElement.tag}> at ({previousElement.position.x}, {previousElement.position.y}), but it comes AFTER it in the tab order (tab stop #{currentElement.tabIndex} vs #{previousElement.tabIndex}). These elements are on the same row ({verticalDiff}px vertical difference), so tab order should follow left-to-right reading order.",
+            'why': "When tab order doesn't match visual layout, keyboard users experience disorienting navigation. They expect to tab left-to-right and top-to-bottom following the visual layout, but instead find themselves jumping backwards or in unexpected directions. This cognitive load makes the interface much harder to use and can cause users to miss important content or controls.",
+            'who': "Keyboard users navigating with Tab key, screen reader users who rely on tab order to understand layout, users with cognitive disabilities who need predictable navigation patterns, users with motor disabilities using switch controls.",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.3'],
-            'remediation': "Ensure DOM order matches visual order, avoid positive tabindex values, test tab order manually."
+            'wcag': ['2.4.3 Focus Order'],
+            'remediation': "Fix the DOM order to match the visual layout. The HTML source order should place <{currentElement.tag}> BEFORE <{previousElement.tag}> in the document. Use CSS for visual positioning (flexbox, grid, float, position) rather than relying on tabindex to fix navigation. Avoid positive tabindex values entirely - they're a sign that DOM order doesn't match visual order."
+        },
+        'WarnAmbiguousTabOrder': {
+            'title': "Possible tab order issue: <{currentElement.tag}> may be positioned before <{previousElement.tag}> visually",
+            'what': "The <{currentElement.tag}> at position ({currentElement.position.x}, {currentElement.position.y}) appears to the LEFT of <{previousElement.tag}> at ({previousElement.position.x}, {previousElement.position.y}), but comes AFTER it in tab order (tab stop #{currentElement.tabIndex} vs #{previousElement.tabIndex}). However, these elements have overlapping vertical positions ({verticalDiff}px difference), making it ambiguous whether they're on the same row or different rows.",
+            'why': "If these elements are visually on the same row, the tab order should follow left-to-right reading order. However, with vertical overlap, they might be on different rows (e.g., one in a header, one in main content), in which case the current tab order could be correct. This needs manual verification to determine if it's actually a problem.",
+            'who': "Keyboard users who expect predictable left-to-right, top-to-bottom navigation patterns.",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.3 Focus Order'],
+            'remediation': "Manually verify the visual layout: 1) If these elements appear on the same horizontal row, fix the DOM order to match visual left-to-right order. 2) If they're on clearly different rows (e.g., header navigation vs main content), the current order may be correct and you can ignore this warning. Consider adding more vertical spacing between rows to avoid ambiguous overlap."
         },
         'ErrTabindexOfZeroOnNonInteractiveElement': {
             'title': "tabindex=\"0\" on non-interactive element",
@@ -2649,11 +2658,26 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
                 # Replace {found} with actual font name for font issues
                 if '{found}' in desc[key] and 'found' in metadata:
                     desc[key] = desc[key].replace('{found}', str(metadata.get('found', 'unknown')))
-                # Replace other metadata placeholders
-                for meta_key, meta_value in metadata.items():
-                    placeholder = '{' + meta_key + '}'
-                    if placeholder in desc[key]:
-                        desc[key] = desc[key].replace(placeholder, str(meta_value))
+
+                # Replace nested metadata placeholders (e.g., {currentElement.tag})
+                import re
+                nested_pattern = r'\{([^}]+)\}'
+
+                def replace_nested(match):
+                    path = match.group(1)
+                    parts = path.split('.')
+
+                    # Navigate through nested dict/objects
+                    value = metadata
+                    for part in parts:
+                        if isinstance(value, dict) and part in value:
+                            value = value[part]
+                        else:
+                            return match.group(0)  # Return original if path not found
+
+                    return str(value) if value is not None else match.group(0)
+
+                desc[key] = re.sub(nested_pattern, replace_nested, desc[key])
         
         return desc
     

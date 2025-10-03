@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Order Violation - Buttons in Wrong Visual Order</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        /* DOM order is Button2, Button1, Button3 but visual order is Button1, Button2, Button3 */
+        #btn2 { order: 2; }
+        #btn1 { order: 1; }
+        #btn3 { order: 3; }
+    </style>
+</head>
+<body>
+    <h1>Tab Order Test - Same Row Violation</h1>
+    <p>The buttons below are on the same row but in wrong DOM order.</p>
+
+    <div class="button-row">
+        <!-- DOM order: 2, 1, 3 -->
+        <!-- Visual order: 1, 2, 3 (due to CSS flexbox order) -->
+        <button id="btn2">Button 2</button>
+        <button id="btn1">Button 1</button>
+        <button id="btn3">Button 3</button>
+    </div>
+
+    <p>Expected: Tab should go Button 1 → Button 2 → Button 3 visually left-to-right</p>
+    <p>Actual: Tab goes Button 2 → Button 1 → Button 3 (DOM order)</p>
+    <p>Result: Button 1 appears left but is 2nd in tab order = ERROR</p>
+</body>
+</html>

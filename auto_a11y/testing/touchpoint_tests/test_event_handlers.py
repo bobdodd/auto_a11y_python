@@ -175,28 +175,71 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     }
                     
                     // Check visual tab order
-                    if (previousRect && rect.top > previousRect.bottom + 10) {
-                        // New row - check if elements are roughly in left-to-right order
-                        if (index > 0) {
-                            const previousElement = focusableElements[index - 1];
-                            const previousElementRect = previousElement.getBoundingClientRect();
-                            
-                            if (rect.left < previousElementRect.left - 50) {
+                    if (previousRect && index > 0) {
+                        const previousElement = focusableElements[index - 1];
+                        const previousElementRect = previousElement.getBoundingClientRect();
+
+                        // Calculate vertical alignment
+                        const verticalDiff = Math.abs(rect.top - previousElementRect.top);
+                        const clearlyDifferentRows = verticalDiff > 10;
+                        const definitelySameRow = verticalDiff <= 5;
+                        const ambiguousOverlap = verticalDiff > 5 && verticalDiff <= 10;
+
+                        // Only check left/right position if there's potential for same-row issue
+                        if (!clearlyDifferentRows && rect.left < previousElementRect.left - 50) {
+                            // Get readable descriptions of both elements
+                            const currentDesc = element.tagName.toLowerCase() +
+                                (element.id ? `#${element.id}` : '') +
+                                (element.textContent ? ` ("${element.textContent.trim().substring(0, 30)}")` : '');
+                            const previousDesc = previousElement.tagName.toLowerCase() +
+                                (previousElement.id ? `#${previousElement.id}` : '') +
+                                (previousElement.textContent ? ` ("${previousElement.textContent.trim().substring(0, 30)}")` : '');
+
+                            const sharedData = {
+                                cat: 'event_handlers',
+                                element: element.tagName.toLowerCase(),
+                                xpath: getFullXPath(element),
+                                html: element.outerHTML.substring(0, 200),
+                                currentElement: {
+                                    tag: element.tagName.toLowerCase(),
+                                    id: element.id || null,
+                                    text: element.textContent.trim().substring(0, 50),
+                                    position: { x: Math.round(rect.left), y: Math.round(rect.top) },
+                                    tabIndex: index + 1
+                                },
+                                previousElement: {
+                                    tag: previousElement.tagName.toLowerCase(),
+                                    id: previousElement.id || null,
+                                    text: previousElement.textContent.trim().substring(0, 50),
+                                    html: previousElement.outerHTML.substring(0, 200),
+                                    xpath: getFullXPath(previousElement),
+                                    position: { x: Math.round(previousElementRect.left), y: Math.round(previousElementRect.top) },
+                                    tabIndex: index
+                                },
+                                verticalDiff: Math.round(verticalDiff)
+                            };
+
+                            if (definitelySameRow) {
+                                // Clear same-row violation - this is an ERROR
                                 tabOrderViolations++;
                                 results.errors.push({
                                     err: 'ErrTabOrderViolation',
                                     type: 'err',
-                                    cat: 'event_handlers',
-                                    element: element.tagName,
-                                    xpath: getFullXPath(element),
-                                    html: element.outerHTML.substring(0, 200),
-                                    description: 'Tab order does not follow visual left-to-right layout',
-                                    position: { x: rect.left, y: rect.top }
+                                    description: `Tab order diverges from visual layout: ${currentDesc} appears visually left of ${previousDesc} but comes after it in tab order`,
+                                    ...sharedData
                                 });
                                 results.elements_failed++;
-                            } else {
-                                results.elements_passed++;
+                            } else if (ambiguousOverlap) {
+                                // Ambiguous overlap - this is a WARNING
+                                results.warnings.push({
+                                    err: 'WarnAmbiguousTabOrder',
+                                    type: 'warn',
+                                    description: `Possible tab order issue: ${currentDesc} appears left of ${previousDesc} but comes after it. Elements overlap vertically (${Math.round(verticalDiff)}px difference) - verify visual layout matches intended tab order`,
+                                    ...sharedData
+                                });
                             }
+                        } else {
+                            results.elements_passed++;
                         }
                     }
                     
@@ -233,14 +276,23 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     }
                     
                     if (hasEventHandler && !isIntrinsicInteractive(element) && !element.hasAttribute('tabindex')) {
+                        const tagName = element.tagName.toLowerCase();
+                        const hasOnclick = element.hasAttribute('onclick');
+                        const hasOtherHandlers = element.hasAttribute('onmousedown') ||
+                                                 element.hasAttribute('onmouseup') ||
+                                                 element.hasAttribute('ondblclick');
+
                         results.errors.push({
                             err: 'ErrMissingTabindex',
                             type: 'err',
                             cat: 'event_handlers',
-                            element: element.tagName,
+                            element: tagName,
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
-                            description: 'Non-interactive element with event handler missing tabindex attribute'
+                            description: `<${tagName}> with event handler is not keyboard accessible - missing tabindex`,
+                            elementTag: tagName,
+                            hasOnclick: hasOnclick,
+                            hasOtherHandlers: hasOtherHandlers
                         });
                         results.elements_failed++;
                     }

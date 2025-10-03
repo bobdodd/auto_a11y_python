@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PASS: Skip Link Target with Correct tabindex="-1"</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            background: #000;
+            color: #fff;
+            padding: 10px;
+        }
+        .skip-link:focus {
+            left: 0;
+        }
+        nav {
+            background: #333;
+            padding: 15px;
+        }
+        nav a {
+            color: white;
+            margin-right: 15px;
+        }
+        main {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip link pointing to main heading -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <main>
+        <!-- CORRECT: This h1 is a skip link target with tabindex="-1" -->
+        <!-- It's programmatically focusable but NOT in the natural tab order -->
+        <h1 id="main-content" tabindex="-1">Welcome to Our Site</h1>
+
+        <p>This page demonstrates correct skip link implementation.</p>
+
+        <p><strong>✓ Correct:</strong> tabindex="-1" allows the skip link to focus this heading programmatically when activated.</p>
+
+        <p><strong>✓ Correct:</strong> The heading is NOT in the natural tab order, so users won't encounter an unexpected tab stop.</p>
+
+        <p><strong>Result:</strong> PASS - no violations</p>
+    </main>
+</body>
+</html>

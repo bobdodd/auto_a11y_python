@@ -2223,14 +2223,23 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.2'],
             'remediation': "Include file type and size in link text or adjacent text."
         },
+        'ErrInPageTargetWrongTabindex': {
+            'title': "In-page link target <{element}> has tabindex=\"{currentTabindex}\" but should be tabindex=\"-1\"",
+            'what': "This <{element}> element is the target of in-page links (like skip links) and has tabindex=\"{currentTabindex}\", but it should have tabindex=\"-1\" instead. The element is programmatically focusable when users activate the link, but with tabindex=\"{currentTabindex}\" it also appears in the natural tab order, creating an unnecessary and confusing tab stop.",
+            'why': "In-page link targets (especially skip link targets) need tabindex=\"-1\" to be focusable programmatically when users activate the link, WITHOUT being in the regular tab order. Using tabindex=\"0\" or positive values adds the element to the tab sequence, creating confusing extra tab stops. Users would tab to a heading or container that isn't normally interactive, wondering why they're focused there.",
+            'who': "Keyboard users who encounter unexpected tab stops on non-interactive elements, screen reader users who may get confused by focus landing on content elements, users with cognitive disabilities who need predictable navigation.",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.4.3 Focus Order', '2.1.1 Keyboard'],
+            'remediation': "Change tabindex=\"{currentTabindex}\" to tabindex=\"-1\" on this element. This allows skip links to focus it programmatically when activated, but keeps it OUT of the natural keyboard tab order. The element will still receive focus when the skip link is clicked, but won't be a tab stop during normal navigation."
+        },
         'WarnMissingNegativeTabindex': {
-            'title': "Element that should be removed from tab order lacks negative tabindex",
-            'what': "Element that should be removed from tab order lacks negative tabindex",
-            'why': "Some elements need to be programmatically focusable but not in tab order.",
-            'who': "Keyboard users encountering unnecessary tab stops.",
-            'impact': ImpactScale.LOW.value,
-            'wcag': ['2.1.1'],
-            'remediation': "Add tabindex=\"-1\" to elements that should be focusable by script but not keyboard."
+            'title': "In-page link target <{element}> should have tabindex=\"-1\"",
+            'what': "This <{element}> element is the target of in-page links but lacks tabindex=\"-1\". Without it, when users activate the link, focus may not move properly to the target content.",
+            'why': "In-page link targets (especially skip link targets) should have tabindex=\"-1\" to ensure they can receive programmatic focus when the link is activated. Without this, some browsers may not properly move focus to the target, defeating the purpose of the skip link.",
+            'who': "Keyboard users relying on skip links to bypass repetitive content, screen reader users who need focus to move to the target section.",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.1 Bypass Blocks'],
+            'remediation': "Add tabindex=\"-1\" to this element so it can receive programmatic focus when the in-page link is activated. This ensures skip links work properly across all browsers."
         },
         'WarnMissingRequiredIndication': {
             'title': "Required form fields not clearly indicated",

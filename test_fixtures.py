@@ -34,7 +34,7 @@ from auto_a11y.testing.test_runner import TestRunner
 
 class FixtureTestRunner:
     """Runner for testing accessibility fixtures"""
-    
+
     def __init__(self, fixtures_dir: str = "Fixtures"):
         self.fixtures_dir = Path(fixtures_dir)
         self.config = Config()
@@ -43,6 +43,11 @@ class FixtureTestRunner:
         self.test_runner = TestRunner(self.db, self.config.__dict__)
         self.results = []
         self.test_run_id = str(uuid.uuid4())  # Unique ID for this test run
+
+        # Check if AI analysis is available
+        self.ai_available = bool(self.config.CLAUDE_API_KEY)
+        if not self.ai_available:
+            logger.warning("CLAUDE_API_KEY not set - AI_ prefixed tests will be skipped")
         
     def get_all_fixtures(self) -> List[Tuple[Path, str]]:
         """Get all HTML fixtures with their expected error codes"""
@@ -143,13 +148,24 @@ class FixtureTestRunner:
             # Run tests on the fixture with timeout
             print("   Running accessibility tests...")
 
+            # Check if this is an AI test and if AI is available
+            is_ai_test = expected_code.startswith("AI_")
+            if is_ai_test and not self.ai_available:
+                print("   ⚠️  Skipping AI_ test (CLAUDE_API_KEY not set)")
+                result["notes"].append("Skipped: AI analysis requires CLAUDE_API_KEY environment variable")
+                result["success"] = False
+                # Still save to DB to track that it was intentionally skipped
+                db_id = self.save_fixture_result_to_db(result)
+                if db_id:
+                    result["db_id"] = db_id
+                return result
+
             # Get the page object
             page_obj = self.db.get_page(page_id)
 
             try:
                 # Determine if AI analysis should run
-                # Run AI analysis for AI_ prefixed tests
-                run_ai = expected_code.startswith("AI_")
+                run_ai = is_ai_test and self.ai_available
 
                 if run_ai:
                     print("   🤖 Running with AI analysis enabled...")
@@ -328,6 +344,13 @@ class FixtureTestRunner:
         print(f"📝 Test Run ID: {self.test_run_id}")
         print("=" * 80)
 
+        # Display AI analysis status
+        if self.ai_available:
+            print("🤖 AI Analysis: ENABLED (CLAUDE_API_KEY found)")
+        else:
+            print("⚠️  AI Analysis: DISABLED (CLAUDE_API_KEY not set)")
+            print("   AI_ prefixed tests will be skipped")
+
         fixtures = self.get_all_fixtures()
         print(f"\nFound {len(fixtures)} fixtures to test\n")
 
@@ -389,21 +412,45 @@ class FixtureTestRunner:
         passing_codes = sum(1 for status in error_code_status.values() if status["passed"])
         failing_codes = len(error_code_status) - passing_codes
 
+        # Count skipped AI tests separately
+        skipped_ai_count = sum(1 for r in self.results if
+                               'AI_' in r['expected_code'] and
+                               any('Skipped: AI analysis requires' in str(note) for note in r.get('notes', [])))
+
+        actual_failure_count = failure_count - skipped_ai_count
+
+        # Count AI codes that were skipped
+        skipped_ai_codes = set()
+        for r in self.results:
+            if 'AI_' in r['expected_code'] and any('Skipped: AI analysis requires' in str(note) for note in r.get('notes', [])):
+                skipped_ai_codes.add(r['expected_code'])
+
         # Print summary
         print("\n" + "=" * 80)
         print("📊 TEST SUMMARY")
         print("=" * 80)
         print(f"Total fixtures tested: {len(fixtures)}")
         print(f"  ✅ Passed: {success_count}")
-        print(f"  ❌ Failed: {failure_count}")
+        if skipped_ai_count > 0:
+            print(f"  ⚠️  Skipped (no API key): {skipped_ai_count}")
+            print(f"  ❌ Failed: {actual_failure_count}")
+        else:
+            print(f"  ❌ Failed: {failure_count}")
         print(f"  Success rate: {(success_count/len(fixtures)*100):.1f}%")
         print(f"\nUnique error codes tested: {len(fixtures_by_code)}")
         print(f"  ✅ Passing codes (all fixtures pass): {passing_codes}")
-        print(f"  ❌ Failing codes (one or more fixtures fail): {failing_codes}")
+        if len(skipped_ai_codes) > 0:
+            print(f"  ⚠️  Skipped AI codes (no API key): {len(skipped_ai_codes)}")
+            actual_failing_codes = failing_codes - len(skipped_ai_codes)
+            print(f"  ❌ Failing codes (one or more fixtures fail): {actual_failing_codes}")
+        else:
+            print(f"  ❌ Failing codes (one or more fixtures fail): {failing_codes}")
         print(f"  Code success rate: {(passing_codes/len(fixtures_by_code)*100):.1f}%")
 
-        # List failures by error code
-        if failing_codes > 0:
+        # List failures by error code (excluding skipped AI codes)
+        actual_failing_codes = failing_codes - len(skipped_ai_codes) if len(skipped_ai_codes) > 0 else failing_codes
+
+        if actual_failing_codes > 0:
             print("\n" + "=" * 80)
             print("❌ FAILED ERROR CODES")
             print("=" * 80)
@@ -411,6 +458,10 @@ class FixtureTestRunner:
             print("All fixtures must pass for the error code to be enabled in production.\n")
 
             for error_code in sorted(error_code_status.keys()):
+                # Skip AI codes that were skipped due to no API key
+                if error_code in skipped_ai_codes:
+                    continue
+
                 status = error_code_status[error_code]
                 if not status["passed"]:
                     print(f"\n❌ {error_code}")
@@ -425,6 +476,16 @@ class FixtureTestRunner:
                             if result["notes"]:
                                 for note in result["notes"]:
                                     print(f"      Note: {note}")
+
+        # Optionally list skipped AI codes separately
+        if len(skipped_ai_codes) > 0:
+            print("\n" + "=" * 80)
+            print("⚠️  SKIPPED AI ERROR CODES (No API Key)")
+            print("=" * 80)
+            print(f"\nThese {len(skipped_ai_codes)} AI_ tests require CLAUDE_API_KEY environment variable:")
+            for ai_code in sorted(skipped_ai_codes):
+                status = error_code_status[ai_code]
+                print(f"  • {ai_code} ({status['total_fixtures']} fixture{'s' if status['total_fixtures'] > 1 else ''})")
         
         # Calculate duration
         duration = time.time() - start_time

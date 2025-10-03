@@ -98,6 +98,18 @@ async def test_animations(page) -> Dict[str, Any]:
                     all.forEach(element => {
                         const style = window.getComputedStyle(element);
                         if (style.animation && style.animationName !== 'none') {
+                            // Get full animation CSS properties
+                            const animationCSS = {
+                                'animation-name': style.animationName,
+                                'animation-duration': style.animationDuration,
+                                'animation-timing-function': style.animationTimingFunction,
+                                'animation-delay': style.animationDelay,
+                                'animation-iteration-count': style.animationIterationCount,
+                                'animation-direction': style.animationDirection,
+                                'animation-fill-mode': style.animationFillMode,
+                                'animation-play-state': style.animationPlayState
+                            };
+
                             elements.push({
                                 element: element,
                                 tag: element.tagName.toLowerCase(),
@@ -107,7 +119,8 @@ async def test_animations(page) -> Dict[str, Any]:
                                     duration: style.animationDuration,
                                     iterationCount: style.animationIterationCount,
                                     playState: style.animationPlayState
-                                }
+                                },
+                                css: animationCSS
                             });
                         }
                     });
@@ -157,7 +170,7 @@ async def test_animations(page) -> Dict[str, Any]:
                         cat: 'animations',
                         element: 'page',
                         xpath: '/html',
-                        html: '<page>',
+                        html: 'page-wide',
                         description: `Page has ${animatedElements.length} animations but lacks prefers-reduced-motion media query support`
                     });
                     results.elements_failed++;
@@ -171,6 +184,11 @@ async def test_animations(page) -> Dict[str, Any]:
                     
                     // Check for infinite animations
                     if (animation.iterationCount === 'infinite') {
+                        // Format CSS for display
+                        const cssLines = Object.entries(item.css)
+                            .map(([prop, value]) => `  ${prop}: ${value};`)
+                            .join('\\n');
+
                         results.errors.push({
                             err: 'ErrInfiniteAnimation',
                             type: 'err',
@@ -179,7 +197,9 @@ async def test_animations(page) -> Dict[str, Any]:
                             xpath: item.xpath,
                             html: element.outerHTML.substring(0, 200),
                             description: 'Element has infinite animation which can cause accessibility issues',
-                            animationName: animation.name
+                            animationName: animation.name,
+                            animationCSS: cssLines,
+                            cssProperties: item.css
                         });
                         results.elements_failed++;
                     } else {
@@ -189,8 +209,13 @@ async def test_animations(page) -> Dict[str, Any]:
                     // Check for long duration animations
                     const duration = parseFloat(animation.duration);
                     const durationMs = animation.duration.includes('ms') ? duration : duration * 1000;
-                    
+
                     if (durationMs > 5000) {
+                        // Format CSS for display
+                        const cssLines = Object.entries(item.css)
+                            .map(([prop, value]) => `  ${prop}: ${value};`)
+                            .join('\\n');
+
                         results.warnings.push({
                             err: 'WarnLongAnimation',
                             type: 'warn',
@@ -199,7 +224,9 @@ async def test_animations(page) -> Dict[str, Any]:
                             xpath: item.xpath,
                             html: element.outerHTML.substring(0, 200),
                             description: `Animation duration (${animation.duration}) exceeds 5 seconds`,
-                            duration: animation.duration
+                            duration: animation.duration,
+                            animationCSS: cssLines,
+                            cssProperties: item.css
                         });
                     }
                 });

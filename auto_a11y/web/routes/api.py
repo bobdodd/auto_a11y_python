@@ -33,7 +33,21 @@ def get_fixture_test_status():
         passing_tests = set()
         if test_config.fixture_validator:
             passing_tests = test_config.fixture_validator.get_passing_tests()
-        
+
+        # Calculate category counts
+        all_pass_count = 0
+        partial_pass_count = 0
+        all_fail_count = 0
+
+        for error_code, status in statuses.items():
+            category = status.get('status_category', 'all_fail')
+            if category == 'all_pass':
+                all_pass_count += 1
+            elif category == 'partial_pass':
+                partial_pass_count += 1
+            else:
+                all_fail_count += 1
+
         return jsonify({
             'success': True,
             'debug_mode': test_config.debug_mode,
@@ -41,7 +55,10 @@ def get_fixture_test_status():
             'passing_tests': list(passing_tests),
             'test_statuses': statuses,
             'total_tests': len(statuses),
-            'passing_count': len(passing_tests)
+            'passing_count': len(passing_tests),
+            'all_pass_count': all_pass_count,
+            'partial_pass_count': partial_pass_count,
+            'all_fail_count': all_fail_count
         })
     except Exception as e:
         logger.error(f"Error getting fixture test status: {e}")

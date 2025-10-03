@@ -50,10 +50,10 @@ TEST_DOCUMENTATION = {
 async def test_modals(page) -> Dict[str, Any]:
     """
     Test modal dialogs for accessibility requirements including proper headings
-    
+
     Args:
         page: Pyppeteer page object
-        
+
     Returns:
         Dictionary containing test results with errors and warnings
     """
@@ -70,9 +70,10 @@ async def test_modals(page) -> Dict[str, Any]:
                     elements_passed: 0,
                     elements_failed: 0,
                     test_name: 'modals',
-                    checks: []
+                    checks: [],
+                    debug: []  // Add debug info
                 };
-                
+
                 // Function to generate XPath for elements
                 function getFullXPath(element) {
                     if (!element) return '';
@@ -102,30 +103,56 @@ async def test_modals(page) -> Dict[str, Any]:
                     const dialogElements = Array.from(document.querySelectorAll('dialog'));
                     const roleDialogs = Array.from(document.querySelectorAll('[role="dialog"]'));
                     const modalDivs = Array.from(document.querySelectorAll('div[class*="modal" i]'));
-                    
-                    return [...dialogElements, ...roleDialogs, ...modalDivs];
+
+                    // Combine all candidates and deduplicate
+                    const allModals = [...dialogElements, ...roleDialogs, ...modalDivs];
+                    const uniqueModals = Array.from(new Set(allModals));
+
+                    // Filter out nested modals - only keep outermost
+                    return uniqueModals.filter(modal => {
+                        return !uniqueModals.some(otherModal =>
+                            otherModal !== modal && otherModal.contains(modal)
+                        );
+                    });
                 }
                 
                 // Check dialog heading structure
                 function checkDialogHeading(modal) {
-                    const children = Array.from(modal.childNodes);
-                    const firstElement = children.find(node => 
-                        node.nodeType === 1 && 
-                        !['script', 'style'].includes(node.tagName.toLowerCase())
-                    );
+                    // Look for first heading anywhere in modal (not just direct children)
+                    const firstHeading = modal.querySelector('h1, h2, h3, h4, h5, h6');
 
-                    if (!firstElement || !['h1', 'h2'].includes(firstElement.tagName.toLowerCase())) {
+                    results.debug.push({
+                        modal: modal.id || modal.className,
+                        foundHeading: firstHeading ? firstHeading.tagName : 'none',
+                        headingText: firstHeading ? firstHeading.textContent.trim() : null
+                    });
+
+                    if (!firstHeading) {
                         return {
                             hasProperHeading: false,
-                            firstElement: firstElement ? firstElement.tagName.toLowerCase() : null
+                            hasHeading: false,
+                            foundLevel: null
+                        };
+                    }
+
+                    const level = parseInt(firstHeading.tagName.substring(1));
+                    const headingText = firstHeading.textContent.trim();
+
+                    // Modal should start with h2 (or h1 if it's the page's main h1)
+                    if (level > 2) {
+                        return {
+                            hasProperHeading: false,
+                            hasHeading: true,
+                            foundLevel: level,
+                            headingText: headingText
                         };
                     }
 
                     return {
                         hasProperHeading: true,
                         heading: {
-                            level: firstElement.tagName.toLowerCase(),
-                            text: firstElement.textContent.trim()
+                            level: firstHeading.tagName.toLowerCase(),
+                            text: headingText
                         }
                     };
                 }
@@ -133,21 +160,24 @@ async def test_modals(page) -> Dict[str, Any]:
                 // Find close elements
                 function findCloseElements(modal) {
                     const closeElements = [];
+                    const inaccessibleCloseElements = [];
+
+                    // First check for properly interactive close elements
                     const interactiveElements = modal.querySelectorAll(
-                        'button, a, [role="button"], [tabindex="0"]'
+                        'button, a, [role="button"], [tabindex]'
                     );
 
                     interactiveElements.forEach(element => {
                         const text = element.textContent.trim().toLowerCase();
                         const ariaLabel = element.getAttribute('aria-label')?.toLowerCase();
                         const title = element.getAttribute('title')?.toLowerCase();
-                        
+
                         if ((text && text.includes('close')) ||
                             (ariaLabel && ariaLabel.includes('close')) ||
                             (title && title.includes('close')) ||
                             element.className.toLowerCase().includes('close') ||
                             element.id.toLowerCase().includes('close')) {
-                            
+
                             closeElements.push({
                                 element: element.tagName.toLowerCase(),
                                 id: element.id || null,
@@ -158,7 +188,41 @@ async def test_modals(page) -> Dict[str, Any]:
                         }
                     });
 
-                    return closeElements;
+                    // If no accessible close elements found, check for inaccessible ones
+                    if (closeElements.length === 0) {
+                        const allElements = modal.querySelectorAll('span, div, i, svg');
+
+                        allElements.forEach(element => {
+                            const text = element.textContent.trim().toLowerCase();
+                            const ariaLabel = element.getAttribute('aria-label')?.toLowerCase();
+                            const title = element.getAttribute('title')?.toLowerCase();
+                            const className = element.className.toLowerCase();
+                            const id = element.id.toLowerCase();
+
+                            // Check for close-related patterns
+                            const hasCloseText = text === 'close' || text === 'x' || text === '×' || text === '✕';
+                            const hasCloseClass = className.includes('close') || className.includes('dismiss');
+                            const hasCloseId = id.includes('close') || id.includes('dismiss');
+                            const hasCloseLabel = (ariaLabel && ariaLabel.includes('close')) ||
+                                                 (title && title.includes('close'));
+                            const hasIconClass = className.includes('icon-close') ||
+                                               className.includes('icon-x') ||
+                                               className.includes('fa-times') ||
+                                               className.includes('fa-close');
+
+                            if (hasCloseText || hasCloseClass || hasCloseId || hasCloseLabel || hasIconClass) {
+                                inaccessibleCloseElements.push({
+                                    element: element.tagName.toLowerCase(),
+                                    id: element.id || null,
+                                    text: text,
+                                    className: element.className,
+                                    reason: 'Missing role="button" and tabindex'
+                                });
+                            }
+                        });
+                    }
+
+                    return { closeElements, inaccessibleCloseElements };
                 }
                 
                 // Check focus management
@@ -194,14 +258,26 @@ async def test_modals(page) -> Dict[str, Any]:
                 
                 modals.forEach(modal => {
                     const headingInfo = checkDialogHeading(modal);
-                    const closeElements = findCloseElements(modal);
+                    const closeInfo = findCloseElements(modal);
                     const focusInfo = checkFocusManagement(modal);
-                    
+
                     let hasViolation = false;
-                    
+
                     // Check for proper heading
                     if (!headingInfo.hasProperHeading) {
                         modalsWithoutHeading++;
+
+                        let description = 'Modal dialog lacks a heading to identify its purpose';
+                        let foundLevel = null;
+                        let headingText = null;
+
+                        if (headingInfo.hasHeading) {
+                            // Has heading but wrong level
+                            description = `Modal has h${headingInfo.foundLevel} heading ("${headingInfo.headingText}") but should use h2 (or h1) for proper document structure`;
+                            foundLevel = headingInfo.foundLevel;
+                            headingText = headingInfo.headingText;
+                        }
+
                         results.errors.push({
                             err: 'ErrModalMissingHeading',
                             type: 'err',
@@ -209,15 +285,27 @@ async def test_modals(page) -> Dict[str, Any]:
                             element: modal.tagName.toLowerCase(),
                             xpath: getFullXPath(modal),
                             html: modal.outerHTML.substring(0, 200),
-                            description: 'Modal dialog does not start with H1 or H2 heading',
-                            firstElement: headingInfo.firstElement
+                            description: description,
+                            foundLevel: foundLevel,
+                            headingText: headingText
                         });
                         hasViolation = true;
                     }
-                    
+
                     // Check for close mechanism
-                    if (closeElements.length === 0) {
+                    if (closeInfo.closeElements.length === 0) {
                         modalsWithoutClose++;
+
+                        let description = 'Modal dialog has no identifiable close mechanism';
+                        let inaccessibleElements = null;
+
+                        // If we found inaccessible close elements, note them
+                        if (closeInfo.inaccessibleCloseElements.length > 0) {
+                            const inaccessible = closeInfo.inaccessibleCloseElements[0];
+                            description = `Modal has close element (<${inaccessible.element}${inaccessible.id ? ' id="' + inaccessible.id + '"' : ''}${inaccessible.className ? ' class="' + inaccessible.className + '"' : ''}>) but it lacks role="button" and tabindex, making it inaccessible to keyboard users`;
+                            inaccessibleElements = closeInfo.inaccessibleCloseElements;
+                        }
+
                         results.errors.push({
                             err: 'ErrModalMissingClose',
                             type: 'err',
@@ -225,7 +313,8 @@ async def test_modals(page) -> Dict[str, Any]:
                             element: modal.tagName.toLowerCase(),
                             xpath: getFullXPath(modal),
                             html: modal.outerHTML.substring(0, 200),
-                            description: 'Modal dialog has no identifiable close mechanism'
+                            description: description,
+                            inaccessibleCloseElements: inaccessibleElements
                         });
                         hasViolation = true;
                     }
@@ -309,7 +398,17 @@ async def test_modals(page) -> Dict[str, Any]:
                 return results;
             }
         ''')
-        
+
+        # Log debug info
+        if 'debug' in results and results['debug']:
+            logger.warning(f"MODAL DEBUG: {results['debug']}")
+
+        # Log errors for debugging
+        if 'errors' in results:
+            for error in results['errors']:
+                if error.get('err') == 'ErrModalMissingHeading':
+                    logger.warning(f"MODAL HEADING ERROR: desc='{error.get('description')}' foundLevel={error.get('foundLevel')} headingText='{error.get('headingText')}'")
+
         return results
         
     except Exception as e:

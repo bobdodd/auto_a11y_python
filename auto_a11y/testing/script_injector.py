@@ -26,35 +26,36 @@ class ScriptInjector:
         'tests/passTracking.js',    # Pass tracking helpers
         
         # Test scripts
-        'tests/headings.js',
-        'tests/images.js',
-        'tests/forms2.js',
-        'tests/landmarks.js',
-        'tests/color.js',
-        'tests/focus.js',
-        'tests/language.js',
-        'tests/pageTitle.js',
-        'tests/tabindex.js',
-        'tests/titleAttr.js',
-        'tests/fonts.js',
-        'tests/svg.js',
-        'tests/pdf.js'
+        # NOTE: Most legacy JS tests are disabled - replaced by Python touchpoint tests
+        # 'tests/headings.js',  # REMOVED: Replaced by test_headings.py
+        # 'tests/images.js',  # REMOVED: Replaced by test_images.py (also handles SVG)
+        # 'tests/forms2.js',  # REMOVED: Replaced by test_forms.py
+        # 'tests/landmarks.js',  # REMOVED: Replaced by test_landmarks.py
+        # 'tests/color.js',  # REMOVED: Replaced by test_colors.py
+        # 'tests/focus.js',  # REMOVED: Replaced by test_focus_management.py
+        # 'tests/tabindex.js',  # REMOVED: Replaced by test_tabindex.py
+        # 'tests/titleAttr.js',  # REMOVED: Replaced by test_title_attribute.py
+        # 'tests/fonts.js',  # REMOVED: Replaced by test_fonts.py
+        # 'tests/svg.js',  # REMOVED: Replaced by test_images.py
+        'tests/language.js',  # KEPT: No Python equivalent yet
+        'tests/pageTitle.js',  # KEPT: No Python equivalent yet
+        'tests/pdf.js'  # KEPT: Specialized PDF handling
     ]
     
     # Map test names to their function names
     TEST_FUNCTIONS = {
-        'headings': 'headingsScrape',
-        'images': 'imagesScrape',
-        'forms2': 'forms2Scrape',
-        'landmarks': 'landmarksScrape',
-        'color': 'colorScrape',
-        'focus': 'focusScrape',
+        # 'headings': 'headingsScrape',  # REMOVED: Replaced by test_headings.py
+        # 'images': 'imagesScrape',  # REMOVED: Replaced by test_images.py
+        # 'forms2': 'forms2Scrape',  # REMOVED: Replaced by test_forms.py
+        # 'landmarks': 'landmarksScrape',  # REMOVED: Replaced by test_landmarks.py
+        # 'color': 'colorScrape',  # REMOVED: Replaced by test_colors.py
+        # 'focus': 'focusScrape',  # REMOVED: Replaced by test_focus_management.py
+        # 'tabindex': 'tabindexScrape',  # REMOVED: Replaced by test_tabindex.py
+        # 'titleAttr': 'titleAttrScrape',  # REMOVED: Replaced by test_title_attribute.py
+        # 'fonts': 'fontsScrape',  # REMOVED: Replaced by test_fonts.py
+        # 'svg': 'svgScrape',  # REMOVED: Replaced by test_images.py
         'language': 'languageScrape',
         'pageTitle': 'pageTitleScrape',
-        'tabindex': 'tabindexScrape',
-        'titleAttr': 'titleAttrScrape',
-        'fonts': 'fontsScrape',
-        'svg': 'svgScrape',
         'pdf': 'pdfScrape'
     }
     
@@ -113,16 +114,10 @@ class ScriptInjector:
             await page.evaluateOnNewDocument('''
                 window.a11yTestsLoaded = true;
                 window.a11yTestFunctions = {
-                    headings: typeof headingsScrape !== 'undefined',
-                    images: typeof imagesScrape !== 'undefined',
-                    forms2: typeof forms2Scrape !== 'undefined',
-                    landmarks: typeof landmarksScrape !== 'undefined',
-                    color: typeof colorScrape !== 'undefined',
-                    focus: typeof focusScrape !== 'undefined',
+                    // Most legacy tests removed - replaced by Python touchpoint tests
                     language: typeof languageScrape !== 'undefined',
                     pageTitle: typeof pageTitleScrape !== 'undefined',
-                    tabindex: typeof tabindexScrape !== 'undefined',
-                    titleAttr: typeof titleAttrScrape !== 'undefined'
+                    pdf: typeof pdfScrape !== 'undefined'
                 };
             ''')
             

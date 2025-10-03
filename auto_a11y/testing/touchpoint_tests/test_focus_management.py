@@ -148,17 +148,34 @@ async def test_focus_management(page) -> Dict[str, Any]:
                 interactiveElements.forEach(element => {
                     const tag = element.tagName.toLowerCase();
                     const text = element.textContent.trim().substring(0, 50);
-                    
+
                     // Check for focus indicators
                     const hasFocus = hasFocusStyles(element);
                     if (!hasFocus) {
+                        // Capture HTML, with fallback for edge cases
+                        let htmlSnippet = '';
+                        let htmlSource = 'unknown';
+                        try {
+                            if (element.outerHTML) {
+                                htmlSnippet = element.outerHTML.substring(0, 200);
+                                htmlSource = 'outerHTML';
+                            } else {
+                                htmlSnippet = `<${tag}${element.id ? ' id="' + element.id + '"' : ''}${element.className ? ' class="' + element.className + '"' : ''}>${text}</${tag}>`;
+                                htmlSource = 'fallback-empty';
+                            }
+                        } catch (e) {
+                            htmlSnippet = `<${tag}${element.id ? ' id="' + element.id + '"' : ''}${element.className ? ' class="' + element.className + '"' : ''}>${text}</${tag}>`;
+                            htmlSource = 'fallback-error';
+                        }
+
                         results.errors.push({
                             err: 'ErrNoFocusIndicator',
                             type: 'err',
                             cat: 'focus_management',
                             element: tag,
                             xpath: getFullXPath(element),
-                            html: element.outerHTML.substring(0, 200),
+                            html: htmlSnippet,
+                            htmlSource: htmlSource,
                             description: 'Interactive element has no visible focus indicator',
                             text: text
                         });
@@ -231,7 +248,14 @@ async def test_focus_management(page) -> Dict[str, Any]:
                 return results;
             }
         ''')
-        
+
+        # Log focus errors for debugging
+        if 'errors' in results:
+            for error in results['errors']:
+                if error.get('err') == 'ErrNoFocusIndicator':
+                    logger.warning(f"FOCUS ERROR: xpath={error.get('xpath')} html='{error.get('html', 'MISSING')[:100]}' htmlSource={error.get('htmlSource', 'N/A')}")
+                    break  # Just log first one
+
         return results
         
     except Exception as e:

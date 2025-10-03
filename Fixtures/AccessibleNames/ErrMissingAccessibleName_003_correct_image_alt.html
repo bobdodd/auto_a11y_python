@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links with Image Alt Text - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_003_correct_image_alt",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Links get accessible names from child image alt text",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- Link gets accessible name from image alt="logo" -->
+            <div data-expected-pass="true"
+                 data-pass-reason="Link has accessible name 'logo' from child image alt text">
+                <a href="#" class="logo">
+                    <img src="./a11y.png" alt="logo">
+                </a>
+            </div>
+
+            <!-- Link gets accessible name from image alt -->
+            <div data-expected-pass="true"
+                 data-pass-reason="Link has accessible name 'Shopping cart' from child image alt text">
+                <a href="/cart">
+                    <img src="cart.png" alt="Shopping cart">
+                </a>
+            </div>
+
+            <!-- Link gets accessible name from SVG title -->
+            <div data-expected-pass="true"
+                 data-pass-reason="Link has accessible name 'Settings' from child SVG title element">
+                <a href="/settings">
+                    <svg width="20" height="20">
+                        <title>Settings</title>
+                        <circle cx="10" cy="10" r="8"/>
+                    </svg>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Test Page</h1>
+        <p>This page tests that links properly inherit accessible names from child images.</p>
+    </main>
+</body>
+</html>

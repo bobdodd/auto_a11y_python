@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links with Empty/Missing Alt - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_004_violations_image_empty_alt",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links with images that have empty or missing alt text have no accessible name",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- Link has image with empty alt, no other name source -->
+            <div data-expected-violation="true"
+                 data-violation-id="ErrMissingAccessibleName"
+                 data-violation-reason="Link contains image with empty alt='', providing no accessible name">
+                <a href="/cart">
+                    <img src="cart.png" alt="">
+                </a>
+            </div>
+
+            <!-- Link has image with no alt attribute at all -->
+            <div data-expected-violation="true"
+                 data-violation-id="ErrMissingAccessibleName"
+                 data-violation-reason="Link contains image with missing alt attribute, providing no accessible name">
+                <a href="/profile">
+                    <img src="profile.png">
+                </a>
+            </div>
+
+            <!-- Link is completely empty -->
+            <div data-expected-violation="true"
+                 data-violation-id="ErrMissingAccessibleName"
+                 data-violation-reason="Link is empty with no content or accessible name attributes">
+                <a href="/home"></a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Test Page</h1>
+        <p>This page tests that links without proper accessible names are correctly identified.</p>
+    </main>
+</body>
+</html>

@@ -181,7 +181,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                 }
                 
                 // Find all potential dialogs
-                const dialogs = [
+                const dialogCandidates = [
                     ...Array.from(document.querySelectorAll('dialog')),
                     ...Array.from(document.querySelectorAll('[role="dialog"]')),
                     ...Array.from(document.querySelectorAll('[class*="modal"]')),
@@ -191,7 +191,17 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                             return style.zIndex !== 'auto' && parseInt(style.zIndex) > 100;
                         })
                 ];
-                
+
+                // Deduplicate
+                const uniqueDialogs = Array.from(new Set(dialogCandidates));
+
+                // Filter out nested dialogs - only keep outermost
+                const dialogs = uniqueDialogs.filter(dialog => {
+                    return !uniqueDialogs.some(otherDialog =>
+                        otherDialog !== dialog && otherDialog.contains(dialog)
+                    );
+                });
+
                 // Filter for visible dialogs
                 const visibleDialogs = dialogs.filter(isVisible);
                 

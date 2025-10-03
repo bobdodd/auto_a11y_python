@@ -468,6 +468,15 @@ class ResultProcessor:
                     'full_remediation': enhanced_desc.get('remediation', ''),
                     **violation_data  # Include all original metadata from JS tests
                 }
+
+                # Debug logging for heading skip errors
+                if error_code == 'ErrSkippedHeadingLevel':
+                    logger.warning(f"PROCESSOR DEBUG: Creating metadata for {error_code}")
+                    logger.warning(f"  violation_data keys: {list(violation_data.keys())}")
+                    logger.warning(f"  metadata keys after spread: {list(metadata.keys())}")
+                    logger.warning(f"  previousHeadingHtml in metadata: {'previousHeadingHtml' in metadata}")
+                    if 'previousHeadingHtml' in metadata:
+                        logger.warning(f"  previousHeadingHtml value: {metadata['previousHeadingHtml'][:80]}")
             else:
                 # Try original description mapping
                 detailed_desc = get_issue_description(violation_id)
@@ -538,6 +547,14 @@ class ResultProcessor:
             
             # Always add metadata (may be enriched later in pages.py)
             violation.metadata = metadata
+
+            # Debug logging for heading skip errors
+            if error_code == 'ErrSkippedHeadingLevel':
+                logger.warning(f"PROCESSOR: Created violation for {error_code}")
+                logger.warning(f"  metadata keys: {list(metadata.keys())}")
+                logger.warning(f"  previousHeadingHtml in metadata: {'previousHeadingHtml' in metadata}")
+                if 'previousHeadingHtml' in metadata:
+                    logger.warning(f"  previousHeadingHtml value: {metadata.get('previousHeadingHtml', '')[:80]}")
             
             return violation
             

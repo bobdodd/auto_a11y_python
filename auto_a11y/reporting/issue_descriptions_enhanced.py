@@ -1027,22 +1027,22 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Use correct format: \"en-US\" or \"en\""
         },
         'ErrInfiniteAnimation': {
-            'title': "Animation runs infinitely without pause controls",
-            'what': "Animation runs infinitely without pause controls",
-            'why': "Continuous animations can trigger seizures, cause distraction, and make content unusable for many users.",
+            'title': "Animation '{animationName}' runs infinitely without pause controls",
+            'what': "Animation '{animationName}' runs infinitely without pause controls",
+            'why': "Continuous animations can trigger seizures, cause distraction, and make content unusable for many users. This animation is set to repeat indefinitely (animation-iteration-count: infinite).",
             'who': "Users with vestibular disorders, users with ADHD, users with photosensitive epilepsy, users with cognitive disabilities.",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.2.2'],
-            'remediation': "Provide pause/stop controls for all animations, respect prefers-reduced-motion settings, limit animation duration."
+            'remediation': "Provide pause/stop controls for all animations, respect prefers-reduced-motion settings, or limit animation-iteration-count to a finite number. Current CSS:\n{animationCSS}"
         },
         'ErrInsufficientContrast': {
-            'title': "Text does not meet WCAG contrast ratio requirements",
-            'what': "Text does not meet WCAG contrast ratio requirements",
-            'why': "Insufficient contrast makes text unreadable for users with low vision or in challenging lighting conditions.",
+            'title': "Text contrast ratio {ratio}:1 does not meet WCAG requirements (required: {required}:1)",
+            'what': "Text contrast ratio {ratio}:1 does not meet WCAG requirements (required: {required}:1)",
+            'why': "Insufficient contrast ({ratio}:1) makes text unreadable for users with low vision or in challenging lighting conditions. Text color {fg} on background {bg} does not provide enough distinction.",
             'who': "Users with low vision, users with color blindness, aging users, all users in bright sunlight or glare.",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.4.3'],
-            'remediation': "Ensure 4.5:1 contrast ratio for normal text, 3:1 for large text (18pt+), use color contrast analyzers to verify."
+            'remediation': "Current contrast is {ratio}:1, but at least {required}:1 is required. Adjust foreground color {fg} or background color {bg} to meet requirements. For {fontSize}px text, ensure 4.5:1 for normal text or 3:1 for large text (18pt+)."
         },
         'ErrInvalidAriaLevel': {
             'title': "Invalid aria-level value (not 1-6)",
@@ -1099,22 +1099,22 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Make accessible name match visible text"
         },
         'ErrLargeTextContrastAA': {
-            'title': "Large text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
+            'title': "Large text ({fontSize}px) fails WCAG AA contrast: {ratio}:1 (required: 3:1)",
             'what': "Large text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
             'why': "This large text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AA requirements. Large text (24px+ or 18.66px+ bold) requires a minimum contrast ratio of 3:1 to pass Level AA. The foreground color ({fg}) against background ({bg}) doesn\'t provide enough distinction.",
             'who': "Users with low vision, color blindness, or age-related vision changes who struggle to distinguish text with insufficient contrast, even when the text is larger",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.4.3'],
-            'remediation': "Current contrast is {ratio}:1, but WCAG Level AA requires at least 3:1 for large text. To fix, adjust the foreground color from {fg} or the background from {bg}. Consider using #949494 or darker on white background for large text."
+            'remediation': "Current contrast is {ratio}:1, but WCAG Level AA requires at least 3:1 for large text ({fontSize}px). To fix, adjust the foreground color from {fg} or the background from {bg}. Consider using #949494 or darker on white background for large text."
         },
         'ErrLargeTextContrastAAA': {
-            'title': "Large text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
+            'title': "Large text ({fontSize}px) fails WCAG AAA contrast: {ratio}:1 (required: 4.5:1)",
             'what': "Large text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
             'why': "This large text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AAA enhanced requirements. Large text (24px+ or 18.66px+ bold) requires a minimum contrast ratio of 4.5:1 to pass Level AAA for enhanced accessibility.",
             'who': "Users with moderate visual impairments who benefit from enhanced contrast even for large text, ensuring optimal readability in all conditions",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.4.6'],
-            'remediation': "Current contrast is {ratio}:1, but WCAG Level AAA requires at least 4.5:1 for large text. To fix, adjust colors to achieve higher contrast, such as #767676 or darker on white background for large text at Level AAA."
+            'remediation': "Current contrast is {ratio}:1, but WCAG Level AAA requires at least 4.5:1 for large text ({fontSize}px). To fix, adjust colors to achieve higher contrast, such as #767676 or darker on white background for large text at Level AAA."
         },
         'ErrLinkOpensNewWindowNoWarning': {
             'title': "Link opens in new window/tab without warning users",
@@ -1243,13 +1243,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Provide at least one clear way to close modals (close button, escape key, cancel button)."
         },
         'ErrModalMissingHeading': {
-            'title': "Modal dialog lacks a heading to identify its purpose",
-            'what': "Modal dialog lacks a heading to identify its purpose",
-            'why': "Without headings, users don\'t know the purpose or context of the modal content.",
-            'who': "Screen reader users who need to understand modal purpose, users with cognitive disabilities.",
+            'title': "Modal has h{foundLevel} heading but should use h2 or h1",
+            'what': "Modal has h{foundLevel} heading (\"{headingText}\") but should use h2 (or h1) for proper document structure",
+            'why': "Without proper heading structure, users don\'t know the purpose or context of the modal content. Modals should start with h1 or h2 headings to maintain document structure and provide clear context.",
+            'who': "Screen reader users who need to understand modal purpose and navigate by headings, users with cognitive disabilities who rely on clear document structure.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.4.6'],
-            'remediation': "Add a heading (h1-h6) at the beginning of modal content that clearly identifies its purpose."
+            'remediation': "Change the modal heading from h{foundLevel} to h2 (or h1 if this is the page's main heading). Current heading: \"{headingText}\". Modals should use h2 to maintain proper document hierarchy and provide clear context for all users."
         },
         'ErrModalWithoutEscape': {
             'title': "Modal cannot be closed using the Escape key",
@@ -1262,12 +1262,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         },
         'ErrMouseOnlyHandler': {
             'title': "Interactive functionality only available through mouse events",
-            'what': "Interactive functionality only available through mouse events",
-            'why': "Mouse-only interactions exclude users who cannot use a pointing device.",
+            'what': "Element has mouse event handler (onclick, onmouseover, etc.) but lacks keyboard event handlers, making it inaccessible to keyboard users",
+            'why': "Mouse-only interactions exclude users who cannot use a pointing device. While adding role=\"button\" helps screen readers identify the element as interactive, it does not provide keyboard functionality - keyboard event handlers are still required.",
             'who': "Keyboard users, screen reader users, users with motor disabilities, mobile device users.",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.1.1'],
-            'remediation': "Provide keyboard equivalents for all mouse interactions, use click events that work with keyboard, add proper keyboard event handlers."
+            'remediation': "Best practice: Use a <button> element instead of <div> or <span>, which provides mouse and keyboard support automatically. If you must use a non-button element: (1) Add role=\"button\" for screen reader support, (2) Add tabindex=\"0\" to make it keyboard focusable, (3) Add onkeydown handler to respond to Enter and Space keys: onkeydown=\"if(event.key==='Enter'||event.key===' '){/* your action */}\". Note that role=\"button\" alone does NOT provide keyboard functionality."
         },
         'ErrMultipleBannerLandmarks': {
             'title': "Multiple banner landmarks found",
@@ -1639,13 +1639,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Insert an h{expectedLevel} heading between the h{skippedFrom} and h{skippedTo}, or change the h{skippedTo} to h{expectedLevel} to maintain sequential order. After h{skippedFrom}, use h{expectedLevel} for the next level. Don\'t skip levels when going down the hierarchy. If you need a heading to look smaller visually, use CSS to style it rather than choosing a lower heading level. The heading level should reflect the content\'s logical structure, not its visual appearance."
         },
         'ErrSmallText': {
-            'title': "Text is too small to read comfortably (less than 12px)",
-            'what': "Text is too small to read comfortably (less than 12px)",
+            'title': "Text is too small ({fontSize}px) - minimum 16px recommended",
+            'what': "Text size is {fontSize}px, which is below the recommended minimum of 16px for comfortable reading",
             'why': "Small text is difficult to read, especially for users with low vision or on mobile devices.",
             'who': "Users with low vision, aging users, mobile device users, users with reading disabilities.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.4.4'],
-            'remediation': "Use minimum 14px (preferably 16px) for body text, ensure text can be zoomed to 200% without loss of functionality."
+            'remediation': "Increase font size to minimum 16px for body text (14px absolute minimum). Ensure text can be zoomed to 200% without loss of functionality. Current size: {fontSize}px."
         },
         'ErrSvgImageNoLabel': {
             'title': "SVG image element lacks accessible text alternatives, making it invisible to screen reader users",
@@ -1702,18 +1702,18 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Use <th> elements for column headers in first row, add scope=\"col\" to clarify header relationships."
         },
         'ErrTextContrastAA': {
-            'title': "Text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
-            'what': "Text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
-            'why': "This text with a contrast ratio of {ratio}:1 does not meet WCAG Level AA requirements. Normal text requires a minimum contrast ratio of 4.5:1 to pass Level AA. The foreground color ({fg}) against the background ({bg}) doesn\'t provide enough distinction for users with visual impairments.",
+            'title': "Normal text ({fontSize}px) fails WCAG AA contrast: {ratio}:1 (required: 4.5:1)",
+            'what': "Normal text fails WCAG AA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
+            'why': "This normal-sized text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AA requirements. Normal text requires a minimum contrast ratio of 4.5:1 to pass Level AA. The foreground color ({fg}) against the background ({bg}) doesn\'t provide enough distinction for users with visual impairments.",
             'who': "Users with low vision who need higher contrast to distinguish text, users with color blindness, older users experiencing age-related vision changes, and users viewing content in bright sunlight or on low-quality displays",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.4.3'],
             'remediation': "Current contrast is {ratio}:1, but WCAG Level AA requires at least 4.5:1 for normal text ({fontSize}px). To fix, darken the foreground color from {fg} or lighten the background from {bg}. Consider using #595959 or darker on white background, or #FFFFFF on backgrounds darker than #767676."
         },
         'ErrTextContrastAAA': {
-            'title': "Text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
-            'what': "Text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
-            'why': "This text with a contrast ratio of {ratio}:1 does not meet WCAG Level AAA enhanced requirements. Normal text requires a minimum contrast ratio of 7:1 to pass Level AAA. The foreground color ({fg}) against the background ({bg}) doesn\'t provide optimal distinction for maximum accessibility.",
+            'title': "Normal text ({fontSize}px) fails WCAG AAA contrast: {ratio}:1 (required: 7:1)",
+            'what': "Normal text fails WCAG AAA with contrast ratio of {ratio}:1 (foreground: {fg}, background: {bg})",
+            'why': "This normal-sized text ({fontSize}px) with a contrast ratio of {ratio}:1 does not meet WCAG Level AAA enhanced requirements. Normal text requires a minimum contrast ratio of 7:1 to pass Level AAA. The foreground color ({fg}) against the background ({bg}) doesn\'t provide optimal distinction for maximum accessibility.",
             'who': "Users with moderate visual impairments, including those with low vision, color blindness, or contrast sensitivity who benefit from enhanced contrast for optimal readability",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.4.6'],
@@ -2161,13 +2161,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "If the element performs an action (submit form, open dialog), use a button element. If it navigates to a new URL, keep it as a link but consider whether button styling is appropriate. Ensure keyboard behavior matches the element type."
         },
         'WarnLongAnimation': {
-            'title': "Animation duration exceeds 5 seconds",
-            'what': "Animation duration exceeds 5 seconds",
-            'why': "Long animations can be distracting and may need user controls.",
-            'who': "Users with attention disorders, users with cognitive disabilities.",
+            'title': "Animation duration ({duration}) exceeds 5 seconds",
+            'what': "Animation duration ({duration}) exceeds 5 seconds",
+            'why': "Long animations can be distracting and may need user controls. Extended animation durations make it harder for users to focus on content and can be overwhelming for users with cognitive disabilities.",
+            'who': "Users with attention disorders (ADHD), users with cognitive disabilities, users with vestibular disorders.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.2.2'],
-            'remediation': "Shorten animation duration or provide pause/stop controls."
+            'remediation': "Shorten animation-duration to 5 seconds or less, or provide pause/stop controls. Consider respecting prefers-reduced-motion media query. Current CSS:\n{animationCSS}"
         },
         'WarnMissingAriaLabelledby': {
             'title': "Form field could benefit from aria-labelledby for complex labeling",

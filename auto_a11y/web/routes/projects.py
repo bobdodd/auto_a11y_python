@@ -74,39 +74,15 @@ def create_project():
         
         if not name:
             flash('Project name is required', 'error')
-            # Get fixture test status for error case
-            test_statuses = {}
-            passing_tests = set()
-            if hasattr(current_app, 'test_config') and current_app.test_config:
-                test_statuses = current_app.test_config.get_all_test_statuses()
-                if current_app.test_config.fixture_validator:
-                    passing_tests = current_app.test_config.fixture_validator.get_passing_tests()
-                debug_mode = current_app.test_config.debug_mode
-            else:
-                debug_mode = current_app.app_config.DEBUG
-            return render_template('projects/create.html',
-                                 test_statuses=test_statuses,
-                                 passing_tests=passing_tests,
-                                 debug_mode=debug_mode)
+            # Redirect to GET handler which will populate everything
+            return redirect(url_for('projects.create_project'))
         
         # Check if project name exists
         existing = current_app.db.projects.find_one({'name': name})
         if existing:
             flash(f'Project "{name}" already exists', 'error')
-            # Get fixture test status for error case
-            test_statuses = {}
-            passing_tests = set()
-            if hasattr(current_app, 'test_config') and current_app.test_config:
-                test_statuses = current_app.test_config.get_all_test_statuses()
-                if current_app.test_config.fixture_validator:
-                    passing_tests = current_app.test_config.fixture_validator.get_passing_tests()
-                debug_mode = current_app.test_config.debug_mode
-            else:
-                debug_mode = current_app.app_config.DEBUG
-            return render_template('projects/create.html',
-                                 test_statuses=test_statuses,
-                                 passing_tests=passing_tests,
-                                 debug_mode=debug_mode)
+            # Redirect to GET handler which will populate everything
+            return redirect(url_for('projects.create_project'))
         
         # Get touchpoint configuration
         from auto_a11y.config.touchpoint_tests import TOUCHPOINT_TEST_MAPPING
@@ -167,7 +143,7 @@ def create_project():
     # Get fixture test status for all tests
     test_statuses = {}
     passing_tests = set()
-    
+
     if hasattr(current_app, 'test_config') and current_app.test_config:
         test_statuses = current_app.test_config.get_all_test_statuses()
         if current_app.test_config.fixture_validator:
@@ -175,11 +151,112 @@ def create_project():
         debug_mode = current_app.test_config.debug_mode
     else:
         debug_mode = current_app.app_config.DEBUG
-    
+
+    # Group tests by touchpoint dynamically
+    from collections import defaultdict
+    tests_by_touchpoint = defaultdict(list)
+
+    # Map fixture directory names to UI touchpoint names
+    touchpoint_mapping = {
+        'ARIA': 'aria',
+        'AccessibleNames': 'accessible_names',
+        'Animation': 'animation',
+        'Animations': 'animation',
+        'Buttons': 'buttons',
+        'ColorsAndContrast': 'colors_contrast',
+        'Contrast': 'colors_contrast',
+        'DialogsAndModals': 'dialogs',
+        'Modals': 'dialogs',
+        'Documents': 'documents',
+        'EventHandling': 'event_handling',
+        'Focus': 'focus_management',
+        'Fonts': 'typography',
+        'Forms': 'forms',
+        'Headings': 'headings',
+        'IFrames': 'iframes',
+        'Images': 'images',
+        'SVG': 'images',
+        'Interactive': 'aria',
+        'Keyboard': 'keyboard_navigation',
+        'Tabindex': 'keyboard_navigation',
+        'Landmarks': 'landmarks',
+        'Language': 'language',
+        'Links': 'links',
+        'Lists': 'lists',
+        'Maps': 'maps',
+        'Media': 'media',
+        'Video': 'media',
+        'Audio': 'media',
+        'Navigation': 'navigation',
+        'ReadingOrder': 'reading_order',
+        'Semantic': 'semantic_structure',
+        'Structure': 'semantic_structure',
+        'Page': 'semantic_structure',
+        'PageTitle': 'semantic_structure',
+        'Tables': 'tables',
+        'Timing': 'timing',
+        'Typography': 'typography',
+        'Style': 'typography'
+    }
+
+    # Touchpoint display names (ordered)
+    touchpoint_names = {
+        'accessible_names': 'Accessible Names',
+        'animation': 'Animation',
+        'aria': 'ARIA',
+        'buttons': 'Buttons',
+        'colors_contrast': 'Colors & Contrast',
+        'dialogs': 'Dialogs & Modals',
+        'documents': 'Documents',
+        'event_handling': 'Event Handling',
+        'focus_management': 'Focus Management',
+        'forms': 'Forms',
+        'headings': 'Headings',
+        'iframes': 'Iframes',
+        'images': 'Images',
+        'keyboard_navigation': 'Keyboard Navigation',
+        'landmarks': 'Landmarks',
+        'language': 'Language',
+        'links': 'Links',
+        'lists': 'Lists',
+        'maps': 'Maps',
+        'media': 'Media',
+        'navigation': 'Navigation',
+        'reading_order': 'Reading Order',
+        'semantic_structure': 'Semantic Structure',
+        'tables': 'Tables',
+        'timing': 'Timing',
+        'typography': 'Typography',
+        'other': 'Other'
+    }
+
+    # Group all tests by touchpoint
+    for error_code, status in test_statuses.items():
+        # Try to determine touchpoint from fixture paths
+        fixture_paths = status.get('fixture_paths', [])
+        if fixture_paths:
+            # Get directory from first fixture path
+            first_path = fixture_paths[0]
+            if '/' in first_path:
+                directory = first_path.split('/')[0]
+                touchpoint = touchpoint_mapping.get(directory, 'other')
+            else:
+                touchpoint = 'other'
+        else:
+            touchpoint = 'other'
+
+        tests_by_touchpoint[touchpoint].append(error_code)
+
+    # Sort tests within each touchpoint
+    for touchpoint in tests_by_touchpoint:
+        tests_by_touchpoint[touchpoint].sort()
+
     return render_template('projects/create.html',
                          test_statuses=test_statuses,
                          passing_tests=passing_tests,
-                         debug_mode=debug_mode)
+                         debug_mode=debug_mode,
+                         tests_by_touchpoint=dict(tests_by_touchpoint),
+                         touchpoint_names=touchpoint_names)
 
 
 @projects_bp.route('/<project_id>')

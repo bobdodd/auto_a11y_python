@@ -92,36 +92,10 @@
                             
                             <!-- Touchpoint Tree -->
                             <div class="touchpoint-tree border rounded p-3" style="max-height: 400px; overflow-y: auto;">
-                                {% set touchpoint_data = [
-                                    ('accessible_names', 'Accessible Names', ['ErrMissingAccessibleName', 'WarnGenericAccessibleName']),
-                                    ('animation', 'Animation', ['ErrAutoStartTimers', 'ErrInfiniteAnimation', 'ErrNoReducedMotionSupport', 'WarnFastInterval', 'WarnLongAnimation']),
-                                    ('aria', 'ARIA', ['AI_ErrMissingInteractiveRole', 'ErrMapAriaHidden', 'WarnMissingAriaModal']),
-                                    ('buttons', 'Buttons', ['ErrButtonEmpty', 'ErrButtonNoText', 'ErrMissingCloseButton', 'WarnButtonTextInsufficient']),
-                                    ('colors_contrast', 'Colors & Contrast', ['ErrInsufficientContrast', 'ErrSmallText', 'InfoNoColorSchemeSupport', 'InfoNoContrastSupport', 'WarnColorOnlyLink']),
-                                    ('dialogs', 'Dialogs & Modals', ['ErrModalMissingClose', 'ErrModalMissingHeading', 'ErrModalWithoutEscape', 'WarnMissingAriaModal', 'WarnModalMissingAriaLabelledby', 'WarnModalMissingAriaModal', 'WarnModalNoFocusableElements']),
-                                    ('documents', 'Documents', ['ErrMissingDocumentType', 'WarnGenericDocumentLinkText', 'WarnMissingDocumentMetadata']),
-                                    ('event_handling', 'Event Handling', ['ErrMouseOnlyHandler']),
-                                    ('focus_management', 'Focus Management', ['ErrContentObscuring', 'ErrNoFocusIndicator', 'ErrNoOutlineOffsetDefined', 'ErrOutlineIsNoneOnInteractiveElement', 'WarnZeroOutlineOffset']),
-                                    ('forms', 'Forms', ['ErrEmptyLabel', 'ErrNoLabel', 'ErrPlaceholderAsLabel', 'ErrUnlabelledField', 'WarnMissingAriaLabelledby', 'WarnMissingRequiredIndication', 'WarnNoFieldset', 'WarnNoLegend', 'WarnUnlabelledForm', 'WarnUnlabelledRegion']),
-                                    ('headings', 'Headings', ['DiscoHeadingWithID', 'ErrEmptyHeading', 'ErrIncorrectHeadingLevel', 'ErrModalMissingHeading', 'ErrMultipleH1', 'ErrNoH1', 'ErrSkippedHeadingLevel', 'InfoHeadingNearLengthLimit', 'WarnHeadingInsideDisplayNone', 'WarnHeadingOver60CharsLong', 'WarnVisualHierarchy']),
-                                    ('iframes', 'Iframes', ['ErrVideoIframeMissingTitle']),
-                                    ('images', 'Images', ['DiscoFoundInlineSvg', 'DiscoFoundSvgImage', 'ErrAltOnElementThatDoesntTakeIt', 'ErrAltTooLong', 'ErrImageAltContainsHTML', 'ErrImageWithEmptyAlt', 'ErrImageWithImgFileExtensionAlt', 'ErrImageWithNoAlt', 'ErrImageWithURLAsAlt', 'ErrNoAlt', 'ErrRedundantAlt', 'ErrSVGNoAccessibleName', 'WarnSVGNoRole', 'WarnSvgPositiveTabindex']),
-                                    ('keyboard_navigation', 'Keyboard Navigation', ['ErrMissingTabindex', 'ErrNonInteractiveZeroTabindex', 'ErrNoFocusIndicator', 'ErrPositiveTabindex', 'ErrTabOrderViolation', 'WarnHighTabindex', 'WarnMissingNegativeTabindex', 'WarnModalNoFocusableElements', 'WarnNegativeTabindex']),
-                                    ('landmarks', 'Landmarks', ['ErrDuplicateLandmarkWithoutName', 'ErrMissingMainLandmark', 'WarnContentOutsideLandmarks', 'WarnMissingBannerLandmark', 'WarnMissingContentinfoLandmark']),
-                                    ('language', 'Language', ['ErrHreflangAttrEmpty', 'ErrHreflangNotOnLink', 'ErrIncorrectlyFormattedPrimaryLang', 'ErrNoDocumentLanguage', 'WarnMissingDocumentMetadata']),
-                                    ('links', 'Links', ['ErrInvalidGenericLinkName', 'WarnAnchorTargetTabindex', 'WarnColorOnlyLink', 'WarnGenericDocumentLinkText', 'WarnGenericLinkNoImprovement']),
-                                    ('lists', 'Lists', ['ErrEmptyList', 'ErrFakeListImplementation', 'WarnCustomBulletStyling', 'WarnDeepListNesting']),
-                                    ('maps', 'Maps', ['ErrDivMapMissingAttributes', 'ErrMapMissingTitle']),
-                                    ('media', 'Media', ['ErrNativeVideoMissingControls', 'ErrVideoIframeMissingTitle', 'WarnVideoAutoplay']),
-                                    ('navigation', 'Navigation', ['AI_ErrAccordionWithoutARIA', 'AI_ErrCarouselWithoutARIA', 'AI_ErrDropdownWithoutARIA', 'ErrDuplicateNavNames', 'ErrInappropriateMenuRole', 'ErrNavMissingAccessibleName', 'WarnNoCurrentPageIndicator']),
-                                    ('reading_order', 'Reading Order', ['AI_InfoContentOrder', 'AI_WarnPossibleReadingOrderIssue']),
-                                    ('semantic_structure', 'Semantic Structure', ['ErrEmptyPageTitle', 'ErrHeaderMissingScope', 'ErrImproperTitleAttribute', 'ErrMissingDocumentType', 'ErrMultiplePageTitles', 'ErrNoPageTitle', 'WarnPageTitleTooLong', 'WarnPageTitleTooShort', 'WarnVisualHierarchy']),
-                                    ('tables', 'Tables', ['ErrHeaderMissingScope', 'ErrTableMissingCaption', 'ErrTableNoColumnHeaders', 'WarnTableMissingThead']),
-                                    ('timing', 'Timing', ['ErrAutoStartTimers', 'ErrTimersWithoutControls', 'WarnFastInterval']),
-                                    ('typography', 'Typography', ['ErrSmallText', 'WarnItalicText', 'WarnJustifiedText', 'WarnRightAlignedText', 'WarnSmallLineHeight'])
-                                ] %}
-                                
-                                {% for touchpoint_id, touchpoint_name, test_ids in touchpoint_data %}
+                                {% for touchpoint_id in touchpoint_names.keys()|sort %}
+                                {% set touchpoint_name = touchpoint_names[touchpoint_id] %}
+                                {% set test_ids = tests_by_touchpoint.get(touchpoint_id, []) %}
+                                {% if test_ids %}
                                 <div class="touchpoint-item mb-2">
                                     <div class="d-flex align-items-center">
                                         <!-- Expand/Collapse button -->
@@ -188,6 +162,7 @@
                                         {% endfor %}
                                     </div>
                                 </div>
+                                {% endif %}
                                 {% endfor %}
                             </div>
                         </div>

@@ -187,20 +187,38 @@ async def test_colors(page) -> Dict[str, Any]:
                         const ratio = getContrastRatio(foreLum, backLum);
                         const isLarge = isLargeText(element);
                         const requiredRatio = isLarge ? 3 : 4.5;
-                        
+
                         if (ratio < requiredRatio) {
                             contrastViolations++;
+
+                            // Helper to convert RGB array to hex color
+                            function rgbToHex(rgb) {
+                                return '#' + rgb.map(c => {
+                                    const hex = Math.round(c).toString(16);
+                                    return hex.length === 1 ? '0' + hex : hex;
+                                }).join('');
+                            }
+
+                            // Get font size for metadata
+                            const fontSize = parseInt(style.fontSize) || 16;
+
+                            // Use different error codes for normal vs large text
+                            const errorCode = isLarge ? 'ErrLargeTextContrastAA' : 'ErrTextContrastAA';
+
                             results.errors.push({
-                                err: 'ErrInsufficientContrast',
+                                err: errorCode,
                                 type: 'err',
-                                cat: 'colors',
+                                cat: 'color_contrast',
                                 element: element.tagName,
                                 xpath: getFullXPath(element),
                                 html: element.outerHTML.substring(0, 200),
-                                description: `Text has insufficient contrast ratio: ${ratio.toFixed(2)}:1 (required: ${requiredRatio}:1)`,
-                                contrast: ratio.toFixed(2),
-                                required: requiredRatio,
-                                isLarge: isLarge
+                                description: `${isLarge ? 'Large text' : 'Text'} has insufficient contrast ratio: ${ratio.toFixed(2)}:1 (required: ${requiredRatio}:1)`,
+                                ratio: ratio.toFixed(2),
+                                required: requiredRatio.toFixed(1),
+                                isLarge: isLarge,
+                                fg: rgbToHex(foreground),
+                                bg: rgbToHex(background),
+                                fontSize: fontSize
                             });
                             results.elements_failed++;
                         } else {
@@ -221,7 +239,7 @@ async def test_colors(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnColorOnlyLink',
                             type: 'warn',
-                            cat: 'colors',
+                            cat: 'color_use',
                             element: 'A',
                             xpath: getFullXPath(link),
                             html: link.outerHTML.substring(0, 200),
@@ -281,19 +299,19 @@ async def test_colors(page) -> Dict[str, Any]:
                     results.warnings.push({
                         err: 'InfoNoContrastSupport',
                         type: 'info',
-                        cat: 'colors',
+                        cat: 'color_contrast',
                         element: 'page',
                         xpath: '/html',
                         html: '<page>',
                         description: 'Page lacks prefers-contrast media query support for high contrast preferences'
                     });
                 }
-                
+
                 if (!hasColorSchemeSupport) {
                     results.warnings.push({
                         err: 'InfoNoColorSchemeSupport',
                         type: 'info',
-                        cat: 'colors',
+                        cat: 'color_contrast',
                         element: 'page',
                         xpath: '/html',
                         html: '<page>',

@@ -522,7 +522,7 @@
                         <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
                     </div>
                     
-                    {% for description, description_group in touchpoint_violations|groupby('description') %}
+                    {% for error_code, description_group in touchpoint_violations|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set viol_counter.value = viol_counter.value + 1 %}
                         {% if group_list|length > 1 %}
@@ -532,12 +532,18 @@
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#viol-group-{{ viol_counter.value }}">
-                                        <span class="badge bg-danger me-2">{{ group_list|length }}</span>
                                         {% set first_violation = group_list[0] %}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact.value|lower if first_violation.impact.value else first_violation.impact|lower] or 'secondary' }} me-2">{{ group_list|length }}</span>
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact.value|lower if first_violation.impact.value else first_violation.impact|lower] or 'secondary' }} me-2 impact-badge">
                                             {{ first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper }}
                                         </span>
-                                        {{ description }}
+                                        {% if first_violation.metadata and first_violation.metadata.title %}
+                                            {{ first_violation.metadata.title }}
+                                        {% elif first_violation.metadata and first_violation.metadata.what %}
+                                            {{ first_violation.metadata.what }}
+                                        {% else %}
+                                            {{ first_violation.description }}
+                                        {% endif %}
                                     </button>
                                 </h2>
                                 <div id="viol-group-{{ viol_counter.value }}" 
@@ -657,7 +663,14 @@
                                                         
                                                         {% if violation.html %}
                                                         <h6 class="mt-3">Code Snippet</h6>
+                                                        {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
+                                                        <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                                        {% else %}
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                                        {% endif %}
                                                         {% endif %}
                                                         
                                                         {% if violation.metadata.ai_detected %}
@@ -691,7 +704,9 @@
                                             <i class="bi bi-robot"></i> AI
                                         </span>
                                         {% endif %}
-                                        {% if violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
+                                        {% if violation.metadata and violation.metadata.title %}
+                                            {{ violation.metadata.title }}
+                                        {% elif violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
                                             {{ violation.metadata.what }}
                                         {% else %}
                                             {{ violation.description }}
@@ -801,7 +816,14 @@
                             {% if violation.html %}
                             <div class="mt-3">
                                 <h6>Code Snippet</h6>
+                                {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
+                                <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
+                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
+                                <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                {% else %}
+                                <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                {% endif %}
                             </div>
                             {% endif %}
                             
@@ -846,7 +868,7 @@
                         <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
                     </div>
                     
-                    {% for description, description_group in touchpoint_warnings|groupby('description') %}
+                    {% for error_code, description_group in touchpoint_warnings|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set warn_counter.value = warn_counter.value + 1 %}
                         {% if group_list|length > 1 %}
@@ -856,12 +878,18 @@
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#warn-group-{{ warn_counter.value }}">
-                                        <span class="badge bg-warning text-dark me-2">{{ group_list|length }}</span>
                                         {% set first_warning = group_list[0] %}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact.value|lower if first_warning.impact.value else first_warning.impact|lower] or 'secondary' }} me-2">{{ group_list|length }}</span>
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact.value|lower if first_warning.impact.value else first_warning.impact|lower] or 'secondary' }} me-2 impact-badge">
                                             {{ first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper }}
                                         </span>
-                                        {{ description }}
+                                        {% if first_warning.metadata and first_warning.metadata.title %}
+                                            {{ first_warning.metadata.title }}
+                                        {% elif first_warning.metadata and first_warning.metadata.what %}
+                                            {{ first_warning.metadata.what }}
+                                        {% else %}
+                                            {{ first_warning.description }}
+                                        {% endif %}
                                     </button>
                                 </h2>
                                 <div id="warn-group-{{ warn_counter.value }}" 
@@ -952,7 +980,14 @@
                                                         {% endif %}
                                                         {% if warning.html %}
                                                         <h6 class="mt-3">Code Snippet</h6>
+                                                        {% if 'ErrSkippedHeadingLevel' in warning.id and warning.metadata and 'previousHeadingHtml' in warning.metadata %}
+                                                        <p class="mb-2"><strong>Previous heading (h{{ warning.metadata.skippedFrom }}):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Current heading (h{{ warning.metadata.skippedTo }}) - skipped h{{ warning.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
+                                                        {% else %}
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
+                                                        {% endif %}
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -978,7 +1013,9 @@
                                             <i class="bi bi-robot"></i> AI
                                         </span>
                                         {% endif %}
-                                        {% if warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
+                                        {% if warning.metadata and warning.metadata.title %}
+                                            {{ warning.metadata.title }}
+                                        {% elif warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
                                             {{ warning.metadata.what }}
                                         {% else %}
                                             {{ warning.description }}
@@ -1051,7 +1088,14 @@
                             {% if warning.html %}
                             <div class="mt-3">
                                 <h6>Code Snippet</h6>
+                                {% if 'ErrSkippedHeadingLevel' in warning.id and warning.metadata and 'previousHeadingHtml' in warning.metadata %}
+                                <p class="mb-2"><strong>Previous heading (h{{ warning.metadata.skippedFrom }}):</strong></p>
+                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
+                                <p class="mb-2"><strong>Current heading (h{{ warning.metadata.skippedTo }}) - skipped h{{ warning.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
+                                {% else %}
+                                <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
+                                {% endif %}
                             </div>
                             {% endif %}
                             {% else %}
@@ -1089,7 +1133,7 @@
                         <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
                     </div>
                     
-                    {% for description, description_group in touchpoint_infos|groupby('description') %}
+                    {% for error_code, description_group in touchpoint_infos|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set info_counter.value = info_counter.value + 1 %}
                         {% if group_list|length > 1 %}
@@ -1099,14 +1143,20 @@
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#info-group-{{ info_counter.value }}">
-                                        <span class="badge bg-info me-2">{{ group_list|length }}</span>
                                         {% set first_info = group_list[0] %}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_info.impact.value|lower if first_info.impact.value else first_info.impact|lower] or 'info' }} me-2">{{ group_list|length }}</span>
                                         {% if first_info.impact %}
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_info.impact.value|lower if first_info.impact.value else first_info.impact|lower] or 'info' }} me-2 impact-badge">
                                             {{ first_info.impact.value|upper if first_info.impact.value else first_info.impact|upper }}
                                         </span>
                                         {% endif %}
-                                        {{ description }}
+                                        {% if first_info.metadata and first_info.metadata.title %}
+                                            {{ first_info.metadata.title }}
+                                        {% elif first_info.metadata and first_info.metadata.what %}
+                                            {{ first_info.metadata.what }}
+                                        {% else %}
+                                            {{ first_info.description }}
+                                        {% endif %}
                                     </button>
                                 </h2>
                                 <div id="info-group-{{ info_counter.value }}" 
@@ -1194,7 +1244,14 @@
                                                         {% endif %}
                                                         {% if info.html %}
                                                         <h6 class="mt-3">Code Snippet</h6>
+                                                        {% if 'ErrSkippedHeadingLevel' in info.id and info.metadata and 'previousHeadingHtml' in info.metadata %}
+                                                        <p class="mb-2"><strong>Previous heading (h{{ info.metadata.skippedFrom }}):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Current heading (h{{ info.metadata.skippedTo }}) - skipped h{{ info.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
+                                                        {% else %}
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
+                                                        {% endif %}
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -1212,7 +1269,9 @@
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#info-single-{{ info_counter.value }}">
-                            {% if info.metadata and info.metadata.what and info.metadata.what != "Accessibility issue: " + info.id.split('_')[1] %}
+                            {% if info.metadata and info.metadata.title %}
+                                {{ info.metadata.title }}
+                            {% elif info.metadata and info.metadata.what and info.metadata.what != "Accessibility issue: " + info.id.split('_')[1] %}
                                 {{ info.metadata.what }}
                             {% else %}
                                 {{ info.description }}
@@ -1285,7 +1344,14 @@
                             {% if info.html %}
                             <div class="mt-3">
                                 <h6>Code Snippet</h6>
+                                {% if 'ErrSkippedHeadingLevel' in info.id and info.metadata and 'previousHeadingHtml' in info.metadata %}
+                                <p class="mb-2"><strong>Previous heading (h{{ info.metadata.skippedFrom }}):</strong></p>
+                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
+                                <p class="mb-2"><strong>Current heading (h{{ info.metadata.skippedTo }}) - skipped h{{ info.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
+                                {% else %}
+                                <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
+                                {% endif %}
                             </div>
                             {% endif %}
                             {% else %}
@@ -1323,7 +1389,7 @@
                         <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
                     </div>
                     
-                    {% for description, description_group in touchpoint_discoveries|groupby('description') %}
+                    {% for error_code, description_group in touchpoint_discoveries|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set disc_counter.value = disc_counter.value + 1 %}
                         {% if group_list|length > 1 %}
@@ -1333,14 +1399,20 @@
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#disc-group-{{ disc_counter.value }}">
-                                        <span class="badge me-2" style="background-color: #6f42c1; color: white;">{{ group_list|length }}</span>
                                         {% set first_discovery = group_list[0] %}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_discovery.impact.value|lower if first_discovery.impact.value else first_discovery.impact|lower] or 'secondary' }} me-2">{{ group_list|length }}</span>
                                         {% if first_discovery.impact %}
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_discovery.impact.value|lower if first_discovery.impact.value else first_discovery.impact|lower] or 'secondary' }} me-2 impact-badge">
                                             {{ first_discovery.impact.value|upper if first_discovery.impact.value else first_discovery.impact|upper }}
                                         </span>
                                         {% endif %}
-                                        {{ description }}
+                                        {% if first_discovery.metadata and first_discovery.metadata.title %}
+                                            {{ first_discovery.metadata.title }}
+                                        {% elif first_discovery.metadata and first_discovery.metadata.what %}
+                                            {{ first_discovery.metadata.what }}
+                                        {% else %}
+                                            {{ first_discovery.description }}
+                                        {% endif %}
                                     </button>
                                 </h2>
                                 <div id="disc-group-{{ disc_counter.value }}" 
@@ -1430,7 +1502,14 @@
                                                         {% endif %}
                                                         {% if discovery.html %}
                                                         <h6 class="mt-3">Code Snippet</h6>
+                                                        {% if 'ErrSkippedHeadingLevel' in discovery.id and discovery.metadata and 'previousHeadingHtml' in discovery.metadata %}
+                                                        <p class="mb-2"><strong>Previous heading (h{{ discovery.metadata.skippedFrom }}):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Current heading (h{{ discovery.metadata.skippedTo }}) - skipped h{{ discovery.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
+                                                        {% else %}
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
+                                                        {% endif %}
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -1448,7 +1527,9 @@
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#disc-single-{{ disc_counter.value }}">
-                            {% if discovery.metadata and discovery.metadata.what and discovery.metadata.what != "Accessibility issue: " + discovery.id.split('_')[1] %}
+                            {% if discovery.metadata and discovery.metadata.title %}
+                                {{ discovery.metadata.title }}
+                            {% elif discovery.metadata and discovery.metadata.what and discovery.metadata.what != "Accessibility issue: " + discovery.id.split('_')[1] %}
                                 {{ discovery.metadata.what }}
                             {% else %}
                                 {{ discovery.description }}
@@ -1524,7 +1605,14 @@
                             {% if discovery.html %}
                             <div class="mt-3">
                                 <h6>Code Snippet</h6>
+                                {% if 'ErrSkippedHeadingLevel' in discovery.id and discovery.metadata and 'previousHeadingHtml' in discovery.metadata %}
+                                <p class="mb-2"><strong>Previous heading (h{{ discovery.metadata.skippedFrom }}):</strong></p>
+                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
+                                <p class="mb-2"><strong>Current heading (h{{ discovery.metadata.skippedTo }}) - skipped h{{ discovery.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
+                                {% else %}
+                                <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
+                                {% endif %}
                             </div>
                             {% endif %}
                             {% else %}

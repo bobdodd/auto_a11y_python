@@ -113,6 +113,7 @@ function focusScrape() {
                     outlineStyle: outlineStyle,
                     outlineWidth: outlineWidth,
                     xpath: xpath,
+                    html: element.outerHTML ? element.outerHTML.substring(0, 200) : '',
                     parentLandmark: element.getAttribute('a11y-parentLandmark'),
                     parentLandmarkXpath: element.getAttribute('a11y-parentLandmark.xpath'),
                     parentLandmarkAN: element.getAttribute('a11y-parentLandmark.an'),

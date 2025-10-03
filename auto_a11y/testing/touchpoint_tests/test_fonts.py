@@ -303,7 +303,15 @@ async def test_fonts(page) -> Dict[str, Any]:
                 return results;
             }
         ''')
-        
+
+        # Log small text errors for debugging
+        if 'errors' in results:
+            small_text_errors = [e for e in results['errors'] if e.get('err') == 'ErrSmallText']
+            if small_text_errors:
+                logger.warning(f"FONTS DEBUG: Found {len(small_text_errors)} ErrSmallText errors")
+                for i, error in enumerate(small_text_errors[:3]):  # Log first 3
+                    logger.warning(f"  [{i}] fontSize={error.get('fontSize')} description='{error.get('description', 'N/A')[:80]}'")
+
         return results
         
     except Exception as e:

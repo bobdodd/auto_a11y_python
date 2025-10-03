@@ -141,12 +141,13 @@ async def test_headings(page) -> Dict[str, Any]:
                 
                 // Check each heading
                 let previousLevel = 0;
+                let previousHeading = null;
                 headings.forEach(heading => {
                     const tagName = heading.tagName.toLowerCase();
                     const level = parseInt(tagName.charAt(1));
                     headingCounts[tagName]++;
                     headingHierarchy.push(level);
-                    
+
                     // Check for empty headings
                     const textContent = heading.textContent.trim();
                     if (!textContent) {
@@ -163,6 +164,7 @@ async def test_headings(page) -> Dict[str, Any]:
                     } else {
                         // Check for heading hierarchy gaps
                         if (previousLevel > 0 && level > previousLevel + 1) {
+                            const expectedLevel = previousLevel + 1;
                             results.errors.push({
                                 err: 'ErrSkippedHeadingLevel',
                                 type: 'err',
@@ -170,12 +172,20 @@ async def test_headings(page) -> Dict[str, Any]:
                                 element: heading.tagName,
                                 xpath: getFullXPath(heading),
                                 html: heading.outerHTML.substring(0, 200),
-                                description: `Heading level skipped from H${previousLevel} to H${level}`
+                                description: `Heading level skipped from H${previousLevel} to H${level}`,
+                                skippedFrom: previousLevel,
+                                skippedTo: level,
+                                expectedLevel: expectedLevel,
+                                previousHeadingHtml: previousHeading ? previousHeading.outerHTML.substring(0, 200) : '',
+                                previousHeadingXpath: previousHeading ? getFullXPath(previousHeading) : '',
+                                previousHeadingText: previousHeading ? previousHeading.textContent.trim().substring(0, 100) : ''
                             });
                             results.elements_failed++;
                         } else {
                             results.elements_passed++;
                         }
+
+                        previousHeading = heading;
                         
                         // Check for excessively long headings
                         if (textContent.length > 60) {
@@ -260,7 +270,16 @@ async def test_headings(page) -> Dict[str, Any]:
                 return results;
             }
         ''')
-        
+
+        # Log skipped heading errors for debugging
+        if 'errors' in results:
+            skipped_errors = [e for e in results['errors'] if e.get('err') == 'ErrSkippedHeadingLevel']
+            if skipped_errors:
+                logger.warning(f"HEADINGS DEBUG: Found {len(skipped_errors)} ErrSkippedHeadingLevel errors")
+                for i, error in enumerate(skipped_errors[:2]):  # Log first 2
+                    logger.warning(f"  [{i}] from h{error.get('skippedFrom')} to h{error.get('skippedTo')}, expected h{error.get('expectedLevel')}")
+                    logger.warning(f"       previousHeadingHtml: {error.get('previousHeadingHtml', 'MISSING')[:80]}")
+
         return results
         
     except Exception as e:

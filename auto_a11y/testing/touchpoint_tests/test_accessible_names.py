@@ -138,14 +138,14 @@ async def test_accessible_names(page) -> Dict[str, Any]:
                         (role && requiresNameRoles.includes(role));
                 }
                 
-                // Simple accessible name computation
+                // Accessible name computation following W3C algorithm
                 function computeAccessibleName(element) {
                     // Check aria-label first
                     const ariaLabel = element.getAttribute('aria-label');
                     if (ariaLabel && ariaLabel.trim()) {
                         return ariaLabel.trim();
                     }
-                    
+
                     // Check aria-labelledby
                     const ariaLabelledby = element.getAttribute('aria-labelledby');
                     if (ariaLabelledby) {
@@ -154,15 +154,15 @@ async def test_accessible_names(page) -> Dict[str, Any]:
                             return labelElement.textContent.trim();
                         }
                     }
-                    
+
                     const tag = element.tagName.toLowerCase();
-                    
+
                     // Handle images
                     if (tag === 'img') {
                         const alt = element.getAttribute('alt');
                         return alt !== null ? alt : '';
                     }
-                    
+
                     // Handle form controls
                     if (['input', 'textarea', 'select'].includes(tag)) {
                         // Check for associated label
@@ -172,7 +172,7 @@ async def test_accessible_names(page) -> Dict[str, Any]:
                                 return label.textContent.trim();
                             }
                         }
-                        
+
                         // Check for wrapping label
                         const parentLabel = element.closest('label');
                         if (parentLabel) {
@@ -183,7 +183,7 @@ async def test_accessible_names(page) -> Dict[str, Any]:
                             }
                             return clone.textContent.trim();
                         }
-                        
+
                         // For input type=submit/reset/button, use value
                         if (tag === 'input') {
                             const type = element.getAttribute('type');
@@ -192,23 +192,52 @@ async def test_accessible_names(page) -> Dict[str, Any]:
                             }
                         }
                     }
-                    
+
                     // Handle iframes
                     if (tag === 'iframe') {
                         return element.title || '';
                     }
-                    
-                    // Handle buttons and links - use text content
+
+                    // Handle buttons and links - compute name from contents
                     if (['button', 'a'].includes(tag)) {
+                        // First try direct text content (for simple text links/buttons)
+                        const directText = Array.from(element.childNodes)
+                            .filter(node => node.nodeType === Node.TEXT_NODE)
+                            .map(node => node.textContent.trim())
+                            .join(' ');
+
+                        if (directText) {
+                            return directText;
+                        }
+
+                        // Check for child images with alt text
+                        const img = element.querySelector('img');
+                        if (img) {
+                            const alt = img.getAttribute('alt');
+                            if (alt !== null) {
+                                return alt;
+                            }
+                        }
+
+                        // Check for child SVG with title
+                        const svg = element.querySelector('svg');
+                        if (svg) {
+                            const title = svg.querySelector('title');
+                            if (title) {
+                                return title.textContent.trim();
+                            }
+                        }
+
+                        // Fall back to all text content (includes nested elements)
                         return element.textContent.trim();
                     }
-                    
+
                     // Handle title attribute as fallback
                     const title = element.title;
                     if (title && title.trim()) {
                         return title.trim();
                     }
-                    
+
                     return element.textContent ? element.textContent.trim() : '';
                 }
                 

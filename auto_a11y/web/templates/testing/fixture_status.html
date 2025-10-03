@@ -86,7 +86,7 @@
 
     <!-- Summary Cards -->
     <div class="row mb-4 g-3">
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100">
                 <div class="card-body">
                     <h5 class="card-title fs-6">Debug Mode</h5>
@@ -97,30 +97,48 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">Total Tests</h5>
+                    <h5 class="card-title fs-6">Total Error Codes</h5>
                     <p class="card-text display-6" id="total-tests">-</p>
-                    <small class="text-muted">Tests with fixtures</small>
+                    <small class="text-muted">Error codes with fixtures</small>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card h-100">
+        <div class="col-12 col-sm-6 col-xl-2">
+            <div class="card h-100 border-success">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">Passing Tests</h5>
-                    <p class="card-text display-6 text-success" id="passing-tests">-</p>
-                    <small class="text-muted">Available for use</small>
+                    <h5 class="card-title fs-6">All Pass <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-pass')"></i></h5>
+                    <p class="card-text display-6 text-success" id="all-pass-tests">-</p>
+                    <small class="text-muted">All fixtures passing</small>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card h-100">
+        <div class="col-12 col-sm-6 col-xl-2">
+            <div class="card h-100 border-warning">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">Failed Tests</h5>
-                    <p class="card-text display-6 text-danger" id="failed-tests">-</p>
-                    <small class="text-muted">Disabled (unless debug)</small>
+                    <h5 class="card-title fs-6">Partial Pass <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('partial-pass')"></i></h5>
+                    <p class="card-text display-6 text-warning" id="partial-pass-tests">-</p>
+                    <small class="text-muted">Some fixtures passing</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-2">
+            <div class="card h-100 border-danger">
+                <div class="card-body">
+                    <h5 class="card-title fs-6">All Fail <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-fail')"></i></h5>
+                    <p class="card-text display-6 text-danger" id="all-fail-tests">-</p>
+                    <small class="text-muted">No fixtures passing</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-2">
+            <div class="card h-100 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title fs-6">Enabled</h5>
+                    <p class="card-text display-6 text-primary" id="enabled-tests">-</p>
+                    <small class="text-muted">Available for scanning</small>
                 </div>
             </div>
         </div>
@@ -150,8 +168,14 @@
                     <h5 class="mb-0">Individual Test Status</h5>
                     <small class="text-muted">Tests are automatically enabled/disabled based on fixture results</small>
                     <div class="alert alert-info mt-2 mb-0" role="alert">
-                        <i class="bi bi-info-circle"></i> <strong>Note:</strong> Each error code may have multiple fixtures (e.g., violations and correct usage examples).
-                        A test is only enabled if <strong>all</strong> fixtures for that code pass.
+                        <i class="bi bi-info-circle"></i> <strong>Understanding Test Status:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li><strong>Error Code:</strong> Each accessibility issue type (e.g., ErrNoAltText)</li>
+                            <li><strong>Fixtures:</strong> Individual HTML test files for each error code (typically 2-3 per code)</li>
+                            <li><strong>All Pass:</strong> Every fixture for this error code passes - <span class="badge bg-success">Enabled for scanning</span></li>
+                            <li><strong>Partial Pass:</strong> Some fixtures pass, others fail - <span class="badge bg-danger">Disabled</span> (needs fixing)</li>
+                            <li><strong>All Fail:</strong> No fixtures pass - <span class="badge bg-danger">Disabled</span> (needs implementation or fixing)</li>
+                        </ul>
                     </div>
                 </div>
                 <div class="card-body">
@@ -259,11 +283,13 @@ function updateSummary(data) {
         debugBadge.textContent = 'OFF';
         debugBadge.className = 'badge bg-secondary';
     }
-    
+
     // Update counts
     document.getElementById('total-tests').textContent = data.total_tests;
-    document.getElementById('passing-tests').textContent = data.passing_count;
-    document.getElementById('failed-tests').textContent = data.total_tests - data.passing_count;
+    document.getElementById('all-pass-tests').textContent = data.all_pass_count || 0;
+    document.getElementById('partial-pass-tests').textContent = data.partial_pass_count || 0;
+    document.getElementById('all-fail-tests').textContent = data.all_fail_count || 0;
+    document.getElementById('enabled-tests').textContent = data.passing_count;
 }
 
 function updateTestRunInfo(summary) {
@@ -319,9 +345,17 @@ function updateTestTable(statuses) {
     let html = '';
     for (const [errorCode, status] of Object.entries(statuses)) {
         const success = status.success;
-        const statusBadge = success
-            ? '<span class="badge bg-success">✓ All Pass</span>'
-            : '<span class="badge bg-danger">✗ Failed</span>';
+        const category = status.status_category || 'all_fail';
+
+        // Create status badge based on category
+        let statusBadge;
+        if (category === 'all_pass') {
+            statusBadge = '<span class="badge bg-success">✓ All Pass</span>';
+        } else if (category === 'partial_pass') {
+            statusBadge = '<span class="badge bg-warning text-dark">⚠ Partial Pass</span>';
+        } else {
+            statusBadge = '<span class="badge bg-danger">✗ All Fail</span>';
+        }
 
         // Show fixture count and pass/fail ratio
         const fixtureInfo = status.total_fixtures
@@ -336,7 +370,13 @@ function updateTestTable(statuses) {
             ? new Date(status.tested_at).toLocaleString()
             : '-';
 
-        const rowClass = success ? '' : 'table-warning';
+        // Color rows based on category
+        let rowClass = '';
+        if (category === 'partial_pass') {
+            rowClass = 'table-warning';
+        } else if (category === 'all_fail') {
+            rowClass = 'table-danger';
+        }
 
         html += `
             <tr class="${rowClass}">
@@ -392,6 +432,103 @@ function showError(message) {
             <i class="bi bi-exclamation-circle"></i> ${message}
         </div>
     `;
+}
+
+function showHelp(topic) {
+    const helpContent = {
+        'all-pass': {
+            title: 'All Pass Status',
+            content: `
+                <p><strong>What it means:</strong> Every fixture file for this error code passes its test.</p>
+                <p><strong>Example:</strong> If <code>ErrNoAltText</code> has 3 fixtures:</p>
+                <ul>
+                    <li>✅ ErrNoAltText_001_violations_basic.html (passes)</li>
+                    <li>✅ ErrNoAltText_002_violations_decorative.html (passes)</li>
+                    <li>✅ ErrNoAltText_003_correct_with_alt.html (passes)</li>
+                </ul>
+                <p><strong>Result:</strong> <span class="badge bg-success">Enabled for scanning</span></p>
+                <p>This error code will be used to detect accessibility issues in real websites.</p>
+            `
+        },
+        'partial-pass': {
+            title: 'Partial Pass Status',
+            content: `
+                <p><strong>What it means:</strong> Some fixtures pass, but others fail. The test implementation is incomplete or has bugs.</p>
+                <p><strong>Example:</strong> If <code>ErrColorContrast</code> has 3 fixtures:</p>
+                <ul>
+                    <li>✅ ErrColorContrast_001_violations_low_contrast.html (passes)</li>
+                    <li>❌ ErrColorContrast_002_violations_gradients.html (fails - not detected)</li>
+                    <li>✅ ErrColorContrast_003_correct_high_contrast.html (passes)</li>
+                </ul>
+                <p><strong>Result:</strong> <span class="badge bg-danger">Disabled</span> - Not ready for production</p>
+                <p><strong>Action needed:</strong> Fix the test implementation so all fixtures pass. The test should detect violations in _002 without false positives on _003.</p>
+                <hr>
+                <p><strong>Why is this important?</strong> Partial passes mean the test is unreliable. It might miss real issues (false negatives) or report false positives. All fixtures must pass before enabling.</p>
+            `
+        },
+        'all-fail': {
+            title: 'All Fail Status',
+            content: `
+                <p><strong>What it means:</strong> None of the fixtures pass. This usually means:</p>
+                <ul>
+                    <li>The test isn't implemented yet</li>
+                    <li>The test has a critical bug</li>
+                    <li>The test is detecting the wrong issues</li>
+                </ul>
+                <p><strong>Example:</strong> If <code>AI_ErrMissingAria</code> has 2 fixtures:</p>
+                <ul>
+                    <li>❌ AI_ErrMissingAria_001_violations.html (fails - not detected)</li>
+                    <li>❌ AI_ErrMissingAria_002_correct.html (fails - false positive)</li>
+                </ul>
+                <p><strong>Result:</strong> <span class="badge bg-danger">Disabled</span> - Not implemented or broken</p>
+                <p><strong>Action needed:</strong> Implement the test logic or fix critical bugs. The test must correctly identify violations and avoid false positives.</p>
+            `
+        }
+    };
+
+    const help = helpContent[topic];
+    if (!help) return;
+
+    // Create modal dynamically
+    const modalHtml = `
+        <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="helpModalLabel">${help.title}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ${help.content}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <a href="https://github.com/yourusername/auto_a11y_python/blob/main/FIXTURE_TESTING_GUIDE.md" target="_blank" class="btn btn-primary">
+                            View Full Documentation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Remove existing modal if any
+    const existingModal = document.getElementById('helpModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('helpModal'));
+    modal.show();
+
+    // Clean up after modal is hidden
+    document.getElementById('helpModal').addEventListener('hidden.bs.modal', function() {
+        this.remove();
+    });
 }
 </script>
 {% endblock %}

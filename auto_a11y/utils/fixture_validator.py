@@ -115,6 +115,14 @@ class FixtureValidator:
                 all_passed = all(t.get("success", False) for t in tests)
                 passed_count = sum(1 for t in tests if t.get("success", False))
 
+                # Determine status category
+                if all_passed and passed_count > 0:
+                    status_category = "all_pass"
+                elif passed_count > 0 and passed_count < len(tests):
+                    status_category = "partial_pass"
+                else:
+                    status_category = "all_fail"
+
                 # Aggregate fixture paths
                 fixture_paths = [t.get("fixture_path", "") for t in tests]
 
@@ -132,6 +140,7 @@ class FixtureValidator:
 
                 status_map[expected_code] = {
                     "success": all_passed,
+                    "status_category": status_category,
                     "total_fixtures": len(tests),
                     "passed_fixtures": passed_count,
                     "fixture_paths": fixture_paths,

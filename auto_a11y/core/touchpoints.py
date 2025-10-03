@@ -286,9 +286,12 @@ class TouchpointMapper:
         'landmark': TouchpointID.LANDMARKS,
         'landmarks': TouchpointID.LANDMARKS,
         'color': TouchpointID.COLOR_USE,
+        'color_use': TouchpointID.COLOR_USE,
         'contrast': TouchpointID.COLOR_CONTRAST,
-        'colorContrast': TouchpointID.COLOR_CONTRAST,
+        'color_contrast': TouchpointID.COLOR_CONTRAST,
+        'colorcontrast': TouchpointID.COLOR_CONTRAST,
         'focus': TouchpointID.FOCUS_MANAGEMENT,
+        'focus_management': TouchpointID.FOCUS_MANAGEMENT,
         'language': TouchpointID.LANGUAGE,
         'lang': TouchpointID.LANGUAGE,
         'button': TouchpointID.FORMS,  # Buttons are part of forms
@@ -297,6 +300,7 @@ class TouchpointMapper:
         'links': TouchpointID.ACCESSIBLE_NAMES,
         'page': TouchpointID.TITLE_ATTRIBUTES,
         'title': TouchpointID.TITLE_ATTRIBUTES,
+        'titleattr': TouchpointID.TITLE_ATTRIBUTES,
         'tabindex': TouchpointID.TABINDEX,
         'aria': TouchpointID.ACCESSIBLE_NAMES,
         'svg': TouchpointID.IMAGES,
@@ -371,10 +375,21 @@ class TouchpointMapper:
         
         # Color/contrast errors
         'ErrInsufficientContrast': TouchpointID.COLOR_CONTRAST,
-        'ErrSmallText': TouchpointID.COLOR_CONTRAST,
+        'ErrTextContrastAA': TouchpointID.COLOR_CONTRAST,
+        'ErrLargeTextContrastAA': TouchpointID.COLOR_CONTRAST,
+        'ErrTextContrastAAA': TouchpointID.COLOR_CONTRAST,
+        'ErrLargeTextContrastAAA': TouchpointID.COLOR_CONTRAST,
         'InfoNoColorSchemeSupport': TouchpointID.COLOR_CONTRAST,
         'InfoNoContrastSupport': TouchpointID.COLOR_CONTRAST,
         'WarnColorOnlyLink': TouchpointID.COLOR_USE,
+
+        # Font/typography errors
+        'ErrSmallText': TouchpointID.FONTS,
+        'WarnSmallLineHeight': TouchpointID.FONTS,
+        'WarnItalicText': TouchpointID.FONTS,
+        'WarnJustifiedText': TouchpointID.FONTS,
+        'WarnRightAlignedText': TouchpointID.FONTS,
+        'WarnVisualHierarchy': TouchpointID.FONTS,
         
         # Focus errors
         'ErrNoFocusIndicator': TouchpointID.FOCUS_MANAGEMENT,
@@ -538,18 +553,25 @@ class TouchpointMapper:
     def get_touchpoint_for_category(cls, category: str) -> TouchpointID:
         """
         Get touchpoint ID for a given category
-        
+
         Args:
             category: Old category name
-            
+
         Returns:
             TouchpointID for the category
+
+        Raises:
+            ValueError: If category is not mapped to a touchpoint
         """
         category_lower = category.lower() if category else 'other'
-        return cls.CATEGORY_TO_TOUCHPOINT.get(
-            category_lower, 
-            TouchpointID.ACCESSIBLE_NAMES  # Default
-        )
+        touchpoint = cls.CATEGORY_TO_TOUCHPOINT.get(category_lower)
+        if touchpoint is None:
+            raise ValueError(
+                f"Category '{category}' is not mapped to a touchpoint. "
+                f"Add mapping in TouchpointManager.CATEGORY_TO_TOUCHPOINT. "
+                f"Available categories: {list(cls.CATEGORY_TO_TOUCHPOINT.keys())}"
+            )
+        return touchpoint
     
     @classmethod
     def get_touchpoint_for_error_code(cls, error_code: str) -> Optional[TouchpointID]:

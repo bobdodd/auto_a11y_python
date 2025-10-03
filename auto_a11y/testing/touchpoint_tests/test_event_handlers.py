@@ -261,14 +261,21 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 });
                 
                 // Check for modals without escape handlers
-                const modals = Array.from(document.querySelectorAll('dialog, [role="dialog"], [class*="modal"]'));
+                const modals = Array.from(document.querySelectorAll('dialog, [role="dialog"], [class*="modal"]'))
+                    .filter(modal => {
+                        // Exclude nested modal content containers - only check outermost modal
+                        const hasModalAncestor = Array.from(document.querySelectorAll('dialog, [role="dialog"], [class*="modal"]'))
+                            .some(otherModal => otherModal !== modal && otherModal.contains(modal));
+                        return !hasModalAncestor;
+                    });
+
                 modals.forEach(modal => {
                     const onkeydown = modal.getAttribute('onkeydown');
-                    const hasEscapeHandler = onkeydown && 
-                                           (onkeydown.includes('Escape') || 
-                                            onkeydown.includes('Esc') || 
+                    const hasEscapeHandler = onkeydown &&
+                                           (onkeydown.includes('Escape') ||
+                                            onkeydown.includes('Esc') ||
                                             onkeydown.includes('27'));
-                    
+
                     if (!hasEscapeHandler) {
                         results.errors.push({
                             err: 'ErrModalWithoutEscape',

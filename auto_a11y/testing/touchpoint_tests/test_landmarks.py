@@ -166,10 +166,11 @@ async def test_landmarks(page) -> Dict[str, Any]:
                 // Track landmarks found
                 const landmarkCounts = {};
                 const landmarkNames = {};
+                const landmarkElements_byType = {}; // Track all elements by type
                 let hasMain = false;
                 let hasBanner = false;
                 let hasContentinfo = false;
-                
+
                 landmarkElements.forEach(element => {
                     const tag = element.tagName.toLowerCase();
                     let role = element.getAttribute('role');
@@ -203,98 +204,146 @@ async def test_landmarks(page) -> Dict[str, Any]:
                     }
                     
                     const name = getLandmarkName(element);
-                    
+
                     // Track landmark counts and names
                     landmarkCounts[role] = (landmarkCounts[role] || 0) + 1;
                     if (name) {
                         if (!landmarkNames[role]) landmarkNames[role] = new Set();
                         landmarkNames[role].add(name);
                     }
-                    
+
+                    // Store elements by type for later reporting
+                    if (!landmarkElements_byType[role]) {
+                        landmarkElements_byType[role] = [];
+                    }
+                    landmarkElements_byType[role].push({
+                        element: element,
+                        name: name,
+                        xpath: getFullXPath(element),
+                        html: element.outerHTML.substring(0, 200),
+                        tag: tag
+                    });
+
                     // Update summary flags
                     if (role === 'main') hasMain = true;
                     if (role === 'banner' || (tag === 'header' && isTopLevel)) hasBanner = true;
                     if (role === 'contentinfo' || (tag === 'footer' && isTopLevel)) hasContentinfo = true;
-                    
-                    // Check for violations
-                    if (landmarkCounts[role] > 1 && !name) {
-                        results.errors.push({
-                            err: 'ErrDuplicateLandmarkWithoutName',
-                            type: 'err',
-                            cat: 'landmarks',
-                            element: tag,
-                            xpath: getFullXPath(element),
-                            html: element.outerHTML.substring(0, 200),
-                            description: `Multiple ${role} landmarks found, but this one lacks a unique accessible name`,
-                            role: role
-                        });
-                        results.elements_failed++;
+                });
+
+                // Now check for duplicate landmarks without unique names
+                Object.keys(landmarkElements_byType).forEach(role => {
+                    const elements = landmarkElements_byType[role];
+
+                    // Check if there are multiple of this type without unique names
+                    if (elements.length > 1) {
+                        const namedElements = elements.filter(el => el.name);
+                        const unnamedElements = elements.filter(el => !el.name);
+
+                        // If there are multiple and any lack names, report each unnamed one
+                        if (unnamedElements.length > 0) {
+                            unnamedElements.forEach(el => {
+                                // Build array of all instances for context
+                                const allInstancesHtml = elements.map((instance, idx) => {
+                                    return {
+                                        index: idx + 1,
+                                        html: instance.html,
+                                        xpath: instance.xpath,
+                                        name: instance.name || '(no accessible name)',
+                                        tag: instance.tag
+                                    };
+                                });
+
+                                results.errors.push({
+                                    err: 'ErrDuplicateLandmarkWithoutName',
+                                    type: 'err',
+                                    cat: 'landmarks',
+                                    element: el.tag,
+                                    xpath: el.xpath,
+                                    html: el.html,
+                                    description: `Found ${elements.length} ${role} landmarks, but this one lacks a unique accessible name`,
+                                    role: role,
+                                    totalCount: elements.length,
+                                    allInstances: allInstancesHtml
+                                });
+                                results.elements_failed++;
+                            });
+                        } else {
+                            // All are named, count as passed
+                            elements.forEach(() => results.elements_passed++);
+                        }
                     } else {
+                        // Only one of this type, count as passed
                         results.elements_passed++;
                     }
-                    
+
                     // Check for forms without labels
-                    if (role === 'form' && !name) {
-                        results.warnings.push({
-                            err: 'WarnUnlabelledForm',
-                            type: 'warn',
-                            cat: 'landmarks',
-                            element: tag,
-                            xpath: getFullXPath(element),
-                            html: element.outerHTML.substring(0, 200),
-                            description: 'Form landmark should have an accessible name'
-                        });
-                    }
-                    
-                    // Check for regions without labels
-                    if (role === 'region' && !name) {
-                        results.warnings.push({
-                            err: 'WarnUnlabelledRegion',
-                            type: 'warn',
-                            cat: 'landmarks',
-                            element: tag,
-                            xpath: getFullXPath(element),
-                            html: element.outerHTML.substring(0, 200),
-                            description: 'Region landmark should have an accessible name'
-                        });
-                    }
+                    elements.forEach(el => {
+                        if (role === 'form' && !el.name) {
+                            results.warnings.push({
+                                err: 'WarnUnlabelledForm',
+                                type: 'warn',
+                                cat: 'landmarks',
+                                element: el.tag,
+                                xpath: el.xpath,
+                                html: el.html,
+                                description: 'Form landmark should have an accessible name'
+                            });
+                        }
+
+                        // Check for regions without labels
+                        if (role === 'region' && !el.name) {
+                            results.warnings.push({
+                                err: 'WarnUnlabelledRegion',
+                                type: 'warn',
+                                cat: 'landmarks',
+                                element: el.tag,
+                                xpath: el.xpath,
+                                html: el.html,
+                                description: 'Region landmark should have an accessible name'
+                            });
+                        }
+                    });
                 });
                 
+                // Get body start for context when landmarks are missing
+                const bodyElement = document.body;
+                const bodyStart = bodyElement ? bodyElement.outerHTML.substring(0, 500) : '<body>';
+
                 // Check for missing required landmarks
                 if (!hasMain) {
                     results.errors.push({
                         err: 'ErrMissingMainLandmark',
                         type: 'err',
                         cat: 'landmarks',
-                        element: 'page',
-                        xpath: '/html',
-                        html: '<page>',
-                        description: 'Page is missing a main landmark'
+                        element: 'body',
+                        xpath: '/html/body',
+                        html: bodyStart,
+                        description: 'Page is missing a main landmark - add <main> element or role="main" to identify primary content'
                     });
                     results.elements_failed++;
                 }
-                
+
                 if (!hasBanner) {
                     results.warnings.push({
                         err: 'WarnMissingBannerLandmark',
                         type: 'warn',
                         cat: 'landmarks',
-                        element: 'page',
-                        xpath: '/html',
-                        html: '<page>',
-                        description: 'Page is missing a banner landmark'
+                        element: 'body',
+                        xpath: '/html/body',
+                        html: bodyStart,
+                        description: 'Page is missing a banner landmark - add <header> element at top level or role="banner"'
                     });
                 }
-                
+
                 if (!hasContentinfo) {
                     results.warnings.push({
                         err: 'WarnMissingContentinfoLandmark',
                         type: 'warn',
                         cat: 'landmarks',
-                        element: 'page',
-                        xpath: '/html',
-                        html: '<page>',
-                        description: 'Page is missing a contentinfo landmark'
+                        element: 'body',
+                        xpath: '/html/body',
+                        html: bodyStart,
+                        description: 'Page is missing a contentinfo landmark - add <footer> element at top level or role="contentinfo"'
                     });
                 }
                 
@@ -336,10 +385,10 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         err: 'WarnContentOutsideLandmarks',
                         type: 'warn',
                         cat: 'landmarks',
-                        element: 'page',
-                        xpath: '/html',
-                        html: '<page>',
-                        description: `Found ${contentOutsideLandmarks} text nodes outside of landmarks`,
+                        element: 'body',
+                        xpath: '/html/body',
+                        html: bodyStart,
+                        description: `Found ${contentOutsideLandmarks} text nodes outside of landmarks - wrap content in semantic landmarks`,
                         count: contentOutsideLandmarks
                     });
                 }

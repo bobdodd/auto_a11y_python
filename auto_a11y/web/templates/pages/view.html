@@ -668,6 +668,27 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                                        {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
+                                                        <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                                        <h6 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h6>
+                                                        {% for instance in violation.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrTabOrderViolation' in violation.id and violation.metadata and 'previousElement' in violation.metadata %}
+                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousElement.html|e }}</code></pre>
+                                                        <div class="alert alert-info">
+                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
+                                                            <p class="mb-1">• This element: x={{ violation.metadata.currentElement.position.x }}, y={{ violation.metadata.currentElement.position.y }} (tab stop #{{ violation.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• Previous element: x={{ violation.metadata.previousElement.position.x }}, y={{ violation.metadata.previousElement.position.y }} (tab stop #{{ violation.metadata.previousElement.tabIndex }})</p>
+                                                        </div>
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                                         {% endif %}
@@ -821,7 +842,28 @@
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
-                                {% else %}
+                                {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
+                                <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                <h6 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h6>
+                                {% for instance in violation.metadata.allInstances %}
+                                <div class="mb-3">
+                                    <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                    <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                    <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                </div>
+                                {% endfor %}
+                                                        {% elif 'ErrTabOrderViolation' in violation.id and violation.metadata and 'previousElement' in violation.metadata %}
+                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousElement.html|e }}</code></pre>
+                                                        <div class="alert alert-info">
+                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
+                                                            <p class="mb-1">• This element: x={{ violation.metadata.currentElement.position.x }}, y={{ violation.metadata.currentElement.position.y }} (tab stop #{{ violation.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• Previous element: x={{ violation.metadata.previousElement.position.x }}, y={{ violation.metadata.previousElement.position.y }} (tab stop #{{ violation.metadata.previousElement.tabIndex }})</p>
+                                                        </div>
+                                                        {% else %}
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                 {% endif %}
                             </div>
@@ -985,6 +1027,27 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ warning.metadata.skippedTo }}) - skipped h{{ warning.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
+                                                        {% elif 'ErrDuplicateLandmarkWithoutName' in warning.id and warning.metadata and 'allInstances' in warning.metadata %}
+                                                        <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.html|e }}</code></pre>
+                                                        <h6 class="mt-4">All {{ warning.metadata.totalCount }} {{ warning.metadata.role }} landmarks on page:</h6>
+                                                        {% for instance in warning.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrTabOrderViolation' in warning.id and warning.metadata and 'previousElement' in warning.metadata %}
+                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousElement.html|e }}</code></pre>
+                                                        <div class="alert alert-info">
+                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
+                                                            <p class="mb-1">• This element: x={{ warning.metadata.currentElement.position.x }}, y={{ warning.metadata.currentElement.position.y }} (tab stop #{{ warning.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• Previous element: x={{ warning.metadata.previousElement.position.x }}, y={{ warning.metadata.previousElement.position.y }} (tab stop #{{ warning.metadata.previousElement.tabIndex }})</p>
+                                                        </div>
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
                                                         {% endif %}
@@ -1093,9 +1156,30 @@
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ warning.metadata.skippedTo }}) - skipped h{{ warning.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
-                                {% else %}
-                                <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
-                                {% endif %}
+                                {% elif 'ErrDuplicateLandmarkWithoutName' in warning.id and warning.metadata and 'allInstances' in warning.metadata %}
+                                                        <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.html|e }}</code></pre>
+                                                        <h6 class="mt-4">All {{ warning.metadata.totalCount }} {{ warning.metadata.role }} landmarks on page:</h6>
+                                                        {% for instance in warning.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrTabOrderViolation' in warning.id and warning.metadata and 'previousElement' in warning.metadata %}
+                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousElement.html|e }}</code></pre>
+                                                        <div class="alert alert-info">
+                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
+                                                            <p class="mb-1">• This element: x={{ warning.metadata.currentElement.position.x }}, y={{ warning.metadata.currentElement.position.y }} (tab stop #{{ warning.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• Previous element: x={{ warning.metadata.previousElement.position.x }}, y={{ warning.metadata.previousElement.position.y }} (tab stop #{{ warning.metadata.previousElement.tabIndex }})</p>
+                                                        </div>
+                                                        {% else %}
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
+                                                        {% endif %}
                             </div>
                             {% endif %}
                             {% else %}
@@ -1249,6 +1333,27 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ info.metadata.skippedTo }}) - skipped h{{ info.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
+                                                        {% elif 'ErrDuplicateLandmarkWithoutName' in info.id and info.metadata and 'allInstances' in info.metadata %}
+                                                        <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.html|e }}</code></pre>
+                                                        <h6 class="mt-4">All {{ info.metadata.totalCount }} {{ info.metadata.role }} landmarks on page:</h6>
+                                                        {% for instance in info.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrTabOrderViolation' in info.id and info.metadata and 'previousElement' in info.metadata %}
+                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousElement.html|e }}</code></pre>
+                                                        <div class="alert alert-info">
+                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
+                                                            <p class="mb-1">• This element: x={{ info.metadata.currentElement.position.x }}, y={{ info.metadata.currentElement.position.y }} (tab stop #{{ info.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• Previous element: x={{ info.metadata.previousElement.position.x }}, y={{ info.metadata.previousElement.position.y }} (tab stop #{{ info.metadata.previousElement.tabIndex }})</p>
+                                                        </div>
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
                                                         {% endif %}
@@ -1349,9 +1454,30 @@
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ info.metadata.skippedTo }}) - skipped h{{ info.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
-                                {% else %}
-                                <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
-                                {% endif %}
+                                {% elif 'ErrDuplicateLandmarkWithoutName' in info.id and info.metadata and 'allInstances' in info.metadata %}
+                                                        <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.html|e }}</code></pre>
+                                                        <h6 class="mt-4">All {{ info.metadata.totalCount }} {{ info.metadata.role }} landmarks on page:</h6>
+                                                        {% for instance in info.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrTabOrderViolation' in info.id and info.metadata and 'previousElement' in info.metadata %}
+                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousElement.html|e }}</code></pre>
+                                                        <div class="alert alert-info">
+                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
+                                                            <p class="mb-1">• This element: x={{ info.metadata.currentElement.position.x }}, y={{ info.metadata.currentElement.position.y }} (tab stop #{{ info.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• Previous element: x={{ info.metadata.previousElement.position.x }}, y={{ info.metadata.previousElement.position.y }} (tab stop #{{ info.metadata.previousElement.tabIndex }})</p>
+                                                        </div>
+                                                        {% else %}
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
+                                                        {% endif %}
                             </div>
                             {% endif %}
                             {% else %}
@@ -1507,6 +1633,27 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ discovery.metadata.skippedTo }}) - skipped h{{ discovery.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
+                                                        {% elif 'ErrDuplicateLandmarkWithoutName' in discovery.id and discovery.metadata and 'allInstances' in discovery.metadata %}
+                                                        <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
+                                                        <h6 class="mt-4">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</h6>
+                                                        {% for instance in discovery.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrTabOrderViolation' in discovery.id and discovery.metadata and 'previousElement' in discovery.metadata %}
+                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousElement.html|e }}</code></pre>
+                                                        <div class="alert alert-info">
+                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
+                                                            <p class="mb-1">• This element: x={{ discovery.metadata.currentElement.position.x }}, y={{ discovery.metadata.currentElement.position.y }} (tab stop #{{ discovery.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• Previous element: x={{ discovery.metadata.previousElement.position.x }}, y={{ discovery.metadata.previousElement.position.y }} (tab stop #{{ discovery.metadata.previousElement.tabIndex }})</p>
+                                                        </div>
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
                                                         {% endif %}
@@ -1610,9 +1757,30 @@
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ discovery.metadata.skippedTo }}) - skipped h{{ discovery.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
-                                {% else %}
-                                <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
-                                {% endif %}
+                                {% elif 'ErrDuplicateLandmarkWithoutName' in discovery.id and discovery.metadata and 'allInstances' in discovery.metadata %}
+                                                        <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
+                                                        <h6 class="mt-4">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</h6>
+                                                        {% for instance in discovery.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrTabOrderViolation' in discovery.id and discovery.metadata and 'previousElement' in discovery.metadata %}
+                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousElement.html|e }}</code></pre>
+                                                        <div class="alert alert-info">
+                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
+                                                            <p class="mb-1">• This element: x={{ discovery.metadata.currentElement.position.x }}, y={{ discovery.metadata.currentElement.position.y }} (tab stop #{{ discovery.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• Previous element: x={{ discovery.metadata.previousElement.position.x }}, y={{ discovery.metadata.previousElement.position.y }} (tab stop #{{ discovery.metadata.previousElement.tabIndex }})</p>
+                                                        </div>
+                                                        {% else %}
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
+                                                        {% endif %}
                             </div>
                             {% endif %}
                             {% else %}

@@ -208,26 +208,63 @@ async def test_tabindex(page) -> Dict[str, Any]:
                     }
                 });
                 
-                // Check for missing required tabindex on in-page targets
+                // Check for incorrect tabindex on in-page targets
                 const inPageTargets = Array.from(document.querySelectorAll('*[id]'));
                 let missingRequiredTabindex = 0;
-                
+
                 inPageTargets.forEach(element => {
-                    if (isInPageTarget(element) && 
-                        !isInteractiveElement(element) && 
-                        element.getAttribute('tabindex') !== '-1') {
-                        missingRequiredTabindex++;
-                        results.warnings.push({
-                            err: 'WarnMissingNegativeTabindex',
-                            type: 'warn',
-                            cat: 'tabindex',
-                            element: element.tagName.toLowerCase(),
-                            xpath: getFullXPath(element),
-                            html: element.outerHTML.substring(0, 200),
-                            description: 'In-page link target should have tabindex="-1" for proper focus management',
-                            id: element.id,
-                            currentTabindex: element.getAttribute('tabindex') || 'not set'
-                        });
+                    if (isInPageTarget(element) && !isInteractiveElement(element)) {
+                        const tabindexValue = element.getAttribute('tabindex');
+
+                        // Check if it's a skip link target specifically
+                        const skipLinks = Array.from(document.querySelectorAll('a[href^="#"]'))
+                            .filter(a => {
+                                const href = a.getAttribute('href');
+                                return href === `#${element.id}` &&
+                                       (a.textContent.toLowerCase().includes('skip') ||
+                                        a.classList.contains('skip-link') ||
+                                        a.classList.contains('skip'));
+                            });
+                        const isSkipTarget = skipLinks.length > 0;
+
+                        if (tabindexValue !== '-1') {
+                            missingRequiredTabindex++;
+
+                            if (tabindexValue !== null) {
+                                // Has tabindex but it's wrong (0, 1, 2, etc.) - this is an ERROR
+                                results.errors.push({
+                                    err: 'ErrInPageTargetWrongTabindex',
+                                    type: 'err',
+                                    cat: 'tabindex',
+                                    element: element.tagName.toLowerCase(),
+                                    xpath: getFullXPath(element),
+                                    html: element.outerHTML.substring(0, 200),
+                                    description: `In-page link target has tabindex="${tabindexValue}" but should be tabindex="-1" for programmatic focus only`,
+                                    id: element.id,
+                                    currentTabindex: tabindexValue,
+                                    isSkipTarget: isSkipTarget,
+                                    linkingElements: skipLinks.map(a => ({
+                                        text: a.textContent.trim(),
+                                        href: a.getAttribute('href')
+                                    }))
+                                });
+                                results.elements_failed++;
+                            } else {
+                                // No tabindex at all - this is a WARNING
+                                results.warnings.push({
+                                    err: 'WarnMissingNegativeTabindex',
+                                    type: 'warn',
+                                    cat: 'tabindex',
+                                    element: element.tagName.toLowerCase(),
+                                    xpath: getFullXPath(element),
+                                    html: element.outerHTML.substring(0, 200),
+                                    description: 'In-page link target should have tabindex="-1" for proper focus management',
+                                    id: element.id,
+                                    currentTabindex: 'not set',
+                                    isSkipTarget: isSkipTarget
+                                });
+                            }
+                        }
                     }
                 });
                 

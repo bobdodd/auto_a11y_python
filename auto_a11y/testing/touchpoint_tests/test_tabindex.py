@@ -171,7 +171,8 @@ async def test_tabindex(page) -> Dict[str, Any]:
                     }
                     
                     // Check for non-interactive elements with tabindex="0"
-                    if (tabindex === 0 && !isInteractive) {
+                    // Skip this check for in-page link targets - they're handled separately with more specific error
+                    if (tabindex === 0 && !isInteractive && !isInPageTarget(element)) {
                         nonInteractiveZeroCount++;
                         results.errors.push({
                             err: 'ErrNonInteractiveZeroTabindex',

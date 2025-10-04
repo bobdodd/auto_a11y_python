@@ -409,7 +409,32 @@ async def test_landmarks(page) -> Dict[str, Any]:
                     passed: results.elements_passed,
                     failed: results.elements_failed
                 });
-                
+
+                // Check for form landmarks without accessible names
+                const formLandmarks = Array.from(document.querySelectorAll('[role="form"]'));
+                formLandmarks.forEach(element => {
+                    const ariaLabel = element.getAttribute('aria-label');
+                    const ariaLabelledby = element.getAttribute('aria-labelledby');
+                    const hasAccessibleName = (ariaLabel && ariaLabel.trim()) ||
+                                             (ariaLabelledby && document.getElementById(ariaLabelledby));
+
+                    if (!hasAccessibleName) {
+                        results.errors.push({
+                            err: 'ErrFormLandmarkMustHaveAccessibleName',
+                            type: 'err',
+                            cat: 'landmarks',
+                            element: element.tagName.toLowerCase(),
+                            xpath: getFullXPath(element),
+                            html: element.outerHTML.substring(0, 200),
+                            description: 'Element with role="form" must have an accessible name via aria-label or aria-labelledby',
+                            role: 'form'
+                        });
+                        results.elements_failed++;
+                    } else {
+                        results.elements_passed++;
+                    }
+                });
+
                 return results;
             }
         ''')

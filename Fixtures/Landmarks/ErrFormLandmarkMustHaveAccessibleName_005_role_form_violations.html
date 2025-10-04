@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Form Tests - Missing Accessible Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkMustHaveAccessibleName_005_role_form_violations",
+    "issueId": "ErrFormLandmarkMustHaveAccessibleName",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Various elements with role='form' lacking accessible names",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1>Role Form Test Cases - Violations</h1>
+
+        <!-- Violation 1: div with role="form" -->
+        <div role="form"
+             data-expected-violation="true"
+             data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+             data-violation-reason="role='form' without accessible name">
+            <h2>Contact Form</h2>
+            <input type="text" placeholder="Name">
+            <button>Submit</button>
+        </div>
+
+        <!-- Violation 2: section with role="form" and empty aria-label -->
+        <section role="form" aria-label=""
+                 data-expected-violation="true"
+                 data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+                 data-violation-reason="role='form' with empty aria-label">
+            <h2>Registration</h2>
+            <input type="email" placeholder="Email">
+            <button>Register</button>
+        </section>
+
+        <!-- Violation 3: article with role="form" -->
+        <article role="form"
+                 data-expected-violation="true"
+                 data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+                 data-violation-reason="role='form' without accessible name">
+            <h2>Survey</h2>
+            <input type="text" placeholder="Your feedback">
+            <button>Send</button>
+        </article>
+
+        <!-- Violation 4: nav with role="form" (unusual but valid) -->
+        <nav role="form"
+             data-expected-violation="true"
+             data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+             data-violation-reason="role='form' overrides nav, needs accessible name">
+            <h2>Filter Options</h2>
+            <input type="checkbox" id="filter1"> <label for="filter1">Option 1</label>
+            <button>Apply Filters</button>
+        </nav>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

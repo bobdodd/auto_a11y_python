@@ -297,15 +297,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': [],
             'remediation': "Manually test form with keyboard and screen reader"
         },
-        'DiscoFormPage': {
-            'title': "Page contains forms - needs comprehensive accessibility review",
-            'what': "Page contains forms - needs comprehensive accessibility review",
-            'why': "Forms are critical interaction points requiring thorough testing",
-            'who': "All users with disabilities",
-            'impact': ImpactScale.INFO.value,
-            'wcag': [],
-            'remediation': "Manually test all forms with keyboard and screen reader"
-        },
         'DiscoFoundInlineSvg': {
             'title': "Inline SVG element detected that requires manual review to determine appropriate accessibility implementation based on its purpose and complexity",
             'what': "Inline SVG element detected that requires manual review to determine appropriate accessibility implementation based on its purpose and complexity",

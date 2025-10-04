@@ -253,18 +253,6 @@ class IssueCatalog:
             "who_it_affects": "All users with disabilities",
             "how_to_fix": "Manually test form with keyboard and screen reader"
         },
-        "DiscoFormPage": {
-            "id": "DiscoFormPage",
-            "type": "Discovery",
-            "impact": "N/A",
-            "wcag": [],
-            "wcag_full": "N/A",
-            "category": "forms",
-            "description": "Page contains forms - needs comprehensive accessibility review",
-            "why_it_matters": "Forms are critical interaction points requiring thorough testing",
-            "who_it_affects": "All users with disabilities",
-            "how_to_fix": "Manually test all forms with keyboard and screen reader"
-        },
         "forms_DiscoNoSubmitButton": {
             "id": "forms_DiscoNoSubmitButton",
             "type": "Discovery",

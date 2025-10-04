@@ -411,14 +411,23 @@ async def test_landmarks(page) -> Dict[str, Any]:
                 });
 
                 // Check for form landmarks without accessible names
-                const formLandmarks = Array.from(document.querySelectorAll('[role="form"]'));
+                // Both <form> elements and elements with role="form" need accessible names
+                // Note: <form> without accessible name is NOT a landmark, but <form> WITH
+                // accessible name becomes a form landmark, so we check all forms
+                const formLandmarks = Array.from(document.querySelectorAll('form, [role="form"]'));
                 formLandmarks.forEach(element => {
                     const ariaLabel = element.getAttribute('aria-label');
                     const ariaLabelledby = element.getAttribute('aria-labelledby');
                     const hasAccessibleName = (ariaLabel && ariaLabel.trim()) ||
                                              (ariaLabelledby && document.getElementById(ariaLabelledby));
 
-                    if (!hasAccessibleName) {
+                    // Only report error if element has role="form" OR is a <form> element
+                    // <form> elements only become landmarks when they have accessible names,
+                    // but if they SHOULD be landmarks, they need names
+                    const isFormElement = element.tagName.toLowerCase() === 'form';
+                    const hasFormRole = element.getAttribute('role') === 'form';
+
+                    if ((isFormElement || hasFormRole) && !hasAccessibleName) {
                         results.errors.push({
                             err: 'ErrFormLandmarkMustHaveAccessibleName',
                             type: 'err',
@@ -426,11 +435,12 @@ async def test_landmarks(page) -> Dict[str, Any]:
                             element: element.tagName.toLowerCase(),
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
-                            description: 'Element with role="form" must have an accessible name via aria-label or aria-labelledby',
-                            role: 'form'
+                            description: `${isFormElement ? '<form>' : 'Element with role="form"'} must have an accessible name via aria-label or aria-labelledby to be a proper form landmark`,
+                            role: hasFormRole ? 'form' : 'implicit',
+                            isFormElement: isFormElement
                         });
                         results.elements_failed++;
-                    } else {
+                    } else if (hasAccessibleName) {
                         results.elements_passed++;
                     }
                 });

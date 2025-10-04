@@ -9,8 +9,8 @@
     "id": "ErrFormLandmarkMustHaveAccessibleName_002_correct_with_labels",
     "issueId": "ErrFormLandmarkMustHaveAccessibleName",
     "expectedViolationCount": 0,
-    "expectedPassCount": 3,
-    "description": "Form landmarks with proper accessible names via aria-label and aria-labelledby",
+    "expectedPassCount": 4,
+    "description": "Form landmarks (<form> and role='form') with proper accessible names via aria-label and aria-labelledby",
     "wcag": "1.3.1",
     "impact": "Medium"
 }
@@ -50,6 +50,16 @@
             <input type="email" name="contact_email" placeholder="Email">
             <button type="submit">Send</button>
         </aside>
+
+        <!-- Correct 4: <form> element with aria-label -->
+        <form aria-label="Feedback submission form"
+              data-expected-pass="true"
+              data-pass-reason="<form> element has aria-label making it a form landmark">
+            <h2>Feedback Form</h2>
+            <label for="feedback">Your Feedback:</label>
+            <textarea id="feedback" name="feedback"></textarea>
+            <button type="submit">Submit Feedback</button>
+        </form>
     </main>
 
     <footer>

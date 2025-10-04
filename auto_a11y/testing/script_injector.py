@@ -253,23 +253,55 @@ class ScriptInjector:
                             logger.debug(f"Running Python touchpoint test: {touchpoint_id}")
                             result = await test_func(page)
                             
-                            # Filter results based on individual test settings
+                            # Filter results based on individual test settings AND fixture validation
                             if 'errors' in result:
                                 filtered_errors = []
                                 for error in result['errors']:
-                                    test_id = error.get('id', '')
-                                    if self.test_config.is_test_enabled(test_id, touchpoint_id):
+                                    error_code = error.get('err', '')
+                                    # Check both: is test enabled in config AND did it pass fixture validation?
+                                    if (self.test_config.is_test_enabled(error_code, touchpoint_id) and
+                                        self.test_config.is_test_available_by_fixture(error_code)):
                                         filtered_errors.append(error)
+                                    else:
+                                        logger.debug(f"Filtering out {error_code}: enabled={self.test_config.is_test_enabled(error_code, touchpoint_id)}, passed_fixtures={self.test_config.is_test_available_by_fixture(error_code)}")
                                 result['errors'] = filtered_errors
-                            
+
                             if 'warnings' in result:
                                 filtered_warnings = []
                                 for warning in result['warnings']:
-                                    test_id = warning.get('id', '')
-                                    if self.test_config.is_test_enabled(test_id, touchpoint_id):
+                                    error_code = warning.get('err', '')
+                                    # Check both: is test enabled in config AND did it pass fixture validation?
+                                    if (self.test_config.is_test_enabled(error_code, touchpoint_id) and
+                                        self.test_config.is_test_available_by_fixture(error_code)):
                                         filtered_warnings.append(warning)
+                                    else:
+                                        logger.debug(f"Filtering out {error_code}: enabled={self.test_config.is_test_enabled(error_code, touchpoint_id)}, passed_fixtures={self.test_config.is_test_available_by_fixture(error_code)}")
                                 result['warnings'] = filtered_warnings
-                            
+
+                            if 'info' in result:
+                                filtered_info = []
+                                for info_item in result['info']:
+                                    error_code = info_item.get('err', '')
+                                    # Check both: is test enabled in config AND did it pass fixture validation?
+                                    if (self.test_config.is_test_enabled(error_code, touchpoint_id) and
+                                        self.test_config.is_test_available_by_fixture(error_code)):
+                                        filtered_info.append(info_item)
+                                    else:
+                                        logger.debug(f"Filtering out {error_code}: enabled={self.test_config.is_test_enabled(error_code, touchpoint_id)}, passed_fixtures={self.test_config.is_test_available_by_fixture(error_code)}")
+                                result['info'] = filtered_info
+
+                            if 'discovery' in result:
+                                filtered_discovery = []
+                                for discovery_item in result['discovery']:
+                                    error_code = discovery_item.get('err', '')
+                                    # Check both: is test enabled in config AND did it pass fixture validation?
+                                    if (self.test_config.is_test_enabled(error_code, touchpoint_id) and
+                                        self.test_config.is_test_available_by_fixture(error_code)):
+                                        filtered_discovery.append(discovery_item)
+                                    else:
+                                        logger.debug(f"Filtering out {error_code}: enabled={self.test_config.is_test_enabled(error_code, touchpoint_id)}, passed_fixtures={self.test_config.is_test_available_by_fixture(error_code)}")
+                                result['discovery'] = filtered_discovery
+
                             # Override JavaScript test results if the Python version exists
                             # This allows gradual migration from JS to Python tests
                             if touchpoint_id in results:

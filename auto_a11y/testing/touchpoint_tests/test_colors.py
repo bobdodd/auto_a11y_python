@@ -58,6 +58,7 @@ async def test_colors(page) -> Dict[str, Any]:
                     applicable: true,
                     errors: [],
                     warnings: [],
+                    discovery: [],
                     passes: [],
                     elements_tested: 0,
                     elements_passed: 0,
@@ -208,7 +209,7 @@ async def test_colors(page) -> Dict[str, Any]:
                             results.errors.push({
                                 err: errorCode,
                                 type: 'err',
-                                cat: 'color_contrast',
+                                cat: 'colors',
                                 element: element.tagName,
                                 xpath: getFullXPath(element),
                                 html: element.outerHTML.substring(0, 200),
@@ -239,7 +240,7 @@ async def test_colors(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnColorOnlyLink',
                             type: 'warn',
-                            cat: 'color_use',
+                            cat: 'colors',
                             element: 'A',
                             xpath: getFullXPath(link),
                             html: link.outerHTML.substring(0, 200),
@@ -299,7 +300,7 @@ async def test_colors(page) -> Dict[str, Any]:
                     results.warnings.push({
                         err: 'InfoNoContrastSupport',
                         type: 'info',
-                        cat: 'color_contrast',
+                        cat: 'colors',
                         element: 'page',
                         xpath: '/html',
                         html: '<page>',
@@ -311,14 +312,44 @@ async def test_colors(page) -> Dict[str, Any]:
                     results.warnings.push({
                         err: 'InfoNoColorSchemeSupport',
                         type: 'info',
-                        cat: 'color_contrast',
+                        cat: 'colors',
                         element: 'page',
                         xpath: '/html',
                         html: '<page>',
                         description: 'Page lacks prefers-color-scheme media query support for dark/light mode preferences'
                     });
                 }
-                
+
+                // DISCOVERY: Report inline style attributes
+                const elementsWithStyleAttr = Array.from(document.querySelectorAll('[style]'));
+                if (elementsWithStyleAttr.length > 0) {
+                    results.warnings.push({
+                        err: 'DiscoStyleAttrOnElements',
+                        type: 'disco',
+                        cat: 'colors',
+                        element: 'document',
+                        xpath: '/html[1]',
+                        html: `<meta>Found ${elementsWithStyleAttr.length} elements with inline styles</meta>`,
+                        description: `${elementsWithStyleAttr.length} elements with inline style attributes detected`,
+                        count: elementsWithStyleAttr.length
+                    });
+                }
+
+                // DISCOVERY: Report <style> elements in document
+                const styleElements = Array.from(document.querySelectorAll('style'));
+                if (styleElements.length > 0) {
+                    results.warnings.push({
+                        err: 'DiscoStyleElementOnPage',
+                        type: 'disco',
+                        cat: 'colors',
+                        element: 'style',
+                        xpath: '/html[1]',
+                        html: `<meta>Found ${styleElements.length} style elements</meta>`,
+                        description: `${styleElements.length} <style> elements detected in document`,
+                        count: styleElements.length
+                    });
+                }
+
                 return results;
             }
         ''')

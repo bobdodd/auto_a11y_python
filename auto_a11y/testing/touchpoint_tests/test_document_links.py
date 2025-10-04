@@ -58,6 +58,7 @@ async def test_document_links(page) -> Dict[str, Any]:
                     applicable: true,
                     errors: [],
                     warnings: [],
+                    discovery: [],
                     passes: [],
                     elements_tested: 0,
                     elements_passed: 0,
@@ -191,7 +192,26 @@ async def test_document_links(page) -> Dict[str, Any]:
                     passed: results.elements_passed,
                     failed: results.elements_failed
                 });
-                
+
+                // DISCOVERY: Report PDF links
+                const pdfLinks = allLinks.filter(link => {
+                    const href = link.href || '';
+                    return href.toLowerCase().endsWith('.pdf');
+                });
+
+                pdfLinks.forEach(link => {
+                    results.warnings.push({
+                        err: 'DiscoPDFLinksFound',
+                        type: 'disco',
+                        cat: 'document_links',
+                        element: 'a',
+                        xpath: getFullXPath(link),
+                        html: link.outerHTML.substring(0, 200),
+                        description: 'PDF link detected - ensure PDF is accessible',
+                        href: link.href
+                    });
+                });
+
                 return results;
             }
         ''')

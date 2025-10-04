@@ -15,8 +15,7 @@ class TouchpointID(Enum):
     """Enumeration of all accessibility touchpoints"""
     ACCESSIBLE_NAMES = "accessible_names"
     ANIMATION = "animation"
-    COLOR_CONTRAST = "color_contrast"
-    COLOR_USE = "color_use"
+    COLORS = "colors"
     DIALOGS = "dialogs"
     ELECTRONIC_DOCUMENTS = "electronic_documents"
     EVENT_HANDLING = "event_handling"
@@ -30,6 +29,7 @@ class TouchpointID(Enum):
     LANGUAGE = "language"
     LISTS = "lists"
     MAPS = "maps"
+    PAGE = "page"
     READ_MORE_LINKS = "read_more_links"
     TABINDEX = "tabindex"
     TITLE_ATTRIBUTES = "title_attributes"
@@ -80,22 +80,13 @@ TOUCHPOINTS = {
         wcag_criteria=["2.2.2", "2.3.1", "2.3.3"]
     ),
     
-    TouchpointID.COLOR_CONTRAST: Touchpoint(
-        id=TouchpointID.COLOR_CONTRAST,
-        name="Color Contrast",
-        description="Verifies text and UI components meet WCAG color contrast requirements",
-        js_tests=["colorContrast.js"],
-        ai_tests=["contrast_visual_check"],
-        wcag_criteria=["1.4.3", "1.4.6", "1.4.11"]
-    ),
-    
-    TouchpointID.COLOR_USE: Touchpoint(
-        id=TouchpointID.COLOR_USE,
-        name="Color Use",
-        description="Ensures color is not the only means of conveying information",
-        js_tests=["color.js"],
-        ai_tests=["color_only_information"],
-        wcag_criteria=["1.4.1"]
+    TouchpointID.COLORS: Touchpoint(
+        id=TouchpointID.COLORS,
+        name="Colors and Contrast",
+        description="Verifies text and UI components meet WCAG color contrast requirements and ensures color is not the only means of conveying information",
+        js_tests=["colorContrast.js", "color.js"],
+        ai_tests=["contrast_visual_check", "color_only_information"],
+        wcag_criteria=["1.4.1", "1.4.3", "1.4.6", "1.4.11"]
     ),
     
     TouchpointID.DIALOGS: Touchpoint(
@@ -214,7 +205,16 @@ TOUCHPOINTS = {
         ai_tests=["map_accessibility", "map_alternative_text"],
         wcag_criteria=["1.1.1", "2.1.1", "1.4.1"]
     ),
-    
+
+    TouchpointID.PAGE: Touchpoint(
+        id=TouchpointID.PAGE,
+        name="Page",
+        description="Validates page-level structure including page title element and document metadata",
+        js_tests=["pageTitle.js"],
+        ai_tests=[],
+        wcag_criteria=["2.4.2"]
+    ),
+
     TouchpointID.READ_MORE_LINKS: Touchpoint(
         id=TouchpointID.READ_MORE_LINKS,
         name="Read More Links",
@@ -236,10 +236,10 @@ TOUCHPOINTS = {
     TouchpointID.TITLE_ATTRIBUTES: Touchpoint(
         id=TouchpointID.TITLE_ATTRIBUTES,
         name="Title Attributes",
-        description="Evaluates proper use of title attributes and page titles",
-        js_tests=["titleAttr.js", "pageTitle.js"],
+        description="Evaluates proper use of HTML title attributes for tooltips and supplementary information",
+        js_tests=["titleAttr.js"],
         ai_tests=[],
-        wcag_criteria=["2.4.2", "3.3.2"]
+        wcag_criteria=["3.3.2"]
     ),
     
     TouchpointID.TABLES: Touchpoint(
@@ -285,11 +285,13 @@ class TouchpointMapper:
         'forms': TouchpointID.FORMS,
         'landmark': TouchpointID.LANDMARKS,
         'landmarks': TouchpointID.LANDMARKS,
-        'color': TouchpointID.COLOR_USE,
-        'color_use': TouchpointID.COLOR_USE,
-        'contrast': TouchpointID.COLOR_CONTRAST,
-        'color_contrast': TouchpointID.COLOR_CONTRAST,
-        'colorcontrast': TouchpointID.COLOR_CONTRAST,
+        'color': TouchpointID.COLORS,
+        'colors': TouchpointID.COLORS,
+        'color_use': TouchpointID.COLORS,
+        'contrast': TouchpointID.COLORS,
+        'color_contrast': TouchpointID.COLORS,
+        'colorcontrast': TouchpointID.COLORS,
+        'colorsandcontrast': TouchpointID.COLORS,
         'focus': TouchpointID.FOCUS_MANAGEMENT,
         'focus_management': TouchpointID.FOCUS_MANAGEMENT,
         'language': TouchpointID.LANGUAGE,
@@ -298,8 +300,10 @@ class TouchpointMapper:
         'buttons': TouchpointID.FORMS,
         'link': TouchpointID.ACCESSIBLE_NAMES,
         'links': TouchpointID.ACCESSIBLE_NAMES,
-        'page': TouchpointID.TITLE_ATTRIBUTES,
+        'page': TouchpointID.PAGE,
         'title': TouchpointID.TITLE_ATTRIBUTES,
+        'title_attribute': TouchpointID.TITLE_ATTRIBUTES,
+        'title_attributes': TouchpointID.TITLE_ATTRIBUTES,
         'titleattr': TouchpointID.TITLE_ATTRIBUTES,
         'tabindex': TouchpointID.TABINDEX,
         'aria': TouchpointID.ACCESSIBLE_NAMES,
@@ -308,7 +312,7 @@ class TouchpointMapper:
         'font': TouchpointID.FONTS,
         'fonts': TouchpointID.FONTS,
         'javascript': TouchpointID.EVENT_HANDLING,
-        'style': TouchpointID.COLOR_USE,
+        'style': TouchpointID.COLORS,
         'navigation': TouchpointID.LANDMARKS,
         'modal': TouchpointID.DIALOGS,
         'dialog': TouchpointID.DIALOGS,
@@ -374,14 +378,14 @@ class TouchpointMapper:
         'forms_DiscoPlaceholderAsLabel': TouchpointID.FORMS,
         
         # Color/contrast errors
-        'ErrInsufficientContrast': TouchpointID.COLOR_CONTRAST,
-        'ErrTextContrastAA': TouchpointID.COLOR_CONTRAST,
-        'ErrLargeTextContrastAA': TouchpointID.COLOR_CONTRAST,
-        'ErrTextContrastAAA': TouchpointID.COLOR_CONTRAST,
-        'ErrLargeTextContrastAAA': TouchpointID.COLOR_CONTRAST,
-        'InfoNoColorSchemeSupport': TouchpointID.COLOR_CONTRAST,
-        'InfoNoContrastSupport': TouchpointID.COLOR_CONTRAST,
-        'WarnColorOnlyLink': TouchpointID.COLOR_USE,
+        'ErrInsufficientContrast': TouchpointID.COLORS,
+        'ErrTextContrastAA': TouchpointID.COLORS,
+        'ErrLargeTextContrastAA': TouchpointID.COLORS,
+        'ErrTextContrastAAA': TouchpointID.COLORS,
+        'ErrLargeTextContrastAAA': TouchpointID.COLORS,
+        'InfoNoColorSchemeSupport': TouchpointID.COLORS,
+        'InfoNoContrastSupport': TouchpointID.COLORS,
+        'WarnColorOnlyLink': TouchpointID.COLORS,
 
         # Font/typography errors
         'ErrSmallText': TouchpointID.FONTS,
@@ -419,12 +423,12 @@ class TouchpointMapper:
         'ErrHreflangNotOnLink': TouchpointID.LANGUAGE,
         'ErrHreflangAttrEmpty': TouchpointID.LANGUAGE,
         
-        # Page/Title errors
-        'ErrNoPageTitle': TouchpointID.TITLE_ATTRIBUTES,
-        'ErrEmptyPageTitle': TouchpointID.TITLE_ATTRIBUTES,
-        'ErrMultiplePageTitles': TouchpointID.TITLE_ATTRIBUTES,
-        'WarnPageTitleTooShort': TouchpointID.TITLE_ATTRIBUTES,
-        'WarnPageTitleTooLong': TouchpointID.TITLE_ATTRIBUTES,
+        # Page title errors (page <title> element)
+        'ErrNoPageTitle': TouchpointID.PAGE,
+        'ErrEmptyPageTitle': TouchpointID.PAGE,
+        'ErrMultiplePageTitles': TouchpointID.PAGE,
+        'WarnPageTitleTooShort': TouchpointID.PAGE,
+        'WarnPageTitleTooLong': TouchpointID.PAGE,
         'ErrImproperTitleAttribute': TouchpointID.TITLE_ATTRIBUTES,
         
         # Landmark errors
@@ -512,8 +516,8 @@ class TouchpointMapper:
         
         # Style/JavaScript discovery items (these are just discoveries, not specific issues)
         'DiscoFoundJS': TouchpointID.EVENT_HANDLING,
-        'DiscoStyleAttrOnElements': TouchpointID.COLOR_USE,  # Could affect color/contrast
-        'DiscoStyleElementOnPage': TouchpointID.COLOR_USE,  # Could affect color/contrast
+        'DiscoStyleAttrOnElements': TouchpointID.COLORS,  # Could affect color/contrast
+        'DiscoStyleElementOnPage': TouchpointID.COLORS,  # Could affect color/contrast
         
         # Additional mappings for completeness
         'ErrMissingRole': TouchpointID.ACCESSIBLE_NAMES,  # Missing ARIA role
@@ -537,7 +541,7 @@ class TouchpointMapper:
         'reading_order': TouchpointID.HEADINGS,
         'modal_issue': TouchpointID.DIALOGS,
         'animation_detected': TouchpointID.ANIMATION,
-        'contrast_issue': TouchpointID.COLOR_CONTRAST,
+        'contrast_issue': TouchpointID.COLORS,
         'focus_issue': TouchpointID.FOCUS_MANAGEMENT,
         'form_issue': TouchpointID.FORMS,
         'language_change': TouchpointID.LANGUAGE,

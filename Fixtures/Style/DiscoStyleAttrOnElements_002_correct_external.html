@@ -71,13 +71,13 @@
     </style>
 </head>
 <body>
-    <h1 class="page-title"
-        data-expected-pass="true"
-        data-pass-reason="Page uses CSS classes instead of inline styles. Users with custom stylesheets can override styles as needed. Browser extensions and user agents can apply accessibility enhancements. High contrast mode and dark mode work correctly">Product Catalog</h1>
+    <h1 class="page-title">Product Catalog</h1>
 
     <main>
-        <!-- CSS classes instead of inline styles - CORRECT -->
-        <div class="product-card"
+        <!-- Minimal inline styles for dynamic content - acceptable pattern -->
+        <div class="product-card" style="order: 1;"
+             data-expected-pass="true"
+             data-pass-reason="Minimal inline style for dynamic ordering. Used only for runtime-determined positioning that can't be pre-defined in CSS. Users can still override with custom stylesheets using !important"
              data-expected-pass="true"
              data-pass-reason="Product card uses CSS classes for styling. Users can apply custom stylesheets for better readability. Styles can be overridden for high contrast or user preferences. Responsive design and user customization work properly">
             <h2 class="product-title">Premium Widget</h2>
@@ -86,16 +86,18 @@
             <button class="add-to-cart-btn">Add to Cart</button>
         </div>
 
-        <!-- Alert with CSS classes -->
-        <div class="alert-banner"
+        <!-- Alert with minimal inline style for visibility state -->
+        <div class="alert-banner" style="display: block;"
              data-expected-pass="true"
-             data-pass-reason="Alert banner uses CSS classes instead of inline styles. Users with custom color schemes can override colors. High contrast mode applies correctly. Screen magnification and zoom work without issues">
+             data-pass-reason="Minimal inline style for dynamic visibility. Used for runtime show/hide state that JavaScript toggles. Users can still override visibility with custom stylesheets">
             <p class="alert-text">Special Offer: Free shipping on orders over $50!</p>
         </div>
 
-        <!-- Navigation with CSS classes -->
+        <!-- Navigation with minimal inline style for emphasis -->
         <nav class="main-nav">
-            <a href="/" class="nav-link">Home</a>
+            <a href="/" class="nav-link" style="font-weight: bold;"
+               data-expected-pass="true"
+               data-pass-reason="Minimal inline style for current page emphasis. Used to highlight active navigation item dynamically. Users can override with custom stylesheets for their preferred indication method">Home</a>
             <a href="/products" class="nav-link">Products</a>
             <a href="/about" class="nav-link">About</a>
         </nav>

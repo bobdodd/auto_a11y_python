@@ -59,6 +59,7 @@ async def test_images(page) -> Dict[str, Any]:
                     applicable: true,
                     errors: [],
                     warnings: [],
+                    discovery: [],
                     passes: [],
                     elements_tested: 0,
                     elements_passed: 0,
@@ -275,7 +276,39 @@ async def test_images(page) -> Dict[str, Any]:
                         ).length
                     });
                 }
-                
+
+                // DISCOVERY: Report inline SVGs
+                const inlineSvgs = Array.from(document.querySelectorAll('svg'));
+                inlineSvgs.forEach(svg => {
+                    results.warnings.push({
+                        err: 'DiscoFoundInlineSvg',
+                        type: 'disco',
+                        cat: 'images',
+                        element: 'svg',
+                        xpath: getFullXPath(svg),
+                        html: svg.outerHTML.substring(0, 200),
+                        description: 'Inline SVG detected requiring accessibility review'
+                    });
+                });
+
+                // DISCOVERY: Report SVG images (img elements with .svg src)
+                const allImages = Array.from(document.querySelectorAll('img'));
+                const svgImages = allImages.filter(img => {
+                    const src = img.src || '';
+                    return src.toLowerCase().endsWith('.svg');
+                });
+                svgImages.forEach(img => {
+                    results.warnings.push({
+                        err: 'DiscoFoundSvgImage',
+                        type: 'disco',
+                        cat: 'images',
+                        element: 'img',
+                        xpath: getFullXPath(img),
+                        html: img.outerHTML.substring(0, 200),
+                        description: 'SVG image file detected requiring accessibility review'
+                    });
+                });
+
                 return results;
             }
         ''')

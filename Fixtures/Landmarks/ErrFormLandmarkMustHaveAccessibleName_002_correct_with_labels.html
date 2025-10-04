@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Landmarks With Accessible Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkMustHaveAccessibleName_002_correct_with_labels",
+    "issueId": "ErrFormLandmarkMustHaveAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Form landmarks with proper accessible names via aria-label and aria-labelledby",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1>Form Landmark Test Page - Correct</h1>
+
+        <!-- Correct 1: div with role="form" and aria-label -->
+        <div role="form"
+             aria-label="Product search form"
+             data-expected-pass="true"
+             data-pass-reason="Form landmark has aria-label">
+            <h2 id="search-heading">Search Products</h2>
+            <input type="text" name="search" placeholder="Enter search term">
+            <button type="submit">Search</button>
+        </div>
+
+        <!-- Correct 2: section with role="form" and aria-labelledby -->
+        <h2 id="newsletter-heading">Newsletter Signup</h2>
+        <section role="form"
+                 aria-labelledby="newsletter-heading"
+                 data-expected-pass="true"
+                 data-pass-reason="Form landmark has aria-labelledby">
+            <input type="email" name="email" placeholder="Your email">
+            <button type="submit">Subscribe</button>
+        </section>
+
+        <!-- Correct 3: aside with role="form" and aria-label -->
+        <aside role="form"
+               aria-label="Quick contact form"
+               data-expected-pass="true"
+               data-pass-reason="Form landmark has aria-label">
+            <h2>Quick Contact</h2>
+            <input type="text" name="name" placeholder="Your name">
+            <input type="email" name="contact_email" placeholder="Email">
+            <button type="submit">Send</button>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Landmarks Without Accessible Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkMustHaveAccessibleName_001_violations_basic",
+    "issueId": "ErrFormLandmarkMustHaveAccessibleName",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Form landmarks (role='form') without accessible names",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1>Form Landmark Test Page</h1>
+
+        <!-- Violation 1: div with role="form" without accessible name -->
+        <div role="form"
+             data-expected-violation="true"
+             data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+             data-violation-reason="Form landmark lacks aria-label or aria-labelledby">
+            <h2>Search Products</h2>
+            <input type="text" name="search" placeholder="Enter search term">
+            <button type="submit">Search</button>
+        </div>
+
+        <!-- Violation 2: section with role="form" without accessible name -->
+        <section role="form"
+                 data-expected-violation="true"
+                 data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+                 data-violation-reason="Form landmark lacks accessible name">
+            <h2>Newsletter Signup</h2>
+            <input type="email" name="email" placeholder="Your email">
+            <button type="submit">Subscribe</button>
+        </section>
+
+        <!-- Violation 3: aside with role="form" without accessible name -->
+        <aside role="form"
+               data-expected-violation="true"
+               data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+               data-violation-reason="Form landmark missing accessible name">
+            <h2>Quick Contact</h2>
+            <input type="text" name="name" placeholder="Your name">
+            <input type="email" name="contact_email" placeholder="Email">
+            <button type="submit">Send</button>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

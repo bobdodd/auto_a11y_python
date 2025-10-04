@@ -116,7 +116,10 @@ async def test_tabindex(page) -> Dict[str, Any]:
                 
                 // Check if element is target of in-page link
                 function isInPageTarget(element) {
-                    return element.id && !!document.querySelector(`a[href="#${element.id}"]`);
+                    if (!element.id) return false;
+                    const selector = `a[href="#${element.id}"]`;
+                    const link = document.querySelector(selector);
+                    return !!link;
                 }
                 
                 // Check if element is within SVG

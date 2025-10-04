@@ -273,12 +273,8 @@ async def test_headings(page) -> Dict[str, Any]:
 
         # Log skipped heading errors for debugging
         if 'errors' in results:
+            # Validation of heading errors
             skipped_errors = [e for e in results['errors'] if e.get('err') == 'ErrSkippedHeadingLevel']
-            if skipped_errors:
-                logger.warning(f"HEADINGS DEBUG: Found {len(skipped_errors)} ErrSkippedHeadingLevel errors")
-                for i, error in enumerate(skipped_errors[:2]):  # Log first 2
-                    logger.warning(f"  [{i}] from h{error.get('skippedFrom')} to h{error.get('skippedTo')}, expected h{error.get('expectedLevel')}")
-                    logger.warning(f"       previousHeadingHtml: {error.get('previousHeadingHtml', 'MISSING')[:80]}")
 
         return results
         

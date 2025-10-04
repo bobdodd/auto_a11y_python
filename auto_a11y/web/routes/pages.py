@@ -49,12 +49,6 @@ def enrich_test_result_with_catalog(test_result):
             
             # Only update if we got meaningful enriched data
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                # Debug logging for heading skip errors
-                if error_code == 'ErrSkippedHeadingLevel':
-                    logger.warning(f"PAGES.PY: Before enrichment for {error_code}")
-                    logger.warning(f"  metadata keys before: {list(violation.metadata.keys())}")
-                    logger.warning(f"  previousHeadingHtml in metadata: {'previousHeadingHtml' in violation.metadata}")
-
                 # Add enriched metadata
                 violation.metadata['title'] = catalog_info.get('type', '')
                 violation.metadata['what'] = catalog_info['description']
@@ -71,14 +65,6 @@ def enrich_test_result_with_catalog(test_result):
                     violation.metadata['wcag_full'] = []
                 violation.metadata['full_remediation'] = catalog_info['how_to_fix']
                 violation.metadata['impact_detail'] = catalog_info['impact']
-
-                # Debug logging for heading skip errors
-                if error_code == 'ErrSkippedHeadingLevel':
-                    logger.warning(f"PAGES.PY: After enrichment for {error_code}")
-                    logger.warning(f"  metadata keys after: {list(violation.metadata.keys())}")
-                    logger.warning(f"  previousHeadingHtml in metadata: {'previousHeadingHtml' in violation.metadata}")
-                    if 'previousHeadingHtml' in violation.metadata:
-                        logger.warning(f"  previousHeadingHtml value: {violation.metadata.get('previousHeadingHtml', '')[:80]}")
     
     # Enrich warnings
     if hasattr(test_result, 'warnings') and test_result.warnings:
@@ -208,28 +194,7 @@ def view_page(page_id):
     
     # Get latest test result and enrich with catalog data
     test_result = current_app.db.get_latest_test_result(page_id)
-
-    # Debug logging for heading skip errors
-    if test_result and hasattr(test_result, 'violations'):
-        for violation in test_result.violations:
-            if 'ErrSkippedHeadingLevel' in violation.id:
-                logger.warning(f"VIEW_PAGE: Found {violation.id} BEFORE enrichment")
-                logger.warning(f"  metadata keys: {list(violation.metadata.keys()) if violation.metadata else 'NO METADATA'}")
-                logger.warning(f"  previousHeadingHtml in metadata: {'previousHeadingHtml' in violation.metadata if violation.metadata else False}")
-                if violation.metadata and 'previousHeadingHtml' in violation.metadata:
-                    logger.warning(f"  previousHeadingHtml value: {violation.metadata.get('previousHeadingHtml', '')[:80]}")
-
     test_result = enrich_test_result_with_catalog(test_result)
-
-    # Debug logging for heading skip errors AFTER enrichment
-    if test_result and hasattr(test_result, 'violations'):
-        for violation in test_result.violations:
-            if 'ErrSkippedHeadingLevel' in violation.id:
-                logger.warning(f"VIEW_PAGE: Found {violation.id} AFTER enrichment")
-                logger.warning(f"  metadata keys: {list(violation.metadata.keys()) if violation.metadata else 'NO METADATA'}")
-                logger.warning(f"  previousHeadingHtml in metadata: {'previousHeadingHtml' in violation.metadata if violation.metadata else False}")
-                if violation.metadata and 'previousHeadingHtml' in violation.metadata:
-                    logger.warning(f"  previousHeadingHtml value: {violation.metadata.get('previousHeadingHtml', '')[:80]}")
     
     # Get test history
     test_history = current_app.db.get_test_results(page_id=page_id, limit=10)

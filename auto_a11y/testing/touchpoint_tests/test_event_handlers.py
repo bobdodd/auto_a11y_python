@@ -79,6 +79,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     applicable: true,
                     errors: [],
                     warnings: [],
+                    discovery: [],
                     passes: [],
                     elements_tested: 0,
                     elements_passed: 0,
@@ -360,7 +361,22 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         failed: tabOrderViolations
                     });
                 }
-                
+
+                // DISCOVERY: Report presence of JavaScript on the page
+                const scriptElements = Array.from(document.querySelectorAll('script[src], script:not([src])'));
+                if (scriptElements.length > 0) {
+                    results.warnings.push({
+                        err: 'DiscoFoundJS',
+                        type: 'disco',
+                        cat: 'event_handlers',
+                        element: 'script',
+                        xpath: '/html[1]',
+                        html: `<meta>Found ${scriptElements.length} script elements</meta>`,
+                        description: `${scriptElements.length} JavaScript elements detected - ensure progressive enhancement`,
+                        count: scriptElements.length
+                    });
+                }
+
                 return results;
             }
         ''')

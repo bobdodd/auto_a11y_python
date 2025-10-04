@@ -399,15 +399,9 @@ async def test_modals(page) -> Dict[str, Any]:
             }
         ''')
 
-        # Log debug info
-        if 'debug' in results and results['debug']:
-            logger.warning(f"MODAL DEBUG: {results['debug']}")
-
-        # Log errors for debugging
+        # Validation of modal errors
         if 'errors' in results:
-            for error in results['errors']:
-                if error.get('err') == 'ErrModalMissingHeading':
-                    logger.warning(f"MODAL HEADING ERROR: desc='{error.get('description')}' foundLevel={error.get('foundLevel')} headingText='{error.get('headingText')}'")
+            modal_errors = [e for e in results['errors'] if e.get('err') == 'ErrModalMissingHeading']
 
         return results
         

@@ -180,7 +180,42 @@
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="search-tests" placeholder="Search tests...">
+                        <input type="text" class="form-control" id="search-tests" placeholder="Search error codes...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Filter by Status:</label>
+                        <div class="btn-group" role="group" aria-label="Status filter">
+                            <input type="radio" class="btn-check" name="status-filter" id="filter-all" value="all" checked autocomplete="off">
+                            <label class="btn btn-outline-primary" for="filter-all">All</label>
+
+                            <input type="radio" class="btn-check" name="status-filter" id="filter-all-pass" value="all_pass" autocomplete="off">
+                            <label class="btn btn-outline-success" for="filter-all-pass">All Pass</label>
+
+                            <input type="radio" class="btn-check" name="status-filter" id="filter-partial" value="partial_pass" autocomplete="off">
+                            <label class="btn btn-outline-warning" for="filter-partial">Partial Pass</label>
+
+                            <input type="radio" class="btn-check" name="status-filter" id="filter-fail" value="all_fail" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="filter-fail">All Fail</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Filter by Type:</label>
+                        <div class="btn-group" role="group" aria-label="Type filter">
+                            <input type="radio" class="btn-check" name="type-filter" id="type-all" value="all" checked autocomplete="off">
+                            <label class="btn btn-outline-secondary" for="type-all">All</label>
+
+                            <input type="radio" class="btn-check" name="type-filter" id="type-err" value="Err" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="type-err">Err</label>
+
+                            <input type="radio" class="btn-check" name="type-filter" id="type-warn" value="Warn" autocomplete="off">
+                            <label class="btn btn-outline-warning" for="type-warn">Warn</label>
+
+                            <input type="radio" class="btn-check" name="type-filter" id="type-info" value="Info" autocomplete="off">
+                            <label class="btn btn-outline-info" for="type-info">Info</label>
+
+                            <input type="radio" class="btn-check" name="type-filter" id="type-disco" value="Disco" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="type-disco">Disco</label>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover" id="test-status-table">
@@ -247,10 +282,24 @@ let allTestStatuses = {};
 
 document.addEventListener('DOMContentLoaded', function() {
     loadFixtureStatus();
-    
+
     // Setup search
     document.getElementById('search-tests').addEventListener('input', function(e) {
-        filterTests(e.target.value);
+        applyFilters();
+    });
+
+    // Setup status filter
+    document.querySelectorAll('input[name="status-filter"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            applyFilters();
+        });
+    });
+
+    // Setup type filter
+    document.querySelectorAll('input[name="type-filter"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            applyFilters();
+        });
     });
 });
 
@@ -392,24 +441,36 @@ function updateTestTable(statuses) {
     tbody.innerHTML = html;
 }
 
-function filterTests(searchTerm) {
-    const term = searchTerm.toLowerCase();
-    const tbody = document.getElementById('test-status-tbody');
-    
-    if (!term) {
-        updateTestTable(allTestStatuses);
-        return;
-    }
-    
+function applyFilters() {
+    const searchTerm = document.getElementById('search-tests').value.toLowerCase();
+    const statusFilter = document.querySelector('input[name="status-filter"]:checked').value;
+    const typeFilter = document.querySelector('input[name="type-filter"]:checked').value;
+
     const filtered = {};
     for (const [errorCode, status] of Object.entries(allTestStatuses)) {
-        if (errorCode.toLowerCase().includes(term) || 
-            (status.fixture_path && status.fixture_path.toLowerCase().includes(term))) {
+        // Apply search filter
+        const matchesSearch = !searchTerm ||
+            errorCode.toLowerCase().includes(searchTerm) ||
+            (status.fixture_path && status.fixture_path.toLowerCase().includes(searchTerm));
+
+        // Apply status filter
+        const matchesStatus = statusFilter === 'all' || status.status_category === statusFilter;
+
+        // Apply type filter (Err, Warn, Info, Disco)
+        const matchesType = typeFilter === 'all' || errorCode.startsWith(typeFilter);
+
+        // Include if matches all filters
+        if (matchesSearch && matchesStatus && matchesType) {
             filtered[errorCode] = status;
         }
     }
-    
+
     updateTestTable(filtered);
+}
+
+// Keep old function for compatibility
+function filterTests(searchTerm) {
+    applyFilters();
 }
 
 function refreshStatus() {

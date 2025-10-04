@@ -58,31 +58,75 @@ function titleAttrScrape() {
         if (element.tagName === 'IFRAME') {
             return; // Handle iframes separately
         }
-        
+
         titleAttrCheck.total++;
         const xpath = Elements.DOMPath.xPath(element, true);
-        const title = element.getAttribute('title');
-        
+        const title = element.getAttribute('title').trim();
+
         // Title attributes on most elements are problematic for accessibility
         // They don't work well with touch devices, screen readers inconsistently announce them,
         // and they create dependency on hover which excludes keyboard users
-        titleAttrCheck.failed++;
-        
+
         // Determine severity based on context
         let errorType = 'warn';
         let errorCode = 'WarnTitleAttrFound';
-        
+
         // Check if element has accessible name from other sources
         const hasAriaLabel = element.hasAttribute('aria-label');
         const hasAriaLabelledby = element.hasAttribute('aria-labelledby');
-        const isLabelable = ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(element.tagName);
-        
-        if (isLabelable && !hasAriaLabel && !hasAriaLabelledby) {
-            // More serious if title is the only labeling mechanism
+        const isFormField = ['INPUT', 'SELECT', 'TEXTAREA'].includes(element.tagName);
+
+        // Check if element has visible text content
+        const visibleText = (element.textContent || '').trim();
+        const hasVisibleText = visibleText.length > 0;
+
+        // Get associated label for form fields
+        let hasLabel = false;
+        if (isFormField) {
+            const id = element.id;
+            if (id) {
+                hasLabel = document.querySelector(`label[for="${id}"]`) !== null;
+            }
+            // Check if wrapped in label
+            if (!hasLabel) {
+                let parent = element.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.tagName === 'LABEL') {
+                        hasLabel = true;
+                        break;
+                    }
+                    parent = parent.parentElement;
+                }
+            }
+        }
+
+        // Determine error type and severity
+        if (isFormField && !hasLabel && !hasAriaLabel && !hasAriaLabelledby) {
+            // Form field with ONLY title attribute as label - this is HIGH severity
             errorType = 'err';
             errorCode = 'ErrTitleAsOnlyLabel';
+            titleAttrCheck.failed++;
+        } else if (hasVisibleText) {
+            // Element has visible text - title is redundant/problematic
+            // Check if title duplicates or is substring of visible text
+            const titleLower = title.toLowerCase();
+            const textLower = visibleText.toLowerCase();
+
+            if (titleLower === textLower || textLower.includes(titleLower) || titleLower.includes(textLower)) {
+                errorType = 'warn';
+                errorCode = 'WarnRedundantTitleAttr';
+            } else {
+                errorType = 'warn';
+                errorCode = 'WarnTitleAttrFound';
+            }
+            titleAttrCheck.failed++;
+        } else {
+            // General case - title attribute present
+            errorType = 'warn';
+            errorCode = 'WarnTitleAttrFound';
+            titleAttrCheck.failed++;
         }
-        
+
         errorList.push({
             url: window.location.href,
             type: errorType,
@@ -90,6 +134,7 @@ function titleAttrScrape() {
             err: errorCode,
             element: element.tagName.toLowerCase(),
             title: title,
+            visibleText: hasVisibleText ? visibleText.substring(0, 100) : '',
             xpath: xpath,
             parentLandmark: element.getAttribute('a11y-parentLandmark'),
             parentLandmarkXpath: element.getAttribute('a11y-parentLandmark.xpath'),

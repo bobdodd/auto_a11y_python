@@ -72,6 +72,7 @@ async def test_fonts(page) -> Dict[str, Any]:
                     applicable: true,
                     errors: [],
                     warnings: [],
+                    discovery: [],
                     passes: [],
                     elements_tested: 0,
                     elements_passed: 0,
@@ -299,18 +300,43 @@ async def test_fonts(page) -> Dict[str, Any]:
                         failed: italicTextCount
                     });
                 }
-                
+
+                // DISCOVERY: Report unique fonts found on the page
+                const allElements = Array.from(document.querySelectorAll('*'));
+                const uniqueFonts = new Set();
+
+                allElements.forEach(el => {
+                    const computedStyle = window.getComputedStyle(el);
+                    const fontFamily = computedStyle.fontFamily;
+                    if (fontFamily && fontFamily !== 'inherit') {
+                        // Clean up font family string
+                        const fonts = fontFamily.split(',').map(f => f.trim().replace(/['"]/g, ''));
+                        fonts.forEach(font => uniqueFonts.add(font));
+                    }
+                });
+
+                if (uniqueFonts.size > 0) {
+                    results.warnings.push({
+                        err: 'DiscoFontFound',
+                        type: 'disco',
+                        cat: 'fonts',
+                        element: 'document',
+                        xpath: '/html[1]',
+                        html: `<meta>Found ${uniqueFonts.size} unique fonts</meta>`,
+                        description: `Fonts detected on page: ${Array.from(uniqueFonts).join(', ')}`,
+                        fontCount: uniqueFonts.size,
+                        fonts: Array.from(uniqueFonts)
+                    });
+                }
+
                 return results;
             }
         ''')
 
         # Log small text errors for debugging
         if 'errors' in results:
+            # Validation of font errors
             small_text_errors = [e for e in results['errors'] if e.get('err') == 'ErrSmallText']
-            if small_text_errors:
-                logger.warning(f"FONTS DEBUG: Found {len(small_text_errors)} ErrSmallText errors")
-                for i, error in enumerate(small_text_errors[:3]):  # Log first 3
-                    logger.warning(f"  [{i}] fontSize={error.get('fontSize')} description='{error.get('description', 'N/A')[:80]}'")
 
         return results
         

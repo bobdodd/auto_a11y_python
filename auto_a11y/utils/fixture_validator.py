@@ -36,20 +36,28 @@ class FixtureValidator:
                 return self._cache
 
         try:
-            # Get the most recent test run
-            latest_run = self.db.db.fixture_test_runs.find_one(
-                {},
-                sort=[("completed_at", -1)]
-            )
+            # Get the most recent test result for each fixture (not just from latest run)
+            # This allows incremental updates when running with filters
+            pipeline = [
+                # Sort by tested_at descending to get latest first
+                {"$sort": {"tested_at": -1}},
+                # Group by fixture_path + expected_code to get latest result for each
+                {"$group": {
+                    "_id": {
+                        "fixture_path": "$fixture_path",
+                        "expected_code": "$expected_code"
+                    },
+                    "latest_result": {"$first": "$$ROOT"}
+                }},
+                # Reshape to get the actual document
+                {"$replaceRoot": {"newRoot": "$latest_result"}}
+            ]
 
-            if not latest_run:
-                logger.warning("No fixture test runs found in database")
+            all_tests = list(self.db.db.fixture_tests.aggregate(pipeline))
+
+            if not all_tests:
+                logger.warning("No fixture test results found in database")
                 return set()
-
-            # Get all tests from this run
-            all_tests = self.db.db.fixture_tests.find({
-                "test_run_id": latest_run["_id"]
-            })
 
             # Group tests by error code
             tests_by_code = {}
@@ -70,7 +78,7 @@ class FixtureValidator:
             self._cache = passing_codes
             self._cache_time = datetime.now()
 
-            logger.info(f"Found {len(passing_codes)} error codes with all fixtures passing from run {latest_run['_id']}")
+            logger.info(f"Found {len(passing_codes)} error codes with all fixtures passing")
             return passing_codes
 
         except Exception as e:
@@ -85,19 +93,27 @@ class FixtureValidator:
             Dict mapping error codes to their test status (aggregated across all fixtures)
         """
         try:
-            # Get the most recent test run
-            latest_run = self.db.db.fixture_test_runs.find_one(
-                {},
-                sort=[("completed_at", -1)]
-            )
+            # Get the most recent test result for each fixture (not just from latest run)
+            # This allows incremental updates when running with filters
+            pipeline = [
+                # Sort by tested_at descending to get latest first
+                {"$sort": {"tested_at": -1}},
+                # Group by fixture_path + expected_code to get latest result for each
+                {"$group": {
+                    "_id": {
+                        "fixture_path": "$fixture_path",
+                        "expected_code": "$expected_code"
+                    },
+                    "latest_result": {"$first": "$$ROOT"}
+                }},
+                # Reshape to get the actual document
+                {"$replaceRoot": {"newRoot": "$latest_result"}}
+            ]
 
-            if not latest_run:
+            all_tests = list(self.db.db.fixture_tests.aggregate(pipeline))
+
+            if not all_tests:
                 return {}
-
-            # Get all test results from this run
-            all_tests = self.db.db.fixture_tests.find({
-                "test_run_id": latest_run["_id"]
-            })
 
             # Group tests by error code
             tests_by_code = {}

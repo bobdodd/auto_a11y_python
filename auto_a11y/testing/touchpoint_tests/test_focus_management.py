@@ -253,8 +253,7 @@ async def test_focus_management(page) -> Dict[str, Any]:
         if 'errors' in results:
             for error in results['errors']:
                 if error.get('err') == 'ErrNoFocusIndicator':
-                    logger.warning(f"FOCUS ERROR: xpath={error.get('xpath')} html='{error.get('html', 'MISSING')[:100]}' htmlSource={error.get('htmlSource', 'N/A')}")
-                    break  # Just log first one
+                    break  # Just check first one
 
         return results
         

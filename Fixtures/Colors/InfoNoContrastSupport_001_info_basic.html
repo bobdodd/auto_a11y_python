@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - With High Contrast Support</title>
+    <title>Dashboard - No High Contrast Support</title>
     <script type="application/json" id="test-metadata">
 {
-    "id": "InfoNoContrastSupport_002_with_support",
+    "id": "InfoNoContrastSupport_001_info_basic",
     "issueId": "InfoNoContrastSupport",
-    "expectedViolationCount": 0,
-    "expectedPassCount": 1,
-    "description": "Site supports and adapts to high contrast mode",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Site doesn't support high contrast mode",
     "wcag": "1.4.3",
     "impact": "Low"
 }
@@ -30,37 +30,14 @@
         button {
             background: #2196f3;
             color: white;
-            border: 1px solid transparent;
+            border: none;
             padding: 10px 20px;
             cursor: pointer;
         }
-
-        /* High contrast mode support */
-        @media (prefers-contrast: high) {
-            body {
-                background: white;
-                color: black;
-            }
-            .card {
-                border: 2px solid black;
-            }
-            button {
-                border: 2px solid black;
-                background: white;
-                color: black;
-            }
-        }
-
-        /* Also support forced-colors for Windows High Contrast */
-        @media (forced-colors: active) {
-            button {
-                border: 2px solid currentColor;
-            }
-        }
     </style>
 </head>
-<body data-expected-pass="true"
-      data-pass-reason="Site includes prefers-contrast and forced-colors media queries to support high contrast modes">
+<body data-info="true"
+      data-info-reason="Site doesn't test or adapt for OS high contrast mode, which may cause usability issues for low vision users">
     <h1>User Dashboard</h1>
 
     <div class="card">

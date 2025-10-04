@@ -98,8 +98,8 @@ class TestRunner:
                             
                             # Create test configuration from project settings
                             from auto_a11y.config.test_config import TestConfiguration
-                            test_config = TestConfiguration()
-                            
+                            test_config = TestConfiguration(database=self.db, debug_mode=False)
+
                             # Apply touchpoint settings from project
                             if 'touchpoints' in project_config:
                                 test_config.config['touchpoints'] = project_config['touchpoints']

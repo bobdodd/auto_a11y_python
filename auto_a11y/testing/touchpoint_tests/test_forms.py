@@ -65,6 +65,7 @@ async def test_forms(page) -> Dict[str, Any]:
                     applicable: true,
                     errors: [],
                     warnings: [],
+                    discovery: [],
                     passes: [],
                     elements_tested: 0,
                     elements_passed: 0,
@@ -125,29 +126,32 @@ async def test_forms(page) -> Dict[str, Any]:
                     // Check for associated label
                     let hasLabel = false;
                     let labelText = '';
-                    
+                    let hasVisibleLabel = false;
+
                     // Method 1: Check for label with for attribute
                     if (inputId) {
                         const label = document.querySelector(`label[for="${inputId}"]`);
                         if (label) {
                             hasLabel = true;
+                            hasVisibleLabel = true;
                             labelText = label.textContent.trim();
                         }
                     }
-                    
+
                     // Method 2: Check if input is inside a label
                     if (!hasLabel) {
                         const parentLabel = input.closest('label');
                         if (parentLabel) {
                             hasLabel = true;
+                            hasVisibleLabel = true;
                             labelText = parentLabel.textContent.trim();
                         }
                     }
-                    
+
                     // Method 3: Check for aria-label or aria-labelledby
                     const ariaLabel = input.getAttribute('aria-label');
                     const ariaLabelledby = input.getAttribute('aria-labelledby');
-                    
+
                     if (ariaLabel) {
                         hasLabel = true;
                         labelText = ariaLabel;
@@ -206,7 +210,22 @@ async def test_forms(page) -> Dict[str, Any]:
                         results.elements_failed++;
                     } else {
                         results.elements_passed++;
-                        
+
+                        // INFO: Check if using aria-label without visible label
+                        if (ariaLabel && !hasVisibleLabel) {
+                            results.warnings.push({
+                                err: 'InfoFieldLabelledUsingAriaLabel',
+                                type: 'info',
+                                cat: 'forms',
+                                element: input.tagName,
+                                xpath: getFullXPath(input),
+                                html: input.outerHTML.substring(0, 200),
+                                description: `Field uses aria-label="${ariaLabel}" without visible label`,
+                                ariaLabel: ariaLabel,
+                                inputType: inputType
+                            });
+                        }
+
                         // Check for required field indication
                         if (input.hasAttribute('required') || input.getAttribute('aria-required') === 'true') {
                             // Check if the label indicates it's required
@@ -300,7 +319,21 @@ async def test_forms(page) -> Dict[str, Any]:
                         failed: totalGroups - groupsWithFieldset
                     });
                 }
-                
+
+                // DISCOVERY: Report all forms on the page for manual review
+                const allForms = Array.from(document.querySelectorAll('form'));
+                allForms.forEach(form => {
+                    results.warnings.push({
+                        err: 'DiscoFormOnPage',
+                        type: 'disco',
+                        cat: 'forms',
+                        element: 'form',
+                        xpath: getFullXPath(form),
+                        html: form.outerHTML.substring(0, 200),
+                        description: 'Form detected on page requiring manual accessibility review'
+                    });
+                });
+
                 return results;
             }
         ''')

@@ -182,9 +182,40 @@ auto_a11y_python/
 ├── templates/          # HTML templates
 ├── static/            # CSS, JS, images
 ├── docs/              # Documentation
+├── Fixtures/          # Test fixtures for validation
 ├── config.py          # Configuration
+├── test_fixtures.py   # Fixture testing script
 └── run.py            # Entry point
 ```
+
+## Testing
+
+### Fixture Testing
+
+Auto A11y includes a comprehensive fixture testing system to validate that accessibility tests work correctly before deploying them in production. For complete documentation:
+
+- **[Fixture Testing Guide](docs/FIXTURE_TESTING.md)** - Comprehensive guide with workflows and examples
+- **[Quick Reference](FIXTURE_TESTING_QUICKREF.md)** - Command cheat sheet for daily use
+
+**Quick start:**
+```bash
+# Test all fixtures (takes ~1 hour for ~900 fixtures)
+python test_fixtures.py
+
+# Test only Discovery fixtures (~5 minutes)
+python test_fixtures.py --type Disco
+
+# Test specific category
+python test_fixtures.py --category Images
+
+# Test specific error code
+python test_fixtures.py --code ErrNoAlt
+
+# Combine filters
+python test_fixtures.py --type Err --category Headings --limit 10
+```
+
+Only tests that pass ALL their fixtures are enabled in production. View fixture status at `http://localhost:5001/testing/fixture-status`
 
 ## API Usage
 

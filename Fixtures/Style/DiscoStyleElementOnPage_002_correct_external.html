@@ -15,9 +15,16 @@
     "impact": "N/A"
 }
     </script>
-    <!-- External stylesheet instead of embedded <style> tag - CORRECT -->
+    <!-- External stylesheet for main styles -->
     <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="components.css">
+
+    <!-- Small embedded <style> for critical CSS - acceptable pattern -->
+    <style data-expected-pass="true"
+           data-pass-reason="Minimal embedded style tag used only for critical CSS to improve page load performance. This is an acceptable use case for embedded styles as it reduces render-blocking. Main styles still loaded from external stylesheet for cacheability">
+        /* Critical CSS for above-the-fold content */
+        body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+        .page-header { display: block; }
+    </style>
 </head>
 <body data-expected-pass="true"
       data-pass-reason="Page uses external stylesheets instead of embedded <style> element. Better cacheability improves page load performance. Users with custom stylesheets can override styles more easily. Style organization and maintainability improved. Works better with user preferences for high contrast, dark mode, and custom fonts">

@@ -49,11 +49,21 @@ class FixtureTestRunner:
         if not self.ai_available:
             logger.warning("CLAUDE_API_KEY not set - AI_ prefixed tests will be skipped")
         
-    def get_all_fixtures(self) -> List[Tuple[Path, str]]:
-        """Get all HTML fixtures with their expected error codes"""
+    def get_all_fixtures(self, category_filter: str = None, type_filter: str = None, code_filter: str = None) -> List[Tuple[Path, str]]:
+        """
+        Get all HTML fixtures with their expected error codes
+
+        Args:
+            category_filter: Only include fixtures from this category (touchpoint folder)
+            type_filter: Only include fixtures of this type (Err, Warn, Info, Disco, AI)
+            code_filter: Only include fixtures for this specific error code
+        """
         fixtures = []
 
         for html_file in self.fixtures_dir.rglob("*.html"):
+            # Apply category filter
+            if category_filter and html_file.parent.name != category_filter:
+                continue
             # Extract error code from filename
             filename = html_file.stem
 
@@ -82,6 +92,17 @@ class FixtureTestRunner:
 
             error_code = '_'.join(error_code_parts) if error_code_parts else filename
 
+            # Apply type filter (Err, Warn, Info, Disco, AI)
+            if type_filter:
+                if type_filter == 'AI' and not error_code.startswith('AI_'):
+                    continue
+                elif type_filter != 'AI' and not error_code.startswith(type_filter):
+                    continue
+
+            # Apply code filter (exact match on error code)
+            if code_filter and error_code != code_filter:
+                continue
+
             fixtures.append((html_file, error_code))
 
         return sorted(fixtures)
@@ -107,19 +128,53 @@ class FixtureTestRunner:
             logger.error(f"Failed to save fixture result to database: {e}")
             return None
     
+    def extract_fixture_metadata(self, fixture_path: Path) -> Dict:
+        """Extract test metadata from fixture HTML file"""
+        try:
+            with open(fixture_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            # Look for test-metadata JSON in the HTML
+            import re
+            import json
+            pattern = r'<script[^>]*id=["\']test-metadata["\'][^>]*>\s*(\{.*?\})\s*</script>'
+            match = re.search(pattern, content, re.DOTALL)
+
+            if match:
+                metadata_str = match.group(1)
+                return json.loads(metadata_str)
+        except Exception as e:
+            logger.debug(f"Could not extract metadata from {fixture_path}: {e}")
+
+        return {}
+
     async def test_fixture(self, fixture_path: Path, expected_code: str, fixture_num: int, total_fixtures: int) -> Dict:
         """Test a single fixture file"""
         print(f"\n[{fixture_num}/{total_fixtures}] 📄 Testing: {fixture_path.relative_to(self.fixtures_dir)}")
         print(f"   Expected: {expected_code}")
-        
+
+        # Extract metadata to determine if this is a negative test
+        metadata = self.extract_fixture_metadata(fixture_path)
+        expected_violation_count = metadata.get('expectedViolationCount', 1)  # Default to 1 (positive test)
+
+        # Discovery items are ALWAYS positive tests (we expect to find them)
+        # Negative tests only apply to Err/Warn/Info when expectedViolationCount is 0
+        is_discovery = expected_code.startswith('Disco')
+        is_negative_test = (expected_violation_count == 0) and not is_discovery
+
+        if is_negative_test:
+            print(f"   (Negative test: expecting code NOT to be found)")
+
         result = {
             "fixture": str(fixture_path.relative_to(self.fixtures_dir)),
             "expected_code": expected_code,
             "found_codes": [],
             "success": False,
-            "notes": []
+            "notes": [],
+            "is_negative_test": is_negative_test,
+            "expected_violation_count": expected_violation_count
         }
-        
+
         try:
             # Create a temporary project and website for testing
             project = Project(
@@ -188,11 +243,11 @@ class FixtureTestRunner:
             if test_result:
                 # Collect all violation/warning/info IDs
                 all_issues = []
-                
-                if hasattr(test_result, 'violations'):
-                    for violation in test_result.violations:
-                        # Extract the error code from the ID
-                        issue_id = violation.id if hasattr(violation, 'id') else ''
+
+                violations = test_result.get('violations', []) if isinstance(test_result, dict) else (test_result.violations if hasattr(test_result, 'violations') else [])
+                for violation in violations:
+                        # Extract the error code from the ID (JavaScript returns 'err' field in dicts)
+                        issue_id = violation.get('err', '') if isinstance(violation, dict) else (violation.id if hasattr(violation, 'id') else '')
                         if '_' in issue_id:
                             parts = issue_id.split('_')
                             for i, part in enumerate(parts):
@@ -203,9 +258,9 @@ class FixtureTestRunner:
                         else:
                             all_issues.append(issue_id)
                 
-                if hasattr(test_result, 'warnings'):
-                    for warning in test_result.warnings:
-                        issue_id = warning.id if hasattr(warning, 'id') else ''
+                warnings = test_result.get('warnings', []) if isinstance(test_result, dict) else (test_result.warnings if hasattr(test_result, 'warnings') else [])
+                for warning in warnings:
+                        issue_id = warning.get('err', '') if isinstance(warning, dict) else (warning.id if hasattr(warning, 'id') else '')
                         if '_' in issue_id:
                             parts = issue_id.split('_')
                             for i, part in enumerate(parts):
@@ -216,9 +271,9 @@ class FixtureTestRunner:
                         else:
                             all_issues.append(issue_id)
                 
-                if hasattr(test_result, 'info'):
-                    for info_item in test_result.info:
-                        issue_id = info_item.id if hasattr(info_item, 'id') else ''
+                info_items = test_result.get('info', []) if isinstance(test_result, dict) else (test_result.info if hasattr(test_result, 'info') else [])
+                for info_item in info_items:
+                        issue_id = info_item.get('err', '') if isinstance(info_item, dict) else (info_item.id if hasattr(info_item, 'id') else '')
                         if '_' in issue_id:
                             parts = issue_id.split('_')
                             for i, part in enumerate(parts):
@@ -229,9 +284,9 @@ class FixtureTestRunner:
                         else:
                             all_issues.append(issue_id)
                 
-                if hasattr(test_result, 'discovery'):
-                    for discovery in test_result.discovery:
-                        issue_id = discovery.id if hasattr(discovery, 'id') else ''
+                discoveries = test_result.get('discovery', []) if isinstance(test_result, dict) else (test_result.discovery if hasattr(test_result, 'discovery') else [])
+                for discovery in discoveries:
+                        issue_id = discovery.get('err', '') if isinstance(discovery, dict) else (discovery.id if hasattr(discovery, 'id') else '')
                         if '_' in issue_id:
                             parts = issue_id.split('_')
                             for i, part in enumerate(parts):
@@ -243,16 +298,28 @@ class FixtureTestRunner:
                             all_issues.append(issue_id)
                 
                 result["found_codes"] = list(set(all_issues))  # Remove duplicates
-                
-                # Check if expected code was found
-                if expected_code in result["found_codes"]:
-                    result["success"] = True
-                    print(f"   ✅ Success! Found expected code: {expected_code}")
+
+                # Check success based on whether this is a negative test
+                code_found = expected_code in result["found_codes"]
+
+                if is_negative_test:
+                    # Negative test: success if code is NOT found
+                    if not code_found:
+                        result["success"] = True
+                        print(f"   ✅ Success! Code correctly NOT found: {expected_code}")
+                    else:
+                        print(f"   ❌ Failed! Code should NOT be found but was: {expected_code}")
+                        result["notes"].append(f"Negative test failure: {expected_code} should not be present")
                 else:
-                    print(f"   ❌ Failed! Expected code not found: {expected_code}")
-                    print(f"   Found codes: {', '.join(result['found_codes']) if result['found_codes'] else 'None'}")
-                    
-                # Note any additional issues found
+                    # Positive test: success if code IS found
+                    if code_found:
+                        result["success"] = True
+                        print(f"   ✅ Success! Found expected code: {expected_code}")
+                    else:
+                        print(f"   ❌ Failed! Expected code not found: {expected_code}")
+                        print(f"   Found codes: {', '.join(result['found_codes']) if result['found_codes'] else 'None'}")
+
+                # Note any additional issues found (excluding the expected code)
                 extra_codes = [code for code in result["found_codes"] if code != expected_code]
                 if extra_codes:
                     result["notes"].append(f"Additional issues found: {', '.join(extra_codes)}")
@@ -335,14 +402,38 @@ class FixtureTestRunner:
             logger.error(f"Failed to save test run summary: {e}")
             return False
     
-    async def run_all_tests(self) -> None:
-        """Run tests on all fixtures"""
+    async def run_all_tests(self, category_filter: str = None, type_filter: str = None, code_filter: str = None, limit: int = None) -> None:
+        """
+        Run tests on all fixtures
+
+        Args:
+            category_filter: Only test fixtures from this category
+            type_filter: Only test fixtures of this type
+            code_filter: Only test fixtures for this error code
+            limit: Maximum number of fixtures to test
+        """
         start_time = time.time()
 
         print("=" * 80)
         print("🧪 ACCESSIBILITY FIXTURE TEST SUITE")
         print(f"📝 Test Run ID: {self.test_run_id}")
         print("=" * 80)
+
+        # Display filters if any
+        filters_active = []
+        if category_filter:
+            filters_active.append(f"Category: {category_filter}")
+        if type_filter:
+            filters_active.append(f"Type: {type_filter}")
+        if code_filter:
+            filters_active.append(f"Code: {code_filter}")
+        if limit:
+            filters_active.append(f"Limit: {limit}")
+
+        if filters_active:
+            print("\n🔍 ACTIVE FILTERS:")
+            for f in filters_active:
+                print(f"   • {f}")
 
         # Display AI analysis status
         if self.ai_available:
@@ -351,7 +442,12 @@ class FixtureTestRunner:
             print("⚠️  AI Analysis: DISABLED (CLAUDE_API_KEY not set)")
             print("   AI_ prefixed tests will be skipped")
 
-        fixtures = self.get_all_fixtures()
+        fixtures = self.get_all_fixtures(category_filter, type_filter, code_filter)
+
+        # Apply limit if specified
+        if limit and limit < len(fixtures):
+            fixtures = fixtures[:limit]
+
         print(f"\nFound {len(fixtures)} fixtures to test\n")
 
         # Group fixtures by error code to track pass/fail per code
@@ -523,7 +619,9 @@ async def main():
     import argparse
     
     parser = argparse.ArgumentParser(description='Test accessibility fixtures')
-    parser.add_argument('--category', help='Test only fixtures in this category')
+    parser.add_argument('--category', help='Test only fixtures in this category (touchpoint folder name)')
+    parser.add_argument('--type', choices=['Err', 'Warn', 'Info', 'Disco', 'AI'], help='Test only fixtures of this type (Err, Warn, Info, Disco, AI)')
+    parser.add_argument('--code', help='Test only fixtures for this specific error code (e.g., ErrNoAlt)')
     parser.add_argument('--limit', type=int, help='Limit number of fixtures to test')
     parser.add_argument('--fixture', help='Test only a specific fixture file')
     parser.add_argument('--history', action='store_true', help='Show test run history')
@@ -586,11 +684,12 @@ async def main():
             sys.exit(1)
     else:
         # Run normal test suite with optional filters
-        if args.category or args.limit:
-            print(f"🔍 Running with filters: category={args.category}, limit={args.limit}")
-            # TODO: Implement category and limit filters in run_all_tests
-        
-        exit_code = await runner.run_all_tests()
+        exit_code = await runner.run_all_tests(
+            category_filter=args.category,
+            type_filter=args.type,
+            code_filter=args.code,
+            limit=args.limit
+        )
         sys.exit(exit_code)
 
 

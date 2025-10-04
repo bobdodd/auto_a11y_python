@@ -731,12 +731,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         },
         'ErrEmptyPageTitle': {
             'title': "Page title element is empty",
-            'what': "Page title element is empty",
-            'why': "Empty titles provide no information about page content",
-            'who': "Screen reader users, users with cognitive disabilities",
+            'what': "The page has a <title> element but it contains no text",
+            'why': "The page title is the first thing screen reader users hear when a page loads. An empty title provides no information about what page they're on - it's like opening a book with a blank cover. The title appears in browser tabs, bookmarks, search results, and browser history. An empty title means users see \"Untitled\" or nothing at all, making it impossible to distinguish this page from others or understand its purpose. This is especially problematic when users have multiple tabs open or are trying to return to a page from their history.",
+            'who': "Screen reader users who rely on titles for immediate page identification, users with cognitive disabilities who need clear page identification, users managing multiple browser tabs, users with memory issues using browser history, and all users when bookmarking or sharing pages",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.4.2'],
-            'remediation': "Add descriptive text to title element"
+            'remediation': "Add descriptive text to the <title> element. A good page title should be: (1) Unique - different from other pages on your site, (2) Descriptive - clearly identifies the page content, (3) Concise - ideally 20-60 characters, (4) Front-loaded - most important info first, (5) Contextual - includes site name for orientation. Use the pattern \"Page Topic - Section - Site Name\" or \"Specific Content - Site Name\". Examples: \"Shopping Cart - Acme Store\", \"Privacy Policy - Company Name\", \"Product Name - Category - Store\". Avoid generic titles like \"Home\", \"Page\", or \"Untitled\"."
         },
         'ErrEmptyTitleAttr': {
             'title': "Empty title attribute",
@@ -1528,7 +1528,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'who': "Keyboard users who expect logical, predictable navigation order, screen reader users who rely on consistent focus flow, users with motor disabilities who need efficient keyboard navigation, users with cognitive disabilities who are confused by unpredictable focus movement, and developers maintaining the code who must manage complex tabindex values",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.4.3'],
-            'remediation': "Remove positive tabindex values and use only tabindex=\"0\" (adds element to natural tab order) or tabindex=\"-1\" (removes from tab order but allows programmatic focus). Let the DOM order determine tab order - if elements need to be reached in a different order, rearrange them in the HTML. If visual order must differ from DOM order for design reasons, consider using CSS Grid or Flexbox with the order property, but be cautious as this can still cause accessibility issues."
+            'remediation': "Remove positive tabindex values and use only tabindex=\"0\" (adds element to natural tab order) or tabindex=\"-1\" (removes from tab order but allows programmatic focus). Let the DOM order determine tab order - if elements need to be reached in a different order, rearrange them in the HTML. If visual order must differ from DOM order for design reasons, consider using CSS Grid or Flexbox with the order property, but be cautious as this can still cause accessibility issues. NOTE: Positive tabindex may be acceptable within interactive SVG widgets (maps, diagrams, data visualizations) where custom navigation flows guide users through different content journeys - these cases generate warnings rather than errors."
         },
         'ErrPrimaryHrefLangNotRecognized': {
             'title': "hreflang language code not recognized",
@@ -2503,13 +2503,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Set line-height to at least 1.5 for body text."
         },
         'WarnSvgPositiveTabindex': {
-            'title': "SVG element has positive tabindex disrupting tab order",
-            'what': "SVG element has positive tabindex disrupting tab order",
-            'why': "SVGs typically shouldn\'t be in tab order unless interactive.",
-            'who': "Keyboard users experiencing confusing navigation.",
+            'title': "SVG element uses positive tabindex - verify this is intentional for interactive widget",
+            'what': "SVG element uses positive tabindex value (greater than 0), potentially creating custom tab order",
+            'why': "While positive tabindex is generally problematic, it can be appropriate within interactive SVG widgets like maps, diagrams, or data visualizations where you need to guide users through different \"journeys\" or metadata. For example, an interactive map might use custom tab order to navigate between different types of geographic features, or a diagram might guide users through different conceptual layers. However, this should only be used when creating a genuinely beneficial navigation experience within a self-contained interactive widget, not for general page layout.",
+            'who': "Keyboard users who may benefit from guided navigation within complex interactive graphics, but could be confused if the custom tab order is poorly designed or unnecessary",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.4.3'],
-            'remediation': "Remove tabindex from non-interactive SVGs, use tabindex=\"0\" only for interactive SVGs."
+            'remediation': "Review whether this positive tabindex serves a clear purpose for keyboard navigation within an interactive SVG widget (map, diagram, data visualization). If the SVG is interactive and the tab order creates a logical navigation flow for different content \"journeys\", this usage may be acceptable. If the SVG is decorative or the custom tab order doesn't provide clear value, remove the positive tabindex and use tabindex=\"0\" to add to natural tab order or tabindex=\"-1\" to remove from tab order but allow programmatic focus. Ensure any custom tab order is thoroughly tested with keyboard-only users."
         },
         'WarnTableMissingThead': {
             'title': "Table missing thead element for headers",
@@ -2520,14 +2520,23 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1'],
             'remediation': "Wrap header rows in thead element, data rows in tbody."
         },
+        'WarnRedundantTitleAttr': {
+            'title': "Title attribute duplicates visible text, creating inaccessible tooltip",
+            'what': "Element has a title attribute that duplicates or overlaps with visible text content: \"{visibleText}\" with title=\"{title}\"",
+            'why': "When the title attribute duplicates visible text, it creates a redundant tooltip that provides no additional value but causes significant accessibility problems. The tooltip cannot be dismissed and disappears when users move their mouse toward it - a critical issue for screen magnifier users who need to move their viewport to read the tooltip text. The tooltip also doesn't appear on touch devices, isn't accessible to keyboard users, and creates a poor experience for users with motor impairments who trigger tooltips accidentally. This redundancy adds no value while creating barriers for many users. The general rule is: never use title attributes except on iframes (where they serve as accessible names) and in the <head> element (where \"title\" has a completely different meaning as the page title element).",
+            'who': "Screen magnifier users who cannot read tooltips that disappear when moving the mouse, mobile and touch screen users who never see tooltips, keyboard users who cannot access hover-dependent content, users with motor disabilities who accidentally trigger or cannot maintain hover, users with cognitive disabilities confused by redundant information",
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['3.3.2'],
+            'remediation': "Remove the title attribute entirely since the visible text already provides the necessary information. Title attributes should only be used: (1) on <iframe> elements to provide accessible names, or (2) in the <head> element as the page title. For all other use cases, use visible, persistent text that all users can access. If you need supplementary information, use visible helper text, aria-describedby, or clickable info icons instead of title attributes."
+        },
         'WarnTitleAttrFound': {
             'title': "Title attribute is being used on an element, which has significant accessibility limitations",
             'what': "Title attribute is being used on an element, which has significant accessibility limitations",
-            'why': "Title attributes are problematic for accessibility: they don\'t appear on mobile devices or touch screens, keyboard users cannot access them without a mouse, screen readers handle them inconsistently (some ignore them, some read them), they disappear quickly making them hard to read for users with motor or cognitive disabilities, they cannot be styled or resized for users with low vision, and they\'re not translated by browser translation tools. Using title attributes for important information excludes many users from accessing that content.",
+            'why': "Title attributes are problematic for accessibility: they don\'t appear on mobile devices or touch screens, keyboard users cannot access them without a mouse, screen readers handle them inconsistently (some ignore them, some read them), they disappear quickly making them hard to read for users with motor or cognitive disabilities, they cannot be styled or resized for users with low vision, and they\'re not translated by browser translation tools. The general rule is: never use title attributes except on iframes (where they serve as accessible names) and in the <head> element (where \"title\" has a completely different meaning as the page title element).",
             'who': "Mobile and touch screen users who never see title tooltips, keyboard-only users who cannot hover to trigger tooltips, screen reader users who may not hear title content reliably, users with motor disabilities who cannot hover precisely, users with cognitive disabilities who need more time to read, users with low vision who cannot resize tooltip text, and users relying on translation tools",
             'impact': ImpactScale.LOW.value,
             'wcag': ['3.3.2', '4.1.2'],
-            'remediation': "Replace title attributes with visible, persistent text that all users can access. For form fields, use visible <label> elements or aria-label. For links and buttons, ensure the visible text is descriptive. For abbreviations, provide the full text on first use. For supplementary information, use visible helper text, details/summary elements, or clickable info icons. Only use title attributes for progressive enhancement where the information duplicates visible content. Never rely on title alone for important information."
+            'remediation': "Remove title attributes and replace with visible, persistent text that all users can access. Title attributes should only be used: (1) on <iframe> elements to provide accessible names, or (2) in the <head> element as the page title. For form fields, use visible <label> elements or aria-label. For links and buttons, ensure the visible text is descriptive. For abbreviations, provide the full text on first use. For supplementary information, use visible helper text, details/summary elements, aria-describedby, or clickable info icons. Never rely on title attributes for important information."
         },
         'WarnUnlabelledForm': {
             'title': "Form element lacks accessible name",

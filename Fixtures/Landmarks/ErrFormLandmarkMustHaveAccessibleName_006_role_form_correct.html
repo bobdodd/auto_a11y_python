@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Form Tests - Correct Accessible Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkMustHaveAccessibleName_006_role_form_correct",
+    "issueId": "ErrFormLandmarkMustHaveAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Various elements with role='form' having proper accessible names",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1>Role Form Test Cases - Correct</h1>
+
+        <!-- Correct 1: div with role="form" and aria-label -->
+        <div role="form" aria-label="Contact form"
+             data-expected-pass="true"
+             data-pass-reason="role='form' with aria-label">
+            <h2>Contact Us</h2>
+            <input type="text" placeholder="Name">
+            <button>Submit</button>
+        </div>
+
+        <!-- Correct 2: section with role="form" and aria-labelledby -->
+        <h2 id="reg-heading">User Registration</h2>
+        <section role="form" aria-labelledby="reg-heading"
+                 data-expected-pass="true"
+                 data-pass-reason="role='form' with aria-labelledby">
+            <input type="email" placeholder="Email">
+            <button>Register</button>
+        </section>
+
+        <!-- Correct 3: article with role="form" and aria-label -->
+        <article role="form" aria-label="Customer survey"
+                 data-expected-pass="true"
+                 data-pass-reason="role='form' with aria-label">
+            <h2>Tell Us What You Think</h2>
+            <input type="text" placeholder="Your feedback">
+            <button>Send</button>
+        </article>
+
+        <!-- Correct 4: aside with role="form" and aria-labelledby -->
+        <h2 id="filter-heading">Search Filters</h2>
+        <aside role="form" aria-labelledby="filter-heading"
+               data-expected-pass="true"
+               data-pass-reason="role='form' with aria-labelledby">
+            <input type="checkbox" id="filter1"> <label for="filter1">Option 1</label>
+            <button>Apply Filters</button>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

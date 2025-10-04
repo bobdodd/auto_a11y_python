@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Element Tests - Various Configurations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkMustHaveAccessibleName_003_form_elements",
+    "issueId": "ErrFormLandmarkMustHaveAccessibleName",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Native <form> elements without accessible names",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <h1>Form Element Test Cases</h1>
+
+        <!-- Violation 1: Simple form without accessible name -->
+        <form data-expected-violation="true"
+              data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+              data-violation-reason="<form> lacks accessible name">
+            <label for="email1">Email:</label>
+            <input type="email" id="email1" name="email">
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- Violation 2: Form with empty aria-label -->
+        <form aria-label=""
+              data-expected-violation="true"
+              data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+              data-violation-reason="<form> has empty aria-label">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Violation 3: Form with whitespace-only aria-label -->
+        <form aria-label="   "
+              data-expected-violation="true"
+              data-violation-id="ErrFormLandmarkMustHaveAccessibleName"
+              data-violation-reason="<form> has whitespace-only aria-label">
+            <label for="search">Search:</label>
+            <input type="search" id="search" name="q">
+            <button type="submit">Search</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

@@ -176,7 +176,12 @@ async def test_headings(page) -> Dict[str, Any]:
 
                     // Check for empty headings
                     const textContent = heading.textContent.trim();
-                    if (!textContent) {
+
+                    // Check if heading has images with alt text (not empty if so)
+                    const images = heading.querySelectorAll('img[alt]');
+                    const hasImageWithAlt = Array.from(images).some(img => img.alt.trim() !== '');
+
+                    if (!textContent && !hasImageWithAlt) {
                         results.errors.push({
                             err: 'ErrEmptyHeading',
                             type: 'err',

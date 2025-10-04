@@ -92,14 +92,40 @@ async def test_headings(page) -> Dict[str, Any]:
                 
                 // Get all headings
                 const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
-                
+
+                // Check for elements with role="heading" and invalid aria-level
+                const roleHeadings = Array.from(document.querySelectorAll('[role="heading"]'));
+                roleHeadings.forEach(element => {
+                    const ariaLevel = element.getAttribute('aria-level');
+
+                    if (ariaLevel) {
+                        const levelNum = parseInt(ariaLevel, 10);
+
+                        // Check if aria-level is invalid (not 1-6 or not a valid number)
+                        if (isNaN(levelNum) || levelNum < 1 || levelNum > 6) {
+                            results.errors.push({
+                                err: 'ErrInvalidAriaLevel',
+                                type: 'err',
+                                cat: 'headings',
+                                element: element.tagName,
+                                xpath: getFullXPath(element),
+                                html: element.outerHTML.substring(0, 200),
+                                description: `Element with role="heading" has invalid aria-level="${ariaLevel}" (must be 1-6)`,
+                                ariaLevel: ariaLevel,
+                                role: element.getAttribute('role')
+                            });
+                            results.elements_failed++;
+                        }
+                    }
+                });
+
                 if (headings.length === 0) {
                     results.applicable = false;
                     results.not_applicable_reason = 'No headings found on the page';
                     return results;
                 }
-                
-                results.elements_tested = headings.length;
+
+                results.elements_tested = headings.length + roleHeadings.length;
                 
                 // Track heading counts
                 const headingCounts = { h1: 0, h2: 0, h3: 0, h4: 0, h5: 0, h6: 0 };

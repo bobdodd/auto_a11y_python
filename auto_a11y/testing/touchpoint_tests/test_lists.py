@@ -364,11 +364,14 @@ async def test_lists(page) -> Dict[str, Any]:
                         let hasImage = beforeBackgroundImage && beforeBackgroundImage !== 'none';
                         if (!hasImage) {
                             const firstChild = item.firstElementChild;
-                            if (firstChild && (firstChild.tagName === 'IMG' || firstChild.tagName === 'SVG')) {
-                                // Check if it's small (likely a bullet icon)
-                                const rect = firstChild.getBoundingClientRect();
-                                if (rect.width < 50 && rect.height < 50) {
-                                    hasImage = true;
+                            if (firstChild) {
+                                const tagName = firstChild.tagName.toUpperCase();
+                                if (tagName === 'IMG' || tagName === 'SVG') {
+                                    // Check if it's small (likely a bullet icon)
+                                    const rect = firstChild.getBoundingClientRect();
+                                    if (rect.width < 50 && rect.height < 50) {
+                                        hasImage = true;
+                                    }
                                 }
                             }
                         }

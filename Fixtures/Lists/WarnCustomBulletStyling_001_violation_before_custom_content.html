@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnCustomBulletStyling - ::before with custom content</title>
+    <style>
+        ul.custom-bullets {
+            list-style-type: none;
+        }
+        ul.custom-bullets li::before {
+            content: "➤ ";
+            color: #007bff;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Custom Bullet with ::before content</h1>
+
+    <p>This list uses ::before pseudo-element with custom content (➤) as bullets:</p>
+
+    <ul class="custom-bullets">
+        <li>First item with custom arrow bullet</li>
+        <li>Second item with custom arrow bullet</li>
+        <li>Third item with custom arrow bullet</li>
+    </ul>
+
+    <p><strong>Expected:</strong> Should trigger WarnCustomBulletStyling with customType: "::before with custom content"</p>
+</body>
+</html>

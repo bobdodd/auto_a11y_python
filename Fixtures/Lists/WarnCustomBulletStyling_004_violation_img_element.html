@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnCustomBulletStyling - IMG element bullets</title>
+    <style>
+        ul.img-bullets {
+            list-style-type: none;
+        }
+        ul.img-bullets li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        ul.img-bullets li img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Custom Bullet with IMG Elements</h1>
+
+    <p>This list uses &lt;img&gt; elements as bullets (first child, small size):</p>
+
+    <ul class="img-bullets">
+        <li>
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300aaff'><polygon points='12,2 15,9 22,10 17,15 18,22 12,19 6,22 7,15 2,10 9,9'/></svg>" alt="">
+            <span>First item with star image bullet</span>
+        </li>
+        <li>
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300aaff'><polygon points='12,2 15,9 22,10 17,15 18,22 12,19 6,22 7,15 2,10 9,9'/></svg>" alt="">
+            <span>Second item with star image bullet</span>
+        </li>
+        <li>
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300aaff'><polygon points='12,2 15,9 22,10 17,15 18,22 12,19 6,22 7,15 2,10 9,9'/></svg>" alt="">
+            <span>Third item with star image bullet</span>
+        </li>
+    </ul>
+
+    <p><strong>Expected:</strong> Should trigger WarnCustomBulletStyling with customType: "&lt;img&gt; element as bullet"</p>
+    <p><strong>Note:</strong> Images must be first child and smaller than 50x50 pixels to be detected as bullets.</p>
+</body>
+</html>

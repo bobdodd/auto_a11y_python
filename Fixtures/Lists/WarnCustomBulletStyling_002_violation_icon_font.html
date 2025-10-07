@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnCustomBulletStyling - Icon font bullets</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        ul.icon-bullets {
+            list-style-type: none;
+        }
+        ul.icon-bullets li::before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f00c";
+            font-weight: 900;
+            color: #28a745;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Custom Bullet with Icon Font</h1>
+
+    <p>This list uses Font Awesome icons via ::before pseudo-element:</p>
+
+    <ul class="icon-bullets">
+        <li>First item with Font Awesome checkmark</li>
+        <li>Second item with Font Awesome checkmark</li>
+        <li>Third item with Font Awesome checkmark</li>
+    </ul>
+
+    <p><strong>Expected:</strong> Should trigger WarnCustomBulletStyling with customType: "::before with icon font"</p>
+</body>
+</html>

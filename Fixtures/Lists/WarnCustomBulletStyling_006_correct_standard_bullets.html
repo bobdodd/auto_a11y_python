@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnCustomBulletStyling - Correct standard bullets</title>
+    <style>
+        /* Standard list styling that should NOT trigger warnings */
+        ul.disc-bullets {
+            list-style-type: disc;
+        }
+        ul.circle-bullets {
+            list-style-type: circle;
+        }
+        ul.square-bullets {
+            list-style-type: square;
+        }
+        ol.decimal-bullets {
+            list-style-type: decimal;
+        }
+        /* Custom colors/sizes are fine as long as standard bullets are used */
+        ul.styled-standard {
+            list-style-type: disc;
+            color: #007bff;
+        }
+        ul.styled-standard li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Correct List Styling (No Warnings)</h1>
+
+    <p>These lists use standard list-style-type values and should NOT trigger warnings:</p>
+
+    <h2>Disc bullets (default)</h2>
+    <ul class="disc-bullets">
+        <li>First item with standard disc bullet</li>
+        <li>Second item with standard disc bullet</li>
+        <li>Third item with standard disc bullet</li>
+    </ul>
+
+    <h2>Circle bullets</h2>
+    <ul class="circle-bullets">
+        <li>First item with circle bullet</li>
+        <li>Second item with circle bullet</li>
+        <li>Third item with circle bullet</li>
+    </ul>
+
+    <h2>Square bullets</h2>
+    <ul class="square-bullets">
+        <li>First item with square bullet</li>
+        <li>Second item with square bullet</li>
+        <li>Third item with square bullet</li>
+    </ul>
+
+    <h2>Decimal numbering</h2>
+    <ol class="decimal-bullets">
+        <li>First numbered item</li>
+        <li>Second numbered item</li>
+        <li>Third numbered item</li>
+    </ol>
+
+    <h2>Styled but using standard bullets</h2>
+    <ul class="styled-standard">
+        <li>Item with custom color but standard disc bullet</li>
+        <li>Item with custom spacing but standard disc bullet</li>
+        <li>Custom styling of text/spacing is fine</li>
+    </ul>
+
+    <p><strong>Expected:</strong> NO WarnCustomBulletStyling warnings should be triggered for any of these lists.</p>
+</body>
+</html>

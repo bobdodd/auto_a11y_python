@@ -59,7 +59,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
     """
     try:
         # First, extract breakpoints from stylesheets
-        breakpoints = await page.evaluate('''
+        breakpoints = await page.evaluate(r'''
             () => {
                 const breakpoints = new Set();
 
@@ -132,10 +132,11 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
             await page.evaluate('() => new Promise(resolve => setTimeout(resolve, 300))')
 
             # Execute JavaScript to analyze floating dialogs at this breakpoint
-            results = await page.evaluate(f'''
-                () => {{
-                    const breakpointWidth = {breakpoint_width};
-                    const results = {{
+            # Build the JavaScript code with breakpoint_width injected
+            js_code = '''
+                () => {
+                    const breakpointWidth = ''' + str(breakpoint_width) + ''';
+                    const results = {
                         applicable: true,
                         errors: [],
                         warnings: [],
@@ -145,7 +146,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                         elements_failed: 0,
                         test_name: 'floating_dialogs',
                         checks: []
-                    }};
+                    };
                 
                 // Function to generate XPath for elements
                 function getFullXPath(element) {
@@ -378,17 +379,19 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                 });
                 
                 // Add check information for reporting
-                results.checks.push({{
+                results.checks.push({
                     description: 'Dialog accessibility',
                     wcag: ['4.1.2', '2.4.6', '2.1.1', '2.1.2'],
                     total: visibleDialogs.length * 3, // 3 main checks per dialog
                     passed: results.elements_passed,
                     failed: results.elements_failed
-                }});
+                });
 
                 return results;
-                }}
-            ''')
+                }
+            '''
+
+            results = await page.evaluate(js_code)
 
             # Aggregate results from this breakpoint
             if results['applicable']:

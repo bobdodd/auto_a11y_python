@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 import logging
 from auto_a11y.reporting.comprehensive_report import ComprehensiveReportGenerator
+from auto_a11y.reporting.issue_catalog import IssueCatalog
 from io import StringIO
 
 logger = logging.getLogger(__name__)
@@ -1436,7 +1437,7 @@ class ExcelFormatter(BaseFormatter):
                 if not test_result:
                     continue
 
-                # Add violations (from list attributes)
+                # Add violations (from list attributes) - enrich with catalog data
                 violations = getattr(test_result, 'violations', []) if hasattr(test_result, 'violations') else []
                 for v in violations:
                     # Handle both Violation objects and dicts
@@ -1444,6 +1445,9 @@ class ExcelFormatter(BaseFormatter):
                         v_dict = v.to_dict()
                     else:
                         v_dict = v if isinstance(v, dict) else {}
+
+                    # Enrich with catalog information
+                    v_dict = IssueCatalog.enrich_issue(v_dict)
 
                     ws.cell(row=row, column=1, value='Violation')
                     ws.cell(row=row, column=2, value=str(v_dict.get('impact', 'Unknown')).upper())
@@ -1463,13 +1467,16 @@ class ExcelFormatter(BaseFormatter):
                         ws.cell(row=row, column=col).fill = styles['violation']['fill']
                     row += 1
 
-                # Add warnings
+                # Add warnings - enrich with catalog data
                 warnings = getattr(test_result, 'warnings', []) if hasattr(test_result, 'warnings') else []
                 for w in warnings:
                     if hasattr(w, 'to_dict'):
                         w_dict = w.to_dict()
                     else:
                         w_dict = w if isinstance(w, dict) else {}
+
+                    # Enrich with catalog information
+                    w_dict = IssueCatalog.enrich_issue(w_dict)
 
                     ws.cell(row=row, column=1, value='Warning')
                     ws.cell(row=row, column=2, value=str(w_dict.get('impact', 'Moderate')).upper())
@@ -1489,13 +1496,16 @@ class ExcelFormatter(BaseFormatter):
                         ws.cell(row=row, column=col).fill = styles['warning']['fill']
                     row += 1
 
-                # Add info items
+                # Add info items - enrich with catalog data
                 info_items = getattr(test_result, 'info', []) if hasattr(test_result, 'info') else []
                 for i in info_items:
                     if hasattr(i, 'to_dict'):
                         i_dict = i.to_dict()
                     else:
                         i_dict = i if isinstance(i, dict) else {}
+
+                    # Enrich with catalog information
+                    i_dict = IssueCatalog.enrich_issue(i_dict)
 
                     ws.cell(row=row, column=1, value='Info')
                     ws.cell(row=row, column=2, value='INFO')
@@ -1515,13 +1525,16 @@ class ExcelFormatter(BaseFormatter):
                         ws.cell(row=row, column=col).fill = styles['info']['fill']
                     row += 1
 
-                # Add discovery items
+                # Add discovery items - enrich with catalog data
                 discovery_items = getattr(test_result, 'discovery', []) if hasattr(test_result, 'discovery') else []
                 for d in discovery_items:
                     if hasattr(d, 'to_dict'):
                         d_dict = d.to_dict()
                     else:
                         d_dict = d if isinstance(d, dict) else {}
+
+                    # Enrich with catalog information
+                    d_dict = IssueCatalog.enrich_issue(d_dict)
 
                     ws.cell(row=row, column=1, value='Discovery')
                     ws.cell(row=row, column=2, value='DISCOVERY')

@@ -34,31 +34,42 @@ class BrowserManager:
             pass  # Browser already running
             return
         
+        # Check if headless mode is requested
+        is_headless = self.config.get('headless', True)
+
+        # Build args list
+        browser_args = [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            # Removed --no-zygote and --single-process as they can cause connection issues
+            '--disable-gpu',
+            f'--window-size={self.config.get("viewport_width", 1920)},{self.config.get("viewport_height", 1080)}',
+            # Suppress SPDY/HTTP2 warnings
+            '--log-level=3',  # Only show fatal errors
+            '--silent',
+            '--disable-logging',
+            '--disable-extensions',
+            '--disable-background-networking',
+            # Stealth mode arguments
+            '--disable-blink-features=AutomationControlled',  # Hide automation
+            '--exclude-switches=enable-automation',  # Hide automation flag
+            '--disable-infobars',  # Hide "Chrome is being controlled" banner
+        ]
+
+        # Add headless=new mode if headless is requested (Chrome 109+)
+        # This mode is much harder to detect than old headless
+        if is_headless:
+            browser_args.append('--headless=new')
+
         launch_options = {
-            'headless': self.config.get('headless', True),
+            'headless': False,  # Don't use old headless, use --headless=new flag instead
             'handleSIGINT': False,
             'handleSIGTERM': False,
             'handleSIGHUP': False,
-            'args': [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-accelerated-2d-canvas',
-                '--no-first-run',
-                # Removed --no-zygote and --single-process as they can cause connection issues
-                '--disable-gpu',
-                f'--window-size={self.config.get("viewport_width", 1920)},{self.config.get("viewport_height", 1080)}',
-                # Suppress SPDY/HTTP2 warnings
-                '--log-level=3',  # Only show fatal errors
-                '--silent',
-                '--disable-logging',
-                '--disable-extensions',
-                '--disable-background-networking',
-                # Stealth mode arguments
-                '--disable-blink-features=AutomationControlled',  # Hide automation
-                '--exclude-switches=enable-automation',  # Hide automation flag
-                '--disable-infobars',  # Hide "Chrome is being controlled" banner
-            ],
+            'args': browser_args,
             'dumpio': self.config.get('dumpio', False),  # Disable to reduce console noise
             'timeout': self.config.get('timeout', 60000),  # Increased to 60 seconds
             'autoClose': False,  # Prevent automatic closing

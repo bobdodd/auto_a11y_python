@@ -379,7 +379,7 @@ async def test_lists(page) -> Dict[str, Any]:
                             let customDetails = '';
 
                             if (hasImage) {
-                                if (beforeBackgroundImage !== 'none') {
+                                if (beforeBackgroundImage && beforeBackgroundImage !== 'none') {
                                     customType = '::before background-image';
                                     customDetails = beforeBackgroundImage.substring(0, 100);
                                 } else if (item.querySelector('img')) {
@@ -391,10 +391,12 @@ async def test_lists(page) -> Dict[str, Any]:
                                 }
                             } else if (hasIconFont) {
                                 customType = '::before with icon font';
-                                customDetails = `font-family: ${beforeFontFamily.substring(0, 50)}, content: ${beforeContent.substring(0, 30)}`;
+                                const fontFam = beforeFontFamily ? beforeFontFamily.substring(0, 50) : 'unknown';
+                                const content = beforeContent ? beforeContent.substring(0, 30) : '';
+                                customDetails = `font-family: ${fontFam}, content: ${content}`;
                             } else if (hasCustomBullet) {
                                 customType = '::before with custom content';
-                                customDetails = `content: ${beforeContent.substring(0, 50)}`;
+                                customDetails = beforeContent ? `content: ${beforeContent.substring(0, 50)}` : '';
                             }
 
                             const listStyleType = style.getPropertyValue('list-style-type');

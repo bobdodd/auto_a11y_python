@@ -346,11 +346,13 @@ async def test_lists(page) -> Dict[str, Any]:
                         const beforePseudo = window.getComputedStyle(item, '::before');
 
                         const beforeContent = beforePseudo.getPropertyValue('content');
-                        const hasCustomBullet = beforeContent !== 'none' &&
+                        const hasCustomBullet = beforeContent &&
+                                              beforeContent !== 'none' &&
+                                              beforeContent !== 'normal' &&
                                               beforeContent !== '""' &&
-                                              beforeContent !== 'normal';
+                                              beforeContent !== '"\\0022\\0022"';
 
-                        const beforeFontFamily = beforePseudo.getPropertyValue('font-family');
+                        const beforeFontFamily = beforePseudo.getPropertyValue('font-family') || '';
                         const hasIconFont = beforeFontFamily.includes('icon') ||
                                           beforeFontFamily.includes('awesome') ||
                                           beforeFontFamily.includes('material') ||

@@ -568,7 +568,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Use only one labeling method"
         },
         'ErrContentObscuring': {
-            'title': "Dialog/overlay obscures {obscuredCount} interactive element(s) at {breakpoint}px",
+            'title': "Dialog/overlay obscures interactive content",
             'what': "Dialog or overlay at {dialogXpath} obscures {obscuredCount} interactive element(s) at {breakpoint}px viewport width, preventing users from accessing them",
             'why': "When content is covered by other elements, users cannot access or interact with it, creating complete barriers to functionality. The dialog is positioned over interactive elements that users need to access. This issue is viewport-specific and may only appear at certain screen sizes.",
             'who': "All users at this viewport size, particularly keyboard users who cannot use mouse to work around layout issues, screen reader users who may not know content is obscured, mobile users with limited screen space.",

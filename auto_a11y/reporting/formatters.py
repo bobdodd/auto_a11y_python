@@ -1411,26 +1411,21 @@ class ExcelFormatter(BaseFormatter):
                 if not test_result:
                     continue
 
-                # Get issues from test_result
-                issues_data = None
-                if hasattr(test_result, 'issues_json') and test_result.issues_json:
-                    import json
-                    try:
-                        issues_data = json.loads(test_result.issues_json)
-                    except:
-                        pass
+                # Add violations (from list attributes)
+                violations = getattr(test_result, 'violations', []) if hasattr(test_result, 'violations') else []
+                for v in violations:
+                    # Handle both Violation objects and dicts
+                    if hasattr(v, 'to_dict'):
+                        v_dict = v.to_dict()
+                    else:
+                        v_dict = v if isinstance(v, dict) else {}
 
-                if not issues_data:
-                    continue
-
-                # Add violations
-                for v in issues_data.get('violations', []):
                     ws.cell(row=row, column=1, value='Violation')
-                    ws.cell(row=row, column=2, value=v.get('impact', 'Unknown').upper())
-                    ws.cell(row=row, column=3, value=v.get('id', v.get('rule_id', '')))
-                    ws.cell(row=row, column=4, value=v.get('description', ''))
-                    ws.cell(row=row, column=5, value=v.get('element', ''))
-                    ws.cell(row=row, column=6, value=v.get('xpath', ''))
+                    ws.cell(row=row, column=2, value=str(v_dict.get('impact', 'Unknown')).upper())
+                    ws.cell(row=row, column=3, value=v_dict.get('id', ''))
+                    ws.cell(row=row, column=4, value=v_dict.get('description', ''))
+                    ws.cell(row=row, column=5, value=v_dict.get('element', ''))
+                    ws.cell(row=row, column=6, value=v_dict.get('xpath', ''))
                     ws.cell(row=row, column=7, value=page_url)
                     ws.cell(row=row, column=8, value=website_name)
 
@@ -1439,13 +1434,19 @@ class ExcelFormatter(BaseFormatter):
                     row += 1
 
                 # Add warnings
-                for w in issues_data.get('warnings', []):
+                warnings = getattr(test_result, 'warnings', []) if hasattr(test_result, 'warnings') else []
+                for w in warnings:
+                    if hasattr(w, 'to_dict'):
+                        w_dict = w.to_dict()
+                    else:
+                        w_dict = w if isinstance(w, dict) else {}
+
                     ws.cell(row=row, column=1, value='Warning')
-                    ws.cell(row=row, column=2, value=w.get('impact', 'Moderate').upper())
-                    ws.cell(row=row, column=3, value=w.get('id', w.get('rule_id', '')))
-                    ws.cell(row=row, column=4, value=w.get('description', ''))
-                    ws.cell(row=row, column=5, value=w.get('element', ''))
-                    ws.cell(row=row, column=6, value=w.get('xpath', ''))
+                    ws.cell(row=row, column=2, value=str(w_dict.get('impact', 'Moderate')).upper())
+                    ws.cell(row=row, column=3, value=w_dict.get('id', ''))
+                    ws.cell(row=row, column=4, value=w_dict.get('description', ''))
+                    ws.cell(row=row, column=5, value=w_dict.get('element', ''))
+                    ws.cell(row=row, column=6, value=w_dict.get('xpath', ''))
                     ws.cell(row=row, column=7, value=page_url)
                     ws.cell(row=row, column=8, value=website_name)
 
@@ -1454,13 +1455,19 @@ class ExcelFormatter(BaseFormatter):
                     row += 1
 
                 # Add info items
-                for i in issues_data.get('info', []):
+                info_items = getattr(test_result, 'info', []) if hasattr(test_result, 'info') else []
+                for i in info_items:
+                    if hasattr(i, 'to_dict'):
+                        i_dict = i.to_dict()
+                    else:
+                        i_dict = i if isinstance(i, dict) else {}
+
                     ws.cell(row=row, column=1, value='Info')
                     ws.cell(row=row, column=2, value='INFO')
-                    ws.cell(row=row, column=3, value=i.get('id', ''))
-                    ws.cell(row=row, column=4, value=i.get('description', ''))
-                    ws.cell(row=row, column=5, value=i.get('element', ''))
-                    ws.cell(row=row, column=6, value=i.get('xpath', ''))
+                    ws.cell(row=row, column=3, value=i_dict.get('id', ''))
+                    ws.cell(row=row, column=4, value=i_dict.get('description', ''))
+                    ws.cell(row=row, column=5, value=i_dict.get('element', ''))
+                    ws.cell(row=row, column=6, value=i_dict.get('xpath', ''))
                     ws.cell(row=row, column=7, value=page_url)
                     ws.cell(row=row, column=8, value=website_name)
 
@@ -1469,13 +1476,19 @@ class ExcelFormatter(BaseFormatter):
                     row += 1
 
                 # Add discovery items
-                for d in issues_data.get('discovery', []):
+                discovery_items = getattr(test_result, 'discovery', []) if hasattr(test_result, 'discovery') else []
+                for d in discovery_items:
+                    if hasattr(d, 'to_dict'):
+                        d_dict = d.to_dict()
+                    else:
+                        d_dict = d if isinstance(d, dict) else {}
+
                     ws.cell(row=row, column=1, value='Discovery')
                     ws.cell(row=row, column=2, value='DISCOVERY')
-                    ws.cell(row=row, column=3, value=d.get('id', ''))
-                    ws.cell(row=row, column=4, value=d.get('description', ''))
-                    ws.cell(row=row, column=5, value=d.get('element', ''))
-                    ws.cell(row=row, column=6, value=d.get('xpath', ''))
+                    ws.cell(row=row, column=3, value=d_dict.get('id', ''))
+                    ws.cell(row=row, column=4, value=d_dict.get('description', ''))
+                    ws.cell(row=row, column=5, value=d_dict.get('element', ''))
+                    ws.cell(row=row, column=6, value=d_dict.get('xpath', ''))
                     ws.cell(row=row, column=7, value=page_url)
                     ws.cell(row=row, column=8, value=website_name)
 
@@ -1484,21 +1497,25 @@ class ExcelFormatter(BaseFormatter):
                     row += 1
 
                 # Add AI findings if available
-                if hasattr(test_result, 'ai_findings') and test_result.ai_findings:
-                    for f in test_result.ai_findings:
-                        ws.cell(row=row, column=1, value='AI Finding')
-                        severity = getattr(f, 'severity', 'Unknown')
-                        ws.cell(row=row, column=2, value=str(severity).upper())
-                        ws.cell(row=row, column=3, value=getattr(f, 'issue_id', ''))
-                        ws.cell(row=row, column=4, value=getattr(f, 'description', ''))
-                        ws.cell(row=row, column=5, value=getattr(f, 'element', ''))
-                        ws.cell(row=row, column=6, value=getattr(f, 'xpath', ''))
-                        ws.cell(row=row, column=7, value=page_url)
-                        ws.cell(row=row, column=8, value=website_name)
+                ai_findings = getattr(test_result, 'ai_findings', []) if hasattr(test_result, 'ai_findings') else []
+                for f in ai_findings:
+                    if hasattr(f, 'to_dict'):
+                        f_dict = f.to_dict()
+                    else:
+                        f_dict = f if isinstance(f, dict) else {}
 
-                        for col in range(1, 9):
-                            ws.cell(row=row, column=col).fill = styles['info']['fill']
-                        row += 1
+                    ws.cell(row=row, column=1, value='AI Finding')
+                    ws.cell(row=row, column=2, value=str(f_dict.get('severity', 'Unknown')).upper())
+                    ws.cell(row=row, column=3, value=f_dict.get('type', ''))
+                    ws.cell(row=row, column=4, value=f_dict.get('description', ''))
+                    ws.cell(row=row, column=5, value='')  # AI findings don't have element
+                    ws.cell(row=row, column=6, value='')  # AI findings don't have xpath
+                    ws.cell(row=row, column=7, value=page_url)
+                    ws.cell(row=row, column=8, value=website_name)
+
+                    for col in range(1, 9):
+                        ws.cell(row=row, column=col).fill = styles['info']['fill']
+                    row += 1
 
         self._auto_adjust_columns(ws)
 

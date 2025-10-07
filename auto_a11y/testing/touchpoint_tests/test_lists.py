@@ -59,7 +59,7 @@ async def test_lists(page) -> Dict[str, Any]:
     """
     try:
         # Execute JavaScript to analyze lists
-        results = await page.evaluate('''
+        results = await page.evaluate(r'''
             () => {
                 const results = {
                     applicable: true,

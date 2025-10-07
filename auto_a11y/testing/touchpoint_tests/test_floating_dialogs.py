@@ -155,18 +155,19 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                     const dialogRect = dialog.getBoundingClientRect();
                     const allElements = Array.from(document.body.querySelectorAll('*'));
                     const overlappingInteractive = [];
-                    
+
                     allElements.forEach(element => {
                         if (element !== dialog && !dialog.contains(element)) {
                             const elementRect = element.getBoundingClientRect();
-                            
+
                             // Check if elements overlap
-                            if (!(elementRect.right < dialogRect.left || 
-                                  elementRect.left > dialogRect.right || 
-                                  elementRect.bottom < dialogRect.top || 
+                            if (!(elementRect.right < dialogRect.left ||
+                                  elementRect.left > dialogRect.right ||
+                                  elementRect.bottom < dialogRect.top ||
                                   elementRect.top > dialogRect.bottom)) {
-                                
-                                if (isInteractive(element)) {
+
+                                // Only include visible interactive elements
+                                if (isVisible(element) && isInteractive(element)) {
                                     overlappingInteractive.push({
                                         element: element.tagName.toLowerCase(),
                                         xpath: getFullXPath(element),
@@ -176,7 +177,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                             }
                         }
                     });
-                    
+
                     return overlappingInteractive;
                 }
                 

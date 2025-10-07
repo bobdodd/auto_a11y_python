@@ -1849,6 +1849,54 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users",
             "how_to_fix": "Use only one title element per page"
         },
+        "ErrStyleAttrColorFont": {
+            "id": "ErrStyleAttrColorFont",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["1.4.3", "1.4.8", "1.4.12"],
+            "wcag_full": "1.4.3 Contrast (Minimum) (Level AA), 1.4.8 Visual Presentation (Level AAA), 1.4.12 Text Spacing (Level AA)",
+            "category": "styles",
+            "description": "Inline style attributes define color or font properties directly on HTML elements, overriding user stylesheets and preventing users from customizing visual presentation",
+            "why_it_matters": "When colors and fonts are hard-coded in inline style attributes, CSS specificity rules make them extremely difficult for users to override with their own stylesheets. Users with low vision who need specific color schemes (high contrast, inverted colors, custom color combinations), users with dyslexia who need particular fonts, and users who need custom text spacing cannot apply their accessibility preferences. Inline styles essentially lock visual presentation, forcing all users to view content exactly as designed regardless of their needs.",
+            "who_it_affects": "Users with low vision who require custom color schemes or high contrast settings, users with dyslexia or reading disabilities who need specific fonts like OpenDyslexic or Comic Sans, users with light sensitivity who need dark mode or specific color combinations, users with cognitive disabilities who need customized text presentation, elderly users who need larger text with specific spacing, and users with color blindness who need adjusted color palettes",
+            "how_to_fix": "Move all color and font declarations from inline style attributes to external CSS files or <style> blocks with lower specificity, use CSS classes instead of inline styles (replace style=\"color: red; font-size: 18px;\" with class=\"error-text\"), ensure user stylesheets can override your styles by avoiding !important declarations, test that users can apply custom stylesheets successfully, and reserve inline styles only for layout properties like positioning or dimensions when absolutely necessary"
+        },
+        "WarnStyleAttrOther": {
+            "id": "WarnStyleAttrOther",
+            "type": "Warning",
+            "impact": "Low",
+            "wcag": ["1.4.8"],
+            "wcag_full": "1.4.8 Visual Presentation (Level AAA)",
+            "category": "styles",
+            "description": "Inline style attributes define layout properties (margin, padding, width, display) directly on HTML elements instead of using CSS classes",
+            "why_it_matters": "While layout-related inline styles are less problematic for accessibility than color/font styles, they still reduce maintainability, make responsive design harder to implement, and can interfere with user zoom and customization. Inline layout styles scatter presentation logic throughout HTML making it difficult to create consistent designs or implement site-wide changes. They also make it harder for users with custom stylesheets to adjust spacing or layout for their needs.",
+            "who_it_affects": "Users who need custom stylesheets to adjust layout for readability, users who zoom content and need flexible layouts that adapt properly, developers maintaining the codebase who cannot easily update or debug scattered inline styles, and users with cognitive disabilities who benefit from consistent, predictable layouts",
+            "how_to_fix": "Move layout properties to CSS classes or external stylesheets for better maintainability (replace style=\"margin: 20px; padding: 10px;\" with appropriate CSS classes), use semantic HTML with CSS for layout rather than inline positioning, create reusable utility classes for common spacing patterns, ensure responsive design works properly without inline dimension declarations, and document any truly necessary inline layout styles with comments explaining why they cannot be moved to stylesheets"
+        },
+        "ErrStyleTagColorFont": {
+            "id": "ErrStyleTagColorFont",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["1.4.3", "1.4.8", "1.4.12"],
+            "wcag_full": "1.4.3 Contrast (Minimum) (Level AA), 1.4.8 Visual Presentation (Level AAA), 1.4.12 Text Spacing (Level AA)",
+            "category": "styles",
+            "description": "Style tags in HTML document define color or font properties, making it harder for users to override with custom stylesheets due to specificity and source order",
+            "why_it_matters": "Embedded <style> tags create specificity and cascade issues that can prevent users from successfully applying their own stylesheets for accessibility needs. Colors and fonts defined in <style> tags appear later in the cascade than external stylesheets, often requiring users to add !important to every custom rule or fight complex specificity battles. This creates significant barriers for users who depend on custom styling - those with low vision needing high contrast, users with dyslexia needing specific fonts, or users with light sensitivity needing dark themes. External CSS files load first and are easier to override with user stylesheets.",
+            "who_it_affects": "Users with low vision who need custom color schemes that may be overridden by embedded styles, users with dyslexia or reading disabilities who cannot reliably apply their preferred fonts, users with photosensitivity who need consistent dark mode implementations, users with cognitive disabilities requiring specific visual customizations, and users relying on browser extensions or assistive technology that inject custom CSS which may be defeated by embedded styles",
+            "how_to_fix": "Move all color and font definitions from <style> tags to external CSS files that load early in the document head, use external stylesheets with link elements instead of embedded styles (replace <style> with <link rel=\"stylesheet\" href=\"styles.css\">), ensure external stylesheets are loaded before any embedded styles if you must use both, avoid using overly specific selectors or !important that make user overrides difficult, test that user stylesheets successfully override your color and font choices, and reserve <style> tags for critical layout CSS only when external files would cause flash of unstyled content"
+        },
+        "WarnStyleTagOther": {
+            "id": "WarnStyleTagOther",
+            "type": "Warning",
+            "impact": "Low",
+            "wcag": ["1.4.8"],
+            "wcag_full": "1.4.8 Visual Presentation (Level AAA)",
+            "category": "styles",
+            "description": "Style tags in HTML document define layout properties, which should preferably be in external CSS files for better maintainability and performance",
+            "why_it_matters": "While layout CSS in <style> tags is less problematic than inline styles, using external CSS files provides better caching, allows CSS to be shared across pages, makes maintenance easier, enables better testing, and improves page load performance. Embedded <style> blocks increase HTML file size, prevent browser caching of styles, make it harder to implement site-wide design changes, and can create flash of unstyled content issues. External CSS also makes it easier to implement responsive design and media queries consistently.",
+            "who_it_affects": "All users benefit from faster page loads through CSS caching, users on slow connections who download unnecessary CSS with every page, users who zoom or need responsive layouts that should be managed centrally, developers maintaining scattered style blocks across multiple pages, and users whose custom stylesheets work more predictably when site styles are in external files",
+            "how_to_fix": "Move layout CSS from <style> tags to external CSS files loaded via <link> elements, combine styles from multiple pages into shared stylesheets to improve caching, use CSS modules or build tools to manage styles systematically, keep <style> tags only for critical above-the-fold CSS if optimizing initial paint time, document any remaining embedded styles with comments explaining why external CSS isn't suitable, and ensure responsive design and media queries are managed in external files where they can be easily updated"
+        },
     }
     
     @classmethod

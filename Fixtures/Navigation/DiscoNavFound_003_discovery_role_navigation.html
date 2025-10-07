@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoNavFound Test - Role Navigation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoNavFound_003_discovery_role_navigation",
+    "issueId": "DiscoNavFound",
+    "expectedViolationCount": 0,
+    "expectedWarningCount": 0,
+    "expectedDiscoveryCount": 1,
+    "expectedPassCount": 0,
+    "description": "Navigation using role='navigation' instead of nav element",
+    "wcag": [],
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Navigation Using Role</h1>
+
+    <div role="navigation" aria-label="Site navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products.html">Products</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+        </ul>
+    </div>
+
+    <main>
+        <p>This page uses role="navigation" on a div element.</p>
+    </main>
+</body>
+</html>

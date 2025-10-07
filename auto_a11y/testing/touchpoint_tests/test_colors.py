@@ -320,36 +320,6 @@ async def test_colors(page) -> Dict[str, Any]:
                     });
                 }
 
-                // DISCOVERY: Report inline style attributes
-                const elementsWithStyleAttr = Array.from(document.querySelectorAll('[style]'));
-                if (elementsWithStyleAttr.length > 0) {
-                    results.warnings.push({
-                        err: 'DiscoStyleAttrOnElements',
-                        type: 'disco',
-                        cat: 'colors',
-                        element: 'document',
-                        xpath: '/html[1]',
-                        html: `<meta>Found ${elementsWithStyleAttr.length} elements with inline styles</meta>`,
-                        description: `${elementsWithStyleAttr.length} elements with inline style attributes detected`,
-                        count: elementsWithStyleAttr.length
-                    });
-                }
-
-                // DISCOVERY: Report <style> elements in document
-                const styleElements = Array.from(document.querySelectorAll('style'));
-                if (styleElements.length > 0) {
-                    results.warnings.push({
-                        err: 'DiscoStyleElementOnPage',
-                        type: 'disco',
-                        cat: 'colors',
-                        element: 'style',
-                        xpath: '/html[1]',
-                        html: `<meta>Found ${styleElements.length} style elements</meta>`,
-                        description: `${styleElements.length} <style> elements detected in document`,
-                        count: styleElements.length
-                    });
-                }
-
                 return results;
             }
         ''')

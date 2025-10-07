@@ -362,20 +362,49 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     });
                 }
 
-                // DISCOVERY: Report presence of JavaScript on the page
+                // DISCOVERY: Report each script element and inline event handler individually
                 const scriptElements = Array.from(document.querySelectorAll('script[src], script:not([src])'));
-                if (scriptElements.length > 0) {
+                scriptElements.forEach(script => {
+                    const src = script.getAttribute('src');
+                    const isInline = !src;
+                    const scriptContent = isInline ? script.textContent.substring(0, 100) : '';
+
                     results.warnings.push({
                         err: 'DiscoFoundJS',
                         type: 'disco',
                         cat: 'event_handlers',
                         element: 'script',
-                        xpath: '/html[1]',
-                        html: `<meta>Found ${scriptElements.length} script elements</meta>`,
-                        description: `${scriptElements.length} JavaScript elements detected - ensure progressive enhancement`,
-                        count: scriptElements.length
+                        xpath: getFullXPath(script),
+                        html: script.outerHTML.substring(0, 200),
+                        description: isInline
+                            ? `Inline <script> tag detected - ensure progressive enhancement and that functionality works without JavaScript`
+                            : `External script "${src}" detected - ensure progressive enhancement and that functionality works without JavaScript`,
+                        scriptType: isInline ? 'inline' : 'external',
+                        src: src || null
                     });
-                }
+                });
+
+                // DISCOVERY: Report elements with inline event handler attributes
+                const elementsWithHandlers = Array.from(document.querySelectorAll('*'))
+                    .filter(el => Array.from(el.attributes).some(attr => attr.name.startsWith('on')));
+
+                elementsWithHandlers.forEach(element => {
+                    const handlers = Array.from(element.attributes)
+                        .filter(attr => attr.name.startsWith('on'))
+                        .map(attr => attr.name)
+                        .join(', ');
+
+                    results.warnings.push({
+                        err: 'DiscoFoundJS',
+                        type: 'disco',
+                        cat: 'event_handlers',
+                        element: element.tagName.toLowerCase(),
+                        xpath: getFullXPath(element),
+                        html: element.outerHTML.substring(0, 200),
+                        description: `Element has inline event handler attributes (${handlers}) - ensure keyboard accessibility and progressive enhancement`,
+                        eventHandlers: handlers
+                    });
+                });
 
                 return results;
             }

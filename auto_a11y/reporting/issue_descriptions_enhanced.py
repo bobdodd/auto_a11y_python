@@ -280,22 +280,22 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Provide pause/stop controls and respect prefers-reduced-motion preference"
         },
         'DiscoFontFound': {
-            'title': "Font \'{found}\' detected in use on the page for accessibility review",
-            'what': "Font \'{found}\' detected in use on the page for accessibility review",
-            'why': "Tracking font usage helps identify typography choices that may affect readability. Font \'{found}\' has been detected on this page. While not inherently an accessibility issue, certain fonts can be harder to read for users with dyslexia, low vision, or reading disabilities. This discovery item documents which fonts are in use so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.",
+            'title': "Font '{fontName}' detected in use on the page for accessibility review",
+            'what': "Font '{fontName}' is used at {sizeCount} different size{sizeCount_plural}: {fontSizes_list}",
+            'why': "Tracking font usage helps identify typography choices that may affect readability. Font '{fontName}' has been detected on this page. While not inherently an accessibility issue, certain fonts can be harder to read for users with dyslexia, low vision, or reading disabilities. This discovery item documents which fonts are in use and at what sizes so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.",
             'who': "This information helps accessibility auditors and developers understand the typography landscape of the page, particularly relevant for users with dyslexia who benefit from clear sans-serif fonts, users with low vision who need good character distinction, and users with reading disabilities who benefit from consistent, readable typefaces",
             'impact': ImpactScale.INFO.value,
             'wcag': [],
-            'remediation': "No action required - this is informational only. The font \'{found}\' is currently in use. For accessibility best practices, consider using fonts with clear character distinction (avoiding ambiguous characters like I/l/1), adequate spacing between letters, and good readability at various sizes. Popular accessible fonts include Arial, Verdana, Tahoma, and specialized dyslexia-friendly fonts like OpenDyslexic. Document your font choices and test readability with actual users when possible."
+            'remediation': "No action required - this is informational only. The font '{fontName}' is currently in use at {sizeCount} size{sizeCount_plural}. For accessibility best practices, consider using fonts with clear character distinction (avoiding ambiguous characters like I/l/1), adequate spacing between letters, and good readability at various sizes. Popular accessible fonts include Arial, Verdana, Tahoma, and specialized dyslexia-friendly fonts like OpenDyslexic. Document your font choices and test readability with actual users when possible."
         },
         'DiscoFormOnPage': {
-            'title': "Form detected on page - needs manual testing",
-            'what': "Form detected on page - needs manual testing",
-            'why': "Forms need comprehensive accessibility testing",
-            'who': "All users with disabilities",
+            'title': "Form detected (signature: {formSignature}){searchContext_title} - requires comprehensive manual testing",
+            'what': "A form has been detected on this page with {fieldCount} field{fieldCount_plural} ({fieldTypes_summary}). The form submits to '{formAction}' using {formMethod} method. {searchContext_description} Form signature {formSignature} allows tracking this same form across different pages.",
+            'why': "Forms are critical interactive components that require comprehensive manual accessibility testing beyond what automated tools can verify. Every form must be tested with keyboard navigation (tab order, enter/space activation, escape to cancel), screen readers (field labels announced correctly, error messages associated with fields, required fields indicated), and various input methods. Forms with poor accessibility create significant barriers - unlabeled fields leave users guessing what to enter, poor error handling prevents users from completing tasks, and keyboard traps can make forms completely unusable. Search forms are especially important as they provide a critical navigation mechanism - users rely on them to find content quickly, and screen reader users often navigate directly to search landmarks. The form signature allows auditors to recognize when the same form appears on multiple pages, ensuring consistent testing and remediation across the site.",
+            'who': "Screen reader users who need properly labeled form controls and error associations, keyboard-only users who must navigate and submit forms without a mouse, users with motor disabilities who need adequate time limits and clear focus indicators, users with cognitive disabilities who need clear instructions and helpful error messages, voice control users who need properly exposed form control names, mobile users who need forms that work with assistive technologies on touch devices, and screen reader users who use landmark navigation to jump directly to search forms",
             'impact': ImpactScale.INFO.value,
-            'wcag': [],
-            'remediation': "Manually test form with keyboard and screen reader"
+            'wcag': ['1.3.1', '2.1.1', '2.4.3', '3.2.2', '3.3.1', '3.3.2', '3.3.3', '3.3.4', '4.1.2'],
+            'remediation': "Manually test this form with keyboard navigation (ensure all fields are reachable via Tab, form can be submitted with Enter, and there are no keyboard traps), screen reader (verify each field has a clear label or aria-label, required fields are indicated, error messages are associated with fields via aria-describedby, and fieldset/legend are used for radio button groups), test error validation (submit invalid data and verify error messages are clear, specific, and programmatically associated with fields), test with form pre-filled (ensure autocomplete attributes are used appropriately), verify timeout warnings for any time limits, and confirm the form works across different devices and assistive technologies. {searchContext_remediation}"
         },
         'DiscoFoundInlineSvg': {
             'title': "Inline SVG element detected that requires manual review to determine appropriate accessibility implementation based on its purpose and complexity",
@@ -314,6 +314,60 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.INFO.value,
             'wcag': [],
             'remediation': "Ensure progressive enhancement"
+        },
+        'DiscoNavFound': {
+            'title': "Navigation region detected (signature: {navSignature}) - requires manual accessibility review",
+            'what': "A navigation region has been detected on this page with {linkCount} link{linkCount_plural}. {navLabel_description} Navigation signature {navSignature} allows tracking this same navigation across different pages.",
+            'why': "Navigation regions are critical wayfinding tools that must be keyboard accessible, properly labeled, and work with screen readers. Each navigation area needs verification that links are organized logically, focus order is correct, current page indication is provided (aria-current=\"page\"), and the navigation can be easily understood and operated by all users. Multiple navigation regions must be distinguishable via unique accessible names. The navigation signature allows auditors to recognize when the same navigation structure appears on multiple pages, ensuring consistent testing and remediation across the site.",
+            'who': "Screen reader users who navigate by landmarks and need clear labels to distinguish navigation regions, keyboard users who must efficiently tab through navigation links, users with motor disabilities who need consistent and predictable navigation patterns, users with cognitive disabilities who benefit from clear, well-organized navigation structures",
+            'impact': ImpactScale.INFO.value,
+            'wcag': ['2.4.1', '2.4.3', '4.1.2'],
+            'remediation': "Verify navigation has a clear accessible name (aria-label or aria-labelledby) if multiple nav regions exist. Test keyboard navigation through all links (Tab order should be logical). Ensure current page is indicated with aria-current=\"page\". Verify focus indicators are visible. Test with screen reader to confirm navigation is announced correctly and links are understandable out of context."
+        },
+        'DiscoAsideFound': {
+            'title': "Complementary region detected (signature: {asideSignature}) - requires manual accessibility review",
+            'what': "A complementary region (<aside> or role=\"complementary\") has been detected on this page. {asideLabel_description} Signature {asideSignature} allows tracking this same region across different pages.",
+            'why': "Complementary regions provide supporting content related to the main content. They must be properly labeled when multiple exist, contain relevant supplementary information, and be distinguishable from main content for screen reader users who navigate by landmarks. The signature allows auditors to recognize when the same complementary content appears on multiple pages.",
+            'who': "Screen reader users who navigate by landmarks to find supporting content, users with cognitive disabilities who benefit from clear content organization and separation of main vs. supplementary information",
+            'impact': ImpactScale.INFO.value,
+            'wcag': ['2.4.1', '4.1.2'],
+            'remediation': "Verify the aside contains truly complementary content (related to but separate from main content). If multiple complementary regions exist on the page, ensure each has a unique accessible name using aria-label or aria-labelledby. Test with screen reader to confirm the region is announced correctly and its purpose is clear."
+        },
+        'DiscoSectionFound': {
+            'title': "Section region detected (signature: {sectionSignature}) - requires manual accessibility review",
+            'what': "A section region has been detected on this page. {sectionLabel_description} Signature {sectionSignature} allows tracking this same section across different pages.",
+            'why': "Section elements with accessible names become region landmarks. They must have meaningful, unique labels to help screen reader users navigate between distinct areas of content. Sections without accessible names are not landmarks and won't appear in landmark navigation. The signature allows auditors to recognize when the same section structure appears on multiple pages.",
+            'who': "Screen reader users who navigate by landmarks to jump between major page sections, users with cognitive disabilities who benefit from clearly labeled and organized content regions",
+            'impact': ImpactScale.INFO.value,
+            'wcag': ['2.4.1', '4.1.2'],
+            'remediation': "Verify each section has a descriptive, unique accessible name (aria-label or aria-labelledby) that clearly identifies its purpose. Ensure the label is concise and meaningful. If the section doesn't represent a significant region of content, consider if it should be a landmark at all. Test with screen reader to confirm the region is announced with its label."
+        },
+        'DiscoHeaderFound': {
+            'title': "Banner region detected (signature: {headerSignature}) - requires manual accessibility review",
+            'what': "A banner landmark (<header> at top level or role=\"banner\") has been detected on this page. {headerLabel_description} Signature {headerSignature} allows tracking this same banner across different pages.",
+            'why': "Banner landmarks identify the main header of the page, typically containing site logo, main navigation, and site-wide utilities. There should be only one banner per page. It must be properly labeled if the site identity isn't obvious, and should not be nested inside other landmarks. The signature allows auditors to recognize when the same banner appears on multiple pages.",
+            'who': "Screen reader users who navigate by landmarks to quickly access site-wide navigation and branding, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who rely on consistent banner placement for orientation",
+            'impact': ImpactScale.INFO.value,
+            'wcag': ['2.4.1', '4.1.2'],
+            'remediation': "Verify there is only one banner landmark per page. Ensure the banner contains site-level content (logo, main nav, site utilities) rather than page-specific content. If multiple headers exist, ensure only the site-level one is a banner. Test with screen reader to confirm banner is announced correctly."
+        },
+        'DiscoFooterFound': {
+            'title': "Contentinfo region detected (signature: {footerSignature}) - requires manual accessibility review",
+            'what': "A contentinfo landmark (<footer> at top level or role=\"contentinfo\") has been detected on this page. {footerLabel_description} Signature {footerSignature} allows tracking this same footer across different pages.",
+            'why': "Contentinfo landmarks identify site-wide footer information such as copyright, privacy policy, and contact links. There should be only one contentinfo per page. It must contain site-level information rather than page-specific footers, and should not be nested inside other landmarks. The signature allows auditors to recognize when the same footer appears on multiple pages.",
+            'who': "Screen reader users who navigate by landmarks to quickly access site-wide footer information and legal links, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who rely on consistent footer placement for finding important site information",
+            'impact': ImpactScale.INFO.value,
+            'wcag': ['2.4.1', '4.1.2'],
+            'remediation': "Verify there is only one contentinfo landmark per page. Ensure the footer contains site-level information (copyright, privacy, contact) rather than article-specific or section-specific footers. If multiple footers exist, ensure only the site-level one is contentinfo. Test with screen reader to confirm contentinfo is announced correctly."
+        },
+        'DiscoSearchFound': {
+            'title': "Search region detected (signature: {searchSignature}) - requires manual accessibility review",
+            'what': "A search landmark (<search> or role=\"search\") has been detected on this page. {searchLabel_description} Signature {searchSignature} allows tracking this same search region across different pages.",
+            'why': "Search landmarks identify search functionality on the page. They help screen reader users quickly locate search features. The search region must have a clear accessible name if multiple search regions exist, contain appropriate search form controls, and be easily discoverable through landmark navigation. The signature allows auditors to recognize when the same search region appears on multiple pages.",
+            'who': "Screen reader users who navigate by landmarks to quickly find search functionality, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who benefit from clearly marked search areas",
+            'impact': ImpactScale.INFO.value,
+            'wcag': ['2.4.1', '4.1.2'],
+            'remediation': "Verify the search region contains actual search functionality (typically a form with input and submit button). If multiple search regions exist, ensure each has a unique accessible name using aria-label or aria-labelledby. Ensure search form controls are properly labeled and keyboard accessible. Test with screen reader to confirm search region is announced correctly and search controls are accessible."
         },
         'DiscoFoundSvgImage': {
             'title': "SVG element with role=\"img\" detected that requires manual review to verify appropriate text alternatives are provided",
@@ -855,6 +909,15 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1', '2.4.6'],
             'remediation': "Add meaningful label describing form purpose"
         },
+        'ErrFormLandmarkMustHaveAccessibleName': {
+            'title': "Form element missing accessible name required to become a landmark",
+            'what': "A <form> element or element with role=\"form\" lacks an accessible name via aria-label or aria-labelledby. Without an accessible name, <form> elements do not create form landmarks, making them harder for screen reader users to discover and navigate. Elements with explicit role=\"form\" always create landmarks and absolutely require accessible names.",
+            'why': "Form landmarks are critical navigation points that allow screen reader users to quickly jump between different forms on a page using landmark navigation commands. A <form> element only becomes a landmark when it has an accessible name - without one, it remains a generic container that screen readers cannot easily locate. When a page has multiple forms (like a search form, newsletter signup, and contact form), users need these named landmarks to efficiently navigate to the form they want without tabbing through every field. Elements with explicit role=\"form\" create landmarks regardless of accessible name presence, but an unnamed form landmark announces as just \"form\" with no identifying information, forcing users to explore its contents to determine its purpose.",
+            'who': "Screen reader users who rely on landmark navigation to efficiently move between page regions and locate forms, users with motor disabilities who use voice control and need to target forms by name, users with cognitive disabilities who benefit from clear form identification and predictable navigation structure, mobile screen reader users who need quick access to forms without exploring entire pages, and power users who navigate by landmarks to skip repetitive content and go directly to specific forms",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['3.3.2', '5.2.4'],
+            'remediation': "Add aria-label with a descriptive name to the form element (e.g., <form aria-label=\"Newsletter signup\">), or use aria-labelledby to reference a visible heading that describes the form's purpose (e.g., <form aria-labelledby=\"contact-heading\"> with <h2 id=\"contact-heading\">Contact Us</h2>). Prefer aria-labelledby when there is a visible heading that describes the form, as this benefits all users. Use aria-label for secondary forms like search that may not have dedicated headings. Ensure each accessible name clearly distinguishes the form's purpose when multiple forms exist on the page."
+        },
         'ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs': {
             'title': "Form landmark has both aria-label and aria-labelledby",
             'what': "Form landmark has both aria-label and aria-labelledby",
@@ -1285,7 +1348,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'who': "Screen reader users who expect a single h1 to identify the page topic, users navigating by headings who see multiple \"top level\" items, SEO and search engines that look for a single main topic",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.3.1'],
-            'remediation': "Keep only one h1 that represents the main page topic. Change the other {count-1} h1 elements to h2 or appropriate lower levels based on their relationship to the main topic."
+            'remediation': "Keep only one h1 that represents the main page topic. Change the other h1 elements to h2 or appropriate lower levels based on their relationship to the main topic."
         },
         'ErrMultipleMainLandmarks': {
             'title': "Multiple main landmark regions found on the page",
@@ -1792,13 +1855,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Consider if a visible label showing \"{found}\" would better serve all users. If space permits, use a visible <label> element with the text \"{found}\". If aria-label must be used, ensure \"{found}\" is clear and descriptive. Consider adding visible helper text or placeholder text to provide visual context."
         },
         'InfoHeadingNearLengthLimit': {
-            'title': "Heading approaching recommended length limit",
-            'what': "Heading approaching recommended length limit",
-            'why': "Very long headings are difficult to scan and understand quickly.",
-            'who': "Users with cognitive disabilities, users scanning content.",
+            'title': "Heading is {length} characters, approaching recommended limit of {limit}",
+            'what': "Heading is {length} characters long, approaching the recommended limit of {limit} characters",
+            'why': "Long headings (currently {length} characters) are more difficult to scan and understand quickly. While not yet exceeding the {limit} character limit, shorter headings improve readability and comprehension.",
+            'who': "Users with cognitive disabilities who benefit from concise headings, users scanning content quickly, screen reader users who must listen to full heading text.",
             'impact': ImpactScale.LOW.value,
             'wcag': ['2.4.6'],
-            'remediation': "Consider shortening headings to be more concise while maintaining clarity."
+            'remediation': "Consider shortening the heading from {length} to under {nearLimit} characters for optimal readability while maintaining clarity. Current text: \"{text}\""
         },
         'InfoNoColorSchemeSupport': {
             'title': "Site doesn\'t support OS color scheme preferences",
@@ -2098,13 +2161,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Remove unused headings or make them visible"
         },
         'WarnHeadingOver60CharsLong': {
-            'title': "Heading text is {length} characters long: \"{headingText}\"",
-            'what': "Heading text is {length} characters long: \"{headingText}\"",
-            'why': "This heading has {length} characters. Long headings are harder to scan quickly, more difficult to understand at a glance, and can overwhelm users. Screen reader users hearing the full heading text may struggle to grasp the main point. Long headings also cause layout issues on mobile devices and in navigation menus.",
+            'title': "Heading text is {length} characters long, exceeding the recommended {limit} character limit",
+            'what': "Heading text is {length} characters long, exceeding the recommended {limit} character limit",
+            'why': "This heading has {length} characters which exceeds the {limit} character recommendation. Long headings are harder to scan quickly, more difficult to understand at a glance, and can overwhelm users. Screen reader users hearing the full heading text may struggle to grasp the main point. Long headings also cause layout issues on mobile devices and in navigation menus.",
             'who': "Users with cognitive disabilities who benefit from concise, clear headings, screen reader users who must listen to the entire heading, users scanning the page quickly for information, and mobile users with limited screen space",
             'impact': ImpactScale.LOW.value,
             'wcag': ['2.4.6'],
-            'remediation': "Shorten the heading to under 60 characters while preserving its meaning. Current: \"{headingText}\" - Consider breaking into a shorter heading with explanatory text below, or focus on the key message. Use descriptive but concise language."
+            'remediation': "Shorten the heading from {length} to under {limit} characters while preserving its meaning. Current text: \"{text}\" - Consider breaking into a shorter heading with explanatory text below, or focus on the key message. Use descriptive but concise language."
         },
         'WarnHighTabindex': {
             'title': "Very high tabindex value used (over 10)",
@@ -2431,13 +2494,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Wrap navigation areas in <nav> elements or add role=\"navigation\" to containers with navigation links. If you have multiple navigation areas, label each one with aria-label to distinguish them (e.g., aria-label=\"Main navigation\", aria-label=\"Footer links\", aria-label=\"Breadcrumb\"). Not every group of links needs to be a navigation landmark - use it for major navigation blocks that users would want to find quickly."
         },
         'WarnPageTitleTooLong': {
-            'title': "Page title is {length} characters long, exceeding the recommended 60 character limit",
-            'what': "Page title is {length} characters long, exceeding the recommended 60 character limit",
-            'why': "The title \"{title}\" with {length} characters will get cut off in browser tabs (typically around 30 characters) and search engine results (typically 50-60 characters), losing important information. The most important information might be at the end and never seen. Screen reader users have to listen to lengthy titles repeatedly.",
+            'title': "Page title is {length} characters long, exceeding the recommended {limit} character limit",
+            'what': "Page title is {length} characters long, exceeding the recommended {limit} character limit",
+            'why': "The title \"{found}\" with {length} characters will get cut off in browser tabs (typically around 30 characters) and search engine results (typically 50-60 characters), losing important information. The most important information might be at the end and never seen. Screen reader users have to listen to lengthy titles repeatedly.",
             'who': "Users with multiple tabs open who see truncated titles, users searching for content who can\'t see full titles in results, screen reader users who must listen to long titles repeatedly, mobile users with even less space for title display",
             'impact': ImpactScale.LOW.value,
             'wcag': ['2.4.2'],
-            'remediation': "Shorten the title from {length} to under 60 characters. Place the most important, unique information first. Remove unnecessary words like \"Welcome to\" or \"This page contains\". Test how titles appear in browser tabs and search results to ensure key information is visible."
+            'remediation': "Shorten the title from {length} to under {limit} characters. Place the most important, unique information first. Remove unnecessary words like \"Welcome to\" or \"This page contains\". Test how titles appear in browser tabs and search results to ensure key information is visible."
         },
         'WarnPageTitleTooShort': {
             'title': "Page title \"{found}\" is only {length} characters, potentially not descriptive enough",
@@ -2485,13 +2548,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add role=\"img\" for informative SVGs, use aria-hidden=\"true\" for decorative ones."
         },
         'WarnSmallLineHeight': {
-            'title': "Line height less than 1",
-            'what': "Line height less than 1.5 times font size",
-            'why': "Tight line spacing makes text difficult to read and track.",
-            'who': "Users with dyslexia, users with low vision.",
+            'title': "Line height less than 1.5x font size",
+            'what': "Line height is {lineHeight}px with a ratio of {ratio} for font size {fontSize}px. Line height should be at least 1.5 times the font size.",
+            'why': "Tight line spacing makes text difficult to read and track. Adequate line spacing helps users with dyslexia distinguish lines and improves reading comprehension for all users.",
+            'who': "Users with dyslexia who need clear line separation, users with low vision who track lines of text, older users, users with reading disabilities.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.4.12'],
-            'remediation': "Set line-height to at least 1.5 for body text."
+            'remediation': "Set line-height to at least 1.5. For this element with font size {fontSize}px, the line height should be at least {minLineHeight}px (currently {lineHeight}px)."
         },
         'WarnSvgPositiveTabindex': {
             'title': "SVG element uses positive tabindex - verify this is intentional for interactive widget",
@@ -2655,6 +2718,42 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['3.3.2'],
             'remediation': "Add required attribute and visual indication"
         },
+        'ErrStyleAttrColorFont': {
+            'title': "Inline style attributes define color or font properties, preventing user customization",
+            'what': "Inline style attributes define color or font properties directly on HTML elements, overriding user stylesheets and preventing users from customizing visual presentation",
+            'why': "When colors and fonts are hard-coded in inline style attributes, CSS specificity rules make them extremely difficult for users to override with their own stylesheets. Users with low vision who need specific color schemes (high contrast, inverted colors, custom color combinations), users with dyslexia who need particular fonts, and users who need custom text spacing cannot apply their accessibility preferences. Inline styles essentially lock visual presentation, forcing all users to view content exactly as designed regardless of their needs.",
+            'who': "Users with low vision who require custom color schemes or high contrast settings, users with dyslexia or reading disabilities who need specific fonts like OpenDyslexic or Comic Sans, users with light sensitivity who need dark mode or specific color combinations, users with cognitive disabilities who need customized text presentation, elderly users who need larger text with specific spacing, and users with color blindness who need adjusted color palettes",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.4.3', '1.4.8', '1.4.12'],
+            'remediation': "Move all color and font declarations from inline style attributes to external CSS files or <style> blocks with lower specificity, use CSS classes instead of inline styles (replace style=\"color: red; font-size: 18px;\" with class=\"error-text\"), ensure user stylesheets can override your styles by avoiding !important declarations, test that users can apply custom stylesheets successfully, and reserve inline styles only for layout properties like positioning or dimensions when absolutely necessary"
+        },
+        'WarnStyleAttrOther': {
+            'title': "Inline style attributes define layout properties instead of using CSS classes",
+            'what': "Inline style attributes define layout properties (margin, padding, width, display) directly on HTML elements instead of using CSS classes",
+            'why': "While layout-related inline styles are less problematic for accessibility than color/font styles, they still reduce maintainability, make responsive design harder to implement, and can interfere with user zoom and customization. Inline layout styles scatter presentation logic throughout HTML making it difficult to create consistent designs or implement site-wide changes. They also make it harder for users with custom stylesheets to adjust spacing or layout for their needs.",
+            'who': "Users who need custom stylesheets to adjust layout for readability, users who zoom content and need flexible layouts that adapt properly, developers maintaining the codebase who cannot easily update or debug scattered inline styles, and users with cognitive disabilities who benefit from consistent, predictable layouts",
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['1.4.8'],
+            'remediation': "Move layout properties to CSS classes or external stylesheets for better maintainability (replace style=\"margin: 20px; padding: 10px;\" with appropriate CSS classes), use semantic HTML with CSS for layout rather than inline positioning, create reusable utility classes for common spacing patterns, ensure responsive design works properly without inline dimension declarations, and document any truly necessary inline layout styles with comments explaining why they cannot be moved to stylesheets"
+        },
+        'ErrStyleTagColorFont': {
+            'title': "Style tags define color or font properties, making user stylesheet overrides difficult",
+            'what': "Style tags in HTML document define color or font properties, making it harder for users to override with custom stylesheets due to specificity and source order",
+            'why': "Embedded <style> tags create specificity and cascade issues that can prevent users from successfully applying their own stylesheets for accessibility needs. Colors and fonts defined in <style> tags appear later in the cascade than external stylesheets, often requiring users to add !important to every custom rule or fight complex specificity battles. This creates significant barriers for users who depend on custom styling - those with low vision needing high contrast, users with dyslexia needing specific fonts, or users with light sensitivity needing dark themes. External CSS files load first and are easier to override with user stylesheets.",
+            'who': "Users with low vision who need custom color schemes that may be overridden by embedded styles, users with dyslexia or reading disabilities who cannot reliably apply their preferred fonts, users with photosensitivity who need consistent dark mode implementations, users with cognitive disabilities requiring specific visual customizations, and users relying on browser extensions or assistive technology that inject custom CSS which may be defeated by embedded styles",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.4.3', '1.4.8', '1.4.12'],
+            'remediation': "Move all color and font definitions from <style> tags to external CSS files that load early in the document head, use external stylesheets with link elements instead of embedded styles (replace <style> with <link rel=\"stylesheet\" href=\"styles.css\">), ensure external stylesheets are loaded before any embedded styles if you must use both, avoid using overly specific selectors or !important that make user overrides difficult, test that user stylesheets successfully override your color and font choices, and reserve <style> tags for critical layout CSS only when external files would cause flash of unstyled content"
+        },
+        'WarnStyleTagOther': {
+            'title': "Style tags define layout properties, which should be in external CSS files",
+            'what': "Style tags in HTML document define layout properties, which should preferably be in external CSS files for better maintainability and performance",
+            'why': "While layout CSS in <style> tags is less problematic than inline styles, using external CSS files provides better caching, allows CSS to be shared across pages, makes maintenance easier, enables better testing, and improves page load performance. Embedded <style> blocks increase HTML file size, prevent browser caching of styles, make it harder to implement site-wide design changes, and can create flash of unstyled content issues. External CSS also makes it easier to implement responsive design and media queries consistently.",
+            'who': "All users benefit from faster page loads through CSS caching, users on slow connections who download unnecessary CSS with every page, users who zoom or need responsive layouts that should be managed centrally, developers maintaining scattered style blocks across multiple pages, and users whose custom stylesheets work more predictably when site styles are in external files",
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['1.4.8'],
+            'remediation': "Move layout CSS from <style> tags to external CSS files loaded via <link> elements, combine styles from multiple pages into shared stylesheets to improve caching, use CSS modules or build tools to manage styles systematically, keep <style> tags only for critical above-the-fold CSS if optimizing initial paint time, document any remaining embedded styles with comments explaining why external CSS isn\'t suitable, and ensure responsive design and media queries are managed in external files where they can be easily updated"
+        },
     }
     
     # Get the specific description for this error type
@@ -2664,9 +2763,62 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         # Replace metadata placeholders in the description
         for key in ['title', 'what', 'why', 'who', 'remediation']:
             if key in desc and isinstance(desc[key], str):
-                # Replace {found} with actual font name for font issues
+                # Replace {found} with actual font name for font issues (legacy support)
                 if '{found}' in desc[key] and 'found' in metadata:
                     desc[key] = desc[key].replace('{found}', str(metadata.get('found', 'unknown')))
+
+                # Special handling for font size list
+                if '{fontSizes_list}' in desc[key] and 'fontSizes' in metadata:
+                    sizes = metadata.get('fontSizes', [])
+                    desc[key] = desc[key].replace('{fontSizes_list}', ', '.join(sizes) if isinstance(sizes, list) else str(sizes))
+
+                # Special handling for field types summary
+                if '{fieldTypes_summary}' in desc[key] and 'fieldTypes' in metadata:
+                    field_types = metadata.get('fieldTypes', {})
+                    if isinstance(field_types, dict):
+                        summary = ', '.join([f"{count} {ftype}" for ftype, count in field_types.items()])
+                        desc[key] = desc[key].replace('{fieldTypes_summary}', summary or 'unknown fields')
+                    else:
+                        desc[key] = desc[key].replace('{fieldTypes_summary}', str(field_types))
+
+                # Special handling for search context in forms
+                if '{searchContext_title}' in desc[key]:
+                    is_search = metadata.get('isSearchForm', False)
+                    if is_search:
+                        desc[key] = desc[key].replace('{searchContext_title}', ' [SEARCH FORM]')
+                    else:
+                        desc[key] = desc[key].replace('{searchContext_title}', '')
+
+                if '{searchContext_description}' in desc[key]:
+                    search_ctx = metadata.get('searchContext', '')
+                    if 'search' in search_ctx.lower():
+                        desc[key] = desc[key].replace('{searchContext_description}',
+                            f'This form is identified as a search form ({search_ctx}).')
+                    else:
+                        desc[key] = desc[key].replace('{searchContext_description}', '')
+
+                if '{searchContext_remediation}' in desc[key]:
+                    is_search = metadata.get('isSearchForm', False)
+                    if is_search:
+                        desc[key] = desc[key].replace('{searchContext_remediation}',
+                            'For search forms specifically: verify the form or its container has role="search" so screen reader users can navigate directly to it using landmark navigation, ensure the search input has an appropriate label (visible or aria-label="Search"), and test that search results are announced to screen readers.')
+                    else:
+                        desc[key] = desc[key].replace('{searchContext_remediation}', '')
+
+                # Special handling for plurals
+                if '{sizeCount_plural}' in desc[key] and 'sizeCount' in metadata:
+                    count = metadata.get('sizeCount', 0)
+                    desc[key] = desc[key].replace('{sizeCount_plural}', 's' if count != 1 else '')
+
+                if '{fieldCount_plural}' in desc[key] and 'fieldCount' in metadata:
+                    count = metadata.get('fieldCount', 0)
+                    desc[key] = desc[key].replace('{fieldCount_plural}', 's' if count != 1 else '')
+
+                # Special handling for calculated line height minimum
+                if '{minLineHeight}' in desc[key] and 'fontSize' in metadata:
+                    font_size = float(metadata.get('fontSize', 16))
+                    min_line_height = font_size * 1.5
+                    desc[key] = desc[key].replace('{minLineHeight}', f"{min_line_height:.2f}")
 
                 # Replace nested metadata placeholders (e.g., {currentElement.tag})
                 import re
@@ -2674,6 +2826,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
 
                 def replace_nested(match):
                     path = match.group(1)
+
+                    # Skip special placeholders already handled
+                    if path in ['fontSizes_list', 'sizeCount_plural', 'fieldCount_plural', 'fieldTypes_summary',
+                                'searchContext_title', 'searchContext_description', 'searchContext_remediation', 'minLineHeight']:
+                        return match.group(0)
+
                     parts = path.split('.')
 
                     # Navigate through nested dict/objects

@@ -445,10 +445,294 @@ async def test_landmarks(page) -> Dict[str, Any]:
                     }
                 });
 
+                // DISCOVERY: Report all navigation landmarks for tracking across pages
+                const navElements = Array.from(document.querySelectorAll('nav, [role="navigation"]'));
+                navElements.forEach(nav => {
+                    // Get all links in this navigation
+                    const links = Array.from(nav.querySelectorAll('a'));
+                    const linkCount = links.length;
+
+                    // Get accessible name if present
+                    let navLabel = '';
+                    const ariaLabel = nav.getAttribute('aria-label');
+                    if (ariaLabel) {
+                        navLabel = ariaLabel.trim();
+                    } else {
+                        const labelledBy = nav.getAttribute('aria-labelledby');
+                        if (labelledBy) {
+                            const labelEl = document.getElementById(labelledBy);
+                            if (labelEl) {
+                                navLabel = labelEl.textContent.trim();
+                            }
+                        }
+                    }
+
+                    // Generate signature from nav structure
+                    const navStructure = links.map(link => link.textContent.trim()).join('|');
+                    const navXPath = getFullXPath(nav);
+                    const signatureString = navStructure + '|' + navXPath;
+
+                    // Simple hash function (same as forms)
+                    let hash = 0;
+                    for (let i = 0; i < signatureString.length; i++) {
+                        const char = signatureString.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash; // Convert to 32bit integer
+                    }
+                    const navSignature = Math.abs(hash).toString(16).padStart(8, '0');
+
+                    // Build description
+                    let description = `Navigation region detected (signature: ${navSignature})`;
+                    if (navLabel) {
+                        description += ` with label "${navLabel}"`;
+                    }
+                    description += ` containing ${linkCount} link${linkCount !== 1 ? 's' : ''} - requires manual accessibility review`;
+
+                    results.warnings.push({
+                        err: 'DiscoNavFound',
+                        type: 'disco',
+                        cat: 'landmarks',
+                        element: nav.tagName.toLowerCase(),
+                        xpath: navXPath,
+                        html: nav.outerHTML.substring(0, 500),
+                        description: description,
+                        navSignature: navSignature,
+                        linkCount: linkCount,
+                        navLabel: navLabel
+                    });
+                });
+
+                // DISCOVERY: Report all <aside> or role="complementary" for tracking across pages
+                const asideElements = Array.from(document.querySelectorAll('aside, [role="complementary"]'));
+                asideElements.forEach(aside => {
+                    let asideLabel = '';
+                    const ariaLabel = aside.getAttribute('aria-label');
+                    if (ariaLabel) {
+                        asideLabel = ariaLabel.trim();
+                    } else {
+                        const labelledBy = aside.getAttribute('aria-labelledby');
+                        if (labelledBy) {
+                            const labelEl = document.getElementById(labelledBy);
+                            if (labelEl) asideLabel = labelEl.textContent.trim();
+                        }
+                    }
+
+                    const textContent = aside.textContent.trim().substring(0, 200);
+                    const asideXPath = getFullXPath(aside);
+                    const signatureString = textContent + '|' + asideXPath;
+
+                    // Simple hash function
+                    let hash = 0;
+                    for (let i = 0; i < signatureString.length; i++) {
+                        const char = signatureString.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash;
+                    }
+                    const asideSignature = Math.abs(hash).toString(16).padStart(8, '0');
+
+                    const description = `Complementary region detected (signature: ${asideSignature}) - requires manual accessibility review`;
+
+                    results.warnings.push({
+                        err: 'DiscoAsideFound',
+                        type: 'disco',
+                        cat: 'landmarks',
+                        element: aside.tagName.toLowerCase(),
+                        xpath: asideXPath,
+                        html: aside.outerHTML.substring(0, 500),
+                        description: description,
+                        asideSignature: asideSignature,
+                        asideLabel: asideLabel
+                    });
+                });
+
+                // DISCOVERY: Report all <section> with role="region" or explicit labels
+                const sectionElements = Array.from(document.querySelectorAll('section[role="region"], section[aria-label], section[aria-labelledby]'));
+                sectionElements.forEach(section => {
+                    let sectionLabel = '';
+                    const ariaLabel = section.getAttribute('aria-label');
+                    if (ariaLabel) {
+                        sectionLabel = ariaLabel.trim();
+                    } else {
+                        const labelledBy = section.getAttribute('aria-labelledby');
+                        if (labelledBy) {
+                            const labelEl = document.getElementById(labelledBy);
+                            if (labelEl) sectionLabel = labelEl.textContent.trim();
+                        }
+                    }
+
+                    const textContent = section.textContent.trim().substring(0, 200);
+                    const sectionXPath = getFullXPath(section);
+                    const signatureString = textContent + '|' + sectionLabel + '|' + sectionXPath;
+
+                    // Simple hash function
+                    let hash = 0;
+                    for (let i = 0; i < signatureString.length; i++) {
+                        const char = signatureString.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash;
+                    }
+                    const sectionSignature = Math.abs(hash).toString(16).padStart(8, '0');
+
+                    const description = `Section region detected (signature: ${sectionSignature}) - requires manual accessibility review`;
+
+                    results.warnings.push({
+                        err: 'DiscoSectionFound',
+                        type: 'disco',
+                        cat: 'landmarks',
+                        element: section.tagName.toLowerCase(),
+                        xpath: sectionXPath,
+                        html: section.outerHTML.substring(0, 500),
+                        description: description,
+                        sectionSignature: sectionSignature,
+                        sectionLabel: sectionLabel
+                    });
+                });
+
+                // DISCOVERY: Report all <header> at top level or role="banner"
+                const headerElements = Array.from(document.querySelectorAll('header, [role="banner"]'));
+                headerElements.forEach(header => {
+                    // Only report top-level headers or explicit role="banner"
+                    const hasExplicitRole = header.getAttribute('role') === 'banner';
+                    const isTopLevel = !header.closest('article, section, aside, nav, main');
+
+                    if (hasExplicitRole || isTopLevel) {
+                        let headerLabel = '';
+                        const ariaLabel = header.getAttribute('aria-label');
+                        if (ariaLabel) {
+                            headerLabel = ariaLabel.trim();
+                        } else {
+                            const labelledBy = header.getAttribute('aria-labelledby');
+                            if (labelledBy) {
+                                const labelEl = document.getElementById(labelledBy);
+                                if (labelEl) headerLabel = labelEl.textContent.trim();
+                            }
+                        }
+
+                        const textContent = header.textContent.trim().substring(0, 200);
+                        const headerXPath = getFullXPath(header);
+                        const signatureString = textContent + '|' + headerXPath;
+
+                        // Simple hash function
+                        let hash = 0;
+                        for (let i = 0; i < signatureString.length; i++) {
+                            const char = signatureString.charCodeAt(i);
+                            hash = ((hash << 5) - hash) + char;
+                            hash = hash & hash;
+                        }
+                        const headerSignature = Math.abs(hash).toString(16).padStart(8, '0');
+
+                        const description = `Banner region detected (signature: ${headerSignature}) - requires manual accessibility review`;
+
+                        results.warnings.push({
+                            err: 'DiscoHeaderFound',
+                            type: 'disco',
+                            cat: 'landmarks',
+                            element: header.tagName.toLowerCase(),
+                            xpath: headerXPath,
+                            html: header.outerHTML.substring(0, 500),
+                            description: description,
+                            headerSignature: headerSignature,
+                            headerLabel: headerLabel
+                        });
+                    }
+                });
+
+                // DISCOVERY: Report all <footer> at top level or role="contentinfo"
+                const footerElements = Array.from(document.querySelectorAll('footer, [role="contentinfo"]'));
+                footerElements.forEach(footer => {
+                    // Only report top-level footers or explicit role="contentinfo"
+                    const hasExplicitRole = footer.getAttribute('role') === 'contentinfo';
+                    const isTopLevel = !footer.closest('article, section, aside, nav, main');
+
+                    if (hasExplicitRole || isTopLevel) {
+                        let footerLabel = '';
+                        const ariaLabel = footer.getAttribute('aria-label');
+                        if (ariaLabel) {
+                            footerLabel = ariaLabel.trim();
+                        } else {
+                            const labelledBy = footer.getAttribute('aria-labelledby');
+                            if (labelledBy) {
+                                const labelEl = document.getElementById(labelledBy);
+                                if (labelEl) footerLabel = labelEl.textContent.trim();
+                            }
+                        }
+
+                        const textContent = footer.textContent.trim().substring(0, 200);
+                        const footerXPath = getFullXPath(footer);
+                        const signatureString = textContent + '|' + footerXPath;
+
+                        // Simple hash function
+                        let hash = 0;
+                        for (let i = 0; i < signatureString.length; i++) {
+                            const char = signatureString.charCodeAt(i);
+                            hash = ((hash << 5) - hash) + char;
+                            hash = hash & hash;
+                        }
+                        const footerSignature = Math.abs(hash).toString(16).padStart(8, '0');
+
+                        const description = `Contentinfo region detected (signature: ${footerSignature}) - requires manual accessibility review`;
+
+                        results.warnings.push({
+                            err: 'DiscoFooterFound',
+                            type: 'disco',
+                            cat: 'landmarks',
+                            element: footer.tagName.toLowerCase(),
+                            xpath: footerXPath,
+                            html: footer.outerHTML.substring(0, 500),
+                            description: description,
+                            footerSignature: footerSignature,
+                            footerLabel: footerLabel
+                        });
+                    }
+                });
+
+                // DISCOVERY: Report all <search> or role="search"
+                const searchElements = Array.from(document.querySelectorAll('search, [role="search"]'));
+                searchElements.forEach(search => {
+                    let searchLabel = '';
+                    const ariaLabel = search.getAttribute('aria-label');
+                    if (ariaLabel) {
+                        searchLabel = ariaLabel.trim();
+                    } else {
+                        const labelledBy = search.getAttribute('aria-labelledby');
+                        if (labelledBy) {
+                            const labelEl = document.getElementById(labelledBy);
+                            if (labelEl) searchLabel = labelEl.textContent.trim();
+                        }
+                    }
+
+                    const textContent = search.textContent.trim().substring(0, 200);
+                    const searchXPath = getFullXPath(search);
+                    const signatureString = textContent + '|' + searchLabel + '|' + searchXPath;
+
+                    // Simple hash function
+                    let hash = 0;
+                    for (let i = 0; i < signatureString.length; i++) {
+                        const char = signatureString.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash;
+                    }
+                    const searchSignature = Math.abs(hash).toString(16).padStart(8, '0');
+
+                    const description = `Search region detected (signature: ${searchSignature}) - requires manual accessibility review`;
+
+                    results.warnings.push({
+                        err: 'DiscoSearchFound',
+                        type: 'disco',
+                        cat: 'landmarks',
+                        element: search.tagName.toLowerCase(),
+                        xpath: searchXPath,
+                        html: search.outerHTML.substring(0, 500),
+                        description: description,
+                        searchSignature: searchSignature,
+                        searchLabel: searchLabel
+                    });
+                });
+
                 return results;
             }
         ''')
-        
+
         return results
         
     except Exception as e:

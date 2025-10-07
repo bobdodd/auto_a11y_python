@@ -2,10 +2,13 @@ function pageTitleScrape() {
     let errorList = [];
     let passList = [];
     let checks = [];
-    
+
+    // Get title length limit from config, default to 60
+    const titleLengthLimit = (window.a11yConfig && window.a11yConfig.titleLengthLimit) || 60;
+
     // Page title is always applicable - all pages need a title
     let titleCheck = initializeCheck('page_title', 'Page has descriptive title', ['2.4.2']);
-    
+
     const titleElement = document.querySelector('title');
     titleCheck.total = 1;
     
@@ -44,7 +47,7 @@ function pageTitleScrape() {
                 xpath: '/html/head/title',
                 fpTempId: '0'
             });
-        } else if (titleText.length > 60) {
+        } else if (titleText.length > titleLengthLimit) {
             titleCheck.passed = 1; // Still passes but with warning
             errorList.push({
                 url: window.location.href,
@@ -53,12 +56,13 @@ function pageTitleScrape() {
                 err: 'WarnPageTitleTooLong',
                 found: titleText,
                 length: titleText.length,
+                limit: titleLengthLimit,
                 xpath: '/html/head/title',
                 fpTempId: '0'
             });
             passList.push({
                 check: 'page_title',
-                title: titleText.substring(0, 60) + '...',
+                title: titleText.substring(0, titleLengthLimit) + '...',
                 xpath: '/html/head/title',
                 wcag: ['2.4.2'],
                 reason: 'Page has title (but too long)'

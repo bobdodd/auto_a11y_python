@@ -163,6 +163,7 @@ def create_project():
         'Animation': 'animation',
         'Animations': 'animation',
         'Buttons': 'buttons',
+        'Colors': 'colors_contrast',
         'ColorsAndContrast': 'colors_contrast',
         'Contrast': 'colors_contrast',
         'DialogsAndModals': 'dialogs',
@@ -196,7 +197,8 @@ def create_project():
         'Tables': 'tables',
         'Timing': 'timing',
         'Typography': 'typography',
-        'Style': 'typography'
+        'Style': 'styles',
+        'Styles': 'styles'
     }
 
     # Touchpoint display names (ordered)
@@ -224,6 +226,7 @@ def create_project():
         'navigation': 'Navigation',
         'reading_order': 'Reading Order',
         'semantic_structure': 'Semantic Structure',
+        'styles': 'Inline Styles',
         'tables': 'Tables',
         'timing': 'Timing',
         'typography': 'Typography',
@@ -295,7 +298,29 @@ def edit_project(project_id):
         if not project.config:
             project.config = {}
         project.config['wcag_level'] = wcag_level
-        
+
+        # Update page title length limit
+        try:
+            title_length_limit = int(request.form.get('title_length_limit', 60))
+            # Validate range
+            if 30 <= title_length_limit <= 120:
+                project.config['titleLengthLimit'] = title_length_limit
+            else:
+                project.config['titleLengthLimit'] = 60
+        except (ValueError, TypeError):
+            project.config['titleLengthLimit'] = 60
+
+        # Update heading length limit
+        try:
+            heading_length_limit = int(request.form.get('heading_length_limit', 60))
+            # Validate range
+            if 30 <= heading_length_limit <= 120:
+                project.config['headingLengthLimit'] = heading_length_limit
+            else:
+                project.config['headingLengthLimit'] = 60
+        except (ValueError, TypeError):
+            project.config['headingLengthLimit'] = 60
+
         # Update touchpoint configuration
         from auto_a11y.config.touchpoint_tests import TOUCHPOINT_TEST_MAPPING
         

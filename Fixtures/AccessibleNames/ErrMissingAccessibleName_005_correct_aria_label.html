@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Names via aria-label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_005_correct_aria_label",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 6,
+    "description": "Interactive elements use aria-label for accessible names",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>aria-label Examples</h1>
+
+    <form>
+        <div data-expected-pass="true"
+             data-pass-reason="Text input has aria-label providing accessible name">
+            <input type="text" name="email" aria-label="Email address">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Email input has aria-label providing accessible name">
+            <input type="email" name="subscriber-email" aria-label="Newsletter subscription email">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Select dropdown has aria-label identifying its purpose">
+            <select name="country" aria-label="Select your country">
+                <option value="">Choose...</option>
+                <option value="us">United States</option>
+                <option value="uk">United Kingdom</option>
+                <option value="ca">Canada</option>
+            </select>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Textarea has aria-label providing accessible name">
+            <textarea name="comments" aria-label="Additional comments"></textarea>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Button has aria-label providing clear accessible name">
+            <button type="button" aria-label="Close dialog">✕</button>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Checkbox has aria-label providing accessible name">
+            <input type="checkbox" name="agree" aria-label="I agree to the terms and conditions">
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

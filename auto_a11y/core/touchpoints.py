@@ -23,6 +23,7 @@ class TouchpointID(Enum):
     FOCUS_MANAGEMENT = "focus_management"
     FONTS = "fonts"
     FORMS = "forms"
+    STYLES = "styles"
     HEADINGS = "headings"
     IMAGES = "images"
     LANDMARKS = "landmarks"
@@ -142,7 +143,16 @@ TOUCHPOINTS = {
         ai_tests=["font_readability", "icon_font_detection"],
         wcag_criteria=["1.4.4", "1.4.12"]
     ),
-    
+
+    TouchpointID.STYLES: Touchpoint(
+        id=TouchpointID.STYLES,
+        name="Inline Styles",
+        description="Evaluates inline style attributes for proper separation of presentation from content",
+        js_tests=[],
+        ai_tests=[],
+        wcag_criteria=["1.4.3", "1.4.8", "1.4.12"]
+    ),
+
     TouchpointID.FORMS: Touchpoint(
         id=TouchpointID.FORMS,
         name="Forms",
@@ -312,7 +322,8 @@ class TouchpointMapper:
         'font': TouchpointID.FONTS,
         'fonts': TouchpointID.FONTS,
         'javascript': TouchpointID.EVENT_HANDLING,
-        'style': TouchpointID.COLORS,
+        'style': TouchpointID.STYLES,
+        'styles': TouchpointID.STYLES,
         'navigation': TouchpointID.LANDMARKS,
         'modal': TouchpointID.DIALOGS,
         'dialog': TouchpointID.DIALOGS,
@@ -374,6 +385,12 @@ class TouchpointMapper:
         'WarnUnlabelledRegion': TouchpointID.LANDMARKS,  # Regions are landmarks
         'WarnMissingAriaLabelledby': TouchpointID.FORMS,
         'DiscoFormOnPage': TouchpointID.FORMS,
+        'DiscoNavFound': TouchpointID.LANDMARKS,  # Navigation is a landmark
+        'DiscoAsideFound': TouchpointID.LANDMARKS,  # Complementary is a landmark
+        'DiscoSectionFound': TouchpointID.LANDMARKS,  # Section (region) is a landmark
+        'DiscoHeaderFound': TouchpointID.LANDMARKS,  # Banner is a landmark
+        'DiscoFooterFound': TouchpointID.LANDMARKS,  # Contentinfo is a landmark
+        'DiscoSearchFound': TouchpointID.LANDMARKS,  # Search is a landmark
         'forms_DiscoNoSubmitButton': TouchpointID.FORMS,
         'forms_DiscoPlaceholderAsLabel': TouchpointID.FORMS,
         
@@ -514,10 +531,16 @@ class TouchpointMapper:
         'AI_InfoContentOrder': TouchpointID.HEADINGS,
         'AI_WarnPossibleReadingOrderIssue': TouchpointID.HEADINGS,
         
+        # Style errors and warnings
+        'ErrStyleAttrColorFont': TouchpointID.STYLES,
+        'WarnStyleAttrOther': TouchpointID.STYLES,
+        'ErrStyleTagColorFont': TouchpointID.STYLES,
+        'WarnStyleTagOther': TouchpointID.STYLES,
+
         # Style/JavaScript discovery items (these are just discoveries, not specific issues)
         'DiscoFoundJS': TouchpointID.EVENT_HANDLING,
-        'DiscoStyleAttrOnElements': TouchpointID.COLORS,  # Could affect color/contrast
-        'DiscoStyleElementOnPage': TouchpointID.COLORS,  # Could affect color/contrast
+        'DiscoStyleAttrOnElements': TouchpointID.STYLES,  # Old code, moved to styles touchpoint
+        'DiscoStyleElementOnPage': TouchpointID.STYLES,  # Moved from colors to styles
         
         # Additional mappings for completeness
         'ErrMissingRole': TouchpointID.ACCESSIBLE_NAMES,  # Missing ARIA role

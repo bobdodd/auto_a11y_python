@@ -323,6 +323,66 @@ async def test_forms(page) -> Dict[str, Any]:
                 // DISCOVERY: Report all forms on the page for manual review
                 const allForms = Array.from(document.querySelectorAll('form'));
                 allForms.forEach(form => {
+                    // Generate a content-based signature for the form
+                    // This allows identifying the same form across different pages/xpaths
+                    const formSignatureData = [];
+
+                    // Include form attributes
+                    const action = form.getAttribute('action') || '';
+                    const method = (form.getAttribute('method') || 'get').toLowerCase();
+                    formSignatureData.push(`action:${action}`);
+                    formSignatureData.push(`method:${method}`);
+
+                    // Include form field structure (type and name of each input)
+                    const formFields = Array.from(form.querySelectorAll('input, select, textarea, button'))
+                        .map(field => {
+                            const type = field.type || field.tagName.toLowerCase();
+                            const name = field.name || field.id || '';
+                            return `${type}:${name}`;
+                        })
+                        .sort(); // Sort for consistency
+
+                    formSignatureData.push(...formFields);
+
+                    // Create signature string and generate simple hash (CRC-like)
+                    const signatureString = formSignatureData.join('|');
+
+                    // Simple hash function (similar to CRC concept)
+                    let hash = 0;
+                    for (let i = 0; i < signatureString.length; i++) {
+                        const char = signatureString.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash; // Convert to 32bit integer
+                    }
+                    const formSignature = Math.abs(hash).toString(16).padStart(8, '0');
+
+                    // Check if form has search role or is contained within search landmark
+                    const formRole = form.getAttribute('role');
+                    const isSearchRole = formRole === 'search';
+                    const searchContainer = form.closest('[role="search"]');
+                    const isWithinSearch = searchContainer !== null && searchContainer !== form;
+                    const isSearchForm = isSearchRole || isWithinSearch;
+
+                    // Count form fields by type
+                    const fieldCounts = {};
+                    Array.from(form.querySelectorAll('input, select, textarea')).forEach(field => {
+                        const type = field.type || field.tagName.toLowerCase();
+                        fieldCounts[type] = (fieldCounts[type] || 0) + 1;
+                    });
+
+                    const fieldSummary = Object.entries(fieldCounts)
+                        .map(([type, count]) => `${count} ${type}`)
+                        .join(', ');
+
+                    // Build description with search context
+                    let description = `Form detected (signature: ${formSignature})`;
+                    if (isSearchRole) {
+                        description += ` with role="search"`;
+                    } else if (isWithinSearch) {
+                        description += ` contained within search landmark`;
+                    }
+                    description += ` with ${fieldSummary || 'no fields'} - requires manual accessibility review`;
+
                     results.warnings.push({
                         err: 'DiscoFormOnPage',
                         type: 'disco',
@@ -330,7 +390,14 @@ async def test_forms(page) -> Dict[str, Any]:
                         element: 'form',
                         xpath: getFullXPath(form),
                         html: form.outerHTML.substring(0, 200),
-                        description: 'Form detected on page requiring manual accessibility review'
+                        description: description,
+                        formSignature: formSignature,
+                        formAction: action,
+                        formMethod: method,
+                        fieldCount: Object.values(fieldCounts).reduce((a, b) => a + b, 0),
+                        fieldTypes: fieldCounts,
+                        isSearchForm: isSearchForm,
+                        searchContext: isSearchRole ? 'has role="search"' : (isWithinSearch ? 'within search landmark' : 'not a search form')
                     });
                 });
 

@@ -117,10 +117,13 @@ class TestRunner:
                 except Exception as e:
                     logger.warning(f"Could not get project config: {e}, using defaults")
                 
-                # Create script injector with test configuration
+                # Set test configuration for Python tests
                 if test_config:
                     self.script_injector.test_config = test_config
-                
+
+                # Pass project config separately for JavaScript config injection
+                self.script_injector.project_config = project_config
+
                 # Inject test scripts
                 await self.script_injector.inject_script_files(browser_page)
                 

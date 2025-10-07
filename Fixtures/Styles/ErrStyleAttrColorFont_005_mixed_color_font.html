@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrStyleAttrColorFont - Mixed Color and Font</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_005_mixed_color_font",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test detection of inline styles with both color AND font properties combined",
+    "wcag": "1.4.3, 1.4.8, 1.4.12",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Mixed Color and Font Inline Styles</h1>
+
+    <main>
+        <section>
+            <h2>Color + Font Combinations</h2>
+            <p
+               style="color: red; font-size: 18px;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline color and font-size">
+                Text with both color and font-size
+            </p>
+
+            <div
+                 style="background-color: yellow; font-family: Arial; padding: 10px;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline background-color, font-family, and layout property">
+                Element with background-color, font-family, and padding
+            </div>
+
+            <span
+                  style="color: blue; font-weight: bold; line-height: 1.8;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Multiple color and font properties">
+                Text with color, font-weight, and line-height
+            </span>
+
+            <p
+               style="border-color: green; font-style: italic; letter-spacing: 2px;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Border color and font styling">
+                Text with border-color and font styling
+            </p>
+
+            <div
+                 style="background: linear-gradient(red, blue); font: 16px/1.5 Georgia, serif; margin: 20px;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Background gradient, font shorthand, and layout">
+                Element with background, font shorthand, and margin
+            </div>
+        </section>
+    </main>
+</body>
+</html>

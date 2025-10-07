@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnStyleAttrOther - Pass (No Inline Styles)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnStyleAttrOther_002_correct_no_inline_styles",
+    "issueId": "WarnStyleAttrOther",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "expectedWarningCount": 0,
+    "description": "Page with all styles in CSS (no inline style attributes)",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .layout-box {
+            margin: 20px;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+        .positioned-element {
+            position: relative;
+            top: 10px;
+            left: 5px;
+        }
+        .float-element {
+            float: left;
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: All Styles in CSS</h1>
+
+    <main>
+        <section>
+            <h2>Layout defined in CSS</h2>
+            <div class="layout-box">
+                This div gets its layout from CSS classes.
+            </div>
+        </section>
+
+        <section>
+            <h2>Positioning defined in CSS</h2>
+            <div class="positioned-element">
+                This div gets its positioning from CSS.
+            </div>
+
+            <span class="float-element">
+                This span gets its float from CSS.
+            </span>
+        </section>
+    </main>
+</body>
+</html>

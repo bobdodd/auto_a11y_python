@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrStyleAttrColorFont - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_006_edge_cases",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 8,
+    "expectedPassCount": 0,
+    "description": "Test edge cases: uppercase properties, shorthand with color, multi-line styles",
+    "wcag": "1.4.3, 1.4.8",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Edge Cases for Color/Font Detection</h1>
+
+    <main>
+        <section>
+            <h2>Case Variations</h2>
+            <p
+               style="COLOR: red;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Uppercase COLOR property">
+                Text with uppercase COLOR
+            </p>
+
+            <p
+               style="Font-Family: Arial;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Mixed case Font-Family">
+                Text with mixed case Font-Family
+            </p>
+
+            <p
+               style="BACKGROUND-COLOR: yellow;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Uppercase BACKGROUND-COLOR">
+                Text with uppercase BACKGROUND-COLOR
+            </p>
+        </section>
+
+        <section>
+            <h2>Shorthand Properties with Color</h2>
+            <div
+                 style="border: 2px solid red;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Border shorthand includes color">
+                Border shorthand with color
+            </div>
+
+            <div
+                 style="outline: 1px dashed blue;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Outline shorthand includes color">
+                Outline shorthand with color
+            </div>
+
+            <span
+                  style="text-decoration: underline red;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Text-decoration with color">
+                Text decoration with color
+            </span>
+        </section>
+
+        <section>
+            <h2>Extra Whitespace</h2>
+            <p
+               style="  color  :  green  ;  "
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Color with extra whitespace">
+                Text with extra whitespace around color property
+            </p>
+
+            <p
+               style="font-size:20px;letter-spacing:1px"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Multiple font properties, no spaces">
+                Text with no spaces between properties
+            </p>
+        </section>
+    </main>
+</body>
+</html>

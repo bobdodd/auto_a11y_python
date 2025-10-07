@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnStyleTagOther - Layout Only</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnStyleTagOther_001_violations_basic",
+    "issueId": "WarnStyleTagOther",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "<style> tag with layout CSS only (no color/font)",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        /* This style tag contains ONLY layout definitions - should be WARNING */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .positioned {
+            position: relative;
+            top: 10px;
+            left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Page: Style Tag with Layout Only</h1>
+        <p>This page has a style tag that defines only layout properties (no colors or fonts), which should be a warning.</p>
+        <div class="grid">
+            <div>Item 1</div>
+            <div>Item 2</div>
+            <div>Item 3</div>
+        </div>
+    </div>
+</body>
+</html>

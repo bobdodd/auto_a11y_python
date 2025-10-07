@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoNavFound Test - Single Navigation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoNavFound_001_discovery_single_nav",
+    "issueId": "DiscoNavFound",
+    "expectedViolationCount": 0,
+    "expectedWarningCount": 0,
+    "expectedDiscoveryCount": 1,
+    "expectedPassCount": 0,
+    "description": "Single navigation element detected for manual review",
+    "wcag": [],
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Single Navigation Element</h1>
+
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <p>This page has a single navigation element that should be detected for manual accessibility review.</p>
+    </main>
+</body>
+</html>

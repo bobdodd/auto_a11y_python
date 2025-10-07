@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Names via Mixed Techniques</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_009_correct_mixed_techniques",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 8,
+    "description": "Interactive elements use various techniques for accessible names in one form",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Registration Form - Mixed Labeling Techniques</h1>
+
+    <form>
+        <!-- Using label with for attribute -->
+        <div data-expected-pass="true"
+             data-pass-reason="Uses label with for attribute">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username">
+        </div>
+
+        <!-- Using wrapping label -->
+        <div data-expected-pass="true"
+             data-pass-reason="Uses wrapping label">
+            <label>
+                Email Address:
+                <input type="email" name="email">
+            </label>
+        </div>
+
+        <!-- Using aria-label -->
+        <div data-expected-pass="true"
+             data-pass-reason="Uses aria-label">
+            <input type="password" name="password" aria-label="Password">
+        </div>
+
+        <!-- Using aria-labelledby -->
+        <div data-expected-pass="true"
+             data-pass-reason="Uses aria-labelledby">
+            <span id="country-label">Country</span>
+            <select name="country" aria-labelledby="country-label">
+                <option value="us">United States</option>
+                <option value="uk">United Kingdom</option>
+            </select>
+        </div>
+
+        <!-- Wrapping label for checkbox -->
+        <div data-expected-pass="true"
+             data-pass-reason="Checkbox wrapped in label">
+            <label>
+                <input type="checkbox" name="newsletter">
+                Subscribe to newsletter
+            </label>
+        </div>
+
+        <!-- Label with for for radio button -->
+        <div data-expected-pass="true"
+             data-pass-reason="Radio button with label using for">
+            <input type="radio" id="plan-basic" name="plan" value="basic">
+            <label for="plan-basic">Basic Plan</label>
+        </div>
+
+        <!-- Button with aria-label -->
+        <div data-expected-pass="true"
+             data-pass-reason="Button with aria-label">
+            <button type="button" aria-label="Add profile photo">📷</button>
+        </div>
+
+        <!-- Textarea with label -->
+        <div data-expected-pass="true"
+             data-pass-reason="Textarea with label for">
+            <label for="bio">Biography</label>
+            <textarea id="bio" name="bio" rows="4"></textarea>
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

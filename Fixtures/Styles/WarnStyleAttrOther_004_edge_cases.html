@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnStyleAttrOther - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnStyleAttrOther_004_edge_cases",
+    "issueId": "WarnStyleAttrOther",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test layout styles only - ensure no false positives for color/font",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Layout-Only Edge Cases</h1>
+
+    <main>
+        <section>
+            <h2>Layout Properties that Could Be Confused</h2>
+            <div
+                 style="opacity: 0.5;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther"
+                 data-warning-reason="Opacity affects visibility but not color">
+                Element with opacity (not a color property)
+            </div>
+
+            <div
+                 style="visibility: hidden;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther"
+                 data-warning-reason="Visibility is layout, not color">
+                Element with visibility
+            </div>
+
+            <div
+                 style="overflow: hidden;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther"
+                 data-warning-reason="Overflow is layout">
+                Element with overflow
+            </div>
+
+            <div
+                 style="transform: rotate(45deg);"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther"
+                 data-warning-reason="Transform is layout">
+                Element with transform
+            </div>
+
+            <div
+                 style="cursor: pointer;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther"
+                 data-warning-reason="Cursor is interaction, not color/font">
+                Element with cursor
+            </div>
+        </section>
+
+        <section>
+            <h2>Properties with "color" or "font" in name but not color/font</h2>
+            <p>Note: There aren't many properties that have "color" or "font" in the name that aren't actually color/font properties. The test correctly categorizes all color-* and font-* properties.</p>
+        </section>
+    </main>
+</body>
+</html>

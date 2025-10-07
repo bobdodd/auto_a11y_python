@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Names via wrapping label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_008_correct_label_wrapping",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 7,
+    "description": "Interactive elements wrapped in label elements for accessible names",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Wrapping Label Examples</h1>
+
+    <form>
+        <div data-expected-pass="true"
+             data-pass-reason="Text input wrapped in label element provides accessible name">
+            <label>
+                Full Name:
+                <input type="text" name="full-name">
+            </label>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Email input wrapped in label element provides accessible name">
+            <label>
+                Email:
+                <input type="email" name="email">
+            </label>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Select dropdown wrapped in label element provides accessible name">
+            <label>
+                Country:
+                <select name="country">
+                    <option value="">Choose...</option>
+                    <option value="us">United States</option>
+                    <option value="uk">United Kingdom</option>
+                </select>
+            </label>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Textarea wrapped in label element provides accessible name">
+            <label>
+                Comments:
+                <textarea name="comments" rows="3"></textarea>
+            </label>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Checkbox wrapped in label element provides accessible name">
+            <label>
+                <input type="checkbox" name="terms">
+                I agree to the terms and conditions
+            </label>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Radio button wrapped in label element provides accessible name">
+            <label>
+                <input type="radio" name="contact-method" value="email">
+                Contact me by email
+            </label>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Radio button wrapped in label element provides accessible name">
+            <label>
+                <input type="radio" name="contact-method" value="phone">
+                Contact me by phone
+            </label>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

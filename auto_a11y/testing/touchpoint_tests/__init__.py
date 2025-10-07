@@ -13,6 +13,7 @@ from .test_event_handlers import test_event_handlers, TEST_DOCUMENTATION as EVEN
 from .test_floating_dialogs import test_floating_dialogs, TEST_DOCUMENTATION as FLOATING_DIALOGS_DOCS
 from .test_focus_management import test_focus_management, TEST_DOCUMENTATION as FOCUS_MANAGEMENT_DOCS
 from .test_fonts import test_fonts, TEST_DOCUMENTATION as FONTS_DOCS
+from .test_styles import test_styles, TEST_DOCUMENTATION as STYLES_DOCS
 from .test_landmarks import test_landmarks, TEST_DOCUMENTATION as LANDMARKS_DOCS
 from .test_lists import test_lists, TEST_DOCUMENTATION as LISTS_DOCS
 from .test_maps import test_maps, TEST_DOCUMENTATION as MAPS_DOCS
@@ -38,6 +39,7 @@ TOUCHPOINT_TESTS = {
     'floating_dialogs': test_floating_dialogs,
     'focus_management': test_focus_management,
     'fonts': test_fonts,
+    'styles': test_styles,
     'landmarks': test_landmarks,
     'lists': test_lists,
     'maps': test_maps,
@@ -64,6 +66,7 @@ TEST_DOCUMENTATION = {
     'floating_dialogs': FLOATING_DIALOGS_DOCS,
     'focus_management': FOCUS_MANAGEMENT_DOCS,
     'fonts': FONTS_DOCS,
+    'styles': STYLES_DOCS,
     'landmarks': LANDMARKS_DOCS,
     'lists': LISTS_DOCS,
     'maps': MAPS_DOCS,
@@ -89,6 +92,7 @@ __all__ = [
     'test_floating_dialogs',
     'test_focus_management',
     'test_fonts',
+    'test_styles',
     'test_landmarks',
     'test_lists',
     'test_maps',

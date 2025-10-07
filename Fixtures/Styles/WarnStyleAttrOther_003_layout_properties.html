@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnStyleAttrOther - Comprehensive Layout Properties</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnStyleAttrOther_003_layout_properties",
+    "issueId": "WarnStyleAttrOther",
+    "expectedViolationCount": 20,
+    "expectedPassCount": 0,
+    "description": "Test detection of various layout-related inline styles (no color/font)",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Layout-Only Inline Styles</h1>
+
+    <main>
+        <section>
+            <h2>Box Model Properties</h2>
+            <div
+                 style="margin: 20px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with margin
+            </div>
+
+            <div
+                 style="padding: 15px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with padding
+            </div>
+
+            <div
+                 style="width: 300px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with width
+            </div>
+
+            <div
+                 style="height: 200px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with height
+            </div>
+
+            <div
+                 style="max-width: 500px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with max-width
+            </div>
+
+            <div
+                 style="min-height: 100px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with min-height
+            </div>
+        </section>
+
+        <section>
+            <h2>Display and Layout</h2>
+            <div
+                 style="display: flex;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with display: flex
+            </div>
+
+            <div
+                 style="display: grid; grid-template-columns: 1fr 1fr;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with display: grid
+            </div>
+
+            <div
+                 style="justify-content: center;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with justify-content
+            </div>
+
+            <div
+                 style="align-items: center;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with align-items
+            </div>
+
+            <div
+                 style="flex-direction: column;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with flex-direction
+            </div>
+        </section>
+
+        <section>
+            <h2>Positioning</h2>
+            <div
+                 style="position: relative;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with position: relative
+            </div>
+
+            <div
+                 style="position: absolute; top: 10px; left: 20px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with absolute positioning
+            </div>
+
+            <div
+                 style="float: left;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with float
+            </div>
+
+            <div
+                 style="clear: both;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with clear
+            </div>
+
+            <div
+                 style="z-index: 100;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with z-index
+            </div>
+        </section>
+
+        <section>
+            <h2>Borders (without color)</h2>
+            <div
+                 style="border: 1px solid;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with border (no color specified)
+            </div>
+
+            <div
+                 style="border-width: 2px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with border-width
+            </div>
+
+            <div
+                 style="border-radius: 8px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with border-radius
+            </div>
+
+            <div
+                 style="box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther">
+                Element with box-shadow
+            </div>
+        </section>
+    </main>
+</body>
+</html>

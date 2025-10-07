@@ -1293,7 +1293,7 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_all_issues_sheet(self, ws, data, styles):
         """Create a combined sheet with all issues (violations, warnings, info, discovery)"""
-        headers = ['Type', 'Severity', 'Rule ID', 'Description', 'Element', 'XPath', 'Page Location']
+        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL']
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1306,13 +1306,18 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=1, value='Violation')
             ws.cell(row=row, column=2, value=v.get('impact', 'Unknown').upper())
             ws.cell(row=row, column=3, value=v.get('id', v.get('rule_id', '')))
-            ws.cell(row=row, column=4, value=v.get('description', ''))
-            ws.cell(row=row, column=5, value=v.get('element', ''))
-            ws.cell(row=row, column=6, value=v.get('xpath', ''))
-            ws.cell(row=row, column=7, value=v.get('url', ''))
+            ws.cell(row=row, column=4, value=v.get('touchpoint', v.get('category', '')))
+            ws.cell(row=row, column=5, value=v.get('what', v.get('description', '')))
+            ws.cell(row=row, column=6, value=v.get('why', ''))
+            ws.cell(row=row, column=7, value=v.get('who', ''))
+            ws.cell(row=row, column=8, value=v.get('remediation', v.get('suggested_fix', '')))
+            ws.cell(row=row, column=9, value=', '.join(v.get('wcag_criteria', [])) if isinstance(v.get('wcag_criteria'), list) else v.get('wcag_criteria', ''))
+            ws.cell(row=row, column=10, value=v.get('xpath', ''))
+            ws.cell(row=row, column=11, value=v.get('element', ''))
+            ws.cell(row=row, column=12, value=v.get('url', ''))
 
             # Apply violation coloring
-            for col in range(1, 8):
+            for col in range(1, 13):
                 ws.cell(row=row, column=col).fill = styles['violation']['fill']
 
             row += 1
@@ -1320,15 +1325,20 @@ class ExcelFormatter(BaseFormatter):
         # Add all warnings
         for w in data.get('warnings', []):
             ws.cell(row=row, column=1, value='Warning')
-            ws.cell(row=row, column=2, value='MEDIUM')
+            ws.cell(row=row, column=2, value=w.get('impact', 'MEDIUM').upper())
             ws.cell(row=row, column=3, value=w.get('id', w.get('rule_id', '')))
-            ws.cell(row=row, column=4, value=w.get('description', ''))
-            ws.cell(row=row, column=5, value=w.get('element', ''))
-            ws.cell(row=row, column=6, value=w.get('xpath', ''))
-            ws.cell(row=row, column=7, value=w.get('url', ''))
+            ws.cell(row=row, column=4, value=w.get('touchpoint', w.get('category', '')))
+            ws.cell(row=row, column=5, value=w.get('what', w.get('description', '')))
+            ws.cell(row=row, column=6, value=w.get('why', ''))
+            ws.cell(row=row, column=7, value=w.get('who', ''))
+            ws.cell(row=row, column=8, value=w.get('remediation', w.get('suggested_fix', '')))
+            ws.cell(row=row, column=9, value=', '.join(w.get('wcag_criteria', [])) if isinstance(w.get('wcag_criteria'), list) else w.get('wcag_criteria', ''))
+            ws.cell(row=row, column=10, value=w.get('xpath', ''))
+            ws.cell(row=row, column=11, value=w.get('element', ''))
+            ws.cell(row=row, column=12, value=w.get('url', ''))
 
             # Apply warning coloring
-            for col in range(1, 8):
+            for col in range(1, 13):
                 ws.cell(row=row, column=col).fill = styles['warning']['fill']
 
             row += 1
@@ -1338,13 +1348,18 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=1, value='Info')
             ws.cell(row=row, column=2, value='INFO')
             ws.cell(row=row, column=3, value=i.get('id', ''))
-            ws.cell(row=row, column=4, value=i.get('description', ''))
-            ws.cell(row=row, column=5, value=i.get('element', ''))
-            ws.cell(row=row, column=6, value=i.get('xpath', ''))
-            ws.cell(row=row, column=7, value=i.get('url', ''))
+            ws.cell(row=row, column=4, value=i.get('touchpoint', i.get('category', '')))
+            ws.cell(row=row, column=5, value=i.get('what', i.get('description', '')))
+            ws.cell(row=row, column=6, value=i.get('why', ''))
+            ws.cell(row=row, column=7, value=i.get('who', ''))
+            ws.cell(row=row, column=8, value=i.get('remediation', ''))
+            ws.cell(row=row, column=9, value=', '.join(i.get('wcag_criteria', [])) if isinstance(i.get('wcag_criteria'), list) else i.get('wcag_criteria', ''))
+            ws.cell(row=row, column=10, value=i.get('xpath', ''))
+            ws.cell(row=row, column=11, value=i.get('element', ''))
+            ws.cell(row=row, column=12, value=i.get('url', ''))
 
             # Apply info coloring
-            for col in range(1, 8):
+            for col in range(1, 13):
                 ws.cell(row=row, column=col).fill = styles['info']['fill']
 
             row += 1
@@ -1354,13 +1369,18 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=1, value='Discovery')
             ws.cell(row=row, column=2, value='DISCOVERY')
             ws.cell(row=row, column=3, value=d.get('id', d.get('err', '')))
-            ws.cell(row=row, column=4, value=d.get('description', ''))
-            ws.cell(row=row, column=5, value=d.get('element', ''))
-            ws.cell(row=row, column=6, value=d.get('xpath', ''))
-            ws.cell(row=row, column=7, value=d.get('url', ''))
+            ws.cell(row=row, column=4, value=d.get('touchpoint', d.get('category', '')))
+            ws.cell(row=row, column=5, value=d.get('what', d.get('description', '')))
+            ws.cell(row=row, column=6, value=d.get('why', ''))
+            ws.cell(row=row, column=7, value=d.get('who', ''))
+            ws.cell(row=row, column=8, value=d.get('remediation', ''))
+            ws.cell(row=row, column=9, value=', '.join(d.get('wcag_criteria', [])) if isinstance(d.get('wcag_criteria'), list) else d.get('wcag_criteria', ''))
+            ws.cell(row=row, column=10, value=d.get('xpath', ''))
+            ws.cell(row=row, column=11, value=d.get('element', ''))
+            ws.cell(row=row, column=12, value=d.get('url', ''))
 
             # Apply discovery coloring
-            for col in range(1, 8):
+            for col in range(1, 13):
                 cell = ws.cell(row=row, column=col)
                 if 'discovery' in styles:
                     cell.fill = styles['discovery']['fill']
@@ -1375,13 +1395,18 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=1, value='AI Finding')
             ws.cell(row=row, column=2, value=getattr(f, 'severity', 'MEDIUM').upper())
             ws.cell(row=row, column=3, value=getattr(f, 'type', ''))
-            ws.cell(row=row, column=4, value=getattr(f, 'description', ''))
-            ws.cell(row=row, column=5, value=getattr(f, 'element', ''))
-            ws.cell(row=row, column=6, value=getattr(f, 'xpath', ''))
-            ws.cell(row=row, column=7, value=getattr(f, 'url', ''))
+            ws.cell(row=row, column=4, value='')  # AI findings don't have touchpoint
+            ws.cell(row=row, column=5, value=getattr(f, 'description', ''))
+            ws.cell(row=row, column=6, value='')
+            ws.cell(row=row, column=7, value='')
+            ws.cell(row=row, column=8, value=getattr(f, 'suggested_fix', ''))
+            ws.cell(row=row, column=9, value='')
+            ws.cell(row=row, column=10, value='')
+            ws.cell(row=row, column=11, value='')
+            ws.cell(row=row, column=12, value=getattr(f, 'url', ''))
 
             # Apply AI finding coloring (use info style)
-            for col in range(1, 8):
+            for col in range(1, 13):
                 ws.cell(row=row, column=col).fill = styles['info']['fill']
 
             row += 1
@@ -1390,7 +1415,7 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_project_all_issues_sheet(self, ws, data, styles):
         """Create a combined sheet with all issues from all pages across all websites"""
-        headers = ['Type', 'Severity', 'Rule ID', 'Description', 'Element', 'XPath', 'Page URL', 'Website']
+        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Website']
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1423,13 +1448,18 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=1, value='Violation')
                     ws.cell(row=row, column=2, value=str(v_dict.get('impact', 'Unknown')).upper())
                     ws.cell(row=row, column=3, value=v_dict.get('id', ''))
-                    ws.cell(row=row, column=4, value=v_dict.get('description', ''))
-                    ws.cell(row=row, column=5, value=v_dict.get('element', ''))
-                    ws.cell(row=row, column=6, value=v_dict.get('xpath', ''))
-                    ws.cell(row=row, column=7, value=page_url)
-                    ws.cell(row=row, column=8, value=website_name)
+                    ws.cell(row=row, column=4, value=v_dict.get('touchpoint', v_dict.get('category', '')))
+                    ws.cell(row=row, column=5, value=v_dict.get('what', v_dict.get('description', '')))
+                    ws.cell(row=row, column=6, value=v_dict.get('why', ''))
+                    ws.cell(row=row, column=7, value=v_dict.get('who', ''))
+                    ws.cell(row=row, column=8, value=v_dict.get('remediation', v_dict.get('suggested_fix', '')))
+                    ws.cell(row=row, column=9, value=', '.join(v_dict.get('wcag_criteria', [])) if isinstance(v_dict.get('wcag_criteria'), list) else v_dict.get('wcag_criteria', ''))
+                    ws.cell(row=row, column=10, value=v_dict.get('xpath', ''))
+                    ws.cell(row=row, column=11, value=v_dict.get('element', ''))
+                    ws.cell(row=row, column=12, value=page_url)
+                    ws.cell(row=row, column=13, value=website_name)
 
-                    for col in range(1, 9):
+                    for col in range(1, 14):
                         ws.cell(row=row, column=col).fill = styles['violation']['fill']
                     row += 1
 
@@ -1444,13 +1474,18 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=1, value='Warning')
                     ws.cell(row=row, column=2, value=str(w_dict.get('impact', 'Moderate')).upper())
                     ws.cell(row=row, column=3, value=w_dict.get('id', ''))
-                    ws.cell(row=row, column=4, value=w_dict.get('description', ''))
-                    ws.cell(row=row, column=5, value=w_dict.get('element', ''))
-                    ws.cell(row=row, column=6, value=w_dict.get('xpath', ''))
-                    ws.cell(row=row, column=7, value=page_url)
-                    ws.cell(row=row, column=8, value=website_name)
+                    ws.cell(row=row, column=4, value=w_dict.get('touchpoint', w_dict.get('category', '')))
+                    ws.cell(row=row, column=5, value=w_dict.get('what', w_dict.get('description', '')))
+                    ws.cell(row=row, column=6, value=w_dict.get('why', ''))
+                    ws.cell(row=row, column=7, value=w_dict.get('who', ''))
+                    ws.cell(row=row, column=8, value=w_dict.get('remediation', w_dict.get('suggested_fix', '')))
+                    ws.cell(row=row, column=9, value=', '.join(w_dict.get('wcag_criteria', [])) if isinstance(w_dict.get('wcag_criteria'), list) else w_dict.get('wcag_criteria', ''))
+                    ws.cell(row=row, column=10, value=w_dict.get('xpath', ''))
+                    ws.cell(row=row, column=11, value=w_dict.get('element', ''))
+                    ws.cell(row=row, column=12, value=page_url)
+                    ws.cell(row=row, column=13, value=website_name)
 
-                    for col in range(1, 9):
+                    for col in range(1, 14):
                         ws.cell(row=row, column=col).fill = styles['warning']['fill']
                     row += 1
 
@@ -1465,13 +1500,18 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=1, value='Info')
                     ws.cell(row=row, column=2, value='INFO')
                     ws.cell(row=row, column=3, value=i_dict.get('id', ''))
-                    ws.cell(row=row, column=4, value=i_dict.get('description', ''))
-                    ws.cell(row=row, column=5, value=i_dict.get('element', ''))
-                    ws.cell(row=row, column=6, value=i_dict.get('xpath', ''))
-                    ws.cell(row=row, column=7, value=page_url)
-                    ws.cell(row=row, column=8, value=website_name)
+                    ws.cell(row=row, column=4, value=i_dict.get('touchpoint', i_dict.get('category', '')))
+                    ws.cell(row=row, column=5, value=i_dict.get('what', i_dict.get('description', '')))
+                    ws.cell(row=row, column=6, value=i_dict.get('why', ''))
+                    ws.cell(row=row, column=7, value=i_dict.get('who', ''))
+                    ws.cell(row=row, column=8, value=i_dict.get('remediation', ''))
+                    ws.cell(row=row, column=9, value=', '.join(i_dict.get('wcag_criteria', [])) if isinstance(i_dict.get('wcag_criteria'), list) else i_dict.get('wcag_criteria', ''))
+                    ws.cell(row=row, column=10, value=i_dict.get('xpath', ''))
+                    ws.cell(row=row, column=11, value=i_dict.get('element', ''))
+                    ws.cell(row=row, column=12, value=page_url)
+                    ws.cell(row=row, column=13, value=website_name)
 
-                    for col in range(1, 9):
+                    for col in range(1, 14):
                         ws.cell(row=row, column=col).fill = styles['info']['fill']
                     row += 1
 
@@ -1486,13 +1526,18 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=1, value='Discovery')
                     ws.cell(row=row, column=2, value='DISCOVERY')
                     ws.cell(row=row, column=3, value=d_dict.get('id', ''))
-                    ws.cell(row=row, column=4, value=d_dict.get('description', ''))
-                    ws.cell(row=row, column=5, value=d_dict.get('element', ''))
-                    ws.cell(row=row, column=6, value=d_dict.get('xpath', ''))
-                    ws.cell(row=row, column=7, value=page_url)
-                    ws.cell(row=row, column=8, value=website_name)
+                    ws.cell(row=row, column=4, value=d_dict.get('touchpoint', d_dict.get('category', '')))
+                    ws.cell(row=row, column=5, value=d_dict.get('what', d_dict.get('description', '')))
+                    ws.cell(row=row, column=6, value=d_dict.get('why', ''))
+                    ws.cell(row=row, column=7, value=d_dict.get('who', ''))
+                    ws.cell(row=row, column=8, value=d_dict.get('remediation', ''))
+                    ws.cell(row=row, column=9, value=', '.join(d_dict.get('wcag_criteria', [])) if isinstance(d_dict.get('wcag_criteria'), list) else d_dict.get('wcag_criteria', ''))
+                    ws.cell(row=row, column=10, value=d_dict.get('xpath', ''))
+                    ws.cell(row=row, column=11, value=d_dict.get('element', ''))
+                    ws.cell(row=row, column=12, value=page_url)
+                    ws.cell(row=row, column=13, value=website_name)
 
-                    for col in range(1, 9):
+                    for col in range(1, 14):
                         ws.cell(row=row, column=col).fill = styles['discovery']['fill']
                     row += 1
 
@@ -1507,13 +1552,18 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=1, value='AI Finding')
                     ws.cell(row=row, column=2, value=str(f_dict.get('severity', 'Unknown')).upper())
                     ws.cell(row=row, column=3, value=f_dict.get('type', ''))
-                    ws.cell(row=row, column=4, value=f_dict.get('description', ''))
-                    ws.cell(row=row, column=5, value='')  # AI findings don't have element
-                    ws.cell(row=row, column=6, value='')  # AI findings don't have xpath
-                    ws.cell(row=row, column=7, value=page_url)
-                    ws.cell(row=row, column=8, value=website_name)
+                    ws.cell(row=row, column=4, value='')  # AI findings don't have touchpoint
+                    ws.cell(row=row, column=5, value=f_dict.get('description', ''))
+                    ws.cell(row=row, column=6, value='')
+                    ws.cell(row=row, column=7, value='')
+                    ws.cell(row=row, column=8, value=f_dict.get('suggested_fix', ''))
+                    ws.cell(row=row, column=9, value='')
+                    ws.cell(row=row, column=10, value='')
+                    ws.cell(row=row, column=11, value='')
+                    ws.cell(row=row, column=12, value=page_url)
+                    ws.cell(row=row, column=13, value=website_name)
 
-                    for col in range(1, 9):
+                    for col in range(1, 14):
                         ws.cell(row=row, column=col).fill = styles['info']['fill']
                     row += 1
 

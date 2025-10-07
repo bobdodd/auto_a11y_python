@@ -668,6 +668,16 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                                        {% elif 'ErrContentObscuring' in violation.id and violation.metadata and 'obscuredElements' in violation.metadata %}
+                                                        <p class="mb-2"><strong>Obscuring element (dialog/overlay):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                                        <h6 class="mt-4">{{ violation.metadata.obscuredCount }} Interactive element(s) being obscured:</h6>
+                                                        {% for element in violation.metadata.obscuredElements %}
+                                                        <div class="mb-3 border-start border-warning border-3 ps-3">
+                                                            <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
+                                                            <p class="mb-1 small text-muted">Location: <code>{{ element.xpath }}</code></p>
+                                                        </div>
+                                                        {% endfor %}
                                                         {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
                                                         <h6 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h6>
                                                         {% for h1 in violation.metadata.allH1s %}
@@ -851,6 +861,16 @@
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                {% elif 'ErrContentObscuring' in violation.id and violation.metadata and 'obscuredElements' in violation.metadata %}
+                                <p class="mb-2"><strong>Obscuring element (dialog/overlay):</strong></p>
+                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                <h6 class="mt-4">{{ violation.metadata.obscuredCount }} Interactive element(s) being obscured:</h6>
+                                {% for element in violation.metadata.obscuredElements %}
+                                <div class="mb-3 border-start border-warning border-3 ps-3">
+                                    <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
+                                    <p class="mb-1 small text-muted">Location: <code>{{ element.xpath }}</code></p>
+                                </div>
+                                {% endfor %}
                                 {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
                                 <h6 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h6>
                                 {% for h1 in violation.metadata.allH1s %}

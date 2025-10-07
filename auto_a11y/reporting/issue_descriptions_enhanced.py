@@ -568,13 +568,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Use only one labeling method"
         },
         'ErrContentObscuring': {
-            'title': "Content is obscured by other elements preventing interaction",
-            'what': "Content is obscured by other elements preventing interaction",
-            'why': "When content is covered by other elements, users cannot access or interact with it, creating complete barriers to functionality.",
-            'who': "All users, particularly keyboard users who cannot use mouse to work around layout issues, screen reader users who may not know content is obscured.",
+            'title': "Dialog/overlay obscures {obscuredCount} interactive element(s)",
+            'what': "Dialog or overlay at {dialogXpath} obscures {obscuredCount} interactive element(s), preventing users from accessing them",
+            'why': "When content is covered by other elements, users cannot access or interact with it, creating complete barriers to functionality. The dialog is positioned over interactive elements that users need to access.",
+            'who': "All users, particularly keyboard users who cannot use mouse to work around layout issues, screen reader users who may not know content is obscured, mobile users with limited screen space.",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.4.3', '2.1.2'],
-            'remediation': "Fix z-index and positioning issues, ensure modals and overlays don\'t cover content inappropriately, test that all content remains accessible."
+            'remediation': "Fix z-index and positioning issues to prevent the dialog from covering interactive content. Ensure modals and overlays don\'t cover content inappropriately. Consider repositioning the dialog, making it dismissible, or redesigning the layout. Test that all content remains accessible when the dialog is visible."
         },
         'ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark': {
             'title': "Contentinfo landmark is nested inside another landmark",

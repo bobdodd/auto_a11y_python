@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnCustomBulletStyling - SVG element bullets</title>
+    <style>
+        ul.svg-bullets {
+            list-style-type: none;
+        }
+        ul.svg-bullets li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        ul.svg-bullets li svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 10px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Custom Bullet with SVG Elements</h1>
+
+    <p>This list uses &lt;svg&gt; elements as bullets (first child, small size):</p>
+
+    <ul class="svg-bullets">
+        <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff6b6b">
+                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+            </svg>
+            <span>First item with SVG checkmark bullet</span>
+        </li>
+        <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff6b6b">
+                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+            </svg>
+            <span>Second item with SVG checkmark bullet</span>
+        </li>
+        <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff6b6b">
+                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+            </svg>
+            <span>Third item with SVG checkmark bullet</span>
+        </li>
+    </ul>
+
+    <p><strong>Expected:</strong> Should trigger WarnCustomBulletStyling with customType: "&lt;svg&gt; element as bullet"</p>
+    <p><strong>Note:</strong> SVG must be first child and smaller than 50x50 pixels to be detected as bullets.</p>
+</body>
+</html>

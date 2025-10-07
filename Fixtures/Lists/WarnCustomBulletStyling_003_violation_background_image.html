@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnCustomBulletStyling - Background image bullets</title>
+    <style>
+        ul.bg-image-bullets {
+            list-style-type: none;
+        }
+        ul.bg-image-bullets li {
+            padding-left: 30px;
+            position: relative;
+        }
+        ul.bg-image-bullets li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 3px;
+            width: 20px;
+            height: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff6b6b"><circle cx="12" cy="12" r="10"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Custom Bullet with Background Image</h1>
+
+    <p>This list uses ::before pseudo-element with background-image as bullets:</p>
+
+    <ul class="bg-image-bullets">
+        <li>First item with background image bullet</li>
+        <li>Second item with background image bullet</li>
+        <li>Third item with background image bullet</li>
+    </ul>
+
+    <p><strong>Expected:</strong> Should trigger WarnCustomBulletStyling with customType: "::before background-image"</p>
+</body>
+</html>

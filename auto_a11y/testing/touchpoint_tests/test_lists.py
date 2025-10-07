@@ -126,6 +126,23 @@ async def test_lists(page) -> Dict[str, Any]:
                             return true;
                         }
 
+                        // Check for icon fonts used as bullets (Font Awesome, Material Icons, etc.)
+                        const iconElements = el.querySelectorAll('i, span[class*="icon"], span[class*="fa-"], span[class*="material-"]');
+                        if (iconElements.length >= 3) {
+                            // Check if they appear to be used as bullets (siblings with text following)
+                            let bulletCount = 0;
+                            iconElements.forEach(icon => {
+                                const parent = icon.parentElement;
+                                // Check if icon is at start of parent and parent has text after it
+                                if (parent && parent.firstElementChild === icon && parent.textContent.trim().length > icon.textContent.trim().length) {
+                                    bulletCount++;
+                                }
+                            });
+                            if (bulletCount >= 3) {
+                                return true;
+                            }
+                        }
+
                         // Check for text starting with dash/hyphen/asterisk bullets
                         const lines = text.split('\n').filter(line => line.trim().length > 0);
                         if (lines.length >= 3) {
@@ -188,7 +205,28 @@ async def test_lists(page) -> Dict[str, Any]:
                     let pattern = 'unknown';
                     let detectedBullets = [];
 
-                    if (style.display === 'list-item') {
+                    // Check for icon fonts first
+                    const iconElements = element.querySelectorAll('i, span[class*="icon"], span[class*="fa-"], span[class*="material-"]');
+                    const iconBullets = [];
+                    iconElements.forEach(icon => {
+                        const parent = icon.parentElement;
+                        if (parent && parent.firstElementChild === icon) {
+                            // Get text after the icon in the same parent
+                            const textContent = Array.from(parent.childNodes)
+                                .filter(node => node !== icon && (node.nodeType === 3 || !node.matches('i, span[class*="icon"], span[class*="fa-"], span[class*="material-"]')))
+                                .map(node => node.textContent)
+                                .join('')
+                                .trim();
+                            if (textContent.length > 0) {
+                                iconBullets.push(textContent);
+                            }
+                        }
+                    });
+
+                    if (iconBullets.length >= 3) {
+                        pattern = 'icon font bullets (Font Awesome, Material Icons, etc.)';
+                        detectedBullets = iconBullets;
+                    } else if (style.display === 'list-item') {
                         pattern = 'CSS list-item display';
                     } else if (html.includes('•')) {
                         pattern = 'bullet character (•)';

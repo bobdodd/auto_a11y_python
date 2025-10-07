@@ -1717,6 +1717,18 @@ class IssueCatalog:
             "who_it_affects": "Users needing custom styles",
             "how_to_fix": "Consider external stylesheets"
         },
+        "DiscoResponsiveBreakpoints": {
+            "id": "DiscoResponsiveBreakpoints",
+            "type": "Discovery",
+            "impact": "N/A",
+            "wcag": ["1.4.10", "2.4.3"],
+            "wcag_full": "1.4.10 Reflow (AA), 2.4.3 Focus Order (A)",
+            "category": "responsive",
+            "description": "Responsive breakpoints detected on page",
+            "why_it_matters": "Layout changes at different viewport widths may affect accessibility",
+            "who_it_affects": "Mobile and tablet users, users who zoom content",
+            "how_to_fix": "Test accessibility at each defined breakpoint"
+        },
         "DiscoFoundJS": {
             "id": "DiscoFoundJS",
             "type": "Discovery",
@@ -1840,14 +1852,14 @@ class IssueCatalog:
         "ErrMultiplePageTitles": {
             "id": "ErrMultiplePageTitles",
             "type": "Error",
-            "impact": "Low",
+            "impact": "Medium",
             "wcag": ["2.4.2"],
-            "wcag_full": "2.4.2",
+            "wcag_full": "2.4.2 Page Titled (A)",
             "category": "page",
-            "description": "Multiple title elements found in document",
-            "why_it_matters": "Multiple titles may confuse assistive technologies",
-            "who_it_affects": "Screen reader users",
-            "how_to_fix": "Use only one title element per page"
+            "description": "Multiple title elements found in document head causing unpredictable behavior",
+            "why_it_matters": "Browsers and assistive technologies choose unpredictably between multiple titles, creating inconsistent experience",
+            "who_it_affects": "All users, screen reader users, search engine users",
+            "how_to_fix": "Remove all but one title element from document head"
         },
         "ErrStyleAttrColorFont": {
             "id": "ErrStyleAttrColorFont",

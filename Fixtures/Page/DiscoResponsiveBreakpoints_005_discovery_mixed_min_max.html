@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Breakpoints - Mixed Min and Max Width</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoResponsiveBreakpoints_005_discovery_mixed_min_max",
+    "issueId": "DiscoResponsiveBreakpoints",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Page with both min-width and max-width media queries combined",
+    "wcag": "1.4.10, 2.4.3",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        /* Base styles */
+        .container {
+            padding: 16px;
+        }
+
+        /* Mobile only */
+        @media (max-width: 599px) {
+            .desktop-only {
+                display: none;
+            }
+
+            .mobile-only {
+                display: block;
+            }
+        }
+
+        /* Tablet range */
+        @media (min-width: 600px) and (max-width: 1023px) {
+            .container {
+                padding: 24px;
+            }
+
+            .tablet-specific {
+                display: block;
+            }
+        }
+
+        /* Desktop and up */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .mobile-only {
+                display: none;
+            }
+
+            .desktop-only {
+                display: block;
+            }
+        }
+
+        /* Large desktop */
+        @media (min-width: 1440px) {
+            .container {
+                max-width: 1400px;
+            }
+
+            body {
+                font-size: 18px;
+            }
+        }
+
+        /* Extra wide screens */
+        @media (min-width: 1920px) {
+            .container {
+                max-width: 1800px;
+            }
+        }
+    </style>
+</head>
+<body data-requires-review="true"
+      data-review-reason="Page uses mixed min-width and max-width breakpoints: 599px, 600px, 1023px, 1024px, 1440px, 1920px">
+    <div class="container">
+        <h1>Mixed Breakpoint Approach</h1>
+
+        <div class="mobile-only">
+            <p>Mobile navigation menu (visible below 600px and hidden above 1024px)</p>
+            <button aria-label="Open menu" aria-expanded="false">☰ Menu</button>
+        </div>
+
+        <div class="tablet-specific" style="display: none;">
+            <p>Tablet-specific layout (600px-1023px range)</p>
+        </div>
+
+        <nav class="desktop-only" style="display: none;">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <main>
+            <p>This page combines both min-width and max-width media queries, creating specific ranges for different device types.</p>
+            <p>Important to test at all breakpoint boundaries: 599px, 600px, 1023px, 1024px, 1440px, and 1920px.</p>
+            <p>Verify that focus order and interactive elements work correctly at each breakpoint.</p>
+        </main>
+    </div>
+</body>
+</html>

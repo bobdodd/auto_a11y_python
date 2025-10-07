@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Breakpoints - Max-Width Breakpoints</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoResponsiveBreakpoints_003_discovery_max_width_breakpoints",
+    "issueId": "DiscoResponsiveBreakpoints",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Page using max-width media queries (desktop-first approach)",
+    "wcag": "1.4.10, 2.4.3",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        /* Desktop first approach */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        /* Desktop */
+        @media (max-width: 1200px) {
+            .navigation {
+                flex-direction: column;
+            }
+        }
+
+        /* Tablet */
+        @media (max-width: 992px) {
+            .content {
+                padding: 20px;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .navigation {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* Small mobile */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body data-requires-review="true"
+      data-review-reason="Page uses max-width breakpoints at 480px, 768px, 992px, 1200px - ensure interactive elements accessible at each width">
+    <header>
+        <button class="mobile-menu" aria-label="Open menu" aria-expanded="false">
+            Menu
+        </button>
+
+        <nav class="navigation">
+            <a href="#home">Home</a>
+            <a href="#services">Services</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <main class="content">
+        <h1>Desktop-First Responsive Design</h1>
+        <p>This page uses max-width media queries, starting from desktop and adapting down to mobile.</p>
+        <p>Navigation changes from horizontal flex to hidden (replaced by mobile menu button) as viewport narrows.</p>
+    </main>
+
+    <aside class="sidebar">
+        <h2>Sidebar</h2>
+        <p>Sidebar moves above content on tablet widths.</p>
+    </aside>
+</body>
+</html>

@@ -7,19 +7,19 @@
     <title>Product Catalog | Shop Now | Best Deals</title>
     <script type="application/json" id="test-metadata">
 {
-    "id": "WarnMultipleTitleElements_001_violations_basic",
-    "issueId": "WarnMultipleTitleElements",
+    "id": "ErrMultiplePageTitles_002_violations_multiple",
+    "issueId": "ErrMultiplePageTitles",
     "expectedViolationCount": 1,
     "expectedPassCount": 0,
-    "description": "Page with multiple title elements",
+    "description": "Page with 2 title elements causing unpredictable behavior",
     "wcag": "2.4.2",
     "impact": "Medium"
 }
     </script>
 </head>
 <body data-expected-violation="true"
-      data-violation-id="WarnMultipleTitleElements"
-      data-violation-reason="Page contains multiple <title> elements. Only the first title is typically used by browsers and screen readers. Causes confusion about the actual page title. Screen readers may announce inconsistent or incorrect page titles. Search engines may be confused about page content">
+      data-violation-id="ErrMultiplePageTitles"
+      data-violation-reason="Page has 2 title elements. Browsers and assistive technologies choose unpredictably between them, creating inconsistent page identification across devices and tools">
     <h1>Product Catalog</h1>
 
     <main>

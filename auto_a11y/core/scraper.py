@@ -456,13 +456,21 @@ class ScrapingEngine:
                         status=PageStatus.DISCOVERY_FAILED,
                         error_reason=f"Failed to create browser page: {str(e2)[:200]}"
                     )
-            
+
+            # Apply stealth techniques to avoid bot detection
+            await self.browser_manager._apply_stealth(page)
+
             # Set viewport
             await page.setViewport({
                 'width': self.browser_manager.config.get('viewport_width', 1920),
                 'height': self.browser_manager.config.get('viewport_height', 1080)
             })
-            
+
+            # Set realistic user agent
+            user_agent = self.browser_manager.config.get('user_agent',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+            await page.setUserAgent(user_agent)
+
             # Set navigation timeout - balanced to avoid hanging but allow slow pages
             page.setDefaultNavigationTimeout(25000)  # 25 seconds timeout
             

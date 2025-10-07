@@ -1,0 +1,892 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Reports</h1>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateReportModal">
+            <i class="bi bi-plus-circle"></i> Generate Report
+        </button>
+    </div>
+
+    <!-- Report Types -->
+    <style>
+        .report-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #dee2e6;
+        }
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .report-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 280px;
+        }
+        .report-card .icon-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .report-card .content-wrapper {
+            flex-grow: 0;
+        }
+        .report-card .btn-wrapper {
+            margin-top: auto;
+            padding-top: 15px;
+        }
+        /* Darker colors for better contrast (WCAG AAA compliant) */
+        .icon-html { color: #b8860b !important; } /* DarkGoldenrod - darker than warning */
+        .icon-pdf { color: #c82333 !important; } /* Darker red */
+        .icon-excel { color: #1e7e34 !important; } /* Darker green */
+        .icon-json { color: #117a8b !important; } /* Darker cyan */
+        .icon-summary { color: #004085 !important; } /* Darker blue */
+        
+        /* Override Bootstrap button colors for accessibility */
+        .btn-html { 
+            color: #856404; 
+            border-color: #856404;
+            background-color: transparent;
+        }
+        .btn-html:hover, .btn-html:focus { 
+            background-color: #856404; 
+            border-color: #856404;
+            color: white;
+        }
+        .btn-html:focus {
+            box-shadow: 0 0 0 0.2rem rgba(133, 100, 4, 0.25);
+        }
+        
+        .btn-json {
+            color: #0c525d; /* Much darker teal for 4.5:1 contrast */
+            border-color: #0c525d;
+            background-color: transparent;
+        }
+        .btn-json:hover, .btn-json:focus {
+            background-color: #0c525d;
+            border-color: #0c525d;
+            color: white;
+        }
+        .btn-json:focus {
+            box-shadow: 0 0 0 0.2rem rgba(12, 82, 93, 0.25);
+        }
+        
+        .btn-pdf {
+            color: #721c24; /* Darker red for better contrast */
+            border-color: #721c24;
+            background-color: transparent;
+        }
+        .btn-pdf:hover, .btn-pdf:focus {
+            background-color: #721c24;
+            border-color: #721c24;
+            color: white;
+        }
+        .btn-pdf:focus {
+            box-shadow: 0 0 0 0.2rem rgba(114, 28, 36, 0.25);
+        }
+        
+        .btn-excel {
+            color: #155724; /* Darker green for better contrast */
+            border-color: #155724;
+            background-color: transparent;
+        }
+        .btn-excel:hover, .btn-excel:focus {
+            background-color: #155724;
+            border-color: #155724;
+            color: white;
+        }
+        .btn-excel:focus {
+            box-shadow: 0 0 0 0.2rem rgba(21, 87, 36, 0.25);
+        }
+        
+        .btn-summary {
+            color: #004085; /* Darker blue for better contrast */
+            border-color: #004085;
+            background-color: transparent;
+        }
+        .btn-summary:hover, .btn-summary:focus {
+            background-color: #004085;
+            border-color: #004085;
+            color: white;
+        }
+        .btn-summary:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 64, 133, 0.25);
+        }
+    </style>
+    
+    <div class="row mb-4 g-3">
+        <div class="col-md-4">
+            <div class="card h-100 report-card">
+                <div class="card-body text-center">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-file-earmark-check display-3 icon-summary"></i>
+                    </div>
+                    <div class="content-wrapper">
+                        <h5 class="card-title mt-3">Accessibility Report</h5>
+                        <p class="card-text text-muted">Comprehensive accessibility testing results</p>
+                    </div>
+                    <div class="btn-wrapper">
+                        <button class="btn btn-summary" data-bs-toggle="modal" data-bs-target="#generateReportModal">
+                            <i class="bi bi-download me-2"></i>Generate Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 report-card">
+                <div class="card-body text-center">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-search display-3 icon-html"></i>
+                    </div>
+                    <div class="content-wrapper">
+                        <h5 class="card-title mt-3">Discovery Report</h5>
+                        <p class="card-text text-muted">Discover content requiring manual inspection</p>
+                    </div>
+                    <div class="btn-wrapper">
+                        <button class="btn btn-html" data-bs-toggle="modal" data-bs-target="#discoveryModal">
+                            <i class="bi bi-search me-2"></i>Generate Discovery Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 report-card">
+                <div class="card-body text-center">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-diagram-3 display-3 icon-summary"></i>
+                    </div>
+                    <div class="content-wrapper">
+                        <h5 class="card-title mt-3">Site Structure</h5>
+                        <p class="card-text text-muted">Hierarchical view of website organization</p>
+                    </div>
+                    <div class="btn-wrapper">
+                        <button class="btn btn-summary" data-bs-toggle="modal" data-bs-target="#siteStructureModal">
+                            <i class="bi bi-diagram-3 me-2"></i>Generate Structure
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Reports -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Recent Reports</h5>
+        </div>
+        <div class="card-body">
+            {% if reports %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Report Name</th>
+                            <th>Type</th>
+                            <th>Project</th>
+                            <th>Generated</th>
+                            <th>Size</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-file-earmark-{{ {'pdf': 'pdf text-danger', 
+                                                                 'excel': 'excel text-success', 
+                                                                 'json': 'code text-info',
+                                                                 'html': 'text text-primary'}[report.type] or 'text' }}"></i>
+                                {{ report.name }}
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ {'pdf': 'danger', 
+                                                          'excel': 'success', 
+                                                          'json': 'info',
+                                                          'html': 'primary'}[report.type] or 'secondary' }}">
+                                    {{ report.type|upper }}
+                                </span>
+                            </td>
+                            <td>{{ report.project_name or 'All Projects' }}</td>
+                            <td>{{ report.created_at.strftime('%Y-%m-%d %H:%M') if report.created_at else 'Unknown' }}</td>
+                            <td>{{ report.size_kb|filesizeformat if report.size_kb else 'N/A' }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('reports.download_report', filename=report.filename) }}" 
+                                       class="btn btn-sm btn-primary" title="Download">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-danger" 
+                                            onclick="deleteReport('{{ report.filename }}')" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-4">
+                No reports generated yet. Click "Generate Report" to create your first report.
+            </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Generate Report Modal -->
+<div class="modal fade" id="generateReportModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="generateReportForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="reportName" class="form-label">Report Name</label>
+                                <input type="text" class="form-control" id="reportName" 
+                                       placeholder="Accessibility Report">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="reportType" class="form-label">Report Type</label>
+                                <select class="form-control" id="reportType">
+                                    <option value="pdf">PDF Report</option>
+                                    <option value="excel">Excel Spreadsheet</option>
+                                    <option value="json">JSON Export</option>
+                                    <option value="html">HTML Report</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="projectSelect" class="form-label">Project</label>
+                                <select class="form-control" id="projectSelect">
+                                    <option value="">All Projects</option>
+                                    {% for project in projects %}
+                                    <option value="{{ project.id }}">{{ project.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="websiteSelect" class="form-label">Website</label>
+                                <select class="form-control" id="websiteSelect" disabled>
+                                    <option value="">Select a project first...</option>
+                                    {% for website in websites %}
+                                    <option value="{{ website.id }}" data-project-id="{{ website.project_id }}" style="display: none;">{{ website.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Date Range</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="date" class="form-control" id="startDate">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="date" class="form-control" id="endDate">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Include in Report</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeViolations" checked>
+                            <label class="form-check-label" for="includeViolations">
+                                Accessibility Violations
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeWarnings" checked>
+                            <label class="form-check-label" for="includeWarnings">
+                                Warnings
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeAI" checked>
+                            <label class="form-check-label" for="includeAI">
+                                AI Analysis Results
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeScreenshots">
+                            <label class="form-check-label" for="includeScreenshots">
+                                Screenshots (increases file size)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeSummary" checked>
+                            <label class="form-check-label" for="includeSummary">
+                                Executive Summary
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-file-earmark-arrow-down"></i> Generate Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize date inputs and report name with today's date
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    
+    // Set default report name with today's date
+    const reportNameInput = document.getElementById('reportName');
+    if (!reportNameInput.value) {
+        reportNameInput.value = `Accessibility Report ${todayStr}`;
+    }
+    
+    // Set date range
+    document.getElementById('endDate').value = todayStr;
+    
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    document.getElementById('startDate').value = thirtyDaysAgo.toISOString().split('T')[0];
+});
+
+// Handle project selection change
+document.getElementById('projectSelect').addEventListener('change', function() {
+    const websiteSelect = document.getElementById('websiteSelect');
+    const selectedProjectId = this.value;
+
+    // Get the placeholder option (first option)
+    const placeholderOption = websiteSelect.querySelector('option[value=""]');
+
+    // Reset website selection
+    websiteSelect.value = '';
+
+    // Get all website options (excluding placeholder)
+    const websiteOptions = websiteSelect.querySelectorAll('option[data-project-id]');
+
+    if (selectedProjectId) {
+        // Enable website select
+        websiteSelect.disabled = false;
+
+        // Update placeholder text
+        placeholderOption.textContent = 'All Websites';
+
+        // Show/hide website options based on selected project
+        websiteOptions.forEach(option => {
+            if (option.dataset.projectId === selectedProjectId) {
+                option.style.display = '';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    } else {
+        // Disable website select when "All Projects" is selected
+        websiteSelect.disabled = true;
+
+        // Update placeholder text
+        placeholderOption.textContent = 'Select a project first...';
+
+        // Hide all website options
+        websiteOptions.forEach(option => {
+            option.style.display = 'none';
+        });
+    }
+});
+
+// Handle report generation form
+document.getElementById('generateReportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        name: document.getElementById('reportName').value,
+        type: document.getElementById('reportType').value,
+        project_id: document.getElementById('projectSelect').value,
+        website_id: document.getElementById('websiteSelect').value,
+        start_date: document.getElementById('startDate').value,
+        end_date: document.getElementById('endDate').value,
+        include_violations: document.getElementById('includeViolations').checked,
+        include_warnings: document.getElementById('includeWarnings').checked,
+        include_ai: document.getElementById('includeAI').checked,
+        include_screenshots: document.getElementById('includeScreenshots').checked,
+        include_summary: document.getElementById('includeSummary').checked
+    };
+    
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+    submitBtn.disabled = true;
+    
+    // Submit request
+    fetch('/reports/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Close modal and reload page
+            bootstrap.Modal.getInstance(document.getElementById('generateReportModal')).hide();
+            location.reload();
+        } else {
+            alert('Failed to generate report: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        alert('Error generating report: ' + error);
+    })
+    .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+function generateReport(type) {
+    document.getElementById('reportType').value = type;
+    const modal = new bootstrap.Modal(document.getElementById('generateReportModal'));
+    modal.show();
+}
+
+function deleteReport(reportId) {
+    if (!confirm('Are you sure you want to delete this report?')) {
+        return;
+    }
+    
+    fetch(`/reports/${reportId}/delete`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Failed to delete report');
+        }
+    });
+}
+
+// Site Structure Report Functions
+document.addEventListener('DOMContentLoaded', function() {
+    // Load projects when site structure modal opens
+    const siteStructureModal = document.getElementById('siteStructureModal');
+    if (siteStructureModal) {
+        siteStructureModal.addEventListener('show.bs.modal', function() {
+            loadProjectsForStructure();
+        });
+    }
+    
+    // Handle project selection change
+    const structureProject = document.getElementById('structureProject');
+    if (structureProject) {
+        structureProject.addEventListener('change', function() {
+            const projectId = this.value;
+            if (projectId) {
+                loadWebsitesForProject(projectId);
+            } else {
+                const websiteSelect = document.getElementById('structureWebsite');
+                websiteSelect.innerHTML = '<option value="">First select a project...</option>';
+                websiteSelect.disabled = true;
+            }
+        });
+    }
+    
+    // Handle site structure form submission
+    const siteStructureForm = document.getElementById('siteStructureForm');
+    if (siteStructureForm) {
+        siteStructureForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateSiteStructureReport();
+        });
+    }
+});
+
+function loadProjectsForStructure() {
+    fetch('/projects/api/list')
+    .then(response => response.json())
+    .then(data => {
+        const select = document.getElementById('structureProject');
+        select.innerHTML = '<option value="">Choose a project...</option>';
+        
+        if (data.projects && data.projects.length > 0) {
+            data.projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project.id;
+                option.textContent = project.name;
+                select.appendChild(option);
+            });
+        } else {
+            select.innerHTML = '<option value="">No projects available</option>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading projects:', error);
+        const select = document.getElementById('structureProject');
+        select.innerHTML = '<option value="">Error loading projects</option>';
+    });
+}
+
+function loadWebsitesForProject(projectId) {
+    const websiteSelect = document.getElementById('structureWebsite');
+    websiteSelect.innerHTML = '<option value="">Loading websites...</option>';
+    websiteSelect.disabled = true;
+    
+    fetch(`/projects/api/${projectId}/websites`)
+    .then(response => response.json())
+    .then(data => {
+        websiteSelect.innerHTML = '<option value="">Choose a website...</option>';
+        
+        if (data.websites && data.websites.length > 0) {
+            data.websites.forEach(website => {
+                const option = document.createElement('option');
+                option.value = website.id;
+                option.textContent = `${website.name} (${website.url})`;
+                websiteSelect.appendChild(option);
+            });
+            websiteSelect.disabled = false;
+        } else {
+            websiteSelect.innerHTML = '<option value="">No websites in this project</option>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading websites:', error);
+        websiteSelect.innerHTML = '<option value="">Error loading websites</option>';
+    });
+}
+
+function generateSiteStructureReport() {
+    const websiteId = document.getElementById('structureWebsite').value;
+    const format = document.getElementById('structureFormat').value;
+    
+    if (!websiteId) {
+        alert('Please select a project and website');
+        return;
+    }
+    
+    // Create a form to submit the report request
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/reports/generate/page-structure/${websiteId}`;
+    
+    const formatInput = document.createElement('input');
+    formatInput.type = 'hidden';
+    formatInput.name = 'format';
+    formatInput.value = format;
+    form.appendChild(formatInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+    
+    // Close the modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('siteStructureModal'));
+    modal.hide();
+}
+
+// Discovery Report Functions - Initialize on DOMContentLoaded
+(function() {
+    // Wait for DOM to be ready
+    const initDiscovery = function() {
+        // Load projects when discovery modal opens
+        const discoveryModal = document.getElementById('discoveryModal');
+        if (discoveryModal) {
+            discoveryModal.addEventListener('show.bs.modal', function() {
+                loadProjectsForDiscovery();
+            });
+        }
+
+        // Handle scope selection change
+        const scopeRadios = document.querySelectorAll('input[name="discoveryScope"]');
+        scopeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const projectGroup = document.getElementById('discoveryProjectGroup');
+                const websiteGroup = document.getElementById('discoveryWebsiteGroup');
+                const helpText = document.getElementById('discoveryProjectHelpText');
+
+                if (this.value === 'website') {
+                    projectGroup.style.display = 'block';
+                    websiteGroup.style.display = 'block';
+                    if (helpText) {
+                        helpText.textContent = 'Select a project first';
+                    }
+                } else {
+                    projectGroup.style.display = 'block';
+                    websiteGroup.style.display = 'none';
+                    if (helpText) {
+                        helpText.textContent = 'All websites in the project will be included';
+                    }
+                }
+            });
+        });
+
+        // Handle project selection change for discovery
+        const discoveryProject = document.getElementById('discoveryProject');
+        if (discoveryProject) {
+            discoveryProject.addEventListener('change', function() {
+                const projectId = this.value;
+                const scope = document.querySelector('input[name="discoveryScope"]:checked').value;
+
+                if (scope === 'website' && projectId) {
+                    loadWebsitesForDiscovery(projectId);
+                }
+            });
+        }
+
+        // Handle discovery form submission
+        const discoveryForm = document.getElementById('discoveryForm');
+        if (discoveryForm) {
+            discoveryForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                generateDiscoveryReport();
+            });
+        }
+    };
+
+    // Initialize after DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDiscovery);
+    } else {
+        initDiscovery();
+    }
+})();
+
+function loadProjectsForDiscovery() {
+    fetch('/projects/api/list')
+    .then(response => response.json())
+    .then(data => {
+        const select = document.getElementById('discoveryProject');
+        select.innerHTML = '<option value="">Choose a project...</option>';
+
+        if (data.projects && data.projects.length > 0) {
+            data.projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project.id;
+                option.textContent = project.name;
+                select.appendChild(option);
+            });
+        } else {
+            select.innerHTML = '<option value="">No projects available</option>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading projects:', error);
+        const select = document.getElementById('discoveryProject');
+        select.innerHTML = '<option value="">Error loading projects</option>';
+    });
+}
+
+function loadWebsitesForDiscovery(projectId) {
+    const websiteSelect = document.getElementById('discoveryWebsite');
+    websiteSelect.innerHTML = '<option value="">Loading websites...</option>';
+    websiteSelect.disabled = true;
+
+    fetch(`/projects/api/${projectId}/websites`)
+    .then(response => response.json())
+    .then(data => {
+        websiteSelect.innerHTML = '<option value="">Choose a website...</option>';
+
+        if (data.websites && data.websites.length > 0) {
+            data.websites.forEach(website => {
+                const option = document.createElement('option');
+                option.value = website.id;
+                option.textContent = `${website.name} (${website.url})`;
+                websiteSelect.appendChild(option);
+            });
+            websiteSelect.disabled = false;
+        } else {
+            websiteSelect.innerHTML = '<option value="">No websites in this project</option>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading websites:', error);
+        websiteSelect.innerHTML = '<option value="">Error loading websites</option>';
+    });
+}
+
+function generateDiscoveryReport() {
+    const scope = document.querySelector('input[name="discoveryScope"]:checked').value;
+    const projectId = document.getElementById('discoveryProject').value;
+    const format = document.getElementById('discoveryFormat').value;
+
+    if (!projectId) {
+        alert('Please select a project');
+        return;
+    }
+
+    let actionUrl;
+    if (scope === 'website') {
+        const websiteId = document.getElementById('discoveryWebsite').value;
+        if (!websiteId) {
+            alert('Please select a website');
+            return;
+        }
+        actionUrl = `/reports/generate/discovery/website/${websiteId}`;
+    } else {
+        actionUrl = `/reports/generate/discovery/project/${projectId}`;
+    }
+
+    // Create a form to submit the report request
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = actionUrl;
+
+    const formatInput = document.createElement('input');
+    formatInput.type = 'hidden';
+    formatInput.name = 'format';
+    formatInput.value = format;
+    form.appendChild(formatInput);
+
+    document.body.appendChild(form);
+    form.submit();
+
+    // Close the modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('discoveryModal'));
+    if (modal) {
+        modal.hide();
+    }
+}
+</script>
+
+<!-- Site Structure Report Modal -->
+<div class="modal fade" id="siteStructureModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Site Structure Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="siteStructureForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="structureProject" class="form-label">Select Project</label>
+                        <select class="form-select" id="structureProject" required>
+                            <option value="">Choose a project...</option>
+                        </select>
+                        <small class="text-muted">Select the project containing the website</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="structureWebsite" class="form-label">Select Website</label>
+                        <select class="form-select" id="structureWebsite" required disabled>
+                            <option value="">First select a project...</option>
+                        </select>
+                        <small class="text-muted">Select the website to analyze its structure</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="structureFormat" class="form-label">Export Format</label>
+                        <select class="form-select" id="structureFormat">
+                            <option value="html">HTML (Interactive)</option>
+                            <option value="json">JSON (Data)</option>
+                            <option value="csv">CSV (Spreadsheet)</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> This report will generate a hierarchical tree view of all pages in the selected website, organized by URL structure.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-diagram-3"></i> Generate Structure Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Discovery Report Modal -->
+<div class="modal fade" id="discoveryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Discovery Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="discoveryForm">
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle"></i> This report discovers pages with content requiring manual accessibility inspection, including:
+                        <ul class="mt-2 mb-0">
+                            <li>Discovery issues (content requiring human judgment)</li>
+                            <li>Informational notices</li>
+                            <li>Accessible name issues (forms, links, buttons)</li>
+                            <li>Elements with poor or missing labels</li>
+                        </ul>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Scope</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="discoveryScope" id="discoveryScopeWebsite" value="website" checked>
+                            <label class="form-check-label" for="discoveryScopeWebsite">
+                                Single Website
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="discoveryScope" id="discoveryScopeProject" value="project">
+                            <label class="form-check-label" for="discoveryScopeProject">
+                                Entire Project
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="discoveryProjectGroup">
+                        <label for="discoveryProject" class="form-label">Select Project</label>
+                        <select class="form-select" id="discoveryProject" required>
+                            <option value="">Choose a project...</option>
+                        </select>
+                        <small class="text-muted" id="discoveryProjectHelpText">Select a project first</small>
+                    </div>
+                    <div class="mb-3" id="discoveryWebsiteGroup">
+                        <label for="discoveryWebsite" class="form-label">Select Website</label>
+                        <select class="form-select" id="discoveryWebsite" required disabled>
+                            <option value="">First select a project...</option>
+                        </select>
+                        <small class="text-muted">Select the specific website to analyze</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="discoveryFormat" class="form-label">Export Format</label>
+                        <select class="form-select" id="discoveryFormat">
+                            <option value="html">HTML (Recommended)</option>
+                            <option value="pdf">PDF</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Generate Discovery Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

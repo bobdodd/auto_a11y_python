@@ -2000,12 +2000,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         },
         'WarnCustomBulletStyling': {
             'title': "List uses custom bullet styling that may not be accessible",
-            'what': "List uses custom bullet styling that may not be accessible",
-            'why': "Custom bullets using CSS or images may not be announced correctly by screen readers.",
-            'who': "Screen reader users who may miss list semantics.",
+            'what': "List item uses {customType} for bullets instead of standard list-style-type. Details: {customDetails}",
+            'why': "Custom bullets using CSS ::before pseudo-elements, background images, or embedded images may not be announced correctly by screen readers. While the list structure is preserved, custom visual bullets might not provide the same semantic cues or be available to assistive technologies. This can reduce the clarity of list navigation for screen reader users.",
+            'who': "Screen reader users who may miss visual bullet cues, users with custom stylesheets who override author styles, users relying on list semantics for navigation.",
             'impact': ImpactScale.LOW.value,
             'wcag': ['1.3.1'],
-            'remediation': "Use CSS ::marker pseudo-element for custom bullets, ensure list semantics are preserved."
+            'remediation': "Consider using standard list-style-type values (disc, circle, square, decimal, etc.) which are better supported by assistive technologies. If custom bullets are required, use the CSS ::marker pseudo-element instead of ::before, as ::marker is specifically designed for this purpose and has better accessibility support. Ensure the list-style-type property is not set to 'none'. Test with screen readers to verify list navigation works correctly."
         },
         'WarnDeepListNesting': {
             'title': "Lists nested more than 3 levels deep",

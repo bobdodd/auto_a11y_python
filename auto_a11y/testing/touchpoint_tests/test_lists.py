@@ -344,18 +344,48 @@ async def test_lists(page) -> Dict[str, Any]:
                     items.forEach(item => {
                         const style = window.getComputedStyle(item);
                         const beforePseudo = window.getComputedStyle(item, '::before');
-                        
-                        const hasCustomBullet = beforePseudo.getPropertyValue('content') !== 'none' &&
-                                              beforePseudo.getPropertyValue('content') !== '""' &&
-                                              beforePseudo.getPropertyValue('content') !== 'normal';
-                        
-                        const hasIconFont = beforePseudo.getPropertyValue('font-family').includes('icon') ||
-                                          beforePseudo.getPropertyValue('content').match(/[^\\u0000-\\u007F]/);
-                        
-                        const hasImage = beforePseudo.getPropertyValue('background-image') !== 'none' ||
+
+                        const beforeContent = beforePseudo.getPropertyValue('content');
+                        const hasCustomBullet = beforeContent !== 'none' &&
+                                              beforeContent !== '""' &&
+                                              beforeContent !== 'normal';
+
+                        const beforeFontFamily = beforePseudo.getPropertyValue('font-family');
+                        const hasIconFont = beforeFontFamily.includes('icon') ||
+                                          beforeFontFamily.includes('awesome') ||
+                                          beforeFontFamily.includes('material') ||
+                                          (beforeContent && beforeContent.match(/[^\u0000-\u007F]/));
+
+                        const beforeBackgroundImage = beforePseudo.getPropertyValue('background-image');
+                        const hasImage = beforeBackgroundImage !== 'none' ||
                                        item.querySelector('img, svg');
-                        
+
                         if (hasCustomBullet || hasIconFont || hasImage) {
+                            // Determine what type of custom styling was detected
+                            let customType = '';
+                            let customDetails = '';
+
+                            if (hasImage) {
+                                if (beforeBackgroundImage !== 'none') {
+                                    customType = '::before background-image';
+                                    customDetails = beforeBackgroundImage.substring(0, 100);
+                                } else if (item.querySelector('img')) {
+                                    customType = '<img> element as bullet';
+                                    const img = item.querySelector('img');
+                                    customDetails = img ? img.src.split('/').pop().substring(0, 50) : '';
+                                } else if (item.querySelector('svg')) {
+                                    customType = '<svg> element as bullet';
+                                }
+                            } else if (hasIconFont) {
+                                customType = '::before with icon font';
+                                customDetails = `font-family: ${beforeFontFamily.substring(0, 50)}, content: ${beforeContent.substring(0, 30)}`;
+                            } else if (hasCustomBullet) {
+                                customType = '::before with custom content';
+                                customDetails = `content: ${beforeContent.substring(0, 50)}`;
+                            }
+
+                            const listStyleType = style.getPropertyValue('list-style-type');
+
                             results.warnings.push({
                                 err: 'WarnCustomBulletStyling',
                                 type: 'warn',
@@ -363,8 +393,10 @@ async def test_lists(page) -> Dict[str, Any]:
                                 element: item.tagName.toLowerCase(),
                                 xpath: getFullXPath(item),
                                 html: item.outerHTML.substring(0, 200),
-                                description: 'List item uses custom bullet styling that may affect screen reader announcements',
-                                styleType: style.getPropertyValue('list-style-type')
+                                description: `List item uses custom bullet styling (${customType}) that may affect screen reader announcements`,
+                                customType: customType,
+                                customDetails: customDetails,
+                                listStyleType: listStyleType
                             });
                         }
                     });

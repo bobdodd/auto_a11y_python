@@ -1012,6 +1012,10 @@ class ExcelFormatter(BaseFormatter):
         ws_all_issues = wb.create_sheet("All Issues")
         self._create_project_all_issues_sheet(ws_all_issues, data, styles)
 
+        # All Issues (Deduplicated) Sheet - groups by common components
+        ws_deduped_issues = wb.create_sheet("All Issues (Deduplicated)")
+        self._create_project_deduped_issues_sheet(ws_deduped_issues, data, styles)
+
         # Save to bytes
         from io import BytesIO
         output = BytesIO()
@@ -1579,6 +1583,235 @@ class ExcelFormatter(BaseFormatter):
                     for col in range(1, 14):
                         ws.cell(row=row, column=col).fill = styles['info']['fill']
                     row += 1
+
+        self._auto_adjust_columns(ws)
+
+    def _xpath_is_within(self, issue_xpath: str, component_xpath: str) -> bool:
+        """
+        Check if an issue's XPath is within a component's XPath.
+
+        Args:
+            issue_xpath: XPath of the issue
+            component_xpath: XPath of the component
+
+        Returns:
+            True if issue_xpath is within or equal to component_xpath
+        """
+        if not issue_xpath or not component_xpath:
+            return False
+
+        # Normalize xpaths by removing trailing slashes
+        issue_xpath = issue_xpath.rstrip('/')
+        component_xpath = component_xpath.rstrip('/')
+
+        # Check if issue xpath starts with component xpath
+        # e.g., /html/body/nav/a is within /html/body/nav
+        return issue_xpath == component_xpath or issue_xpath.startswith(component_xpath + '/')
+
+    def _extract_common_components(self, data: Dict[str, Any]) -> Dict[str, Dict]:
+        """
+        Extract common components (forms, navs, asides, sections, headers) from discovery issues.
+
+        Args:
+            data: Project report data
+
+        Returns:
+            Dictionary mapping signature -> component info with xpaths per page
+        """
+        common_components = {}
+
+        # Iterate through all websites and pages
+        for website_data in data.get('websites', []):
+            website = website_data.get('website', {})
+            website_name = website.get('name', '') if isinstance(website, dict) else getattr(website, 'name', '')
+
+            for page_result in website_data.get('pages', []):
+                page = page_result.get('page', {})
+                page_url = page.get('url', '') if isinstance(page, dict) else getattr(page, 'url', '')
+
+                test_result = page_result.get('test_result')
+                if not test_result:
+                    continue
+
+                # Get discovery items
+                discovery_items = getattr(test_result, 'discovery', []) if hasattr(test_result, 'discovery') else []
+
+                for d in discovery_items:
+                    if hasattr(d, 'to_dict'):
+                        d_dict = d.to_dict()
+                    else:
+                        d_dict = d if isinstance(d, dict) else {}
+
+                    issue_id = d_dict.get('id', '')
+                    metadata = d_dict.get('metadata', {})
+
+                    # Extract signature and xpath for different component types
+                    signature = None
+                    component_type = None
+                    label = None
+
+                    if issue_id in ['DiscoFormOnPage', 'forms_DiscoFormOnPage']:
+                        signature = metadata.get('formSignature')
+                        component_type = 'Form'
+                        field_count = metadata.get('fieldCount', 0)
+                        label = f"Form ({field_count} fields)"
+                    elif issue_id in ['DiscoNavFound', 'landmarks_DiscoNavFound']:
+                        signature = metadata.get('navSignature')
+                        component_type = 'Navigation'
+                        label = metadata.get('navLabel', 'Navigation')
+                    elif issue_id in ['DiscoAsideFound', 'landmarks_DiscoAsideFound']:
+                        signature = metadata.get('asideSignature')
+                        component_type = 'Aside'
+                        label = metadata.get('asideLabel', 'Aside')
+                    elif issue_id in ['DiscoSectionFound', 'landmarks_DiscoSectionFound']:
+                        signature = metadata.get('sectionSignature')
+                        component_type = 'Section'
+                        label = metadata.get('sectionLabel', 'Section')
+                    elif issue_id in ['DiscoHeaderFound', 'landmarks_DiscoHeaderFound']:
+                        signature = metadata.get('headerSignature')
+                        component_type = 'Header'
+                        label = metadata.get('headerLabel', 'Header')
+
+                    if signature and signature != 'unknown':
+                        if signature not in common_components:
+                            common_components[signature] = {
+                                'type': component_type,
+                                'label': label,
+                                'xpaths_by_page': {},  # page_url -> xpath
+                                'pages': set()
+                            }
+
+                        xpath = d_dict.get('xpath', '') or metadata.get('xpath', '')
+                        common_components[signature]['xpaths_by_page'][page_url] = xpath
+                        common_components[signature]['pages'].add(page_url)
+
+        return common_components
+
+    def _create_project_deduped_issues_sheet(self, ws, data, styles):
+        """Create a deduplicated issues sheet that groups issues by common components"""
+        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected',
+                   'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element',
+                   'Common Component(s)', 'Pages with Issue', 'Page Count']
+
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            self._apply_style(cell, styles['header'])
+
+        row = 2
+
+        # Extract common components from discovery issues
+        common_components = self._extract_common_components(data)
+
+        # Track unique issues: (rule_id, xpath_or_component) -> issue data
+        unique_issues = {}
+
+        # Iterate through all websites and their pages
+        for website_data in data.get('websites', []):
+            website = website_data.get('website', {})
+            website_name = website.get('name', '') if isinstance(website, dict) else getattr(website, 'name', '')
+
+            for page_result in website_data.get('pages', []):
+                page = page_result.get('page', {})
+                page_url = page.get('url', '') if isinstance(page, dict) else getattr(page, 'url', '')
+
+                test_result = page_result.get('test_result')
+                if not test_result:
+                    continue
+
+                # Process all issue types
+                for issue_type, issue_list_attr in [('violation', 'violations'), ('warning', 'warnings'),
+                                                      ('info', 'info'), ('discovery', 'discovery')]:
+                    issues = getattr(test_result, issue_list_attr, []) if hasattr(test_result, issue_list_attr) else []
+
+                    for issue in issues:
+                        if hasattr(issue, 'to_dict'):
+                            issue_dict = issue.to_dict()
+                        else:
+                            issue_dict = issue if isinstance(issue, dict) else {}
+
+                        # Enrich with catalog information
+                        issue_dict = IssueCatalog.enrich_issue(issue_dict)
+
+                        rule_id = issue_dict.get('id', '')
+                        issue_xpath = issue_dict.get('xpath', '')
+
+                        # Find which common components contain this issue
+                        containing_components = []
+                        for signature, comp_data in common_components.items():
+                            # Check if this issue is within this component on this page
+                            comp_xpath = comp_data['xpaths_by_page'].get(page_url)
+                            if comp_xpath and self._xpath_is_within(issue_xpath, comp_xpath):
+                                containing_components.append(f"{comp_data['type']}: {comp_data['label']}")
+
+                        # Create deduplication key
+                        if containing_components:
+                            # Dedupe by rule_id + component(s)
+                            dedup_key = (rule_id, tuple(sorted(containing_components)))
+                        else:
+                            # Dedupe by rule_id + exact xpath for non-component issues
+                            dedup_key = (rule_id, issue_xpath)
+
+                        if dedup_key not in unique_issues:
+                            unique_issues[dedup_key] = {
+                                'type': issue_type,
+                                'data': issue_dict,
+                                'component': ', '.join(containing_components) if containing_components else '',
+                                'pages': set(),
+                                'page_xpaths': {}  # page -> xpath mapping
+                            }
+
+                        unique_issues[dedup_key]['pages'].add(page_url)
+                        unique_issues[dedup_key]['page_xpaths'][page_url] = issue_xpath
+
+        # Write deduplicated issues to sheet
+        for (rule_id, dedup_value), issue_data in sorted(unique_issues.items(),
+                                                          key=lambda x: (x[1]['type'], x[0][0])):
+            v_dict = issue_data['data']
+            issue_type = issue_data['type']
+
+            # Determine fill color based on type
+            if issue_type == 'violation':
+                fill_color = styles['violation']['fill']
+                type_label = 'Violation'
+            elif issue_type == 'warning':
+                fill_color = styles['warning']['fill']
+                type_label = 'Warning'
+            elif issue_type == 'info':
+                fill_color = styles['info']['fill']
+                type_label = 'Info'
+            else:  # discovery
+                fill_color = styles.get('discovery', {}).get('fill', styles['info']['fill'])
+                type_label = 'Discovery'
+
+            ws.cell(row=row, column=1, value=type_label)
+            ws.cell(row=row, column=2, value=str(v_dict.get('impact', 'Unknown')).upper())
+            ws.cell(row=row, column=3, value=rule_id)
+            ws.cell(row=row, column=4, value=v_dict.get('touchpoint', v_dict.get('category', '')))
+            ws.cell(row=row, column=5, value=v_dict.get('description_full', v_dict.get('what', v_dict.get('description', ''))))
+            ws.cell(row=row, column=6, value=v_dict.get('why_it_matters', ''))
+            ws.cell(row=row, column=7, value=v_dict.get('who_it_affects', ''))
+            ws.cell(row=row, column=8, value=v_dict.get('how_to_fix', v_dict.get('remediation', v_dict.get('suggested_fix', ''))))
+            ws.cell(row=row, column=9, value=v_dict.get('wcag_full', ', '.join(v_dict.get('wcag_criteria', [])) if isinstance(v_dict.get('wcag_criteria'), list) else v_dict.get('wcag_criteria', '')))
+
+            # For location, show one representative xpath
+            representative_xpath = list(issue_data['page_xpaths'].values())[0] if issue_data['page_xpaths'] else ''
+            ws.cell(row=row, column=10, value=representative_xpath)
+
+            ws.cell(row=row, column=11, value=v_dict.get('element', ''))
+            ws.cell(row=row, column=12, value=issue_data['component'])
+
+            # List all pages where this issue appears
+            pages_list = '\n'.join(sorted(issue_data['pages']))
+            ws.cell(row=row, column=13, value=pages_list)
+            ws.cell(row=row, column=13).alignment = self.Alignment(wrap_text=True, vertical='top')
+
+            ws.cell(row=row, column=14, value=len(issue_data['pages']))
+
+            # Apply fill color
+            for col in range(1, 15):
+                ws.cell(row=row, column=col).fill = fill_color
+
+            row += 1
 
         self._auto_adjust_columns(ws)
 

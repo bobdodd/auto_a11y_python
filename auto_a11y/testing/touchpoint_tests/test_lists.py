@@ -359,8 +359,19 @@ async def test_lists(page) -> Dict[str, Any]:
                                           (beforeContent && beforeContent.match(/[^\u0000-\u007F]/));
 
                         const beforeBackgroundImage = beforePseudo.getPropertyValue('background-image');
-                        const hasImage = beforeBackgroundImage !== 'none' ||
-                                       item.querySelector('img, svg');
+
+                        // Check for image/svg bullets (must be first child and small)
+                        let hasImage = beforeBackgroundImage && beforeBackgroundImage !== 'none';
+                        if (!hasImage) {
+                            const firstChild = item.firstElementChild;
+                            if (firstChild && (firstChild.tagName === 'IMG' || firstChild.tagName === 'SVG')) {
+                                // Check if it's small (likely a bullet icon)
+                                const rect = firstChild.getBoundingClientRect();
+                                if (rect.width < 50 && rect.height < 50) {
+                                    hasImage = true;
+                                }
+                            }
+                        }
 
                         if (hasCustomBullet || hasIconFont || hasImage) {
                             // Determine what type of custom styling was detected

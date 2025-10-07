@@ -568,13 +568,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Use only one labeling method"
         },
         'ErrContentObscuring': {
-            'title': "Dialog/overlay obscures {obscuredCount} interactive element(s)",
-            'what': "Dialog or overlay at {dialogXpath} obscures {obscuredCount} interactive element(s), preventing users from accessing them",
-            'why': "When content is covered by other elements, users cannot access or interact with it, creating complete barriers to functionality. The dialog is positioned over interactive elements that users need to access.",
-            'who': "All users, particularly keyboard users who cannot use mouse to work around layout issues, screen reader users who may not know content is obscured, mobile users with limited screen space.",
+            'title': "Dialog/overlay obscures {obscuredCount} interactive element(s) at {breakpoint}px",
+            'what': "Dialog or overlay at {dialogXpath} obscures {obscuredCount} interactive element(s) at {breakpoint}px viewport width, preventing users from accessing them",
+            'why': "When content is covered by other elements, users cannot access or interact with it, creating complete barriers to functionality. The dialog is positioned over interactive elements that users need to access. This issue is viewport-specific and may only appear at certain screen sizes.",
+            'who': "All users at this viewport size, particularly keyboard users who cannot use mouse to work around layout issues, screen reader users who may not know content is obscured, mobile users with limited screen space.",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.4.3', '2.1.2'],
-            'remediation': "Fix z-index and positioning issues to prevent the dialog from covering interactive content. Ensure modals and overlays don\'t cover content inappropriately. Consider repositioning the dialog, making it dismissible, or redesigning the layout. Test that all content remains accessible when the dialog is visible."
+            'remediation': "Fix z-index and positioning issues to prevent the dialog from covering interactive content at the {breakpoint}px viewport width. Ensure modals and overlays don\'t cover content inappropriately. Use responsive CSS to adjust dialog positioning at different breakpoints. Consider repositioning the dialog, making it dismissible, or redesigning the layout for this screen size. Test that all content remains accessible when the dialog is visible across all responsive breakpoints."
         },
         'ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark': {
             'title': "Contentinfo landmark is nested inside another landmark",

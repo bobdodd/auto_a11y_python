@@ -2188,13 +2188,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Replace generic titles with descriptive ones that explain the iframe\'s content or purpose. Use specific descriptions like title=\"YouTube video: Product demo\", title=\"Customer feedback form\", title=\"Live chat support\", or title=\"Interactive map of office locations\". Each iframe title should be unique if there are multiple iframes. Avoid redundant words like \"iframe\" in the title since the element type is already announced."
         },
         'WarnInvalidLangChange': {
-            'title': "Invalid language code: \"{found}\"",
+            'title': "Invalid or unrecognized language code",
             'what': "Element has lang=\"{found}\" which is not a valid ISO 639 language code",
             'why': "Invalid language codes on content sections prevent screen readers from switching language processors correctly. This can cause content in foreign languages to be pronounced using the wrong language rules, making it incomprehensible. For example, French text might be read with English pronunciation rules. Users expect language changes to be handled smoothly, and invalid codes break this functionality.",
             'who': "Multilingual screen reader users who need proper language switching, users reading content in multiple languages, users with reading disabilities using assistive tools, and users relying on proper pronunciation for comprehension",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['3.1.2'],
-            'remediation': "Replace lang=\"{found}\" with a valid ISO 639 language code. Valid formats are two-letter codes (\"en\", \"fr\", \"es\") or two-letter codes with region subtags (\"en-US\", \"fr-CA\", \"es-MX\"). Common corrections: \"fre\" → \"fr\", \"French\" → \"fr\", \"en-us\" → \"en-US\". Test with screen readers to ensure language changes are announced and pronounced correctly."
+            'remediation': "Replace lang=\"{found}\" with a valid ISO 639 language code. Valid formats are two-letter codes (\"en\", \"fr\", \"es\") or two-letter codes with region subtags (\"en-US\", \"fr-CA\", \"es-MX\"). Common corrections: \"fre\" → \"fr\", \"French\" → \"fr\", \"en-us\" → \"en-US\", \"EN-CA\" → \"en-CA\". Test with screen readers to ensure language changes are announced and pronounced correctly."
         },
         'WarnItalicText': {
             'title': "Italic text used extensively which can reduce readability",

@@ -541,7 +541,8 @@ class TouchpointMapper:
         'DiscoFoundJS': TouchpointID.EVENT_HANDLING,
         'DiscoStyleAttrOnElements': TouchpointID.STYLES,  # Old code, moved to styles touchpoint
         'DiscoStyleElementOnPage': TouchpointID.STYLES,  # Moved from colors to styles
-        
+        'DiscoResponsiveBreakpoints': TouchpointID.PAGE,  # Responsive breakpoints discovery
+
         # Additional mappings for completeness
         'ErrMissingRole': TouchpointID.ACCESSIBLE_NAMES,  # Missing ARIA role
         'ErrInvalidRole': TouchpointID.ACCESSIBLE_NAMES,  # Invalid ARIA role

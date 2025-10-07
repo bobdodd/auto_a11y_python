@@ -79,14 +79,14 @@ function pageTitleScrape() {
         }
     }
     
-    // Check for multiple title elements (shouldn't happen but worth checking)
+    // Check for multiple title elements (WCAG 2.4.2 violation - should be error)
     const allTitles = document.querySelectorAll('title');
     if (allTitles.length > 1) {
         errorList.push({
             url: window.location.href,
-            type: 'warn',
+            type: 'err',
             cat: 'page',
-            err: 'WarnMultipleTitleElements',
+            err: 'ErrMultiplePageTitles',
             count: allTitles.length,
             xpath: '/html/head',
             fpTempId: '0'

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Breakpoints - Multiple Breakpoints</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoResponsiveBreakpoints_002_discovery_multiple_breakpoints",
+    "issueId": "DiscoResponsiveBreakpoints",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Page with multiple breakpoints across mobile, tablet, desktop, and wide screens",
+    "wcag": "1.4.10, 2.4.3",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        /* Mobile first approach */
+        .grid {
+            display: block;
+        }
+
+        .sidebar {
+            display: none;
+        }
+
+        /* Small mobile */
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+        }
+
+        /* Tablet portrait */
+        @media (min-width: 768px) {
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Tablet landscape */
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .sidebar {
+                display: block;
+            }
+        }
+
+        /* Desktop */
+        @media (min-width: 1280px) {
+            .container {
+                max-width: 1200px;
+            }
+        }
+
+        /* Large desktop */
+        @media (min-width: 1920px) {
+            .container {
+                max-width: 1600px;
+            }
+
+            body {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body data-requires-review="true"
+      data-review-reason="Page has multiple responsive breakpoints: 480px, 768px, 1024px, 1280px, 1920px - test accessibility at each viewport">
+    <div class="container">
+        <h1>Multi-Breakpoint Layout</h1>
+
+        <div class="grid">
+            <article>
+                <h2>Article 1</h2>
+                <p>Content adapts across five different breakpoints.</p>
+            </article>
+            <article>
+                <h2>Article 2</h2>
+                <p>Navigation and layout change at each breakpoint.</p>
+            </article>
+            <article>
+                <h2>Article 3</h2>
+                <p>Ensure keyboard navigation works at all viewport widths.</p>
+            </article>
+        </div>
+
+        <aside class="sidebar">
+            <h3>Related Links</h3>
+            <ul>
+                <li><a href="#link1">Link 1</a></li>
+                <li><a href="#link2">Link 2</a></li>
+            </ul>
+        </aside>
+    </div>
+</body>
+</html>

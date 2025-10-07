@@ -414,6 +414,15 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': [],
             'remediation': "Consider external stylesheets"
         },
+        'DiscoResponsiveBreakpoints': {
+            'title': "Responsive breakpoints detected on page",
+            'what': "Page defines {breakpointCount} responsive breakpoint{breakpointCount_plural} in CSS media queries: {breakpoints}. Breakpoints range from {minBreakpoint}px to {maxBreakpoint}px.",
+            'why': "Responsive breakpoints indicate that the page layout changes at different viewport widths. This is important for accessibility testing because interactive elements, navigation menus, and content visibility may change at different breakpoints. Some accessibility issues (such as content obscuring, focus order, or touch target sizes) may only appear at specific viewport widths. Testing at multiple breakpoints ensures that keyboard navigation, screen reader landmarks, and interactive controls work correctly across all responsive layouts. Mobile-specific layouts often have collapsible menus, different navigation patterns, or alternative content presentation that requires separate accessibility verification.",
+            'who': "Mobile device users who view pages at small viewport widths, tablet users at medium breakpoints, users who zoom content which changes the effective viewport, users with screen readers who need consistent landmark navigation across breakpoints, keyboard users who need predictable focus order at all viewport sizes, and touch device users who need adequate target sizes in mobile layouts",
+            'impact': ImpactScale.INFO.value,
+            'wcag': ['1.4.10', '2.4.3'],
+            'remediation': "Test accessibility at each defined breakpoint. Verify that keyboard navigation order remains logical, all interactive elements remain accessible, focus indicators are visible, landmark regions are properly labeled, touch targets meet minimum size requirements (44x44px), and content that appears/disappears at different breakpoints doesn't create keyboard traps or break screen reader navigation. Use browser developer tools or page.setViewport() to test at: {breakpoints}px. Pay special attention to navigation menus that collapse into hamburger menus, content that reflows vertically, and any interactive elements that change position or visibility."
+        },
         'ErrAltOnElementThatDoesntTakeIt': {
             'title': "Alt attribute placed on HTML elements that don\'t support it (such as div, span, p, or other non-image elements), making the alternative text inaccessible to assistive technologies",
             'what': "Alt attribute placed on HTML elements that don\'t support it (such as div, span, p, or other non-image elements), making the alternative text inaccessible to assistive technologies",
@@ -1360,13 +1369,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Use only one <main> element or role=\"main\" per page. Identify which content is truly the primary, unique content for that page and wrap only that in the main landmark. If you have multiple important sections, use other appropriate landmarks (article, section) or headings to structure them within the single main landmark. The main should contain all unique page content but exclude repeated elements like headers, navigation, and footers."
         },
         'ErrMultiplePageTitles': {
-            'title': "Multiple title elements found in document",
-            'what': "Multiple title elements found in document",
-            'why': "Multiple titles may confuse assistive technologies",
-            'who': "Screen reader users",
-            'impact': ImpactScale.LOW.value,
+            'title': "{count} <title> elements found in the document head, which causes unpredictable behavior",
+            'what': "{count} <title> elements found in the document head. HTML specification requires exactly one <title> element per document.",
+            'why': "Having {count} title elements causes browsers to choose unpredictably between them, creating inconsistent page identification. Different browsers and assistive technologies may choose different titles from the {count} available, creating an inconsistent experience across devices and tools. Screen readers may announce one title while the browser tab displays another. Search engines may index the wrong title, hurting SEO and discoverability. Users bookmarking the page may see a different title than intended.",
+            'who': "All users seeing inconsistent titles in browser tabs, screen reader users who may hear different titles than what's visually displayed, users bookmarking pages with incorrect titles, search engine users who may see wrong titles in search results",
+            'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.4.2'],
-            'remediation': "Use only one title element per page"
+            'remediation': "Remove all but one <title> element from the document head. Keep only the most descriptive title that accurately represents the page content. Check for scripts or templates that might be adding titles dynamically. Ensure your CMS or framework isn't creating duplicate titles through multiple includes or components."
         },
         'ErrNativeVideoMissingControls': {
             'title': "Native HTML5 video element missing controls attribute",

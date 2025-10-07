@@ -92,7 +92,8 @@ WCAG_MAPPINGS = {
     'ErrEmptyPageTitle': ['2.4.2 Page Titled'],
     'ErrPageTitleTooLong': ['2.4.2 Page Titled'],
     'ErrPageTitleTooShort': ['2.4.2 Page Titled'],
-    'WarnMultipleTitleElements': ['2.4.2 Page Titled'],
+    'ErrMultiplePageTitles': ['2.4.2 Page Titled'],
+    'WarnMultipleTitleElements': ['2.4.2 Page Titled'],  # Deprecated - use ErrMultiplePageTitles
     
     # SVG Issues
     'ErrSvgImageNoLabel': ['1.1.1 Non-text Content'],

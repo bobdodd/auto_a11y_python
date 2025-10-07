@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Breakpoints - Mobile and Desktop</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoResponsiveBreakpoints_001_discovery_mobile_desktop",
+    "issueId": "DiscoResponsiveBreakpoints",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Page with mobile and desktop breakpoints detected",
+    "wcag": "1.4.10, 2.4.3",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        /* Base mobile styles */
+        body {
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .menu {
+            display: block;
+        }
+
+        .hamburger {
+            display: block;
+        }
+
+        /* Tablet breakpoint */
+        @media (min-width: 768px) {
+            .container {
+                width: 750px;
+                margin: 0 auto;
+            }
+
+            .menu {
+                display: flex;
+            }
+        }
+
+        /* Desktop breakpoint */
+        @media (min-width: 1024px) {
+            .container {
+                width: 1000px;
+            }
+
+            .hamburger {
+                display: none;
+            }
+
+            body {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body data-requires-review="true"
+      data-review-reason="Page has responsive breakpoints at 768px and 1024px - test accessibility at each viewport width">
+    <div class="container">
+        <header>
+            <button class="hamburger" aria-label="Menu">☰</button>
+            <h1>Responsive Website</h1>
+        </header>
+
+        <nav class="menu">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <main>
+            <p>This page should be tested at multiple breakpoints: 768px (tablet) and 1024px (desktop).</p>
+        </main>
+    </div>
+</body>
+</html>

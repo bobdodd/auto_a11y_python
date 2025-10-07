@@ -81,6 +81,7 @@ function languageScrape() {
                     err: 'WarnEmptyLangAttribute',
                     element: element.tagName,
                     xpath: Elements.DOMPath.xPath(element, true),
+                    html: element.outerHTML.substring(0, 200),
                     fpTempId: element.getAttribute('a11y-fpId')
                 });
             } else if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(lang)) {
@@ -93,6 +94,7 @@ function languageScrape() {
                     element: element.tagName,
                     found: lang,
                     xpath: Elements.DOMPath.xPath(element, true),
+                    html: element.outerHTML.substring(0, 200),
                     fpTempId: element.getAttribute('a11y-fpId')
                 });
             } else {

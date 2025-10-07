@@ -87,9 +87,9 @@ function languageScrape() {
                 langChangeCheck.failed++;
                 errorList.push({
                     url: window.location.href,
-                    type: 'warn',
+                    type: 'err',
                     cat: 'language',
-                    err: 'WarnInvalidLangChange',
+                    err: 'ErrInvalidLangChange',
                     element: element.tagName,
                     found: lang,
                     xpath: Elements.DOMPath.xPath(element, true),

@@ -196,7 +196,15 @@ async def test_lists(page) -> Dict[str, Any]:
                         return false;
                     });
 
-                potentialFakeLists.forEach(element => {
+                // Filter out nested elements - only keep the outermost fake list containers
+                const filteredFakeLists = potentialFakeLists.filter(element => {
+                    // Check if any of the other potential fake lists is an ancestor of this element
+                    return !potentialFakeLists.some(other =>
+                        other !== element && other.contains(element)
+                    );
+                });
+
+                filteredFakeLists.forEach(element => {
                     const style = window.getComputedStyle(element);
                     const html = element.innerHTML;
                     const text = element.textContent;
@@ -289,13 +297,13 @@ async def test_lists(page) -> Dict[str, Any]:
                 // Find all proper lists
                 const allLists = Array.from(document.querySelectorAll('ul, ol'));
                 
-                if (allLists.length === 0 && potentialFakeLists.length === 0) {
+                if (allLists.length === 0 && filteredFakeLists.length === 0) {
                     results.applicable = false;
                     results.not_applicable_reason = 'No lists found on the page';
                     return results;
                 }
-                
-                results.elements_tested = allLists.length + potentialFakeLists.length;
+
+                results.elements_tested = allLists.length + filteredFakeLists.length;
                 
                 allLists.forEach(list => {
                     const items = list.querySelectorAll('li');
@@ -366,9 +374,9 @@ async def test_lists(page) -> Dict[str, Any]:
                 results.checks.push({
                     description: 'List structure integrity',
                     wcag: ['1.3.1', '4.1.1'],
-                    total: allLists.length + potentialFakeLists.length,
+                    total: allLists.length + filteredFakeLists.length,
                     passed: results.elements_passed,
-                    failed: results.elements_failed + potentialFakeLists.length
+                    failed: results.elements_failed + filteredFakeLists.length
                 });
                 
                 const deepNestingCount = allLists.filter(list => calculateListDepth(list) > 3).length;

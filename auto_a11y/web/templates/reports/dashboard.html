@@ -382,6 +382,8 @@ document.getElementById('projectSelect').addEventListener('change', function() {
     const websiteSelect = document.getElementById('websiteSelect');
     const selectedProjectId = this.value;
 
+    console.log('Project selection changed:', selectedProjectId);
+
     // Get the placeholder option (first option)
     const placeholderOption = websiteSelect.querySelector('option[value=""]');
 
@@ -390,6 +392,7 @@ document.getElementById('projectSelect').addEventListener('change', function() {
 
     // Get all website options (excluding placeholder)
     const websiteOptions = websiteSelect.querySelectorAll('option[data-project-id]');
+    console.log('Total website options found:', websiteOptions.length);
 
     if (selectedProjectId) {
         // Enable website select
@@ -399,13 +402,17 @@ document.getElementById('projectSelect').addEventListener('change', function() {
         placeholderOption.textContent = 'All Websites';
 
         // Show/hide website options based on selected project
+        let visibleCount = 0;
         websiteOptions.forEach(option => {
+            console.log('Option project ID:', option.dataset.projectId, 'Selected:', selectedProjectId, 'Match:', option.dataset.projectId === selectedProjectId);
             if (option.dataset.projectId === selectedProjectId) {
                 option.style.display = '';
+                visibleCount++;
             } else {
                 option.style.display = 'none';
             }
         });
+        console.log('Visible websites for project ' + selectedProjectId + ':', visibleCount);
     } else {
         // Disable website select when "All Projects" is selected
         websiteSelect.disabled = true;
@@ -417,6 +424,7 @@ document.getElementById('projectSelect').addEventListener('change', function() {
         websiteOptions.forEach(option => {
             option.style.display = 'none';
         });
+        console.log('No project selected, website dropdown disabled');
     }
 });
 

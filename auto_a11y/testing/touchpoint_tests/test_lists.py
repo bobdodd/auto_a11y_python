@@ -113,15 +113,66 @@ async def test_lists(page) -> Dict[str, Any]:
                 }
                 
                 // Check for fake lists (elements styled as lists but not using ul/ol)
-                const potentialFakeLists = Array.from(document.querySelectorAll('div, span'))
+                const potentialFakeLists = Array.from(document.querySelectorAll('div, span, p'))
                     .filter(el => {
                         const style = window.getComputedStyle(el);
-                        return style.display === 'list-item' || 
-                               (el.innerHTML.includes('•') || el.innerHTML.includes('·')) ||
+                        const text = el.textContent;
+                        const html = el.innerHTML;
+
+                        // Check various fake list patterns
+                        return style.display === 'list-item' ||
+                               html.includes('•') || html.includes('·') || html.includes('‣') ||
+                               html.includes('◦') || html.includes('▪') || html.includes('▫') ||
+                               text.match(/^\s*[-–—*]\s/) ||  // Lines starting with dash/hyphen/asterisk
+                               (html.match(/<br\s*\/?>/gi) || []).length > 2 ||  // Multiple br tags
                                el.querySelector('[class*="bullet"], [class*="list"]');
                     });
-                
+
                 potentialFakeLists.forEach(element => {
+                    const style = window.getComputedStyle(element);
+                    const html = element.innerHTML;
+                    const text = element.textContent;
+
+                    // Determine what pattern makes this look like a fake list
+                    let pattern = 'unknown';
+                    let detectedBullets = [];
+
+                    if (style.display === 'list-item') {
+                        pattern = 'CSS list-item display';
+                    } else if (html.includes('•')) {
+                        pattern = 'bullet character (•)';
+                        detectedBullets = text.split('•').map(item => item.trim()).filter(item => item.length > 0);
+                    } else if (html.includes('·')) {
+                        pattern = 'middot character (·)';
+                        detectedBullets = text.split('·').map(item => item.trim()).filter(item => item.length > 0);
+                    } else if (html.includes('‣')) {
+                        pattern = 'triangular bullet (‣)';
+                        detectedBullets = text.split('‣').map(item => item.trim()).filter(item => item.length > 0);
+                    } else if (html.includes('◦') || html.includes('▪') || html.includes('▫')) {
+                        pattern = 'geometric bullet characters';
+                        const bullets = ['◦', '▪', '▫'];
+                        for (const bullet of bullets) {
+                            if (html.includes(bullet)) {
+                                detectedBullets = text.split(bullet).map(item => item.trim()).filter(item => item.length > 0);
+                                break;
+                            }
+                        }
+                    } else if (text.match(/^\s*[-–—*]\s/)) {
+                        pattern = 'dash or asterisk bullets';
+                        detectedBullets = text.split(/\n/).map(line => line.replace(/^\s*[-–—*]\s*/, '').trim()).filter(item => item.length > 0);
+                    } else if ((html.match(/<br\s*\/?>/gi) || []).length > 2) {
+                        pattern = 'multiple <br> tags';
+                        detectedBullets = html.split(/<br\s*\/?>/gi).map(item => item.replace(/<[^>]*>/g, '').trim()).filter(item => item.length > 0);
+                    } else if (element.querySelector('[class*="bullet"], [class*="list"]')) {
+                        pattern = 'class names suggesting list/bullets';
+                    }
+
+                    // Get sample items (max 5)
+                    const sampleItems = detectedBullets.slice(0, 5).map((item, idx) => ({
+                        index: idx + 1,
+                        text: item.substring(0, 100)
+                    }));
+
                     results.errors.push({
                         err: 'ErrFakeListImplementation',
                         type: 'err',
@@ -129,7 +180,10 @@ async def test_lists(page) -> Dict[str, Any]:
                         element: element.tagName.toLowerCase(),
                         xpath: getFullXPath(element),
                         html: element.outerHTML.substring(0, 200),
-                        description: 'Element appears to be a list but does not use proper list markup',
+                        description: `Element appears to be a list using ${pattern} but does not use proper list markup`,
+                        pattern: pattern,
+                        itemCount: detectedBullets.length,
+                        sampleItems: sampleItems,
                         innerHTML: element.innerHTML.substring(0, 100)
                     });
                     results.elements_failed++;

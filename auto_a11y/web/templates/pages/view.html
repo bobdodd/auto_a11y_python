@@ -687,6 +687,22 @@
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
+                                                        {% elif 'ErrFakeListImplementation' in violation.id and violation.metadata and 'sampleItems' in violation.metadata %}
+                                                        <p class="mb-2"><strong>Detected pattern:</strong> {{ violation.metadata.pattern }}</p>
+                                                        <p class="mb-2"><strong>Number of items found:</strong> {{ violation.metadata.itemCount }}</p>
+                                                        {% if violation.metadata.sampleItems %}
+                                                        <h6 class="mt-4">Sample list items detected:</h6>
+                                                        {% for item in violation.metadata.sampleItems %}
+                                                        <div class="mb-2 border-start border-info border-3 ps-3">
+                                                            <p class="mb-0"><strong>Item {{ item.index }}:</strong> {{ item.text }}</p>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% if violation.metadata.itemCount > 5 %}
+                                                        <p class="text-muted small mt-2">...and {{ violation.metadata.itemCount - 5 }} more items</p>
+                                                        {% endif %}
+                                                        {% endif %}
+                                                        <p class="mb-2 mt-3"><strong>Container element:</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
@@ -880,6 +896,22 @@
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
                                 </div>
                                 {% endfor %}
+                                {% elif 'ErrFakeListImplementation' in violation.id and violation.metadata and 'sampleItems' in violation.metadata %}
+                                <p class="mb-2"><strong>Detected pattern:</strong> {{ violation.metadata.pattern }}</p>
+                                <p class="mb-2"><strong>Number of items found:</strong> {{ violation.metadata.itemCount }}</p>
+                                {% if violation.metadata.sampleItems %}
+                                <h6 class="mt-4">Sample list items detected:</h6>
+                                {% for item in violation.metadata.sampleItems %}
+                                <div class="mb-2 border-start border-info border-3 ps-3">
+                                    <p class="mb-0"><strong>Item {{ item.index }}:</strong> {{ item.text }}</p>
+                                </div>
+                                {% endfor %}
+                                {% if violation.metadata.itemCount > 5 %}
+                                <p class="text-muted small mt-2">...and {{ violation.metadata.itemCount - 5 }} more items</p>
+                                {% endif %}
+                                {% endif %}
+                                <p class="mb-2 mt-3"><strong>Container element:</strong></p>
+                                <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                 {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
                                 <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>

@@ -471,19 +471,53 @@ class ScrapingEngine:
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
             await page.setUserAgent(user_agent)
 
-            # Set navigation timeout - balanced to avoid hanging but allow slow pages
-            page.setDefaultNavigationTimeout(25000)  # 25 seconds timeout
-            
+            # Set navigation timeout - increased for Cloudflare challenges
+            page.setDefaultNavigationTimeout(45000)  # 45 seconds timeout
+
             # Navigate to URL with proper error handling
             response = None
             try:
+                # First try with networkidle0 to wait for all network activity to settle
+                # This helps with Cloudflare challenges that need to complete
                 response = await self.browser_manager.goto(
                     page=page,
                     url=url,
-                    wait_until='domcontentloaded',  # Just wait for DOM, not all resources
-                    timeout=20000  # 20 seconds timeout per page
+                    wait_until='networkidle0',  # Wait for network to be idle for 500ms
+                    timeout=40000  # 40 seconds timeout per page
                 )
-                
+
+                # Wait additional time for any JavaScript challenges to complete
+                await asyncio.sleep(3)
+
+                # Check if we're stuck on a Cloudflare challenge page
+                try:
+                    page_title = await page.title()
+                    page_content = await page.content()
+
+                    # Detect Cloudflare challenge indicators
+                    if 'cloudflare' in page_title.lower() or 'checking your browser' in page_content.lower():
+                        logger.warning(f"Cloudflare challenge detected on: {url}")
+                        logger.warning(f"Page title: {page_title}")
+                        # Wait longer for challenge to complete
+                        await asyncio.sleep(10)
+                        page_title = await page.title()
+                        page_content = await page.content()
+                        if 'cloudflare' in page_title.lower() or 'checking your browser' in page_content.lower():
+                            logger.error(f"Cloudflare challenge failed to complete for: {url}")
+                            return Page(
+                                website_id=website.id,
+                                url=url,
+                                title="Failed: Cloudflare challenge",
+                                discovered_from=website.url if depth == 0 else None,
+                                depth=depth,
+                                status=PageStatus.DISCOVERY_FAILED,
+                                error_reason="Stuck on Cloudflare challenge page"
+                            )
+
+                    logger.info(f"Successfully loaded page: {url} (title: {page_title[:50]})")
+                except Exception as e:
+                    logger.warning(f"Could not check page content for {url}: {e}")
+
                 if not response:
                     logger.warning(f"Failed to load page: {url}")
                     # Return a failed page record instead of None

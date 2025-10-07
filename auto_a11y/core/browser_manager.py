@@ -53,11 +53,16 @@ class BrowserManager:
                 '--silent',
                 '--disable-logging',
                 '--disable-extensions',
-                '--disable-background-networking'
+                '--disable-background-networking',
+                # Stealth mode arguments
+                '--disable-blink-features=AutomationControlled',  # Hide automation
+                '--exclude-switches=enable-automation',  # Hide automation flag
+                '--disable-infobars',  # Hide "Chrome is being controlled" banner
             ],
             'dumpio': self.config.get('dumpio', False),  # Disable to reduce console noise
             'timeout': self.config.get('timeout', 60000),  # Increased to 60 seconds
-            'autoClose': False  # Prevent automatic closing
+            'autoClose': False,  # Prevent automatic closing
+            'ignoreDefaultArgs': ['--enable-automation']  # Don't use automation flag
         }
         
         # Add user data directory if specified
@@ -74,6 +79,44 @@ class BrowserManager:
             self.browser = None
             raise
     
+    async def _apply_stealth(self, page):
+        """
+        Apply stealth techniques to make the browser harder to detect
+
+        Args:
+            page: Page instance to apply stealth to
+        """
+        # Override navigator properties to hide automation
+        await page.evaluateOnNewDocument('''() => {
+            // Overwrite the `navigator.webdriver` property
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => false,
+            });
+
+            // Overwrite the `plugins` property to add fake plugins
+            Object.defineProperty(navigator, 'plugins', {
+                get: () => [1, 2, 3, 4, 5],
+            });
+
+            // Overwrite the `languages` property
+            Object.defineProperty(navigator, 'languages', {
+                get: () => ['en-US', 'en'],
+            });
+
+            // Pass the Chrome Test
+            window.chrome = {
+                runtime: {},
+            };
+
+            // Pass the Permissions Test
+            const originalQuery = window.navigator.permissions.query;
+            window.navigator.permissions.query = (parameters) => (
+                parameters.name === 'notifications' ?
+                    Promise.resolve({ state: Notification.permission }) :
+                    originalQuery(parameters)
+            );
+        }''')
+
     async def stop(self):
         """Stop browser instance"""
         if not self.browser:
@@ -112,20 +155,24 @@ class BrowserManager:
             page = None
             try:
                 page = await self.browser.newPage()
-                
+
+                # Apply stealth techniques
+                await self._apply_stealth(page)
+
                 # Set viewport
                 await page.setViewport({
                     'width': self.config.get('viewport_width', 1920),
                     'height': self.config.get('viewport_height', 1080)
                 })
-                
-                # Set user agent if specified
-                if 'user_agent' in self.config:
-                    await page.setUserAgent(self.config['user_agent'])
-                
+
+                # Set user agent if specified (use a realistic one if not provided)
+                user_agent = self.config.get('user_agent',
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+                await page.setUserAgent(user_agent)
+
                 # Set default timeout
                 page.setDefaultNavigationTimeout(self.config.get('timeout', 60000))
-                
+
                 self.pages.append(page)
                 yield page
                 

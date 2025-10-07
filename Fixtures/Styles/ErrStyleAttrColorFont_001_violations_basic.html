@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrStyleAttrColorFont - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_001_violations_basic",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Elements with inline styles containing color or font properties",
+    "wcag": "1.4.3, 1.4.8",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Inline Styles with Color/Font Properties</h1>
+
+    <main>
+        <section>
+            <h2>Color-related inline styles</h2>
+            <p
+               style="color: red;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline color style prevents user customization">
+                This paragraph has inline color styling.
+            </p>
+
+            <div
+                 style="background-color: #ffff00; padding: 10px;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline background-color prevents theme customization">
+                This div has inline background color.
+            </div>
+        </section>
+
+        <section>
+            <h2>Font-related inline styles</h2>
+            <span
+                  style="font-family: Arial, sans-serif;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Inline font-family prevents user font preferences">
+                This text uses inline font-family.
+            </span>
+
+            <p
+               style="font-size: 24px; font-weight: bold;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline font sizing prevents responsive scaling">
+                This paragraph has inline font size and weight.
+            </p>
+
+            <div
+                 style="line-height: 1.2; letter-spacing: 2px;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline line-height and letter-spacing affect readability">
+                This div has inline line-height and letter-spacing.
+            </div>
+        </section>
+    </main>
+</body>
+</html>

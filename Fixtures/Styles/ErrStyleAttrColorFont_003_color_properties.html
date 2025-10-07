@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrStyleAttrColorFont - All Color Properties</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_003_color_properties",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 13,
+    "expectedPassCount": 0,
+    "description": "Test detection of all color-related CSS properties in inline styles",
+    "wcag": "1.4.3, 1.4.8",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: All Color-Related Inline Style Properties</h1>
+
+    <main>
+        <section>
+            <h2>Basic Color Properties</h2>
+            <p
+               style="color: red;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline color property">
+                Text with color property
+            </p>
+
+            <div
+                 style="background-color: yellow;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline background-color property">
+                Element with background-color
+            </div>
+
+            <div
+                 style="background: linear-gradient(to right, red, blue);"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline background property (includes color)">
+                Element with background property
+            </div>
+        </section>
+
+        <section>
+            <h2>Border Color Properties</h2>
+            <div
+                 style="border-color: green;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline border-color property">
+                Element with border-color
+            </div>
+
+            <div
+                 style="border-top-color: purple;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline border-top-color property">
+                Element with border-top-color
+            </div>
+
+            <div
+                 style="border-right-color: orange;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline border-right-color property">
+                Element with border-right-color
+            </div>
+
+            <div
+                 style="border-bottom-color: pink;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline border-bottom-color property">
+                Element with border-bottom-color
+            </div>
+
+            <div
+                 style="border-left-color: cyan;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline border-left-color property">
+                Element with border-left-color
+            </div>
+        </section>
+
+        <section>
+            <h2>Other Color Properties</h2>
+            <div
+                 style="outline-color: blue;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline outline-color property">
+                Element with outline-color
+            </div>
+
+            <span
+                  style="text-decoration-color: red;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Inline text-decoration-color property">
+                Text with text-decoration-color
+            </span>
+
+            <div
+                 style="column-rule-color: brown;"
+                 data-expected-violation="true"
+                 data-violation-id="ErrStyleAttrColorFont"
+                 data-violation-reason="Inline column-rule-color property">
+                Element with column-rule-color
+            </div>
+
+            <input
+                   type="text"
+                   style="caret-color: red;"
+                   data-expected-violation="true"
+                   data-violation-id="ErrStyleAttrColorFont"
+                   data-violation-reason="Inline caret-color property"
+                   aria-label="Input with caret color">
+        </section>
+
+        <section>
+            <h2>SVG Color Properties</h2>
+            <svg width="100" height="100">
+                <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        style="fill: red;"
+                        data-expected-violation="true"
+                        data-violation-id="ErrStyleAttrColorFont"
+                        data-violation-reason="Inline fill property" />
+            </svg>
+
+            <svg width="100" height="100">
+                <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        style="stroke: blue;"
+                        data-expected-violation="true"
+                        data-violation-id="ErrStyleAttrColorFont"
+                        data-violation-reason="Inline stroke property" />
+            </svg>
+        </section>
+    </main>
+</body>
+</html>

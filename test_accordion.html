@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.accordion { border: 1px solid #ccc; }
+.accordion-item { border-bottom: 1px solid #e1e4e8; }
+.accordion-button { width: 100%; background: #f6f8fa; border: none; padding: 15px; text-align: left; cursor: pointer; }
+.accordion-button:hover { background: #e9ecef; }
+.accordion-collapse { background: white; }
+.accordion-body { padding: 20px; border-top: 1px solid #e1e4e8; }
+</style>
+</head>
+<body>
+<h1>Test Accordion</h1>
+<div class="accordion">
+    <div class="accordion-item">
+        <button class="accordion-button" onclick="toggleAccordion('page-0')">
+            Page 0 - Click to expand
+            <span class="accordion-icon">▼</span>
+        </button>
+        <div id="page-0" class="accordion-collapse" style="display: none;">
+            <div class="accordion-body">Content for page 0</div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <button class="accordion-button" onclick="toggleAccordion('page-1')">
+            Page 1 - Click to expand
+            <span class="accordion-icon">▼</span>
+        </button>
+        <div id="page-1" class="accordion-collapse" style="display: none;">
+            <div class="accordion-body">Content for page 1</div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <button class="accordion-button" onclick="toggleAccordion('page-2')">
+            Page 2 - Click to expand
+            <span class="accordion-icon">▼</span>
+        </button>
+        <div id="page-2" class="accordion-collapse" style="display: none;">
+            <div class="accordion-body">Content for page 2</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleAccordion(id) {
+    const element = document.getElementById(id);
+    const button = document.querySelector('[onclick*="' + id + '"]');
+    const icon = button.querySelector('.accordion-icon');
+
+    if (element.style.display === 'none') {
+        element.style.display = 'block';
+        icon.textContent = '▲';
+    } else {
+        element.style.display = 'none';
+        icon.textContent = '▼';
+    }
+}
+</script>
+</body>
+</html>

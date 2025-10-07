@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoSearchFound Test - role="search"</title>
+</head>
+<body>
+    <header>
+        <h1>Site Header</h1>
+    </header>
+
+    <main>
+        <div role="search" aria-label="Site Search">
+            <form action="/search" method="get">
+                <label for="q">Search the site:</label>
+                <input type="text" id="q" name="q">
+                <button type="submit">Go</button>
+            </form>
+        </div>
+
+        <h2>Main Content</h2>
+        <p>Page content here.</p>
+    </main>
+</body>
+</html>

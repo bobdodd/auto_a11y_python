@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing Accessible Names - Placeholder Anti-pattern</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_010_violations_placeholder_only",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Form fields with only placeholder attributes lack accessible names",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Newsletter Signup - Placeholder Anti-pattern</h1>
+
+    <form>
+        <div data-expected-violation="true"
+             data-violation-id="ErrMissingAccessibleName"
+             data-violation-reason="Placeholder is not a substitute for accessible name - it disappears on input and is not reliably announced by screen readers">
+            <input type="email" name="email" placeholder="Enter your email address">
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="ErrMissingAccessibleName"
+             data-violation-reason="Placeholder alone does not provide accessible name">
+            <input type="text" name="first-name" placeholder="First Name">
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="ErrMissingAccessibleName"
+             data-violation-reason="Placeholder alone does not provide accessible name">
+            <input type="text" name="last-name" placeholder="Last Name">
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="ErrMissingAccessibleName"
+             data-violation-reason="Placeholder on select is not an accessible name">
+            <select name="interest" placeholder="Select your interest">
+                <option value="">Choose...</option>
+                <option value="tech">Technology</option>
+                <option value="sports">Sports</option>
+            </select>
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="ErrMissingAccessibleName"
+             data-violation-reason="Placeholder on textarea is not an accessible name">
+            <textarea name="comments" placeholder="Tell us what you're interested in..."></textarea>
+        </div>
+
+        <button type="submit">Subscribe</button>
+    </form>
+</body>
+</html>

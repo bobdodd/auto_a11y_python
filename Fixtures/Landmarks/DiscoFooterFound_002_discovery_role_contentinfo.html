@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoFooterFound Test - role="contentinfo"</title>
+</head>
+<body>
+    <header>
+        <h1>Site Header</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Article Title</h2>
+            <p>Article content.</p>
+            <footer>
+                <p>Article footer (should NOT be detected as contentinfo)</p>
+            </footer>
+        </article>
+    </main>
+
+    <div role="contentinfo" aria-label="Site Footer">
+        <p>&copy; 2024 Company Name.</p>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+    </div>
+</body>
+</html>

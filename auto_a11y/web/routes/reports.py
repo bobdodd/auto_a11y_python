@@ -5,6 +5,7 @@ Report generation routes
 from flask import Blueprint, render_template, request, jsonify, send_file, current_app, url_for, flash, redirect
 from auto_a11y.models import PageStatus
 from auto_a11y.reporting import ReportGenerator, PageStructureReport
+from auto_a11y.reporting.discovery_report import DiscoveryReportGenerator
 from datetime import datetime
 import logging
 import json
@@ -347,30 +348,30 @@ def generate_project_report(project_id):
 def generate_page_structure_report(website_id):
     """Generate site structure tree report for website"""
     format = request.form.get('format', 'html')
-    
+
     try:
         # Get website and pages
         website = current_app.db.get_website(website_id)
         if not website:
             return jsonify({'error': 'Website not found'}), 404
-        
+
         # Get project if available
         project = None
         if website.project_id:
             project = current_app.db.get_project(website.project_id)
-        
+
         pages = current_app.db.get_pages(website_id)
         if not pages:
             return jsonify({'error': 'No pages found for website'}), 404
-        
+
         # Generate report with project information
         report = PageStructureReport(current_app.db, website, pages, project)
         report.generate()
-        
+
         # Save report in requested format
         report_path = report.save(format)
         report_path = Path(report_path)
-        
+
         # Return file
         return send_file(
             report_path,
@@ -383,7 +384,63 @@ def generate_page_structure_report(website_id):
                 'pdf': 'application/pdf'
             }.get(format, 'application/octet-stream')
         )
-        
+
     except Exception as e:
         logger.error(f"Failed to generate page structure report: {e}")
         return jsonify({'error': str(e)}), 500
+
+
+@reports_bp.route('/generate/discovery/website/<website_id>', methods=['POST'])
+def generate_discovery_website_report(website_id):
+    """Generate discovery report for a website"""
+    format = request.form.get('format', 'html')
+
+    try:
+        # Initialize discovery report generator
+        generator = DiscoveryReportGenerator(
+            current_app.db,
+            current_app.app_config.__dict__
+        )
+
+        # Generate report (saves to reports directory)
+        report_path = generator.generate_website_discovery_report(
+            website_id=website_id,
+            format=format
+        )
+
+        # Flash success message and redirect to dashboard
+        flash(f'Discovery report generated successfully!', 'success')
+        return redirect(url_for('reports.reports_dashboard'))
+
+    except Exception as e:
+        logger.error(f"Failed to generate discovery report: {e}", exc_info=True)
+        flash(f'Failed to generate report: {str(e)}', 'error')
+        return redirect(url_for('reports.reports_dashboard'))
+
+
+@reports_bp.route('/generate/discovery/project/<project_id>', methods=['POST'])
+def generate_discovery_project_report(project_id):
+    """Generate discovery report for an entire project"""
+    format = request.form.get('format', 'html')
+
+    try:
+        # Initialize discovery report generator
+        generator = DiscoveryReportGenerator(
+            current_app.db,
+            current_app.app_config.__dict__
+        )
+
+        # Generate report (saves to reports directory)
+        report_path = generator.generate_project_discovery_report(
+            project_id=project_id,
+            format=format
+        )
+
+        # Flash success message and redirect to dashboard
+        flash(f'Discovery report generated successfully!', 'success')
+        return redirect(url_for('reports.reports_dashboard'))
+
+    except Exception as e:
+        logger.error(f"Failed to generate discovery report: {e}", exc_info=True)
+        flash(f'Failed to generate report: {str(e)}', 'error')
+        return redirect(url_for('reports.reports_dashboard'))

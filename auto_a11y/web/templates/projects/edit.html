@@ -44,7 +44,27 @@
                                 <strong>Level AAA:</strong> Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)
                             </div>
                         </div>
-                        
+
+                        <div class="mb-3">
+                            <label for="title_length_limit" class="form-label">Page Title Length Limit</label>
+                            <input type="number" class="form-control" id="title_length_limit" name="title_length_limit"
+                                   value="{{ project.config.get('titleLengthLimit', 60) }}" min="30" max="120">
+                            <div class="form-text">
+                                Maximum recommended characters for page titles. Default is 60. Titles longer than this will generate a warning.
+                                Browser tabs typically show ~30 characters, search results show ~50-60 characters.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="heading_length_limit" class="form-label">Heading Length Limit</label>
+                            <input type="number" class="form-control" id="heading_length_limit" name="heading_length_limit"
+                                   value="{{ project.config.get('headingLengthLimit', 60) }}" min="30" max="120">
+                            <div class="form-text">
+                                Maximum recommended characters for headings (h1-h6). Default is 60. Headings longer than this will generate a warning.
+                                Headings approaching this limit (above 67% of the limit) will generate an info message.
+                            </div>
+                        </div>
+
                         <!-- Touchpoint Testing Configuration -->
                         <div class="mb-3">
                             <label class="form-label">Touchpoint Tests Configuration</label>
@@ -86,6 +106,7 @@
                                     ('navigation', 'Navigation', ['AI_ErrAccordionWithoutARIA', 'AI_ErrCarouselWithoutARIA', 'AI_ErrDropdownWithoutARIA', 'ErrDuplicateNavNames', 'ErrInappropriateMenuRole', 'ErrNavMissingAccessibleName', 'WarnNoCurrentPageIndicator']),
                                     ('reading_order', 'Reading Order', ['AI_InfoContentOrder', 'AI_WarnPossibleReadingOrderIssue']),
                                     ('semantic_structure', 'Semantic Structure', ['ErrEmptyPageTitle', 'ErrHeaderMissingScope', 'ErrImproperTitleAttribute', 'ErrMissingDocumentType', 'ErrMultiplePageTitles', 'ErrNoPageTitle', 'WarnPageTitleTooLong', 'WarnPageTitleTooShort', 'WarnVisualHierarchy']),
+                                    ('styles', 'Inline Styles', ['ErrStyleAttrColorFont', 'WarnStyleAttrOther', 'ErrStyleTagColorFont', 'WarnStyleTagOther']),
                                     ('tables', 'Tables', ['ErrHeaderMissingScope', 'ErrTableMissingCaption', 'ErrTableNoColumnHeaders', 'WarnTableMissingThead']),
                                     ('timing', 'Timing', ['ErrAutoStartTimers', 'ErrTimersWithoutControls', 'WarnFastInterval']),
                                     ('typography', 'Typography', ['ErrSmallText', 'WarnItalicText', 'WarnJustifiedText', 'WarnRightAlignedText', 'WarnSmallLineHeight'])

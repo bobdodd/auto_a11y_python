@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnStyleAttrOther - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnStyleAttrOther_001_violations_basic",
+    "issueId": "WarnStyleAttrOther",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Elements with inline styles containing layout properties (not color/font)",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Inline Styles with Layout Properties</h1>
+
+    <main>
+        <section>
+            <h2>Layout-related inline styles</h2>
+            <div
+                 style="margin: 20px; padding: 15px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther"
+                 data-warning-reason="Inline margin and padding should be in CSS">
+                This div has inline margin and padding.
+            </div>
+
+            <div
+                 style="display: flex; justify-content: center;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther"
+                 data-warning-reason="Inline flexbox layout should be in CSS">
+                This div has inline flexbox layout.
+            </div>
+        </section>
+
+        <section>
+            <h2>Positioning inline styles</h2>
+            <div
+                 style="position: relative; top: 10px; left: 5px;"
+                 data-expected-warning="true"
+                 data-warning-id="WarnStyleAttrOther"
+                 data-warning-reason="Inline positioning should be in CSS">
+                This div has inline positioning.
+            </div>
+
+            <span
+                  style="float: left; width: 50%;"
+                  data-expected-warning="true"
+                  data-warning-id="WarnStyleAttrOther"
+                  data-warning-reason="Inline float and width should be in CSS">
+                This span has inline float and width.
+            </span>
+        </section>
+    </main>
+</body>
+</html>

@@ -90,6 +90,10 @@ async def test_headings(page) -> Dict[str, Any]:
                     return path;
                 }
                 
+                // Get heading length limit from config, default to 60
+                const headingLengthLimit = (window.a11yConfig && window.a11yConfig.headingLengthLimit) || 60;
+                const headingNearLimit = Math.floor(headingLengthLimit * 0.67); // ~40 for default 60
+
                 // Get all headings
                 const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
 
@@ -147,20 +151,29 @@ async def test_headings(page) -> Dict[str, Any]:
                     });
                     results.elements_failed++;
                 } else if (h1Elements.length > 1) {
+                    // Create ONE error with all H1s listed
+                    const allH1s = [];
                     h1Elements.forEach((h1, index) => {
-                        if (index > 0) {  // Report all but the first H1
-                            results.errors.push({
-                                err: 'ErrMultipleH1',
-                                type: 'err', 
-                                cat: 'headings',
-                                element: h1.tagName,
-                                xpath: getFullXPath(h1),
-                                html: h1.outerHTML.substring(0, 200),
-                                description: `Multiple H1 elements found (${index + 1} of ${h1Elements.length})`
-                            });
-                            results.elements_failed++;
-                        }
+                        allH1s.push({
+                            index: index + 1,
+                            xpath: getFullXPath(h1),
+                            html: h1.outerHTML.substring(0, 200),
+                            text: h1.textContent.trim()
+                        });
                     });
+
+                    results.errors.push({
+                        err: 'ErrMultipleH1',
+                        type: 'err',
+                        cat: 'headings',
+                        element: 'page',
+                        xpath: allH1s[0].xpath,  // Use first H1's xpath as primary location
+                        html: allH1s[0].html,     // Use first H1's HTML as primary snippet
+                        description: `Page contains ${h1Elements.length} h1 elements instead of just one`,
+                        count: h1Elements.length,
+                        allH1s: allH1s
+                    });
+                    results.elements_failed++;
                 } else {
                     results.elements_passed++;
                 }
@@ -176,12 +189,26 @@ async def test_headings(page) -> Dict[str, Any]:
 
                     // Check for empty headings
                     const textContent = heading.textContent.trim();
+                    const originalText = heading.textContent;  // Capture original (untrimmed) text
 
                     // Check if heading has images with alt text (not empty if so)
                     const images = heading.querySelectorAll('img[alt]');
                     const hasImageWithAlt = Array.from(images).some(img => img.alt.trim() !== '');
 
                     if (!textContent && !hasImageWithAlt) {
+                        // Create visual representation of the empty/whitespace content
+                        let textDisplay = originalText;
+                        if (textDisplay === '') {
+                            textDisplay = '(empty)';
+                        } else {
+                            // Show whitespace characters visibly using split/join to avoid regex
+                            textDisplay = textDisplay.split(' ').join('\u00B7')    // Space to middle dot
+                                                     .split('\\t').join('\u2192')   // Tab to arrow
+                                                     .split('\\n').join('\u21B5')   // Newline to return symbol
+                                                     .split('\\r').join('');        // Remove carriage return
+                            if (textDisplay === '') textDisplay = '(whitespace)';
+                        }
+
                         results.errors.push({
                             err: 'ErrEmptyHeading',
                             type: 'err',
@@ -189,7 +216,9 @@ async def test_headings(page) -> Dict[str, Any]:
                             element: heading.tagName,
                             xpath: getFullXPath(heading),
                             html: heading.outerHTML.substring(0, 200),
-                            description: `${heading.tagName} element is empty`
+                            description: `${heading.tagName} element is empty`,
+                            text: textDisplay,           // Visual representation
+                            originalText: originalText    // Raw original text
                         });
                         results.elements_failed++;
                     } else {
@@ -219,7 +248,7 @@ async def test_headings(page) -> Dict[str, Any]:
                         previousHeading = heading;
                         
                         // Check for excessively long headings
-                        if (textContent.length > 60) {
+                        if (textContent.length > headingLengthLimit) {
                             results.warnings.push({
                                 err: 'WarnHeadingOver60CharsLong',
                                 type: 'warn',
@@ -227,12 +256,15 @@ async def test_headings(page) -> Dict[str, Any]:
                                 element: heading.tagName,
                                 xpath: getFullXPath(heading),
                                 html: heading.outerHTML.substring(0, 200),
-                                description: `${heading.tagName} text is ${textContent.length} characters long (should be under 60)`
+                                description: `${heading.tagName} text is ${textContent.length} characters long (should be under ${headingLengthLimit})`,
+                                length: textContent.length,
+                                limit: headingLengthLimit,
+                                text: textContent.substring(0, 100)
                             });
                         }
-                        
+
                         // Info: Check for optimal heading length (best practice)
-                        if (textContent.length > 40 && textContent.length <= 60) {
+                        if (textContent.length > headingNearLimit && textContent.length <= headingLengthLimit) {
                             results.warnings.push({
                                 err: 'InfoHeadingNearLengthLimit',
                                 type: 'info',
@@ -240,7 +272,11 @@ async def test_headings(page) -> Dict[str, Any]:
                                 element: heading.tagName,
                                 xpath: getFullXPath(heading),
                                 html: heading.outerHTML.substring(0, 200),
-                                description: `${heading.tagName} is ${textContent.length} characters - consider shortening for better readability`
+                                description: `${heading.tagName} is ${textContent.length} characters - consider shortening for better readability`,
+                                length: textContent.length,
+                                limit: headingLengthLimit,
+                                nearLimit: headingNearLimit,
+                                text: textContent.substring(0, 100)
                             });
                         }
                         

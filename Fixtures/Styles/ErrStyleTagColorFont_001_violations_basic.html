@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrStyleTagColorFont - Basic Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleTagColorFont_001_violations_basic",
+    "issueId": "ErrStyleTagColorFont",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "<style> tag containing color and font CSS definitions",
+    "wcag": "1.4.3, 1.4.8, 1.4.12",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* This style tag contains both color and font definitions - should be ERROR */
+        body {
+            color: #333333;
+            background-color: #ffffff;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        h1 {
+            color: #0066cc;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .highlight {
+            background-color: yellow;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Style Tag with Color and Font Definitions</h1>
+    <p>This page has a style tag that defines colors and fonts, which should be detected as an error.</p>
+    <p class="highlight">Highlighted text</p>
+</body>
+</html>

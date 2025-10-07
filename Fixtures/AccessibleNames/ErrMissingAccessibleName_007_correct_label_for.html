@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Names via label with for attribute</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_007_correct_label_for",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 7,
+    "description": "Interactive elements use label elements with for attribute for accessible names",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Label with for= Examples</h1>
+
+    <form>
+        <div data-expected-pass="true"
+             data-pass-reason="Text input has associated label using for attribute">
+            <label for="first-name">First Name</label>
+            <input type="text" id="first-name" name="first-name">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Email input has associated label using for attribute">
+            <label for="email-address">Email Address</label>
+            <input type="email" id="email-address" name="email">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Password input has associated label using for attribute">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Select dropdown has associated label using for attribute">
+            <label for="department">Department</label>
+            <select id="department" name="department">
+                <option value="">Select...</option>
+                <option value="sales">Sales</option>
+                <option value="support">Support</option>
+                <option value="engineering">Engineering</option>
+            </select>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Textarea has associated label using for attribute">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4"></textarea>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Checkbox has associated label using for attribute">
+            <input type="checkbox" id="newsletter" name="newsletter">
+            <label for="newsletter">Subscribe to newsletter</label>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Radio button has associated label using for attribute">
+            <input type="radio" id="payment-card" name="payment" value="card">
+            <label for="payment-card">Credit Card</label>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

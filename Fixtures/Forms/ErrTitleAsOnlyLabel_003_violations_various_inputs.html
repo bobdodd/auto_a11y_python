@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing Accessible Names - Title Attribute Anti-pattern</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTitleAsOnlyLabel_003_violations_various_inputs",
+    "issueId": "ErrTitleAsOnlyLabel",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Various form input types using title attribute as only label",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form - Title Attribute Issues</h1>
+
+    <form>
+        <div data-expected-violation="true"
+             data-violation-id="ErrTitleAsOnlyLabel"
+             data-violation-reason="Title attribute is not reliably announced by screen readers and should not be sole source of accessible name">
+            <input type="text" name="name" title="Your full name">
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="ErrTitleAsOnlyLabel"
+             data-violation-reason="Title attribute is not a reliable accessible name">
+            <input type="email" name="email" title="Email address for contact">
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="ErrTitleAsOnlyLabel"
+             data-violation-reason="Title attribute alone does not provide accessible name">
+            <select name="subject" title="Subject of inquiry">
+                <option value="">Select...</option>
+                <option value="sales">Sales</option>
+                <option value="support">Support</option>
+            </select>
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="ErrTitleAsOnlyLabel"
+             data-violation-reason="Title attribute is not sufficient for accessible name">
+            <textarea name="message" title="Your message"></textarea>
+        </div>
+
+        <div data-expected-violation="true"
+             data-violation-id="ErrTitleAsOnlyLabel"
+             data-violation-reason="Button with only title attribute lacks accessible name">
+            <button type="button" title="Send message">📧</button>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

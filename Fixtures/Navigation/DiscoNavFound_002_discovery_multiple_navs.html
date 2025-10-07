@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoNavFound Test - Multiple Navigations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoNavFound_002_discovery_multiple_navs",
+    "issueId": "DiscoNavFound",
+    "expectedViolationCount": 0,
+    "expectedWarningCount": 2,
+    "expectedDiscoveryCount": 2,
+    "expectedPassCount": 0,
+    "description": "Multiple navigation elements detected, each tracked with unique signature",
+    "wcag": [],
+    "impact": "N/A"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Navigation Elements</h1>
+
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products.html">Products</a></li>
+            <li><a href="/services.html">Services</a></li>
+            <li><a href="/about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <p>Content with secondary navigation in footer.</p>
+    </main>
+
+    <footer>
+        <nav aria-label="Footer navigation">
+            <ul>
+                <li><a href="/privacy.html">Privacy</a></li>
+                <li><a href="/terms.html">Terms</a></li>
+                <li><a href="/contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </footer>
+</body>
+</html>

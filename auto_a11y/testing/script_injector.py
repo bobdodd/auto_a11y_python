@@ -110,6 +110,22 @@ class ScriptInjector:
                     await page.evaluateOnNewDocument(self.loaded_scripts[script_path])
                     # Script injected - silent unless error
             
+            # Inject configuration for tests to use
+            # Use project_config if available, otherwise use defaults
+            title_limit = 60
+            heading_limit = 60
+            if hasattr(self, 'project_config') and self.project_config:
+                title_limit = self.project_config.get('titleLengthLimit', 60)
+                heading_limit = self.project_config.get('headingLengthLimit', 60)
+
+            config_js = f'''
+                window.a11yConfig = {{
+                    titleLengthLimit: {title_limit},
+                    headingLengthLimit: {heading_limit}
+                }};
+            '''
+            await page.evaluateOnNewDocument(config_js)
+
             # Add helper function to check if scripts are loaded
             await page.evaluateOnNewDocument('''
                 window.a11yTestsLoaded = true;
@@ -207,18 +223,18 @@ class ScriptInjector:
         if self.test_config is None:
             from auto_a11y.config.test_config import get_test_config
             self.test_config = get_test_config()
-        
+
         # Check global enable
         if not self.test_config.config.get("global", {}).get("enabled", True):
             logger.info("All tests are disabled globally")
             return results
-        
+
         # Run JavaScript-based tests if enabled
         if self.test_config.config.get("global", {}).get("run_javascript_tests", True):
             for test_name in self.TEST_FUNCTIONS.keys():
                 # Map test to touchpoint
                 touchpoint = self._get_touchpoint_for_js_test(test_name)
-                
+
                 # Check if test is enabled
                 if self.test_config.is_test_enabled(test_name, touchpoint):
                     try:
@@ -238,7 +254,7 @@ class ScriptInjector:
                     logger.debug(f"Skipping disabled JavaScript test: {test_name}")
         else:
             logger.info("JavaScript tests are disabled globally")
-        
+
         # Run Python-based touchpoint tests if enabled
         if self.test_config.config.get("global", {}).get("run_python_tests", True):
             try:

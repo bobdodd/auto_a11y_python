@@ -392,11 +392,83 @@ How to fix: Verify the SVG with role="img" has appropriate accessible names thro
 
 ---
 
+ID: DiscoNavFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: navigation
+Description: Navigation region detected (signature: {navSignature}) - requires manual accessibility review
+Why it matters: Navigation regions are critical wayfinding tools that must be keyboard accessible, properly labeled, and work with screen readers. Each navigation area needs verification that links are organized logically, focus order is correct, current page indication is provided (aria-current="page"), and the navigation can be easily understood and operated by all users. Multiple navigation regions must be distinguishable via unique accessible names.
+Who it affects: Screen reader users who navigate by landmarks and need clear labels to distinguish navigation regions, keyboard users who must efficiently tab through navigation links, users with motor disabilities who need consistent and predictable navigation patterns, users with cognitive disabilities who benefit from clear, well-organized navigation structures.
+How to fix: Verify navigation has a clear accessible name (aria-label or aria-labelledby) if multiple nav regions exist. Test keyboard navigation through all links (Tab order should be logical). Ensure current page is indicated with aria-current="page". Verify focus indicators are visible. Test with screen reader to confirm navigation is announced correctly and links are understandable out of context.
+
+---
+
+ID: DiscoAsideFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Complementary region detected (signature: {asideSignature}) - requires manual accessibility review
+Why it matters: Complementary regions (<aside> or role="complementary") provide supporting content related to the main content. They must be properly labeled when multiple exist, contain relevant supplementary information, and be distinguishable from main content for screen reader users who navigate by landmarks.
+Who it affects: Screen reader users who navigate by landmarks to find supporting content, users with cognitive disabilities who benefit from clear content organization and separation of main vs. supplementary information.
+How to fix: Verify the aside contains truly complementary content (related to but separate from main content). If multiple complementary regions exist on the page, ensure each has a unique accessible name using aria-label or aria-labelledby. Test with screen reader to confirm the region is announced correctly and its purpose is clear.
+
+---
+
+ID: DiscoSectionFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Section region detected (signature: {sectionSignature}) - requires manual accessibility review
+Why it matters: Section elements with accessible names become region landmarks (<section> with aria-label/aria-labelledby or role="region"). They must have meaningful, unique labels to help screen reader users navigate between distinct areas of content. Sections without accessible names are not landmarks and won't appear in landmark navigation.
+Who it affects: Screen reader users who navigate by landmarks to jump between major page sections, users with cognitive disabilities who benefit from clearly labeled and organized content regions.
+How to fix: Verify each section has a descriptive, unique accessible name (aria-label or aria-labelledby) that clearly identifies its purpose. Ensure the label is concise and meaningful. If the section doesn't represent a significant region of content, consider if it should be a landmark at all. Test with screen reader to confirm the region is announced with its label.
+
+---
+
+ID: DiscoHeaderFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Banner region detected (signature: {headerSignature}) - requires manual accessibility review
+Why it matters: Banner landmarks (<header> at top level or role="banner") identify the main header of the page, typically containing site logo, main navigation, and site-wide utilities. There should be only one banner per page. It must be properly labeled if the site identity isn't obvious, and should not be nested inside other landmarks (which would prevent it from being a banner).
+Who it affects: Screen reader users who navigate by landmarks to quickly access site-wide navigation and branding, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who rely on consistent banner placement for orientation.
+How to fix: Verify there is only one banner landmark per page (scoped to top-level <header> or explicit role="banner"). Ensure the banner contains site-level content (logo, main nav, site utilities) rather than page-specific content. If multiple headers exist, ensure only the site-level one is a banner. Test with screen reader to confirm banner is announced correctly.
+
+---
+
+ID: DiscoFooterFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Contentinfo region detected (signature: {footerSignature}) - requires manual accessibility review
+Why it matters: Contentinfo landmarks (<footer> at top level or role="contentinfo") identify site-wide footer information such as copyright, privacy policy, and contact links. There should be only one contentinfo per page. It must contain site-level information rather than page-specific footers, and should not be nested inside other landmarks (which would prevent it from being contentinfo).
+Who it affects: Screen reader users who navigate by landmarks to quickly access site-wide footer information and legal links, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who rely on consistent footer placement for finding important site information.
+How to fix: Verify there is only one contentinfo landmark per page (scoped to top-level <footer> or explicit role="contentinfo"). Ensure the footer contains site-level information (copyright, privacy, contact) rather than article-specific or section-specific footers. If multiple footers exist, ensure only the site-level one is contentinfo. Test with screen reader to confirm contentinfo is announced correctly.
+
+---
+
+ID: DiscoSearchFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Search region detected (signature: {searchSignature}) - requires manual accessibility review
+Why it matters: Search landmarks (<search> or role="search") identify search functionality on the page. They help screen reader users quickly locate search features. The search region must have a clear accessible name if multiple search regions exist, contain appropriate search form controls, and be easily discoverable through landmark navigation.
+Who it affects: Screen reader users who navigate by landmarks to quickly find search functionality, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who benefit from clearly marked search areas.
+How to fix: Verify the search region contains actual search functionality (typically a form with input and submit button). If multiple search regions exist, ensure each has a unique accessible name using aria-label or aria-labelledby. Ensure search form controls are properly labeled and keyboard accessible. Test with screen reader to confirm search region is announced correctly and search controls are accessible.
+
+---
+
 ID: DiscoHeadingWithID
 Type: Discovery
 Impact: N/A
 WCAG: N/A
-Touchpoint: headings
+Touchpoint: navigation
 Description: Heading element has an ID attribute that may be used for in-page navigation
 Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
 Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
@@ -1672,7 +1744,7 @@ Touchpoint: headings
 Description: Page contains {count} h1 elements instead of just one
 Why it matters: Having {count} h1 elements creates confusion about the page's main topic. Each h1 represents a primary heading, and multiple h1s suggest multiple main topics, breaking the document hierarchy. Screen readers users won't know which h1 represents the actual page topic.
 Who it affects: Screen reader users who expect a single h1 to identify the page topic, users navigating by headings who see multiple "top level" items, SEO and search engines that look for a single main topic
-How to fix: Keep only one h1 that represents the main page topic. Change the other {count-1} h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
+How to fix: Keep only one h1 that represents the main page topic. Change the other h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
 
 ---
 
@@ -5183,7 +5255,7 @@ Touchpoint: headings
 Description: Page contains {count} h1 elements instead of just one
 Why it matters: Having {count} h1 elements creates confusion about the page's main topic. Each h1 represents a primary heading, and multiple h1s suggest multiple main topics, breaking the document hierarchy. Screen readers users won't know which h1 represents the actual page topic.
 Who it affects: Screen reader users who expect a single h1 to identify the page topic, users navigating by headings who see multiple "top level" items, SEO and search engines that look for a single main topic
-How to fix: Keep only one h1 that represents the main page topic. Change the other {count-1} h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
+How to fix: Keep only one h1 that represents the main page topic. Change the other h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
 
 ID: ErrNoHeadingsOnPage
 Type: Error

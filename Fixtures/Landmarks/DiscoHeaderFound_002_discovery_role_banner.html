@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoHeaderFound Test - role="banner"</title>
+</head>
+<body>
+    <div role="banner" aria-label="Site Header">
+        <div class="logo">Site Logo</div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+        </nav>
+    </div>
+
+    <main>
+        <article>
+            <header>
+                <h1>Article Title</h1>
+                <p>Article metadata</p>
+            </header>
+            <p>Article content (this header should NOT be detected as a banner)</p>
+        </article>
+    </main>
+</body>
+</html>

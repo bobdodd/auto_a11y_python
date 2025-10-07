@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
 Auto A11y Python - Main entry point
+Updated: 2025-10-06 to force reload
 """
 
 import sys

@@ -668,6 +668,15 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                                        {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
+                                                        <h6 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h6>
+                                                        {% for h1 in violation.metadata.allH1s %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>H1 #{{ h1.index }}:</strong> {{ h1.text }}</p>
+                                                            <p class="mb-1 small text-muted">Location: <code>{{ h1.xpath }}</code></p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
@@ -842,6 +851,15 @@
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
+                                <h6 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h6>
+                                {% for h1 in violation.metadata.allH1s %}
+                                <div class="mb-3">
+                                    <p class="mb-1"><strong>H1 #{{ h1.index }}:</strong> {{ h1.text }}</p>
+                                    <p class="mb-1 small text-muted">Location: <code>{{ h1.xpath }}</code></p>
+                                    <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
+                                </div>
+                                {% endfor %}
                                 {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
                                 <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
@@ -1644,6 +1662,22 @@
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
+                                                        {% elif 'ErrStyleAttrColorFont' in discovery.id and discovery.metadata and 'styleContent' in discovery.metadata %}
+                                                        <p class="mb-2"><strong>Element with inline color/font style:</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Inline style attribute:</strong></p>
+                                                        <pre class="bg-danger text-light p-3 rounded"><code>{{ discovery.metadata.styleContent|e }}</code></pre>
+                                                        <div class="alert alert-danger">
+                                                            <p class="mb-0"><strong>Error:</strong> Inline color and font styles prevent users from customizing colors and fonts to their needs. Move these styles to a CSS file to support user preferences and accessibility features.</p>
+                                                        </div>
+                                                        {% elif 'WarnStyleAttrOther' in discovery.id and discovery.metadata and 'styleContent' in discovery.metadata %}
+                                                        <p class="mb-2"><strong>Element with inline layout style:</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Inline style attribute:</strong></p>
+                                                        <pre class="bg-warning text-dark p-3 rounded"><code>{{ discovery.metadata.styleContent|e }}</code></pre>
+                                                        <div class="alert alert-warning">
+                                                            <p class="mb-0"><strong>Warning:</strong> While layout styles are less critical than color/font styles, it's better to move these styles to a CSS class for better maintainability and separation of concerns.</p>
+                                                        </div>
                                                         {% elif 'ErrTabOrderViolation' in discovery.id and discovery.metadata and 'previousElement' in discovery.metadata %}
                                                         <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
@@ -1768,6 +1802,22 @@
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
+                                                        {% elif 'ErrStyleAttrColorFont' in discovery.id and discovery.metadata and 'styleContent' in discovery.metadata %}
+                                                        <p class="mb-2"><strong>Element with inline color/font style:</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Inline style attribute:</strong></p>
+                                                        <pre class="bg-danger text-light p-3 rounded"><code>{{ discovery.metadata.styleContent|e }}</code></pre>
+                                                        <div class="alert alert-danger">
+                                                            <p class="mb-0"><strong>Error:</strong> Inline color and font styles prevent users from customizing colors and fonts to their needs. Move these styles to a CSS file to support user preferences and accessibility features.</p>
+                                                        </div>
+                                                        {% elif 'WarnStyleAttrOther' in discovery.id and discovery.metadata and 'styleContent' in discovery.metadata %}
+                                                        <p class="mb-2"><strong>Element with inline layout style:</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Inline style attribute:</strong></p>
+                                                        <pre class="bg-warning text-dark p-3 rounded"><code>{{ discovery.metadata.styleContent|e }}</code></pre>
+                                                        <div class="alert alert-warning">
+                                                            <p class="mb-0"><strong>Warning:</strong> While layout styles are less critical than color/font styles, it's better to move these styles to a CSS class for better maintainability and separation of concerns.</p>
+                                                        </div>
                                                         {% elif 'ErrTabOrderViolation' in discovery.id and discovery.metadata and 'previousElement' in discovery.metadata %}
                                                         <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>

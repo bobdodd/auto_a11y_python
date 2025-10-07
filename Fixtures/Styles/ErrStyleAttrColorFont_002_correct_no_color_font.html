@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrStyleAttrColorFont - Pass (No Color/Font Inline Styles)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_002_correct_no_color_font",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Page without inline color or font styles (may have layout styles which are warnings)",
+    "wcag": "1.4.3, 1.4.8",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .styled-text {
+            color: blue;
+            font-family: Georgia, serif;
+            font-size: 18px;
+        }
+        .colored-box {
+            background-color: lightblue;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Proper CSS Styling (No Inline Color/Font Styles)</h1>
+
+    <main>
+        <section>
+            <h2>Colors and fonts defined in CSS</h2>
+            <p class="styled-text">
+                This paragraph gets its color and font from CSS classes.
+            </p>
+
+            <div class="colored-box">
+                This div gets its background color from CSS.
+            </div>
+        </section>
+
+        <section>
+            <h2>Layout-only inline styles (warnings, not errors)</h2>
+            <div style="margin: 10px; display: flex;">
+                Layout styles like margin and display are acceptable (though still generate warnings).
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -51,15 +51,32 @@ function headingsScrape() {
                     // Check content
                     const res = computeTextAlternative(element);
                     const trimmed = res.name.trim();
-                    
+                    const originalText = res.name;  // Capture original (untrimmed) text
+
                     if (trimmed === "" || trimmed === null) {
                         contentCheck.failed++;
+
+                        // Create visual representation of the empty/whitespace content
+                        let textDisplay = originalText;
+                        if (textDisplay === '' || textDisplay === null) {
+                            textDisplay = '(empty)';
+                        } else {
+                            // Show whitespace characters visibly using split/join
+                            textDisplay = textDisplay.split(' ').join('\u00B7')    // Space to middle dot
+                                                     .split('\t').join('\u2192')   // Tab to arrow
+                                                     .split('\n').join('\u21B5')   // Newline to return symbol
+                                                     .split('\r').join('');        // Remove carriage return
+                            if (textDisplay === '') textDisplay = '(whitespace)';
+                        }
+
                         errorList.push({
                             url: window.location.href,
                             type: 'err',
                             cat: 'heading',
                             err: 'ErrEmptyHeading',
                             xpath: xpath,
+                            text: textDisplay,           // Visual representation
+                            originalText: originalText,  // Raw original text
                             parentLandmark: element.getAttribute('a11y-parentLandmark'),
                             parentLandmarkXpath: element.getAttribute('a11y-parentLandmark.xpath'),
                             parentLandmarkAN: element.getAttribute('a11y-parentLandmark.an'),
@@ -174,12 +191,28 @@ function headingsScrape() {
         });
     } else if (h1Count > 1) {
         h1Check.failed = 1;
+        // Create ONE error with all H1s listed
+        const h1Elements = document.querySelectorAll('h1');
+        const allH1s = [];
+        h1Elements.forEach((h1, index) => {
+            const xpath = Elements.DOMPath.xPath(h1, true);
+            allH1s.push({
+                index: index + 1,
+                xpath: xpath,
+                html: h1.outerHTML,
+                text: h1.textContent.trim()
+            });
+        });
+
         errorList.push({
             url: window.location.href,
             type: 'err',
             cat: 'heading',
             err: 'ErrMultipleH1',
             count: h1Count,
+            xpath: allH1s[0].xpath,  // Use first H1's xpath as primary location
+            html: allH1s[0].html,     // Use first H1's HTML as primary snippet
+            allH1s: allH1s,           // Array of all H1s
             fpTempId: '0'
         });
     } else {

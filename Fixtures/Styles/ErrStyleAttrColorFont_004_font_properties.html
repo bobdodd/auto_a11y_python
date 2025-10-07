@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrStyleAttrColorFont - All Font Properties</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_004_font_properties",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 17,
+    "expectedPassCount": 0,
+    "description": "Test detection of all font-related CSS properties in inline styles",
+    "wcag": "1.4.3, 1.4.8, 1.4.12",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: All Font-Related Inline Style Properties</h1>
+
+    <main>
+        <section>
+            <h2>Font Shorthand</h2>
+            <p
+               style="font: italic bold 16px/1.5 Arial, sans-serif;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline font shorthand property">
+                Text with font shorthand property
+            </p>
+        </section>
+
+        <section>
+            <h2>Font Family and Size</h2>
+            <p
+               style="font-family: Georgia, serif;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline font-family property">
+                Text with font-family property
+            </p>
+
+            <p
+               style="font-size: 24px;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline font-size property">
+                Text with font-size property
+            </p>
+
+            <span
+                  style="font-size-adjust: 0.5;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Inline font-size-adjust property">
+                Text with font-size-adjust
+            </span>
+        </section>
+
+        <section>
+            <h2>Font Weight and Style</h2>
+            <p
+               style="font-weight: bold;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline font-weight property">
+                Text with font-weight property
+            </p>
+
+            <p
+               style="font-style: italic;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline font-style property">
+                Text with font-style property
+            </p>
+
+            <p
+               style="font-variant: small-caps;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline font-variant property">
+                Text with font-variant property
+            </p>
+
+            <p
+               style="font-stretch: condensed;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline font-stretch property">
+                Text with font-stretch property
+            </p>
+
+            <span
+                  style="font-synthesis: weight style;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Inline font-synthesis property">
+                Text with font-synthesis
+            </span>
+        </section>
+
+        <section>
+            <h2>Text Spacing Properties</h2>
+            <p
+               style="line-height: 2.0;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline line-height property">
+                Text with line-height property
+            </p>
+
+            <p
+               style="letter-spacing: 0.1em;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline letter-spacing property">
+                Text with letter-spacing property
+            </p>
+
+            <p
+               style="word-spacing: 0.5em;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline word-spacing property">
+                Text with word-spacing property
+            </p>
+
+            <span
+                  style="font-kerning: normal;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Inline font-kerning property">
+                Text with font-kerning
+            </span>
+        </section>
+
+        <section>
+            <h2>Text Transformation and Decoration</h2>
+            <p
+               style="text-transform: uppercase;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline text-transform property">
+                Text with text-transform property
+            </p>
+
+            <p
+               style="text-decoration: underline;"
+               data-expected-violation="true"
+               data-violation-id="ErrStyleAttrColorFont"
+               data-violation-reason="Inline text-decoration property">
+                Text with text-decoration property
+            </p>
+
+            <span
+                  style="text-decoration-line: line-through;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Inline text-decoration-line property">
+                Text with text-decoration-line
+            </span>
+
+            <span
+                  style="text-decoration-style: wavy;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Inline text-decoration-style property">
+                Text with text-decoration-style
+            </span>
+
+            <span
+                  style="text-decoration-thickness: 2px;"
+                  data-expected-violation="true"
+                  data-violation-id="ErrStyleAttrColorFont"
+                  data-violation-reason="Inline text-decoration-thickness property">
+                Text with text-decoration-thickness
+            </span>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnStyleTagOther - Pass (External CSS)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnStyleTagOther_002_correct_external_css",
+    "issueId": "WarnStyleTagOther",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Page using external CSS instead of style tags",
+    "wcag": "1.4.8",
+    "impact": "Low"
+}
+    </script>
+    <!-- No <style> tag - layout would be in external CSS -->
+</head>
+<body>
+    <h1>Test Page: No Style Tags</h1>
+    <p>This page has no style tags. Layout should be defined in external CSS files.</p>
+</body>
+</html>

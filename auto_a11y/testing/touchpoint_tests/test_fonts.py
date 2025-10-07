@@ -193,6 +193,8 @@ async def test_fonts(page) -> Dict[str, Any]:
                             html: element.outerHTML.substring(0, 200),
                             description: `Line height ratio is ${(lineHeight / fontSize).toFixed(2)} (should be at least 1.5)`,
                             ratio: (lineHeight / fontSize).toFixed(2),
+                            lineHeight: lineHeight.toFixed(2),
+                            fontSize: fontSize.toFixed(2),
                             text: text
                         });
                         hasViolation = true;
@@ -301,33 +303,49 @@ async def test_fonts(page) -> Dict[str, Any]:
                     });
                 }
 
-                // DISCOVERY: Report unique fonts found on the page
+                // DISCOVERY: Report each unique font with the sizes it's used at
                 const allElements = Array.from(document.querySelectorAll('*'));
-                const uniqueFonts = new Set();
+                const fontData = new Map(); // Map of font name -> Set of sizes
 
                 allElements.forEach(el => {
                     const computedStyle = window.getComputedStyle(el);
                     const fontFamily = computedStyle.fontFamily;
-                    if (fontFamily && fontFamily !== 'inherit') {
-                        // Clean up font family string
+                    const fontSize = computedStyle.fontSize;
+
+                    if (fontFamily && fontFamily !== 'inherit' && fontSize) {
+                        // Clean up font family string - take the first font in the stack
                         const fonts = fontFamily.split(',').map(f => f.trim().replace(/['"]/g, ''));
-                        fonts.forEach(font => uniqueFonts.add(font));
+                        const primaryFont = fonts[0]; // Use the first (primary) font
+
+                        if (!fontData.has(primaryFont)) {
+                            fontData.set(primaryFont, new Set());
+                        }
+                        fontData.get(primaryFont).add(fontSize);
                     }
                 });
 
-                if (uniqueFonts.size > 0) {
+                // Create individual discovery report for each font
+                fontData.forEach((sizes, fontName) => {
+                    const sortedSizes = Array.from(sizes).sort((a, b) => {
+                        // Sort by numeric value (converting px to numbers)
+                        const aNum = parseFloat(a);
+                        const bNum = parseFloat(b);
+                        return aNum - bNum;
+                    });
+
                     results.warnings.push({
                         err: 'DiscoFontFound',
                         type: 'disco',
                         cat: 'fonts',
                         element: 'document',
                         xpath: '/html[1]',
-                        html: `<meta>Found ${uniqueFonts.size} unique fonts</meta>`,
-                        description: `Fonts detected on page: ${Array.from(uniqueFonts).join(', ')}`,
-                        fontCount: uniqueFonts.size,
-                        fonts: Array.from(uniqueFonts)
+                        html: `<meta>Font: ${fontName}</meta>`,
+                        description: `Font '${fontName}' is used at ${sortedSizes.length} different size${sortedSizes.length > 1 ? 's' : ''}: ${sortedSizes.join(', ')}`,
+                        fontName: fontName,
+                        fontSizes: sortedSizes,
+                        sizeCount: sortedSizes.length
                     });
-                }
+                });
 
                 return results;
             }

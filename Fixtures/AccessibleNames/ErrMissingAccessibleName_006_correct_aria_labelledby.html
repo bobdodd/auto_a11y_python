@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Names via aria-labelledby</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_006_correct_aria_labelledby",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Interactive elements use aria-labelledby for accessible names",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>aria-labelledby Examples</h1>
+
+    <form>
+        <div data-expected-pass="true"
+             data-pass-reason="Input has aria-labelledby referencing visible label">
+            <span id="username-label">Username</span>
+            <input type="text" name="username" aria-labelledby="username-label">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Input has aria-labelledby referencing visible label">
+            <span id="phone-label">Phone Number</span>
+            <input type="tel" name="phone" aria-labelledby="phone-label">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Select has aria-labelledby referencing descriptive element">
+            <p id="size-description">Select your preferred size:</p>
+            <select name="size" aria-labelledby="size-description">
+                <option value="s">Small</option>
+                <option value="m">Medium</option>
+                <option value="l">Large</option>
+            </select>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Textarea has aria-labelledby providing accessible name">
+            <div id="feedback-heading">Customer Feedback</div>
+            <textarea name="feedback" aria-labelledby="feedback-heading"></textarea>
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Button has aria-labelledby referencing descriptive text">
+            <span id="save-action">Save your changes</span>
+            <button type="button" aria-labelledby="save-action">💾</button>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

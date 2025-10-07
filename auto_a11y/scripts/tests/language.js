@@ -11,12 +11,15 @@ function languageScrape() {
     
     if (!htmlElement || !htmlElement.hasAttribute('lang')) {
         langCheck.failed = 1;
+        // Capture the opening tag of the html element
+        const htmlTag = htmlElement ? htmlElement.outerHTML.split('>')[0] + '>' : '<html>';
         errorList.push({
             url: window.location.href,
             type: 'err',
             cat: 'language',
             err: 'ErrNoPageLanguage',
             xpath: '/html',
+            html: htmlTag,
             fpTempId: '0'
         });
     } else {
@@ -25,16 +28,19 @@ function languageScrape() {
         // Check if language code is valid (basic check for format)
         if (!lang || lang.trim() === '') {
             langCheck.failed = 1;
+            const htmlTag = htmlElement.outerHTML.split('>')[0] + '>';
             errorList.push({
                 url: window.location.href,
                 type: 'err',
                 cat: 'language',
                 err: 'ErrEmptyLanguageAttribute',
                 xpath: '/html',
+                html: htmlTag,
                 fpTempId: '0'
             });
         } else if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(lang)) {
             langCheck.failed = 1;
+            const htmlTag = htmlElement.outerHTML.split('>')[0] + '>';
             errorList.push({
                 url: window.location.href,
                 type: 'err',
@@ -42,6 +48,7 @@ function languageScrape() {
                 err: 'ErrInvalidLanguageCode',
                 found: lang,
                 xpath: '/html',
+                html: htmlTag,
                 fpTempId: '0'
             });
         } else {

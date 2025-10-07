@@ -93,7 +93,7 @@ def create_project():
             'colors_contrast', 'keyboard_navigation', 'landmarks', 'language',
             'tables', 'lists', 'media', 'dialogs', 'animation', 'timing',
             'typography', 'semantic_structure', 'aria', 'focus_management',
-            'reading_order', 'event_handling', 'accessible_names'
+            'reading_order', 'event_handling', 'accessible_names', 'page'
         ]
         
         for touchpoint_id in touchpoint_ids:
@@ -330,7 +330,7 @@ def edit_project(project_id):
             'colors_contrast', 'keyboard_navigation', 'landmarks', 'language',
             'tables', 'lists', 'media', 'dialogs', 'animation', 'timing',
             'typography', 'semantic_structure', 'aria', 'focus_management',
-            'reading_order', 'event_handling', 'accessible_names'
+            'reading_order', 'event_handling', 'accessible_names', 'page'
         ]
         
         for touchpoint_id in touchpoint_ids:

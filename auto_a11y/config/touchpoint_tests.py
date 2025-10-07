@@ -185,14 +185,9 @@ TOUCHPOINT_TEST_MAPPING = {
     ],
     
     'semantic_structure': [
-        'ErrEmptyPageTitle',
         'ErrHeaderMissingScope',
         'ErrImproperTitleAttribute',
         'ErrMissingDocumentType',
-        'ErrMultiplePageTitles',
-        'ErrNoPageTitle',
-        'WarnPageTitleTooLong',
-        'WarnPageTitleTooShort',
         'WarnVisualHierarchy',
     ],
     
@@ -242,6 +237,15 @@ TOUCHPOINT_TEST_MAPPING = {
     
     'iframes': [
         'ErrVideoIframeMissingTitle',
+    ],
+
+    'page': [
+        'DiscoResponsiveBreakpoints',
+        'ErrEmptyPageTitle',
+        'ErrMultiplePageTitles',
+        'ErrNoPageTitle',
+        'WarnPageTitleTooLong',
+        'WarnPageTitleTooShort',
     ],
 }
 

@@ -119,13 +119,65 @@ async def test_lists(page) -> Dict[str, Any]:
                         const text = el.textContent;
                         const html = el.innerHTML;
 
-                        // Check various fake list patterns
-                        return style.display === 'list-item' ||
-                               html.includes('•') || html.includes('·') || html.includes('‣') ||
-                               html.includes('◦') || html.includes('▪') || html.includes('▫') ||
-                               text.match(/^\s*[-–—*]\s/) ||  // Lines starting with dash/hyphen/asterisk
-                               (html.match(/<br\s*\/?>/gi) || []).length > 2 ||  // Multiple br tags
-                               el.querySelector('[class*="bullet"], [class*="list"]');
+                        // Check for explicit list styling or bullet characters
+                        if (style.display === 'list-item' ||
+                            html.includes('•') || html.includes('·') || html.includes('‣') ||
+                            html.includes('◦') || html.includes('▪') || html.includes('▫') ||
+                            el.querySelector('[class*="bullet"], [class*="list"]')) {
+                            return true;
+                        }
+
+                        // Check for text starting with dash/hyphen/asterisk bullets
+                        const lines = text.split('\n').filter(line => line.trim().length > 0);
+                        if (lines.length >= 3) {
+                            const bulletLines = lines.filter(line => line.match(/^\s*[-–—*•]\s/));
+                            // If at least 50% of lines start with bullets, it's likely a list
+                            if (bulletLines.length >= lines.length * 0.5) {
+                                return true;
+                            }
+                        }
+
+                        // Check for numbered lists (1. 2. 3. or 1) 2) 3))
+                        if (lines.length >= 3) {
+                            const numberedLines = lines.filter(line => line.match(/^\s*\d+[\.\)]\s/));
+                            if (numberedLines.length >= lines.length * 0.5) {
+                                return true;
+                            }
+                        }
+
+                        // For <br> tags, be more conservative
+                        const brCount = (html.match(/<br\s*\/?>/gi) || []).length;
+                        if (brCount >= 3) {
+                            // Only flag as fake list if:
+                            // 1. Has intro text ending with colon
+                            // 2. Items are relatively short (avg < 100 chars)
+                            // 3. Multiple items start with similar patterns
+                            const parts = html.split(/<br\s*\/?>/gi)
+                                .map(part => part.replace(/<[^>]*>/g, '').trim())
+                                .filter(part => part.length > 0);
+
+                            if (parts.length >= 3) {
+                                // Check for intro ending with colon
+                                const hasIntro = parts[0].match(/:\s*$/);
+
+                                // Check average length of items (excluding first if it's intro)
+                                const items = hasIntro ? parts.slice(1) : parts;
+                                const avgLength = items.reduce((sum, item) => sum + item.length, 0) / items.length;
+
+                                // Check if items start with similar patterns (bullets, numbers, dashes)
+                                const patterned = items.filter(item =>
+                                    item.match(/^[-–—*•◦▪▫·‣]\s/) ||
+                                    item.match(/^\d+[\.\)]\s/)
+                                );
+
+                                // Only flag if has intro with colon AND items are short OR items have bullet patterns
+                                if ((hasIntro && avgLength < 150) || patterned.length >= items.length * 0.5) {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        return false;
                     });
 
                 potentialFakeLists.forEach(element => {
@@ -157,14 +209,24 @@ async def test_lists(page) -> Dict[str, Any]:
                                 break;
                             }
                         }
-                    } else if (text.match(/^\s*[-–—*]\s/)) {
-                        pattern = 'dash or asterisk bullets';
-                        detectedBullets = text.split(/\n/).map(line => line.replace(/^\s*[-–—*]\s*/, '').trim()).filter(item => item.length > 0);
-                    } else if ((html.match(/<br\s*\/?>/gi) || []).length > 2) {
-                        pattern = 'multiple <br> tags';
-                        detectedBullets = html.split(/<br\s*\/?>/gi).map(item => item.replace(/<[^>]*>/g, '').trim()).filter(item => item.length > 0);
                     } else if (element.querySelector('[class*="bullet"], [class*="list"]')) {
                         pattern = 'class names suggesting list/bullets';
+                    } else {
+                        // Check for line-based patterns
+                        const lines = text.split('\n').filter(line => line.trim().length > 0);
+                        const bulletLines = lines.filter(line => line.match(/^\s*[-–—*•]\s/));
+                        const numberedLines = lines.filter(line => line.match(/^\s*\d+[\.\)]\s/));
+
+                        if (bulletLines.length >= lines.length * 0.5) {
+                            pattern = 'dash or asterisk bullets';
+                            detectedBullets = bulletLines.map(line => line.replace(/^\s*[-–—*•]\s*/, '').trim());
+                        } else if (numberedLines.length >= lines.length * 0.5) {
+                            pattern = 'numbered list (1. 2. 3.)';
+                            detectedBullets = numberedLines.map(line => line.replace(/^\s*\d+[\.\)]\s*/, '').trim());
+                        } else if ((html.match(/<br\s*\/?>/gi) || []).length >= 3) {
+                            pattern = 'line breaks with list patterns';
+                            detectedBullets = html.split(/<br\s*\/?>/gi).map(item => item.replace(/<[^>]*>/g, '').trim()).filter(item => item.length > 0);
+                        }
                     }
 
                     // Get sample items (max 5)

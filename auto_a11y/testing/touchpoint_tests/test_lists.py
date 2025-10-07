@@ -122,8 +122,7 @@ async def test_lists(page) -> Dict[str, Any]:
                         // Check for explicit list styling or bullet characters
                         if (style.display === 'list-item' ||
                             html.includes('•') || html.includes('·') || html.includes('‣') ||
-                            html.includes('◦') || html.includes('▪') || html.includes('▫') ||
-                            el.querySelector('[class*="bullet"], [class*="list"]')) {
+                            html.includes('◦') || html.includes('▪') || html.includes('▫')) {
                             return true;
                         }
 
@@ -209,8 +208,6 @@ async def test_lists(page) -> Dict[str, Any]:
                                 break;
                             }
                         }
-                    } else if (element.querySelector('[class*="bullet"], [class*="list"]')) {
-                        pattern = 'class names suggesting list/bullets';
                     } else {
                         // Check for line-based patterns
                         const lines = text.split('\n').filter(line => line.trim().length > 0);

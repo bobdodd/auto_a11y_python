@@ -224,6 +224,7 @@ def create_project():
         'maps': 'Maps',
         'media': 'Media',
         'navigation': 'Navigation',
+        'page': 'Page',
         'reading_order': 'Reading Order',
         'semantic_structure': 'Semantic Structure',
         'styles': 'Inline Styles',

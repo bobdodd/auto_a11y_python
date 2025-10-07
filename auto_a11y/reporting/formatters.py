@@ -1006,7 +1006,11 @@ class ExcelFormatter(BaseFormatter):
         if data.get('websites'):
             ws_websites = wb.create_sheet("Websites")
             self._create_websites_sheet(ws_websites, data['websites'], styles)
-        
+
+        # All Issues Sheet (combined view across all pages)
+        ws_all_issues = wb.create_sheet("All Issues")
+        self._create_project_all_issues_sheet(ws_all_issues, data, styles)
+
         # Save to bytes
         from io import BytesIO
         output = BytesIO()
@@ -1381,6 +1385,120 @@ class ExcelFormatter(BaseFormatter):
                 ws.cell(row=row, column=col).fill = styles['info']['fill']
 
             row += 1
+
+        self._auto_adjust_columns(ws)
+
+    def _create_project_all_issues_sheet(self, ws, data, styles):
+        """Create a combined sheet with all issues from all pages across all websites"""
+        headers = ['Type', 'Severity', 'Rule ID', 'Description', 'Element', 'XPath', 'Page URL', 'Website']
+
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            self._apply_style(cell, styles['header'])
+
+        row = 2
+
+        # Iterate through all websites and their pages
+        for website_data in data.get('websites', []):
+            website = website_data.get('website', {})
+            website_name = website.get('name', '') if isinstance(website, dict) else getattr(website, 'name', '')
+
+            for page_result in website_data.get('pages', []):
+                page = page_result.get('page', {})
+                page_url = page.get('url', '') if isinstance(page, dict) else getattr(page, 'url', '')
+
+                test_result = page_result.get('test_result')
+                if not test_result:
+                    continue
+
+                # Get issues from test_result
+                issues_data = None
+                if hasattr(test_result, 'issues_json') and test_result.issues_json:
+                    import json
+                    try:
+                        issues_data = json.loads(test_result.issues_json)
+                    except:
+                        pass
+
+                if not issues_data:
+                    continue
+
+                # Add violations
+                for v in issues_data.get('violations', []):
+                    ws.cell(row=row, column=1, value='Violation')
+                    ws.cell(row=row, column=2, value=v.get('impact', 'Unknown').upper())
+                    ws.cell(row=row, column=3, value=v.get('id', v.get('rule_id', '')))
+                    ws.cell(row=row, column=4, value=v.get('description', ''))
+                    ws.cell(row=row, column=5, value=v.get('element', ''))
+                    ws.cell(row=row, column=6, value=v.get('xpath', ''))
+                    ws.cell(row=row, column=7, value=page_url)
+                    ws.cell(row=row, column=8, value=website_name)
+
+                    for col in range(1, 9):
+                        ws.cell(row=row, column=col).fill = styles['violation']['fill']
+                    row += 1
+
+                # Add warnings
+                for w in issues_data.get('warnings', []):
+                    ws.cell(row=row, column=1, value='Warning')
+                    ws.cell(row=row, column=2, value=w.get('impact', 'Moderate').upper())
+                    ws.cell(row=row, column=3, value=w.get('id', w.get('rule_id', '')))
+                    ws.cell(row=row, column=4, value=w.get('description', ''))
+                    ws.cell(row=row, column=5, value=w.get('element', ''))
+                    ws.cell(row=row, column=6, value=w.get('xpath', ''))
+                    ws.cell(row=row, column=7, value=page_url)
+                    ws.cell(row=row, column=8, value=website_name)
+
+                    for col in range(1, 9):
+                        ws.cell(row=row, column=col).fill = styles['warning']['fill']
+                    row += 1
+
+                # Add info items
+                for i in issues_data.get('info', []):
+                    ws.cell(row=row, column=1, value='Info')
+                    ws.cell(row=row, column=2, value='INFO')
+                    ws.cell(row=row, column=3, value=i.get('id', ''))
+                    ws.cell(row=row, column=4, value=i.get('description', ''))
+                    ws.cell(row=row, column=5, value=i.get('element', ''))
+                    ws.cell(row=row, column=6, value=i.get('xpath', ''))
+                    ws.cell(row=row, column=7, value=page_url)
+                    ws.cell(row=row, column=8, value=website_name)
+
+                    for col in range(1, 9):
+                        ws.cell(row=row, column=col).fill = styles['info']['fill']
+                    row += 1
+
+                # Add discovery items
+                for d in issues_data.get('discovery', []):
+                    ws.cell(row=row, column=1, value='Discovery')
+                    ws.cell(row=row, column=2, value='DISCOVERY')
+                    ws.cell(row=row, column=3, value=d.get('id', ''))
+                    ws.cell(row=row, column=4, value=d.get('description', ''))
+                    ws.cell(row=row, column=5, value=d.get('element', ''))
+                    ws.cell(row=row, column=6, value=d.get('xpath', ''))
+                    ws.cell(row=row, column=7, value=page_url)
+                    ws.cell(row=row, column=8, value=website_name)
+
+                    for col in range(1, 9):
+                        ws.cell(row=row, column=col).fill = styles['discovery']['fill']
+                    row += 1
+
+                # Add AI findings if available
+                if hasattr(test_result, 'ai_findings') and test_result.ai_findings:
+                    for f in test_result.ai_findings:
+                        ws.cell(row=row, column=1, value='AI Finding')
+                        severity = getattr(f, 'severity', 'Unknown')
+                        ws.cell(row=row, column=2, value=str(severity).upper())
+                        ws.cell(row=row, column=3, value=getattr(f, 'issue_id', ''))
+                        ws.cell(row=row, column=4, value=getattr(f, 'description', ''))
+                        ws.cell(row=row, column=5, value=getattr(f, 'element', ''))
+                        ws.cell(row=row, column=6, value=getattr(f, 'xpath', ''))
+                        ws.cell(row=row, column=7, value=page_url)
+                        ws.cell(row=row, column=8, value=website_name)
+
+                        for col in range(1, 9):
+                            ws.cell(row=row, column=col).fill = styles['info']['fill']
+                        row += 1
 
         self._auto_adjust_columns(ws)
 

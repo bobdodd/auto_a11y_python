@@ -1677,6 +1677,7 @@ class ExcelFormatter(BaseFormatter):
                             common_components[signature] = {
                                 'type': component_type,
                                 'label': label,
+                                'signature': signature,  # Store signature for display
                                 'xpaths_by_page': {},  # page_url -> xpath
                                 'pages': set()
                             }
@@ -1741,7 +1742,8 @@ class ExcelFormatter(BaseFormatter):
                             # Check if this issue is within this component on this page
                             comp_xpath = comp_data['xpaths_by_page'].get(page_url)
                             if comp_xpath and self._xpath_is_within(issue_xpath, comp_xpath):
-                                containing_components.append(f"{comp_data['type']}: {comp_data['label']}")
+                                # Format like Discovery Report: "Type signature"
+                                containing_components.append(f"{comp_data['type']} {comp_data['signature']}")
 
                         # Create deduplication key
                         if containing_components:

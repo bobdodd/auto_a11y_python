@@ -290,9 +290,6 @@
                                 <label for="websiteSelect" class="form-label">Website</label>
                                 <select class="form-control" id="websiteSelect" disabled>
                                     <option value="">Select a project first...</option>
-                                    {% for website in websites %}
-                                    <option value="{{ website.id }}" data-project-id="{{ website.project_id }}" style="display: none;">{{ website.name }}</option>
-                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -377,54 +374,44 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('startDate').value = thirtyDaysAgo.toISOString().split('T')[0];
 });
 
-// Handle project selection change
+// Handle project selection change - dynamically load websites
 document.getElementById('projectSelect').addEventListener('change', function() {
     const websiteSelect = document.getElementById('websiteSelect');
     const selectedProjectId = this.value;
 
-    console.log('Project selection changed:', selectedProjectId);
-
-    // Get the placeholder option (first option)
-    const placeholderOption = websiteSelect.querySelector('option[value=""]');
-
     // Reset website selection
     websiteSelect.value = '';
 
-    // Get all website options (excluding placeholder)
-    const websiteOptions = websiteSelect.querySelectorAll('option[data-project-id]');
-    console.log('Total website options found:', websiteOptions.length);
-
     if (selectedProjectId) {
-        // Enable website select
-        websiteSelect.disabled = false;
-
-        // Update placeholder text
-        placeholderOption.textContent = 'All Websites';
-
-        // Show/hide website options based on selected project
-        let visibleCount = 0;
-        websiteOptions.forEach(option => {
-            console.log('Option project ID:', option.dataset.projectId, 'Selected:', selectedProjectId, 'Match:', option.dataset.projectId === selectedProjectId);
-            if (option.dataset.projectId === selectedProjectId) {
-                option.style.display = '';
-                visibleCount++;
-            } else {
-                option.style.display = 'none';
-            }
-        });
-        console.log('Visible websites for project ' + selectedProjectId + ':', visibleCount);
-    } else {
-        // Disable website select when "All Projects" is selected
+        // Load websites for selected project
+        websiteSelect.innerHTML = '<option value="">Loading websites...</option>';
         websiteSelect.disabled = true;
 
-        // Update placeholder text
-        placeholderOption.textContent = 'Select a project first...';
+        fetch(`/projects/api/${selectedProjectId}/websites`)
+            .then(response => response.json())
+            .then(data => {
+                websiteSelect.innerHTML = '<option value="">All Websites</option>';
 
-        // Hide all website options
-        websiteOptions.forEach(option => {
-            option.style.display = 'none';
-        });
-        console.log('No project selected, website dropdown disabled');
+                if (data.websites && data.websites.length > 0) {
+                    data.websites.forEach(website => {
+                        const option = document.createElement('option');
+                        option.value = website.id;
+                        option.textContent = website.name;
+                        websiteSelect.appendChild(option);
+                    });
+                    websiteSelect.disabled = false;
+                } else {
+                    websiteSelect.innerHTML = '<option value="">No websites in this project</option>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading websites:', error);
+                websiteSelect.innerHTML = '<option value="">Error loading websites</option>';
+            });
+    } else {
+        // Disable website select when "All Projects" is selected
+        websiteSelect.innerHTML = '<option value="">Select a project first...</option>';
+        websiteSelect.disabled = true;
     }
 });
 

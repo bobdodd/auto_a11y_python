@@ -92,8 +92,7 @@
                             
                             <!-- Touchpoint Tree -->
                             <div class="touchpoint-tree border rounded p-3" style="max-height: 400px; overflow-y: auto;">
-                                {% for touchpoint_id in touchpoint_names.keys()|sort %}
-                                {% set touchpoint_name = touchpoint_names[touchpoint_id] %}
+                                {% for touchpoint_id, touchpoint_name in touchpoint_names.items()|sort(attribute='1') %}
                                 {% set test_ids = tests_by_touchpoint.get(touchpoint_id, []) %}
                                 {% if test_ids %}
                                 <div class="touchpoint-item mb-2">

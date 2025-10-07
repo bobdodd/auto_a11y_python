@@ -58,20 +58,94 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
         Dictionary containing test results with errors and warnings
     """
     try:
-        # Execute JavaScript to analyze floating dialogs
-        results = await page.evaluate('''
+        # First, extract breakpoints from stylesheets
+        breakpoints = await page.evaluate('''
             () => {
-                const results = {
-                    applicable: true,
-                    errors: [],
-                    warnings: [],
-                    passes: [],
-                    elements_tested: 0,
-                    elements_passed: 0,
-                    elements_failed: 0,
-                    test_name: 'floating_dialogs',
-                    checks: []
-                };
+                const breakpoints = new Set();
+
+                // Parse all stylesheets for media queries
+                for (const sheet of document.styleSheets) {
+                    try {
+                        if (sheet.cssRules) {
+                            for (const rule of sheet.cssRules) {
+                                if (rule instanceof CSSMediaRule) {
+                                    // Extract width values from media query
+                                    const media = rule.media.mediaText;
+                                    const widthMatches = media.match(/(?:min-width|max-width):\s*(\d+)px/g);
+                                    if (widthMatches) {
+                                        widthMatches.forEach(match => {
+                                            const value = parseInt(match.match(/(\d+)px/)[1]);
+                                            breakpoints.add(value);
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        // Skip stylesheets we can't access (CORS)
+                    }
+                }
+
+                // Add common breakpoints if none found
+                if (breakpoints.size === 0) {
+                    return [320, 768, 1024, 1440];
+                }
+
+                // Convert to array and sort, add mobile if not present
+                const bpArray = Array.from(breakpoints).sort((a, b) => a - b);
+                if (!bpArray.includes(320)) {
+                    bpArray.unshift(320);
+                }
+                // Add desktop width if largest is small
+                if (bpArray[bpArray.length - 1] < 1200) {
+                    bpArray.push(1440);
+                }
+
+                return bpArray;
+            }
+        ''')
+
+        logger.info(f"Testing dialogs at breakpoints: {breakpoints}")
+
+        # Store original viewport
+        original_viewport = await page.viewport()
+
+        # Collect all errors/warnings/passes across all breakpoints
+        all_errors = []
+        all_warnings = []
+        all_passes = []
+        total_elements_tested = 0
+        total_elements_passed = 0
+        total_elements_failed = 0
+        test_applicable = False
+        not_applicable_reason = ''
+
+        # Test at each breakpoint
+        for breakpoint_width in breakpoints:
+            # Set viewport to breakpoint
+            await page.setViewport({
+                'width': breakpoint_width,
+                'height': original_viewport.get('height', 800)
+            })
+
+            # Wait a moment for layout to settle
+            await page.evaluate('() => new Promise(resolve => setTimeout(resolve, 300))')
+
+            # Execute JavaScript to analyze floating dialogs at this breakpoint
+            results = await page.evaluate(f'''
+                () => {{
+                    const breakpointWidth = {breakpoint_width};
+                    const results = {{
+                        applicable: true,
+                        errors: [],
+                        warnings: [],
+                        passes: [],
+                        elements_tested: 0,
+                        elements_passed: 0,
+                        elements_failed: 0,
+                        test_name: 'floating_dialogs',
+                        checks: []
+                    }};
                 
                 // Function to generate XPath for elements
                 function getFullXPath(element) {
@@ -262,10 +336,11 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
-                            description: `Dialog obscures ${overlappingElements.length} interactive element(s)`,
+                            description: `Dialog obscures ${overlappingElements.length} interactive element(s) at ${breakpointWidth}px viewport`,
                             obscuredCount: overlappingElements.length,
                             obscuredElements: overlappingElements,
-                            dialogXpath: getFullXPath(dialog)
+                            dialogXpath: getFullXPath(dialog),
+                            breakpoint: breakpointWidth
                         });
                         results.elements_failed++;
                     } else {
@@ -303,19 +378,71 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                 });
                 
                 // Add check information for reporting
-                results.checks.push({
+                results.checks.push({{
                     description: 'Dialog accessibility',
                     wcag: ['4.1.2', '2.4.6', '2.1.1', '2.1.2'],
                     total: visibleDialogs.length * 3, // 3 main checks per dialog
                     passed: results.elements_passed,
                     failed: results.elements_failed
-                });
-                
+                }});
+
                 return results;
-            }
-        ''')
-        
-        return results
+                }}
+            ''')
+
+            # Aggregate results from this breakpoint
+            if results['applicable']:
+                test_applicable = True
+
+            # Deduplicate errors by signature (xpath + error type, but keep breakpoint-specific ones)
+            for error in results.get('errors', []):
+                # Check if we already have this error at a different breakpoint
+                signature = f"{error.get('err')}:{error.get('xpath')}"
+                existing = next((e for e in all_errors if f"{e.get('err')}:{e.get('xpath')}" == signature), None)
+
+                if not existing:
+                    all_errors.append(error)
+                elif error.get('err') == 'ErrContentObscuring':
+                    # For content obscuring, we want to keep all breakpoint-specific instances
+                    all_errors.append(error)
+
+            all_warnings.extend(results.get('warnings', []))
+            all_passes.extend(results.get('passes', []))
+            total_elements_tested += results.get('elements_tested', 0)
+            total_elements_passed += results.get('elements_passed', 0)
+            total_elements_failed += results.get('elements_failed', 0)
+
+            if not results['applicable'] and not not_applicable_reason:
+                not_applicable_reason = results.get('not_applicable_reason', '')
+
+        # Restore original viewport
+        if original_viewport:
+            await page.setViewport(original_viewport)
+
+        # Return aggregated results
+        final_results = {
+            'applicable': test_applicable,
+            'not_applicable_reason': not_applicable_reason if not test_applicable else '',
+            'errors': all_errors,
+            'warnings': all_warnings,
+            'passes': all_passes,
+            'elements_tested': total_elements_tested,
+            'elements_passed': total_elements_passed,
+            'elements_failed': total_elements_failed,
+            'test_name': 'floating_dialogs',
+            'checks': []
+        }
+
+        if test_applicable and total_elements_tested > 0:
+            final_results['checks'].append({
+                'description': 'Dialog accessibility',
+                'wcag': ['4.1.2', '2.4.6', '2.1.1', '2.1.2'],
+                'total': total_elements_tested * 3,
+                'passed': total_elements_passed,
+                'failed': total_elements_failed
+            })
+
+        return final_results
         
     except Exception as e:
         logger.error(f"Error in test_floating_dialogs: {e}")

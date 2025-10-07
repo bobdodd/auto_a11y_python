@@ -802,13 +802,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add valid language code to xml:lang attribute"
         },
         'ErrFakeListImplementation': {
-            'title': "Visual list created without proper list markup (using br tags, dashes, or bullets)",
-            'what': "Visual list created without proper list markup (using br tags, dashes, or bullets)",
-            'why': "Fake lists don\'t convey proper structure to assistive technologies, preventing users from understanding relationships between items.",
-            'who': "Screen reader users who cannot navigate lists properly, users who rely on structural navigation.",
+            'title': "Visual list created without proper list markup",
+            'what': "Element contains {itemCount} list-like items using {pattern}, but does not use proper <ul>/<ol> and <li> markup",
+            'why': "Fake lists don\'t convey proper structure to assistive technologies, preventing users from understanding relationships between items. Screen readers cannot announce the number of items, allow list navigation, or provide context about the list structure.",
+            'who': "Screen reader users who cannot navigate lists properly, users who rely on structural navigation, keyboard users who cannot jump between list items.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.3.1'],
-            'remediation': "Use proper ul/ol elements with li items for lists, avoid using visual characters or br tags to simulate list appearance."
+            'remediation': "Replace the visual list simulation with proper semantic HTML list markup. Use <ul> or <ol> elements with <li> children for each list item. Remove the {pattern} and let the browser handle list presentation through proper HTML semantics and CSS styling."
         },
         'ErrFielLabelledBySomethingNotALabel': {
             'title': "Field is labeled by an element that is not a proper label",

@@ -917,7 +917,11 @@ class ExcelFormatter(BaseFormatter):
         ws_summary = wb.active
         ws_summary.title = "Summary"
         self._create_summary_sheet(ws_summary, data, styles)
-        
+
+        # All Issues Sheet (combined view)
+        ws_all_issues = wb.create_sheet("All Issues")
+        self._create_all_issues_sheet(ws_all_issues, data, styles)
+
         # Violations Sheet
         if data.get('violations'):
             ws_violations = wb.create_sheet("Violations")
@@ -1282,7 +1286,104 @@ class ExcelFormatter(BaseFormatter):
             row += 1
         
         self._auto_adjust_columns(ws)
-    
+
+    def _create_all_issues_sheet(self, ws, data, styles):
+        """Create a combined sheet with all issues (violations, warnings, info, discovery)"""
+        headers = ['Type', 'Severity', 'Rule ID', 'Description', 'Element', 'XPath', 'Page Location']
+
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            self._apply_style(cell, styles['header'])
+
+        row = 2
+
+        # Add all violations
+        for v in data.get('violations', []):
+            ws.cell(row=row, column=1, value='Violation')
+            ws.cell(row=row, column=2, value=v.get('impact', 'Unknown').upper())
+            ws.cell(row=row, column=3, value=v.get('id', v.get('rule_id', '')))
+            ws.cell(row=row, column=4, value=v.get('description', ''))
+            ws.cell(row=row, column=5, value=v.get('element', ''))
+            ws.cell(row=row, column=6, value=v.get('xpath', ''))
+            ws.cell(row=row, column=7, value=v.get('url', ''))
+
+            # Apply violation coloring
+            for col in range(1, 8):
+                ws.cell(row=row, column=col).fill = styles['violation']['fill']
+
+            row += 1
+
+        # Add all warnings
+        for w in data.get('warnings', []):
+            ws.cell(row=row, column=1, value='Warning')
+            ws.cell(row=row, column=2, value='MEDIUM')
+            ws.cell(row=row, column=3, value=w.get('id', w.get('rule_id', '')))
+            ws.cell(row=row, column=4, value=w.get('description', ''))
+            ws.cell(row=row, column=5, value=w.get('element', ''))
+            ws.cell(row=row, column=6, value=w.get('xpath', ''))
+            ws.cell(row=row, column=7, value=w.get('url', ''))
+
+            # Apply warning coloring
+            for col in range(1, 8):
+                ws.cell(row=row, column=col).fill = styles['warning']['fill']
+
+            row += 1
+
+        # Add all info items
+        for i in data.get('info', []):
+            ws.cell(row=row, column=1, value='Info')
+            ws.cell(row=row, column=2, value='INFO')
+            ws.cell(row=row, column=3, value=i.get('id', ''))
+            ws.cell(row=row, column=4, value=i.get('description', ''))
+            ws.cell(row=row, column=5, value=i.get('element', ''))
+            ws.cell(row=row, column=6, value=i.get('xpath', ''))
+            ws.cell(row=row, column=7, value=i.get('url', ''))
+
+            # Apply info coloring
+            for col in range(1, 8):
+                ws.cell(row=row, column=col).fill = styles['info']['fill']
+
+            row += 1
+
+        # Add all discovery items
+        for d in data.get('discovery', []):
+            ws.cell(row=row, column=1, value='Discovery')
+            ws.cell(row=row, column=2, value='DISCOVERY')
+            ws.cell(row=row, column=3, value=d.get('id', d.get('err', '')))
+            ws.cell(row=row, column=4, value=d.get('description', ''))
+            ws.cell(row=row, column=5, value=d.get('element', ''))
+            ws.cell(row=row, column=6, value=d.get('xpath', ''))
+            ws.cell(row=row, column=7, value=d.get('url', ''))
+
+            # Apply discovery coloring
+            for col in range(1, 8):
+                cell = ws.cell(row=row, column=col)
+                if 'discovery' in styles:
+                    cell.fill = styles['discovery']['fill']
+                else:
+                    from openpyxl.styles import PatternFill
+                    cell.fill = PatternFill(start_color="E6E0FF", end_color="E6E0FF", fill_type="solid")
+
+            row += 1
+
+        # Add AI findings if present
+        for f in data.get('ai_findings', []):
+            ws.cell(row=row, column=1, value='AI Finding')
+            ws.cell(row=row, column=2, value=getattr(f, 'severity', 'MEDIUM').upper())
+            ws.cell(row=row, column=3, value=getattr(f, 'type', ''))
+            ws.cell(row=row, column=4, value=getattr(f, 'description', ''))
+            ws.cell(row=row, column=5, value=getattr(f, 'element', ''))
+            ws.cell(row=row, column=6, value=getattr(f, 'xpath', ''))
+            ws.cell(row=row, column=7, value=getattr(f, 'url', ''))
+
+            # Apply AI finding coloring (use info style)
+            for col in range(1, 8):
+                ws.cell(row=row, column=col).fill = styles['info']['fill']
+
+            row += 1
+
+        self._auto_adjust_columns(ws)
+
     def _create_website_summary_sheet(self, ws, data, styles):
         """Create website summary sheet"""
         # Title

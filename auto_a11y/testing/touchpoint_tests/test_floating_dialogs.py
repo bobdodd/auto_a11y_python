@@ -338,10 +338,12 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
                             description: `Dialog obscures ${overlappingElements.length} interactive element(s) at ${breakpointWidth}px viewport`,
-                            obscuredCount: overlappingElements.length,
-                            obscuredElements: overlappingElements,
-                            dialogXpath: getFullXPath(dialog),
-                            breakpoint: breakpointWidth
+                            metadata: {
+                                obscuredCount: overlappingElements.length,
+                                obscuredElements: overlappingElements,
+                                dialogXpath: getFullXPath(dialog),
+                                breakpoint: breakpointWidth
+                            }
                         });
                         results.elements_failed++;
                     } else {

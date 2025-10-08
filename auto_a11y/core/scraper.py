@@ -1305,7 +1305,8 @@ class ScrapingEngine:
             )
 
             logger.debug(f"Discovery screenshot saved: {filepath}")
-            return str(filepath)
+            # Return just the filename, not the full path with screenshots/
+            return filename
 
         except Exception as e:
             logger.warning(f"Failed to take discovery screenshot for {url}: {e}")

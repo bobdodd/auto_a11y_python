@@ -471,23 +471,35 @@ class ScrapingEngine:
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
             await page.setUserAgent(user_agent)
 
-            # Set navigation timeout - increased for Cloudflare challenges
-            page.setDefaultNavigationTimeout(45000)  # 45 seconds timeout
+            # Configure timeouts and wait conditions based on stealth mode
+            stealth_mode = self.browser_manager.config.get('stealth_mode', False)
+
+            if stealth_mode:
+                # Slower, more thorough for Cloudflare-protected sites
+                page.setDefaultNavigationTimeout(45000)  # 45 seconds
+                wait_until = 'networkidle0'  # Wait for all network activity to stop
+                nav_timeout = 40000  # 40 seconds
+                post_nav_wait = 3  # Wait 3 seconds after navigation
+            else:
+                # Faster for normal sites
+                page.setDefaultNavigationTimeout(25000)  # 25 seconds
+                wait_until = 'domcontentloaded'  # Just wait for DOM
+                nav_timeout = 20000  # 20 seconds
+                post_nav_wait = 0  # No extra wait
 
             # Navigate to URL with proper error handling
             response = None
             try:
-                # First try with networkidle0 to wait for all network activity to settle
-                # This helps with Cloudflare challenges that need to complete
                 response = await self.browser_manager.goto(
                     page=page,
                     url=url,
-                    wait_until='networkidle0',  # Wait for network to be idle for 500ms
-                    timeout=40000  # 40 seconds timeout per page
+                    wait_until=wait_until,
+                    timeout=nav_timeout
                 )
 
-                # Wait additional time for any JavaScript challenges to complete
-                await asyncio.sleep(3)
+                # Wait additional time for JavaScript challenges if in stealth mode
+                if post_nav_wait > 0:
+                    await asyncio.sleep(post_nav_wait)
 
                 # Check if we're stuck on a Cloudflare challenge page
                 try:
@@ -617,14 +629,24 @@ class ScrapingEngine:
                 except Exception as e:
                     logger.warning(f"Failed to extract links from {url}: {e}")
                     # Continue without links rather than failing the whole page
-            
+
+            # Take screenshot during discovery for page preview
+            screenshot_path = None
+            try:
+                screenshot_path = await self._take_discovery_screenshot(page, website.id, url)
+                if screenshot_path:
+                    logger.debug(f"Discovery screenshot saved: {screenshot_path}")
+            except Exception as e:
+                logger.warning(f"Failed to take discovery screenshot for {url}: {e}")
+                # Continue without screenshot rather than failing the whole page
+
             # Close the page now that we're done with it
             try:
                 await page.close()
                 page = None  # Mark as closed
             except Exception as e:
                 logger.warning(f"Error closing page after successful discovery: {e}")
-            
+
             # Create page object
             page_obj = Page(
                 website_id=website.id,
@@ -632,7 +654,8 @@ class ScrapingEngine:
                 title=title or "Untitled",
                 discovered_from=website.url if depth == 0 else None,
                 depth=depth,
-                status=PageStatus.DISCOVERED
+                status=PageStatus.DISCOVERED,
+                screenshot_path=screenshot_path  # Add screenshot from discovery
             )
             
             logger.debug(f"Discovered page: {url} - {title}")
@@ -1220,17 +1243,17 @@ class ScrapingEngine:
     async def _can_fetch(self, url: str) -> bool:
         """
         Check if URL can be fetched according to robots.txt
-        
+
         Args:
             url: URL to check
-            
+
         Returns:
             True if URL can be fetched
         """
         try:
             parsed = urlparse(url)
             robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
-            
+
             # Check cache
             if robots_url not in self.robots_cache:
                 # For now, skip robots.txt checking to avoid page conflicts
@@ -1239,14 +1262,54 @@ class ScrapingEngine:
                 rp.set_url(robots_url)
                 rp.parse(['User-agent: *', 'Allow: /'])
                 self.robots_cache[robots_url] = rp
-            
+
             # Check if URL is fetchable
             return self.robots_cache[robots_url].can_fetch('*', url)
-            
+
         except Exception as e:
             logger.debug(f"Error checking robots.txt for {url}: {e}")
             # Default to allow on error
             return True
+
+    async def _take_discovery_screenshot(self, page, website_id: str, url: str) -> Optional[str]:
+        """
+        Take screenshot during page discovery for preview thumbnail
+
+        Args:
+            page: Pyppeteer page object
+            website_id: Website ID
+            url: Page URL being discovered
+
+        Returns:
+            Screenshot file path or None if failed
+        """
+        try:
+            from pathlib import Path
+
+            # Create screenshots directory if it doesn't exist
+            screenshot_dir = Path('screenshots')
+            screenshot_dir.mkdir(exist_ok=True, parents=True)
+
+            # Generate filename using URL hash to keep it reasonable length
+            import hashlib
+            url_hash = hashlib.md5(url.encode()).hexdigest()[:12]
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f"discovery_{website_id}_{url_hash}_{timestamp}.jpg"
+            filepath = screenshot_dir / filename
+
+            # Take screenshot with browser manager
+            await self.browser_manager.take_screenshot(
+                page,
+                path=str(filepath),
+                full_page=True
+            )
+
+            logger.debug(f"Discovery screenshot saved: {filepath}")
+            return str(filepath)
+
+        except Exception as e:
+            logger.warning(f"Failed to take discovery screenshot for {url}: {e}")
+            return None
 
 
 # ScrapingJob class has been moved to scraping_job.py for database-backed implementation

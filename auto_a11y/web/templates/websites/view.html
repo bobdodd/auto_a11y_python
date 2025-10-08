@@ -317,18 +317,25 @@
                             </td>
                             <td>
                                 <a href="{{ url_for('pages.view_page', page_id=page.id) }}"
-                                   class="btn btn-sm btn-primary">
+                                   class="btn btn-sm btn-primary"
+                                   title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 {% if page.status.value in ['queued', 'testing'] %}
-                                <button class="btn btn-sm btn-danger page-test-btn" data-page-id="{{ page.id }}" onclick="cancelPageTest('{{ page.id }}')">
+                                <button class="btn btn-sm btn-danger page-test-btn" data-page-id="{{ page.id }}" onclick="cancelPageTest('{{ page.id }}')"
+                                        title="Cancel Test">
                                     <i class="bi bi-x-circle"></i>
                                 </button>
                                 {% else %}
-                                <button class="btn btn-sm btn-success page-test-btn" data-page-id="{{ page.id }}" onclick="testPage('{{ page.id }}')">
+                                <button class="btn btn-sm btn-success page-test-btn" data-page-id="{{ page.id }}" onclick="testPage('{{ page.id }}')"
+                                        title="Run Test">
                                     <i class="bi bi-play"></i>
                                 </button>
                                 {% endif %}
+                                <button class="btn btn-sm btn-outline-danger" onclick="deletePage('{{ page.id }}', '{{ page.url }}')"
+                                        title="Delete Page">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -907,6 +914,32 @@ function cancelPageTest(pageId) {
             btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-x-circle"></i>';
         }
+    });
+}
+
+function deletePage(pageId, pageUrl) {
+    if (!confirm(`Are you sure you want to delete this page?\n\n${pageUrl}\n\nThis will also delete all test results for this page.`)) {
+        return;
+    }
+
+    const btn = event.target ? event.target.closest('button') : document.querySelector(`button[onclick*="${pageId}"]`);
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    }
+
+    $.post(`/pages/${pageId}/delete`, function(data) {
+        if (window.showNotification) {
+            showNotification('Page Deleted', 'Page has been deleted successfully', 'success');
+        }
+        // Reload page to show updated list
+        location.reload();
+    }).fail(function(xhr) {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-trash"></i>';
+        }
+        alert('Failed to delete page: ' + (xhr.responseJSON?.error || 'Unknown error'));
     });
 }
 

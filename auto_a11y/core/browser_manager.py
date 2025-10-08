@@ -61,8 +61,13 @@ class BrowserManager:
 
         # Add headless=new mode if headless is requested (Chrome 109+)
         # This mode is much harder to detect than old headless
-        if is_headless:
+        # Only use new headless mode if stealth is enabled (it's slower)
+        stealth_mode = self.config.get('stealth_mode', False)
+        if is_headless and stealth_mode:
             browser_args.append('--headless=new')
+        elif is_headless:
+            # Use old headless for speed when stealth not needed
+            browser_args.append('--headless')
 
         launch_options = {
             'headless': False,  # Don't use old headless, use --headless=new flag instead
@@ -97,6 +102,10 @@ class BrowserManager:
         Args:
             page: Page instance to apply stealth to
         """
+        # Only apply stealth if enabled in config
+        if not self.config.get('stealth_mode', False):
+            return
+
         # Override navigator properties to hide automation
         await page.evaluateOnNewDocument('''() => {
             // Overwrite the `navigator.webdriver` property
@@ -251,7 +260,7 @@ class BrowserManager:
         options = {
             'fullPage': full_page,
             'type': 'jpeg',
-            'quality': 85
+            'quality': 80  # Reduced from 85 to help prevent MongoDB 16MB document limit issues
         }
         
         if path:

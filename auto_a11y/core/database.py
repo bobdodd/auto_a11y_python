@@ -6,6 +6,7 @@ from typing import List, Optional, Dict, Any
 from pymongo import MongoClient
 from pymongo.database import Database as MongoDatabase
 from pymongo.collection import Collection
+from pymongo.errors import DocumentTooLarge
 from bson import ObjectId
 from datetime import datetime
 import logging
@@ -13,6 +14,13 @@ import logging
 from auto_a11y.models import (
     Project, Website, Page, TestResult,
     ProjectStatus, PageStatus
+)
+from auto_a11y.utils.document_size_handler import (
+    validate_document_size_or_handle,
+    create_size_error_result,
+    get_document_size,
+    format_size,
+    DocumentSizeError
 )
 
 logger = logging.getLogger(__name__)
@@ -327,10 +335,86 @@ class Database:
     # Test result operations
     
     def create_test_result(self, test_result: TestResult) -> str:
-        """Create new test result"""
-        result = self.test_results.insert_one(test_result.to_dict())
-        test_result._id = result.inserted_id
-        
+        """
+        Create new test result with size limit handling
+
+        POLICY: Never truncates violations/warnings/passes data.
+        Only removes screenshots if necessary to fit within MongoDB 16MB limit.
+        Creates an error report violation if result is still too large.
+        """
+        test_result_dict = test_result.to_dict()
+
+        # Check and handle document size
+        try:
+            validated_dict, size_report = validate_document_size_or_handle(
+                test_result_dict,
+                document_type="test_result"
+            )
+
+            if size_report and size_report.get('screenshot_removed'):
+                logger.warning(
+                    f"Screenshot removed from test result for page {test_result.page_id}: "
+                    f"{format_size(size_report['original_size'])} -> "
+                    f"{format_size(size_report['final_size'])}"
+                )
+
+            # Insert the validated document
+            result = self.test_results.insert_one(validated_dict)
+            test_result._id = result.inserted_id
+
+        except DocumentSizeError as e:
+            logger.error(
+                f"Test result too large even after removing screenshot for page {test_result.page_id}: "
+                f"{format_size(e.size)} - Creating error report"
+            )
+
+            # Create an error result with the size limit violation
+            error_result = create_size_error_result(
+                page_id=test_result.page_id,
+                test_date=test_result.test_date,
+                duration_ms=test_result.duration_ms,
+                error_details={
+                    'size': e.size,
+                    'size_formatted': format_size(e.size),
+                    'counts': {
+                        'violations': test_result.violation_count,
+                        'warnings': test_result.warning_count,
+                        'info': test_result.info_count,
+                        'discovery': test_result.discovery_count,
+                        'passes': test_result.pass_count
+                    }
+                }
+            )
+
+            result = self.test_results.insert_one(error_result)
+            test_result._id = result.inserted_id
+
+        except DocumentTooLarge as e:
+            # MongoDB rejected the document - this shouldn't happen after our validation
+            logger.error(f"MongoDB rejected document (should not happen after validation): {e}")
+
+            # Create size error result
+            error_result = create_size_error_result(
+                page_id=test_result.page_id,
+                test_date=test_result.test_date,
+                duration_ms=test_result.duration_ms,
+                error_details={
+                    'size': get_document_size(test_result_dict),
+                    'size_formatted': format_size(get_document_size(test_result_dict)),
+                    'mongodb_error': str(e),
+                    'counts': {
+                        'violations': test_result.violation_count,
+                        'warnings': test_result.warning_count,
+                        'info': test_result.info_count,
+                        'discovery': test_result.discovery_count,
+                        'passes': test_result.pass_count
+                    }
+                }
+            )
+
+            result = self.test_results.insert_one(error_result)
+            test_result._id = result.inserted_id
+
         # Update page with latest test info
         page = self.get_page(test_result.page_id)
         if page:
@@ -343,7 +427,7 @@ class Database:
             page.pass_count = test_result.pass_count
             page.test_duration_ms = test_result.duration_ms
             self.update_page(page)
-        
+
         logger.info(f"Created test result for page: {test_result.page_id}")
         return test_result.id
     

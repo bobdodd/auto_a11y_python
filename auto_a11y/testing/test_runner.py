@@ -146,7 +146,7 @@ class TestRunner:
                     screenshot_bytes = await browser_page.screenshot({
                         'fullPage': True,
                         'type': 'jpeg',
-                        'quality': 85
+                        'quality': 80  # Reduced from 85 to help prevent MongoDB 16MB document limit issues
                     })
                 
                 # Check if project has AI testing enabled

@@ -262,6 +262,7 @@ class TestRunner:
                 page.discovery_count = test_result.discovery_count
                 page.pass_count = test_result.pass_count
                 page.test_duration_ms = duration_ms
+                page.screenshot_path = screenshot_path  # Save screenshot path to page
                 self.db.update_page(page)
                 
                 # Update website's last_tested timestamp

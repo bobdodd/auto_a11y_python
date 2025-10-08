@@ -42,6 +42,7 @@ class Page:
     depth: int = 0  # Crawl depth from start page
     error_reason: Optional[str] = None  # Reason for discovery/test failure
     is_in_latest_discovery: bool = True  # Is this page in the most recent discovery?
+    screenshot_path: Optional[str] = None  # Path to page screenshot
     _id: Optional[ObjectId] = None
     
     @property
@@ -79,7 +80,8 @@ class Page:
             'priority': self.priority,
             'depth': self.depth,
             'error_reason': self.error_reason,
-            'is_in_latest_discovery': self.is_in_latest_discovery
+            'is_in_latest_discovery': self.is_in_latest_discovery,
+            'screenshot_path': self.screenshot_path
         }
         if self._id:
             data['_id'] = self._id
@@ -107,5 +109,6 @@ class Page:
             depth=data.get('depth', 0),
             error_reason=data.get('error_reason'),
             is_in_latest_discovery=data.get('is_in_latest_discovery', True),
+            screenshot_path=data.get('screenshot_path'),
             _id=data.get('_id')
         )

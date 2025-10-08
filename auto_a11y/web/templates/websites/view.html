@@ -261,6 +261,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                            <th style="width: 80px;">Screenshot</th>
                             <th>URL</th>
                             <th>Status</th>
                             <th>Violations</th>
@@ -272,6 +273,19 @@
                     <tbody>
                         {% for page in pages %}
                         <tr>
+                            <td>
+                                {% if page.screenshot_path %}
+                                <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=page.screenshot_path) }}', '{{ page.url }}'); return false;">
+                                    <img src="{{ url_for('serve_screenshot', filename=page.screenshot_path) }}"
+                                         alt="Screenshot of {{ page.url }}"
+                                         style="width: 60px; height: auto; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    <span style="display: none; font-size: 0.8em; color: #999;">No image</span>
+                                </a>
+                                {% else %}
+                                <span style="font-size: 0.8em; color: #999;">-</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 <a href="{{ page.url }}" target="_blank">
                                     {{ page.url }}
@@ -457,9 +471,38 @@
     </div>
 </div>
 
+<!-- Screenshot Modal -->
+<div class="modal fade" id="screenshotModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="screenshotModalTitle">Screenshot</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="screenshotModalImage" src="" alt="Screenshot" style="max-width: 100%; height: auto;">
+            </div>
+            <div class="modal-footer">
+                <a id="screenshotModalLink" href="" target="_blank" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-up-right"></i> Open in New Tab
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
+<script>
+function showScreenshot(screenshotUrl, pageUrl) {
+    $('#screenshotModalTitle').text('Screenshot: ' + pageUrl);
+    $('#screenshotModalImage').attr('src', screenshotUrl);
+    $('#screenshotModalLink').attr('href', screenshotUrl);
+    $('#screenshotModal').modal('show');
+}
+</script>
 <script>
 // Initialize Bootstrap tooltips for error messages
 document.addEventListener('DOMContentLoaded', function() {

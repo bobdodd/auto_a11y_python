@@ -95,12 +95,12 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrDuplicateNavNames',
         'ErrInappropriateMenuRole',
         'ErrNavMissingAccessibleName',
+        'WarnNavMissingAccessibleName',
         'WarnNoCurrentPageIndicator',
     ],
     
     'colors_contrast': [
         'ErrInsufficientContrast',
-        'ErrSmallText',
         'InfoNoColorSchemeSupport',
         'InfoNoContrastSupport',
         'WarnColorOnlyLink',
@@ -176,8 +176,11 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrTimersWithoutControls',
     ],
     
-    'typography': [
+    'fonts': [
+        'DiscoFontFound',
         'ErrSmallText',
+        'WarnFontNotInRecommenedListForA11y',
+        'WarnFontsizeIsBelow16px',
         'WarnItalicText',
         'WarnJustifiedText',
         'WarnRightAlignedText',

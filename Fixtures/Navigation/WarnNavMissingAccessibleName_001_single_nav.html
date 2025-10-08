@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnNavMissingAccessibleName - Single Navigation Warning</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnNavMissingAccessibleName_001_single_nav",
+    "issueId": "WarnNavMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedWarningCount": 1,
+    "expectedPassCount": 0,
+    "description": "Single nav landmark without accessible name - should be warning not error",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Website with Single Navigation Region</h1>
+
+    <header>
+        <nav data-expected-warning="true"
+             data-warning-reason="Single nav landmark has no aria-label or aria-labelledby. While less critical than with multiple nav landmarks (where users can't distinguish between them), adding an accessible name is still a best practice. Screen readers announce 'navigation' without additional context. Users would benefit from knowing this is 'Main navigation' or 'Site navigation'. Not an error since there's only one nav, but recommended for clarity. Affects WCAG 1.3.1 by missing opportunity to provide clear semantic structure">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Page Content</h2>
+            <p>Main content area with a single unlabeled navigation region. This should generate a warning, not an error, since there's only one navigation element and users don't need to distinguish between multiple navigation areas.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

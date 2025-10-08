@@ -366,7 +366,7 @@ class ScriptInjector:
             'pageTitle': 'semantic_structure',
             'tabindex': 'keyboard_navigation',
             'titleAttr': 'semantic_structure',
-            'fonts': 'typography',
+            'fonts': 'fonts',
             'svg': 'images',
             'pdf': 'documents'
         }

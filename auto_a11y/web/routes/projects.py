@@ -92,7 +92,7 @@ def create_project():
             'headings', 'images', 'forms', 'buttons', 'links', 'navigation',
             'colors_contrast', 'keyboard_navigation', 'landmarks', 'language',
             'tables', 'lists', 'media', 'dialogs', 'animation', 'timing',
-            'typography', 'semantic_structure', 'aria', 'focus_management',
+            'fonts', 'semantic_structure', 'aria', 'focus_management',
             'reading_order', 'event_handling', 'accessible_names', 'page'
         ]
         
@@ -121,8 +121,11 @@ def create_project():
             for test_name in ['headings', 'reading_order', 'modals', 'language', 'animations', 'interactive']:
                 if request.form.get(f'ai_test_{test_name}'):
                     ai_tests.append(test_name)
-        
-        # Create project with WCAG level, touchpoints, and AI config
+
+        # Get stealth mode configuration
+        stealth_mode = request.form.get('stealth_mode') == 'true'
+
+        # Create project with WCAG level, touchpoints, AI config, and stealth mode
         project = Project(
             name=name,
             description=description,
@@ -131,7 +134,8 @@ def create_project():
                 'wcag_level': wcag_level,
                 'touchpoints': touchpoints_config,
                 'enable_ai_testing': enable_ai_testing,
-                'ai_tests': ai_tests
+                'ai_tests': ai_tests,
+                'stealth_mode': stealth_mode
             }
         )
         
@@ -171,7 +175,7 @@ def create_project():
         'Documents': 'documents',
         'EventHandling': 'event_handling',
         'Focus': 'focus_management',
-        'Fonts': 'typography',
+        'Fonts': 'fonts',
         'Forms': 'forms',
         'Headings': 'headings',
         'IFrames': 'iframes',
@@ -196,7 +200,7 @@ def create_project():
         'PageTitle': 'page',
         'Tables': 'tables',
         'Timing': 'timing',
-        'Typography': 'typography',
+        'Typography': 'fonts',
         'Style': 'styles',
         'Styles': 'styles'
     }
@@ -230,7 +234,7 @@ def create_project():
         'semantic_structure': 'Semantic Structure',
         'tables': 'Tables',
         'timing': 'Timing',
-        'typography': 'Typography',
+        'fonts': 'Fonts',
         'other': 'Other'
     }
 
@@ -330,7 +334,7 @@ def edit_project(project_id):
             'headings', 'images', 'forms', 'buttons', 'links', 'navigation',
             'colors_contrast', 'keyboard_navigation', 'landmarks', 'language',
             'tables', 'lists', 'media', 'dialogs', 'animation', 'timing',
-            'typography', 'semantic_structure', 'aria', 'focus_management',
+            'fonts', 'semantic_structure', 'aria', 'focus_management',
             'reading_order', 'event_handling', 'accessible_names', 'page'
         ]
         
@@ -356,7 +360,7 @@ def edit_project(project_id):
         # Update AI testing configuration
         enable_ai_testing = request.form.get('enable_ai_testing') == 'on'
         project.config['enable_ai_testing'] = enable_ai_testing
-        
+
         ai_tests = []
         if enable_ai_testing:
             # Collect selected AI tests
@@ -364,7 +368,11 @@ def edit_project(project_id):
                 if request.form.get(f'ai_test_{test_name}'):
                     ai_tests.append(test_name)
         project.config['ai_tests'] = ai_tests
-        
+
+        # Update stealth mode configuration
+        stealth_mode = request.form.get('stealth_mode') == 'true'
+        project.config['stealth_mode'] = stealth_mode
+
         if current_app.db.update_project(project):
             flash('Project updated successfully', 'success')
             return redirect(url_for('projects.view_project', project_id=project_id))
@@ -445,8 +453,16 @@ def test_project(project_id):
     test_all = request.form.get('test_all', 'true') == 'true'
     
     try:
+        # Create browser config with project-specific stealth_mode setting
+        browser_config = current_app.app_config.__dict__.copy()
+        if project and project.config:
+            browser_config['stealth_mode'] = project.config.get('stealth_mode', False)
+        else:
+            browser_config['stealth_mode'] = False
+
         # Initialize website manager
-        manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+        manager = WebsiteManager(current_app.db, browser_config)
+        logger.info(f"Created website manager for project {project_id} testing (stealth_mode: {browser_config.get('stealth_mode', False)})")
         
         # Generate unique job ID
         import uuid

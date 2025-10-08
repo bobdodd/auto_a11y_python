@@ -155,22 +155,40 @@ async def test_menus(page) -> Dict[str, Any]:
                     const accessibleName = getAccessibleName(nav);
                     const items = Array.from(nav.querySelectorAll('a, button'));
                     const hasCurrentItem = items.some(item => item.hasAttribute('aria-current'));
-                    
+
                     accessibleNames.push(accessibleName);
-                    
+
                     // Check for missing accessible name
+                    // Only error if multiple nav elements exist; warning if only one
                     if (!accessibleName) {
-                        results.errors.push({
-                            err: 'ErrNavMissingAccessibleName',
-                            type: 'err',
-                            cat: 'menus',
-                            element: nav.tagName.toLowerCase(),
-                            xpath: getFullXPath(nav),
-                            html: nav.outerHTML.substring(0, 200),
-                            description: 'Navigation element needs an accessible name via aria-label or aria-labelledby',
-                            itemCount: items.length
-                        });
-                        results.elements_failed++;
+                        if (navElements.length > 1) {
+                            // Multiple navigation elements - this is an error
+                            results.errors.push({
+                                err: 'ErrNavMissingAccessibleName',
+                                type: 'err',
+                                cat: 'menus',
+                                element: nav.tagName.toLowerCase(),
+                                xpath: getFullXPath(nav),
+                                html: nav.outerHTML.substring(0, 200),
+                                description: 'Navigation element lacks accessible name to distinguish it',
+                                itemCount: items.length,
+                                totalNavElements: navElements.length
+                            });
+                            results.elements_failed++;
+                        } else {
+                            // Single navigation element - this is a warning
+                            results.warnings.push({
+                                err: 'WarnNavMissingAccessibleName',
+                                type: 'warn',
+                                cat: 'menus',
+                                element: nav.tagName.toLowerCase(),
+                                xpath: getFullXPath(nav),
+                                html: nav.outerHTML.substring(0, 200),
+                                description: 'Navigation element should have an accessible name via aria-label or aria-labelledby',
+                                itemCount: items.length,
+                                totalNavElements: navElements.length
+                            });
+                        }
                     } else {
                         results.elements_passed++;
                     }

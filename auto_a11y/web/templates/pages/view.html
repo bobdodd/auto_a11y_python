@@ -164,6 +164,25 @@
                 </div>
             </div>
         </div>
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Page Screenshot</h6>
+                    {% if page.screenshot_path %}
+                    {% set page_screenshot_filename = page.screenshot_path.split('/')[-1] %}
+                    <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=page_screenshot_filename) }}', '{{ page.url }}'); return false;">
+                        <img src="{{ url_for('serve_screenshot', filename=page_screenshot_filename) }}"
+                             alt="Screenshot of {{ page.url }}"
+                             style="width: 120px; height: auto; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <span style="display: none; font-size: 0.9em; color: #999;">No screenshot available</span>
+                    </a>
+                    {% else %}
+                    <span style="font-size: 0.9em; color: #999;">No screenshot available</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Accessibility Score (if available) -->
@@ -504,6 +523,7 @@
 
     <!-- Test Results Detail -->
     {% if latest_result %}
+    {% set screenshot_filename = latest_result.screenshot_path.split('/')[-1] if latest_result.screenshot_path else none %}
     <div class="card test-results-card" data-filterable="true">
         <div class="card-header">
             <h5 class="mb-0">Latest Test Results</h5>
@@ -537,12 +557,26 @@
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact.value|lower if first_violation.impact.value else first_violation.impact|lower] or 'secondary' }} me-2 impact-badge">
                                             {{ first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper }}
                                         </span>
-                                        {% if first_violation.metadata and first_violation.metadata.title %}
-                                            {{ first_violation.metadata.title }}
-                                        {% elif first_violation.metadata and first_violation.metadata.what %}
-                                            {{ first_violation.metadata.what }}
+                                        {% if group_list|length > 1 %}
+                                            {# For grouped issues, use generic title without instance-specific details #}
+                                            {% set display_text = first_violation.metadata.title if first_violation.metadata and first_violation.metadata.title else first_violation.description %}
+                                            {# Remove quoted content and parentheses for grouped issues #}
+                                            {% set parts = display_text.split(':') %}
+                                            {% if parts|length > 1 %}
+                                                {{ parts[0]|trim }}
+                                            {% else %}
+                                                {% set parts2 = display_text.split('(') %}
+                                                {{ parts2[0]|trim }}
+                                            {% endif %}
                                         {% else %}
-                                            {{ first_violation.description }}
+                                            {# For single issues, show full specific description #}
+                                            {% if first_violation.metadata and first_violation.metadata.title %}
+                                                {{ first_violation.metadata.title }}
+                                            {% elif first_violation.metadata and first_violation.metadata.what %}
+                                                {{ first_violation.metadata.what }}
+                                            {% else %}
+                                                {{ first_violation.description }}
+                                            {% endif %}
                                         {% endif %}
                                     </button>
                                 </h2>
@@ -658,7 +692,12 @@
                                                         </div>
                                                         
                                                         {% if violation.selector or violation.xpath %}
-                                                        <p><strong>Location:</strong> <code>{{ violation.selector|default(violation.xpath) }}</code></p>
+                                                        <p>
+                                                            <strong>Location:</strong> <code>{{ violation.selector|default(violation.xpath) }}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{ violation.selector|default(violation.xpath)|e }}', this)" title="Copy XPath to clipboard">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                         {% endif %}
                                                         
                                                         {% if violation.html %}
@@ -675,7 +714,12 @@
                                                         {% for element in violation.metadata.obscuredElements %}
                                                         <div class="mb-3 border-start border-warning border-3 ps-3">
                                                             <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
-                                                            <p class="mb-1 small text-muted">Location: <code>{{ element.xpath }}</code></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{element.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
@@ -683,7 +727,12 @@
                                                         {% for h1 in violation.metadata.allH1s %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>H1 #{{ h1.index }}:</strong> {{ h1.text }}</p>
-                                                            <p class="mb-1 small text-muted">Location: <code>{{ h1.xpath }}</code></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{h1.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{h1.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
@@ -710,7 +759,12 @@
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
-                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
@@ -728,7 +782,21 @@
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                                         {% endif %}
                                                         {% endif %}
-                                                        
+
+                                                        <!-- Thumbnail of the page at time of test -->
+                                                        {% if screenshot_filename %}
+                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 class="img-thumbnail"
+                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                        </a>
+                                                        <p class="text-muted small mt-1">Click to view full size</p>
+                                                        {% endif %}
+
                                                         {% if violation.metadata.ai_detected %}
                                                         <div class="alert alert-info mt-3">
                                                             <i class="bi bi-robot"></i> <strong>AI Detection Note:</strong>
@@ -866,7 +934,12 @@
                             </div>
                             
                             {% if violation.selector or violation.xpath %}
-                            <p><strong>Location:</strong> <code>{{ violation.selector|default(violation.xpath) }}</code></p>
+                            <p>
+                                <strong>Location:</strong> <code>{{violation.selector|default(violation.xpath)}}</code>
+                                <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{violation.selector|default(violation.xpath)|e}}', this)" title="Copy XPath to clipboard">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </p>
                             {% endif %}
                             
                             {% if violation.html %}
@@ -884,7 +957,12 @@
                                 {% for element in violation.metadata.obscuredElements %}
                                 <div class="mb-3 border-start border-warning border-3 ps-3">
                                     <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
-                                    <p class="mb-1 small text-muted">Location: <code>{{ element.xpath }}</code></p>
+                                    <p class="mb-1 small text-muted">
+                                                            Location: <code>{{element.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                 </div>
                                 {% endfor %}
                                 {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
@@ -892,7 +970,12 @@
                                 {% for h1 in violation.metadata.allH1s %}
                                 <div class="mb-3">
                                     <p class="mb-1"><strong>H1 #{{ h1.index }}:</strong> {{ h1.text }}</p>
-                                    <p class="mb-1 small text-muted">Location: <code>{{ h1.xpath }}</code></p>
+                                    <p class="mb-1 small text-muted">
+                                                            Location: <code>{{h1.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{h1.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
                                 </div>
                                 {% endfor %}
@@ -919,7 +1002,12 @@
                                 {% for instance in violation.metadata.allInstances %}
                                 <div class="mb-3">
                                     <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
-                                    <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                    <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                 </div>
                                 {% endfor %}
@@ -938,7 +1026,21 @@
                                 {% endif %}
                             </div>
                             {% endif %}
-                            
+
+                            <!-- Thumbnail of the page at time of test -->
+                            {% if screenshot_filename %}
+                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                     alt="Thumbnail of {{ page.url }}"
+                                     class="img-thumbnail"
+                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                            </a>
+                            <p class="text-muted small mt-1">Click to view full size</p>
+                            {% endif %}
+
                             {% if violation.metadata.ai_detected %}
                             <div class="mt-3">
                                 <h6><i class="bi bi-robot"></i> AI Detection Details</h6>
@@ -1088,7 +1190,12 @@
                                                         <hr>
                                                         <p><strong>Touchpoint:</strong> {{ warning.touchpoint|default('General') }}</p>
                                                         {% if warning.xpath %}
-                                                        <p><strong>Location:</strong> <code>{{ warning.xpath }}</code></p>
+                                                        <p>
+                                <strong>Location:</strong> <code>{{warning.xpath}}</code>
+                                <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{warning.xpath|e}}', this)" title="Copy XPath to clipboard">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </p>
                                                         {% endif %}
                                                         {% if warning.html %}
                                                         <h6 class="mt-3">Code Snippet</h6>
@@ -1104,7 +1211,12 @@
                                                         {% for instance in warning.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
-                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
@@ -1121,6 +1233,20 @@
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
                                                         {% endif %}
+                                                        {% endif %}
+
+                                                        <!-- Thumbnail of the page at time of test -->
+                                                        {% if screenshot_filename %}
+                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 class="img-thumbnail"
+                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                        </a>
+                                                        <p class="text-muted small mt-1">Click to view full size</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -1216,7 +1342,12 @@
                             <hr>
                             <p><strong>Touchpoint:</strong> {{ warning.touchpoint }}</p>
                             {% if warning.xpath %}
-                            <p><strong>Location:</strong> <code>{{ warning.xpath }}</code></p>
+                            <p>
+                                <strong>Location:</strong> <code>{{warning.xpath}}</code>
+                                <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{warning.xpath|e}}', this)" title="Copy XPath to clipboard">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </p>
                             {% endif %}
                             {% if warning.html %}
                             <div class="mt-3">
@@ -1233,7 +1364,12 @@
                                                         {% for instance in warning.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
-                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
@@ -1252,6 +1388,20 @@
                                                         {% endif %}
                             </div>
                             {% endif %}
+
+                            <!-- Thumbnail of the page at time of test -->
+                            {% if screenshot_filename %}
+                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                     alt="Thumbnail of {{ page.url }}"
+                                     class="img-thumbnail"
+                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                            </a>
+                            <p class="text-muted small mt-1">Click to view full size</p>
+                            {% endif %}
                             {% else %}
                             <!-- Standard description -->
                             <p><strong>Touchpoint:</strong> {{ warning.touchpoint }}</p>
@@ -1263,6 +1413,20 @@
                             {% endif %}
                             {% if warning.html %}
                             <pre><code>{{ warning.html|e }}</code></pre>
+                            {% endif %}
+
+                            <!-- Thumbnail of the page at time of test -->
+                            {% if screenshot_filename %}
+                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                     alt="Thumbnail of {{ page.url }}"
+                                     class="img-thumbnail"
+                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                            </a>
+                            <p class="text-muted small mt-1">Click to view full size</p>
                             {% endif %}
                             {% endif %}
                         </div>
@@ -1394,7 +1558,12 @@
                                                         {% endif %}
                                                         
                                                         {% if info.xpath %}
-                                                        <p><strong>Location:</strong> <code>{{ info.xpath }}</code></p>
+                                                        <p>
+                                <strong>Location:</strong> <code>{{info.xpath}}</code>
+                                <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{info.xpath|e}}', this)" title="Copy XPath to clipboard">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </p>
                                                         {% endif %}
                                                         {% if info.html %}
                                                         <h6 class="mt-3">Code Snippet</h6>
@@ -1410,7 +1579,12 @@
                                                         {% for instance in info.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
-                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
@@ -1427,6 +1601,20 @@
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
                                                         {% endif %}
+                                                        {% endif %}
+
+                                                        <!-- Thumbnail of the page at time of test -->
+                                                        {% if screenshot_filename %}
+                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 class="img-thumbnail"
+                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                        </a>
+                                                        <p class="text-muted small mt-1">Click to view full size</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -1514,7 +1702,12 @@
                             <hr>
                             <p><strong>Touchpoint:</strong> {{ info.touchpoint }}</p>
                             {% if info.xpath %}
-                            <p><strong>Location:</strong> <code>{{ info.xpath }}</code></p>
+                            <p>
+                                <strong>Location:</strong> <code>{{info.xpath}}</code>
+                                <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{info.xpath|e}}', this)" title="Copy XPath to clipboard">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </p>
                             {% endif %}
                             {% if info.html %}
                             <div class="mt-3">
@@ -1531,7 +1724,12 @@
                                                         {% for instance in info.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
-                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
@@ -1548,6 +1746,20 @@
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
                                                         {% endif %}
+
+                                                        <!-- Thumbnail of the page at time of test -->
+                                                        {% if screenshot_filename %}
+                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 class="img-thumbnail"
+                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                        </a>
+                                                        <p class="text-muted small mt-1">Click to view full size</p>
+                                                        {% endif %}
                             </div>
                             {% endif %}
                             {% else %}
@@ -1561,6 +1773,20 @@
                             {% endif %}
                             {% if info.html %}
                             <pre><code>{{ info.html|e }}</code></pre>
+                            {% endif %}
+
+                            <!-- Thumbnail of the page at time of test -->
+                            {% if screenshot_filename %}
+                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                     alt="Thumbnail of {{ page.url }}"
+                                     class="img-thumbnail"
+                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                            </a>
+                            <p class="text-muted small mt-1">Click to view full size</p>
                             {% endif %}
                             {% endif %}
                         </div>
@@ -1694,7 +1920,12 @@
                                                         <hr>
                                                         <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
                                                         {% if discovery.xpath %}
-                                                        <p><strong>Location:</strong> <code>{{ discovery.xpath }}</code></p>
+                                                        <p>
+                                <strong>Location:</strong> <code>{{discovery.xpath}}</code>
+                                <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{discovery.xpath|e}}', this)" title="Copy XPath to clipboard">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </p>
                                                         {% endif %}
                                                         {% if discovery.html %}
                                                         <h6 class="mt-3">Code Snippet</h6>
@@ -1710,7 +1941,12 @@
                                                         {% for instance in discovery.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
-                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
@@ -1743,6 +1979,20 @@
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
                                                         {% endif %}
+                                                        {% endif %}
+
+                                                        <!-- Thumbnail of the page at time of test -->
+                                                        {% if screenshot_filename %}
+                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 class="img-thumbnail"
+                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                        </a>
+                                                        <p class="text-muted small mt-1">Click to view full size</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -1833,7 +2083,12 @@
                                 <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
                             </p>
                             {% if discovery.xpath %}
-                            <p><strong>Location:</strong> <code>{{ discovery.xpath }}</code></p>
+                            <p>
+                                <strong>Location:</strong> <code>{{discovery.xpath}}</code>
+                                <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{discovery.xpath|e}}', this)" title="Copy XPath to clipboard">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </p>
                             {% endif %}
                             {% if discovery.html %}
                             <div class="mt-3">
@@ -1850,7 +2105,12 @@
                                                         {% for instance in discovery.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
-                                                            <p class="mb-1 small text-muted">Location: <code>{{ instance.xpath }}</code></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                                         </div>
                                                         {% endfor %}
@@ -1885,6 +2145,20 @@
                                                         {% endif %}
                             </div>
                             {% endif %}
+
+                            <!-- Thumbnail of the page at time of test -->
+                            {% if screenshot_filename %}
+                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                     alt="Thumbnail of {{ page.url }}"
+                                     class="img-thumbnail"
+                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                            </a>
+                            <p class="text-muted small mt-1">Click to view full size</p>
+                            {% endif %}
                             {% else %}
                             <!-- Standard description -->
                             <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
@@ -1899,6 +2173,20 @@
                             {% endif %}
                             {% if discovery.html %}
                             <pre><code>{{ discovery.html|e }}</code></pre>
+                            {% endif %}
+
+                            <!-- Thumbnail of the page at time of test -->
+                            {% if screenshot_filename %}
+                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                     alt="Thumbnail of {{ page.url }}"
+                                     class="img-thumbnail"
+                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                            </a>
+                            <p class="text-muted small mt-1">Click to view full size</p>
                             {% endif %}
                             {% endif %}
                         </div>
@@ -1981,6 +2269,27 @@
     {% endif %}
 </div>
 
+<!-- Screenshot Modal -->
+<div class="modal fade" id="screenshotModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="screenshotModalTitle">Page Screenshot</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="screenshotModalImage" src="" alt="Screenshot" style="max-width: 100%; height: auto;">
+            </div>
+            <div class="modal-footer">
+                <a id="screenshotModalLink" href="" target="_blank" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-up-right"></i> Open in New Tab
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Test Page Modal -->
 <div class="modal fade" id="testModal" tabindex="-1">
     <div class="modal-dialog">
@@ -2003,6 +2312,13 @@
 
 {% block extra_js %}
 <script>
+function showScreenshot(screenshotUrl, pageUrl) {
+    $('#screenshotModalTitle').text('Screenshot: ' + pageUrl);
+    $('#screenshotModalImage').attr('src', screenshotUrl);
+    $('#screenshotModalLink').attr('href', screenshotUrl);
+    $('#screenshotModal').modal('show');
+}
+
 let statusPollInterval = null;
 let testInProgress = false;
 
@@ -2251,6 +2567,33 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('beforeunload', function() {
     stopStatusPolling();
 });
+
+// Copy xpath to clipboard
+function copyXpathToClipboard(xpath, button) {
+    navigator.clipboard.writeText(xpath).then(function() {
+        // Show temporary success feedback
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check text-success"></i>';
+        button.classList.add('text-success');
+
+        // Reset after 2 seconds
+        setTimeout(function() {
+            button.innerHTML = originalHTML;
+            button.classList.remove('text-success');
+        }, 2000);
+    }).catch(function(err) {
+        console.error('Failed to copy xpath: ', err);
+        // Show error feedback
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-x text-danger"></i>';
+        button.classList.add('text-danger');
+
+        setTimeout(function() {
+            button.innerHTML = originalHTML;
+            button.classList.remove('text-danger');
+        }, 2000);
+    });
+}
 </script>
 
 <!-- Include the issue filtering script -->

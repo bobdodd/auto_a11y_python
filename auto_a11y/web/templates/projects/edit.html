@@ -46,6 +46,20 @@
                         </div>
 
                         <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="stealth_mode" name="stealth_mode" value="true"
+                                       {% if project.config.get('stealth_mode', False) %}checked{% endif %}>
+                                <label class="form-check-label" for="stealth_mode">
+                                    Enable Stealth Mode (for Cloudflare-protected sites)
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Enables advanced bot detection bypass techniques. Use for sites protected by Cloudflare or similar services.
+                                <strong>Note:</strong> Stealth mode significantly slows down page discovery and testing (~5-15 seconds per page).
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="title_length_limit" class="form-label">Page Title Length Limit</label>
                             <input type="number" class="form-control" id="title_length_limit" name="title_length_limit"
                                    value="{{ project.config.get('titleLengthLimit', 60) }}" min="30" max="120">

@@ -74,7 +74,20 @@
                                 <strong>Level AAA:</strong> Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)
                             </div>
                         </div>
-                        
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="stealth_mode" name="stealth_mode" value="true">
+                                <label class="form-check-label" for="stealth_mode">
+                                    Enable Stealth Mode (for Cloudflare-protected sites)
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                Enables advanced bot detection bypass techniques. Use for sites protected by Cloudflare or similar services.
+                                <strong>Note:</strong> Stealth mode significantly slows down page discovery and testing (~5-15 seconds per page).
+                            </div>
+                        </div>
+
                         <!-- Touchpoint Testing Configuration -->
                         <div class="mb-3">
                             <label class="form-label">Touchpoint Tests Configuration</label>

@@ -1422,6 +1422,15 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1'],
             'remediation': "Add aria-label or aria-labelledby to nav elements to identify their purpose (e.g., \"Main navigation\", \"Breadcrumb\")."
         },
+        'WarnNavMissingAccessibleName': {
+            'title': "Navigation element should have accessible name",
+            'what': "Single navigation element lacks accessible name",
+            'why': "While less critical with only one navigation, adding an accessible name improves clarity and is a best practice.",
+            'who': "Screen reader users navigating by landmarks, users who need to understand page structure.",
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['1.3.1'],
+            'remediation': "Add aria-label or aria-labelledby to nav element to identify its purpose (e.g., \"Main navigation\", \"Site navigation\")."
+        },
         'ErrNegativeTabindex': {
             'title': "Negative tabindex on interactive element",
             'what': "Negative tabindex on interactive element",
@@ -1702,7 +1711,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Insert an h{expectedLevel} heading between the h{skippedFrom} and h{skippedTo}, or change the h{skippedTo} to h{expectedLevel} to maintain sequential order. After h{skippedFrom}, use h{expectedLevel} for the next level. Don\'t skip levels when going down the hierarchy. If you need a heading to look smaller visually, use CSS to style it rather than choosing a lower heading level. The heading level should reflect the content\'s logical structure, not its visual appearance."
         },
         'ErrSmallText': {
-            'title': "Text is too small ({fontSize}px) - minimum 16px recommended",
+            'title': "Text is too small - minimum 16px recommended",
             'what': "Text size is {fontSize}px, which is below the recommended minimum of 16px for comfortable reading",
             'why': "Small text is difficult to read, especially for users with low vision or on mobile devices.",
             'who': "Users with low vision, aging users, mobile device users, users with reading disabilities.",

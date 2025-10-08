@@ -236,9 +236,19 @@ def discover_pages(website_id):
                 'message': 'Failed to verify browser installation'
             }), 500
         
+        # Get project to access stealth_mode setting
+        project = current_app.db.get_project(website.project_id)
+
+        # Create browser config with project-specific stealth_mode setting
+        browser_config = current_app.app_config.__dict__.copy()
+        if project and project.config:
+            browser_config['stealth_mode'] = project.config.get('stealth_mode', False)
+        else:
+            browser_config['stealth_mode'] = False
+
         # Create website manager
-        website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
-        logger.info(f"Created website manager for website {website_id}")
+        website_manager = WebsiteManager(current_app.db, browser_config)
+        logger.info(f"Created website manager for website {website_id} (stealth_mode: {browser_config.get('stealth_mode', False)})")
         
         # Submit discovery task - use a more predictable job ID format
         import uuid
@@ -514,9 +524,19 @@ def test_all_pages(website_id):
         })
     
     try:
+        # Get project to access stealth_mode setting
+        project = current_app.db.get_project(website.project_id)
+
+        # Create browser config with project-specific stealth_mode setting
+        browser_config = current_app.app_config.__dict__.copy()
+        if project and project.config:
+            browser_config['stealth_mode'] = project.config.get('stealth_mode', False)
+        else:
+            browser_config['stealth_mode'] = False
+
         # Create website manager
-        website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
-        logger.info(f"Created website manager for testing website {website_id}")
+        website_manager = WebsiteManager(current_app.db, browser_config)
+        logger.info(f"Created website manager for testing website {website_id} (stealth_mode: {browser_config.get('stealth_mode', False)})")
         
         # Generate job ID
         job_id = f'testing_{website_id}_{uuid.uuid4().hex[:8]}'

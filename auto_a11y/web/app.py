@@ -140,7 +140,15 @@ def create_app(config):
     def help():
         """Help and documentation page"""
         return render_template('help.html')
-    
+
+    @app.route('/screenshots/<path:filename>')
+    def serve_screenshot(filename):
+        """Serve screenshot files"""
+        from flask import send_from_directory
+        import os
+        screenshots_dir = os.path.join(os.getcwd(), 'screenshots')
+        return send_from_directory(screenshots_dir, filename)
+
     # Error handlers
     @app.errorhandler(404)
     def not_found(error):

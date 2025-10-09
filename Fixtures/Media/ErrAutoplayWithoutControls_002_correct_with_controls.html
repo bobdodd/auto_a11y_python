@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAutoplayWithoutControls - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "testCode": "ErrAutoplayWithoutControls",
+        "description": "Tests that media with autoplay AND controls, or no autoplay at all, passes",
+        "expectedViolationCount": 0,
+        "wcagCriteria": ["1.4.2", "2.2.2"]
+    }
+    </script>
+</head>
+<body>
+    <h1>ErrAutoplayWithoutControls Test - Correct Implementations</h1>
+
+    <h2>Correct 1: Video with autoplay but has controls (muted)</h2>
+    <video autoplay muted controls width="320" height="240">
+        <source src="sample-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <h2>Correct 2: Audio with autoplay but has controls</h2>
+    <audio autoplay controls>
+        <source src="sample-audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <h2>Correct 3: Video with controls but no autoplay</h2>
+    <video controls width="320" height="240">
+        <source src="sample-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <h2>Correct 4: Audio with controls but no autoplay</h2>
+    <audio controls>
+        <source src="sample-audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <h2>Correct 5: Video with neither autoplay nor controls (user must manually play)</h2>
+    <video width="320" height="240">
+        <source src="sample-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <p>All media elements above either have controls when autoplay is present, or don't autoplay at all.</p>
+</body>
+</html>

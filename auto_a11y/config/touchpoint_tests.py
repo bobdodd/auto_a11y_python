@@ -151,6 +151,7 @@ TOUCHPOINT_TEST_MAPPING = {
     ],
     
     'media': [
+        'ErrAutoplayWithoutControls',
         'ErrNativeVideoMissingControls',
         'ErrVideoIframeMissingTitle',
         'WarnVideoAutoplay',

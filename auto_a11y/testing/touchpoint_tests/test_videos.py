@@ -159,7 +159,10 @@ async def test_videos(page) -> Dict[str, Any]:
                 
                 // Find native video elements
                 const nativeVideos = Array.from(document.getElementsByTagName('video'));
-                
+
+                // Find native audio elements
+                const nativeAudios = Array.from(document.getElementsByTagName('audio'));
+
                 // Find iframes that might contain videos
                 const iframeVideos = Array.from(document.getElementsByTagName('iframe'))
                     .filter(iframe => {
@@ -179,18 +182,20 @@ async def test_videos(page) -> Dict[str, Any]:
                 ));
                 
                 const allVideos = [...nativeVideos, ...iframeVideos, ...otherPlayers];
-                
-                if (allVideos.length === 0) {
+                const allMedia = [...nativeVideos, ...nativeAudios, ...iframeVideos, ...otherPlayers];
+
+                if (allVideos.length === 0 && nativeAudios.length === 0) {
                     results.applicable = false;
-                    results.not_applicable_reason = 'No videos found on the page';
+                    results.not_applicable_reason = 'No videos or audio found on the page';
                     return results;
                 }
-                
-                results.elements_tested = allVideos.length;
-                
+
+                results.elements_tested = allMedia.length;
+
                 let iframesWithoutTitles = 0;
                 let nativeVideosWithoutControls = 0;
-                
+                let autoplayWithoutControls = 0;
+
                 // Process all video elements
                 allVideos.forEach(element => {
                     const type = getVideoType(element);
@@ -290,13 +295,61 @@ async def test_videos(page) -> Dict[str, Any]:
                         }
                     }
                     
+                    // Check for autoplay without controls (WCAG 1.4.2, 2.2.2)
+                    if (isNative && hasAutoplay && !element.hasAttribute('controls')) {
+                        autoplayWithoutControls++;
+                        results.errors.push({
+                            err: 'ErrAutoplayWithoutControls',
+                            type: 'err',
+                            cat: 'video',
+                            element: element.tagName.toLowerCase(),
+                            xpath: getFullXPath(element),
+                            html: element.outerHTML.substring(0, 200),
+                            description: 'Video has autoplay but no controls. Users cannot pause, stop, or hide autoplaying content (WCAG 1.4.2 Audio Control, 2.2.2 Pause Stop Hide). Add controls attribute.',
+                            videoType: type,
+                            src: element.src || element.querySelector('source')?.src || 'unknown',
+                            isMuted: isMuted
+                        });
+                        hasViolation = true;
+                    }
+
                     if (!hasViolation) {
                         results.elements_passed++;
                     } else {
                         results.elements_failed++;
                     }
                 });
-                
+
+                // Process all audio elements
+                nativeAudios.forEach(element => {
+                    let hasViolation = false;
+
+                    const hasAutoplay = element.hasAttribute('autoplay');
+                    const hasControls = element.hasAttribute('controls');
+
+                    // Check for autoplay without controls (WCAG 1.4.2, 2.2.2)
+                    if (hasAutoplay && !hasControls) {
+                        autoplayWithoutControls++;
+                        results.errors.push({
+                            err: 'ErrAutoplayWithoutControls',
+                            type: 'err',
+                            cat: 'video',
+                            element: 'audio',
+                            xpath: getFullXPath(element),
+                            html: element.outerHTML.substring(0, 200),
+                            description: 'Audio has autoplay but no controls. Users cannot pause or stop autoplaying audio which interferes with screen readers (WCAG 1.4.2 Audio Control, 2.2.2 Pause Stop Hide). Add controls attribute.',
+                            src: element.src || element.querySelector('source')?.src || 'unknown'
+                        });
+                        hasViolation = true;
+                    }
+
+                    if (!hasViolation) {
+                        results.elements_passed++;
+                    } else {
+                        results.elements_failed++;
+                    }
+                });
+
                 // Add check information for reporting
                 if (iframeVideos.length > 0) {
                     results.checks.push({

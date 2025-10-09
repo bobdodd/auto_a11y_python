@@ -1377,6 +1377,15 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.2'],
             'remediation': "Remove all but one <title> element from the document head. Keep only the most descriptive title that accurately represents the page content. Check for scripts or templates that might be adding titles dynamically. Ensure your CMS or framework isn't creating duplicate titles through multiple includes or components."
         },
+        'ErrAutoplayWithoutControls': {
+            'title': "Media has autoplay but no controls",
+            'what': "Video or audio element has autoplay attribute but no controls, preventing users from pausing or stopping the content",
+            'why': "Autoplaying media without controls violates WCAG 1.4.2 (Audio Control) and 2.2.2 (Pause, Stop, Hide). Users must be able to pause or stop autoplaying media, especially audio that plays longer than 3 seconds. Without controls, autoplaying audio interferes with screen readers, distracts users, and can cause accessibility barriers for users with cognitive disabilities.",
+            'who': "Screen reader users who cannot hear page content over autoplaying audio, users with cognitive disabilities who are distracted by movement or sound, keyboard users who need accessible pause controls.",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.4.2', '2.2.2'],
+            'remediation': "Add controls attribute to provide accessible pause/stop functionality. Alternatively, remove autoplay entirely or provide a visible, keyboard-accessible mechanism to pause or stop the media immediately when the page loads."
+        },
         'ErrNativeVideoMissingControls': {
             'title': "Native HTML5 video element missing controls attribute",
             'what': "Native HTML5 video element missing controls attribute",

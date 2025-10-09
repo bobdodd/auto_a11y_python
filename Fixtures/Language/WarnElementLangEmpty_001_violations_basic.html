@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website - Element Lang Empty</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnElementLangEmpty_001_violations_basic",
+    "issueId": "WarnElementLangEmpty",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Elements with empty or whitespace-only lang attributes",
+    "wcag": "3.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Company Website</h1>
+
+    <p>This page has a lang attribute containing only whitespace, which is ambiguous.</p>
+
+    <article lang=""
+             data-expected-violation="true"
+             data-violation-id="WarnElementLangEmpty"
+             data-violation-reason="Article has empty lang attribute, providing no language change information">
+        <h2>Latest Updates</h2>
+        <p>This article has an empty lang attribute.</p>
+    </article>
+
+    <section lang=" "
+             data-expected-violation="true"
+             data-violation-id="WarnElementLangEmpty"
+             data-violation-reason="Section has lang attribute with whitespace only, no valid language code present">
+        <h3>Important Notice</h3>
+        <p>This section has whitespace in the lang attribute.</p>
+    </section>
+</body>
+</html>

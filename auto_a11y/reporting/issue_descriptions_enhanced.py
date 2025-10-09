@@ -684,14 +684,14 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1'],
             'remediation': "Provide unique accessible names for each navigation element using aria-label or aria-labelledby."
         },
-        'ErrElementLangEmpty': {
+        'WarnElementLangEmpty': {
             'title': "Element has empty lang attribute",
-            'what': "Element has empty lang attribute",
-            'why': "Empty lang on elements provides no language change information",
-            'who': "Screen reader users",
+            'what': "Element has empty lang attribute preventing proper language identification for content sections",
+            'why': "Empty lang on elements provides no language change information. Screen readers cannot adjust pronunciation rules for content in different languages.",
+            'who': "Screen reader users, multilingual users",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['3.1.2'],
-            'remediation': "Add valid language code or remove empty lang attribute"
+            'remediation': "Add valid language code (e.g., lang=\"fr\" for French) or remove empty lang attribute"
         },
         'ErrElementNotContainedInALandmark': {
             'title': "Content exists outside of any landmark",
@@ -765,7 +765,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['3.1.1'],
             'remediation': "Add valid language code to lang attribute"
         },
-        'ErrEmptyLanguageAttribute': {
+        'ErrHtmlLangEmpty': {
             'title': "HTML element has a lang attribute present but with no value (lang=\"\"), preventing screen readers from determining the page language",
             'what': "HTML element has a lang attribute present but with no value (lang=\"\"), preventing screen readers from determining the page language",
             'why': "An empty lang attribute is worse than no lang attribute because it explicitly tells assistive technologies there\'s no language specified, potentially causing screen readers to use incorrect pronunciation rules or fail to switch language synthesizers. This can make content completely unintelligible when read aloud.",

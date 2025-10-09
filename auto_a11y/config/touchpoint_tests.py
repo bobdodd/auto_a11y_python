@@ -247,6 +247,7 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrEmptyPageTitle',
         'ErrMultiplePageTitles',
         'ErrNoPageTitle',
+        'WarnMultipleTitleElements',  # Deprecated - use ErrMultiplePageTitles
         'WarnPageTitleTooLong',
         'WarnPageTitleTooShort',
     ],

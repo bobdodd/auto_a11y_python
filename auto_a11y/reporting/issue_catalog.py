@@ -1453,6 +1453,18 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users",
             "how_to_fix": "Use valid ISO 3166-1 region codes"
         },
+        "ErrEmptyLanguageAttribute": {
+            "id": "ErrEmptyLanguageAttribute",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["3.1.2"],
+            "wcag_full": "3.1.2 Language of Parts (Level AA)",
+            "category": "language",
+            "description": "Element (non-HTML) has a lang attribute present but with no value (lang=\"\"), preventing screen readers from determining language changes",
+            "why_it_matters": "An empty lang attribute on elements prevents screen readers from properly switching pronunciation rules for content in different languages",
+            "who_it_affects": "Screen reader users, multilingual users, users with reading disabilities",
+            "how_to_fix": "Add a valid language code to the lang attribute (e.g., lang=\"fr\" for French). Use ISO 639-1 two-letter codes. Remove the attribute if language matches page language."
+        },
         "ErrHreflangAttrEmpty": {
             "id": "ErrHreflangAttrEmpty",
             "type": "Error",

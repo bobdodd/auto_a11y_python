@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnVideoAutoplay - Correct Implementation (No Autoplay)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnVideoAutoplay_002_correct_no_autoplay",
+    "issueId": "WarnVideoAutoplay",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Videos without autoplay allow user-initiated playback",
+    "wcag": "1.4.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: User-Initiated Video Playback</h1>
+
+    <main>
+        <section>
+            <h2>Native HTML5 Video - User Controlled</h2>
+            <video src="intro-video.mp4"
+                   width="640"
+                   height="360"
+                   controls
+                   data-expected-pass="true"
+                   data-pass-reason="No autoplay - user initiates playback">
+            </video>
+        </section>
+
+        <section>
+            <h2>Native HTML5 Video - Muted But No Autoplay</h2>
+            <video src="background-video.mp4"
+                   width="640"
+                   height="360"
+                   muted
+                   controls
+                   data-expected-pass="true"
+                   data-pass-reason="Muted attribute present but no autoplay - user controlled">
+            </video>
+        </section>
+
+        <section>
+            <h2>YouTube Video - No Autoplay</h2>
+            <iframe width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                    title="YouTube video without autoplay"
+                    frameborder="0"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    data-expected-pass="true"
+                    data-pass-reason="No autoplay parameter - user controlled">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Vimeo Video - No Autoplay</h2>
+            <iframe src="https://player.vimeo.com/video/123456789"
+                    width="640"
+                    height="360"
+                    frameborder="0"
+                    title="Vimeo video without autoplay"
+                    allow="fullscreen; picture-in-picture"
+                    data-expected-pass="true"
+                    data-pass-reason="No autoplay parameter - user controlled">
+            </iframe>
+        </section>
+    </main>
+</body>
+</html>

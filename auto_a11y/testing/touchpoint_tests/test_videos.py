@@ -206,7 +206,7 @@ async def test_videos(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrVideoIframeMissingTitle',
                             type: 'err',
-                            cat: 'videos',
+                            cat: 'video',
                             element: 'iframe',
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
@@ -223,7 +223,7 @@ async def test_videos(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrNativeVideoMissingControls',
                             type: 'err',
-                            cat: 'videos',
+                            cat: 'video',
                             element: 'video',
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
@@ -233,22 +233,58 @@ async def test_videos(page) -> Dict[str, Any]:
                         hasViolation = true;
                     }
                     
-                    // Check for autoplay (accessibility concern - WCAG 1.4.2)
-                    // Only flag unmuted autoplay as a warning. Muted autoplay is acceptable.
-                    if (isNative && element.hasAttribute('autoplay') && !element.hasAttribute('muted')) {
-                        const hasMutedAttribute = element.muted || element.hasAttribute('muted');
+                    // Check for autoplay (accessibility concern - WCAG 1.4.2 and Perceivable principle)
+                    let hasAutoplay = false;
+                    let isMuted = false;
 
-                        if (!hasMutedAttribute) {
+                    if (isNative) {
+                        hasAutoplay = element.hasAttribute('autoplay');
+                        isMuted = element.hasAttribute('muted') || element.muted;
+                    } else if (isIframe) {
+                        const src = element.src || '';
+                        // Check for autoplay parameter in YouTube URLs
+                        if (src.includes('youtube.com') || src.includes('youtu.be')) {
+                            const urlParams = new URLSearchParams(src.split('?')[1] || '');
+                            hasAutoplay = urlParams.get('autoplay') === '1';
+                            isMuted = urlParams.get('mute') === '1';
+                        }
+                        // Check for autoplay parameter in Vimeo URLs
+                        else if (src.includes('vimeo.com')) {
+                            const urlParams = new URLSearchParams(src.split('?')[1] || '');
+                            hasAutoplay = urlParams.get('autoplay') === '1';
+                            isMuted = urlParams.get('muted') === '1';
+                        }
+                    }
+
+                    if (hasAutoplay) {
+                        if (!isMuted) {
+                            // Unmuted autoplay - violates WCAG 1.4.2
                             results.warnings.push({
                                 err: 'WarnVideoAutoplay',
                                 type: 'warn',
-                                cat: 'videos',
-                                element: 'video',
+                                cat: 'video',
+                                element: element.tagName.toLowerCase(),
                                 xpath: getFullXPath(element),
                                 html: element.outerHTML.substring(0, 200),
-                                description: 'Video has unmuted autoplay which can distract users and interfere with screen readers. Consider adding muted attribute or removing autoplay.',
-                                hasControls: element.hasAttribute('controls'),
-                                src: element.src || element.querySelector('source')?.src || 'unknown'
+                                description: 'Video has unmuted autoplay which can distract users and interfere with screen readers (WCAG 1.4.2). Consider adding muted attribute or removing autoplay.',
+                                videoType: type,
+                                hasControls: isNative ? element.hasAttribute('controls') : 'N/A',
+                                src: isNative ? (element.src || element.querySelector('source')?.src || 'unknown') : element.src
+                            });
+                            hasViolation = true;
+                        } else {
+                            // Muted autoplay - passes WCAG 1.4.2 but can still distract neurodiverse users
+                            results.warnings.push({
+                                err: 'WarnVideoMutedAutoplay',
+                                type: 'warn',
+                                cat: 'video',
+                                element: element.tagName.toLowerCase(),
+                                xpath: getFullXPath(element),
+                                html: element.outerHTML.substring(0, 200),
+                                description: 'Video has muted autoplay. While this passes WCAG 1.4.2, moving content can significantly distract sighted neurodiverse users and prevent them from focusing on page content (Perceivable principle). Consider removing autoplay or providing a pause mechanism.',
+                                videoType: type,
+                                hasControls: isNative ? element.hasAttribute('controls') : 'N/A',
+                                src: isNative ? (element.src || element.querySelector('source')?.src || 'unknown') : element.src
                             });
                             hasViolation = true;
                         }

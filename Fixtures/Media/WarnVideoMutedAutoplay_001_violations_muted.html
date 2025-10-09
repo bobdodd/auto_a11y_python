@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnVideoMutedAutoplay - Muted Autoplay Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnVideoMutedAutoplay_001_violations_muted",
+    "issueId": "WarnVideoMutedAutoplay",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Videos with muted autoplay can distract neurodiverse users despite passing WCAG 1.4.2",
+    "wcag": "1.4.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Muted Autoplaying Videos</h1>
+
+    <main>
+        <section>
+            <h2>Native HTML5 Video - Muted Autoplay</h2>
+            <video src="intro-video.mp4"
+                   width="640"
+                   height="360"
+                   autoplay
+                   muted
+                   controls
+                   data-expected-violation="true"
+                   data-violation-id="WarnVideoMutedAutoplay"
+                   data-violation-reason="Muted autoplay passes WCAG 1.4.2 but moving content distracts neurodiverse users">
+            </video>
+        </section>
+
+        <section>
+            <h2>Native HTML5 Video - Muted Autoplay Loop</h2>
+            <video src="background-loop.mp4"
+                   width="640"
+                   height="360"
+                   autoplay
+                   muted
+                   loop
+                   controls
+                   data-expected-violation="true"
+                   data-violation-id="WarnVideoMutedAutoplay"
+                   data-violation-reason="Looping muted video creates continuous visual distraction">
+            </video>
+        </section>
+
+        <section>
+            <h2>YouTube Video - Muted Autoplay</h2>
+            <iframe width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1"
+                    title="YouTube video with muted autoplay"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    data-expected-violation="true"
+                    data-violation-id="WarnVideoMutedAutoplay"
+                    data-violation-reason="YouTube iframe with muted autoplay parameter">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Vimeo Video - Muted Autoplay</h2>
+            <iframe src="https://player.vimeo.com/video/123456789?autoplay=1&muted=1"
+                    width="640"
+                    height="360"
+                    frameborder="0"
+                    title="Vimeo video with muted autoplay"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    data-expected-violation="true"
+                    data-violation-id="WarnVideoMutedAutoplay"
+                    data-violation-reason="Vimeo iframe with muted autoplay parameter">
+            </iframe>
+        </section>
+    </main>
+</body>
+</html>

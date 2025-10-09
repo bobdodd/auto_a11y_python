@@ -154,6 +154,7 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrNativeVideoMissingControls',
         'ErrVideoIframeMissingTitle',
         'WarnVideoAutoplay',
+        'WarnVideoMutedAutoplay',
     ],
     
     'dialogs': [

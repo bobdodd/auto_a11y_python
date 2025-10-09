@@ -129,9 +129,14 @@ async def test_accessible_names(page) -> Dict[str, Any]:
                     // Check for ARIA roles that require names
                     const role = element.getAttribute('role');
                     const requiresNameRoles = [
-                        'button', 'checkbox', 'combobox', 'heading', 'link', 
-                        'listbox', 'menu', 'menubar', 'menuitem', 'radio', 
-                        'tab', 'tabpanel', 'textbox', 'toolbar', 'tree', 'treeitem'
+                        // Standalone widget roles (ARIA 1.2)
+                        'button', 'checkbox', 'radio', 'switch', 'slider', 'spinbutton',
+                        'textbox', 'searchbox', 'combobox', 'link',
+                        'menuitem', 'menuitemcheckbox', 'menuitemradio', 'option',
+                        'tab', 'treeitem',
+                        // Composite widget roles that need names
+                        'tabpanel', 'toolbar', 'tree', 'grid', 'listbox', 'menu',
+                        'menubar', 'heading'
                     ];
 
                     return requiresName.includes(tag) || 

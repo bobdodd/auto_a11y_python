@@ -2052,15 +2052,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1'],
             'remediation': "Ensure all meaningful content is contained within appropriate landmark regions. Typically: use <header> or role=\"banner\" for site headers, <nav> or role=\"navigation\" for navigation menus, <main> or role=\"main\" for primary content, <aside> or role=\"complementary\" for sidebar content, <footer> or role=\"contentinfo\" for footers. Decorative content or spacers can remain outside landmarks. Review your page structure to ensure no important content is orphaned outside the landmark structure."
         },
-        'WarnEmptyLangAttribute': {
-            'title': "Language attribute exists but appears to be empty or contains only whitespace",
-            'what': "Language attribute exists but appears to be empty or contains only whitespace",
-            'why': "An empty or whitespace-only lang attribute is ambiguous - it\'s unclear if the language is truly unknown or if this is an error. Screen readers may use fallback behavior that doesn\'t match the actual content language. This is less severe than a completely empty lang=\"\" but still prevents proper language identification. Browsers and assistive technologies cannot determine the intended language for pronunciation and processing.",
-            'who': "Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['3.1.1'],
-            'remediation': "Either add a valid language code to the attribute (e.g., lang=\"en\") or remove the attribute entirely if the language is unknown. Check for common causes like template variables that didn\'t populate, CMS configuration issues, or JavaScript that clears lang attributes. Ensure any whitespace is removed and a valid ISO 639 language code is provided."
-        },
         'WarnFastInterval': {
             'title': "JavaScript interval running faster than once per second",
             'what': "JavaScript interval running faster than once per second",

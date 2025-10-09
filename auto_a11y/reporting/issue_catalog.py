@@ -1441,18 +1441,6 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users",
             "how_to_fix": "Use valid ISO 3166-1 region codes"
         },
-        "ErrElementLangEmpty": {
-            "id": "ErrElementLangEmpty",
-            "type": "Error",
-            "impact": "Medium",
-            "wcag": ["3.1.2"],
-            "wcag_full": "3.1.2",
-            "category": "language",
-            "description": "Element has empty lang attribute",
-            "why_it_matters": "Empty lang on elements provides no language change information",
-            "who_it_affects": "Screen reader users",
-            "how_to_fix": "Add valid language code or remove empty lang attribute"
-        },
         "ErrElementRegionQualifierNotRecognized": {
             "id": "ErrElementRegionQualifierNotRecognized",
             "type": "Error",

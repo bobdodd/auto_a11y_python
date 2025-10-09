@@ -37,7 +37,7 @@ class ScriptInjector:
         # 'tests/titleAttr.js',  # REMOVED: Replaced by test_title_attribute.py
         # 'tests/fonts.js',  # REMOVED: Replaced by test_fonts.py
         # 'tests/svg.js',  # REMOVED: Replaced by test_images.py
-        'tests/language.js',  # KEPT: No Python equivalent yet
+        # 'tests/language.js',  # REMOVED: Replaced by test_language.py
         'tests/pageTitle.js',  # KEPT: No Python equivalent yet
         'tests/pdf.js'  # KEPT: Specialized PDF handling
     ]
@@ -54,7 +54,7 @@ class ScriptInjector:
         # 'titleAttr': 'titleAttrScrape',  # REMOVED: Replaced by test_title_attribute.py
         # 'fonts': 'fontsScrape',  # REMOVED: Replaced by test_fonts.py
         # 'svg': 'svgScrape',  # REMOVED: Replaced by test_images.py
-        'language': 'languageScrape',
+        # 'language': 'languageScrape',  # REMOVED: Replaced by test_language.py
         'pageTitle': 'pageTitleScrape',
         'pdf': 'pdfScrape'
     }
@@ -131,7 +131,6 @@ class ScriptInjector:
                 window.a11yTestsLoaded = true;
                 window.a11yTestFunctions = {
                     // Most legacy tests removed - replaced by Python touchpoint tests
-                    language: typeof languageScrape !== 'undefined',
                     pageTitle: typeof pageTitleScrape !== 'undefined',
                     pdf: typeof pdfScrape !== 'undefined'
                 };

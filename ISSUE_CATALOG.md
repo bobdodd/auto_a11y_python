@@ -872,18 +872,6 @@ How to fix: Ensure all content is within appropriate landmarks
 
 ---
 
-ID: ErrElementPrimaryLangNotRecognized
-Type: Error
-Impact: Medium
-WCAG: 3.1.1, 3.1.2
-Touchpoint: language
-Description: Element has unrecognized language code
-Why it matters: Language changes won't be announced properly
-Who it affects: Screen reader users
-How to fix: Use valid language codes
-
----
-
 ID: ErrElementRegionQualifierNotRecognized
 Type: Error
 Impact: Low

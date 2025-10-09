@@ -26,6 +26,7 @@ from .test_timers import test_timers, TEST_DOCUMENTATION as TIMERS_DOCS
 from .test_title_attribute import test_title_attribute, TEST_DOCUMENTATION as TITLE_ATTRIBUTE_DOCS
 from .test_videos import test_videos, TEST_DOCUMENTATION as VIDEOS_DOCS
 from .test_page import test_page, TEST_DOCUMENTATION as PAGE_DOCS
+from .test_language import test_language, TEST_DOCUMENTATION as LANGUAGE_DOCS
 
 # Map touchpoint IDs to test functions
 TOUCHPOINT_TESTS = {
@@ -53,6 +54,7 @@ TOUCHPOINT_TESTS = {
     'title_attribute': test_title_attribute,
     'videos': test_videos,
     'page': test_page,
+    'language': test_language,
 }
 
 # Export all test documentation
@@ -81,6 +83,7 @@ TEST_DOCUMENTATION = {
     'title_attribute': TITLE_ATTRIBUTE_DOCS,
     'videos': VIDEOS_DOCS,
     'page': PAGE_DOCS,
+    'language': LANGUAGE_DOCS,
 }
 
 __all__ = [
@@ -108,6 +111,7 @@ __all__ = [
     'test_title_attribute',
     'test_videos',
     'test_page',
+    'test_language',
     'TOUCHPOINT_TESTS',
     'TEST_DOCUMENTATION'
 ]

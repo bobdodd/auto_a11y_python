@@ -5977,16 +5977,6 @@ Why it matters: Screen readers may pronounce text incorrectly without language d
 Who it affects: Screen reader users who speak multiple languages
 How to fix: Add lang attributes to elements containing different languages
 
-ID: ErrElementLangEmpty
-Type: Error
-Impact: Medium
-WCAG: 3.1.2
-Touchpoint: language
-Description: Element has empty lang attribute
-Why it matters: Empty lang on elements provides no language change information
-Who it affects: Screen reader users
-How to fix: Add valid language code or remove empty lang attribute
-
 ID: ErrElementPrimaryLangNotRecognized
 Type: Error
 Impact: Medium
@@ -6016,16 +6006,6 @@ Description: Lang attribute is empty
 Why it matters: Empty lang provides no language information
 Who it affects: Screen reader users
 How to fix: Add valid language code to lang attribute
-
-ID: ErrEmptyLanguageAttribute
-Type: Error
-Impact: High
-WCAG: 3.1.1 Language of Page (Level A)
-Touchpoint: language
-Description: HTML element has a lang attribute present but with no value (lang=""), preventing screen readers from determining the page language
-Why it matters: An empty lang attribute is worse than no lang attribute because it explicitly tells assistive technologies there's no language specified, potentially causing screen readers to use incorrect pronunciation rules or fail to switch language synthesizers. This can make content completely unintelligible when read aloud.
-Who it affects: Blind and low vision users using screen readers who need proper language identification for correct pronunciation, multilingual users who rely on automatic language switching in assistive technologies, users with dyslexia using reading tools that depend on language settings, and users of translation services
-How to fix: Add a valid language code to the lang attribute (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. For the HTML element, always specify the primary document language. If the language is truly unknown, remove the lang attribute entirely rather than leaving it empty.
 
 ID: ErrEmptyXmlLangAttr
 Type: Error
@@ -6166,16 +6146,6 @@ Description: Region qualifier in xml:lang not recognized
 Why it matters: Invalid region codes in xml:lang may cause issues
 Who it affects: Screen reader users
 How to fix: Use valid ISO 3166-1 region codes
-
-ID: WarnEmptyLangAttribute
-Type: Warning
-Impact: Medium
-WCAG: 3.1.1 Language of Page (Level A)
-Touchpoint: language
-Description: Language attribute exists but appears to be empty or contains only whitespace
-Why it matters: An empty or whitespace-only lang attribute is ambiguous - it's unclear if the language is truly unknown or if this is an error. Screen readers may use fallback behavior that doesn't match the actual content language. This is less severe than a completely empty lang="" but still prevents proper language identification. Browsers and assistive technologies cannot determine the intended language for pronunciation and processing.
-Who it affects: Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech
-How to fix: Either add a valid language code to the attribute (e.g., lang="en") or remove the attribute entirely if the language is unknown. Check for common causes like template variables that didn't populate, CMS configuration issues, or JavaScript that clears lang attributes. Ensure any whitespace is removed and a valid ISO 639 language code is provided.
 
 ID: WarnInvalidLangChange
 Type: Warning

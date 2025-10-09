@@ -301,10 +301,10 @@ This document tracks the progress of generating comprehensive test fixtures for 
 ### 🌐 Language Touchpoint (23/23 issues - 100% COMPLETE)
 
 1. **ErrNoPageLanguage** - HTML element missing lang attribute (2 fixtures)
-2. **ErrEmptyLanguageAttribute** - HTML element with empty lang attribute (2 fixtures)
+2. **ErrHtmlLangEmpty** - HTML element with empty lang attribute (2 fixtures)
 3. **ErrInvalidLanguageCode** - Invalid language codes not conforming to ISO 639 (2 fixtures)
 4. **AI_WarnMixedLanguage** - Mixed language content without proper declarations (2 fixtures)
-5. **ErrElementLangEmpty** - Element has empty lang attribute (2 fixtures)
+5. **WarnElementLangEmpty** - Element has empty lang attribute (2 fixtures)
 6. **ErrElementPrimaryLangNotRecognized** - Element has unrecognized language code (2 fixtures)
 7. **ErrElementRegionQualifierNotRecognized** - Element has unrecognized region qualifier (2 fixtures)
 8. **ErrHreflangAttrEmpty** - Link has empty hreflang attribute (2 fixtures)
@@ -320,9 +320,8 @@ This document tracks the progress of generating comprehensive test fixtures for 
 18. **ErrIncorrectlyFormattedPrimaryLang** - Incorrectly formatted language codes (2 fixtures)
 19. **ErrNoPrimaryLangAttr** - Missing lang attribute on html element (2 fixtures)
 20. **ErrRegionQualifierForPrimaryXmlLangNotRecognized** - Invalid region in xml:lang (2 fixtures)
-21. **WarnEmptyLangAttribute** - Whitespace-only lang attributes (2 fixtures)
-22. **WarnInvalidLangChange** - Language changes with invalid codes (2 fixtures)
-23. **ErrInvalidLanguageCode** - Already counted above, comprehensive coverage exists
+21. **WarnInvalidLangChange** - Language changes with invalid codes (2 fixtures)
+22. **ErrInvalidLanguageCode** - Already counted above, comprehensive coverage exists
 
 **Total:** 46 fixture files (45 enhanced + 1 old to be replaced)
 

@@ -564,20 +564,6 @@ How to fix: Provide unique accessible names for each navigation element using ar
 
 ================================================================================
 
-## ErrElementLangEmpty
-
-ID: ErrElementLangEmpty
-Type: Error
-Impact: Medium
-WCAG: 3.1.2
-Touchpoint: language
-Description: Element has empty lang attribute
-Why it matters: Empty lang on elements provides no language change information
-Who it affects: Screen reader users
-How to fix: Add valid language code or remove empty lang attribute
-
-================================================================================
-
 ## ErrElementNotContainedInALandmark
 
 ID: ErrElementNotContainedInALandmark
@@ -631,20 +617,6 @@ Description: Lang attribute is empty
 Why it matters: Empty lang provides no language information
 Who it affects: Screen reader users
 How to fix: Add valid language code to lang attribute
-
-================================================================================
-
-## ErrEmptyLanguageAttribute
-
-ID: ErrEmptyLanguageAttribute
-Type: Error
-Impact: High
-WCAG: 3.1.1 Language of Page (Level A)
-Touchpoint: language
-Description: HTML element has a lang attribute present but with no value (lang=""), preventing screen readers from determining the page language
-Why it matters: An empty lang attribute is worse than no lang attribute because it explicitly tells assistive technologies there's no language specified, potentially causing screen readers to use incorrect pronunciation rules or fail to switch language synthesizers. This can make content completely unintelligible when read aloud.
-Who it affects: Blind and low vision users using screen readers who need proper language identification for correct pronunciation, multilingual users who rely on automatic language switching in assistive technologies, users with dyslexia using reading tools that depend on language settings, and users of translation services
-How to fix: Add a valid language code to the lang attribute (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. For the HTML element, always specify the primary document language. If the language is truly unknown, remove the lang attribute entirely rather than leaving it empty.
 
 ================================================================================
 
@@ -1429,20 +1401,6 @@ Description: Important content found outside of any landmark region, making it h
 Why it matters: Landmarks create a navigable structure for your page, like a table of contents. Content outside landmarks is like having chapters missing from the table of contents - users may never find it when navigating by landmarks. Screen reader users often jump between landmarks to quickly scan page structure, and content outside landmarks requires them to read through the entire page linearly to discover it. This particularly affects users who are familiar with your site and want to quickly navigate to specific content areas.
 Who it affects: Screen reader users who navigate by landmarks to efficiently explore pages, keyboard users using browser extensions for landmark navigation, users with cognitive disabilities who rely on consistent page structure, and power users who use landmarks for quick navigation
 How to fix: Ensure all meaningful content is contained within appropriate landmark regions. Typically: use <header> or role="banner" for site headers, <nav> or role="navigation" for navigation menus, <main> or role="main" for primary content, <aside> or role="complementary" for sidebar content, <footer> or role="contentinfo" for footers. Decorative content or spacers can remain outside landmarks. Review your page structure to ensure no important content is orphaned outside the landmark structure.
-
-================================================================================
-
-## WarnEmptyLangAttribute
-
-ID: WarnEmptyLangAttribute
-Type: Warning
-Impact: Medium
-WCAG: 3.1.1 Language of Page (Level A)
-Touchpoint: language
-Description: Language attribute exists but appears to be empty or contains only whitespace
-Why it matters: An empty or whitespace-only lang attribute is ambiguous - it's unclear if the language is truly unknown or if this is an error. Screen readers may use fallback behavior that doesn't match the actual content language. This is less severe than a completely empty lang="" but still prevents proper language identification. Browsers and assistive technologies cannot determine the intended language for pronunciation and processing.
-Who it affects: Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech
-How to fix: Either add a valid language code to the attribute (e.g., lang="en") or remove the attribute entirely if the language is unknown. Check for common causes like template variables that didn't populate, CMS configuration issues, or JavaScript that clears lang attributes. Ensure any whitespace is removed and a valid ISO 639 language code is provided.
 
 ================================================================================
 

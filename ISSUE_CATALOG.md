@@ -860,18 +860,6 @@ How to fix: Provide unique accessible names for each navigation element using ar
 
 ---
 
-ID: WarnElementLangEmpty
-Type: Warning
-Impact: Medium
-WCAG: 3.1.2
-Touchpoint: language
-Description: Element has empty lang attribute preventing proper language identification for content sections
-Why it matters: Empty lang on elements provides no language change information. Screen readers cannot adjust pronunciation rules for content in different languages.
-Who it affects: Screen reader users, multilingual users
-How to fix: Add valid language code (e.g., lang="fr" for French) or remove empty lang attribute
-
----
-
 ID: ErrElementNotContainedInALandmark
 Type: Error
 Impact: Medium

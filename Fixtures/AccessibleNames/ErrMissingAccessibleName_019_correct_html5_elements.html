@@ -19,15 +19,15 @@
 <body>
     <h1>HTML5 Interactive Elements With Accessible Names</h1>
 
-    <!-- Dialog with aria-label -->
-    <dialog open aria-label="Confirmation Dialog" data-expected-pass="true" data-pass-reason="Dialog element with aria-label. Screen readers announce 'Confirmation Dialog, dialog'. Users understand dialog purpose. Modal context is clear. Focus trapped in dialog. Complies with WCAG 4.1.2 and WCAG 2.4.6">
+    <!-- Dialog with aria-label (not open - testing accessible name only) -->
+    <dialog aria-label="Confirmation Dialog" data-expected-pass="true" data-pass-reason="Dialog element with aria-label. When opened, screen readers announce 'Confirmation Dialog, dialog'. Users understand dialog purpose. Accessible name provided via aria-label. Complies with WCAG 4.1.2 and WCAG 2.4.6">
         <p>Are you sure you want to continue?</p>
         <button>Yes</button>
         <button>No</button>
     </dialog>
 
-    <!-- Dialog with aria-labelledby -->
-    <dialog open aria-labelledby="dialog-title" data-expected-pass="true" data-pass-reason="Dialog element with aria-labelledby referencing visible heading. Screen readers announce 'Delete Account, dialog'. Users see and hear same title. Consistent experience. Complies with WCAG 4.1.2 and WCAG 2.4.6">
+    <!-- Dialog with aria-labelledby (not open - testing accessible name only) -->
+    <dialog aria-labelledby="dialog-title" data-expected-pass="true" data-pass-reason="Dialog element with aria-labelledby referencing visible heading. When opened, screen readers announce 'Delete Account, dialog'. Users see and hear same title. Consistent experience. Complies with WCAG 4.1.2 and WCAG 2.4.6">
         <h2 id="dialog-title">Delete Account</h2>
         <p>This action cannot be undone.</p>
         <button>Delete</button>

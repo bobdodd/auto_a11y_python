@@ -3,7 +3,9 @@ Fonts touchpoint test module
 Evaluates webpage font usage and typography for accessibility concerns.
 """
 
+import json
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, Any, List, Optional
 import logging
 
@@ -54,20 +56,80 @@ TEST_DOCUMENTATION = {
     ]
 }
 
-async def test_fonts(page) -> Dict[str, Any]:
+
+def load_inaccessible_fonts_config():
+    """
+    Load inaccessible fonts configuration from JSON file
+
+    Returns:
+        Dict with 'fonts' (list of font names) and 'categories' (dict with category info)
+    """
+    try:
+        config_path = Path(__file__).parent.parent.parent / 'config' / 'inaccessible_fonts_defaults.json'
+
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+
+        # Flatten all fonts from all categories into a single list
+        all_fonts = []
+        categories_data = {}
+
+        for category_name, category_info in config.get('categories', {}).items():
+            fonts_in_category = category_info.get('fonts', [])
+            all_fonts.extend(fonts_in_category)
+
+            categories_data[category_name] = {
+                'description': category_info.get('description', ''),
+                'fonts': fonts_in_category
+            }
+
+        logger.info(f"Loaded {len(all_fonts)} inaccessible fonts from {len(categories_data)} categories")
+
+        return {
+            'fonts': all_fonts,
+            'categories': categories_data
+        }
+
+    except Exception as e:
+        logger.error(f"Error loading inaccessible fonts config: {e}")
+        # Return empty config as fallback
+        return {
+            'fonts': [],
+            'categories': {}
+        }
+
+async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
     Test fonts and typography for accessibility requirements
-    
+
     Args:
         page: Pyppeteer page object
-        
+        project_config: Optional project configuration dict for project-specific font settings
+
     Returns:
         Dictionary containing test results with errors and warnings
     """
     try:
+        # Load inaccessible fonts configuration
+        # If project_config is provided, use project-specific settings
+        # Otherwise, use system defaults only
+        from auto_a11y.utils.font_config import font_config_manager
+
+        font_config_data = load_inaccessible_fonts_config()
+        font_categories = font_config_data['categories']
+
+        # Get the appropriate font list based on project config
+        if project_config:
+            inaccessible_fonts_list = list(font_config_manager.get_project_inaccessible_fonts(project_config))
+            logger.info(f"Using project-specific font configuration: {len(inaccessible_fonts_list)} fonts")
+        else:
+            inaccessible_fonts_list = font_config_data['fonts']
+            logger.info(f"Using system default font configuration: {len(inaccessible_fonts_list)} fonts")
+
         # Execute JavaScript to analyze fonts and typography
+        # Pass the font configuration to JavaScript
         results = await page.evaluate('''
-            () => {
+            (inaccessibleFontsList, fontCategoriesData) => {
                 const results = {
                     applicable: true,
                     errors: [],
@@ -200,8 +262,11 @@ async def test_fonts(page) -> Dict[str, Any]:
                         hasViolation = true;
                     }
                     
-                    // Check for italic text
-                    if (fontStyle === 'italic') {
+                    // Check for italic text (only flag if substantial length, not brief emphasis)
+                    // Short italic text (<50 chars) is acceptable for emphasis (em, i tags)
+                    // Extensive italic text is harder to read for users with dyslexia
+                    const fullText = element.textContent.trim();
+                    if (fontStyle === 'italic' && fullText.length >= 50) {
                         italicTextCount++;
                         results.warnings.push({
                             err: 'WarnItalicText',
@@ -210,8 +275,9 @@ async def test_fonts(page) -> Dict[str, Any]:
                             element: tag,
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
-                            description: 'Text uses italic styling which may be difficult to read',
-                            text: text
+                            description: `Text uses italic styling for ${fullText.length} characters which may be difficult to read`,
+                            text: text,
+                            textLength: fullText.length
                         });
                         hasViolation = true;
                     }
@@ -303,6 +369,24 @@ async def test_fonts(page) -> Dict[str, Any]:
                     });
                 }
 
+                // Load inaccessible fonts from config (passed from Python)
+                // This list is maintained in auto_a11y/config/inaccessible_fonts_defaults.json
+                const inaccessibleFonts = new Set(inaccessibleFontsList);
+
+                // Font category descriptions loaded from config
+                const fontCategories = fontCategoriesData;
+
+                // Helper function to get category for a font
+                function getFontCategory(fontName) {
+                    const normalized = fontName.toLowerCase();
+                    for (const [category, data] of Object.entries(fontCategories)) {
+                        if (data.fonts.includes(normalized)) {
+                            return { category, description: data.description };
+                        }
+                    }
+                    return { category: 'unknown', description: 'difficult to read' };
+                }
+
                 // DISCOVERY: Report each unique font with the sizes it's used at
                 const allElements = Array.from(document.querySelectorAll('*'));
                 const fontData = new Map(); // Map of font name -> Set of sizes
@@ -324,7 +408,7 @@ async def test_fonts(page) -> Dict[str, Any]:
                     }
                 });
 
-                // Create individual discovery report for each font
+                // Check each font and report issues
                 fontData.forEach((sizes, fontName) => {
                     const sortedSizes = Array.from(sizes).sort((a, b) => {
                         // Sort by numeric value (converting px to numbers)
@@ -333,6 +417,7 @@ async def test_fonts(page) -> Dict[str, Any]:
                         return aNum - bNum;
                     });
 
+                    // Discovery: Report that this font was found
                     results.warnings.push({
                         err: 'DiscoFontFound',
                         type: 'disco',
@@ -345,11 +430,33 @@ async def test_fonts(page) -> Dict[str, Any]:
                         fontSizes: sortedSizes,
                         sizeCount: sortedSizes.length
                     });
+
+                    // ERROR: Check if this is an inaccessible font
+                    const normalizedFont = fontName.toLowerCase();
+                    if (inaccessibleFonts.has(normalizedFont)) {
+                        const categoryInfo = getFontCategory(fontName);
+                        results.errors.push({
+                            err: 'ErrInaccessibleFont',
+                            type: 'error',
+                            cat: 'fonts',
+                            element: 'document',
+                            xpath: '/html[1]',
+                            html: `<meta>Font: ${fontName}</meta>`,
+                            description: `Font '${fontName}' is difficult to read. ${categoryInfo.description}. Research shows these fonts are harder to read, especially for users with dyslexia or low vision.`,
+                            fontName: fontName,
+                            category: categoryInfo.category,
+                            reason: categoryInfo.description,
+                            fontSizes: sortedSizes,
+                            sizeCount: sortedSizes.length
+                        });
+                        results.elements_failed++;
+                        hasViolation = true;
+                    }
                 });
 
                 return results;
             }
-        ''')
+        ''', inaccessible_fonts_list, font_categories)
 
         # Log small text errors for debugging
         if 'errors' in results:

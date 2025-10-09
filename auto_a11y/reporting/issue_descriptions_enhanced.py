@@ -2079,23 +2079,14 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['3.3.2'],
             'remediation': "Review the {count} labeling elements to ensure they make sense when read together in order. Consider if a single, clear label would be better."
         },
-        'WarnFontNotInRecommenedListForA11y': {
-            'title': "Font not in recommended accessibility list",
-            'what': "Font not in recommended accessibility list",
-            'why': "Some fonts are harder to read",
-            'who': "Users with dyslexia, low vision",
-            'impact': ImpactScale.LOW.value,
+        'ErrInaccessibleFont': {
+            'title': "Font '{fontName}' is difficult to read",
+            'what': "Using {fontName} font which is known to be difficult to read",
+            'why': "This font is categorized as {category}: {reason}. Research shows these fonts are harder to read, especially for users with dyslexia or low vision.",
+            'who': "Users with dyslexia, low vision, reading disabilities",
+            'impact': ImpactScale.HIGH.value,
             'wcag': ['1.4.8'],
-            'remediation': "Use clear, simple fonts like Arial, Verdana"
-        },
-        'WarnFontsizeIsBelow16px': {
-            'title': "Font size is {fontSize}px, below recommended 16px minimum",
-            'what': "Font size is {fontSize}px, below recommended 16px minimum",
-            'why': "Text at {fontSize}px is harder to read than the recommended minimum of 16px. Small text requires more effort to read and can cause eye strain, especially for extended reading.",
-            'who': "Users with low vision, older users experiencing age-related vision changes, users with reading disabilities, and anyone viewing content on small screens",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['1.4.4'],
-            'remediation': "Increase font size from {fontSize}px to at least 16px for body text. Consider using relative units (rem, em) for better scalability."
+            'remediation': "Replace {fontName} with a clear, readable sans-serif font like Arial, Verdana, Helvetica, or Tahoma. Avoid decorative, script, cursive, or highly stylized fonts for body text."
         },
         'WarnFormHasNoLabel': {
             'title': "Form element has no accessible name to describe its purpose",

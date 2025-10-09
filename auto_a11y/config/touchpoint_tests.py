@@ -179,8 +179,7 @@ TOUCHPOINT_TEST_MAPPING = {
     'fonts': [
         'DiscoFontFound',
         'ErrSmallText',
-        'WarnFontNotInRecommenedListForA11y',
-        'WarnFontsizeIsBelow16px',
+        'ErrInaccessibleFont',
         'WarnItalicText',
         'WarnJustifiedText',
         'WarnRightAlignedText',

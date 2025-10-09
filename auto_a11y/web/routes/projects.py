@@ -291,7 +291,42 @@ def edit_project(project_id):
     if not project:
         flash('Project not found', 'error')
         return redirect(url_for('projects.list_projects'))
-    
+
+    # Import TOUCHPOINT_TEST_MAPPING for rendering the form
+    from auto_a11y.config.touchpoint_tests import TOUCHPOINT_TEST_MAPPING
+
+    # Build touchpoint data structure for the template
+    touchpoint_names = {
+        'headings': 'Headings',
+        'images': 'Images',
+        'forms': 'Forms',
+        'buttons': 'Buttons',
+        'links': 'Links',
+        'navigation': 'Navigation',
+        'colors_contrast': 'Colors & Contrast',
+        'keyboard_navigation': 'Keyboard Navigation',
+        'landmarks': 'Landmarks',
+        'language': 'Language',
+        'tables': 'Tables',
+        'lists': 'Lists',
+        'media': 'Media',
+        'dialogs': 'Dialogs & Modals',
+        'animation': 'Animation',
+        'timing': 'Timing',
+        'fonts': 'Fonts',
+        'semantic_structure': 'Semantic Structure',
+        'aria': 'ARIA',
+        'focus_management': 'Focus Management',
+        'reading_order': 'Reading Order',
+        'event_handling': 'Event Handling',
+        'accessible_names': 'Accessible Names',
+        'page': 'Page',
+        'documents': 'Documents',
+        'maps': 'Maps',
+        'styles': 'Inline Styles',
+        'iframes': 'Iframes'
+    }
+
     if request.method == 'POST':
         project.name = request.form.get('name', project.name)
         project.description = request.form.get('description', project.description)
@@ -373,13 +408,31 @@ def edit_project(project_id):
         stealth_mode = request.form.get('stealth_mode') == 'true'
         project.config['stealth_mode'] = stealth_mode
 
+        # Update font accessibility configuration
+        use_default_fonts = request.form.get('use_default_fonts') == 'on'
+        additional_fonts_raw = request.form.get('additional_inaccessible_fonts', '').strip()
+        excluded_fonts_raw = request.form.get('excluded_fonts', '').strip()
+
+        # Parse textarea input (one font per line)
+        additional_fonts = [f.strip().lower() for f in additional_fonts_raw.split('\n') if f.strip()]
+        excluded_fonts = [f.strip().lower() for f in excluded_fonts_raw.split('\n') if f.strip()]
+
+        project.config['font_accessibility'] = {
+            'use_defaults': use_default_fonts,
+            'additional_inaccessible_fonts': additional_fonts,
+            'excluded_fonts': excluded_fonts
+        }
+
         if current_app.db.update_project(project):
             flash('Project updated successfully', 'success')
             return redirect(url_for('projects.view_project', project_id=project_id))
         else:
             flash('Failed to update project', 'error')
-    
-    return render_template('projects/edit.html', project=project)
+
+    return render_template('projects/edit.html',
+                         project=project,
+                         touchpoint_names=touchpoint_names,
+                         touchpoint_test_mapping=TOUCHPOINT_TEST_MAPPING)
 
 
 @projects_bp.route('/<project_id>/delete', methods=['POST'])

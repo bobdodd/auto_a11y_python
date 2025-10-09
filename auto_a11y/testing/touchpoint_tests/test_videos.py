@@ -233,17 +233,25 @@ async def test_videos(page) -> Dict[str, Any]:
                         hasViolation = true;
                     }
                     
-                    // Check for autoplay (accessibility concern)
-                    if (isNative && element.hasAttribute('autoplay')) {
-                        results.warnings.push({
-                            err: 'WarnVideoAutoplay',
-                            type: 'warn',
-                            cat: 'videos',
-                            element: 'video',
-                            xpath: getFullXPath(element),
-                            html: element.outerHTML.substring(0, 200),
-                            description: 'Video has autoplay attribute which can cause accessibility issues'
-                        });
+                    // Check for autoplay (accessibility concern - WCAG 1.4.2)
+                    // Only flag unmuted autoplay as a warning. Muted autoplay is acceptable.
+                    if (isNative && element.hasAttribute('autoplay') && !element.hasAttribute('muted')) {
+                        const hasMutedAttribute = element.muted || element.hasAttribute('muted');
+
+                        if (!hasMutedAttribute) {
+                            results.warnings.push({
+                                err: 'WarnVideoAutoplay',
+                                type: 'warn',
+                                cat: 'videos',
+                                element: 'video',
+                                xpath: getFullXPath(element),
+                                html: element.outerHTML.substring(0, 200),
+                                description: 'Video has unmuted autoplay which can distract users and interfere with screen readers. Consider adding muted attribute or removing autoplay.',
+                                hasControls: element.hasAttribute('controls'),
+                                src: element.src || element.querySelector('source')?.src || 'unknown'
+                            });
+                            hasViolation = true;
+                        }
                     }
                     
                     if (!hasViolation) {

@@ -6,18 +6,17 @@
     <title>Website - Proper Lang Codes</title>
     <script type="application/json" id="test-metadata">
 {
-    "id": "WarnEmptyLangAttribute_002_correct_with_codes",
-    "issueId": "WarnEmptyLangAttribute",
+    "id": "WarnElementLangEmpty_002_correct_with_codes",
+    "issueId": "WarnElementLangEmpty",
     "expectedViolationCount": 0,
-    "expectedPassCount": 3,
-    "description": "Lang attributes with valid language codes without whitespace",
-    "wcag": "3.1.1",
+    "expectedPassCount": 2,
+    "description": "Elements with valid lang codes for language changes",
+    "wcag": "3.1.2",
     "impact": "Medium"
 }
     </script>
 </head>
-<body data-expected-pass="true"
-      data-pass-reason="HTML element has valid lang='en' with no whitespace, properly identifying English">
+<body>
     <h1>Company Website</h1>
 
     <p>This page properly declares lang="en" without any whitespace issues.</p>

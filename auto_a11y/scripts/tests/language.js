@@ -33,7 +33,7 @@ function languageScrape() {
                 url: window.location.href,
                 type: 'err',
                 cat: 'language',
-                err: 'ErrEmptyLanguageAttribute',
+                err: 'ErrHtmlLangEmpty',
                 xpath: '/html',
                 html: htmlTag,
                 fpTempId: '0'
@@ -78,7 +78,7 @@ function languageScrape() {
                     url: window.location.href,
                     type: 'warn',
                     cat: 'language',
-                    err: 'WarnEmptyLangAttribute',
+                    err: 'WarnElementLangEmpty',
                     element: element.tagName,
                     xpath: Elements.DOMPath.xPath(element, true),
                     html: element.outerHTML.substring(0, 200),

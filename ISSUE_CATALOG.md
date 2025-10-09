@@ -860,15 +860,15 @@ How to fix: Provide unique accessible names for each navigation element using ar
 
 ---
 
-ID: ErrElementLangEmpty
-Type: Error
+ID: WarnElementLangEmpty
+Type: Warning
 Impact: Medium
 WCAG: 3.1.2
 Touchpoint: language
-Description: Element has empty lang attribute
-Why it matters: Empty lang on elements provides no language change information
-Who it affects: Screen reader users
-How to fix: Add valid language code or remove empty lang attribute
+Description: Element has empty lang attribute preventing proper language identification for content sections
+Why it matters: Empty lang on elements provides no language change information. Screen readers cannot adjust pronunciation rules for content in different languages.
+Who it affects: Screen reader users, multilingual users
+How to fix: Add valid language code (e.g., lang="fr" for French) or remove empty lang attribute
 
 ---
 
@@ -968,7 +968,7 @@ How to fix: Add valid language code to lang attribute
 
 ---
 
-ID: ErrEmptyLanguageAttribute
+ID: ErrHtmlLangEmpty
 Type: Error
 Impact: High
 WCAG: 3.1.1 Language of Page (Level A)
@@ -2636,15 +2636,15 @@ How to fix: Ensure all meaningful content is contained within appropriate landma
 
 ---
 
-ID: WarnEmptyLangAttribute
+ID: WarnElementLangEmpty
 Type: Warning
 Impact: Medium
-WCAG: 3.1.1 Language of Page (Level A)
+WCAG: 3.1.2 Language Changes in Parts (Level AA)
 Touchpoint: language
-Description: Language attribute exists but appears to be empty or contains only whitespace
-Why it matters: An empty or whitespace-only lang attribute is ambiguous - it's unclear if the language is truly unknown or if this is an error. Screen readers may use fallback behavior that doesn't match the actual content language. This is less severe than a completely empty lang="" but still prevents proper language identification. Browsers and assistive technologies cannot determine the intended language for pronunciation and processing.
+Description: Element has empty lang attribute preventing proper language identification for content sections
+Why it matters: Empty lang on elements provides no language change information. Screen readers cannot adjust pronunciation rules for content in different languages. An empty or whitespace-only lang attribute is ambiguous - it's unclear if the language is truly unknown or if this is an error.
 Who it affects: Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech
-How to fix: Either add a valid language code to the attribute (e.g., lang="en") or remove the attribute entirely if the language is unknown. Check for common causes like template variables that didn't populate, CMS configuration issues, or JavaScript that clears lang attributes. Ensure any whitespace is removed and a valid ISO 639 language code is provided.
+How to fix: Add valid language code (e.g., lang="fr" for French) or remove empty lang attribute. Check for common causes like template variables that didn't populate, CMS configuration issues, or JavaScript that clears lang attributes. Ensure any whitespace is removed and a valid ISO 639 language code is provided.
 
 ---
 

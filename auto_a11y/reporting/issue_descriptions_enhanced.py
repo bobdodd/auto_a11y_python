@@ -2638,13 +2638,22 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Make title attributes informative or remove if redundant with visible text."
         },
         'WarnVideoAutoplay': {
-            'title': "Video set to autoplay which may distract users",
-            'what': "Video set to autoplay which may distract users",
-            'why': "Autoplay video can be disruptive and use bandwidth unexpectedly.",
-            'who': "Users with cognitive disabilities, users on limited data plans.",
+            'title': "Video has unmuted autoplay",
+            'what': "Video has unmuted autoplay which can distract users and interfere with screen readers",
+            'why': "Unmuted autoplay violates WCAG 1.4.2 Audio Control. It can interfere with screen readers, distract users, and use bandwidth unexpectedly.",
+            'who': "Screen reader users, users with cognitive disabilities, users on limited data plans.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.4.2'],
-            'remediation': "Remove autoplay or mute autoplaying videos, provide clear play controls."
+            'remediation': "Add muted attribute or remove autoplay entirely. Provide clear play controls for user-initiated playback."
+        },
+        'WarnVideoMutedAutoplay': {
+            'title': "Video has muted autoplay",
+            'what': "Video has muted autoplay which can distract neurodiverse users",
+            'why': "While muted autoplay passes WCAG 1.4.2, moving content can significantly distract sighted neurodiverse users and prevent them from focusing on page content (Perceivable principle). Visual motion draws attention involuntarily.",
+            'who': "Neurodiverse users, users with ADHD, users with attention difficulties, users with vestibular disorders.",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.4.2'],
+            'remediation': "Remove autoplay or provide a pause mechanism that is visible and accessible immediately when the page loads. Consider using prefers-reduced-motion CSS media query to respect user preferences."
         },
         'WarnVisualHierarchy': {
             'title': "Visual hierarchy doesn\'t match semantic structure",

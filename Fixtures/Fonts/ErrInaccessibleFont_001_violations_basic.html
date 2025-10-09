@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inaccessible Fonts Test - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInaccessibleFont_001_violations_basic",
+    "issueId": "ErrInaccessibleFont",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Tests detection of inaccessible fonts from different categories",
+    "wcag": "1.4.8",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .script-font {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            font-size: 18px;
+        }
+        .decorative-font {
+            font-family: 'Papyrus', fantasy;
+            font-size: 18px;
+        }
+        .narrow-font {
+            font-family: 'Arial Narrow', sans-serif;
+            font-size: 18px;
+        }
+        .blackletter-font {
+            font-family: 'Old English Text MT', serif;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrInaccessibleFont"
+      data-violation-reason="Multiple inaccessible fonts used: Comic Sans MS (script/cursive), Papyrus (decorative), Arial Narrow (narrow/condensed), Old English Text MT (blackletter/gothic)">
+
+    <h1>Testing Inaccessible Fonts</h1>
+
+    <div class="script-font">
+        <h2>Script Font (Comic Sans MS)</h2>
+        <p>This text uses Comic Sans MS, which is a script/cursive font. While popular, it's difficult to read for users with dyslexia due to inconsistent letter shapes and connected letterforms.</p>
+    </div>
+
+    <div class="decorative-font">
+        <h2>Decorative Font (Papyrus)</h2>
+        <p>This text uses Papyrus, a highly decorative font that prioritizes aesthetics over readability. The ornamental nature makes it unsuitable for body text.</p>
+    </div>
+
+    <div class="narrow-font">
+        <h2>Narrow Font (Arial Narrow)</h2>
+        <p>This text uses Arial Narrow, a condensed font with tight letter spacing. This reduces legibility, especially for users with low vision who need clear character distinction.</p>
+    </div>
+
+    <div class="blackletter-font">
+        <h2>Blackletter Font (Old English)</h2>
+        <p>This text uses Old English Text MT, a historical blackletter font with complex letterforms. These fonts are extremely difficult to read and should never be used for body text.</p>
+    </div>
+
+</body>
+</html>

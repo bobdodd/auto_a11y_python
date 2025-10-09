@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test WarnItalicText Logic</title>
+</head>
+<body>
+    <h1>Test Italic Text Detection</h1>
+
+    <h2>Short italic (should NOT trigger):</h2>
+    <p>This has <em>emphasis</em> which is short.</p>
+
+    <h2>Long italic paragraph (SHOULD trigger):</h2>
+    <p style="font-style: italic;">
+        This is a long paragraph with italic styling that exceeds 50 characters and should trigger the warning because extensive italic text is harder to read for users with dyslexia.
+    </p>
+
+    <h2>Multiple short em tags (should NOT trigger):</h2>
+    <p>Regular text with <em>short</em> emphasis and <em>another</em> short emphasis tag.</p>
+
+    <script>
+        // Test the logic
+        const elements = document.querySelectorAll('p, em');
+        elements.forEach(el => {
+            const style = window.getComputedStyle(el);
+            const fontStyle = style.fontStyle;
+            const text = el.textContent.trim();
+
+            if (fontStyle === 'italic') {
+                const shouldTrigger = text.length >= 50;
+                console.log(`Element: ${el.tagName}, Length: ${text.length}, Italic: ${fontStyle}, Should trigger: ${shouldTrigger}`);
+                console.log(`Text preview: "${text.substring(0, 60)}..."`);
+            }
+        });
+    </script>
+</body>
+</html>

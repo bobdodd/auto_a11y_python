@@ -108,8 +108,26 @@ async def test_accessible_names(page) -> Dict[str, Any]:
                 // Check if element should have an accessible name
                 function shouldHaveAccessibleName(element) {
                     const tag = element.tagName.toLowerCase();
-                    
-                    // Elements that can have empty accessible names
+
+                    // Check for ARIA roles that require names FIRST
+                    // (takes precedence over native element behavior)
+                    const role = element.getAttribute('role');
+                    const requiresNameRoles = [
+                        // Standalone widget roles (ARIA 1.2)
+                        'button', 'checkbox', 'radio', 'switch', 'slider', 'spinbutton',
+                        'textbox', 'searchbox', 'combobox', 'link',
+                        'menuitem', 'menuitemcheckbox', 'menuitemradio', 'option',
+                        'tab', 'treeitem',
+                        // Composite widget roles that need names
+                        'tabpanel', 'toolbar', 'tree', 'grid', 'listbox', 'menu',
+                        'menubar', 'heading'
+                    ];
+
+                    if (role && requiresNameRoles.includes(role)) {
+                        return true;
+                    }
+
+                    // Elements that can have empty accessible names (if no requiring role)
                     const canBeEmpty = ['div', 'span', 'br', 'p'];
                     if (canBeEmpty.includes(tag)) {
                         return false;
@@ -125,22 +143,8 @@ async def test_accessible_names(page) -> Dict[str, Any]:
                         'button', 'input', 'textarea', 'select', 'img',
                         'iframe', 'area', 'dialog', 'form'
                     ];
-                    
-                    // Check for ARIA roles that require names
-                    const role = element.getAttribute('role');
-                    const requiresNameRoles = [
-                        // Standalone widget roles (ARIA 1.2)
-                        'button', 'checkbox', 'radio', 'switch', 'slider', 'spinbutton',
-                        'textbox', 'searchbox', 'combobox', 'link',
-                        'menuitem', 'menuitemcheckbox', 'menuitemradio', 'option',
-                        'tab', 'treeitem',
-                        // Composite widget roles that need names
-                        'tabpanel', 'toolbar', 'tree', 'grid', 'listbox', 'menu',
-                        'menubar', 'heading'
-                    ];
 
-                    return requiresName.includes(tag) || 
-                        (role && requiresNameRoles.includes(role));
+                    return requiresName.includes(tag);
                 }
                 
                 // Accessible name computation following W3C algorithm
@@ -168,8 +172,20 @@ async def test_accessible_names(page) -> Dict[str, Any]:
                         return alt !== null ? alt : '';
                     }
 
+                    // Handle area elements (image maps)
+                    if (tag === 'area') {
+                        const alt = element.getAttribute('alt');
+                        return alt !== null ? alt : '';
+                    }
+
                     // Handle form controls
                     if (['input', 'textarea', 'select'].includes(tag)) {
+                        // Special case: input type="image" uses alt attribute
+                        if (tag === 'input' && element.getAttribute('type') === 'image') {
+                            const alt = element.getAttribute('alt');
+                            return alt !== null ? alt : '';
+                        }
+
                         // Check for associated label
                         if (element.id) {
                             const label = document.querySelector(`label[for="${element.id}"]`);

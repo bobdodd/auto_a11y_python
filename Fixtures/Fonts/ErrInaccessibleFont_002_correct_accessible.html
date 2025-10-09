@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Fonts Test - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInaccessibleFont_002_correct_accessible",
+    "issueId": "ErrInaccessibleFont",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Tests that accessible fonts are NOT flagged as errors",
+    "wcag": "1.4.8",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .verdana-section {
+            font-family: Verdana, sans-serif;
+        }
+        .georgia-section {
+            font-family: Georgia, serif;
+        }
+        .tahoma-section {
+            font-family: Tahoma, sans-serif;
+        }
+    </style>
+</head>
+<body data-expected-violation="false">
+
+    <h1>Testing Accessible Fonts</h1>
+
+    <div>
+        <h2>Arial (Default)</h2>
+        <p>This text uses Arial, a clean, sans-serif font with good character distinction. It's widely recommended for accessibility as it's easy to read and available on most systems.</p>
+    </div>
+
+    <div class="verdana-section">
+        <h2>Verdana</h2>
+        <p>This text uses Verdana, designed specifically for screen readability. It has generous spacing between characters and is excellent for users with dyslexia or low vision.</p>
+    </div>
+
+    <div class="georgia-section">
+        <h2>Georgia</h2>
+        <p>This text uses Georgia, a serif font that maintains good readability at various sizes. While serif fonts are less common for body text, Georgia is considered accessible due to its clear letterforms.</p>
+    </div>
+
+    <div class="tahoma-section">
+        <h2>Tahoma</h2>
+        <p>This text uses Tahoma, a sans-serif font with tight letter spacing but still maintains good legibility. It's appropriate for accessibility when used at appropriate sizes.</p>
+    </div>
+
+</body>
+</html>

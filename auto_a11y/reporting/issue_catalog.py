@@ -1609,18 +1609,6 @@ class IssueCatalog:
             "who_it_affects": "Users with dyslexia, low vision",
             "how_to_fix": "Use clear, simple fonts like Arial, Verdana"
         },
-        "WarnFontsizeIsBelow16px": {
-            "id": "WarnFontsizeIsBelow16px",
-            "type": "Warning",
-            "impact": "Medium",
-            "wcag": ["1.4.4"],
-            "wcag_full": "1.4.4",
-            "category": "fonts",
-            "description": "Font size below 16px",
-            "why_it_matters": "Small text is hard to read",
-            "who_it_affects": "Users with low vision, older users",
-            "how_to_fix": "Use minimum 16px for body text"
-        },
         "DiscoFontFound": {
             "id": "DiscoFontFound",
             "type": "Discovery",

@@ -79,6 +79,129 @@
                             </div>
                         </div>
 
+                        <!-- Font Accessibility Configuration -->
+                        <div class="mb-3">
+                            <label class="form-label">Inaccessible Fonts Configuration</label>
+                            <div class="form-text mb-2">
+                                Configure which fonts should be flagged as inaccessible for this project.
+                                The system includes a research-backed default list of 50+ problematic fonts.
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="use_default_fonts" name="use_default_fonts"
+                                       {% if project.config.get('font_accessibility', {}).get('use_defaults', True) %}checked{% endif %}>
+                                <label class="form-check-label" for="use_default_fonts">
+                                    Use system default inaccessible fonts list
+                                </label>
+                            </div>
+                            <div class="form-text mb-3">
+                                Includes script/cursive fonts (Comic Sans, Papyrus), decorative fonts (Curlz, Jokerman),
+                                narrow fonts (Arial Narrow, Impact), and blackletter fonts (Old English).
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="additional_inaccessible_fonts" class="form-label">Additional Fonts to Flag</label>
+                                <textarea class="form-control font-monospace" id="additional_inaccessible_fonts" name="additional_inaccessible_fonts"
+                                          rows="3" placeholder="Enter font names, one per line (e.g., 'Custom Font Name')">{% if project.config.get('font_accessibility', {}).get('additional_inaccessible_fonts') %}{{ project.config.get('font_accessibility', {}).get('additional_inaccessible_fonts', [])|join('\n') }}{% endif %}</textarea>
+                                <div class="form-text">
+                                    Add project-specific fonts that should be flagged as inaccessible. One font name per line, lowercase.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="excluded_fonts" class="form-label">Fonts to Exclude from Checking</label>
+                                <textarea class="form-control font-monospace" id="excluded_fonts" name="excluded_fonts"
+                                          rows="3" placeholder="Enter font names, one per line (e.g., 'comic sans ms')">{% if project.config.get('font_accessibility', {}).get('excluded_fonts') %}{{ project.config.get('font_accessibility', {}).get('excluded_fonts', [])|join('\n') }}{% endif %}</textarea>
+                                <div class="form-text">
+                                    Remove specific fonts from the default list if your project requires them. One font name per line, lowercase.
+                                </div>
+                            </div>
+
+                            <div class="accordion mb-3" id="fontDefaultsAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#fontDefaultsList" aria-expanded="false">
+                                            View System Default Inaccessible Fonts List
+                                        </button>
+                                    </h2>
+                                    <div id="fontDefaultsList" class="accordion-collapse collapse" data-bs-parent="#fontDefaultsAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h6>Script/Cursive Fonts (17 fonts)</h6>
+                                                    <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
+                                                        <li>• Brush Script, Brush Script MT, Brushscript</li>
+                                                        <li>• Lucida Handwriting, Lucida Calligraphy</li>
+                                                        <li>• Comic Sans, Comic Sans MS</li>
+                                                        <li>• Bradley Hand, Bradley Hand ITC</li>
+                                                        <li>• Freestyle Script, French Script</li>
+                                                        <li>• Edwardian Script, Mistral</li>
+                                                        <li>
+                                                            <details class="mt-1">
+                                                                <summary style="cursor: pointer; color: #0d6efd;">Show all 17 fonts...</summary>
+                                                                <ul class="small mt-2" style="list-style-type: none; padding-left: 1em;">
+                                                                    <li>• Script MT Bold</li>
+                                                                    <li>• Vivaldi</li>
+                                                                    <li>• Vladimir Script</li>
+                                                                    <li>• Lobster</li>
+                                                                </ul>
+                                                            </details>
+                                                        </li>
+                                                    </ul>
+
+                                                    <h6>Decorative Fonts (16 fonts)</h6>
+                                                    <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
+                                                        <li>• Curlz, Curlz MT</li>
+                                                        <li>• Jokerman, Papyrus</li>
+                                                        <li>• Chiller, Stencil, Ravie</li>
+                                                        <li>• Magneto, Algerian</li>
+                                                        <li>
+                                                            <details class="mt-1">
+                                                                <summary style="cursor: pointer; color: #0d6efd;">Show all 16 fonts...</summary>
+                                                                <ul class="small mt-2" style="list-style-type: none; padding-left: 1em;">
+                                                                    <li>• Showcard Gothic</li>
+                                                                    <li>• Broadway</li>
+                                                                    <li>• Bauhaus 93</li>
+                                                                    <li>• Harrington</li>
+                                                                    <li>• Snap ITC</li>
+                                                                    <li>• Gigi</li>
+                                                                    <li>• Juice ITC</li>
+                                                                </ul>
+                                                            </details>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h6>Narrow/Condensed Fonts (2 fonts)</h6>
+                                                    <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
+                                                        <li>• Arial Narrow</li>
+                                                        <li>• Impact</li>
+                                                    </ul>
+
+                                                    <h6>Blackletter/Gothic Fonts (5 fonts)</h6>
+                                                    <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
+                                                        <li>• Old English, Old English Text MT</li>
+                                                        <li>• Blackletter</li>
+                                                        <li>• Fraktur</li>
+                                                        <li>• Blackadder ITC</li>
+                                                    </ul>
+
+                                                    <div class="alert alert-info small mb-0">
+                                                        <strong>Total:</strong> 40 fonts across 4 categories
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-warning small mt-3 mb-0">
+                                                <strong>Note:</strong> This list is based on accessibility research from dyslexichelp.org, section508.gov, and webaim.org.
+                                                These fonts are difficult to read for users with dyslexia, low vision, or reading disabilities.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Touchpoint Testing Configuration -->
                         <div class="mb-3">
                             <label class="form-label">Touchpoint Tests Configuration</label>
@@ -96,38 +219,8 @@
                             
                             <!-- Touchpoint Tree -->
                             <div class="touchpoint-tree border rounded p-3" style="max-height: 400px; overflow-y: auto;">
-                                {% set touchpoint_data = [
-                                    ('accessible_names', 'Accessible Names', ['ErrMissingAccessibleName', 'WarnGenericAccessibleName']),
-                                    ('animation', 'Animation', ['ErrAutoStartTimers', 'ErrInfiniteAnimation', 'ErrNoReducedMotionSupport', 'WarnFastInterval', 'WarnLongAnimation']),
-                                    ('aria', 'ARIA', ['AI_ErrMissingInteractiveRole', 'ErrMapAriaHidden', 'WarnMissingAriaModal']),
-                                    ('buttons', 'Buttons', ['ErrButtonEmpty', 'ErrButtonNoText', 'ErrMissingCloseButton', 'WarnButtonTextInsufficient']),
-                                    ('colors_contrast', 'Colors & Contrast', ['ErrInsufficientContrast', 'ErrSmallText', 'InfoNoColorSchemeSupport', 'InfoNoContrastSupport', 'WarnColorOnlyLink']),
-                                    ('dialogs', 'Dialogs & Modals', ['ErrModalMissingClose', 'ErrModalMissingHeading', 'ErrModalWithoutEscape', 'WarnMissingAriaModal', 'WarnModalMissingAriaLabelledby', 'WarnModalMissingAriaModal', 'WarnModalNoFocusableElements']),
-                                    ('documents', 'Documents', ['ErrMissingDocumentType', 'WarnGenericDocumentLinkText', 'WarnMissingDocumentMetadata']),
-                                    ('event_handling', 'Event Handling', ['ErrMouseOnlyHandler']),
-                                    ('focus_management', 'Focus Management', ['ErrContentObscuring', 'ErrNoFocusIndicator', 'ErrNoOutlineOffsetDefined', 'ErrOutlineIsNoneOnInteractiveElement', 'WarnZeroOutlineOffset']),
-                                    ('forms', 'Forms', ['ErrEmptyLabel', 'ErrNoLabel', 'ErrPlaceholderAsLabel', 'ErrUnlabelledField', 'WarnMissingAriaLabelledby', 'WarnMissingRequiredIndication', 'WarnNoFieldset', 'WarnNoLegend', 'WarnUnlabelledForm', 'WarnUnlabelledRegion']),
-                                    ('headings', 'Headings', ['DiscoHeadingWithID', 'ErrEmptyHeading', 'ErrIncorrectHeadingLevel', 'ErrModalMissingHeading', 'ErrMultipleH1', 'ErrNoH1', 'ErrSkippedHeadingLevel', 'InfoHeadingNearLengthLimit', 'WarnHeadingInsideDisplayNone', 'WarnHeadingOver60CharsLong', 'WarnVisualHierarchy']),
-                                    ('iframes', 'Iframes', ['ErrVideoIframeMissingTitle']),
-                                    ('styles', 'Inline Styles', ['ErrStyleAttrColorFont', 'WarnStyleAttrOther', 'ErrStyleTagColorFont', 'WarnStyleTagOther']),
-                                    ('images', 'Images', ['DiscoFoundInlineSvg', 'DiscoFoundSvgImage', 'ErrAltOnElementThatDoesntTakeIt', 'ErrAltTooLong', 'ErrImageAltContainsHTML', 'ErrImageWithEmptyAlt', 'ErrImageWithImgFileExtensionAlt', 'ErrImageWithNoAlt', 'ErrImageWithURLAsAlt', 'ErrNoAlt', 'ErrRedundantAlt', 'ErrSVGNoAccessibleName', 'WarnSVGNoRole', 'WarnSvgPositiveTabindex']),
-                                    ('keyboard_navigation', 'Keyboard Navigation', ['ErrMissingTabindex', 'ErrNonInteractiveZeroTabindex', 'ErrNoFocusIndicator', 'ErrPositiveTabindex', 'ErrTabOrderViolation', 'WarnHighTabindex', 'WarnMissingNegativeTabindex', 'WarnModalNoFocusableElements', 'WarnNegativeTabindex']),
-                                    ('landmarks', 'Landmarks', ['ErrDuplicateLandmarkWithoutName', 'ErrMissingMainLandmark', 'WarnContentOutsideLandmarks', 'WarnMissingBannerLandmark', 'WarnMissingContentinfoLandmark']),
-                                    ('language', 'Language', ['ErrHreflangAttrEmpty', 'ErrHreflangNotOnLink', 'ErrIncorrectlyFormattedPrimaryLang', 'ErrNoDocumentLanguage', 'WarnMissingDocumentMetadata']),
-                                    ('links', 'Links', ['ErrInvalidGenericLinkName', 'WarnAnchorTargetTabindex', 'WarnColorOnlyLink', 'WarnGenericDocumentLinkText', 'WarnGenericLinkNoImprovement']),
-                                    ('lists', 'Lists', ['ErrEmptyList', 'ErrFakeListImplementation', 'WarnCustomBulletStyling', 'WarnDeepListNesting']),
-                                    ('maps', 'Maps', ['ErrDivMapMissingAttributes', 'ErrMapMissingTitle']),
-                                    ('media', 'Media', ['ErrNativeVideoMissingControls', 'ErrVideoIframeMissingTitle', 'WarnVideoAutoplay']),
-                                    ('navigation', 'Navigation', ['AI_ErrAccordionWithoutARIA', 'AI_ErrCarouselWithoutARIA', 'AI_ErrDropdownWithoutARIA', 'ErrDuplicateNavNames', 'ErrInappropriateMenuRole', 'ErrNavMissingAccessibleName', 'WarnNoCurrentPageIndicator']),
-                                    ('page', 'Page', ['DiscoResponsiveBreakpoints', 'ErrEmptyPageTitle', 'ErrMultiplePageTitles', 'ErrNoPageTitle', 'WarnPageTitleTooLong', 'WarnPageTitleTooShort']),
-                                    ('reading_order', 'Reading Order', ['AI_InfoContentOrder', 'AI_WarnPossibleReadingOrderIssue']),
-                                    ('semantic_structure', 'Semantic Structure', ['ErrHeaderMissingScope', 'ErrImproperTitleAttribute', 'ErrMissingDocumentType', 'WarnVisualHierarchy']),
-                                    ('tables', 'Tables', ['ErrHeaderMissingScope', 'ErrTableMissingCaption', 'ErrTableNoColumnHeaders', 'WarnTableMissingThead']),
-                                    ('timing', 'Timing', ['ErrAutoStartTimers', 'ErrTimersWithoutControls', 'WarnFastInterval']),
-                                    ('typography', 'Typography', ['ErrSmallText', 'WarnItalicText', 'WarnJustifiedText', 'WarnRightAlignedText', 'WarnSmallLineHeight'])
-                                ] %}
-                                
-                                {% for touchpoint_id, touchpoint_name, test_ids in touchpoint_data %}
+                                {% for touchpoint_id, test_ids in touchpoint_test_mapping.items()|sort %}
+                                {% set touchpoint_name = touchpoint_names.get(touchpoint_id, touchpoint_id|title) %}
                                 <div class="touchpoint-item mb-2">
                                     <div class="d-flex align-items-center">
                                         <!-- Expand/Collapse button -->

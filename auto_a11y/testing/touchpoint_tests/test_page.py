@@ -1,18 +1,17 @@
 """
-Responsive Breakpoints touchpoint test module
-Discovers and reports CSS media query breakpoints defined on the page.
+Page-level touchpoint test module
+Tests page-level accessibility including responsive breakpoints, page titles, etc.
 """
 
-from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
 
 TEST_DOCUMENTATION = {
-    "testName": "Responsive Breakpoints Discovery",
-    "touchpoint": "responsive_breakpoints",
-    "description": "Discovers CSS media query breakpoints defined on the page for accessibility testing at different viewport widths.",
+    "testName": "Page-Level Accessibility Tests",
+    "touchpoint": "page",
+    "description": "Tests page-level accessibility including responsive breakpoints, page structure, and other page-wide concerns.",
     "version": "1.0.0",
     "wcagCriteria": ["1.4.10", "2.4.3"],
     "tests": [
@@ -26,7 +25,7 @@ TEST_DOCUMENTATION = {
     ]
 }
 
-async def test_responsive_breakpoints(page) -> Dict[str, Any]:
+async def test_page(page) -> Dict[str, Any]:
     """
     Discover responsive breakpoints defined in CSS media queries
 

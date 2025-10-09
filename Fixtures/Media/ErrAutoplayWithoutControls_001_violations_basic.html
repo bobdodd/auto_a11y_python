@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAutoplayWithoutControls - Basic Violations</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "testCode": "ErrAutoplayWithoutControls",
+        "description": "Tests detection of videos and audio with autoplay but no controls",
+        "expectedViolationCount": 4,
+        "wcagCriteria": ["1.4.2", "2.2.2"]
+    }
+    </script>
+</head>
+<body>
+    <h1>ErrAutoplayWithoutControls Test - Violations</h1>
+
+    <h2>Violation 1: Video with unmuted autoplay, no controls</h2>
+    <video autoplay width="320" height="240">
+        <source src="sample-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <h2>Violation 2: Video with muted autoplay, no controls</h2>
+    <video autoplay muted width="320" height="240">
+        <source src="sample-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <h2>Violation 3: Audio with autoplay, no controls</h2>
+    <audio autoplay>
+        <source src="sample-audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <h2>Violation 4: Audio with autoplay and loop, no controls</h2>
+    <audio autoplay loop>
+        <source src="sample-audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <p>All media elements above have autoplay but lack controls, preventing users from pausing or stopping them.</p>
+</body>
+</html>

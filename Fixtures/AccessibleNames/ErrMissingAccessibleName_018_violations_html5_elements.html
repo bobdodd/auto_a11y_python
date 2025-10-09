@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingAccessibleName - HTML5 Interactive Elements Without Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_018_violations_html5_elements",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "HTML5 interactive elements (dialog, summary, details, etc.) without accessible names",
+    "wcag": "4.1.2, 2.4.6",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>HTML5 Interactive Elements Without Accessible Names</h1>
+
+    <!-- Dialog without accessible name -->
+    <dialog open data-expected-violation="true" data-violation-reason="Dialog element without accessible name. Screen readers announce 'dialog' but no title or purpose. Users don't know what dialog contains. Modal context unclear. Violates WCAG 4.1.2 and WCAG 2.4.6">
+        <p>This is a dialog</p>
+        <button>Close</button>
+    </dialog>
+
+    <!-- Details/Summary without proper names -->
+    <details data-expected-pass="true" data-pass-reason="Details element does not require accessible name. Summary element within provides the label. Screen readers use summary text as name. Expandable/collapsible controlled by summary. Acceptable per HTML spec">
+        <summary data-expected-violation="true" data-violation-reason="Summary element is empty, no accessible name. Screen readers announce 'disclosure triangle' with no label. Users don't know what content will expand. Cannot understand collapsed section purpose. Violates WCAG 4.1.2 and WCAG 2.4.6"></summary>
+        <p>Hidden content</p>
+    </details>
+
+    <!-- Form without accessible name (when used as landmark) -->
+    <form data-expected-violation="true" data-violation-reason="Form element without accessible name when it should be a landmark. Forms with accessible names become form landmarks. Screen readers list landmarks for navigation. Unnamed forms aren't landmarks. Multiple forms on page should be distinguished. Violates WCAG 4.1.2 and WCAG 2.4.1 Bypass Blocks">
+        <input type="text" id="search" />
+        <button>Search</button>
+    </form>
+
+    <!-- Iframe without title -->
+    <iframe src="content.html" data-expected-violation="true" data-violation-reason="Iframe without title attribute. Screen readers announce 'frame' but no purpose. Users don't know iframe content. Cannot identify nested content. Violates WCAG 4.1.2 and WCAG 2.4.1">
+    </iframe>
+
+    <!-- Area in image map without alt -->
+    <img src="world-map.png" usemap="#worldmap" alt="World Map">
+    <map name="worldmap">
+        <area shape="rect" coords="0,0,100,100" href="/usa" data-expected-violation="true" data-violation-reason="Area element in image map without alt text. Clickable region has no accessible name. Screen readers cannot identify map region. Keyboard users navigate with tab but hear no destination. Violates WCAG 4.1.2 and WCAG 2.4.4 Link Purpose">
+        <area shape="rect" coords="100,0,200,100" href="/canada">
+    </map>
+</body>
+</html>

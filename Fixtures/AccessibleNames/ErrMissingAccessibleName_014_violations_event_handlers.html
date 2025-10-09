@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingAccessibleName - Event Handlers Without Roles/Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_014_violations_event_handlers",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 8,
+    "expectedPassCount": 0,
+    "description": "Elements with event handlers that make them interactive but lack proper roles and accessible names",
+    "wcag": "4.1.2, 2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .clickable { cursor: pointer; color: blue; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Interactive Elements Without Proper Roles and Names</h1>
+
+    <!-- div/span with onclick but no role -->
+    <div onclick="alert('clicked')" class="clickable" data-expected-violation="true" data-violation-reason="Div with onclick handler but no role or accessible name. Not keyboard accessible. Screen readers don't announce as interactive. Users with disabilities cannot activate. Violates WCAG 4.1.2 Name Role Value and WCAG 2.1.1 Keyboard">
+        Click me
+    </div>
+
+    <span onclick="showModal()" class="clickable" data-expected-violation="true" data-violation-reason="Span with onclick but no role or accessible name. Not focusable. Screen readers treat as text. Keyboard users cannot activate. Mouse-only interaction. Violates WCAG 4.1.2 and 2.1.1"></span>
+
+    <!-- div with tabindex but no role or name -->
+    <div tabindex="0" onclick="submit()" class="clickable" data-expected-violation="true" data-violation-reason="Div with tabindex and onclick but no role or accessible name. Keyboard focusable but screen readers don't announce purpose. Users don't know what will happen on Enter. Violates WCAG 4.1.2">Submit</div>
+
+    <!-- div with role but no accessible name -->
+    <div role="button" tabindex="0" onclick="deleteItem()" data-expected-violation="true" data-violation-reason="Div with button role and onclick but no accessible name. Screen readers announce 'button' but no action label. Users don't know what the button does. Violates WCAG 4.1.2"></div>
+
+    <!-- span with keydown handler -->
+    <span onkeydown="if(event.key==='Enter') activate()" tabindex="0" class="clickable" data-expected-violation="true" data-violation-reason="Span with keydown handler and tabindex but no role or accessible name. Keyboard focusable but screen readers treat as text. Users don't know it's interactive. Violates WCAG 4.1.2">Press Enter</span>
+
+    <!-- div with multiple event handlers -->
+    <div onclick="handleClick()" onkeydown="handleKey()" onmouseenter="showTooltip()" tabindex="0" data-expected-violation="true" data-violation-reason="Div with multiple event handlers and tabindex but no role or accessible name. Interactive but not semantically identified. Screen readers don't announce as interactive control. Violates WCAG 4.1.2">Interactive element</div>
+
+    <!-- Image with onclick (becomes button) -->
+    <img src="delete-icon.png" onclick="deleteItem()" class="clickable" data-expected-violation="true" data-violation-reason="Image with onclick handler but no alt text and not in button. Interactive image without accessible name. Screen readers cannot identify purpose. Not keyboard accessible. Violates WCAG 4.1.2 and WCAG 1.1.1">
+
+    <!-- Custom element with event handler -->
+    <custom-widget onclick="toggle()" tabindex="0" data-expected-violation="true" data-violation-reason="Custom element with onclick and tabindex but no role or accessible name. Screen readers don't know how to announce it. Users cannot understand purpose. Needs explicit role and name. Violates WCAG 4.1.2">Toggle</custom-widget>
+
+    <script>
+        function alert(msg) { console.log(msg); }
+        function showModal() { console.log('Modal shown'); }
+        function submit() { console.log('Submitted'); }
+        function deleteItem() { console.log('Item deleted'); }
+        function activate() { console.log('Activated'); }
+        function handleClick() { console.log('Clicked'); }
+        function handleKey(e) { console.log('Key pressed'); }
+        function showTooltip() { console.log('Tooltip shown'); }
+        function toggle() { console.log('Toggled'); }
+    </script>
+</body>
+</html>

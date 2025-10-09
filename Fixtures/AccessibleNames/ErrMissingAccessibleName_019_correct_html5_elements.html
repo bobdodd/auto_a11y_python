@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingAccessibleName - HTML5 Interactive Elements With Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_019_correct_html5_elements",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 8,
+    "description": "HTML5 interactive elements with proper accessible names",
+    "wcag": "4.1.2, 2.4.6",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>HTML5 Interactive Elements With Accessible Names</h1>
+
+    <!-- Dialog with aria-label -->
+    <dialog open aria-label="Confirmation Dialog" data-expected-pass="true" data-pass-reason="Dialog element with aria-label. Screen readers announce 'Confirmation Dialog, dialog'. Users understand dialog purpose. Modal context is clear. Focus trapped in dialog. Complies with WCAG 4.1.2 and WCAG 2.4.6">
+        <p>Are you sure you want to continue?</p>
+        <button>Yes</button>
+        <button>No</button>
+    </dialog>
+
+    <!-- Dialog with aria-labelledby -->
+    <dialog open aria-labelledby="dialog-title" data-expected-pass="true" data-pass-reason="Dialog element with aria-labelledby referencing visible heading. Screen readers announce 'Delete Account, dialog'. Users see and hear same title. Consistent experience. Complies with WCAG 4.1.2 and WCAG 2.4.6">
+        <h2 id="dialog-title">Delete Account</h2>
+        <p>This action cannot be undone.</p>
+        <button>Delete</button>
+        <button>Cancel</button>
+    </dialog>
+
+    <!-- Details/Summary with proper text -->
+    <details data-expected-pass="true" data-pass-reason="Details element with properly labeled summary. Summary text provides name for disclosure widget. Screen readers announce 'More Information, collapsed' or 'expanded'. Users understand what content is hidden. Complies with WCAG 4.1.2 and WCAG 2.4.6">
+        <summary data-expected-pass="true" data-pass-reason="Summary element with text content. Provides accessible name for details disclosure. Screen readers announce 'More Information, disclosure triangle, collapsed'. Users know what will expand. Click or Enter to toggle. Complies with WCAG 4.1.2">More Information</summary>
+        <p>Additional details are shown here when expanded.</p>
+    </details>
+
+    <!-- Form with aria-label (becomes landmark) -->
+    <form aria-label="Site Search" data-expected-pass="true" data-pass-reason="Form element with aria-label becomes form landmark. Screen readers list 'Site Search, form landmark'. Users can navigate directly to search. Multiple forms distinguished by names. Complies with WCAG 4.1.2 and WCAG 2.4.1">
+        <label for="search-input">Search:</label>
+        <input type="search" id="search-input" />
+        <button>Search</button>
+    </form>
+
+    <!-- Form with aria-labelledby -->
+    <h2 id="login-heading">Member Login</h2>
+    <form aria-labelledby="login-heading" data-expected-pass="true" data-pass-reason="Form element with aria-labelledby referencing visible heading. Becomes form landmark. Screen readers announce 'Member Login, form landmark'. Users navigate between forms. Visual and programmatic labels match. Complies with WCAG 4.1.2 and WCAG 2.4.1">
+        <label for="username">Username:</label>
+        <input type="text" id="username" />
+        <button type="submit">Login</button>
+    </form>
+
+    <!-- Iframe with title -->
+    <iframe src="content.html" title="Embedded Article Content" data-expected-pass="true" data-pass-reason="Iframe with title attribute. Screen readers announce 'Embedded Article Content, frame'. Users understand iframe purpose. Can navigate into frame content. Title describes nested content. Complies with WCAG 4.1.2 and WCAG 2.4.1">
+    </iframe>
+
+    <!-- Area in image map with alt -->
+    <img src="world-map.png" usemap="#worldmap" alt="World Map">
+    <map name="worldmap">
+        <area shape="rect" coords="0,0,100,100" href="/usa" alt="United States" data-expected-pass="true" data-pass-reason="Area element with alt text in image map. Screen readers announce 'United States, link'. Keyboard users tab to region and hear destination. Clickable map regions accessible. Complies with WCAG 4.1.2 and WCAG 2.4.4">
+        <area shape="rect" coords="100,0,200,100" href="/canada" alt="Canada" data-expected-pass="true" data-pass-reason="Area element with alt text. Screen readers announce 'Canada, link'. Image map fully accessible. All clickable regions have names. Keyboard navigation works. Complies with WCAG 4.1.2 and WCAG 2.4.4">
+    </map>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingAccessibleName - ARIA Widget Roles Without Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_012_violations_aria_widget_roles",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 15,
+    "expectedPassCount": 0,
+    "description": "ARIA widget roles without accessible names - comprehensive coverage",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>ARIA Widget Roles Missing Accessible Names</h1>
+
+    <!-- Standalone Widget Roles -->
+    <div role="button" tabindex="0" data-expected-violation="true" data-violation-reason="Button role without accessible name. Screen readers cannot identify purpose. Users with disabilities cannot understand what action will be performed. Violates WCAG 4.1.2 Name, Role, Value"></div>
+
+    <div role="checkbox" tabindex="0" data-expected-violation="true" data-violation-reason="Checkbox role without accessible name. Screen readers announce checkbox but no label. Users cannot identify what option they are toggling. Violates WCAG 4.1.2"></div>
+
+    <div role="radio" tabindex="0" data-expected-violation="true" data-violation-reason="Radio button role without accessible name. Screen readers cannot announce the choice label. Users cannot make informed selections. Violates WCAG 4.1.2"></div>
+
+    <div role="switch" tabindex="0" data-expected-violation="true" data-violation-reason="Switch role without accessible name. Screen readers announce switch but no purpose. Users don't know what setting they're controlling. Violates WCAG 4.1.2"></div>
+
+    <div role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" data-expected-violation="true" data-violation-reason="Slider role without accessible name. Screen readers announce slider and value but not what is being adjusted. Users don't know what the slider controls. Violates WCAG 4.1.2"></div>
+
+    <div role="spinbutton" tabindex="0" aria-valuemin="0" aria-valuemax="10" aria-valuenow="5" data-expected-violation="true" data-violation-reason="Spinbutton role without accessible name. Screen readers announce numeric input but not what value it represents. Users cannot identify the field purpose. Violates WCAG 4.1.2"></div>
+
+    <div role="textbox" tabindex="0" data-expected-violation="true" data-violation-reason="Textbox role without accessible name. Screen readers announce editable text but no label. Users don't know what information to enter. Violates WCAG 4.1.2 and WCAG 3.3.2 Labels or Instructions"></div>
+
+    <div role="searchbox" tabindex="0" data-expected-violation="true" data-violation-reason="Searchbox role without accessible name. Screen readers announce search input but no context. Users don't know what they're searching. Violates WCAG 4.1.2"></div>
+
+    <div role="combobox" tabindex="0" aria-expanded="false" data-expected-violation="true" data-violation-reason="Combobox role without accessible name. Screen readers announce combo box but no label. Users cannot identify what options they're selecting from. Violates WCAG 4.1.2 and WCAG 3.3.2"></div>
+
+    <div role="link" tabindex="0" data-expected-violation="true" data-violation-reason="Link role without accessible name. Screen readers announce link but no destination or purpose. Users cannot make informed navigation decisions. Violates WCAG 4.1.2 and WCAG 2.4.4 Link Purpose"></div>
+
+    <div role="menuitem" tabindex="0" data-expected-violation="true" data-violation-reason="Menuitem role without accessible name. Screen readers announce menu item but no action label. Users cannot identify menu options. Violates WCAG 4.1.2"></div>
+
+    <div role="menuitemcheckbox" tabindex="0" data-expected-violation="true" data-violation-reason="Menuitemcheckbox role without accessible name. Screen readers announce toggleable menu item but no label. Users don't know what option they're toggling. Violates WCAG 4.1.2"></div>
+
+    <div role="menuitemradio" tabindex="0" data-expected-violation="true" data-violation-reason="Menuitemradio role without accessible name. Screen readers announce radio menu item but no choice label. Users cannot make informed selections. Violates WCAG 4.1.2"></div>
+
+    <div role="option" tabindex="0" data-expected-violation="true" data-violation-reason="Option role without accessible name. Screen readers announce option but no text. Users in listbox cannot identify choices. Violates WCAG 4.1.2"></div>
+
+    <div role="tab" tabindex="0" data-expected-violation="true" data-violation-reason="Tab role without accessible name. Screen readers announce tab but no panel label. Users cannot identify what content each tab reveals. Violates WCAG 4.1.2"></div>
+
+    <!-- Composite Widgets (Containers) -->
+    <div role="menu" data-expected-pass="true" data-pass-reason="Menu container does not require accessible name. Individual menuitems within must have names. The menu itself is identified by role. Screen readers announce menu structure. This is acceptable per ARIA spec">
+        <div role="menuitem">Save</div>
+    </div>
+
+    <div role="listbox" data-expected-pass="true" data-pass-reason="Listbox container does not require accessible name. Individual options within must have names. The listbox is identified by role. Screen readers announce listbox structure. Acceptable per ARIA spec">
+        <div role="option">Option 1</div>
+    </div>
+
+    <div role="tablist" data-expected-pass="true" data-pass-reason="Tablist container does not require accessible name. Individual tabs within must have names. The tablist is identified by role. Screen readers announce tab list structure. Acceptable per ARIA spec">
+        <div role="tab">Tab 1</div>
+    </div>
+</body>
+</html>

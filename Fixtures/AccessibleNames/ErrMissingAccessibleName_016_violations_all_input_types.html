@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingAccessibleName - All Input Types Without Labels</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_016_violations_all_input_types",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 20,
+    "expectedPassCount": 2,
+    "description": "Comprehensive coverage of all HTML5 input types without accessible names",
+    "wcag": "4.1.2, 3.3.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>All Input Types Without Labels</h1>
+
+    <form>
+        <!-- Text-like inputs -->
+        <input type="text" placeholder="Name" data-expected-violation="true" data-violation-reason="Text input with only placeholder. Placeholder disappears on input and is not a label. Screen readers may not announce placeholder reliably. Users lose context when typing. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="email" data-expected-violation="true" data-violation-reason="Email input without any label or placeholder. Screen readers announce 'edit text' with no context. Users don't know what email address to enter. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="password" data-expected-violation="true" data-violation-reason="Password input without label. Screen readers announce 'password edit text' but no context. Users don't know if it's new password, confirm password, or current password. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="search" data-expected-violation="true" data-violation-reason="Search input without label. Screen readers announce 'search' but no context. Users don't know what they're searching for. Violates WCAG 4.1.2">
+
+        <input type="tel" data-expected-violation="true" data-violation-reason="Telephone input without label. Screen readers announce 'edit text' with no purpose. Users don't know what phone number to provide. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="url" data-expected-violation="true" data-violation-reason="URL input without label. Screen readers announce 'edit text' but no context. Users don't know what URL to enter. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <!-- Number inputs -->
+        <input type="number" data-expected-violation="true" data-violation-reason="Number input without label. Screen readers announce 'spin button' but no purpose. Users don't know what value to enter. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="range" min="0" max="100" data-expected-violation="true" data-violation-reason="Range slider without label. Screen readers announce current value but not what is being adjusted. Users cannot understand slider purpose. Violates WCAG 4.1.2">
+
+        <!-- Date/Time inputs -->
+        <input type="date" data-expected-violation="true" data-violation-reason="Date input without label. Screen readers announce date picker but no context. Users don't know what date to select (birth date, appointment, etc.). Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="datetime-local" data-expected-violation="true" data-violation-reason="Datetime-local input without label. Screen readers announce date-time picker but no purpose. Users don't know what date and time to enter. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="month" data-expected-violation="true" data-violation-reason="Month input without label. Screen readers announce month picker but no context. Users don't know purpose of month selection. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="week" data-expected-violation="true" data-violation-reason="Week input without label. Screen readers announce week picker but no purpose. Users don't understand what week to select. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="time" data-expected-violation="true" data-violation-reason="Time input without label. Screen readers announce time picker but no context. Users don't know what time to select. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <!-- Selection inputs -->
+        <input type="checkbox" data-expected-violation="true" data-violation-reason="Checkbox without label. Screen readers announce 'checkbox not checked' but no option text. Users don't know what they're agreeing to. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <input type="radio" name="group1" data-expected-violation="true" data-violation-reason="Radio button without label. Screen readers announce 'radio button' but no choice text. Users cannot make informed selections. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <!-- File input -->
+        <input type="file" data-expected-violation="true" data-violation-reason="File input without label. Screen readers announce 'choose file button' but no context. Users don't know what type of file to upload. Violates WCAG 4.1.2 and WCAG 3.3.2">
+
+        <!-- Color picker -->
+        <input type="color" data-expected-violation="true" data-violation-reason="Color picker without label. Screen readers announce current color but not purpose. Users don't know what color is being chosen for. Violates WCAG 4.1.2">
+
+        <!-- Button-like inputs -->
+        <input type="submit" value="" data-expected-violation="true" data-violation-reason="Submit button with empty value. Screen readers announce 'button' with no action label. Users don't know what form is being submitted. Violates WCAG 4.1.2">
+
+        <input type="button" value="" onclick="save()" data-expected-violation="true" data-violation-reason="Button input with empty value. Screen readers announce 'button' but no purpose. Users cannot identify action. Violates WCAG 4.1.2">
+
+        <input type="reset" value="" data-expected-violation="true" data-violation-reason="Reset button with empty value. Screen readers announce 'button' but no warning. Users don't know form will be cleared. Violates WCAG 4.1.2">
+
+        <!-- Special inputs that don't need labels -->
+        <input type="hidden" value="token123" data-expected-pass="true" data-pass-reason="Hidden input does not need accessible name. Not visible or interactive. Screen readers ignore hidden fields. No user interaction required. Exempt from WCAG 4.1.2">
+
+        <input type="image" src="search-icon.png" alt="Search" data-expected-pass="true" data-pass-reason="Image input with alt text. Alt attribute provides accessible name. Screen readers announce 'Search, button'. Users understand action. Complies with WCAG 4.1.2 and WCAG 1.1.1">
+    </form>
+
+    <script>
+        function save() { console.log('Saved'); }
+    </script>
+</body>
+</html>

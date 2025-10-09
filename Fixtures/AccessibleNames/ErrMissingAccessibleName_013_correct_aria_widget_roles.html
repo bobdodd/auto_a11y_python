@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingAccessibleName - ARIA Widget Roles With Proper Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_013_correct_aria_widget_roles",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 15,
+    "description": "ARIA widget roles with proper accessible names using various techniques",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>ARIA Widget Roles With Accessible Names</h1>
+
+    <!-- Using aria-label -->
+    <div role="button" tabindex="0" aria-label="Submit form" data-expected-pass="true" data-pass-reason="Button role has accessible name via aria-label. Screen readers announce 'Submit form, button'. Users understand the action. Keyboard accessible with tabindex. Complies with WCAG 4.1.2"></div>
+
+    <div role="checkbox" tabindex="0" aria-label="Subscribe to newsletter" data-expected-pass="true" data-pass-reason="Checkbox role has accessible name via aria-label. Screen readers announce 'Subscribe to newsletter, checkbox, not checked'. Users understand what they're toggling. Complies with WCAG 4.1.2"></div>
+
+    <div role="radio" tabindex="0" aria-label="Email delivery" data-expected-pass="true" data-pass-reason="Radio role has accessible name via aria-label. Screen readers announce 'Email delivery, radio button'. Users understand the choice. Part of radio group navigation. Complies with WCAG 4.1.2"></div>
+
+    <!-- Using aria-labelledby -->
+    <span id="switch-label">Dark mode</span>
+    <div role="switch" tabindex="0" aria-labelledby="switch-label" aria-checked="false" data-expected-pass="true" data-pass-reason="Switch role has accessible name via aria-labelledby. Screen readers announce 'Dark mode, switch, off'. Users understand what setting they control. References visible label. Complies with WCAG 4.1.2"></div>
+
+    <span id="slider-label">Volume</span>
+    <div role="slider" tabindex="0" aria-labelledby="slider-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" data-expected-pass="true" data-pass-reason="Slider role has accessible name via aria-labelledby. Screen readers announce 'Volume, slider, 50'. Users know what they're adjusting. Keyboard navigable. Complies with WCAG 4.1.2"></div>
+
+    <span id="spin-label">Quantity</span>
+    <div role="spinbutton" tabindex="0" aria-labelledby="spin-label" aria-valuemin="0" aria-valuemax="10" aria-valuenow="5" data-expected-pass="true" data-pass-reason="Spinbutton role has accessible name via aria-labelledby. Screen readers announce 'Quantity, spin button, 5'. Users know what value they're changing. Arrow keys adjust. Complies with WCAG 4.1.2"></div>
+
+    <!-- Textbox with label -->
+    <label id="textbox-label">Comments</label>
+    <div role="textbox" tabindex="0" aria-labelledby="textbox-label" contenteditable="true" data-expected-pass="true" data-pass-reason="Textbox role has accessible name via aria-labelledby. Screen readers announce 'Comments, edit text'. Users know what to enter. Editable content. Complies with WCAG 4.1.2 and WCAG 3.3.2"></div>
+
+    <label id="search-label">Search products</label>
+    <div role="searchbox" tabindex="0" aria-labelledby="search-label" contenteditable="true" data-expected-pass="true" data-pass-reason="Searchbox role has accessible name via aria-labelledby. Screen readers announce 'Search products, search'. Users know search context. Optimized for search queries. Complies with WCAG 4.1.2"></div>
+
+    <!-- Combobox with label -->
+    <label id="combo-label">Select country</label>
+    <div role="combobox" tabindex="0" aria-labelledby="combo-label" aria-expanded="false" aria-controls="country-list" data-expected-pass="true" data-pass-reason="Combobox role has accessible name via aria-labelledby. Screen readers announce 'Select country, combo box, collapsed'. Users know what they're selecting. Arrow keys navigate options. Complies with WCAG 4.1.2 and WCAG 3.3.2"></div>
+
+    <!-- Link with visible text content -->
+    <div role="link" tabindex="0" data-expected-pass="true" data-pass-reason="Link role has accessible name from text content. Screen readers announce 'Read more, link'. Users understand destination. Keyboard accessible. Complies with WCAG 4.1.2 and WCAG 2.4.4">Read more</div>
+
+    <!-- Menu items with text content -->
+    <div role="menu">
+        <div role="menuitem" tabindex="0" data-expected-pass="true" data-pass-reason="Menuitem role has accessible name from text content. Screen readers announce 'Save, menu item'. Users identify action. Arrow key navigation. Complies with WCAG 4.1.2">Save</div>
+
+        <div role="menuitemcheckbox" tabindex="0" aria-checked="false" data-expected-pass="true" data-pass-reason="Menuitemcheckbox role has accessible name from text content. Screen readers announce 'Show toolbar, menu item checkbox, not checked'. Users know what they're toggling. Complies with WCAG 4.1.2">Show toolbar</div>
+
+        <div role="menuitemradio" tabindex="0" aria-checked="true" data-expected-pass="true" data-pass-reason="Menuitemradio role has accessible name from text content. Screen readers announce 'Medium size, menu item radio, checked'. Users understand selection. Part of radio group. Complies with WCAG 4.1.2">Medium size</div>
+    </div>
+
+    <!-- Listbox with options -->
+    <div role="listbox" aria-label="Favorite colors">
+        <div role="option" tabindex="0" data-expected-pass="true" data-pass-reason="Option role has accessible name from text content. Screen readers announce 'Blue, option 1 of 3'. Users identify choice. Arrow key selection. Complies with WCAG 4.1.2">Blue</div>
+    </div>
+
+    <!-- Tab with text content -->
+    <div role="tablist">
+        <div role="tab" tabindex="0" aria-selected="true" aria-controls="panel1" data-expected-pass="true" data-pass-reason="Tab role has accessible name from text content. Screen readers announce 'Profile, tab, selected'. Users know what content the tab reveals. Arrow key navigation. Complies with WCAG 4.1.2">Profile</div>
+    </div>
+</body>
+</html>

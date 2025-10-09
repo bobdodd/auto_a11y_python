@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingAccessibleName - Event Handlers With Proper Roles/Names</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_015_correct_event_handlers",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 8,
+    "description": "Elements with event handlers that have proper widget roles and accessible names",
+    "wcag": "4.1.2, 2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .clickable { cursor: pointer; }
+        button { margin: 5px 0; display: block; }
+    </style>
+</head>
+<body>
+    <h1>Interactive Elements With Proper Roles and Names</h1>
+
+    <!-- Proper button element (best practice) -->
+    <button onclick="alert('clicked')" data-expected-pass="true" data-pass-reason="Native button element with onclick handler. Has implicit button role and accessible name from text content. Keyboard accessible by default. Screen readers announce 'Click me, button'. Complies with WCAG 4.1.2">
+        Click me
+    </button>
+
+    <!-- div with proper role and aria-label -->
+    <div role="button" tabindex="0" aria-label="Show modal" onclick="showModal()" onkeydown="if(event.key==='Enter') showModal()" class="clickable" data-expected-pass="true" data-pass-reason="Div with button role, tabindex, aria-label, and both mouse and keyboard handlers. Screen readers announce 'Show modal, button'. Keyboard accessible with Enter key. Complies with WCAG 4.1.2 and WCAG 2.1.1"></div>
+
+    <!-- div with role and labelledby -->
+    <span id="submit-label">Submit Form</span>
+    <div role="button" tabindex="0" aria-labelledby="submit-label" onclick="submit()" onkeydown="if(event.key==='Enter' || event.key===' ') submit()" class="clickable" data-expected-pass="true" data-pass-reason="Div with button role, tabindex, aria-labelledby, and keyboard handlers. References visible label. Screen readers announce 'Submit Form, button'. Enter and Space keys work. Complies with WCAG 4.1.2 and WCAG 2.1.1"></div>
+
+    <!-- div with role and text content -->
+    <div role="button" tabindex="0" onclick="deleteItem()" onkeydown="if(event.key==='Enter') deleteItem()" class="clickable" data-expected-pass="true" data-pass-reason="Div with button role, tabindex, and text content for accessible name. Screen readers announce 'Delete Item, button'. Keyboard accessible. Uses semantic role properly. Complies with WCAG 4.1.2">Delete Item</div>
+
+    <!-- span with proper role and label -->
+    <span role="button" tabindex="0" aria-label="Activate feature" onkeydown="if(event.key==='Enter') activate()" onclick="activate()" class="clickable" data-expected-pass="true" data-pass-reason="Span with button role, tabindex, aria-label, and keyboard handler. Screen readers announce 'Activate feature, button'. Both mouse and keyboard work. Complies with WCAG 4.1.2 and WCAG 2.1.1"></span>
+
+    <!-- div with custom widget role -->
+    <div role="switch" tabindex="0" aria-label="Toggle notifications" aria-checked="false" onclick="toggle()" onkeydown="if(event.key===' ') toggle()" class="clickable" data-expected-pass="true" data-pass-reason="Div with switch role, tabindex, aria-label, and aria-checked. Screen readers announce 'Toggle notifications, switch, off'. Space key toggles. Proper switch semantics. Complies with WCAG 4.1.2">
+        <span aria-hidden="true">○</span>
+    </div>
+
+    <!-- Image in proper button -->
+    <button onclick="deleteItem()" aria-label="Delete" data-expected-pass="true" data-pass-reason="Button containing image with aria-label. Keyboard accessible native button. Screen readers announce 'Delete, button'. Image is decorative within button. Clear purpose. Complies with WCAG 4.1.2 and WCAG 1.1.1">
+        <img src="delete-icon.png" alt="" aria-hidden="true">
+    </button>
+
+    <!-- Custom element with proper role and name -->
+    <custom-widget role="button" tabindex="0" aria-label="Toggle settings" onclick="toggle()" onkeydown="if(event.key==='Enter') toggle()" data-expected-pass="true" data-pass-reason="Custom element with explicit button role, tabindex, aria-label, and keyboard handler. Screen readers announce 'Toggle settings, button'. Keyboard accessible. Custom elements need explicit ARIA. Complies with WCAG 4.1.2">
+        <span aria-hidden="true">⚙</span>
+    </custom-widget>
+
+    <script>
+        function alert(msg) { console.log(msg); }
+        function showModal() { console.log('Modal shown'); }
+        function submit() { console.log('Submitted'); }
+        function deleteItem() { console.log('Item deleted'); }
+        function activate() { console.log('Activated'); }
+        function toggle() { console.log('Toggled'); }
+    </script>
+</body>
+</html>

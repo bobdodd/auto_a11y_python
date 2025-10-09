@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingAccessibleName - All Input Types With Proper Labels</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingAccessibleName_017_correct_all_input_types",
+    "issueId": "ErrMissingAccessibleName",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 22,
+    "description": "Comprehensive coverage of all HTML5 input types with proper accessible names",
+    "wcag": "4.1.2, 3.3.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>All Input Types With Proper Labels</h1>
+
+    <form>
+        <!-- Text-like inputs with label element -->
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" data-expected-pass="true" data-pass-reason="Text input with label element using for/id association. Screen readers announce 'Full Name:, edit text'. Users know what to enter. Clicking label focuses input. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" data-expected-pass="true" data-pass-reason="Email input with label element. Screen readers announce 'Email Address:, edit text'. Users understand field purpose. Browser validates email format. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" data-expected-pass="true" data-pass-reason="Password input with label. Screen readers announce 'Password:, password edit text'. Users know to enter password. Content hidden for security. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <label for="search">Search Products:</label>
+        <input type="search" id="search" data-expected-pass="true" data-pass-reason="Search input with label. Screen readers announce 'Search Products:, search'. Users know search context. Browser may offer search suggestions. Complies with WCAG 4.1.2">
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" data-expected-pass="true" data-pass-reason="Tel input with label. Screen readers announce 'Phone Number:, edit text'. Users know to enter phone. Mobile keyboards show numeric layout. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <label for="website">Website URL:</label>
+        <input type="url" id="website" data-expected-pass="true" data-pass-reason="URL input with label. Screen readers announce 'Website URL:, edit text'. Users know to enter URL. Browser validates URL format. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <!-- Number inputs -->
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" min="1" max="10" data-expected-pass="true" data-pass-reason="Number input with label. Screen readers announce 'Quantity:, spin button'. Users know what value to enter. Arrow keys adjust number. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <label for="volume">Volume:</label>
+        <input type="range" id="volume" min="0" max="100" data-expected-pass="true" data-pass-reason="Range slider with label. Screen readers announce 'Volume:, slider'. Users know what they're adjusting. Arrow keys change value. Complies with WCAG 4.1.2">
+
+        <!-- Date/Time inputs -->
+        <label for="birthdate">Date of Birth:</label>
+        <input type="date" id="birthdate" data-expected-pass="true" data-pass-reason="Date input with label. Screen readers announce 'Date of Birth:, date picker'. Users understand what date to select. Calendar widget available. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <label for="appointment">Appointment:</label>
+        <input type="datetime-local" id="appointment" data-expected-pass="true" data-pass-reason="Datetime-local input with label. Screen readers announce 'Appointment:, date-time picker'. Users know purpose. Can select both date and time. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <label for="startmonth">Start Month:</label>
+        <input type="month" id="startmonth" data-expected-pass="true" data-pass-reason="Month input with label. Screen readers announce 'Start Month:, month picker'. Users understand month selection purpose. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <label for="weeknumber">Week Number:</label>
+        <input type="week" id="weeknumber" data-expected-pass="true" data-pass-reason="Week input with label. Screen readers announce 'Week Number:, week picker'. Users know what week to select. Shows week numbers. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <label for="meeting">Meeting Time:</label>
+        <input type="time" id="meeting" data-expected-pass="true" data-pass-reason="Time input with label. Screen readers announce 'Meeting Time:, time picker'. Users know what time to select. 24hr or 12hr format. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <!-- Selection inputs wrapped in labels -->
+        <label data-expected-pass="true" data-pass-reason="Checkbox wrapped in label. Screen readers announce 'Subscribe to newsletter, checkbox, not checked'. Label text provides accessible name. Clicking text toggles checkbox. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+            <input type="checkbox"> Subscribe to newsletter
+        </label>
+
+        <fieldset>
+            <legend>Delivery Method</legend>
+            <label data-expected-pass="true" data-pass-reason="Radio button wrapped in label within fieldset. Screen readers announce 'Delivery Method, group' then 'Email, radio button'. Fieldset provides group context. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+                <input type="radio" name="delivery" value="email"> Email
+            </label>
+            <label data-expected-pass="true" data-pass-reason="Radio button in same group. Screen readers announce 'SMS, radio button'. Arrow keys navigate group. Clear choice labels. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+                <input type="radio" name="delivery" value="sms"> SMS
+            </label>
+        </fieldset>
+
+        <!-- File input -->
+        <label for="resume">Upload Resume (PDF):</label>
+        <input type="file" id="resume" accept=".pdf" data-expected-pass="true" data-pass-reason="File input with label. Screen readers announce 'Upload Resume (PDF):, choose file button'. Users know what file type to upload. Accept attribute filters file types. Complies with WCAG 4.1.2 and WCAG 3.3.2">
+
+        <!-- Color picker -->
+        <label for="bgcolor">Background Color:</label>
+        <input type="color" id="bgcolor" data-expected-pass="true" data-pass-reason="Color picker with label. Screen readers announce 'Background Color:, color picker'. Users know what color is being selected. Shows current color value. Complies with WCAG 4.1.2">
+
+        <!-- Button-like inputs with values -->
+        <input type="submit" value="Submit Form" data-expected-pass="true" data-pass-reason="Submit button with value attribute. Value provides accessible name. Screen readers announce 'Submit Form, button'. Users know action. Submits form on click. Complies with WCAG 4.1.2">
+
+        <input type="button" value="Save Draft" onclick="save()" data-expected-pass="true" data-pass-reason="Button input with value attribute. Screen readers announce 'Save Draft, button'. Users understand action. Keyboard accessible. Complies with WCAG 4.1.2">
+
+        <input type="reset" value="Clear Form" data-expected-pass="true" data-pass-reason="Reset button with value. Screen readers announce 'Clear Form, button'. Users warned of action. Resets all form fields. Complies with WCAG 4.1.2">
+
+        <!-- Image input with alt -->
+        <input type="image" src="search-icon.png" alt="Search" data-expected-pass="true" data-pass-reason="Image input with alt attribute. Alt text provides accessible name. Screen readers announce 'Search, button'. Users understand action. Submits form on click. Complies with WCAG 4.1.2 and WCAG 1.1.1">
+
+        <!-- Hidden input (exempt) -->
+        <input type="hidden" value="token123" data-expected-pass="true" data-pass-reason="Hidden input does not need accessible name. Not visible or interactive. Screen readers ignore hidden fields. No user interaction required. Exempt from WCAG 4.1.2">
+    </form>
+
+    <script>
+        function save() { console.log('Draft saved'); }
+    </script>
+</body>
+</html>

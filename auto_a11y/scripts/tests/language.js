@@ -76,9 +76,9 @@ function languageScrape() {
                 langChangeCheck.failed++;
                 errorList.push({
                     url: window.location.href,
-                    type: 'warn',
+                    type: 'err',
                     cat: 'language',
-                    err: 'WarnElementLangEmpty',
+                    err: 'ErrEmptyLanguageAttribute',
                     element: element.tagName,
                     xpath: Elements.DOMPath.xPath(element, true),
                     html: element.outerHTML.substring(0, 200),

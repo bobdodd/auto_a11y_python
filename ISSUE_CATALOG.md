@@ -2624,15 +2624,15 @@ How to fix: Ensure all meaningful content is contained within appropriate landma
 
 ---
 
-ID: WarnElementLangEmpty
-Type: Warning
-Impact: Medium
-WCAG: 3.1.2 Language Changes in Parts (Level AA)
+ID: ErrEmptyLanguageAttribute
+Type: Error
+Impact: High
+WCAG: 3.1.2 Language of Parts (Level AA)
 Touchpoint: language
-Description: Element has empty lang attribute preventing proper language identification for content sections
-Why it matters: Empty lang on elements provides no language change information. Screen readers cannot adjust pronunciation rules for content in different languages. An empty or whitespace-only lang attribute is ambiguous - it's unclear if the language is truly unknown or if this is an error.
+Description: Element (non-HTML) has a lang attribute present but with no value (lang=""), preventing screen readers from determining language changes
+Why it matters: An empty lang attribute on elements prevents screen readers from properly switching pronunciation rules for content in different languages. Screen readers cannot adjust pronunciation rules for content sections in different languages. This can make multilingual content difficult or impossible to understand when read aloud.
 Who it affects: Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech
-How to fix: Add valid language code (e.g., lang="fr" for French) or remove empty lang attribute. Check for common causes like template variables that didn't populate, CMS configuration issues, or JavaScript that clears lang attributes. Ensure any whitespace is removed and a valid ISO 639 language code is provided.
+How to fix: Add a valid language code to the lang attribute (e.g., lang="fr" for French, lang="es" for Spanish). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. If the language matches the page language, remove the lang attribute entirely rather than leaving it empty.
 
 ---
 

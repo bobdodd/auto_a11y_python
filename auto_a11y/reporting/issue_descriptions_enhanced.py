@@ -2052,6 +2052,15 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1'],
             'remediation': "Ensure all meaningful content is contained within appropriate landmark regions. Typically: use <header> or role=\"banner\" for site headers, <nav> or role=\"navigation\" for navigation menus, <main> or role=\"main\" for primary content, <aside> or role=\"complementary\" for sidebar content, <footer> or role=\"contentinfo\" for footers. Decorative content or spacers can remain outside landmarks. Review your page structure to ensure no important content is orphaned outside the landmark structure."
         },
+        'ErrEmptyLanguageAttribute': {
+            'title': "Element (non-HTML) has a lang attribute present but with no value (lang=\"\"), preventing screen readers from determining language changes",
+            'what': "Element (non-HTML) has a lang attribute present but with no value (lang=\"\"), preventing screen readers from determining language changes",
+            'why': "An empty lang attribute on elements prevents screen readers from properly switching pronunciation rules for content in different languages. Screen readers cannot adjust pronunciation rules for content sections in different languages. This can make multilingual content difficult or impossible to understand when read aloud.",
+            'who': "Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['3.1.2'],
+            'remediation': "Add a valid language code to the lang attribute (e.g., lang=\"fr\" for French, lang=\"es\" for Spanish). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. If the language matches the page language, remove the lang attribute entirely rather than leaving it empty."
+        },
         'WarnFastInterval': {
             'title': "JavaScript interval running faster than once per second",
             'what': "JavaScript interval running faster than once per second",

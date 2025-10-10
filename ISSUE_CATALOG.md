@@ -1940,18 +1940,6 @@ How to fix: Add a <title> element within the <head> section of your HTML. Create
 
 ---
 
-ID: ErrNoPrimaryLangAttr
-Type: Error
-Impact: High
-WCAG: 3.1.1 Language of Page
-Touchpoint: language
-Description: HTML element is missing the required lang attribute to identify the page's primary language
-Why it matters: Both assistive technologies and browsers render text more accurately when the language is identified. Screen readers need to know which language pronunciation rules to use - without this, they may mispronounce words, use wrong inflections, or attempt to read content in the wrong language entirely. This can make content completely incomprehensible. Visual browsers need language information to display characters and scripts correctly, and search engines use it for proper indexing.
-Who it affects: Screen reader users who may hear garbled pronunciation if the page language doesn't match their assistive technology's default language, users relying on automatic translation tools, users of voice assistants, and users with dyslexia using reading assistance tools
-How to fix: Add the lang attribute to the html element with the appropriate ISO 639-1 language code (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). If the page uses multiple languages equally, use the language that appears first or is used for navigation.
-
----
-
 ID: ErrNoReducedMotionSupport
 Type: Error
 Impact: High
@@ -6020,16 +6008,6 @@ Description: HTML element is missing the lang attribute, preventing assistive te
 Why it matters: Without a declared language, screen readers cannot determine which pronunciation rules and voice synthesizer to use, often defaulting to the user's system language which may be incorrect. This causes mispronunciation, incorrect inflection, and can make content unintelligible, especially for pages in languages different from the user's default settings.
 Who it affects: Blind and low vision users using screen readers who need correct pronunciation for comprehension, international users accessing content in different languages, users with dyslexia or reading disabilities using assistive reading tools, and users of automatic translation services
 How to fix: Add the lang attribute to the <html> element with the appropriate language code (e.g., <html lang="en"> for English, <html lang="fr"> for French). Use ISO 639-1 two-letter codes for modern languages. For XHTML, also include xml:lang with the same value. Ensure the declared language matches the actual primary language of your content. For multilingual pages, use the language that represents the majority of the content.
-
-ID: ErrNoPrimaryLangAttr
-Type: Error
-Impact: High
-WCAG: 3.1.1 Language of Page
-Touchpoint: language
-Description: HTML element is missing the required lang attribute to identify the page's primary language
-Why it matters: Both assistive technologies and browsers render text more accurately when the language is identified. Screen readers need to know which language pronunciation rules to use - without this, they may mispronounce words, use wrong inflections, or attempt to read content in the wrong language entirely. This can make content completely incomprehensible. Visual browsers need language information to display characters and scripts correctly, and search engines use it for proper indexing.
-Who it affects: Screen reader users who may hear garbled pronunciation if the page language doesn't match their assistive technology's default language, users relying on automatic translation tools, users of voice assistants, and users with dyslexia using reading assistance tools
-How to fix: Add the lang attribute to the html element with the appropriate ISO 639-1 language code (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). If the page uses multiple languages equally, use the language that appears first or is used for navigation.
 
 ID: ErrPrimaryHrefLangNotRecognized
 Type: Error

@@ -425,9 +425,39 @@ async def test_language(page) -> Dict[str, Any]:
                         lang_change_check['failed'] += 1
                         results['elements_failed'] += 1
                     elif element['hasXmlLang'] and element['xmlLang'] and element['xmlLang'].strip():
-                        # Element has both lang and xml:lang - check for mismatch
-                        if lang.strip().lower() != element['xmlLang'].strip().lower():
-                            # Mismatch between lang and xml:lang
+                        # Element has both lang and xml:lang - validate xml:lang first
+                        xml_is_valid_format, xml_is_correctly_formatted, xml_is_recognized_lang, xml_is_recognized_region, xml_primary_lang, xml_region_code = validate_language_code(element['xmlLang'])
+
+                        if not xml_is_valid_format or not xml_is_recognized_lang:
+                            # xml:lang is invalid or unrecognized - report that error first
+                            results['errors'].append({
+                                'err': 'ErrPrimaryXmlLangUnrecognized',
+                                'type': 'err',
+                                'cat': 'language',
+                                'element': element['tagName'],
+                                'found': element['xmlLang'],
+                                'xpath': element['xpath'],
+                                'html': element['html'],
+                                'fpTempId': '0'
+                            })
+                            lang_change_check['failed'] += 1
+                            results['elements_failed'] += 1
+                        elif not xml_is_recognized_region:
+                            # xml:lang has unrecognized region
+                            results['errors'].append({
+                                'err': 'ErrRegionQualifierForPrimaryXmlLangNotRecognized',
+                                'type': 'err',
+                                'cat': 'language',
+                                'element': element['tagName'],
+                                'found': element['xmlLang'],
+                                'xpath': element['xpath'],
+                                'html': element['html'],
+                                'fpTempId': '0'
+                            })
+                            lang_change_check['failed'] += 1
+                            results['elements_failed'] += 1
+                        elif lang.strip().lower() != element['xmlLang'].strip().lower():
+                            # Both are valid but mismatch
                             results['errors'].append({
                                 'err': 'ErrPrimaryLangAndXmlLangMismatch',
                                 'type': 'err',
@@ -441,7 +471,7 @@ async def test_language(page) -> Dict[str, Any]:
                             lang_change_check['failed'] += 1
                             results['elements_failed'] += 1
                         else:
-                            # lang and xml:lang match
+                            # Both valid and match
                             results['passes'].append({
                                 'check': 'language_change',
                                 'element': element['tagName'],
@@ -467,7 +497,7 @@ async def test_language(page) -> Dict[str, Any]:
 
             results['checks'].append(lang_change_check)
 
-        # Test 3: XML:lang attribute on HTML element and mismatch detection
+        # Test 3: XML:lang attribute on HTML element with full validation
         if lang_data['htmlHasXmlLang']:
             xml_lang_check = {
                 'description': 'XML:lang attribute is valid',
@@ -489,43 +519,86 @@ async def test_language(page) -> Dict[str, Any]:
                 })
                 xml_lang_check['failed'] = 1
                 results['elements_failed'] += 1
-            elif lang_data['htmlHasLang'] and lang_data['htmlLang'] and lang_data['htmlLang'].strip():
-                # Both lang and xml:lang exist - check for mismatch
-                if lang_data['htmlLang'].strip().lower() != lang_data['htmlXmlLang'].strip().lower():
-                    # Mismatch between lang and xml:lang
+            else:
+                # Validate xml:lang code
+                is_valid_format, is_correctly_formatted, is_recognized_lang, is_recognized_region, primary_lang, region_code = validate_language_code(lang_data['htmlXmlLang'])
+
+                if not is_valid_format:
+                    # Invalid format - completely unrecognizable
                     results['errors'].append({
-                        'err': 'ErrPrimaryLangAndXmlLangMismatch',
+                        'err': 'ErrPrimaryXmlLangUnrecognized',
                         'type': 'err',
                         'cat': 'language',
-                        'found': f"lang=\"{lang_data['htmlLang']}\" xml:lang=\"{lang_data['htmlXmlLang']}\"",
+                        'found': lang_data['htmlXmlLang'],
                         'xpath': '/html',
-                        'html': f"<html lang=\"{lang_data['htmlLang']}\" xml:lang=\"{lang_data['htmlXmlLang']}\">",
+                        'html': f"<html xml:lang=\"{lang_data['htmlXmlLang']}\">",
                         'fpTempId': '0'
                     })
                     xml_lang_check['failed'] = 1
                     results['elements_failed'] += 1
+                elif not is_recognized_lang:
+                    # Valid format but unrecognized language code
+                    results['errors'].append({
+                        'err': 'ErrPrimaryXmlLangUnrecognized',
+                        'type': 'err',
+                        'cat': 'language',
+                        'found': lang_data['htmlXmlLang'],
+                        'xpath': '/html',
+                        'html': f"<html xml:lang=\"{lang_data['htmlXmlLang']}\">",
+                        'fpTempId': '0'
+                    })
+                    xml_lang_check['failed'] = 1
+                    results['elements_failed'] += 1
+                elif not is_recognized_region:
+                    # Valid language but unrecognized region code
+                    results['errors'].append({
+                        'err': 'ErrRegionQualifierForPrimaryXmlLangNotRecognized',
+                        'type': 'err',
+                        'cat': 'language',
+                        'found': lang_data['htmlXmlLang'],
+                        'xpath': '/html',
+                        'html': f"<html xml:lang=\"{lang_data['htmlXmlLang']}\">",
+                        'fpTempId': '0'
+                    })
+                    xml_lang_check['failed'] = 1
+                    results['elements_failed'] += 1
+                elif lang_data['htmlHasLang'] and lang_data['htmlLang'] and lang_data['htmlLang'].strip():
+                    # Both lang and xml:lang are valid - check for mismatch
+                    if lang_data['htmlLang'].strip().lower() != lang_data['htmlXmlLang'].strip().lower():
+                        # Mismatch between lang and xml:lang
+                        results['errors'].append({
+                            'err': 'ErrPrimaryLangAndXmlLangMismatch',
+                            'type': 'err',
+                            'cat': 'language',
+                            'found': f"lang=\"{lang_data['htmlLang']}\" xml:lang=\"{lang_data['htmlXmlLang']}\"",
+                            'xpath': '/html',
+                            'html': f"<html lang=\"{lang_data['htmlLang']}\" xml:lang=\"{lang_data['htmlXmlLang']}\">",
+                            'fpTempId': '0'
+                        })
+                        xml_lang_check['failed'] = 1
+                        results['elements_failed'] += 1
+                    else:
+                        # lang and xml:lang match and are both valid
+                        results['passes'].append({
+                            'check': 'xml_lang',
+                            'language': lang_data['htmlXmlLang'],
+                            'xpath': '/html',
+                            'wcag': ['3.1.1'],
+                            'reason': 'xml:lang matches lang attribute'
+                        })
+                        xml_lang_check['passed'] = 1
+                        results['elements_passed'] += 1
                 else:
-                    # lang and xml:lang match
+                    # xml:lang is valid, no lang or lang is empty
                     results['passes'].append({
                         'check': 'xml_lang',
                         'language': lang_data['htmlXmlLang'],
                         'xpath': '/html',
                         'wcag': ['3.1.1'],
-                        'reason': 'xml:lang matches lang attribute'
+                        'reason': 'xml:lang attribute has valid value'
                     })
                     xml_lang_check['passed'] = 1
                     results['elements_passed'] += 1
-            else:
-                # xml:lang has a value but no lang to compare - just mark as passed
-                results['passes'].append({
-                    'check': 'xml_lang',
-                    'language': lang_data['htmlXmlLang'],
-                    'xpath': '/html',
-                    'wcag': ['3.1.1'],
-                    'reason': 'xml:lang attribute has a value'
-                })
-                xml_lang_check['passed'] = 1
-                results['elements_passed'] += 1
 
             results['elements_tested'] += 1
             results['checks'].append(xml_lang_check)

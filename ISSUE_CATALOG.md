@@ -932,18 +932,6 @@ How to fix: Add descriptive text to all label elements that clearly identifies t
 
 ---
 
-ID: ErrEmptyLangAttr
-Type: Error
-Impact: High
-WCAG: 3.1.1
-Touchpoint: language
-Description: Lang attribute is empty
-Why it matters: Empty lang provides no language information
-Who it affects: Screen reader users
-How to fix: Add valid language code to lang attribute
-
----
-
 ID: ErrHtmlLangEmpty
 Type: Error
 Impact: High
@@ -5972,16 +5960,6 @@ Description: Element lang attribute has unrecognized region qualifier
 Why it matters: Invalid region codes may affect pronunciation
 Who it affects: Screen reader users
 How to fix: Use valid ISO 3166-1 region codes
-
-ID: ErrEmptyLangAttr
-Type: Error
-Impact: High
-WCAG: 3.1.1
-Touchpoint: language
-Description: Lang attribute is empty
-Why it matters: Empty lang provides no language information
-Who it affects: Screen reader users
-How to fix: Add valid language code to lang attribute
 
 ID: ErrEmptyXmlLangAttr
 Type: Error

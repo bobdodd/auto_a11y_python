@@ -39,8 +39,38 @@ VALID_LANGUAGE_CODES: Set[str] = {
     'za', 'zh', 'zu'
 }
 
+# ISO 3166-1 alpha-2 region codes (subset of most common ones)
+VALID_REGION_CODES: Set[str] = {
+    'AD', 'AE', 'AF', 'AG', 'AL', 'AM', 'AO', 'AR', 'AT', 'AU', 'AZ',
+    'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BN', 'BO', 'BR', 'BS', 'BT', 'BW', 'BY', 'BZ',
+    'CA', 'CD', 'CF', 'CG', 'CH', 'CI', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CY', 'CZ',
+    'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ',
+    'EC', 'EE', 'EG', 'ER', 'ES', 'ET',
+    'FI', 'FJ', 'FM', 'FR',
+    'GA', 'GB', 'GD', 'GE', 'GH', 'GM', 'GN', 'GQ', 'GR', 'GT', 'GW', 'GY',
+    'HK', 'HN', 'HR', 'HT', 'HU',
+    'ID', 'IE', 'IL', 'IN', 'IQ', 'IR', 'IS', 'IT',
+    'JM', 'JO', 'JP',
+    'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KZ',
+    'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY',
+    'MA', 'MC', 'MD', 'ME', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MO', 'MR', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ',
+    'NA', 'NE', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NZ',
+    'OM',
+    'PA', 'PE', 'PG', 'PH', 'PK', 'PL', 'PS', 'PT', 'PW', 'PY',
+    'QA',
+    'RO', 'RS', 'RU', 'RW',
+    'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SI', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SY', 'SZ',
+    'TD', 'TG', 'TH', 'TJ', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ',
+    'UA', 'UG', 'US', 'UY', 'UZ',
+    'VA', 'VC', 'VE', 'VN', 'VU',
+    'WS',
+    'YE',
+    'ZA', 'ZM', 'ZW'
+}
+
 # Regex pattern for valid language code format: 2-3 letters optionally followed by region code
-LANG_FORMAT_PATTERN = re.compile(r'^[a-z]{2,3}(-[A-Z]{2})?$', re.IGNORECASE)
+# We allow any letter sequence after the dash to catch invalid region codes
+LANG_FORMAT_PATTERN = re.compile(r'^[a-z]{2,3}(-[A-Za-z]+)?$', re.IGNORECASE)
 
 TEST_DOCUMENTATION = {
     "testName": "Language Declaration Tests",
@@ -67,7 +97,7 @@ TEST_DOCUMENTATION = {
 }
 
 
-def validate_language_code(lang_code: str) -> tuple[bool, bool, str]:
+def validate_language_code(lang_code: str) -> tuple[bool, bool, bool, str, str]:
     """
     Validate a language code.
 
@@ -75,22 +105,27 @@ def validate_language_code(lang_code: str) -> tuple[bool, bool, str]:
         lang_code: The language code to validate
 
     Returns:
-        Tuple of (is_valid_format, is_recognized_code, primary_language)
+        Tuple of (is_valid_format, is_recognized_lang, is_recognized_region, primary_language, region_code)
     """
     if not lang_code or not lang_code.strip():
-        return (False, False, '')
+        return (False, False, False, '', '')
 
-    # Check format
+    # Check format (2-3 letter language code, optionally followed by -REGION)
     if not LANG_FORMAT_PATTERN.match(lang_code):
-        return (False, False, '')
+        return (False, False, False, '', '')
 
-    # Extract primary language code (before dash if present)
-    primary_lang = lang_code.split('-')[0].lower()
+    # Extract primary language code and region code (if present)
+    parts = lang_code.split('-')
+    primary_lang = parts[0].lower()
+    region_code = parts[1].upper() if len(parts) > 1 else ''
 
-    # Check if recognized
-    is_recognized = primary_lang in VALID_LANGUAGE_CODES
+    # Check if primary language is recognized
+    is_recognized_lang = primary_lang in VALID_LANGUAGE_CODES
 
-    return (True, is_recognized, primary_lang)
+    # Check if region code is recognized (empty region is valid)
+    is_recognized_region = region_code == '' or region_code in VALID_REGION_CODES
+
+    return (True, is_recognized_lang, is_recognized_region, primary_lang, region_code)
 
 
 async def test_language(page) -> Dict[str, Any]:
@@ -198,7 +233,7 @@ async def test_language(page) -> Dict[str, Any]:
             results['elements_failed'] += 1
         else:
             # Validate HTML lang code
-            is_valid_format, is_recognized, primary_lang = validate_language_code(lang_data['htmlLang'])
+            is_valid_format, is_recognized_lang, is_recognized_region, primary_lang, region_code = validate_language_code(lang_data['htmlLang'])
 
             if not is_valid_format:
                 # Invalid format
@@ -213,10 +248,23 @@ async def test_language(page) -> Dict[str, Any]:
                 })
                 lang_check['failed'] = 1
                 results['elements_failed'] += 1
-            elif not is_recognized:
-                # Valid format but unrecognized code
+            elif not is_recognized_lang:
+                # Valid format but unrecognized primary language
                 results['errors'].append({
                     'err': 'ErrPrimaryLangUnrecognized',
+                    'type': 'err',
+                    'cat': 'language',
+                    'found': lang_data['htmlLang'],
+                    'xpath': '/html',
+                    'html': f"<html lang=\"{lang_data['htmlLang']}\">",
+                    'fpTempId': '0'
+                })
+                lang_check['failed'] = 1
+                results['elements_failed'] += 1
+            elif not is_recognized_region:
+                # Valid language but unrecognized region code
+                results['errors'].append({
+                    'err': 'ErrRegionQualifierForPrimaryLangNotRecognized',
                     'type': 'err',
                     'cat': 'language',
                     'found': lang_data['htmlLang'],
@@ -270,7 +318,7 @@ async def test_language(page) -> Dict[str, Any]:
                     results['elements_failed'] += 1
                 else:
                     # Validate element lang code
-                    is_valid_format, is_recognized, primary_lang = validate_language_code(lang)
+                    is_valid_format, is_recognized_lang, is_recognized_region, primary_lang, region_code = validate_language_code(lang)
 
                     if not is_valid_format:
                         # Invalid format
@@ -286,10 +334,24 @@ async def test_language(page) -> Dict[str, Any]:
                         })
                         lang_change_check['failed'] += 1
                         results['elements_failed'] += 1
-                    elif not is_recognized:
-                        # Valid format but unrecognized code
+                    elif not is_recognized_lang:
+                        # Valid format but unrecognized primary language
                         results['errors'].append({
                             'err': 'ErrElementPrimaryLangNotRecognized',
+                            'type': 'err',
+                            'cat': 'language',
+                            'element': element['tagName'],
+                            'found': lang,
+                            'xpath': element['xpath'],
+                            'html': element['html'],
+                            'fpTempId': '0'
+                        })
+                        lang_change_check['failed'] += 1
+                        results['elements_failed'] += 1
+                    elif not is_recognized_region:
+                        # Valid language but unrecognized region code
+                        results['errors'].append({
+                            'err': 'ErrElementRegionQualifierNotRecognized',
                             'type': 'err',
                             'cat': 'language',
                             'element': element['tagName'],

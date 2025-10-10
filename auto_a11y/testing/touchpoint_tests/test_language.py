@@ -97,7 +97,7 @@ TEST_DOCUMENTATION = {
 }
 
 
-def validate_language_code(lang_code: str) -> tuple[bool, bool, bool, str, str]:
+def validate_language_code(lang_code: str) -> tuple[bool, bool, bool, bool, str, str]:
     """
     Validate a language code.
 
@@ -105,16 +105,34 @@ def validate_language_code(lang_code: str) -> tuple[bool, bool, bool, str, str]:
         lang_code: The language code to validate
 
     Returns:
-        Tuple of (is_valid_format, is_recognized_lang, is_recognized_region, primary_language, region_code)
+        Tuple of (is_valid_format, is_correctly_formatted, is_recognized_lang, is_recognized_region, primary_language, region_code)
     """
     if not lang_code or not lang_code.strip():
-        return (False, False, False, '', '')
+        return (False, False, False, False, '', '')
 
-    # Check format (2-3 letter language code, optionally followed by -REGION)
+    # Check for formatting issues BEFORE normalization
+    is_correctly_formatted = True
+
+    # Check for whitespace (leading, trailing, or internal)
+    if lang_code != lang_code.strip() or '  ' in lang_code:
+        is_correctly_formatted = False
+
+    # Check for underscore separator (common mistake - should be hyphen)
+    if '_' in lang_code:
+        is_correctly_formatted = False
+
+    # Check basic format pattern (allows any case to detect case issues)
     if not LANG_FORMAT_PATTERN.match(lang_code):
-        return (False, False, False, '', '')
+        return (False, False, False, False, '', '')
 
-    # Extract primary language code and region code (if present)
+    # If format matches, check case sensitivity
+    if '-' in lang_code:
+        parts = lang_code.split('-')
+        # Language code should be lowercase, region should be uppercase
+        if parts[0] != parts[0].lower() or parts[1] != parts[1].upper():
+            is_correctly_formatted = False
+
+    # Extract primary language code and region code (normalized for validation)
     parts = lang_code.split('-')
     primary_lang = parts[0].lower()
     region_code = parts[1].upper() if len(parts) > 1 else ''
@@ -125,7 +143,7 @@ def validate_language_code(lang_code: str) -> tuple[bool, bool, bool, str, str]:
     # Check if region code is recognized (empty region is valid)
     is_recognized_region = region_code == '' or region_code in VALID_REGION_CODES
 
-    return (True, is_recognized_lang, is_recognized_region, primary_lang, region_code)
+    return (True, is_correctly_formatted, is_recognized_lang, is_recognized_region, primary_lang, region_code)
 
 
 async def test_language(page) -> Dict[str, Any]:
@@ -248,10 +266,10 @@ async def test_language(page) -> Dict[str, Any]:
             results['elements_failed'] += 1
         else:
             # Validate HTML lang code
-            is_valid_format, is_recognized_lang, is_recognized_region, primary_lang, region_code = validate_language_code(lang_data['htmlLang'])
+            is_valid_format, is_correctly_formatted, is_recognized_lang, is_recognized_region, primary_lang, region_code = validate_language_code(lang_data['htmlLang'])
 
             if not is_valid_format:
-                # Invalid format
+                # Invalid format (completely unrecognizable)
                 results['errors'].append({
                     'err': 'ErrInvalidLanguageCode',
                     'type': 'err',
@@ -263,8 +281,21 @@ async def test_language(page) -> Dict[str, Any]:
                 })
                 lang_check['failed'] = 1
                 results['elements_failed'] += 1
+            elif not is_correctly_formatted:
+                # Valid structure but incorrect formatting (wrong case, whitespace, underscore)
+                results['errors'].append({
+                    'err': 'ErrIncorrectlyFormattedPrimaryLang',
+                    'type': 'err',
+                    'cat': 'language',
+                    'found': lang_data['htmlLang'],
+                    'xpath': '/html',
+                    'html': f"<html lang=\"{lang_data['htmlLang']}\">",
+                    'fpTempId': '0'
+                })
+                lang_check['failed'] = 1
+                results['elements_failed'] += 1
             elif not is_recognized_lang:
-                # Valid format but unrecognized primary language
+                # Correctly formatted but unrecognized primary language
                 results['errors'].append({
                     'err': 'ErrPrimaryLangUnrecognized',
                     'type': 'err',
@@ -277,7 +308,7 @@ async def test_language(page) -> Dict[str, Any]:
                 lang_check['failed'] = 1
                 results['elements_failed'] += 1
             elif not is_recognized_region:
-                # Valid language but unrecognized region code
+                # Correctly formatted and recognized language but unrecognized region code
                 results['errors'].append({
                     'err': 'ErrRegionQualifierForPrimaryLangNotRecognized',
                     'type': 'err',
@@ -333,10 +364,10 @@ async def test_language(page) -> Dict[str, Any]:
                     results['elements_failed'] += 1
                 else:
                     # Validate element lang code
-                    is_valid_format, is_recognized_lang, is_recognized_region, primary_lang, region_code = validate_language_code(lang)
+                    is_valid_format, is_correctly_formatted, is_recognized_lang, is_recognized_region, primary_lang, region_code = validate_language_code(lang)
 
                     if not is_valid_format:
-                        # Invalid format
+                        # Invalid format (completely unrecognizable)
                         results['errors'].append({
                             'err': 'ErrInvalidLangChange',
                             'type': 'err',
@@ -349,8 +380,22 @@ async def test_language(page) -> Dict[str, Any]:
                         })
                         lang_change_check['failed'] += 1
                         results['elements_failed'] += 1
+                    elif not is_correctly_formatted:
+                        # Valid structure but incorrect formatting (wrong case, whitespace, underscore)
+                        results['errors'].append({
+                            'err': 'ErrIncorrectlyFormattedPrimaryLang',
+                            'type': 'err',
+                            'cat': 'language',
+                            'element': element['tagName'],
+                            'found': lang,
+                            'xpath': element['xpath'],
+                            'html': element['html'],
+                            'fpTempId': '0'
+                        })
+                        lang_change_check['failed'] += 1
+                        results['elements_failed'] += 1
                     elif not is_recognized_lang:
-                        # Valid format but unrecognized primary language
+                        # Correctly formatted but unrecognized primary language
                         results['errors'].append({
                             'err': 'ErrElementPrimaryLangNotRecognized',
                             'type': 'err',
@@ -364,7 +409,7 @@ async def test_language(page) -> Dict[str, Any]:
                         lang_change_check['failed'] += 1
                         results['elements_failed'] += 1
                     elif not is_recognized_region:
-                        # Valid language but unrecognized region code
+                        # Correctly formatted and recognized language but unrecognized region code
                         results['errors'].append({
                             'err': 'ErrElementRegionQualifierNotRecognized',
                             'type': 'err',

@@ -69,8 +69,8 @@ VALID_REGION_CODES: Set[str] = {
 }
 
 # Regex pattern for valid language code format: 2-3 letters optionally followed by region code
-# We allow any letter sequence after the dash to catch invalid region codes
-LANG_FORMAT_PATTERN = re.compile(r'^[a-z]{2,3}(-[A-Za-z]+)?$', re.IGNORECASE)
+# We allow any letter sequence after dash or underscore to catch formatting errors and invalid region codes
+LANG_FORMAT_PATTERN = re.compile(r'^[a-z]{2,3}([-_][A-Za-z]+)?$', re.IGNORECASE)
 
 TEST_DOCUMENTATION = {
     "testName": "Language Declaration Tests",

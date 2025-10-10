@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="INVALID_LANG_FORMAT">
+<html lang="en_US">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,12 +17,12 @@
     
     <div class="test-section">
         <h2>Current Document Issues</h2>
-        <p class="error">❌ This document has <code>lang="INVALID_LANG_FORMAT"</code> on the html element</p>
+        <p class="error">❌ This document has <code>lang="en_US"</code> on the html element</p>
         <p>This should trigger the ErrIncorrectlyFormattedPrimaryLang error because:</p>
         <ul>
-            <li>The language code format is completely invalid</li>
-            <li>It doesn't follow BCP 47 standards</li>
-            <li>Screen readers won't recognize this format</li>
+            <li>Uses underscore (_) instead of hyphen (-) as separator</li>
+            <li>It doesn't follow BCP 47 standards (requires hyphen)</li>
+            <li>Should be <code>lang="en-US"</code> instead</li>
         </ul>
     </div>
 
@@ -69,9 +69,9 @@
 
     <div class="test-section">
         <h2>Test Content</h2>
-        <p>This is sample content that would be affected by the incorrect language declaration. 
-           Screen readers should process this text according to the language specified in the 
-           lang attribute, but the malformed code "INVALID_LANG_FORMAT" will likely cause issues.</p>
+        <p>This is sample content that would be affected by the incorrect language declaration.
+           Screen readers should process this text according to the language specified in the
+           lang attribute, but the malformed code "en_US" (with underscore) will likely cause issues.</p>
         
         <p>Words like "hello", "world", "testing", and "accessibility" should be pronounced 
            according to English pronunciation rules, but may be mispronounced due to the 
@@ -86,7 +86,7 @@
             <li><strong>Type:</strong> Error</li>
             <li><strong>Impact:</strong> Medium</li>
             <li><strong>WCAG:</strong> 3.1.1 (Language of Page)</li>
-            <li><strong>Element:</strong> &lt;html&gt; tag with lang="INVALID_LANG_FORMAT"</li>
+            <li><strong>Element:</strong> &lt;html&gt; tag with lang="en_US"</li>
             <li><strong>Suggestion:</strong> Use correct format like "en" or "en-US"</li>
         </ul>
     </div>

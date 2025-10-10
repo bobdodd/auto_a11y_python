@@ -1321,18 +1321,6 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users who may hear garbled pronunciation if the page language doesn't match their assistive technology's default language, users relying on automatic translation tools, users of voice assistants, and users with dyslexia using reading assistance tools",
             "how_to_fix": "Add the lang attribute to the html element with the appropriate ISO 639-1 language code (e.g., lang=\"en\" for English, lang=\"es\" for Spanish, lang=\"fr\" for French). If the page uses multiple languages equally, use the language that appears first or is used for navigation."
         },
-        "ErrEmptyLangAttr": {
-            "id": "ErrEmptyLangAttr",
-            "type": "Error",
-            "impact": "High",
-            "wcag": ["3.1.1"],
-            "wcag_full": "3.1.1",
-            "category": "language",
-            "description": "Lang attribute is empty",
-            "why_it_matters": "Empty lang provides no language information",
-            "who_it_affects": "Screen reader users",
-            "how_to_fix": "Add valid language code to lang attribute"
-        },
         "ErrPrimaryLangUnrecognized": {
             "id": "ErrPrimaryLangUnrecognized",
             "type": "Error",

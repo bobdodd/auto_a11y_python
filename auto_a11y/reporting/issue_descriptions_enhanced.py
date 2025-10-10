@@ -756,15 +756,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1', '3.3.2'],
             'remediation': "Add descriptive text to all label elements that clearly identifies the purpose of the associated form control."
         },
-        'ErrEmptyLangAttr': {
-            'title': "Lang attribute is empty",
-            'what': "Lang attribute is empty",
-            'why': "Empty lang provides no language information",
-            'who': "Screen reader users",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['3.1.1'],
-            'remediation': "Add valid language code to lang attribute"
-        },
         'ErrHtmlLangEmpty': {
             'title': "HTML element has a lang attribute present but with no value (lang=\"\"), preventing screen readers from determining the page language",
             'what': "HTML element has a lang attribute present but with no value (lang=\"\"), preventing screen readers from determining the page language",

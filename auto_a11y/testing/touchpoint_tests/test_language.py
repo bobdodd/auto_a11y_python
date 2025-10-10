@@ -516,17 +516,63 @@ async def test_language(page) -> Dict[str, Any]:
                     hreflang_check['failed'] += 1
                     results['elements_failed'] += 1
                 else:
-                    # Valid hreflang - could validate the code itself, but for now just mark as passed
-                    results['passes'].append({
-                        'check': 'hreflang',
-                        'element': element['tagName'],
-                        'language': hreflang,
-                        'xpath': element['xpath'],
-                        'wcag': ['3.1.1'],
-                        'reason': 'Hreflang properly used on link element'
-                    })
-                    hreflang_check['passed'] += 1
-                    results['elements_passed'] += 1
+                    # Validate hreflang language code
+                    is_valid_format, is_correctly_formatted, is_recognized_lang, is_recognized_region, primary_lang, region_code = validate_language_code(hreflang)
+
+                    if not is_valid_format:
+                        # Invalid format - completely unrecognizable
+                        results['errors'].append({
+                            'err': 'ErrPrimaryHrefLangNotRecognized',
+                            'type': 'err',
+                            'cat': 'language',
+                            'element': element['tagName'],
+                            'found': hreflang,
+                            'xpath': element['xpath'],
+                            'html': element['html'],
+                            'fpTempId': '0'
+                        })
+                        hreflang_check['failed'] += 1
+                        results['elements_failed'] += 1
+                    elif not is_recognized_lang:
+                        # Valid format but unrecognized language code
+                        results['errors'].append({
+                            'err': 'ErrPrimaryHrefLangNotRecognized',
+                            'type': 'err',
+                            'cat': 'language',
+                            'element': element['tagName'],
+                            'found': hreflang,
+                            'xpath': element['xpath'],
+                            'html': element['html'],
+                            'fpTempId': '0'
+                        })
+                        hreflang_check['failed'] += 1
+                        results['elements_failed'] += 1
+                    elif not is_recognized_region:
+                        # Valid language but unrecognized region code
+                        results['errors'].append({
+                            'err': 'ErrRegionQualifierForHreflangUnrecognized',
+                            'type': 'err',
+                            'cat': 'language',
+                            'element': element['tagName'],
+                            'found': hreflang,
+                            'xpath': element['xpath'],
+                            'html': element['html'],
+                            'fpTempId': '0'
+                        })
+                        hreflang_check['failed'] += 1
+                        results['elements_failed'] += 1
+                    else:
+                        # Valid and recognized hreflang
+                        results['passes'].append({
+                            'check': 'hreflang',
+                            'element': element['tagName'],
+                            'language': hreflang,
+                            'xpath': element['xpath'],
+                            'wcag': ['3.1.1'],
+                            'reason': 'Hreflang properly used on link element'
+                        })
+                        hreflang_check['passed'] += 1
+                        results['elements_passed'] += 1
 
             results['checks'].append(hreflang_check)
 

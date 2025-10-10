@@ -139,12 +139,14 @@ async def test_language(page) -> Dict[str, Any]:
         Dictionary containing test results
     """
     try:
-        # Get HTML element lang attribute and all elements with lang attributes
+        # Get HTML element lang/xml:lang attributes, elements with lang, and elements with hreflang
         lang_data = await page.evaluate('''
             () => {
                 const htmlElement = document.querySelector('html');
                 const htmlLang = htmlElement ? htmlElement.getAttribute('lang') : null;
                 const htmlHasLang = htmlElement ? htmlElement.hasAttribute('lang') : false;
+                const htmlXmlLang = htmlElement ? htmlElement.getAttribute('xml:lang') : null;
+                const htmlHasXmlLang = htmlElement ? htmlElement.hasAttribute('xml:lang') : false;
 
                 // Get all elements with lang attribute (excluding html element)
                 const elementsWithLang = Array.from(document.querySelectorAll('[lang]'))
@@ -154,6 +156,16 @@ async def test_language(page) -> Dict[str, Any]:
                         lang: el.getAttribute('lang'),
                         xpath: getXPath(el),
                         html: el.outerHTML.substring(0, 200)
+                    }));
+
+                // Get all elements with hreflang attribute
+                const elementsWithHreflang = Array.from(document.querySelectorAll('[hreflang]'))
+                    .map(el => ({
+                        tagName: el.tagName,
+                        hreflang: el.getAttribute('hreflang'),
+                        xpath: getXPath(el),
+                        html: el.outerHTML.substring(0, 200),
+                        isLink: el.tagName === 'A' || el.tagName === 'LINK' || el.tagName === 'AREA'
                     }));
 
                 // Simple XPath generator
@@ -180,7 +192,10 @@ async def test_language(page) -> Dict[str, Any]:
                 return {
                     htmlHasLang: htmlHasLang,
                     htmlLang: htmlLang,
-                    elementsWithLang: elementsWithLang
+                    htmlHasXmlLang: htmlHasXmlLang,
+                    htmlXmlLang: htmlXmlLang,
+                    elementsWithLang: elementsWithLang,
+                    elementsWithHreflang: elementsWithHreflang
                 };
             }
         ''')
@@ -376,6 +391,99 @@ async def test_language(page) -> Dict[str, Any]:
                         results['elements_passed'] += 1
 
             results['checks'].append(lang_change_check)
+
+        # Test 3: XML:lang attribute on HTML element
+        if lang_data['htmlHasXmlLang']:
+            xml_lang_check = {
+                'description': 'XML:lang attribute is valid',
+                'wcag': ['3.1.1'],
+                'total': 1,
+                'passed': 0,
+                'failed': 0
+            }
+
+            if not lang_data['htmlXmlLang'] or not lang_data['htmlXmlLang'].strip():
+                # Empty xml:lang attribute
+                results['errors'].append({
+                    'err': 'ErrEmptyXmlLangAttr',
+                    'type': 'err',
+                    'cat': 'language',
+                    'xpath': '/html',
+                    'html': f"<html xml:lang=\"{lang_data['htmlXmlLang'] or ''}\">",
+                    'fpTempId': '0'
+                })
+                xml_lang_check['failed'] = 1
+                results['elements_failed'] += 1
+            else:
+                # xml:lang has a value - could validate it like lang, but for now just mark as passed
+                results['passes'].append({
+                    'check': 'xml_lang',
+                    'language': lang_data['htmlXmlLang'],
+                    'xpath': '/html',
+                    'wcag': ['3.1.1'],
+                    'reason': 'xml:lang attribute has a value'
+                })
+                xml_lang_check['passed'] = 1
+                results['elements_passed'] += 1
+
+            results['elements_tested'] += 1
+            results['checks'].append(xml_lang_check)
+
+        # Test 4: Hreflang attributes
+        if lang_data['elementsWithHreflang']:
+            hreflang_check = {
+                'description': 'Hreflang attributes properly used',
+                'wcag': ['3.1.1'],
+                'total': len(lang_data['elementsWithHreflang']),
+                'passed': 0,
+                'failed': 0
+            }
+
+            for element in lang_data['elementsWithHreflang']:
+                hreflang = element['hreflang']
+
+                # Check if hreflang is on a link element
+                if not element['isLink']:
+                    # hreflang on non-link element
+                    results['errors'].append({
+                        'err': 'ErrHreflangNotOnLink',
+                        'type': 'err',
+                        'cat': 'language',
+                        'element': element['tagName'],
+                        'found': hreflang,
+                        'xpath': element['xpath'],
+                        'html': element['html'],
+                        'fpTempId': '0'
+                    })
+                    hreflang_check['failed'] += 1
+                    results['elements_failed'] += 1
+                elif not hreflang or not hreflang.strip():
+                    # Empty hreflang attribute on link
+                    results['errors'].append({
+                        'err': 'ErrHreflangAttrEmpty',
+                        'type': 'err',
+                        'cat': 'language',
+                        'element': element['tagName'],
+                        'xpath': element['xpath'],
+                        'html': element['html'],
+                        'fpTempId': '0'
+                    })
+                    hreflang_check['failed'] += 1
+                    results['elements_failed'] += 1
+                else:
+                    # Valid hreflang - could validate the code itself, but for now just mark as passed
+                    results['passes'].append({
+                        'check': 'hreflang',
+                        'element': element['tagName'],
+                        'language': hreflang,
+                        'xpath': element['xpath'],
+                        'wcag': ['3.1.1'],
+                        'reason': 'Hreflang properly used on link element'
+                    })
+                    hreflang_check['passed'] += 1
+                    results['elements_passed'] += 1
+
+            results['checks'].append(hreflang_check)
 
         return results
 

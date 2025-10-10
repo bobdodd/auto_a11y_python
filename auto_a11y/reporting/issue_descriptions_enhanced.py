@@ -1539,15 +1539,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.2'],
             'remediation': "Add a <title> element within the <head> section of your HTML. Create descriptive, unique titles that identify both the page content and the site. Use a consistent pattern like \"Page Topic - Site Name\". Put the unique page information first since it\'s most important. Keep titles concise (under 60 characters) but descriptive. Avoid generic titles like \"Home\" or \"Page 1\". The title should make sense when read out of context in a list of bookmarks or search results."
         },
-        'ErrNoPrimaryLangAttr': {
-            'title': "HTML element is missing the required lang attribute to identify the page\'s primary language",
-            'what': "HTML element is missing the required lang attribute to identify the page\'s primary language",
-            'why': "Both assistive technologies and browsers render text more accurately when the language is identified. Screen readers need to know which language pronunciation rules to use - without this, they may mispronounce words, use wrong inflections, or attempt to read content in the wrong language entirely. This can make content completely incomprehensible. Visual browsers need language information to display characters and scripts correctly, and search engines use it for proper indexing.",
-            'who': "Screen reader users who may hear garbled pronunciation if the page language doesn\'t match their assistive technology\'s default language, users relying on automatic translation tools, users of voice assistants, and users with dyslexia using reading assistance tools",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['3.1.1'],
-            'remediation': "Add the lang attribute to the html element with the appropriate ISO 639-1 language code (e.g., lang=\"en\" for English, lang=\"es\" for Spanish, lang=\"fr\" for French). If the page uses multiple languages equally, use the language that appears first or is used for navigation."
-        },
         'ErrNoReducedMotionSupport': {
             'title': "Animations do not respect prefers-reduced-motion setting",
             'what': "Animations do not respect prefers-reduced-motion setting",

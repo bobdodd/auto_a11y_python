@@ -1309,18 +1309,6 @@ class IssueCatalog:
             "who_it_affects": "Users with custom stylesheets, high contrast mode users",
             "how_to_fix": "Use external stylesheets for better maintainability"
         },
-        "ErrNoPrimaryLangAttr": {
-            "id": "ErrNoPrimaryLangAttr",
-            "type": "Error",
-            "impact": "High",
-            "wcag": ["3.1.1"],
-            "wcag_full": "3.1.1 Language of Page",
-            "category": "language",
-            "description": "HTML element is missing the required lang attribute to identify the page's primary language",
-            "why_it_matters": "Both assistive technologies and browsers render text more accurately when the language is identified. Screen readers need to know which language pronunciation rules to use - without this, they may mispronounce words, use wrong inflections, or attempt to read content in the wrong language entirely. This can make content completely incomprehensible. Visual browsers need language information to display characters and scripts correctly, and search engines use it for proper indexing.",
-            "who_it_affects": "Screen reader users who may hear garbled pronunciation if the page language doesn't match their assistive technology's default language, users relying on automatic translation tools, users of voice assistants, and users with dyslexia using reading assistance tools",
-            "how_to_fix": "Add the lang attribute to the html element with the appropriate ISO 639-1 language code (e.g., lang=\"en\" for English, lang=\"es\" for Spanish, lang=\"fr\" for French). If the page uses multiple languages equally, use the language that appears first or is used for navigation."
-        },
         "ErrPrimaryLangUnrecognized": {
             "id": "ErrPrimaryLangUnrecognized",
             "type": "Error",

@@ -395,33 +395,6 @@ ISSUE_DESCRIPTIONS = {
     ),
     
     # ============= LANGUAGE ERRORS =============
-    'language_ErrNoPrimaryLangAttr': IssueDescription(
-        title="Missing Page Language",
-        what="The HTML element lacks a lang attribute.",
-        why="The lang attribute tells screen readers which language to use for pronunciation. Without it, screen readers may mispronounce content, making it incomprehensible.",
-        who="Screen reader users, translation tools, search engines",
-        impact=ImpactScale.HIGH,
-        wcag=["3.1.1"],
-        remediation="""
-        Add a lang attribute to the html element:
-        
-        Incorrect:
-        <html>
-        
-        Correct:
-        <html lang="en">  <!-- English -->
-        <html lang="es">  <!-- Spanish -->
-        <html lang="fr">  <!-- French -->
-        <html lang="de">  <!-- German -->
-        <html lang="zh">  <!-- Chinese -->
-        <html lang="ja">  <!-- Japanese -->
-        
-        Use the correct ISO 639-1 language code. Include region if needed:
-        <html lang="en-US">  <!-- US English -->
-        <html lang="en-GB">  <!-- British English -->
-        """
-    ),
-    
     # ============= LANDMARKS ERRORS =============
     'landmarks_ErrNoMainLandmarkOnPage': IssueDescription(
         title="Missing Main Landmark",

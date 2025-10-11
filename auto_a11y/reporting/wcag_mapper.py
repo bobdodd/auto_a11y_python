@@ -48,7 +48,19 @@ WCAG_MAPPINGS = {
     'WarnFieldLabelledByElementThatIsNotALabel': ['1.3.1 Info and Relationships'],
     'InfoFieldLabelledUsingAriaLabel': [],  # Info only
     'DiscoFormOnPage': [],  # Discovery
-    
+
+    # Form Input Focus Issues
+    'ErrInputNoVisibleFocus': ['2.4.7 Focus Visible'],
+    'ErrInputColorChangeOnly': ['2.4.7 Focus Visible', '1.4.1 Use of Color'],
+    'ErrInputFocusContrastFail': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'ErrInputSingleSideBoxShadow': ['2.4.7 Focus Visible'],
+    'ErrInputBorderChangeInsufficient': ['2.4.7 Focus Visible'],
+    'ErrInputOutlineWidthInsufficient': ['2.4.7 Focus Visible', '2.4.11 Focus Appearance'],
+    'WarnInputNoBorderOutline': ['2.4.7 Focus Visible'],
+    'WarnInputDefaultFocus': ['2.4.7 Focus Visible'],
+    'WarnInputFocusGradientBackground': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnInputTransparentFocus': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+
     # Landmark Issues
     'ErrNoMainLandmark': ['1.3.1 Info and Relationships', '2.4.1 Bypass Blocks'],
     'ErrMultipleBanners': ['1.3.1 Info and Relationships'],

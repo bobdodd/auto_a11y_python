@@ -5,6 +5,7 @@ Touchpoint test modules for comprehensive accessibility testing
 from .test_headings import test_headings, TEST_DOCUMENTATION as HEADINGS_DOCS
 from .test_images import test_images, TEST_DOCUMENTATION as IMAGES_DOCS
 from .test_forms import test_forms, TEST_DOCUMENTATION as FORMS_DOCS
+from .test_form_focus import test_form_focus, TEST_DOCUMENTATION as FORM_FOCUS_DOCS
 from .test_accessible_names import test_accessible_names, TEST_DOCUMENTATION as ACCESSIBLE_NAMES_DOCS
 from .test_aria import test_aria, TEST_DOCUMENTATION as ARIA_DOCS
 from .test_animations import test_animations, TEST_DOCUMENTATION as ANIMATIONS_DOCS
@@ -36,6 +37,7 @@ TOUCHPOINT_TESTS = {
     'headings': test_headings,
     'images': test_images,
     'forms': test_forms,
+    'form_focus': test_form_focus,
     'accessible_names': test_accessible_names,
     'aria': test_aria,
     'animations': test_animations,
@@ -68,6 +70,7 @@ TEST_DOCUMENTATION = {
     'headings': HEADINGS_DOCS,
     'images': IMAGES_DOCS,
     'forms': FORMS_DOCS,
+    'form_focus': FORM_FOCUS_DOCS,
     'accessible_names': ACCESSIBLE_NAMES_DOCS,
     'aria': ARIA_DOCS,
     'animations': ANIMATIONS_DOCS,
@@ -99,6 +102,7 @@ __all__ = [
     'test_headings',
     'test_images',
     'test_forms',
+    'test_form_focus',
     'test_accessible_names',
     'test_aria',
     'test_animations',

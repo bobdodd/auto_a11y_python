@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputColorChangeOnly - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInputColorChangeOnly_002_correct_color_plus_structure",
+    "issueId": "ErrInputColorChangeOnly",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Input fields with color change PLUS structural indicator",
+    "wcag": "2.4.7, 1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        /* Basic input styling */
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        /* CORRECT 1: Color change + outline */
+        .color-plus-outline {
+            border: 1px solid #ccc;
+        }
+        .color-plus-outline:focus {
+            border-color: #0066cc; /* Color changes */
+            outline: 2px solid #0066cc; /* AND structural outline */
+        }
+
+        /* CORRECT 2: Color change + border thickening */
+        .color-plus-thickening {
+            border: 1px solid #999;
+        }
+        .color-plus-thickening:focus {
+            border: 2px solid #cc0000; /* Color AND width change */
+            outline: none;
+        }
+
+        /* CORRECT 3: Color change + box-shadow */
+        .color-plus-shadow {
+            border: 1px solid #aaa;
+        }
+        .color-plus-shadow:focus {
+            border-color: #00aa00; /* Color changes */
+            box-shadow: 0 0 0 3px rgba(0,170,0,0.3); /* AND box-shadow */
+            outline: none;
+        }
+
+        /* CORRECT 4: Outline only (no color change needed) */
+        .outline-only {
+            border: 1px solid #ccc;
+        }
+        .outline-only:focus {
+            outline: 2px solid #ff6600; /* Structural indicator alone is fine */
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Input Focus with Color + Structure</h1>
+
+    <p>These input fields combine color changes with structural indicators,
+       meeting WCAG 1.4.1 Use of Color requirements.</p>
+
+    <section>
+        <h2>CORRECT 1: Color change + outline</h2>
+        <label for="input1">Username</label>
+        <input type="text"
+               id="input1"
+               class="color-plus-outline"
+               data-expected-pass="true">
+    </section>
+
+    <section>
+        <h2>CORRECT 2: Color change + border thickening</h2>
+        <label for="input2">Email</label>
+        <input type="email"
+               id="input2"
+               class="color-plus-thickening"
+               data-expected-pass="true">
+    </section>
+
+    <section>
+        <h2>CORRECT 3: Color change + box-shadow</h2>
+        <label for="input3">Phone</label>
+        <input type="text"
+               id="input3"
+               class="color-plus-shadow"
+               data-expected-pass="true">
+    </section>
+
+    <section>
+        <h2>CORRECT 4: Outline only (no color change)</h2>
+        <label for="textarea1">Message</label>
+        <textarea id="textarea1"
+                  class="outline-only"
+                  rows="4"
+                  data-expected-pass="true"></textarea>
+    </section>
+</body>
+</html>

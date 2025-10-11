@@ -447,7 +447,12 @@ class TouchpointMapper:
         'WarnPageTitleTooShort': TouchpointID.PAGE,
         'WarnPageTitleTooLong': TouchpointID.PAGE,
         'ErrImproperTitleAttribute': TouchpointID.TITLE_ATTRIBUTES,
-        
+        'ErrEmptyTitleAttr': TouchpointID.TITLE_ATTRIBUTES,
+        'ErrTitleAsOnlyLabel': TouchpointID.TITLE_ATTRIBUTES,
+        'WarnTitleAttrFound': TouchpointID.TITLE_ATTRIBUTES,
+        'WarnRedundantTitleAttr': TouchpointID.TITLE_ATTRIBUTES,
+        'WarnVagueTitleAttribute': TouchpointID.TITLE_ATTRIBUTES,
+
         # Landmark errors
         'ErrMissingMainLandmark': TouchpointID.LANDMARKS,
         'ErrDuplicateLandmarkWithoutName': TouchpointID.LANDMARKS,
@@ -522,6 +527,7 @@ class TouchpointMapper:
         
         # ARIA errors (map to appropriate touchpoints based on context)
         'AI_ErrMissingInteractiveRole': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrAriaLabelMayNotBeFoundByVoiceControl': TouchpointID.ACCESSIBLE_NAMES,  # WCAG 2.5.3 Label in Name
         'ErrMapAriaHidden': TouchpointID.MAPS,  # This is specifically about maps
         'AI_ErrAccordionWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,  # These need ARIA roles for accessibility
         'AI_ErrCarouselWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,

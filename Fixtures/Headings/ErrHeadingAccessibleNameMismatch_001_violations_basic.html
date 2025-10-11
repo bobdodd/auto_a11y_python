@@ -6,13 +6,13 @@
     <title>Test Fixture: Visible Text Doesn't Match Accessible Name</title>
     <script type="application/json" id="test-metadata">
 {
-    "id": "VisibleHeadingDoesNotMatchA11yName_001_violations_basic",
-    "issueId": "VisibleHeadingDoesNotMatchA11yName",
+    "id": "ErrHeadingAccessibleNameMismatch_001_violations_basic",
+    "issueId": "ErrHeadingAccessibleNameMismatch",
     "expectedViolationCount": 2,
     "expectedPassCount": 0,
     "description": "Headings where visible text doesn't match accessible name",
     "wcag": "2.5.3",
-    "impact": "Medium"
+    "impact": "High"
 }
     </script>
 </head>
@@ -22,13 +22,13 @@
 
         <h2 aria-label="Customer Support Services"
             data-expected-violation="true"
-            data-violation-id="VisibleHeadingDoesNotMatchA11yName"
-            data-violation-reason="Visible text 'Support' does not match accessible name 'Customer Support Services'">Support</h2>
+            data-violation-id="ErrHeadingAccessibleNameMismatch"
+            data-violation-reason="Visible text 'Support' does not start accessible name 'Customer Support Services'">Support</h2>
         <p>Contact our support team.</p>
 
         <h3 data-expected-violation="true"
-            data-violation-id="VisibleHeadingDoesNotMatchA11yName"
-            data-violation-reason="Visible text 'FAQ' hidden, accessible name from aria-label is completely different">
+            data-violation-id="ErrHeadingAccessibleNameMismatch"
+            data-violation-reason="Visible text excluded by aria-hidden/sr-only, accessible name completely different">
             <span aria-hidden="true">FAQ</span>
             <span class="sr-only" aria-label="Frequently Asked Questions and Answers">Questions</span>
         </h3>

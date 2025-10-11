@@ -409,6 +409,18 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users navigating by heading structure who rely on levels to understand content relationships, users with cognitive disabilities who need logical, predictable content organization, users of assistive technology that generates document outlines, and developers or content authors maintaining the page who need to understand the intended structure",
             "how_to_fix": "Always use heading levels sequentially. After h1, use h2 for the next level, then h3, and so on. Don't skip levels when going down (h1→h2→h3, not h1→h3). You can skip levels going back up (h3 can be followed by h2 for a new section). If you need a heading to look smaller visually, use CSS to style it rather than choosing a lower heading level. The heading level should reflect the content's logical structure, not its visual appearance."
         },
+        "ErrHeadingOrder": {
+            "id": "ErrHeadingOrder",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["1.3.1"],
+            "wcag_full": "1.3.1 Info and Relationships",
+            "category": "headings",
+            "description": "Headings appear in illogical order - high-level headings (H1, H2) appear after lower-level headings (H3, H4, H5, H6)",
+            "why_it_matters": "Document structure should be logical and predictable. When high-level headings like H1 or H2 appear after lower-level headings, it creates a backwards or inverted hierarchy. This is like reading a book where chapter titles appear after section headings, or where the main title appears at the end. Screen reader users navigating by headings expect the most important headings first, followed by progressively more detailed subsections. When headings appear out of logical order, users cannot understand the content structure, may miss important navigation landmarks, and cannot build an accurate mental model of how the page is organized.",
+            "who_it_affects": "Screen reader users who rely on heading navigation and expect logical document structure, users with cognitive disabilities who need predictable content organization, users who generate document outlines from headings, and users who navigate by heading levels to understand content hierarchy",
+            "how_to_fix": "Restructure your content so that high-level headings (H1, H2) appear before lower-level headings. Start with H1 for the main page title, then H2 for major sections, then H3 for subsections within those. Headings should appear in a logical, top-down hierarchy that matches how users would naturally read and understand the content structure."
+        },
         "ErrHeadingsDontStartWithH1": {
             "id": "ErrHeadingsDontStartWithH1",
             "type": "Error",
@@ -505,17 +517,17 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users (varies by implementation)",
             "how_to_fix": "Remove unused headings or make them visible"
         },
-        "VisibleHeadingDoesNotMatchA11yName": {
-            "id": "VisibleHeadingDoesNotMatchA11yName",
-            "type": "Warning",
-            "impact": "Medium",
+        "ErrHeadingAccessibleNameMismatch": {
+            "id": "ErrHeadingAccessibleNameMismatch",
+            "type": "Error",
+            "impact": "High",
             "wcag": ["2.5.3"],
             "wcag_full": "2.5.3",
             "category": "headings",
             "description": "Visible heading text doesn't match its accessible name",
             "why_it_matters": "Voice control users may not be able to reference the heading by its visible text",
             "who_it_affects": "Voice control users, screen reader users",
-            "how_to_fix": "Ensure visible text matches or is contained within the accessible name"
+            "how_to_fix": "Ensure visible text starts the accessible name (e.g., visible 'Support' should be at the start of aria-label, like 'Support: Customer Service')"
         },
         "ErrNoMainLandmarkOnPage": {
             "id": "ErrNoMainLandmarkOnPage",
@@ -1609,17 +1621,17 @@ class IssueCatalog:
             "who_it_affects": "Mobile users, keyboard users, some screen readers",
             "how_to_fix": "Use visible text or proper labels instead"
         },
-        "ErrErrEmptyTitleAttr": {
-            "id": "ErrErrEmptyTitleAttr",
+        "ErrEmptyTitleAttr": {
+            "id": "ErrEmptyTitleAttr",
             "type": "Error",
             "impact": "Low",
-            "wcag": ["3.3.2"],
-            "wcag_full": "3.3.2",
+            "wcag": ["4.1.2"],
+            "wcag_full": "4.1.2",
             "category": "title",
             "description": "Empty title attribute",
-            "why_it_matters": "Empty titles provide no information",
+            "why_it_matters": "Empty titles provide no information and add unnecessary markup",
             "who_it_affects": "Users expecting tooltip information",
-            "how_to_fix": "Remove empty title attributes"
+            "how_to_fix": "Remove empty title attributes or provide meaningful descriptive text"
         },
         "ErrIframeWithNoTitleAttr": {
             "id": "ErrIframeWithNoTitleAttr",

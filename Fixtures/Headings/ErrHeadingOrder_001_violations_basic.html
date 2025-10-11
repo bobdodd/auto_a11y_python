@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heading Order Test - ErrHeadingOrder</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrHeadingOrder_001_violations_basic",
+    "issueId": "ErrHeadingOrder",
+    "expectedViolationCount": 2,
+    "description": "Page with illogical heading order - H3, H2, then H1",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <!-- Start with h3, then h2, then h1 - wrong order -->
+    <h3 data-expected-violation="false"
+        data-violation-reason="First heading but it's H3 (no error flagged here, error will be on H2 and H1)">Starting with Level 3</h3>
+    <p>This heading comes first but is level 3.</p>
+
+    <h2 data-expected-violation="true"
+        data-violation-id="ErrHeadingOrder"
+        data-violation-reason="H2 appears after H3 - first H2 appearing after lower-level heading">Then Level 2</h2>
+    <p>This heading comes second but is level 2.</p>
+
+    <h1 data-expected-violation="true"
+        data-violation-id="ErrHeadingOrder"
+        data-violation-reason="H1 appears after H3 and H2 - first H1 appearing after lower-level headings">Finally Level 1</h1>
+    <p>The main heading appears last, breaking logical order.</p>
+    
+    <!-- Going backwards in heading hierarchy -->
+    <h4>Subsection</h4>
+    <h3>Parent Section After Child</h3>
+    
+    <p>This tests detection of illogical heading order.</p>
+</body>
+</html>

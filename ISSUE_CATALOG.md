@@ -92,18 +92,6 @@ How to fix: Add aria-haspopup="true", aria-expanded state, and role="menu" with 
 
 ---
 
-ID: AI_ErrEmptyHeading
-Type: Error
-Impact: High
-WCAG: 1.3.1, 2.4.6
-Touchpoint: headings
-Description: Heading element {element_tag} at level {heading_level} is empty or contains no text
-Why it matters: Empty headings break document structure and confuse screen reader users who navigate by headings
-Who it affects: Screen reader users, users who navigate by headings
-How to fix: Remove empty heading or add meaningful text content
-
----
-
 ID: AI_ErrHeadingLevelMismatch
 Type: Error
 Impact: Medium
@@ -308,7 +296,7 @@ How to fix: Implement focus trap that keeps tab navigation within the modal
 
 ---
 
-ID: AI_WarnProblematicAnimation
+ID: WarnProblematicAnimation
 Type: Warning
 Impact: Medium
 WCAG: 2.2.2, 2.3.1
@@ -2144,6 +2132,18 @@ How to fix: Add <title> element with aria-labelledby, or use role="img" with ari
 
 ---
 
+ID: ErrHeadingOrder
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships
+Touchpoint: headings
+Description: Headings appear in illogical order - high-level headings (H1, H2) appear after lower-level headings (H3, H4, H5, H6)
+Why it matters: Document structure should be logical and predictable. When high-level headings like H1 or H2 appear after lower-level headings, it creates a backwards or inverted hierarchy. This is like reading a book where chapter titles appear after section headings, or where the main title appears at the end. Screen reader users navigating by headings expect the most important headings first, followed by progressively more detailed subsections. When headings appear out of logical order, users cannot understand the content structure, may miss important navigation landmarks, and cannot build an accurate mental model of how the page is organized.
+Who it affects: Screen reader users who rely on heading navigation and expect logical document structure, users with cognitive disabilities who need predictable content organization, users who generate document outlines from headings, and users who navigate by heading levels to understand content hierarchy
+How to fix: Restructure your content so that high-level headings (H1, H2) appear before lower-level headings. Start with H1 for the main page title, then H2 for major sections, then H3 for subsections within those. Headings should appear in a logical, top-down hierarchy that matches how users would naturally read and understand the content structure.
+
+---
+
 ID: ErrSkippedHeadingLevel
 Type: Error
 Impact: Medium
@@ -2408,15 +2408,15 @@ How to fix: Add meaningful label text
 
 ---
 
-ID: VisibleHeadingDoesNotMatchA11yName
-Type: Warning
-Impact: Medium
+ID: ErrHeadingAccessibleNameMismatch
+Type: Error
+Impact: High
 WCAG: 2.5.3
 Touchpoint: headings
 Description: Visible heading text doesn't match its accessible name
 Why it matters: Voice control users may not be able to reference the heading by its visible text
 Who it affects: Voice control users, screen reader users
-How to fix: Ensure visible text matches or is contained within the accessible name
+How to fix: Ensure visible text starts the accessible name (e.g., visible 'Support' should be at the start of aria-label, like 'Support: Customer Service')
 
 ---
 
@@ -3164,18 +3164,6 @@ How to fix: Use fieldset and legend elements to group related form fields like r
 
 ---
 
-ID: WarnNoH1
-Type: Warning
-Impact: High
-WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
-Touchpoint: headings
-Description: Page is missing an h1 element to identify the main topic
-Why it matters: The h1 is the most important heading on a page - it tells users what the page is about, similar to a chapter title in a book. Screen reader users often navigate directly to the h1 first to understand the page purpose. Without it, users must guess the page topic from other cues like the title or URL. The h1 also establishes the starting point for the heading hierarchy. Search engines use the h1 to understand page content, and browser extensions that generate page outlines will be missing the top level. Think of the h1 as answering "What is this page about?" - without it, users lack this fundamental context.
-Who it affects: Screen reader users who jump to the h1 to understand page purpose, users with cognitive disabilities who need clear indication of page topic, SEO and users finding your content through search engines, users of browser tools that generate page outlines or tables of contents
-How to fix: Add exactly one h1 element that describes the main topic or purpose of the page. It should be unique to that page (not the same site-wide). Place it at the beginning of your main content, typically inside the main landmark. The h1 text should make sense if read in isolation and match user expectations based on how they arrived at the page. Don't use the site name as the h1 - use the specific page topic.
-
----
-
 ID: WarnNoLegend
 Type: Warning
 Impact: Medium
@@ -3585,16 +3573,6 @@ Why it matters: Excessively long alt text creates a poor listening experience an
 Who it affects: Screen reader users who must listen to lengthy descriptions, users with cognitive disabilities who may struggle with verbose content.
 How to fix: Limit alt text to 150 characters or less, use longdesc or aria-describedby for complex images, provide detailed descriptions in adjacent text content.
 
-ID: ErrAutoStartTimers
-Type: Error
-Impact: High
-WCAG: 2.2.2 Pause, Stop, Hide (Level A)
-Touchpoint: headings
-Description: Timer starts automatically without user control to pause or stop
-Why it matters: Auto-starting timers can create stress and barriers for users who need more time to complete tasks or read content.
-Who it affects: Users with cognitive disabilities, users with reading disabilities, users with motor impairments who need more time, screen reader users.
-How to fix: Provide controls to pause, stop, or extend time limits, avoid auto-starting timers unless essential, allow users to control timing of content updates.
-
 ID: ErrContentObscuring
 Type: Error
 Impact: High
@@ -3954,16 +3932,6 @@ Description: Data table has no column headers (th elements)
 Why it matters: Without headers, screen reader users cannot understand what each column represents when navigating cells.
 Who it affects: Screen reader users navigating tables, users who need to understand data relationships.
 How to fix: Use <th> elements for column headers in first row, add scope="col" to clarify header relationships.
-
-ID: ErrTimersWithoutControls
-Type: Error
-Impact: High
-WCAG: 2.2.1 Timing Adjustable (Level A)
-Touchpoint: headings
-Description: Time-based content lacks user controls
-Why it matters: Users need control over timed content to have enough time to read and interact with it.
-Who it affects: Users with cognitive disabilities, users with reading disabilities, screen reader users.
-How to fix: Provide controls to pause, stop, or extend time limits; avoid unnecessary time constraints.
 
 ID: ErrVideoIframeMissingTitle
 Type: Error
@@ -4397,7 +4365,7 @@ How to fix: [Remediation guidance]
 
 ### animations
 
-ID: AI_WarnProblematicAnimation
+ID: WarnProblematicAnimation
 Type: Warning
 Impact: Medium
 WCAG: 2.2.2, 2.3.1
@@ -5119,16 +5087,6 @@ How to fix: Add required attribute and visual indication
 
 ### headings
 
-ID: AI_ErrEmptyHeading
-Type: Error
-Impact: High
-WCAG: 1.3.1, 2.4.6
-Touchpoint: headings
-Description: Heading element {element_tag} at level {heading_level} is empty or contains no text
-Why it matters: Empty headings break document structure and confuse screen reader users who navigate by headings
-Who it affects: Screen reader users, users who navigate by headings
-How to fix: Remove empty heading or add meaningful text content
-
 ID: AI_ErrHeadingLevelMismatch
 Type: Error
 Impact: Medium
@@ -5229,6 +5187,16 @@ Why it matters: Heading level is undefined
 Who it affects: Screen reader users
 How to fix: Add aria-level attribute with value 1-6
 
+ID: ErrHeadingOrder
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships
+Touchpoint: headings
+Description: Headings appear in illogical order - high-level headings (H1, H2) appear after lower-level headings (H3, H4, H5, H6)
+Why it matters: Document structure should be logical and predictable. When high-level headings like H1 or H2 appear after lower-level headings, it creates a backwards or inverted hierarchy. This is like reading a book where chapter titles appear after section headings, or where the main title appears at the end. Screen reader users navigating by headings expect the most important headings first, followed by progressively more detailed subsections. When headings appear out of logical order, users cannot understand the content structure, may miss important navigation landmarks, and cannot build an accurate mental model of how the page is organized.
+Who it affects: Screen reader users who rely on heading navigation and expect logical document structure, users with cognitive disabilities who need predictable content organization, users who generate document outlines from headings, and users who navigate by heading levels to understand content hierarchy
+How to fix: Restructure your content so that high-level headings (H1, H2) appear before lower-level headings. Start with H1 for the main page title, then H2 for major sections, then H3 for subsections within those. Headings should appear in a logical, top-down hierarchy that matches how users would naturally read and understand the content structure.
+
 ID: ErrSkippedHeadingLevel
 Type: Error
 Impact: Medium
@@ -5239,15 +5207,15 @@ Why it matters: Heading levels create a hierarchical outline of your content, li
 Who it affects: Screen reader users navigating by heading structure who rely on levels to understand content relationships, users with cognitive disabilities who need logical, predictable content organization, users of assistive technology that generates document outlines, and developers or content authors maintaining the page who need to understand the intended structure
 How to fix: Insert an h{expectedLevel} heading between the h{skippedFrom} and h{skippedTo}, or change the h{skippedTo} to h{expectedLevel} to maintain sequential order. After h{skippedFrom}, use h{expectedLevel} for the next level. Don't skip levels when going down the hierarchy. If you need a heading to look smaller visually, use CSS to style it rather than choosing a lower heading level. The heading level should reflect the content's logical structure, not its visual appearance.
 
-ID: VisibleHeadingDoesNotMatchA11yName
-Type: Warning
-Impact: Medium
+ID: ErrHeadingAccessibleNameMismatch
+Type: Error
+Impact: High
 WCAG: 2.5.3
 Touchpoint: headings
 Description: Visible heading text doesn't match its accessible name
 Why it matters: Voice control users may not be able to reference the heading by its visible text
 Who it affects: Voice control users, screen reader users
-How to fix: Ensure visible text matches or is contained within the accessible name
+How to fix: Ensure visible text starts the accessible name (e.g., visible 'Support' should be at the start of aria-label, like 'Support: Customer Service')
 
 ID: WarnHeadingInsideDisplayNone
 Type: Warning
@@ -5268,16 +5236,6 @@ Description: Heading text is {length} characters long: "{headingText}"
 Why it matters: This heading has {length} characters. Long headings are harder to scan quickly, more difficult to understand at a glance, and can overwhelm users. Screen reader users hearing the full heading text may struggle to grasp the main point. Long headings also cause layout issues on mobile devices and in navigation menus.
 Who it affects: Users with cognitive disabilities who benefit from concise, clear headings, screen reader users who must listen to the entire heading, users scanning the page quickly for information, and mobile users with limited screen space
 How to fix: Shorten the heading to under 60 characters while preserving its meaning. Current: "{headingText}" - Consider breaking into a shorter heading with explanatory text below, or focus on the key message. Use descriptive but concise language.
-
-ID: WarnNoH1
-Type: Warning
-Impact: High
-WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
-Touchpoint: headings
-Description: Page is missing an h1 element to identify the main topic
-Why it matters: The h1 is the most important heading on a page - it tells users what the page is about, similar to a chapter title in a book. Screen reader users often navigate directly to the h1 first to understand the page purpose. Without it, users must guess the page topic from other cues like the title or URL. The h1 also establishes the starting point for the heading hierarchy. Search engines use the h1 to understand page content, and browser extensions that generate page outlines will be missing the top level. Think of the h1 as answering "What is this page about?" - without it, users lack this fundamental context.
-Who it affects: Screen reader users who jump to the h1 to understand page purpose, users with cognitive disabilities who need clear indication of page topic, SEO and users finding your content through search engines, users of browser tools that generate page outlines or tables of contents
-How to fix: Add exactly one h1 element that describes the main topic or purpose of the page. It should be unique to that page (not the same site-wide). Place it at the beginning of your main content, typically inside the main landmark. The h1 text should make sense if read in isolation and match user expectations based on how they arrived at the page. Don't use the site name as the h1 - use the specific page topic.
 
 ---
 

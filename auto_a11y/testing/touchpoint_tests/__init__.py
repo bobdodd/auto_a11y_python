@@ -6,6 +6,7 @@ from .test_headings import test_headings, TEST_DOCUMENTATION as HEADINGS_DOCS
 from .test_images import test_images, TEST_DOCUMENTATION as IMAGES_DOCS
 from .test_forms import test_forms, TEST_DOCUMENTATION as FORMS_DOCS
 from .test_accessible_names import test_accessible_names, TEST_DOCUMENTATION as ACCESSIBLE_NAMES_DOCS
+from .test_aria import test_aria, TEST_DOCUMENTATION as ARIA_DOCS
 from .test_animations import test_animations, TEST_DOCUMENTATION as ANIMATIONS_DOCS
 from .test_colors import test_colors, TEST_DOCUMENTATION as COLORS_DOCS
 from .test_document_links import test_document_links, TEST_DOCUMENTATION as DOCUMENT_LINKS_DOCS
@@ -34,6 +35,7 @@ TOUCHPOINT_TESTS = {
     'images': test_images,
     'forms': test_forms,
     'accessible_names': test_accessible_names,
+    'aria': test_aria,
     'animations': test_animations,
     'colors': test_colors,
     'document_links': test_document_links,
@@ -63,6 +65,7 @@ TEST_DOCUMENTATION = {
     'images': IMAGES_DOCS,
     'forms': FORMS_DOCS,
     'accessible_names': ACCESSIBLE_NAMES_DOCS,
+    'aria': ARIA_DOCS,
     'animations': ANIMATIONS_DOCS,
     'colors': COLORS_DOCS,
     'document_links': DOCUMENT_LINKS_DOCS,
@@ -91,6 +94,7 @@ __all__ = [
     'test_images',
     'test_forms',
     'test_accessible_names',
+    'test_aria',
     'test_animations',
     'test_colors',
     'test_document_links',

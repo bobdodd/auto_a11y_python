@@ -498,8 +498,6 @@ class ClaudeAnalyzer:
                 return ('AI_ErrVisualHeadingNotMarked', ImpactLevel.HIGH)
             elif issue_type == 'wrong_level':
                 return ('AI_ErrHeadingLevelMismatch', ImpactLevel.MEDIUM)
-            elif 'empty' in description:
-                return ('AI_ErrEmptyHeading', ImpactLevel.HIGH)
             elif 'skip' in description:
                 return ('AI_ErrSkippedHeading', ImpactLevel.HIGH)
         
@@ -519,11 +517,6 @@ class ClaudeAnalyzer:
             if issue_type in ['missing_lang', 'wrong_lang', 'unmarked_foreign']:
                 return ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM)
         
-        # Animation issues
-        elif analysis_type == 'animations':
-            if 'infinite' in description or 'pause' in description:
-                return ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM)
-        
         # Default mapping for unrecognized patterns
         issue_map = {
             'visual_not_marked': ('AI_ErrVisualHeadingNotMarked', ImpactLevel.HIGH),
@@ -533,9 +526,6 @@ class ClaudeAnalyzer:
             'missing_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
             'wrong_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
             'unmarked_foreign': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
-            'animation_issue': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
-            'infinite_animation': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
-            'no_pause_control': ('AI_WarnProblematicAnimation', ImpactLevel.MEDIUM),
             'interactive_issue': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
             'non_semantic_button': ('AI_ErrNonSemanticButton', ImpactLevel.HIGH),
             'missing_aria': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),

@@ -1633,6 +1633,18 @@ class IssueCatalog:
             "who_it_affects": "Users expecting tooltip information",
             "how_to_fix": "Remove empty title attributes or provide meaningful descriptive text"
         },
+        "ErrImproperTitleAttribute": {
+            "id": "ErrImproperTitleAttribute",
+            "type": "Error",
+            "impact": "Medium",
+            "wcag": ["5.2.4", "3.3.2"],
+            "wcag_full": "5.2.4 Accessible Documentation (Conformance Requirement), 3.3.2 Labels or Instructions (Level A)",
+            "category": "title",
+            "description": "Title attribute used in particularly problematic patterns (on non-focusable elements or duplicating visible text)",
+            "why_it_matters": "Title attributes fail WCAG 5.2.4 - screen magnifier users at high magnification cannot read tooltips as content goes off-screen. This flags especially bad patterns: titles on non-focusable elements where users can't even trigger the tooltip, and redundant titles that provide no value",
+            "who_it_affects": "Screen magnifier users, mobile users, keyboard-only users, users with motor disabilities",
+            "how_to_fix": "Never use title attributes on body elements. Remove titles from non-focusable containers (div, span). Remove redundant titles. Use visible text, proper labels, or visible helper text instead"
+        },
         "ErrIframeWithNoTitleAttr": {
             "id": "ErrIframeWithNoTitleAttr",
             "type": "Error",

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTitleAttrFound - Correct: Head Section Metadata</title>
+
+    <!-- Link elements with title attributes in head - CORRECT -->
+    <link rel="alternate"
+          href="https://example.com/feed.xml"
+          type="application/rss+xml"
+          title="RSS Feed for Blog Posts"
+          data-expected-pass="true"
+          data-pass-reason="Title attribute in head section for link element providing feed description. This is valid metadata usage in the head section.">
+
+    <link rel="alternate"
+          href="https://example.com/es/"
+          hreflang="es"
+          title="Spanish version of this page"
+          data-expected-pass="true"
+          data-pass-reason="Title attribute on link element in head describing alternate language version. Valid use of title for metadata in head section.">
+
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTitleAttrFound_004_correct_head_metadata",
+    "issueId": "ErrTitleAttrFound",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Title attributes in head section are correct - used for metadata descriptions",
+    "wcag": "5.2.4, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Page with Head Metadata</h1>
+
+    <main>
+        <section>
+            <h2>Content</h2>
+            <p>This page demonstrates that title attributes are valid and acceptable when used in the head section for metadata purposes, such as describing RSS feeds or alternate language versions.</p>
+            <p>The head section contains link elements with title attributes that provide descriptions for assistive technology and browser UI.</p>
+        </section>
+
+        <section>
+            <h2>Subscribe</h2>
+            <p>You can subscribe to our <a href="/feed.xml">RSS feed</a> to stay updated.</p>
+            <p>También disponible en <a href="/es/" hreflang="es" lang="es">español</a>.</p>
+        </section>
+    </main>
+</body>
+</html>

@@ -78,6 +78,9 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                     // Check if it's a form field
                     const isFormField = ['INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName);
 
+                    // Check if element is in <head> section
+                    const isInHead = el.closest('head') !== null;
+
                     // Get associated label for form fields
                     let hasLabel = false;
                     if (isFormField && el.id) {
@@ -100,6 +103,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                         titleValue: titleValue,
                         visibleText: visibleText,
                         isFormField: isFormField,
+                        isInHead: isInHead,
                         hasLabel: hasLabel,
                         hasAriaLabel: el.hasAttribute('aria-label'),
                         hasAriaLabelledby: el.hasAttribute('aria-labelledby'),
@@ -169,7 +173,13 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 results['elements_failed'] += 1
                 continue  # Skip further checks for this element
 
+            # Skip elements in <head> section - title attributes are valid there for metadata
+            if element.get('isInHead', False):
+                results['elements_passed'] += 1
+                continue
+
             # Handle iframes with title (already checked for missing titles above)
+            # Title attribute is REQUIRED on iframes for accessible name
             if tag == 'iframe':
                 results['elements_passed'] += 1
 
@@ -206,7 +216,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                     })
                 continue
 
-            # Handle non-iframe elements with title attributes
+            # Handle non-iframe, non-head elements with title attributes
 
             # ErrTitleAsOnlyLabel: Form field with ONLY title as label (kept for backward compatibility)
             if element['isFormField'] and not element['hasLabel'] and not element['hasAriaLabel'] and not element['hasAriaLabelledby']:

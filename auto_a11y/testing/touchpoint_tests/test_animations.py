@@ -150,6 +150,93 @@ async def test_animations(page) -> Dict[str, Any]:
                     }
                     return false;
                 }
+
+                // Analyze keyframes to detect problematic animation patterns
+                function analyzeKeyframes(animationName) {
+                    const problems = [];
+
+                    try {
+                        for (let sheet of document.styleSheets) {
+                            try {
+                                for (let rule of sheet.cssRules) {
+                                    if (rule instanceof CSSKeyframesRule && rule.name === animationName) {
+                                        // Analyze keyframe rules
+                                        const keyframes = Array.from(rule.cssRules);
+
+                                        // Check for rapid opacity changes (flashing)
+                                        let hasOpacityChanges = false;
+                                        let opacityValues = [];
+
+                                        keyframes.forEach(kf => {
+                                            const opacity = kf.style.opacity;
+                                            if (opacity !== '' && opacity !== undefined) {
+                                                hasOpacityChanges = true;
+                                                opacityValues.push(parseFloat(opacity));
+                                            }
+                                        });
+
+                                        // If opacity toggles between very different values (e.g., 0 and 1)
+                                        if (hasOpacityChanges && opacityValues.length >= 2) {
+                                            const max = Math.max(...opacityValues);
+                                            const min = Math.min(...opacityValues);
+                                            if (max - min > 0.5) {
+                                                problems.push({
+                                                    type: 'flashing',
+                                                    severity: 'high',
+                                                    description: 'Rapid opacity changes can trigger seizures'
+                                                });
+                                            }
+                                        }
+
+                                        // Check for rotation animations
+                                        keyframes.forEach(kf => {
+                                            const transform = kf.style.transform;
+                                            if (transform && transform.includes('rotate')) {
+                                                problems.push({
+                                                    type: 'rotation',
+                                                    severity: 'medium',
+                                                    description: 'Rotation can cause dizziness'
+                                                });
+                                            }
+                                        });
+
+                                        // Check for aggressive translations (shaking)
+                                        let hasLargeTranslations = false;
+                                        keyframes.forEach(kf => {
+                                            const transform = kf.style.transform;
+                                            if (transform && (transform.includes('translateX') || transform.includes('translateY'))) {
+                                                // Try to extract pixel values
+                                                const matches = transform.match(/translate[XY]\\((-?\\d+)px\\)/g);
+                                                if (matches) {
+                                                    matches.forEach(match => {
+                                                        const value = Math.abs(parseInt(match.match(/-?\\d+/)[0]));
+                                                        if (value >= 15) {
+                                                            hasLargeTranslations = true;
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+
+                                        if (hasLargeTranslations) {
+                                            problems.push({
+                                                type: 'shaking',
+                                                severity: 'medium',
+                                                description: 'Aggressive movement can be distracting and cause discomfort'
+                                            });
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                                // Skip inaccessible stylesheets
+                            }
+                        }
+                    } catch (e) {
+                        // Error accessing stylesheets
+                    }
+
+                    return problems;
+                }
                 
                 const animatedElements = findAnimatedElements();
                 const hasReducedMotion = hasReducedMotionSupport();
@@ -161,7 +248,7 @@ async def test_animations(page) -> Dict[str, Any]:
                 }
                 
                 results.elements_tested = animatedElements.length;
-                
+
                 // Check for reduced motion support
                 if (!hasReducedMotion) {
                     results.errors.push({
@@ -177,36 +264,54 @@ async def test_animations(page) -> Dict[str, Any]:
                 } else {
                     results.elements_passed++;
                 }
-                
-                // Check each animated element
-                animatedElements.forEach(item => {
-                    const { element, animation } = item;
-                    
-                    // Check for infinite animations
-                    if (animation.iterationCount === 'infinite') {
-                        // Format CSS for display
-                        const cssLines = Object.entries(item.css)
+
+                // Check for infinite animations (page-level check)
+                const infiniteAnimations = animatedElements.filter(item => item.animation.iterationCount === 'infinite');
+
+                if (infiniteAnimations.length > 0) {
+                    // Check if page has animation controls (pause/stop/hide buttons)
+                    const hasControls = document.querySelector('button[id*="pause"], button[id*="stop"], button[id*="hide"], button[class*="pause"], button[class*="stop"], button[class*="hide"], button[aria-label*="pause"], button[aria-label*="stop"], button[aria-label*="hide"], .animation-controls, #animation-controls') !== null;
+
+                    if (!hasControls) {
+                        // Collect info about all infinite animations for the report
+                        const animationDetails = infiniteAnimations.map(item => ({
+                            element: item.tag,
+                            xpath: item.xpath,
+                            animationName: item.animation.name,
+                            css: item.css
+                        }));
+
+                        // Format the first animation's CSS for display
+                        const firstAnimation = infiniteAnimations[0];
+                        const cssLines = Object.entries(firstAnimation.css)
                             .map(([prop, value]) => `  ${prop}: ${value};`)
                             .join('\\n');
 
+                        // Report ONE page-level violation
                         results.errors.push({
                             err: 'ErrInfiniteAnimation',
                             type: 'err',
                             cat: 'animations',
-                            element: item.tag,
-                            xpath: item.xpath,
-                            html: element.outerHTML.substring(0, 200),
-                            description: 'Element has infinite animation which can cause accessibility issues',
-                            animationName: animation.name,
-                            animationCSS: cssLines,
-                            cssProperties: item.css
+                            element: 'page',
+                            xpath: '/html',
+                            html: 'page-wide',
+                            description: `Page has ${infiniteAnimations.length} infinite animation(s) without pause, stop, or hide controls`,
+                            infiniteAnimationCount: infiniteAnimations.length,
+                            animationDetails: animationDetails,
+                            firstAnimationCSS: cssLines
                         });
                         results.elements_failed++;
                     } else {
                         results.elements_passed++;
                     }
-                    
-                    // Check for long duration animations
+                } else {
+                    // No infinite animations found
+                    results.elements_passed++;
+                }
+
+                // Check for long duration animations (separate loop)
+                animatedElements.forEach(item => {
+                    const { element, animation } = item;
                     const duration = parseFloat(animation.duration);
                     const durationMs = animation.duration.includes('ms') ? duration : duration * 1000;
 
@@ -228,6 +333,46 @@ async def test_animations(page) -> Dict[str, Any]:
                             animationCSS: cssLines,
                             cssProperties: item.css
                         });
+                    }
+                });
+
+                // Check for problematic animation patterns
+                // Only warn if: fast duration (<1s) + infinite + problematic pattern + no reduced motion support
+                animatedElements.forEach(item => {
+                    const { element, animation } = item;
+                    const duration = parseFloat(animation.duration);
+                    const durationMs = animation.duration.includes('ms') ? duration : duration * 1000;
+
+                    // Only check fast, infinite animations
+                    if (durationMs < 1000 && animation.iterationCount === 'infinite') {
+                        const keyframeProblems = analyzeKeyframes(animation.name);
+
+                        if (keyframeProblems.length > 0) {
+                            // Problematic pattern detected
+                            const problemTypes = keyframeProblems.map(p => p.type).join(', ');
+                            const problemDescriptions = keyframeProblems.map(p => p.description).join('; ');
+
+                            const cssLines = Object.entries(item.css)
+                                .map(([prop, value]) => `  ${prop}: ${value};`)
+                                .join('\\n');
+
+                            results.warnings.push({
+                                err: 'WarnProblematicAnimation',
+                                type: 'warn',
+                                cat: 'animation',
+                                element: item.tag,
+                                xpath: item.xpath,
+                                html: element.outerHTML.substring(0, 200),
+                                description: `Problematic animation detected: ${problemDescriptions}`,
+                                animationName: animation.name,
+                                duration: animation.duration,
+                                durationMs: durationMs,
+                                problemTypes: problemTypes,
+                                problems: keyframeProblems,
+                                hasReducedMotion: hasReducedMotion,
+                                animationCSS: cssLines
+                            });
+                        }
                     }
                 });
                 

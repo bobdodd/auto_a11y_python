@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correct Heading Order - No ErrHeadingOrder</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrHeadingOrder_002_correct_logical_order",
+    "issueId": "ErrHeadingOrder",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 8,
+    "description": "Page with proper logical heading order - high-level headings appear first",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <!-- Correct heading order: H1 first, then H2, then H3 -->
+    <h1>Main Page Title</h1>
+    <p>This is the main heading of the page.</p>
+
+    <h2>First Major Section</h2>
+    <p>This is a subsection under the main title.</p>
+
+    <h3>Subsection 1.1</h3>
+    <p>This is a subsection under the first major section.</p>
+
+    <h3>Subsection 1.2</h3>
+    <p>Another subsection at the same level.</p>
+
+    <h2>Second Major Section</h2>
+    <p>Another major section at the H2 level.</p>
+
+    <h3>Subsection 2.1</h3>
+    <p>A subsection under the second major section.</p>
+
+    <h4>Detail 2.1.1</h4>
+    <p>Even more detailed content.</p>
+
+    <p>This demonstrates correct, logical heading hierarchy.</p>
+</body>
+</html>

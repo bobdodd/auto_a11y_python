@@ -44,74 +44,18 @@ TEST_DOCUMENTATION = {
 async def test_timers(page) -> Dict[str, Any]:
     """
     Test for presence and control of timers in JavaScript
-    
+
+    Detects setTimeout and setInterval calls by analyzing JavaScript source code
+    from inline scripts and external script tags.
+
     Args:
         page: Pyppeteer page object
-        
+
     Returns:
         Dictionary containing test results with errors and warnings
     """
     try:
-        # First inject the timer tracking code
-        await page.evaluate('''
-            () => {
-                // Create global tracking object
-                window._timerTracking = {
-                    timers: new Map(),
-                    intervals: new Map(),
-                    autoStartTimers: new Set()
-                };
-
-                // Track setTimeout calls
-                const originalSetTimeout = window.setTimeout;
-                window.setTimeout = function (callback, delay, ...args) {
-                    const stack = new Error().stack;
-                    const timerId = originalSetTimeout.call(this, callback, delay, ...args);
-                    window._timerTracking.timers.set(timerId, {
-                        type: 'timeout',
-                        delay: delay,
-                        stack: stack,
-                        startTime: Date.now(),
-                        autoStart: true
-                    });
-                    return timerId;
-                };
-
-                // Track setInterval calls
-                const originalSetInterval = window.setInterval;
-                window.setInterval = function (callback, delay, ...args) {
-                    const stack = new Error().stack;
-                    const timerId = originalSetInterval.call(this, callback, delay, ...args);
-                    window._timerTracking.intervals.set(timerId, {
-                        type: 'interval',
-                        delay: delay,
-                        stack: stack,
-                        startTime: Date.now(),
-                        autoStart: true
-                    });
-                    return timerId;
-                };
-
-                // Track clearTimeout calls
-                const originalClearTimeout = window.clearTimeout;
-                window.clearTimeout = function (timerId) {
-                    window._timerTracking.timers.delete(timerId);
-                    return originalClearTimeout.call(this, timerId);
-                };
-
-                // Track clearInterval calls
-                const originalClearInterval = window.clearInterval;
-                window.clearInterval = function (timerId) {
-                    window._timerTracking.intervals.delete(timerId);
-                    return originalClearInterval.call(this, timerId);
-                };
-            }
-        ''')
-        
-        # Wait for any initial timers to be set
-        await asyncio.sleep(1)
-        
-        # Execute JavaScript to analyze timers
+        # Execute JavaScript to analyze timer usage in source code
         results = await page.evaluate('''
             () => {
                 const results = {
@@ -125,185 +69,179 @@ async def test_timers(page) -> Dict[str, Any]:
                     test_name: 'timers',
                     checks: []
                 };
-                
-                // Function to generate XPath for elements
-                function getFullXPath(element) {
-                    if (!element) return '';
-                    
-                    function getElementIdx(el) {
-                        let count = 1;
-                        for (let sib = el.previousSibling; sib; sib = sib.previousSibling) {
-                            if (sib.nodeType === 1 && sib.tagName === el.tagName) {
-                                count++;
+
+                // Function to analyze JavaScript source code for timer usage
+                function analyzeJavaScriptForTimers(sourceCode) {
+                    const timers = {
+                        setIntervals: [],
+                        setTimeouts: [],
+                        hasSetInterval: false,
+                        hasSetTimeout: false,
+                        fastIntervals: []
+                    };
+
+                    if (!sourceCode) return timers;
+
+                    // Look for setInterval calls with delay values
+                    if (sourceCode.indexOf('setInterval') !== -1) {
+                        timers.hasSetInterval = true;
+
+                        // Try to extract delay values from setInterval calls
+                        // Pattern: setInterval(..., <delay>)
+                        // Simple approach: look for setInterval followed by delay in common patterns
+                        const intervalPattern = /setInterval\\s*\\([^,]+,\\s*(\\d+)\\s*\\)/g;
+                        let match;
+                        while ((match = intervalPattern.exec(sourceCode)) !== null) {
+                            const delay = parseInt(match[1], 10);
+                            timers.setIntervals.push({ delay: delay });
+
+                            // Check if this is a fast interval (< 1000ms = < 1 second)
+                            if (delay < 1000) {
+                                timers.fastIntervals.push({
+                                    delay: delay,
+                                    position: match.index
+                                });
                             }
                         }
-                        return count;
-                    }
-                    
-                    let path = '';
-                    while (element && element.nodeType === 1) {
-                        const idx = getElementIdx(element);
-                        const tagName = element.tagName.toLowerCase();
-                        path = `/${tagName}[${idx}]${path}`;
-                        element = element.parentNode;
-                    }
-                    return path;
-                }
-                
-                // Verify tracking object exists
-                if (!window._timerTracking) {
-                    results.applicable = false;
-                    results.not_applicable_reason = 'Timer tracking not available';
-                    return results;
-                }
-                
-                // Find timer controls
-                function findTimerControls() {
-                    const controls = [];
-                    const interactiveElements = document.querySelectorAll(
-                        'button, input[type="button"], input[type="submit"], [role="button"], ' +
-                        'a[href], [onclick], [onkeydown], [onkeyup], [onmousedown], [onmouseup]'
-                    );
 
-                    interactiveElements.forEach(element => {
-                        const inlineHandlers = [
-                            element.getAttribute('onclick'),
-                            element.getAttribute('onkeydown'),
-                            element.getAttribute('onkeyup'),
-                            element.getAttribute('onmousedown'),
-                            element.getAttribute('onmouseup')
-                        ].filter(Boolean);
-
-                        const hasTimerControl = inlineHandlers.some(handler => 
-                            handler.includes('setTimeout') || 
-                            handler.includes('setInterval') ||
-                            handler.includes('clearTimeout') ||
-                            handler.includes('clearInterval')
-                        );
-
-                        if (hasTimerControl) {
-                            controls.push({
-                                element: element.tagName.toLowerCase(),
-                                id: element.id || null,
-                                text: element.textContent.trim(),
-                                xpath: getFullXPath(element)
-                            });
+                        // If we couldn't parse any delays, mark as having setInterval anyway
+                        if (timers.setIntervals.length === 0) {
+                            timers.setIntervals = [{ delay: null }];
                         }
-                    });
+                    }
 
-                    return controls;
+                    // Look for setTimeout calls
+                    if (sourceCode.indexOf('setTimeout') !== -1) {
+                        timers.hasSetTimeout = true;
+                        const matches = sourceCode.split('setTimeout');
+                        timers.setTimeouts = new Array(matches.length - 1);
+                    }
+
+                    return timers;
                 }
-                
-                const timerList = [];
-                const controls = findTimerControls();
-                
-                // Process timeouts
-                window._timerTracking.timers.forEach((timer, id) => {
-                    timerList.push({
-                        id: id,
-                        type: 'timeout',
-                        delay: timer.delay,
-                        autoStart: timer.autoStart,
-                        startTime: timer.startTime
-                    });
+
+                // Collect all JavaScript source code from the page
+                let allJavaScriptCode = '';
+                let scriptSources = [];
+
+                // Get inline scripts
+                const inlineScripts = document.querySelectorAll('script:not([src])');
+                inlineScripts.forEach((script, index) => {
+                    if (script.textContent && script.type !== 'application/json') {
+                        allJavaScriptCode += '\\n' + script.textContent;
+                        scriptSources.push({
+                            type: 'inline',
+                            index: index,
+                            preview: script.textContent.substring(0, 100)
+                        });
+                    }
                 });
 
-                // Process intervals
-                window._timerTracking.intervals.forEach((interval, id) => {
-                    timerList.push({
-                        id: id,
-                        type: 'interval',
-                        delay: interval.delay,
-                        autoStart: interval.autoStart,
-                        startTime: interval.startTime
-                    });
-                });
-                
-                if (timerList.length === 0) {
+                // Analyze the collected JavaScript for timer usage
+                const timerAnalysis = analyzeJavaScriptForTimers(allJavaScriptCode);
+
+                // Check if any timers were found
+                const hasTimers = timerAnalysis.hasSetInterval || timerAnalysis.hasSetTimeout;
+
+                if (!hasTimers) {
                     results.applicable = false;
-                    results.not_applicable_reason = 'No timers detected on the page';
+                    results.not_applicable_reason = 'No timers detected in JavaScript source code';
                     return results;
                 }
-                
-                results.elements_tested = timerList.length;
-                
-                const autoStartTimers = timerList.filter(t => t.autoStart);
-                let timersWithoutControls = 0;
-                
-                // Check for auto-start timers
-                if (autoStartTimers.length > 0) {
-                    results.errors.push({
-                        err: 'ErrAutoStartTimers',
-                        type: 'err',
-                        cat: 'timers',
-                        element: 'page',
-                        xpath: '/html',
-                        html: '<page>',
-                        description: `Found ${autoStartTimers.length} auto-starting timer(s)`,
-                        count: autoStartTimers.length,
-                        timerTypes: autoStartTimers.map(t => t.type)
-                    });
-                    results.elements_failed++;
+
+                // Find timer controls - look for buttons/controls that suggest timer management
+                function findTimerControls() {
+                    // Look for elements with IDs, classes, text, or aria-labels that suggest timer control
+                    const controlSelectors = [
+                        'button[id*="pause"]', 'button[id*="Pause"]', 'button[id*="stop"]', 'button[id*="Stop"]',
+                        'button[id*="extend"]', 'button[id*="Extend"]',
+                        'button[class*="pause"]', 'button[class*="stop"]', 'button[class*="extend"]',
+                        'button[aria-label*="pause"]', 'button[aria-label*="stop"]', 'button[aria-label*="extend"]',
+                        '.timer-controls', '#timer-controls', '.countdown-controls', '#countdown-controls',
+                        'button[id*="Btn"]' // Common pattern like pauseBtn, extendBtn
+                    ];
+
+                    for (const selector of controlSelectors) {
+                        try {
+                            const element = document.querySelector(selector);
+                            if (element) {
+                                return true; // Found at least one control
+                            }
+                        } catch (e) {
+                            // Invalid selector, skip
+                        }
+                    }
+
+                    // Also check button text content for timer-related keywords
+                    const buttons = document.querySelectorAll('button, [role="button"]');
+                    for (const button of buttons) {
+                        const text = button.textContent.toLowerCase();
+                        if (text.includes('pause') || text.includes('stop') ||
+                            text.includes('extend') || text.includes('resume') ||
+                            text.includes('timer') || text.includes('time')) {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
-                
-                // Check for timers without controls
-                if (timerList.length > controls.length) {
-                    timersWithoutControls = timerList.length - controls.length;
+
+                const hasControls = findTimerControls();
+
+                results.elements_tested = 1; // Page-level test
+
+                // WCAG 2.2.1 & 2.2.2: Time-based content (setInterval specifically) requires user controls
+                // setInterval creates continuous, auto-updating content
+                if (timerAnalysis.hasSetInterval && !hasControls) {
+                    const intervalCount = timerAnalysis.setIntervals.length;
                     results.errors.push({
                         err: 'ErrTimersWithoutControls',
                         type: 'err',
                         cat: 'timers',
                         element: 'page',
                         xpath: '/html',
-                        html: '<page>',
-                        description: `Found ${timersWithoutControls} timer(s) without user controls`,
-                        count: timersWithoutControls,
-                        totalTimers: timerList.length,
-                        totalControls: controls.length
+                        html: 'page-wide',
+                        description: `Page has ${intervalCount} setInterval timer(s) without pause, stop, or extend controls`,
+                        intervalCount: intervalCount,
+                        timeoutCount: timerAnalysis.setTimeouts.length,
+                        hasControls: false,
+                        scriptSources: scriptSources
                     });
                     results.elements_failed++;
+                } else if (timerAnalysis.hasSetInterval && hasControls) {
+                    // Timers with controls - this is acceptable
+                    results.elements_passed++;
+                } else {
+                    // Only setTimeout, no setInterval - generally acceptable
+                    results.elements_passed++;
                 }
-                
-                if (results.elements_failed === 0) {
-                    results.elements_passed = 1; // Page-level pass
-                }
-                
-                // Check for long-running intervals (potential accessibility issue)
-                timerList.forEach(timer => {
-                    if (timer.type === 'interval' && timer.delay < 1000) {
+
+                // Check for fast intervals (< 1000ms) - Warning level
+                if (timerAnalysis.fastIntervals && timerAnalysis.fastIntervals.length > 0) {
+                    timerAnalysis.fastIntervals.forEach(fastInterval => {
                         results.warnings.push({
                             err: 'WarnFastInterval',
                             type: 'warn',
                             cat: 'timers',
-                            element: 'timer',
+                            element: 'page',
                             xpath: '/html',
-                            html: '<timer>',
-                            description: `Fast interval detected (${timer.delay}ms) - may cause performance or accessibility issues`,
-                            timerId: timer.id,
-                            delay: timer.delay
+                            html: 'page-wide',
+                            description: `JavaScript interval running faster than once per second (${fastInterval.delay}ms)`,
+                            delay: fastInterval.delay,
+                            updatesPerSecond: Math.round(1000 / fastInterval.delay * 10) / 10
                         });
-                    }
-                });
-                
-                // Add check information for reporting
-                results.checks.push({
-                    description: 'Auto-starting timers',
-                    wcag: ['2.2.1', '2.2.2'],
-                    total: timerList.length,
-                    passed: timerList.length - autoStartTimers.length,
-                    failed: autoStartTimers.length
-                });
-                
-                if (timersWithoutControls > 0) {
-                    results.checks.push({
-                        description: 'Timer user controls',
-                        wcag: ['2.2.1', '2.2.2'],
-                        total: timerList.length,
-                        passed: controls.length,
-                        failed: timersWithoutControls
                     });
                 }
-                
+
+                // Add check information for reporting
+                results.checks.push({
+                    description: 'Auto-starting timers with user controls',
+                    wcag: ['2.2.1', '2.2.2'],
+                    total: 1,
+                    passed: results.elements_passed,
+                    failed: results.elements_failed
+                });
+
                 return results;
             }
         ''')

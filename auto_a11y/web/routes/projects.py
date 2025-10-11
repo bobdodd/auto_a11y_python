@@ -93,7 +93,8 @@ def create_project():
             'colors_contrast', 'keyboard_navigation', 'landmarks', 'language',
             'tables', 'lists', 'media', 'dialogs', 'animation', 'timing',
             'fonts', 'semantic_structure', 'aria', 'focus_management',
-            'reading_order', 'event_handling', 'accessible_names', 'page'
+            'reading_order', 'event_handling', 'accessible_names', 'page',
+            'title_attributes'
         ]
         
         for touchpoint_id in touchpoint_ids:
@@ -200,6 +201,7 @@ def create_project():
         'PageTitle': 'page',
         'Tables': 'tables',
         'Timing': 'timing',
+        'TitleAttributes': 'title_attributes',
         'Typography': 'fonts',
         'Style': 'styles',
         'Styles': 'styles'
@@ -234,6 +236,7 @@ def create_project():
         'semantic_structure': 'Semantic Structure',
         'tables': 'Tables',
         'timing': 'Timing',
+        'title_attributes': 'Title Attributes',
         'fonts': 'Fonts',
         'other': 'Other'
     }
@@ -370,7 +373,8 @@ def edit_project(project_id):
             'colors_contrast', 'keyboard_navigation', 'landmarks', 'language',
             'tables', 'lists', 'media', 'dialogs', 'animation', 'timing',
             'fonts', 'semantic_structure', 'aria', 'focus_management',
-            'reading_order', 'event_handling', 'accessible_names', 'page'
+            'reading_order', 'event_handling', 'accessible_names', 'page',
+            'title_attributes'
         ]
         
         for touchpoint_id in touchpoint_ids:

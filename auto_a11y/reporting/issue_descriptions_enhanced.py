@@ -108,15 +108,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.1.1', '4.1.2', '1.3.1'],
             'remediation': "Add aria-haspopup=\"true\", aria-expanded state, and role=\"menu\" with role=\"menuitem\" for options"
         },
-        'AI_ErrEmptyHeading': {
-            'title': "Heading element {element_tag} at level {heading_level} is empty or contains no text",
-            'what': "Heading element {element_tag} at level {heading_level} is empty or contains no text",
-            'why': "Empty headings break document structure and confuse screen reader users who navigate by headings",
-            'who': "Screen reader users, users who navigate by headings",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.3.1', '2.4.6'],
-            'remediation': "Remove empty heading or add meaningful text content"
-        },
         'AI_ErrHeadingLevelMismatch': {
             'title': "Heading level {current_level} doesn\'t match visual hierarchy (should be level {suggested_level})",
             'what': "Heading level {current_level} doesn\'t match visual hierarchy (should be level {suggested_level})",
@@ -270,7 +261,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.1.2', '2.4.3'],
             'remediation': "Implement focus trap that keeps tab navigation within the modal"
         },
-        'AI_WarnProblematicAnimation': {
+        'WarnProblematicAnimation': {
             'title': "Animation detected that may cause accessibility issues",
             'what': "Animation detected that may cause accessibility issues",
             'why': "Animations can trigger seizures or make content difficult to read",
@@ -786,11 +777,11 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         'ErrEmptyTitleAttr': {
             'title': "Empty title attribute",
             'what': "Empty title attribute",
-            'why': "Empty titles provide no information",
+            'why': "Empty titles provide no information and add unnecessary markup",
             'who': "Users expecting tooltip information",
             'impact': ImpactScale.LOW.value,
-            'wcag': ['3.3.2'],
-            'remediation': "Remove empty title attributes"
+            'wcag': ['4.1.2'],
+            'remediation': "Remove empty title attributes or provide meaningful descriptive text"
         },
         'ErrEmptyXmlLangAttr': {
             'title': "xml:lang attribute is empty",
@@ -1692,10 +1683,19 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.1.1'],
             'remediation': "Add <title> element with aria-labelledby, or use role=\"img\" with aria-label for simple SVGs."
         },
+        'ErrHeadingOrder': {
+            'title': "Headings appear in illogical order - high-level headings (H1, H2) appear after lower-level headings (H3, H4, H5, H6)",
+            'what': "Headings appear in illogical order - high-level headings (H1, H2) appear after lower-level headings (H3, H4, H5, H6)",
+            'why': "Document structure should be logical and predictable. When high-level headings like H1 or H2 appear after lower-level headings, it creates a backwards or inverted hierarchy. This is like reading a book where chapter titles appear after section headings, or where the main title appears at the end. Screen reader users navigating by headings expect the most important headings first, followed by progressively more detailed subsections. When headings appear out of logical order, users cannot understand the content structure, may miss important navigation landmarks, and cannot build an accurate mental model of how the page is organized.",
+            'who': "Screen reader users who rely on heading navigation and expect logical document structure, users with cognitive disabilities who need predictable content organization, users who generate document outlines from headings, and users who navigate by heading levels to understand content hierarchy",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.3.1'],
+            'remediation': "Restructure your content so that high-level headings (H1, H2) appear before lower-level headings. Start with H1 for the main page title, then H2 for major sections, then H3 for subsections within those. Headings should appear in a logical, top-down hierarchy that matches how users would naturally read and understand the content structure."
+        },
         'ErrSkippedHeadingLevel': {
             'title': "Heading levels are not in sequential order - jumped from h{skippedFrom} to h{skippedTo}, skipping intermediate level(s)",
             'what': "Heading levels are not in sequential order - jumped from h{skippedFrom} to h{skippedTo}, skipping intermediate level(s)",
-            'why': "Heading levels create a hierarchical outline of your content, like nested bullet points. Jumping from h{skippedFrom} to h{skippedTo} breaks this logical structure. It\'s like having chapter {skippedFrom}, then jumping to section {skippedTo} without the intermediate section. Screen reader users navigating by headings will be confused about the relationship between sections - is the h{skippedTo} a subsection of something that\'s missing? This broken hierarchy makes it hard to understand how content is organized and can cause users to think content is missing or that they\'ve accidentally skipped something.",
+            'why': "Heading levels create a hierarchical outline of your content, like nested bullet points. Jumping from h{skippedFrom} to h{skippedTo} breaks this logical structure. It\'s like having chapter {skippedFrom}, then jumping to section {skippedTo} without the intermediate section. Screen reader users navigating by headings will be confused about the relationship between sections - is the h{skippedTo} a subsection of something that\'s missing? This broken hierarchy makes it hard to understand how content is organized and can cause users to think content is missing or that they've accidentally skipped something.",
             'who': "Screen reader users navigating by heading structure who rely on levels to understand content relationships, users with cognitive disabilities who need logical, predictable content organization, users of assistive technology that generates document outlines, and developers or content authors maintaining the page who need to understand the intended structure",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.3.1'],
@@ -1899,14 +1899,14 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1', '2.4.6'],
             'remediation': "Add meaningful label text"
         },
-        'VisibleHeadingDoesNotMatchA11yName': {
+        'ErrHeadingAccessibleNameMismatch': {
             'title': "Visible heading text doesn\'t match its accessible name",
             'what': "Visible heading text doesn\'t match its accessible name",
             'why': "Voice control users may not be able to reference the heading by its visible text",
             'who': "Voice control users, screen reader users",
-            'impact': ImpactScale.MEDIUM.value,
+            'impact': ImpactScale.HIGH.value,
             'wcag': ['2.5.3'],
-            'remediation': "Ensure visible text matches or is contained within the accessible name"
+            'remediation': "Ensure visible text starts the accessible name (e.g., visible 'Support' should be at the start of aria-label, like 'Support: Customer Service')"
         },
         'WarnAnchorTargetTabindex': {
             'title': "Anchor target element has unnecessary tabindex",
@@ -2474,15 +2474,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.3.1'],
             'remediation': "Use fieldset and legend elements to group related form fields like radio buttons."
-        },
-        'WarnNoH1': {
-            'title': "Page is missing an h1 element to identify the main topic",
-            'what': "Page is missing an h1 element to identify the main topic",
-            'why': "The h1 is the most important heading on a page - it tells users what the page is about, similar to a chapter title in a book. Screen reader users often navigate directly to the h1 first to understand the page purpose. Without it, users must guess the page topic from other cues like the title or URL. The h1 also establishes the starting point for the heading hierarchy. Search engines use the h1 to understand page content, and browser extensions that generate page outlines will be missing the top level. Think of the h1 as answering \"What is this page about?\" - without it, users lack this fundamental context.",
-            'who': "Screen reader users who jump to the h1 to understand page purpose, users with cognitive disabilities who need clear indication of page topic, SEO and users finding your content through search engines, users of browser tools that generate page outlines or tables of contents",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.3.1', '2.4.6'],
-            'remediation': "Add exactly one h1 element that describes the main topic or purpose of the page. It should be unique to that page (not the same site-wide). Place it at the beginning of your main content, typically inside the main landmark. The h1 text should make sense if read in isolation and match user expectations based on how they arrived at the page. Don\'t use the site name as the h1 - use the specific page topic."
         },
         'WarnNoLegend': {
             'title': "Fieldset missing legend element",

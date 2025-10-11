@@ -190,13 +190,13 @@ TOUCHPOINT_TEST_MAPPING = {
     
     'semantic_structure': [
         'ErrHeaderMissingScope',
-        'ErrImproperTitleAttribute',
         'ErrMissingDocumentType',
         'WarnVisualHierarchy',
     ],
     
     'aria': [
         'AI_ErrMissingInteractiveRole',
+        'ErrAriaLabelMayNotBeFoundByVoiceControl',
         'ErrFoundAriaLevelButNoRoleAppliedAtAll',
         'ErrMapAriaHidden',
         'WarnMissingAriaModal',
@@ -251,6 +251,14 @@ TOUCHPOINT_TEST_MAPPING = {
         'WarnMultipleTitleElements',  # Deprecated - use ErrMultiplePageTitles
         'WarnPageTitleTooLong',
         'WarnPageTitleTooShort',
+    ],
+
+    'title_attributes': [
+        'ErrEmptyTitleAttr',
+        'ErrImproperTitleAttribute',
+        'WarnTitleAttrFound',
+        'WarnRedundantTitleAttr',
+        'WarnVagueTitleAttribute',
     ],
 }
 

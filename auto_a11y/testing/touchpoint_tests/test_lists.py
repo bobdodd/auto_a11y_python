@@ -281,7 +281,7 @@ async def test_lists(page) -> Dict[str, Any]:
                     results.errors.push({
                         err: 'ErrFakeListImplementation',
                         type: 'err',
-                        cat: 'lists',
+                        cat: 'list',
                         element: element.tagName.toLowerCase(),
                         xpath: getFullXPath(element),
                         html: element.outerHTML.substring(0, 200),
@@ -295,7 +295,7 @@ async def test_lists(page) -> Dict[str, Any]:
                 });
                 
                 // Find all proper lists
-                const allLists = Array.from(document.querySelectorAll('ul, ol'));
+                const allLists = Array.from(document.querySelectorAll('ul, ol, dl'));
                 
                 if (allLists.length === 0 && filteredFakeLists.length === 0) {
                     results.applicable = false;
@@ -306,32 +306,62 @@ async def test_lists(page) -> Dict[str, Any]:
                 results.elements_tested = allLists.length + filteredFakeLists.length;
                 
                 allLists.forEach(list => {
-                    const items = list.querySelectorAll('li');
+                    const listTag = list.tagName.toLowerCase();
+
+                    // Get items based on list type
+                    const items = listTag === 'dl'
+                        ? list.querySelectorAll('dt, dd')
+                        : list.querySelectorAll('li');
+
                     const depth = calculateListDepth(list);
-                    
-                    // Check for empty lists
-                    if (items.length === 0) {
+
+                    // Check for redundant role="list" on native list elements
+                    const roleAttr = list.getAttribute('role');
+                    if (roleAttr === 'list') {
+                        let reason = '';
+                        if (listTag === 'ul' || listTag === 'ol') {
+                            reason = `${listTag.toUpperCase()} element has redundant role="list" - native HTML list semantics should be used`;
+                        } else if (listTag === 'dl') {
+                            reason = 'DL element has inappropriate role="list" - this obscures the term-definition relationship';
+                        }
+
+                        if (reason) {
+                            results.warnings.push({
+                                err: 'WarnListRoleOnList',
+                                type: 'warn',
+                                cat: 'list',
+                                element: listTag,
+                                xpath: getFullXPath(list),
+                                html: list.outerHTML.substring(0, 200),
+                                description: reason,
+                                listType: listTag
+                            });
+                        }
+                    }
+
+                    // Check for empty lists (only for ul/ol, not dl)
+                    if (listTag !== 'dl' && items.length === 0) {
                         results.errors.push({
                             err: 'ErrEmptyList',
                             type: 'err',
-                            cat: 'lists',
-                            element: list.tagName.toLowerCase(),
+                            cat: 'list',
+                            element: listTag,
                             xpath: getFullXPath(list),
                             html: list.outerHTML.substring(0, 200),
                             description: 'List element contains no list items',
-                            listType: list.tagName.toLowerCase()
+                            listType: listTag
                         });
                         results.elements_failed++;
                     } else {
                         results.elements_passed++;
                     }
-                    
+
                     // Check for excessive nesting (more than 3 levels)
                     if (depth > 3) {
                         results.warnings.push({
                             err: 'WarnDeepListNesting',
                             type: 'warn',
-                            cat: 'lists',
+                            cat: 'list',
                             element: list.tagName.toLowerCase(),
                             xpath: getFullXPath(list),
                             html: list.outerHTML.substring(0, 200),
@@ -407,7 +437,7 @@ async def test_lists(page) -> Dict[str, Any]:
                             results.warnings.push({
                                 err: 'WarnCustomBulletStyling',
                                 type: 'warn',
-                                cat: 'lists',
+                                cat: 'list',
                                 element: item.tagName.toLowerCase(),
                                 xpath: getFullXPath(item),
                                 html: item.outerHTML.substring(0, 200),

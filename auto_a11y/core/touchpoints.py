@@ -332,6 +332,8 @@ class TouchpointMapper:
         'font': TouchpointID.FONTS,
         'fonts': TouchpointID.FONTS,
         'javascript': TouchpointID.EVENT_HANDLING,
+        'event_handling': TouchpointID.EVENT_HANDLING,
+        'event_handlers': TouchpointID.EVENT_HANDLING,
         'style': TouchpointID.STYLES,
         'styles': TouchpointID.STYLES,
         'navigation': TouchpointID.LANDMARKS,

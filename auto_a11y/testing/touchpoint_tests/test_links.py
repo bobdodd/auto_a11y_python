@@ -428,37 +428,34 @@ async def test_links(page):
             outline_width = parse_px(link['focusOutlineWidth'], font_size, root_font_size)
             outline_offset = parse_px(link.get('focusOutlineOffset', '0px'), font_size, root_font_size)
 
-            # Check outline width (must be >= 2px, but can be relaxed if underline present)
+            # PRIORITY 1: Check outline width (ERROR - must be >= 2px if no underline)
             if outline_width > 0 and outline_width < 2.0 and not has_underline:
                 error_code = 'ErrLinkOutlineWidthInsufficient'
                 violation_reason = f'Link focus outline is too thin ({outline_width:.2f}px, needs ≥2px) and has no underline'
 
-            # Warning: outline-offset too large with underline (creates confusing gap)
-            elif has_underline and outline_offset > 1.0:
-                error_code = 'WarnLinkOutlineOffsetTooLarge'
-                violation_reason = f'Link has underline and outline-offset > 1px ({outline_offset:.2f}px) - creates confusing gap between underline and outline'
+            # PRIORITY 2: Check contrast (ERROR - more critical than offset warning)
+            elif not has_gradient:
+                outline_color = parse_color(link['focusOutlineColor'])
+                bg_color = parse_color(link['backgroundColor'])
 
-            # Check outline contrast
-            else:
-                # Warning: Gradient background (cannot auto-verify contrast)
-                if has_gradient:
-                    error_code = 'WarnLinkFocusGradientBackground'
-                    violation_reason = 'Link has gradient background - focus outline contrast cannot be automatically verified'
-
-                # Check contrast against solid background
+                # Check if outline is semi-transparent (< 50% opacity)
+                if outline_color['a'] < 0.5:
+                    error_code = 'WarnLinkTransparentOutline'
+                    violation_reason = f'Link focus outline is semi-transparent (alpha={outline_color["a"]:.2f}) which may not provide sufficient visibility'
                 else:
-                    outline_color = parse_color(link['focusOutlineColor'])
-                    bg_color = parse_color(link['backgroundColor'])
+                    contrast = get_contrast_ratio(outline_color, bg_color)
+                    if contrast < 3.0:
+                        error_code = 'ErrLinkFocusContrastFail'
+                        violation_reason = f'Link focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1 per WCAG 1.4.11)'
+                    # PRIORITY 3: If contrast is OK, check offset (WARNING)
+                    elif has_underline and outline_offset > 1.0:
+                        error_code = 'WarnLinkOutlineOffsetTooLarge'
+                        violation_reason = f'Link has underline and outline-offset > 1px ({outline_offset:.2f}px) - creates confusing gap between underline and outline'
 
-                    # Check if outline is semi-transparent (< 50% opacity)
-                    if outline_color['a'] < 0.5:
-                        error_code = 'WarnLinkTransparentOutline'
-                        violation_reason = f'Link focus outline is semi-transparent (alpha={outline_color["a"]:.2f}) which may not provide sufficient visibility'
-                    else:
-                        contrast = get_contrast_ratio(outline_color, bg_color)
-                        if contrast < 3.0:
-                            error_code = 'ErrLinkFocusContrastFail'
-                            violation_reason = f'Link focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1 per WCAG 1.4.11)'
+            # PRIORITY 4: Gradient background (cannot verify contrast automatically)
+            elif has_gradient:
+                error_code = 'WarnLinkFocusGradientBackground'
+                violation_reason = 'Link has gradient background - focus outline contrast cannot be automatically verified'
 
         # If we found a violation or warning
         if error_code:

@@ -27,37 +27,45 @@
         /* 1px outline - too thin */
         .one-px-outline {
             font-size: 16px;
+            text-decoration: none; /* Remove default underline */
         }
         .one-px-outline:focus {
             outline: 1px solid #0066cc; /* Violates 2px minimum */
             outline-offset: 2px;
+            text-decoration: none; /* Ensure no underline on focus */
         }
 
         /* 0.1em outline = 1.6px (16px font * 0.1 = 1.6px) - too thin */
         .em-too-thin {
             font-size: 16px;
+            text-decoration: none; /* Remove default underline */
         }
         .em-too-thin:focus {
             outline: 0.1em solid #0066cc; /* 1.6px - insufficient */
             outline-offset: 2px;
+            text-decoration: none; /* Ensure no underline on focus */
         }
 
         /* 0.1rem outline = 1.6px (16px root * 0.1 = 1.6px) - too thin */
         .rem-too-thin {
             font-size: 20px; /* Different font size doesn't affect rem */
+            text-decoration: none; /* Remove default underline */
         }
         .rem-too-thin:focus {
             outline: 0.1rem solid #0066cc; /* 1.6px - insufficient */
             outline-offset: 2px;
+            text-decoration: none; /* Ensure no underline on focus */
         }
 
         /* 0.11em = 1.76px (16px * 0.11) - still under 2px */
         .em-edge-case {
             font-size: 16px;
+            text-decoration: none; /* Remove default underline */
         }
         .em-edge-case:focus {
             outline: 0.11em solid #0066cc; /* 1.76px - insufficient */
             outline-offset: 2px;
+            text-decoration: none; /* Ensure no underline on focus */
         }
 
         /* Image link with thin border */

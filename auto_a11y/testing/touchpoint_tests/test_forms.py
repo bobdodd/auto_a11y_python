@@ -661,38 +661,46 @@ async def test_forms(page) -> Dict[str, Any]:
                 )
                 outline_width = parse_px(field['focusOutlineWidth']) if has_outline else 0
 
-                # DETECTION LOGIC
+                # DETECTION LOGIC - Check all conditions independently
+                issues_found = []
+
+                # Check 1: Single-sided box-shadow (highest priority error)
                 if is_single_side_shadow:
-                    error_code = 'ErrInputSingleSideBoxShadow'
-                    violation_reason = 'Input field uses single-sided box-shadow for focus (violates CR 5.2.4)'
-                elif outline_is_none and not border_color_changed and max_border_change <= 0 and not box_shadow_changed:
-                    error_code = 'ErrInputNoVisibleFocus'
-                    violation_reason = 'Input field has no visible focus indicator (violates WCAG 2.4.7)'
-                elif outline_is_none and border_color_changed and max_border_change <= 0 and not box_shadow_changed:
-                    error_code = 'ErrInputColorChangeOnly'
-                    violation_reason = 'Input field focus relies solely on border color change (violates WCAG 1.4.1)'
-                elif max_border_change > 0 and max_border_change < 1.0 and not has_outline and not box_shadow_changed:
-                    error_code = 'ErrInputBorderChangeInsufficient'
-                    violation_reason = f'Input border thickens by only {max_border_change:.2f}px (needs ≥1px)'
-                elif has_outline and outline_width < 2.0:
-                    error_code = 'ErrInputOutlineWidthInsufficient'
-                    violation_reason = f'Input focus outline is {outline_width:.2f}px (WCAG 2.4.11 recommends ≥2px)'
-                elif not has_gradient:
+                    issues_found.append(('ErrInputSingleSideBoxShadow', 'Input field uses single-sided box-shadow for focus (violates CR 5.2.4)'))
+
+                # Check 2: No visible focus indicator at all
+                if outline_is_none and not border_color_changed and max_border_change <= 0 and not box_shadow_changed:
+                    issues_found.append(('ErrInputNoVisibleFocus', 'Input field has no visible focus indicator (violates WCAG 2.4.7)'))
+
+                # Check 3: Color-only change (no structural change)
+                if outline_is_none and border_color_changed and max_border_change <= 0 and not box_shadow_changed:
+                    issues_found.append(('ErrInputColorChangeOnly', 'Input field focus relies solely on border color change (violates WCAG 1.4.1)'))
+
+                # Check 4: Border change too small
+                if max_border_change > 0 and max_border_change < 1.0 and not has_outline and not box_shadow_changed:
+                    issues_found.append(('ErrInputBorderChangeInsufficient', f'Input border thickens by only {max_border_change:.2f}px (needs ≥1px)'))
+
+                # Check 5: Outline width too thin (AAA recommendation)
+                if has_outline and outline_width < 2.0:
+                    issues_found.append(('ErrInputOutlineWidthInsufficient', f'Input focus outline is {outline_width:.2f}px (WCAG 2.4.11 recommends ≥2px)'))
+
+                # Check 6: Contrast and transparency checks
+                if not has_gradient:
                     bg_color = parse_color(field['backgroundColor'])
                     if has_outline:
                         outline_color = parse_color(field['focusOutlineColor'])
+                        # Check transparency
                         if outline_color['a'] < 0.5:
-                            error_code = 'WarnInputTransparentFocus'
-                            violation_reason = f'Input focus outline is semi-transparent (alpha={outline_color["a"]:.2f})'
-                        else:
-                            contrast = get_contrast_ratio(outline_color, bg_color)
-                            if contrast < 3.0:
-                                error_code = 'ErrInputFocusContrastFail'
-                                violation_reason = f'Input focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1)'
-                            elif not border_color_changed and max_border_change <= 0 and not box_shadow_changed:
-                                error_code = 'WarnInputNoBorderOutline'
-                                violation_reason = 'Input uses outline but screen magnifier users may not see comparison'
+                            issues_found.append(('WarnInputTransparentFocus', f'Input focus outline is semi-transparent (alpha={outline_color["a"]:.2f})'))
+                        # Check contrast
+                        contrast = get_contrast_ratio(outline_color, bg_color)
+                        if contrast < 3.0:
+                            issues_found.append(('ErrInputFocusContrastFail', f'Input focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1)'))
+                        # Check outline-only warning
+                        if not border_color_changed and max_border_change <= 0 and not box_shadow_changed:
+                            issues_found.append(('WarnInputNoBorderOutline', 'Input uses outline but screen magnifier users may not see comparison'))
                     elif box_shadow_changed and focus_box_shadow:
+                        # Check box-shadow contrast
                         shadow_color_match = re.search(r'rgb\((\d+),\s*(\d+),\s*(\d+)\)', focus_box_shadow)
                         if shadow_color_match:
                             shadow_color = {'r': int(shadow_color_match.group(1)),
@@ -700,18 +708,18 @@ async def test_forms(page) -> Dict[str, Any]:
                                           'b': int(shadow_color_match.group(3)), 'a': 1.0}
                             contrast = get_contrast_ratio(shadow_color, bg_color)
                             if contrast < 3.0:
-                                error_code = 'ErrInputFocusContrastFail'
-                                violation_reason = f'Input focus box-shadow has insufficient contrast ({contrast:.2f}:1)'
-                elif has_gradient:
-                    error_code = 'WarnInputFocusGradientBackground'
-                    violation_reason = 'Input has gradient background - contrast cannot be automatically verified'
+                                issues_found.append(('ErrInputFocusContrastFail', f'Input focus box-shadow has insufficient contrast ({contrast:.2f}:1)'))
+                else:
+                    # Check 7: Gradient background warning
+                    issues_found.append(('WarnInputFocusGradientBackground', 'Input has gradient background - contrast cannot be automatically verified'))
 
-                if not error_code and has_outline and outline_width == parse_px('1px'):
+                # Check 8: Default browser focus
+                if has_outline and outline_width == parse_px('1px'):
                     if field['focusOutlineColor'] in ['rgb(0, 103, 244)', 'rgb(94, 158, 214)', 'rgb(77, 144, 254)']:
-                        error_code = 'WarnInputDefaultFocus'
-                        violation_reason = 'Input relies on default browser focus styles (inconsistent)'
+                        issues_found.append(('WarnInputDefaultFocus', 'Input relies on default browser focus styles (inconsistent)'))
 
-                if error_code:
+                # Report all issues found for this field
+                for error_code, violation_reason in issues_found:
                     result_type = 'warn' if error_code.startswith('Warn') else 'err'
                     result_list = results['warnings'] if result_type == 'warn' else results['errors']
                     result_list.append({

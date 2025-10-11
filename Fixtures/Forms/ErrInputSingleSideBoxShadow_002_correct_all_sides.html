@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputSingleSideBoxShadow - Correct: Box-Shadow on All Sides</title>
+    <meta name="expected_issues" content="">
+    <meta name="description" content="Text input fields with box-shadow focus indicators that surround all sides. These should NOT trigger ErrInputSingleSideBoxShadow.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA)">
+    <meta name="count" content="0">
+    <meta name="test_type" content="negative">
+    <meta name="touchpoint" content="forms">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* CORRECT 1: Shadow on all sides (0 0 means no offset) */
+        .shadow-all-sides:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px #0066cc;
+        }
+
+        /* CORRECT 2: Shadow with spread on all sides */
+        .shadow-spread:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px #ff6600;
+        }
+
+        /* CORRECT 3: Regular outline (not box-shadow) */
+        .regular-outline:focus {
+            outline: 2px solid #0066cc;
+        }
+
+        /* CORRECT 4: Border thickening (not box-shadow) */
+        .border-thickens {
+            border: 1px solid #ccc;
+        }
+        .border-thickens:focus {
+            outline: none;
+            border: 3px solid #0066cc;
+        }
+
+        /* CORRECT 5: Multiple shadows creating full outline */
+        .multiple-shadows:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrInputSingleSideBoxShadow - Correct Examples</h1>
+    <p>This page contains text input fields with focus indicators that properly surround all sides of the element. None of these should be flagged.</p>
+
+    <section>
+        <h2>Correct Box-Shadow Focus Indicators</h2>
+
+        <label for="input1">Correct 1: Shadow on All Sides (0 offset)</label>
+        <input type="text" id="input1" class="shadow-all-sides" placeholder="box-shadow: 0 0 0 3px #0066cc">
+
+        <label for="input2">Correct 2: Shadow with Spread</label>
+        <input type="email" id="input2" class="shadow-spread" placeholder="box-shadow: 0 0 0 4px #ff6600">
+
+        <label for="input3">Correct 3: Regular Outline (not box-shadow)</label>
+        <input type="text" id="input3" class="regular-outline" placeholder="outline: 2px solid #0066cc">
+
+        <label for="input4">Correct 4: Border Thickening</label>
+        <input type="tel" id="input4" class="border-thickens" placeholder="Border goes from 1px to 3px">
+
+        <label for="textarea1">Correct 5: Box-Shadow on All Sides</label>
+        <textarea id="textarea1" class="multiple-shadows" rows="3" placeholder="box-shadow: 0 0 0 2px #333"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 violations</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> All focus indicators properly surround the element on all sides</li>
+        </ul>
+    </footer>
+</body>
+</html>

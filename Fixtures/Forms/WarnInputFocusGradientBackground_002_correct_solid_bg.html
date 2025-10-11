@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusGradientBackground - Correct: Solid Backgrounds</title>
+    <meta name="expected_issues" content="">
+    <meta name="description" content="Text input fields with solid background colors where contrast can be reliably measured. These should NOT trigger WarnInputFocusGradientBackground.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)">
+    <meta name="count" content="0">
+    <meta name="test_type" content="negative">
+    <meta name="touchpoint" content="forms">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* CORRECT 1: Solid white background */
+        .solid-white {
+            background: white;
+        }
+        .solid-white:focus {
+            outline: 2px solid #0066cc;
+        }
+
+        /* CORRECT 2: Solid light gray background */
+        .solid-gray {
+            background: #f0f0f0;
+        }
+        .solid-gray:focus {
+            outline: 2px solid #333333;
+        }
+
+        /* CORRECT 3: Solid light blue background */
+        .solid-blue {
+            background: #e6f2ff;
+        }
+        .solid-blue:focus {
+            outline: 3px solid #0056b3;
+        }
+
+        /* CORRECT 4: Transparent (inherits parent solid color) */
+        .transparent-bg {
+            background: transparent;
+        }
+        .transparent-bg:focus {
+            outline: 2px solid #0066cc;
+        }
+
+        /* CORRECT 5: Default background (solid) */
+        .default-bg:focus {
+            outline: 2px solid #ff6600;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusGradientBackground - Correct Examples</h1>
+    <p>This page contains text input fields with solid background colors. Contrast can be reliably measured against solid backgrounds. None of these should generate warnings.</p>
+
+    <section>
+        <h2>Solid Background Inputs</h2>
+
+        <label for="input1">Correct 1: Solid White Background</label>
+        <input type="text" id="input1" class="solid-white" placeholder="background: white">
+
+        <label for="input2">Correct 2: Solid Light Gray Background</label>
+        <input type="email" id="input2" class="solid-gray" placeholder="background: #f0f0f0">
+
+        <label for="input3">Correct 3: Solid Light Blue Background</label>
+        <input type="text" id="input3" class="solid-blue" placeholder="background: #e6f2ff">
+
+        <label for="input4">Correct 4: Transparent (Inherits Solid)</label>
+        <input type="tel" id="input4" class="transparent-bg" placeholder="background: transparent">
+
+        <label for="textarea1">Correct 5: Default Background</label>
+        <textarea id="textarea1" class="default-bg" rows="3" placeholder="No background specified"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 warnings</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)</li>
+            <li><strong>Why:</strong> All backgrounds are solid colors, allowing reliable automated contrast measurement</li>
+            <li><strong>Best Practice:</strong> Solid backgrounds are RECOMMENDED for reliable contrast verification</li>
+        </ul>
+    </footer>
+</body>
+</html>

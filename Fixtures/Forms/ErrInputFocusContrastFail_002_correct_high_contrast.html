@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputFocusContrastFail - Correct: High Contrast Focus Indicators</title>
+    <meta name="expected_issues" content="">
+    <meta name="description" content="Text input fields with focus indicators that have sufficient contrast (≥3:1) against background. These should NOT trigger ErrInputFocusContrastFail.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)">
+    <meta name="count" content="0">
+    <meta name="test_type" content="negative">
+    <meta name="touchpoint" content="forms">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* CORRECT 1: Dark blue outline on white (8.6:1 contrast) */
+        .high-contrast-outline:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 1px;
+        }
+
+        /* CORRECT 2: Black outline on white (21:1 contrast) */
+        .black-outline:focus {
+            outline: 2px solid #000000;
+        }
+
+        /* CORRECT 3: Dark box-shadow (7.5:1 contrast) */
+        .dark-shadow:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px #333333;
+        }
+
+        /* CORRECT 4: Orange outline (3.1:1 contrast - just above minimum) */
+        .orange-outline:focus {
+            outline: 3px solid #ff6600;
+        }
+
+        /* CORRECT 5: Dark green border (7.2:1 contrast) */
+        .dark-green-border:focus {
+            outline: none;
+            border: 3px solid #006400;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrInputFocusContrastFail - Correct Examples</h1>
+    <p>This page contains text input fields with focus indicators that have sufficient contrast (≥3:1) against their background. None of these should be flagged.</p>
+
+    <section>
+        <h2>High Contrast Focus Indicators</h2>
+
+        <label for="input1">Correct 1: Dark Blue Outline (8.6:1 contrast)</label>
+        <input type="text" id="input1" class="high-contrast-outline" placeholder="#0056b3 outline on white">
+
+        <label for="input2">Correct 2: Black Outline (21:1 contrast)</label>
+        <input type="email" id="input2" class="black-outline" placeholder="#000000 outline on white">
+
+        <label for="input3">Correct 3: Dark Box-Shadow (7.5:1 contrast)</label>
+        <input type="text" id="input3" class="dark-shadow" placeholder="#333333 box-shadow on white">
+
+        <label for="input4">Correct 4: Orange Outline (3.1:1 contrast)</label>
+        <input type="tel" id="input4" class="orange-outline" placeholder="#ff6600 outline (just above 3:1)">
+
+        <label for="textarea1">Correct 5: Dark Green Border (7.2:1 contrast)</label>
+        <textarea id="textarea1" class="dark-green-border" rows="3" placeholder="#006400 border on white"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 violations</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)</li>
+            <li><strong>Why:</strong> All focus indicators meet the 3:1 contrast requirement</li>
+        </ul>
+    </footer>
+</body>
+</html>

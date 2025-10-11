@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputNoBorderOutline - Correct: Border or Box-Shadow Changes</title>
+    <meta name="expected_issues" content="">
+    <meta name="description" content="Text input fields with border thickening or box-shadow focus indicators (ideal for screen magnifier users). These should NOT trigger WarnInputNoBorderOutline.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA)">
+    <meta name="count" content="0">
+    <meta name="test_type" content="negative">
+    <meta name="touchpoint" content="forms">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+
+        /* CORRECT 1: Border thickening */
+        .border-thickens {
+            border: 1px solid #ccc;
+        }
+        .border-thickens:focus {
+            outline: none;
+            border: 3px solid #0066cc;
+        }
+
+        /* CORRECT 2: Box-shadow addition */
+        .box-shadow-focus:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px #0066cc;
+        }
+
+        /* CORRECT 3: Border AND outline (belt and suspenders) */
+        .border-and-outline {
+            border: 1px solid #ccc;
+        }
+        .border-and-outline:focus {
+            border: 2px solid #0066cc;
+            outline: 2px solid #0066cc;
+            outline-offset: 1px;
+        }
+
+        /* CORRECT 4: Box-shadow AND outline */
+        .shadow-and-outline:focus {
+            box-shadow: 0 0 0 2px #ff6600;
+            outline: 2px solid #ff6600;
+            outline-offset: 2px;
+        }
+
+        /* CORRECT 5: Border color AND thickness change */
+        .border-full-change {
+            border: 1px solid #ccc;
+        }
+        .border-full-change:focus {
+            outline: none;
+            border: 3px solid #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputNoBorderOutline - Correct Examples</h1>
+    <p>This page contains text input fields with border or box-shadow focus indicators, which are ideal for screen magnifier users. None of these should generate warnings.</p>
+
+    <section>
+        <h2>Recommended Focus Indicator Methods</h2>
+
+        <label for="input1">Correct 1: Border Thickening (1px → 3px)</label>
+        <input type="text" id="input1" class="border-thickens" placeholder="Border increases on focus">
+
+        <label for="input2">Correct 2: Box-Shadow Addition</label>
+        <input type="email" id="input2" class="box-shadow-focus" placeholder="box-shadow: 0 0 0 3px #0066cc">
+
+        <label for="input3">Correct 3: Border AND Outline (double indicator)</label>
+        <input type="text" id="input3" class="border-and-outline" placeholder="Both border and outline change">
+
+        <label for="input4">Correct 4: Box-Shadow AND Outline</label>
+        <input type="tel" id="input4" class="shadow-and-outline" placeholder="Double focus indicators">
+
+        <label for="textarea1">Correct 5: Border Color + Thickness</label>
+        <textarea id="textarea1" class="border-full-change" rows="3" placeholder="Border changes significantly"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 warnings</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> All inputs use border or box-shadow changes, which are visible to screen magnifier users viewing a single field</li>
+            <li><strong>Best Practice:</strong> These methods are RECOMMENDED over outline-only approaches</li>
+        </ul>
+    </footer>
+</body>
+</html>

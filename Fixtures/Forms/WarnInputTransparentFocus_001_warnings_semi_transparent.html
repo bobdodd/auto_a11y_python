@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputTransparentFocus - Warnings: Semi-Transparent Focus Indicators</title>
+    <meta name="expected_issues" content="WarnInputTransparentFocus">
+    <meta name="description" content="Text input fields with semi-transparent focus indicators (alpha < 0.5). Transparency reduces visibility and may cause contrast issues depending on background.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)">
+    <meta name="count" content="4">
+    <meta name="test_type" content="positive">
+    <meta name="touchpoint" content="forms">
+    <meta name="severity" content="warning">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* WARNING 1: Outline with 30% opacity */
+        .transparent-30:focus {
+            outline: 3px solid rgba(0, 102, 204, 0.3);
+        }
+
+        /* WARNING 2: Box-shadow with 20% opacity */
+        .shadow-transparent:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.2);
+        }
+
+        /* WARNING 3: Outline with 40% opacity */
+        .transparent-40:focus {
+            outline: 2px solid rgba(51, 51, 51, 0.4);
+        }
+
+        /* WARNING 4: Very transparent box-shadow (10% opacity) */
+        .very-transparent:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputTransparentFocus - Warnings</h1>
+    <p>This page contains text input fields with semi-transparent focus indicators (alpha < 0.5). Transparency reduces visibility and can cause contrast issues. Opaque focus indicators (alpha ≥ 0.5, ideally 1.0) are RECOMMENDED for maximum visibility. All 4 inputs should generate warnings.</p>
+
+    <section>
+        <h2>Semi-Transparent Focus Indicators</h2>
+
+        <label for="input1">Warning 1: Outline with 30% Opacity</label>
+        <input type="text" id="input1" class="transparent-30" placeholder="rgba(0, 102, 204, 0.3)">
+
+        <label for="input2">Warning 2: Box-Shadow with 20% Opacity</label>
+        <input type="email" id="input2" class="shadow-transparent" placeholder="rgba(255, 102, 0, 0.2)">
+
+        <label for="input3">Warning 3: Outline with 40% Opacity</label>
+        <input type="text" id="input3" class="transparent-40" placeholder="rgba(51, 51, 51, 0.4)">
+
+        <label for="textarea1">Warning 4: Very Transparent (10% Opacity)</label>
+        <textarea id="textarea1" class="very-transparent" rows="3" placeholder="rgba(0, 102, 204, 0.1)"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #fffacd; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> WarnInputTransparentFocus</li>
+            <li><strong>Count:</strong> 4 warnings</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)</li>
+            <li><strong>Why:</strong> Semi-transparent focus indicators (alpha < 0.5) have reduced visibility and may not meet contrast requirements depending on what's behind them</li>
+            <li><strong>Alpha Values:</strong>
+                <ul>
+                    <li>0.0 - 0.4: Very transparent (poor visibility)</li>
+                    <li>0.5 - 0.7: Semi-transparent (warning threshold)</li>
+                    <li>0.8 - 1.0: Nearly/fully opaque (recommended)</li>
+                </ul>
+            </li>
+            <li><strong>Recommendation:</strong> Use fully opaque colors (alpha = 1.0) for maximum visibility</li>
+            <li><strong>Note:</strong> Transparency may cause contrast failures on certain backgrounds</li>
+        </ul>
+    </footer>
+</body>
+</html>

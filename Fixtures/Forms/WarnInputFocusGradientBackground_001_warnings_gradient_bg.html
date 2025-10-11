@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusGradientBackground - Warnings: Gradient Backgrounds</title>
+    <meta name="expected_issues" content="WarnInputFocusGradientBackground">
+    <meta name="description" content="Text input fields with gradient backgrounds where focus indicator contrast cannot be reliably measured. Automated tools cannot verify 3:1 contrast across all gradient colors.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)">
+    <meta name="count" content="4">
+    <meta name="test_type" content="positive">
+    <meta name="touchpoint" content="forms">
+    <meta name="severity" content="warning">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* WARNING 1: Gradient background white to gray */
+        .gradient-white-gray {
+            background: linear-gradient(to right, white, #e0e0e0);
+        }
+        .gradient-white-gray:focus {
+            outline: 2px solid #999999;
+        }
+
+        /* WARNING 2: Gradient background blue shades */
+        .gradient-blue {
+            background: linear-gradient(to bottom, #e6f2ff, #cce5ff);
+        }
+        .gradient-blue:focus {
+            outline: 3px solid #0066cc;
+        }
+
+        /* WARNING 3: Gradient background with opacity */
+        .gradient-opacity {
+            background: linear-gradient(135deg, rgba(255,255,255,1), rgba(200,200,200,0.5));
+        }
+        .gradient-opacity:focus {
+            outline: 2px solid #666666;
+        }
+
+        /* WARNING 4: Multi-color gradient */
+        .gradient-multi {
+            background: linear-gradient(to right, #fff9f0, #ffe4d0, #ffd4b0);
+        }
+        .gradient-multi:focus {
+            outline: 2px solid #ff6600;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusGradientBackground - Warnings</h1>
+    <p>This page contains text input fields with gradient backgrounds. Automated tools cannot reliably measure contrast across all gradient colors. Manual verification is required to ensure focus indicators maintain 3:1 contrast against ALL background colors in the gradient. All 4 inputs should generate warnings.</p>
+
+    <section>
+        <h2>Gradient Background Inputs</h2>
+
+        <label for="input1">Warning 1: White to Gray Gradient</label>
+        <input type="text" id="input1" class="gradient-white-gray" placeholder="Gradient: white → #e0e0e0">
+
+        <label for="input2">Warning 2: Blue Gradient Background</label>
+        <input type="email" id="input2" class="gradient-blue" placeholder="Gradient: #e6f2ff → #cce5ff">
+
+        <label for="input3">Warning 3: Gradient with Opacity</label>
+        <input type="text" id="input3" class="gradient-opacity" placeholder="Gradient with transparency">
+
+        <label for="textarea1">Warning 4: Multi-Color Gradient</label>
+        <textarea id="textarea1" class="gradient-multi" rows="3" placeholder="3-color gradient"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #fffacd; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> WarnInputFocusGradientBackground</li>
+            <li><strong>Count:</strong> 4 warnings</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)</li>
+            <li><strong>Why:</strong> Automated tools cannot measure contrast against gradient backgrounds - contrast may be sufficient at one end but insufficient at the other</li>
+            <li><strong>Action Required:</strong> Manually verify focus indicator has ≥3:1 contrast against ALL colors in the gradient</li>
+            <li><strong>Recommendation:</strong> Use solid background colors when possible, or ensure focus indicators have very high contrast (e.g., black on light gradients, white on dark gradients)</li>
+            <li><strong>Note:</strong> This is a limitation of automated testing, not necessarily a WCAG violation</li>
+        </ul>
+    </footer>
+</body>
+</html>

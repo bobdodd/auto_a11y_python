@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputOutlineWidthInsufficient - Correct: Outline Width ≥2px</title>
+    <meta name="expected_issues" content="">
+    <meta name="description" content="Text input fields with outline focus indicators of 2px or greater width. These should NOT trigger ErrInputOutlineWidthInsufficient.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA), 2.4.11 Focus Appearance (Level AAA)">
+    <meta name="count" content="0">
+    <meta name="test_type" content="negative">
+    <meta name="touchpoint" content="forms">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* CORRECT 1: 2px outline (minimum recommended) */
+        .two-px-outline:focus {
+            outline: 2px solid #0066cc;
+        }
+
+        /* CORRECT 2: 3px outline */
+        .three-px-outline:focus {
+            outline: 3px solid #ff6600;
+        }
+
+        /* CORRECT 3: 4px outline */
+        .four-px-outline:focus {
+            outline: 4px solid #0066cc;
+        }
+
+        /* CORRECT 4: Uses border instead of outline */
+        .uses-border {
+            border: 1px solid #ccc;
+        }
+        .uses-border:focus {
+            outline: none;
+            border: 3px solid #0066cc;
+        }
+
+        /* CORRECT 5: Uses box-shadow instead of outline */
+        .uses-shadow:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrInputOutlineWidthInsufficient - Correct Examples</h1>
+    <p>This page contains text input fields with outline focus indicators of 2px or greater, or alternative focus methods. None of these should be flagged.</p>
+
+    <section>
+        <h2>Sufficient Outline Width</h2>
+
+        <label for="input1">Correct 1: 2px Outline (Minimum Recommended)</label>
+        <input type="text" id="input1" class="two-px-outline" placeholder="outline: 2px solid #0066cc">
+
+        <label for="input2">Correct 2: 3px Outline</label>
+        <input type="email" id="input2" class="three-px-outline" placeholder="outline: 3px solid #ff6600">
+
+        <label for="input3">Correct 3: 4px Outline</label>
+        <input type="text" id="input3" class="four-px-outline" placeholder="outline: 4px solid #0066cc">
+
+        <label for="input4">Correct 4: Border Thickening (not outline)</label>
+        <input type="tel" id="input4" class="uses-border" placeholder="Border 1px → 3px">
+
+        <label for="textarea1">Correct 5: Box-Shadow (not outline)</label>
+        <textarea id="textarea1" class="uses-shadow" rows="3" placeholder="box-shadow: 0 0 0 3px"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 violations</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA), 2.4.11 Focus Appearance (Level AAA)</li>
+            <li><strong>Why:</strong> All outlines are ≥2px, or alternative focus methods (border/box-shadow) are used</li>
+        </ul>
+    </footer>
+</body>
+</html>

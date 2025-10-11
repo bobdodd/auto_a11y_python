@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Elements with tabindex and proper focus indicators</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrTabindexNoVisibleFocus_002_correct_with_indicator",
+        "issueId": "ErrTabindexNoVisibleFocus",
+        "expectedViolationCount": 0,
+        "expectedPassCount": 5,
+        "description": "Non-interactive elements with tabindex that have proper visible focus indicators",
+        "wcag": "2.4.7",
+        "impact": "High"
+    }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        /* Good: visible outline on focus */
+        .card:focus {
+            outline: 3px solid #0066cc;
+            outline-offset: 2px;
+        }
+        .interactive-div {
+            background: #e0e0e0;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        /* Good: box-shadow focus indicator */
+        .interactive-div:focus {
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5);
+            outline: none; /* This is OK because we have box-shadow alternative */
+        }
+        .menu-item {
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+        }
+        /* Good: border change on focus */
+        .menu-item:focus {
+            border: 3px solid #0066cc;
+        }
+        .para-focus {
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        /* Good: background color + outline */
+        .para-focus:focus {
+            background-color: #e6f2ff;
+            outline: 2px solid #0066cc;
+        }
+        .section-focus {
+            padding: 20px;
+            background: #f0f0f0;
+            margin: 10px 0;
+            border: 2px solid transparent;
+        }
+        /* Good: border color change + increased width */
+        .section-focus:focus {
+            border: 3px solid #0066cc;
+            background: #e6f2ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tabindex Elements With Proper Focus Indicators</h1>
+    <p>These elements have tabindex and visible focus indicators (correct):</p>
+
+    <!-- Correct 1: div with tabindex and outline focus -->
+    <div class="card" tabindex="0">
+        <h2>Interactive Card 1</h2>
+        <p>This div has tabindex="0" and a 3px blue outline on focus.</p>
+    </div>
+
+    <!-- Correct 2: span with tabindex and box-shadow focus -->
+    <span class="interactive-div" tabindex="0">
+        Click me! I have a box-shadow focus indicator.
+    </span>
+
+    <!-- Correct 3: div with tabindex="-1" and border change -->
+    <div class="menu-item" tabindex="-1" id="menu-1">
+        Menu Item (programmatically focusable, border changes on focus)
+    </div>
+
+    <!-- Correct 4: p tag with tabindex and background + outline -->
+    <p class="para-focus" tabindex="0">
+        This paragraph has both background color change and outline on focus.
+    </p>
+
+    <!-- Correct 5: section with tabindex and border + background -->
+    <section class="section-focus" tabindex="0">
+        <h3>Focusable Section</h3>
+        <p>This section has border and background changes on focus.</p>
+    </section>
+
+    <script>
+        // Make elements interactive with click handlers
+        document.querySelectorAll('[tabindex]').forEach(el => {
+            el.addEventListener('click', () => {
+                console.log('Element clicked:', el.textContent.substring(0, 30));
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1612,14 +1612,14 @@ class IssueCatalog:
         "ErrTitleAttrFound": {
             "id": "ErrTitleAttrFound",
             "type": "Error",
-            "impact": "Low",
-            "wcag": ["3.3.2", "4.1.2"],
-            "wcag_full": "3.3.2, 4.1.2",
+            "impact": "Medium",
+            "wcag": ["5.2.4", "4.1.2"],
+            "wcag_full": "5.2.4 Accessible Documentation (Conformance Requirement), 4.1.2 Name, Role, Value (Level A)",
             "category": "title",
-            "description": "Title attribute used for important information",
-            "why_it_matters": "Title attributes are not reliably accessible",
-            "who_it_affects": "Mobile users, keyboard users, some screen readers",
-            "how_to_fix": "Use visible text or proper labels instead"
+            "description": "Title attribute used - fundamentally inaccessible to assistive technology",
+            "why_it_matters": "Title attributes fail WCAG Conformance requirement 5.2.4. For screen magnifier users at high magnification, tooltip content goes off-screen and disappears when mouse moves, making content completely inaccessible",
+            "who_it_affects": "Screen magnifier users, mobile and touch screen users, keyboard-only users, screen reader users, users with motor or cognitive disabilities",
+            "how_to_fix": "Never use title attributes. Use visible text, proper <label> elements for forms, aria-label for icons, or visible helper text"
         },
         "ErrEmptyTitleAttr": {
             "id": "ErrEmptyTitleAttr",

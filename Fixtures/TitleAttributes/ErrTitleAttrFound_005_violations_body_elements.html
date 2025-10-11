@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTitleAttrFound - Violations: Title on Body Elements</title>
+
+    <!-- Title in head is fine -->
+    <link rel="alternate" href="/feed.xml" type="application/rss+xml" title="RSS Feed">
+
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTitleAttrFound_005_violations_body_elements",
+    "issueId": "ErrTitleAttrFound",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 2,
+    "description": "Title attributes on body elements violate WCAG 5.2.4 - only valid in head and on iframes",
+    "wcag": "5.2.4, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <section>
+            <h2>Features</h2>
+
+            <!-- Link with title in body - VIOLATION -->
+            <p data-expected-violation="true"
+               data-violation-id="ErrTitleAttrFound"
+               data-violation-reason="Title attribute on link in body section. Fails WCAG 5.2.4 - screen magnifier users cannot read tooltips at high magnification. Use visible text instead.">
+                <a href="/details"
+                   title="Click here for more detailed product specifications">
+                    View Specifications
+                </a>
+            </p>
+
+            <!-- Abbreviation with title in body - VIOLATION -->
+            <p data-expected-violation="true"
+               data-violation-id="ErrTitleAttrFound"
+               data-violation-reason="Title attribute on abbreviation in body. Not accessible to screen magnifier users or mobile users. Provide expansion in visible text instead.">
+                Supports <abbr title="Hypertext Transfer Protocol Secure">HTTPS</abbr> connections.
+            </p>
+
+            <!-- Span with title in body - VIOLATION -->
+            <p>
+                Processing time:
+                <span title="Typical processing time is 2-3 business days"
+                      data-expected-violation="true"
+                      data-violation-id="ErrTitleAttrFound"
+                      data-violation-reason="Title attribute on span element in body. Tooltip content inaccessible to many users. Make this information visible.">
+                    2-3 days
+                </span>
+            </p>
+        </section>
+
+        <section>
+            <h2>Embedded Video</h2>
+            <!-- Iframe with title - CORRECT (title required for iframes) -->
+            <iframe src="https://www.youtube.com/embed/example"
+                    title="Product demonstration video showing key features"
+                    width="560"
+                    height="315"
+                    data-expected-pass="true"
+                    data-pass-reason="Title attribute on iframe is correct and required for accessible name.">
+            </iframe>
+
+            <p data-expected-pass="true"
+               data-pass-reason="Regular paragraph with no title attribute - correct implementation.">
+                Watch our product demonstration above to see how easy it is to use.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

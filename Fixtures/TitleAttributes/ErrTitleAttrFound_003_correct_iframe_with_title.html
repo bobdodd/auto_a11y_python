@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTitleAttrFound - Correct: Iframe with Title</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTitleAttrFound_003_correct_iframe_with_title",
+    "issueId": "ErrTitleAttrFound",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Iframes with title attributes are correct - title is required for iframe accessible name",
+    "wcag": "5.2.4, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Embedded Content</h1>
+
+    <main>
+        <section>
+            <h2>YouTube Video</h2>
+            <!-- Iframe with descriptive title - CORRECT (title required for iframes) -->
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                    title="Rick Astley - Never Gonna Give You Up (Official Music Video)"
+                    width="560"
+                    height="315"
+                    data-expected-pass="true"
+                    data-pass-reason="Iframe uses title attribute correctly to provide accessible name. Title attribute is REQUIRED on iframes per WCAG 4.1.2. This is the proper and necessary use of title attribute - iframes need accessible names and title is the standard mechanism.">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Embedded Map</h2>
+            <!-- Iframe with title for map - CORRECT -->
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18..."
+                    title="Google Map showing the location of Central Park in New York City"
+                    width="600"
+                    height="450"
+                    data-expected-pass="true"
+                    data-pass-reason="Iframe with descriptive title attribute for embedded map. Title is required to give screen reader users context about the iframe content. This is proper accessible markup for embedded content.">
+            </iframe>
+        </section>
+
+        <section>
+            <h2>Regular Content (No Title Attributes)</h2>
+            <p>This paragraph has no title attribute, which is correct for regular content.</p>
+            <a href="/learn-more">Learn More</a>
+        </section>
+    </main>
+</body>
+</html>

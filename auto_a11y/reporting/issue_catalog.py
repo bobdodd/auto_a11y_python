@@ -1645,6 +1645,18 @@ class IssueCatalog:
             "who_it_affects": "Screen magnifier users, mobile users, keyboard-only users, users with motor disabilities",
             "how_to_fix": "Never use title attributes on body elements. Remove titles from non-focusable containers (div, span). Remove redundant titles. Use visible text, proper labels, or visible helper text instead"
         },
+        "WarnVagueTitleAttribute": {
+            "id": "WarnVagueTitleAttribute",
+            "type": "Warning",
+            "impact": "Low",
+            "wcag": ["5.2.4", "3.3.2"],
+            "wcag_full": "5.2.4 Accessible Documentation (Conformance Requirement), 3.3.2 Labels or Instructions (Level A)",
+            "category": "title",
+            "description": "Title attribute contains vague or generic text that provides no useful information",
+            "why_it_matters": "Title attributes fundamentally fail WCAG 5.2.4 - screen magnifier users cannot read tooltips as content goes off-screen. Vague titles like 'Click here', 'Link', 'Button' compound the problem by providing no value even for users who can access them",
+            "who_it_affects": "Screen magnifier users (fundamental inaccessibility), mobile users, keyboard users, all users who would benefit from clear information",
+            "how_to_fix": "Never use title attributes (they fail WCAG 5.2.4). Remove title entirely and use visible text, proper labels, aria-label, or visible helper text instead"
+        },
         "ErrIframeWithNoTitleAttr": {
             "id": "ErrIframeWithNoTitleAttr",
             "type": "Error",

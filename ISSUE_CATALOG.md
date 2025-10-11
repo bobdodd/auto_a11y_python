@@ -3323,12 +3323,12 @@ How to fix: Add aria-label or aria-labelledby to region landmarks.
 ID: WarnVagueTitleAttribute
 Type: Warning
 Impact: Low
-WCAG: 3.3.2 Labels or Instructions (Level A)
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 3.3.2 Labels or Instructions (Level A)
 Touchpoint: title_attributes
-Description: Title attribute contains vague or redundant information
-Why it matters: Vague titles don't provide useful supplementary information.
-Who it affects: Users who rely on tooltips for additional context.
-How to fix: Make title attributes informative or remove if redundant with visible text.
+Description: Title attribute contains vague or generic text that provides no useful information
+Why it matters: Title attributes fundamentally fail WCAG 5.2.4 - screen magnifier users at high magnification cannot read tooltips as content goes off-screen and disappears when mouse moves. This warning flags titles with particularly uninformative content like "Click here", "Link", "Button", or other generic phrases. While all title attributes are problematic due to magnification issues, vague titles compound the problem by providing no value even for users who can access them. This represents poor quality content that demonstrates misunderstanding of accessible design
+Who it affects: Screen magnifier users at high magnification (fundamental inaccessibility), mobile and touch users (no hover), keyboard users (inconsistent access), and all users who would benefit from clear, descriptive supplementary information but instead get generic phrases
+How to fix: Never use title attributes in the first place (they fail WCAG 5.2.4). If you must use them despite accessibility concerns, at minimum avoid vague generic phrases like "Click here", "Link", or "Button". Better solution: Remove title attributes entirely and use visible text, proper labels, aria-label for interactive elements, or visible helper text. Don't hide important information in tooltips that many users cannot access
 
 ---
 

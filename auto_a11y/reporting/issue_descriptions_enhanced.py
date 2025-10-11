@@ -2602,13 +2602,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add aria-label or aria-labelledby to region landmarks."
         },
         'WarnVagueTitleAttribute': {
-            'title': "Title attribute contains vague or redundant information",
-            'what': "Title attribute contains vague or redundant information",
-            'why': "Vague titles don\'t provide useful supplementary information.",
-            'who': "Users who rely on tooltips for additional context.",
+            'title': "Title attribute contains vague or generic text that provides no useful information",
+            'what': "Title attribute contains vague or generic phrases like 'Click here', 'Link', 'Button', 'Read more', or other uninformative text that doesn't add value",
+            'why': "Title attributes fundamentally fail WCAG Conformance requirement 5.2.4 as they are inaccessible to screen magnifier users - at high magnification, tooltip content extends off-screen and disappears when mouse moves, making content completely inaccessible. This warning flags titles with particularly uninformative vague or generic content. While all title attributes are problematic due to magnification issues, vague titles compound the problem by providing no useful information even for users who can access them. Generic phrases like 'Click here', 'Link', or 'Button' represent especially poor quality that demonstrates misunderstanding of accessible design principles",
+            'who': "Screen magnifier users at high magnification (fundamental inaccessibility - tooltip goes off-screen), mobile and touch screen users (no hover capability), keyboard-only users (inconsistent access to tooltips), and all users who would benefit from clear, descriptive supplementary information but instead get generic unhelpful phrases",
             'impact': ImpactScale.LOW.value,
-            'wcag': ['3.3.2'],
-            'remediation': "Make title attributes informative or remove if redundant with visible text."
+            'wcag': ['5.2.4', '3.3.2'],
+            'remediation': "Never use title attributes in the first place - they fundamentally fail WCAG 5.2.4 due to screen magnifier inaccessibility. Best solution: Remove the title attribute entirely and use visible text, proper <label> elements for form fields, aria-label for interactive elements like icon buttons, or visible helper text with aria-describedby for supplementary information. If you absolutely must use title attributes despite their accessibility problems (not recommended), at minimum avoid vague generic phrases like 'Click here', 'Link', 'Button', 'Read more', 'Info', 'Details'. But the real solution is to not hide information in tooltips that many users cannot access - make all important information visible and accessible to everyone"
         },
         'WarnVideoAutoplay': {
             'title': "Video has unmuted autoplay",

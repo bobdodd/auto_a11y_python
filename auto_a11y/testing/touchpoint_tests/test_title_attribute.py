@@ -278,6 +278,38 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 results['elements_failed'] += 1
                 continue  # Don't also emit ErrTitleAttrFound for the same element
 
+            # WarnVagueTitleAttribute: Check for vague/generic title content (educational warning)
+            # Common vague/generic phrases that don't add value
+            vague_patterns = [
+                'click here', 'click', 'here', 'link', 'button', 'read more',
+                'more', 'info', 'information', 'details', 'learn more',
+                'see more', 'view', 'open', 'go', 'navigate'
+            ]
+
+            title_lower = title_value.lower().strip()
+
+            # Check if title is just a generic phrase
+            is_vague = title_lower in vague_patterns
+
+            # Check if title is just the element type
+            if tag.lower() in title_lower and len(title_lower) < 15:
+                is_vague = True
+
+            if is_vague:
+                results['warnings'].append({
+                    'err': 'WarnVagueTitleAttribute',
+                    'type': 'warn',
+                    'cat': 'title',
+                    'element': tag,
+                    'xpath': element['xpath'],
+                    'html': element['html'],
+                    'description': f'Title attribute contains vague or generic text ("{title_value}") that provides no useful information. Note: Title attributes fundamentally fail WCAG 5.2.4 - screen magnifier users at high magnification cannot read tooltips as content goes off-screen. However, if you must use titles (not recommended), at least make them informative rather than generic',
+                    'titleValue': title_value,
+                    'visibleText': visible_text[:100] if visible_text else None
+                })
+                results['elements_failed'] += 1
+                continue  # Don't also emit ErrTitleAttrFound for the same element
+
             # ErrTitleAttrFound: Title attribute used - fundamentally inaccessible
             # Fails WCAG Conformance requirement 5.2.4 - not accessible to screen magnifier users
             # At high magnification, tooltip content goes off-screen and disappears when mouse moves

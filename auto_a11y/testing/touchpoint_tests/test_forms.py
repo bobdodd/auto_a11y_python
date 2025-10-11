@@ -404,11 +404,329 @@ async def test_forms(page) -> Dict[str, Any]:
                 return results;
             }
         ''')
-        
+
+        # TEST INPUT FIELD FOCUS INDICATORS
+        # Extract focus styles from stylesheets for text input fields
+        input_styles = await page.evaluate('''
+            () => {
+                const inputs = [];
+                const fields = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], input[type="url"], input[type="number"], textarea, input:not([type])');
+
+                function getComputedStyleValue(element, property) {
+                    try {
+                        return window.getComputedStyle(element).getPropertyValue(property);
+                    } catch (e) {
+                        return '';
+                    }
+                }
+
+                fields.forEach((field, index) => {
+                    const normalStyle = window.getComputedStyle(field);
+
+                    // Extract focus styles from stylesheets (don't actually focus!)
+                    let focusOutlineStyle = null;
+                    let focusOutlineWidth = null;
+                    let focusOutlineColor = null;
+                    let focusOutlineOffset = null;
+                    let focusBorderWidth = null;
+                    let focusBorderTopWidth = null;
+                    let focusBorderRightWidth = null;
+                    let focusBorderBottomWidth = null;
+                    let focusBorderLeftWidth = null;
+                    let focusBorderColor = null;
+                    let focusBorderTopColor = null;
+                    let focusBoxShadow = null;
+
+                    // Check all stylesheets for :focus rules
+                    const sheets = Array.from(document.styleSheets);
+                    for (const sheet of sheets) {
+                        try {
+                            const rules = Array.from(sheet.cssRules || sheet.rules || []);
+                            for (const rule of rules) {
+                                if (rule.selectorText && rule.selectorText.includes(':focus')) {
+                                    const selector = rule.selectorText.replace(':focus', '');
+                                    try {
+                                        if (field.matches(selector)) {
+                                            if (rule.style.outlineStyle !== undefined && rule.style.outlineStyle !== '') {
+                                                focusOutlineStyle = rule.style.outlineStyle;
+                                            }
+                                            if (rule.style.outlineWidth !== undefined && rule.style.outlineWidth !== '') {
+                                                focusOutlineWidth = rule.style.outlineWidth;
+                                            }
+                                            if (rule.style.outlineColor !== undefined && rule.style.outlineColor !== '') {
+                                                focusOutlineColor = rule.style.outlineColor;
+                                            }
+                                            if (rule.style.outlineOffset !== undefined && rule.style.outlineOffset !== '') {
+                                                focusOutlineOffset = rule.style.outlineOffset;
+                                            }
+                                            if (rule.style.outline !== undefined && rule.style.outline !== '') {
+                                                const outlineValue = rule.style.outline;
+                                                if (outlineValue === 'none' || outlineValue === '0') {
+                                                    focusOutlineStyle = 'none';
+                                                    focusOutlineWidth = '0px';
+                                                } else {
+                                                    // Parse outline shorthand: "2px solid #0066cc"
+                                                    const parts = outlineValue.split(' ');
+                                                    if (parts.length >= 1 && (parts[0].includes('px') || parts[0].includes('em'))) {
+                                                        focusOutlineWidth = parts[0];
+                                                    }
+                                                    if (parts.length >= 2 && ['solid', 'dotted', 'dashed', 'double'].includes(parts[1])) {
+                                                        focusOutlineStyle = parts[1];
+                                                    }
+                                                    if (parts.length >= 3) {
+                                                        focusOutlineColor = parts[2];
+                                                    }
+                                                }
+                                            }
+                                            if (rule.style.borderWidth !== undefined && rule.style.borderWidth !== '') {
+                                                focusBorderWidth = rule.style.borderWidth;
+                                            }
+                                            if (rule.style.borderTopWidth !== undefined && rule.style.borderTopWidth !== '') {
+                                                focusBorderTopWidth = rule.style.borderTopWidth;
+                                            }
+                                            if (rule.style.borderRightWidth !== undefined && rule.style.borderRightWidth !== '') {
+                                                focusBorderRightWidth = rule.style.borderRightWidth;
+                                            }
+                                            if (rule.style.borderBottomWidth !== undefined && rule.style.borderBottomWidth !== '') {
+                                                focusBorderBottomWidth = rule.style.borderBottomWidth;
+                                            }
+                                            if (rule.style.borderLeftWidth !== undefined && rule.style.borderLeftWidth !== '') {
+                                                focusBorderLeftWidth = rule.style.borderLeftWidth;
+                                            }
+                                            if (rule.style.borderColor !== undefined && rule.style.borderColor !== '') {
+                                                focusBorderColor = rule.style.borderColor;
+                                            }
+                                            if (rule.style.borderTopColor !== undefined && rule.style.borderTopColor !== '') {
+                                                focusBorderTopColor = rule.style.borderTopColor;
+                                            }
+                                            if (rule.style.boxShadow !== undefined && rule.style.boxShadow !== '') {
+                                                focusBoxShadow = rule.style.boxShadow;
+                                            }
+                                            if (rule.style.border !== undefined && rule.style.border !== '') {
+                                                const borderValue = rule.style.border;
+                                                const parts = borderValue.split(' ');
+                                                if (parts.length >= 1) focusBorderWidth = parts[0];
+                                                if (parts.length >= 3) focusBorderColor = parts[2];
+                                            }
+                                        }
+                                    } catch (e) {
+                                        // Selector might not be valid
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                            // Cross-origin stylesheet
+                        }
+                    }
+
+                    inputs.push({
+                        index,
+                        tag: field.tagName.toLowerCase(),
+                        type: field.type || 'text',
+                        id: field.id || '',
+                        className: field.className || '',
+                        name: field.name || '',
+                        normalOutlineStyle: normalStyle.outlineStyle,
+                        normalOutlineWidth: normalStyle.outlineWidth,
+                        normalOutlineColor: normalStyle.outlineColor,
+                        normalBorderWidth: normalStyle.borderWidth,
+                        normalBorderTopWidth: normalStyle.borderTopWidth,
+                        normalBorderRightWidth: normalStyle.borderRightWidth,
+                        normalBorderBottomWidth: normalStyle.borderBottomWidth,
+                        normalBorderLeftWidth: normalStyle.borderLeftWidth,
+                        normalBorderColor: normalStyle.borderColor,
+                        normalBorderTopColor: normalStyle.borderTopColor,
+                        normalBoxShadow: normalStyle.boxShadow,
+                        backgroundColor: normalStyle.backgroundColor,
+                        backgroundImage: normalStyle.backgroundImage,
+                        focusOutlineStyle,
+                        focusOutlineWidth,
+                        focusOutlineColor,
+                        focusOutlineOffset,
+                        focusBorderWidth,
+                        focusBorderTopWidth,
+                        focusBorderRightWidth,
+                        focusBorderBottomWidth,
+                        focusBorderLeftWidth,
+                        focusBorderColor,
+                        focusBorderTopColor,
+                        focusBoxShadow
+                    });
+                });
+
+                return inputs;
+            }
+        ''')
+
+        # Process input focus indicators (Python logic)
+        if input_styles:
+            import re
+
+            def parse_px(value):
+                if not value or value == 'auto': return 0
+                try:
+                    if 'em' in value:
+                        return float(value.replace('em', '').replace('rem', '')) * 16
+                    return float(value.replace('px', ''))
+                except: return 0
+
+            def parse_color(color_str):
+                if not color_str: return {'r': 0, 'g': 0, 'b': 0, 'a': 1}
+                rgba_match = re.match(r'rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)', color_str)
+                if rgba_match:
+                    return {'r': int(rgba_match.group(1)), 'g': int(rgba_match.group(2)),
+                            'b': int(rgba_match.group(3)),
+                            'a': float(rgba_match.group(4)) if rgba_match.group(4) else 1.0}
+                return {'r': 0, 'g': 0, 'b': 0, 'a': 1}
+
+            def get_contrast_ratio(color1, color2):
+                def luminance(c):
+                    def adjust(val):
+                        val = val / 255.0
+                        return val / 12.92 if val <= 0.03928 else ((val + 0.055) / 1.055) ** 2.4
+                    return 0.2126 * adjust(c['r']) + 0.7152 * adjust(c['g']) + 0.0722 * adjust(c['b'])
+                l1 = luminance(color1)
+                l2 = luminance(color2)
+                return (max(l1, l2) + 0.05) / (min(l1, l2) + 0.05)
+
+            for field in input_styles:
+                error_code = None
+                violation_reason = None
+
+                element_id = f"#{field['id']}" if field.get('id') else (
+                    f".{field.get('className', '').split()[0]}" if field.get('className') and field.get('className').strip() else
+                    f"[name='{field.get('name', '')}']" if field.get('name') else
+                    f"{field.get('tag', 'input')}[{field.get('index', 0)}]"
+                )
+
+                has_gradient = 'gradient' in field.get('backgroundImage', '').lower()
+
+                # Check if focus outline is explicitly disabled (outline:none or 0)
+                outline_is_none = (
+                    field.get('focusOutlineStyle') == 'none' or
+                    field.get('focusOutlineWidth') == '0px'
+                )
+
+                normal_border_top = parse_px(field['normalBorderTopWidth'])
+                normal_border_right = parse_px(field['normalBorderRightWidth'])
+                normal_border_bottom = parse_px(field['normalBorderBottomWidth'])
+                normal_border_left = parse_px(field['normalBorderLeftWidth'])
+
+                focus_border_top = parse_px(field['focusBorderTopWidth'])
+                focus_border_right = parse_px(field['focusBorderRightWidth'])
+                focus_border_bottom = parse_px(field['focusBorderBottomWidth'])
+                focus_border_left = parse_px(field['focusBorderLeftWidth'])
+
+                max_border_change = max(
+                    focus_border_top - normal_border_top,
+                    focus_border_right - normal_border_right,
+                    focus_border_bottom - normal_border_bottom,
+                    focus_border_left - normal_border_left
+                )
+
+                normal_border_color = field['normalBorderColor'] or field['normalBorderTopColor']
+                focus_border_color = field['focusBorderColor'] or field['focusBorderTopColor']
+                # If focus border color is None, it means no change (use normal color)
+                if focus_border_color is None:
+                    focus_border_color = normal_border_color
+                border_color_changed = normal_border_color != focus_border_color
+
+                normal_box_shadow = field['normalBoxShadow']
+                focus_box_shadow = field['focusBoxShadow']
+                # If focus box shadow is None, it means no change (use normal shadow)
+                if focus_box_shadow is None:
+                    focus_box_shadow = normal_box_shadow
+                box_shadow_changed = normal_box_shadow != focus_box_shadow and focus_box_shadow != 'none'
+
+                is_single_side_shadow = False
+                if box_shadow_changed and focus_box_shadow and focus_box_shadow != 'none':
+                    shadow_parts = focus_box_shadow.split('rgb')
+                    if shadow_parts and shadow_parts[0] and shadow_parts[0].strip():
+                        shadow_values = shadow_parts[0].strip().split()
+                        if len(shadow_values) >= 2:
+                            h_offset = parse_px(shadow_values[0])
+                            v_offset = parse_px(shadow_values[1])
+                            is_single_side_shadow = (h_offset != 0 and v_offset == 0) or (h_offset == 0 and v_offset != 0)
+
+                has_outline = (
+                    field['focusOutlineStyle'] not in ['none', 'hidden'] and
+                    field['focusOutlineWidth'] != '0px' and
+                    parse_px(field['focusOutlineWidth']) > 0
+                )
+                outline_width = parse_px(field['focusOutlineWidth']) if has_outline else 0
+
+                # DETECTION LOGIC
+                if is_single_side_shadow:
+                    error_code = 'ErrInputSingleSideBoxShadow'
+                    violation_reason = 'Input field uses single-sided box-shadow for focus (violates CR 5.2.4)'
+                elif outline_is_none and not border_color_changed and max_border_change <= 0 and not box_shadow_changed:
+                    error_code = 'ErrInputNoVisibleFocus'
+                    violation_reason = 'Input field has no visible focus indicator (violates WCAG 2.4.7)'
+                elif outline_is_none and border_color_changed and max_border_change <= 0 and not box_shadow_changed:
+                    error_code = 'ErrInputColorChangeOnly'
+                    violation_reason = 'Input field focus relies solely on border color change (violates WCAG 1.4.1)'
+                elif max_border_change > 0 and max_border_change < 1.0 and not has_outline and not box_shadow_changed:
+                    error_code = 'ErrInputBorderChangeInsufficient'
+                    violation_reason = f'Input border thickens by only {max_border_change:.2f}px (needs ≥1px)'
+                elif has_outline and outline_width < 2.0:
+                    error_code = 'ErrInputOutlineWidthInsufficient'
+                    violation_reason = f'Input focus outline is {outline_width:.2f}px (WCAG 2.4.11 recommends ≥2px)'
+                elif not has_gradient:
+                    bg_color = parse_color(field['backgroundColor'])
+                    if has_outline:
+                        outline_color = parse_color(field['focusOutlineColor'])
+                        if outline_color['a'] < 0.5:
+                            error_code = 'WarnInputTransparentFocus'
+                            violation_reason = f'Input focus outline is semi-transparent (alpha={outline_color["a"]:.2f})'
+                        else:
+                            contrast = get_contrast_ratio(outline_color, bg_color)
+                            if contrast < 3.0:
+                                error_code = 'ErrInputFocusContrastFail'
+                                violation_reason = f'Input focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1)'
+                            elif not border_color_changed and max_border_change <= 0 and not box_shadow_changed:
+                                error_code = 'WarnInputNoBorderOutline'
+                                violation_reason = 'Input uses outline but screen magnifier users may not see comparison'
+                    elif box_shadow_changed and focus_box_shadow:
+                        shadow_color_match = re.search(r'rgb\((\d+),\s*(\d+),\s*(\d+)\)', focus_box_shadow)
+                        if shadow_color_match:
+                            shadow_color = {'r': int(shadow_color_match.group(1)),
+                                          'g': int(shadow_color_match.group(2)),
+                                          'b': int(shadow_color_match.group(3)), 'a': 1.0}
+                            contrast = get_contrast_ratio(shadow_color, bg_color)
+                            if contrast < 3.0:
+                                error_code = 'ErrInputFocusContrastFail'
+                                violation_reason = f'Input focus box-shadow has insufficient contrast ({contrast:.2f}:1)'
+                elif has_gradient:
+                    error_code = 'WarnInputFocusGradientBackground'
+                    violation_reason = 'Input has gradient background - contrast cannot be automatically verified'
+
+                if not error_code and has_outline and outline_width == parse_px('1px'):
+                    if field['focusOutlineColor'] in ['rgb(0, 103, 244)', 'rgb(94, 158, 214)', 'rgb(77, 144, 254)']:
+                        error_code = 'WarnInputDefaultFocus'
+                        violation_reason = 'Input relies on default browser focus styles (inconsistent)'
+
+                if error_code:
+                    result_type = 'warn' if error_code.startswith('Warn') else 'err'
+                    result_list = results['warnings'] if result_type == 'warn' else results['errors']
+                    result_list.append({
+                        'err': error_code,
+                        'type': result_type,
+                        'cat': 'forms',
+                        'element': field['tag'],
+                        'selector': element_id,
+                        'metadata': {
+                            'what': violation_reason,
+                            'element_type': f"{field['tag']}[type='{field['type']}']",
+                            'identifier': element_id
+                        }
+                    })
+
         return results
         
     except Exception as e:
+        import traceback
         logger.error(f"Error in test_forms: {e}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return {
             'error': str(e),
             'applicable': False,

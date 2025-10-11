@@ -409,9 +409,378 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 return results;
             }
         ''')
-        
+
+        # Additional check: Focus indicators for interactive elements (tabindex/event handlers)
+        # Extract elements with tabindex or inline event handlers and check their focus styles
+        focus_elements = await page.evaluate('''
+            () => {
+                const elements = [];
+
+                // Helper to parse color values to RGBA
+                function parseColor(colorStr) {
+                    if (!colorStr || colorStr === 'transparent') {
+                        return { r: 0, g: 0, b: 0, a: 0 };
+                    }
+                    const rgbaMatch = colorStr.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)(?:,\\s*([\\d.]+))?\\)/);
+                    if (rgbaMatch) {
+                        return {
+                            r: parseInt(rgbaMatch[1]),
+                            g: parseInt(rgbaMatch[2]),
+                            b: parseInt(rgbaMatch[3]),
+                            a: rgbaMatch[4] !== undefined ? parseFloat(rgbaMatch[4]) : 1
+                        };
+                    }
+                    const hexMatch = colorStr.match(/^#([0-9a-f]{6})$/i);
+                    if (hexMatch) {
+                        const hex = hexMatch[1];
+                        return {
+                            r: parseInt(hex.substr(0, 2), 16),
+                            g: parseInt(hex.substr(2, 2), 16),
+                            b: parseInt(hex.substr(4, 2), 16),
+                            a: 1
+                        };
+                    }
+                    return { r: 0, g: 0, b: 0, a: 1 };
+                }
+
+                // Calculate relative luminance
+                function getLuminance(color) {
+                    const rsRGB = color.r / 255;
+                    const gsRGB = color.g / 255;
+                    const bsRGB = color.b / 255;
+                    const r = rsRGB <= 0.03928 ? rsRGB / 12.92 : Math.pow((rsRGB + 0.055) / 1.055, 2.4);
+                    const g = gsRGB <= 0.03928 ? gsRGB / 12.92 : Math.pow((gsRGB + 0.055) / 1.055, 2.4);
+                    const b = bsRGB <= 0.03928 ? bsRGB / 12.92 : Math.pow((bsRGB + 0.055) / 1.055, 2.4);
+                    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                }
+
+                // Interactive tags to exclude (already natively interactive)
+                const interactiveTags = ['a', 'button', 'input', 'select', 'textarea', 'summary', 'details'];
+                const interactiveRoles = [
+                    'button', 'link', 'checkbox', 'radio', 'tab', 'menuitem',
+                    'menuitemcheckbox', 'menuitemradio', 'option', 'switch',
+                    'textbox', 'searchbox', 'slider', 'spinbutton', 'combobox',
+                    'scrollbar', 'gridcell', 'treeitem'
+                ];
+
+                // Find all elements with tabindex >= -1
+                const allElements = document.querySelectorAll('[tabindex]');
+                allElements.forEach((element) => {
+                    const tabindex = parseInt(element.getAttribute('tabindex'));
+                    if (tabindex < -1) return; // Skip non-focusable
+
+                    const tagName = element.tagName.toLowerCase();
+                    const role = element.getAttribute('role');
+
+                    // Skip semantic interactive elements
+                    if (interactiveTags.includes(tagName)) return;
+                    if (role && interactiveRoles.includes(role)) return;
+
+                    // Extract styles
+                    const computed = window.getComputedStyle(element);
+
+                    // Extract :focus styles from stylesheets
+                    let focusOutlineStyle = null;
+                    let focusOutlineWidth = null;
+                    let focusOutlineColor = null;
+                    let focusBoxShadow = null;
+                    let focusBorderWidth = null;
+                    let focusBackgroundColor = null;
+
+                    try {
+                        for (let sheet of document.styleSheets) {
+                            try {
+                                const rules = sheet.cssRules || sheet.rules;
+                                if (!rules) continue;
+
+                                for (let rule of rules) {
+                                    if (!rule.selectorText || !rule.selectorText.includes(':focus')) continue;
+
+                                    const testSelector = rule.selectorText.replace(/:focus.*?(?=[,\\s]|$)/g, '').trim();
+                                    if (!testSelector) continue;
+
+                                    try {
+                                        if (element.matches(testSelector)) {
+                                            if (rule.style.outlineStyle !== undefined && rule.style.outlineStyle !== '') {
+                                                focusOutlineStyle = rule.style.outlineStyle;
+                                            }
+                                            if (rule.style.outlineWidth !== undefined && rule.style.outlineWidth !== '') {
+                                                focusOutlineWidth = rule.style.outlineWidth;
+                                            }
+                                            if (rule.style.outlineColor !== undefined && rule.style.outlineColor !== '') {
+                                                focusOutlineColor = rule.style.outlineColor;
+                                            }
+                                            if (rule.style.outline !== undefined && rule.style.outline !== '') {
+                                                const outlineValue = rule.style.outline;
+                                                if (outlineValue === 'none' || outlineValue === '0') {
+                                                    focusOutlineStyle = 'none';
+                                                    focusOutlineWidth = '0px';
+                                                } else {
+                                                    const parts = outlineValue.split(' ');
+                                                    for (let part of parts) {
+                                                        if (part.includes('px') || part.includes('em') || part.includes('rem')) {
+                                                            focusOutlineWidth = part;
+                                                        } else if (['solid', 'dotted', 'dashed', 'double'].includes(part)) {
+                                                            focusOutlineStyle = part;
+                                                        }
+                                                    }
+                                                    const colorParts = parts.filter(p =>
+                                                        !p.match(/^\\d+(\\.\\d+)?(px|em|rem)$/) &&
+                                                        !['solid', 'dotted', 'dashed', 'double'].includes(p)
+                                                    );
+                                                    if (colorParts.length > 0) {
+                                                        focusOutlineColor = colorParts.join(' ');
+                                                    }
+                                                }
+                                            }
+                                            if (rule.style.boxShadow !== undefined && rule.style.boxShadow !== '') {
+                                                focusBoxShadow = rule.style.boxShadow;
+                                            }
+                                            if (rule.style.borderWidth !== undefined && rule.style.borderWidth !== '') {
+                                                focusBorderWidth = rule.style.borderWidth;
+                                            }
+                                            if (rule.style.backgroundColor !== undefined && rule.style.backgroundColor !== '') {
+                                                focusBackgroundColor = rule.style.backgroundColor;
+                                            }
+                                        }
+                                    } catch (e) {
+                                        // Invalid selector
+                                    }
+                                }
+                            } catch (e) {
+                                // Cross-origin stylesheet
+                            }
+                        }
+                    } catch (e) {
+                        // Error accessing stylesheets
+                    }
+
+                    // Check for inline event handlers
+                    const eventAttrs = ['onclick', 'onkeydown', 'onkeyup', 'onkeypress', 'onmousedown', 'onmouseup'];
+                    const hasInlineHandler = eventAttrs.some(attr => element.hasAttribute(attr));
+
+                    elements.push({
+                        tag: tagName,
+                        id: element.id || '',
+                        className: element.className || '',
+                        tabindex: tabindex,
+                        role: role || '',
+                        hasInlineHandler: hasInlineHandler,
+                        normalOutlineStyle: computed.outlineStyle,
+                        normalOutlineWidth: computed.outlineWidth,
+                        normalBorderWidth: computed.borderWidth,
+                        normalBoxShadow: computed.boxShadow,
+                        backgroundColor: computed.backgroundColor,
+                        backgroundImage: computed.backgroundImage,
+                        focusOutlineStyle,
+                        focusOutlineWidth,
+                        focusOutlineColor,
+                        focusBoxShadow,
+                        focusBorderWidth,
+                        focusBackgroundColor
+                    });
+                });
+
+                return elements;
+            }
+        ''')
+
+        # Process focus indicator data in Python
+        if focus_elements:
+            import re
+
+            def parse_px(value):
+                """Parse pixel value from CSS string"""
+                if not value:
+                    return 0
+                try:
+                    if isinstance(value, str):
+                        return float(value.replace('px', '').replace('em', '').replace('rem', '').strip())
+                    return float(value)
+                except:
+                    return 0
+
+            def parse_color(color_str):
+                """Parse CSS color to RGBA dict"""
+                if not color_str or color_str == 'transparent' or color_str == 'initial':
+                    return {'r': 0, 'g': 0, 'b': 0, 'a': 0}
+                match = re.match(r'rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)', color_str)
+                if match:
+                    return {
+                        'r': int(match.group(1)),
+                        'g': int(match.group(2)),
+                        'b': int(match.group(3)),
+                        'a': float(match.group(4)) if match.group(4) else 1.0
+                    }
+                match = re.match(r'#([0-9a-fA-F]{6})', color_str)
+                if match:
+                    hex_val = match.group(1)
+                    return {
+                        'r': int(hex_val[0:2], 16),
+                        'g': int(hex_val[2:4], 16),
+                        'b': int(hex_val[4:6], 16),
+                        'a': 1.0
+                    }
+                return {'r': 0, 'g': 0, 'b': 0, 'a': 1}
+
+            def get_luminance(color):
+                """Calculate relative luminance"""
+                r = color['r'] / 255.0
+                g = color['g'] / 255.0
+                b = color['b'] / 255.0
+                r = r / 12.92 if r <= 0.03928 else ((r + 0.055) / 1.055) ** 2.4
+                g = g / 12.92 if g <= 0.03928 else ((g + 0.055) / 1.055) ** 2.4
+                b = b / 12.92 if b <= 0.03928 else ((b + 0.055) / 1.055) ** 2.4
+                return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+            def get_contrast_ratio(color1, color2):
+                """Calculate contrast ratio between two colors"""
+                l1 = get_luminance(color1)
+                l2 = get_luminance(color2)
+                lighter = max(l1, l2)
+                darker = min(l1, l2)
+                return (lighter + 0.05) / (darker + 0.05)
+
+            # Process each element
+            for elem in focus_elements:
+                element_id = f"#{elem.get('id')}" if elem.get('id') else f"{elem['tag']}.{elem.get('className', '')}"
+                elem_type = 'tabindex' if elem.get('tabindex') is not None else 'handler'
+
+                # Determine error code prefix
+                code_prefix = 'ErrTabindex' if elem_type == 'tabindex' else 'ErrHandler'
+                warn_prefix = 'WarnTabindex' if elem_type == 'tabindex' else 'WarnHandler'
+
+                # Parse focus styles
+                focus_outline_style = elem.get('focusOutlineStyle')
+                focus_outline_width = parse_px(elem.get('focusOutlineWidth'))
+                focus_outline_color = elem.get('focusOutlineColor')
+                focus_box_shadow = elem.get('focusBoxShadow')
+
+                # Check if gradient background
+                bg_image = elem.get('backgroundImage', 'none')
+                has_gradient = bg_image and 'gradient' in bg_image
+
+                # Determine if element has custom focus styles
+                outline_is_none = focus_outline_style == 'none'
+                has_outline = focus_outline_style and focus_outline_style not in ['none', 'initial', ''] and focus_outline_width > 0
+                box_shadow_changed = focus_box_shadow and focus_box_shadow not in ['none', 'initial', '']
+
+                # Check for border/bg changes
+                normal_border_width = parse_px(elem.get('normalBorderWidth', '0px'))
+                focus_border_width = parse_px(elem.get('focusBorderWidth')) if elem.get('focusBorderWidth') else normal_border_width
+                border_width_changed = abs(focus_border_width - normal_border_width) > 0.5
+
+                normal_bg_color = elem.get('backgroundColor')
+                focus_bg_color = elem.get('focusBackgroundColor')
+                bg_color_changed = focus_bg_color and focus_bg_color not in ['', 'initial'] and focus_bg_color != normal_bg_color
+
+                # Run all checks independently
+                issues_found = []
+
+                # Check 1: No visible focus indicator
+                if not has_outline and not box_shadow_changed and not border_width_changed and not bg_color_changed:
+                    desc = f"Element with {'tabindex' if elem_type == 'tabindex' else 'event handler'} has no visible focus indicator"
+                    issues_found.append((f'{code_prefix}NoVisibleFocus', desc))
+
+                # Check 2: outline:none without alternative
+                if outline_is_none and not box_shadow_changed and not border_width_changed and not bg_color_changed:
+                    desc = f"Element sets outline:none without alternative focus indicator"
+                    issues_found.append((f'{code_prefix}OutlineNoneNoBoxShadow', desc))
+
+                # Check 3: Color-only change
+                if bg_color_changed and not has_outline and not box_shadow_changed and not border_width_changed:
+                    desc = f"Element focus relies solely on color change (violates WCAG 1.4.1)"
+                    issues_found.append((f'{code_prefix}ColorChangeOnly', desc))
+
+                # Check 4: Single-sided box-shadow
+                if box_shadow_changed and focus_box_shadow and focus_box_shadow != 'none':
+                    shadow_str = re.sub(r'rgba?\([^)]+\)', '', focus_box_shadow)
+                    shadow_str = re.sub(r'#[0-9a-fA-F]{3,6}', '', shadow_str)
+                    shadow_values = shadow_str.strip().split()
+                    if len(shadow_values) >= 2:
+                        try:
+                            h_offset = parse_px(shadow_values[0])
+                            v_offset = parse_px(shadow_values[1])
+                            if (h_offset != 0 and v_offset == 0) or (h_offset == 0 and v_offset != 0):
+                                desc = f"Element uses single-sided box-shadow for focus (violates CR 5.2.4)"
+                                issues_found.append((f'{code_prefix}SingleSideBoxShadow', desc))
+                        except:
+                            pass
+
+                # Check 5: Outline width insufficient (AAA)
+                if has_outline and focus_outline_width < 2.0:
+                    desc = f"Element focus outline is {focus_outline_width:.1f}px (WCAG 2.4.11 recommends ≥2px)"
+                    issues_found.append((f'{code_prefix}OutlineWidthInsufficient', desc))
+
+                # Check 6: Contrast and transparency checks
+                if not has_gradient:
+                    bg_color = parse_color(elem.get('backgroundColor'))
+
+                    if has_outline and focus_outline_color:
+                        outline_color = parse_color(focus_outline_color)
+
+                        # Check transparency
+                        if outline_color['a'] < 0.5:
+                            desc = f"Element focus outline is semi-transparent (alpha={outline_color['a']:.2f})"
+                            issues_found.append((f'{code_prefix}TransparentOutline', desc))
+
+                        # Check contrast
+                        contrast = get_contrast_ratio(outline_color, bg_color)
+                        if contrast < 3.0:
+                            desc = f"Element focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1)"
+                            issues_found.append((f'{code_prefix}FocusContrastFail', desc))
+
+                    elif box_shadow_changed and focus_box_shadow:
+                        shadow_color_match = re.search(r'rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)', focus_box_shadow)
+                        if shadow_color_match:
+                            shadow_color = {
+                                'r': int(shadow_color_match.group(1)),
+                                'g': int(shadow_color_match.group(2)),
+                                'b': int(shadow_color_match.group(3)),
+                                'a': float(shadow_color_match.group(4)) if shadow_color_match.group(4) else 1.0
+                            }
+
+                            # Check transparency
+                            if shadow_color['a'] < 0.5:
+                                desc = f"Element focus box-shadow is semi-transparent (alpha={shadow_color['a']:.2f})"
+                                issues_found.append((f'{code_prefix}TransparentOutline', desc))
+
+                            # Check contrast
+                            contrast = get_contrast_ratio(shadow_color, bg_color)
+                            if contrast < 3.0:
+                                desc = f"Element focus box-shadow has insufficient contrast ({contrast:.2f}:1)"
+                                issues_found.append((f'{code_prefix}FocusContrastFail', desc))
+
+                # Check 7: Default browser focus (no custom styles)
+                if not has_outline and not outline_is_none and not box_shadow_changed and not border_width_changed and not bg_color_changed:
+                    desc = f"Element relies on default browser focus styles (inconsistent across browsers)"
+                    issues_found.append((f'{warn_prefix}DefaultFocus', desc))
+
+                # Check 8: Outline-only (screen magnifier concern)
+                if has_outline and not box_shadow_changed and not border_width_changed and not bg_color_changed:
+                    desc = f"Element uses outline-only focus (screen magnifier users may not see it when zoomed)"
+                    issues_found.append((f'{warn_prefix}NoBorderOutline', desc))
+
+                # Report all issues found for this element
+                for error_code, violation_reason in issues_found:
+                    result_type = 'warn' if error_code.startswith('Warn') else 'err'
+                    result_list = results['warnings'] if result_type == 'warn' else results['errors']
+                    result_list.append({
+                        'err': error_code,
+                        'type': result_type,
+                        'cat': 'event_handlers',
+                        'element': elem['tag'],
+                        'selector': element_id,
+                        'metadata': {
+                            'what': violation_reason,
+                            'element_type': f"{elem['tag']}[tabindex='{elem.get('tabindex')}']" if elem_type == 'tabindex' else f"{elem['tag']}[event]",
+                            'identifier': element_id,
+                            'has_inline_handler': elem.get('hasInlineHandler', False)
+                        }
+                    })
+
         return results
-        
+
     except Exception as e:
         logger.error(f"Error in test_event_handlers: {e}")
         return {

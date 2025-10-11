@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Elements with tabindex but no focus indicator</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrTabindexNoVisibleFocus_001_violations_no_indicator",
+        "issueId": "ErrTabindexNoVisibleFocus",
+        "expectedViolationCount": 5,
+        "expectedPassCount": 0,
+        "description": "Non-interactive elements with tabindex but no visible focus indicators",
+        "wcag": "2.4.7",
+        "impact": "High"
+    }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        /* No focus styles defined - violation! */
+        .interactive-div {
+            background: #e0e0e0;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .menu-item {
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+        }
+        /* Explicitly removes focus indicator - violation! */
+        .no-outline:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tabindex Elements Without Focus Indicators</h1>
+    <p>These elements have tabindex but no visible focus indicators (violations):</p>
+
+    <!-- Violation 1: div with tabindex="0" but no focus styles -->
+    <div class="card" tabindex="0">
+        <h2>Interactive Card 1</h2>
+        <p>This div has tabindex="0" but no focus indicator defined.</p>
+    </div>
+
+    <!-- Violation 2: span with tabindex="0" but no focus styles -->
+    <span class="interactive-div" tabindex="0">
+        Click me! I'm focusable but have no visible focus indicator.
+    </span>
+
+    <!-- Violation 3: div with tabindex="-1" (programmatic focus) but no indicator -->
+    <div class="menu-item" tabindex="-1" id="menu-1">
+        Menu Item (programmatically focusable, no indicator)
+    </div>
+
+    <!-- Violation 4: p tag with tabindex and outline:none -->
+    <p class="no-outline" tabindex="0">
+        This paragraph is focusable but explicitly removes outline with :focus { outline: none }
+    </p>
+
+    <!-- Violation 5: section with tabindex, no focus styles -->
+    <section tabindex="0" style="padding: 20px; background: #f0f0f0; margin: 10px 0;">
+        <h3>Focusable Section</h3>
+        <p>This section has tabindex="0" but no focus indicator.</p>
+    </section>
+
+    <script>
+        // Make elements interactive with click handlers
+        document.querySelectorAll('[tabindex]').forEach(el => {
+            el.addEventListener('click', () => {
+                console.log('Element clicked:', el.textContent.substring(0, 30));
+            });
+        });
+    </script>
+</body>
+</html>

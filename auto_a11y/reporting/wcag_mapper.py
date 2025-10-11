@@ -116,7 +116,29 @@ WCAG_MAPPINGS = {
     'WarnLinkDefaultFocus': ['2.4.7 Focus Visible'],
     'WarnLinkFocusGradientBackground': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
     'WarnLinkTransparentOutline': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
-    
+
+    # Tabindex Interactive Element Focus Issues
+    'ErrTabindexNoVisibleFocus': ['2.4.7 Focus Visible'],
+    'ErrTabindexFocusContrastFail': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'ErrTabindexOutlineNoneNoBoxShadow': ['2.4.7 Focus Visible'],
+    'ErrTabindexSingleSideBoxShadow': ['2.4.7 Focus Visible'],
+    'ErrTabindexOutlineWidthInsufficient': ['2.4.7 Focus Visible', '2.4.11 Focus Appearance'],
+    'ErrTabindexColorChangeOnly': ['2.4.7 Focus Visible', '1.4.1 Use of Color'],
+    'ErrTabindexTransparentOutline': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnTabindexDefaultFocus': ['2.4.7 Focus Visible'],
+    'WarnTabindexNoBorderOutline': ['2.4.7 Focus Visible'],
+
+    # Event Handler Interactive Element Focus Issues
+    'ErrHandlerNoVisibleFocus': ['2.4.7 Focus Visible'],
+    'ErrHandlerFocusContrastFail': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'ErrHandlerOutlineNoneNoBoxShadow': ['2.4.7 Focus Visible'],
+    'ErrHandlerSingleSideBoxShadow': ['2.4.7 Focus Visible'],
+    'ErrHandlerOutlineWidthInsufficient': ['2.4.7 Focus Visible', '2.4.11 Focus Appearance'],
+    'ErrHandlerColorChangeOnly': ['2.4.7 Focus Visible', '1.4.1 Use of Color'],
+    'ErrHandlerTransparentOutline': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnHandlerDefaultFocus': ['2.4.7 Focus Visible'],
+    'WarnHandlerNoBorderOutline': ['2.4.7 Focus Visible'],
+
     # Language Issues
     'ErrNoPageLanguage': ['3.1.1 Language of Page'],
     'ErrInvalidLanguageCode': ['3.1.1 Language of Page'],

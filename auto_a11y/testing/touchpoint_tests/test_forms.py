@@ -465,16 +465,27 @@ async def test_forms(page) -> Dict[str, Any]:
                                                     focusOutlineStyle = 'none';
                                                     focusOutlineWidth = '0px';
                                                 } else {
-                                                    // Parse outline shorthand: "2px solid #0066cc"
+                                                    // Parse outline shorthand: "2px solid #0066cc" or "3px solid rgba(0, 102, 204, 0.3)"
+                                                    // Note: Browser may return it in different orders like "rgba(...) solid 3px"
                                                     const parts = outlineValue.split(' ');
-                                                    if (parts.length >= 1 && (parts[0].includes('px') || parts[0].includes('em'))) {
-                                                        focusOutlineWidth = parts[0];
+
+                                                    // Try to find width, style, and color from any position
+                                                    for (let part of parts) {
+                                                        if (part.includes('px') || part.includes('em') || part.includes('rem')) {
+                                                            focusOutlineWidth = part;
+                                                        } else if (['solid', 'dotted', 'dashed', 'double'].includes(part)) {
+                                                            focusOutlineStyle = part;
+                                                        }
                                                     }
-                                                    if (parts.length >= 2 && ['solid', 'dotted', 'dashed', 'double'].includes(parts[1])) {
-                                                        focusOutlineStyle = parts[1];
-                                                    }
-                                                    if (parts.length >= 3) {
-                                                        focusOutlineColor = parts[2];
+
+                                                    // Everything that's not width or style is probably color (may have commas/spaces)
+                                                    // Get the full color by filtering out width and style
+                                                    const colorParts = parts.filter(p =>
+                                                        !p.match(/^\d+(\.\d+)?(px|em|rem)$/) &&
+                                                        !['solid', 'dotted', 'dashed', 'double'].includes(p)
+                                                    );
+                                                    if (colorParts.length > 0) {
+                                                        focusOutlineColor = colorParts.join(' ');
                                                     }
                                                 }
                                             }
@@ -640,18 +651,17 @@ async def test_forms(page) -> Dict[str, Any]:
 
                 is_single_side_shadow = False
                 if box_shadow_changed and focus_box_shadow and focus_box_shadow != 'none':
-                    # Parse box-shadow: "h-offset v-offset blur spread color"
-                    # Split by rgb/rgba to get offset values, or just take first 2 tokens
-                    shadow_str = focus_box_shadow.split('rgb')[0] if 'rgb' in focus_box_shadow else focus_box_shadow
-                    # Remove hex colors like #0066cc
-                    shadow_str = re.sub(r'#[0-9a-fA-F]{3,6}', '', shadow_str)
+                    # Parse box-shadow - browser may return: "rgb(r, g, b) h v blur spread" or "h v blur spread rgb(r, g, b)"
+                    # Remove the color part entirely
+                    shadow_str = re.sub(r'rgba?\([^)]+\)', '', focus_box_shadow)  # Remove rgb() or rgba()
+                    shadow_str = re.sub(r'#[0-9a-fA-F]{3,6}', '', shadow_str)  # Remove hex colors
                     shadow_values = shadow_str.strip().split()
                     if len(shadow_values) >= 2:
                         try:
                             h_offset = parse_px(shadow_values[0])
                             v_offset = parse_px(shadow_values[1])
                             is_single_side_shadow = (h_offset != 0 and v_offset == 0) or (h_offset == 0 and v_offset != 0)
-                        except:
+                        except Exception as e:
                             is_single_side_shadow = False
 
                 has_outline = (
@@ -700,12 +710,18 @@ async def test_forms(page) -> Dict[str, Any]:
                         if not border_color_changed and max_border_change <= 0 and not box_shadow_changed:
                             issues_found.append(('WarnInputNoBorderOutline', 'Input uses outline but screen magnifier users may not see comparison'))
                     elif box_shadow_changed and focus_box_shadow:
-                        # Check box-shadow contrast
-                        shadow_color_match = re.search(r'rgb\((\d+),\s*(\d+),\s*(\d+)\)', focus_box_shadow)
+                        # Check box-shadow contrast AND transparency
+                        # Try to match rgba first, then rgb
+                        shadow_color_match = re.search(r'rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)', focus_box_shadow)
                         if shadow_color_match:
                             shadow_color = {'r': int(shadow_color_match.group(1)),
                                           'g': int(shadow_color_match.group(2)),
-                                          'b': int(shadow_color_match.group(3)), 'a': 1.0}
+                                          'b': int(shadow_color_match.group(3)),
+                                          'a': float(shadow_color_match.group(4)) if shadow_color_match.group(4) else 1.0}
+                            # Check transparency
+                            if shadow_color['a'] < 0.5:
+                                issues_found.append(('WarnInputTransparentFocus', f'Input focus box-shadow is semi-transparent (alpha={shadow_color["a"]:.2f})'))
+                            # Check contrast
                             contrast = get_contrast_ratio(shadow_color, bg_color)
                             if contrast < 3.0:
                                 issues_found.append(('ErrInputFocusContrastFail', f'Input focus box-shadow has insufficient contrast ({contrast:.2f}:1)'))
@@ -714,9 +730,10 @@ async def test_forms(page) -> Dict[str, Any]:
                     issues_found.append(('WarnInputFocusGradientBackground', 'Input has gradient background - contrast cannot be automatically verified'))
 
                 # Check 8: Default browser focus
-                if has_outline and outline_width == parse_px('1px'):
-                    if field['focusOutlineColor'] in ['rgb(0, 103, 244)', 'rgb(94, 158, 214)', 'rgb(77, 144, 254)']:
-                        issues_found.append(('WarnInputDefaultFocus', 'Input relies on default browser focus styles (inconsistent)'))
+                # Warn if NO custom focus styles are defined (relying on browser defaults)
+                # has_outline=False means no custom :focus outline/border/box-shadow rules found
+                if not has_outline and not outline_is_none and not border_color_changed and not box_shadow_changed:
+                    issues_found.append(('WarnInputDefaultFocus', 'Input relies on default browser focus styles (inconsistent across browsers)'))
 
                 # Report all issues found for this field
                 for error_code, violation_reason in issues_found:

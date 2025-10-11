@@ -2257,6 +2257,248 @@ class IssueCatalog:
             "who_it_affects": "All users benefit from faster page loads through CSS caching, users on slow connections who download unnecessary CSS with every page, users who zoom or need responsive layouts that should be managed centrally, developers maintaining scattered style blocks across multiple pages, and users whose custom stylesheets work more predictably when site styles are in external files",
             "how_to_fix": "Move layout CSS from <style> tags to external CSS files loaded via <link> elements, combine styles from multiple pages into shared stylesheets to improve caching, use CSS modules or build tools to manage styles systematically, keep <style> tags only for critical above-the-fold CSS if optimizing initial paint time, document any remaining embedded styles with comments explaining why external CSS isn't suitable, and ensure responsive design and media queries are managed in external files where they can be easily updated"
         },
+
+        # ============================================================================
+        # Tabindex Interactive Element Focus Indicators
+        # ============================================================================
+        "ErrTabindexNoVisibleFocus": {
+            "id": "ErrTabindexNoVisibleFocus",
+            "title": "Element with tabindex has no visible focus indicator",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["2.4.7"],
+            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Non-interactive element made focusable with tabindex attribute lacks a visible focus indicator",
+            "why_it_matters": "When elements are made keyboard-focusable using tabindex, keyboard users must be able to see where focus is located. Without a visible focus indicator, keyboard-only users cannot determine which element has focus, making navigation impossible. This is especially critical for elements that aren't natively interactive, as users won't expect them to be focusable.",
+            "who_it_affects": "Keyboard-only users who cannot use a mouse, users with motor disabilities who rely on keyboard navigation, screen magnifier users who need to see focus location, users with attention disorders who track focus visually, and users navigating with assistive technologies that follow keyboard focus",
+            "how_to_fix": "Add a :focus style with a visible indicator such as outline (e.g., 'outline: 2px solid #0066cc'), box-shadow (e.g., 'box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5)'), or border change. Ensure the indicator has at least 3:1 contrast ratio with adjacent colors. For elements with tabindex, treat them like buttons and provide clear visual feedback when focused."
+        },
+        "ErrTabindexFocusContrastFail": {
+            "id": "ErrTabindexFocusContrastFail",
+            "title": "Focus indicator on tabindex element has insufficient contrast",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["1.4.11", "2.4.7"],
+            "wcag_full": "1.4.11 Non-text Contrast (Level AA), 2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Focus indicator on element with tabindex has less than 3:1 contrast ratio with adjacent colors",
+            "why_it_matters": "Low contrast focus indicators are difficult or impossible to see for users with low vision, color blindness, or in bright lighting conditions. A 3:1 contrast ratio is the minimum required by WCAG 2.1 for non-text elements including focus indicators. Users with mild vision impairments, older users, and users in sub-optimal viewing conditions rely on adequate contrast to see where keyboard focus is located.",
+            "who_it_affects": "Users with low vision who cannot perceive low-contrast indicators, users with color blindness who may not distinguish certain color combinations, older users experiencing age-related vision decline, users viewing screens in bright sunlight or poor lighting, and keyboard users who need to track focus visually",
+            "how_to_fix": "Increase the contrast of the focus indicator to at least 3:1 against adjacent colors. Use tools like the WebAIM Contrast Checker to verify contrast ratios. Consider using high-contrast colors like dark blue (#0066cc) on white backgrounds. Ensure the focus indicator color contrasts with both the element background and surrounding content. Test with multiple background colors if the element appears in different contexts."
+        },
+        "ErrTabindexOutlineNoneNoBoxShadow": {
+            "id": "ErrTabindexOutlineNoneNoBoxShadow",
+            "title": "Tabindex element sets outline:none without alternative indicator",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["2.4.7"],
+            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Element with tabindex removes default outline with 'outline:none' but provides no alternative focus indicator",
+            "why_it_matters": "Removing the browser's default focus outline without providing an alternative completely eliminates the focus indicator, making keyboard navigation impossible. This is a critical accessibility failure that prevents keyboard users from knowing where they are on the page. The default outline exists specifically to provide keyboard accessibility - removing it requires providing an equally visible alternative.",
+            "who_it_affects": "All keyboard-only users who cannot navigate without visible focus, users with motor disabilities using alternative input devices, screen magnifier users tracking focus location, users with attention disorders following focus visually, and assistive technology users whose tools follow keyboard focus",
+            "how_to_fix": "If outline:none is used, always provide an alternative focus indicator using box-shadow, border changes, or background color changes. For example: 'button:focus { outline: none; box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5); }'. Better yet, keep the outline and enhance it: 'button:focus { outline: 2px solid #0066cc; outline-offset: 2px; }'. Never remove focus indicators without replacement."
+        },
+        "ErrTabindexSingleSideBoxShadow": {
+            "id": "ErrTabindexSingleSideBoxShadow",
+            "title": "Tabindex element uses single-sided box-shadow for focus",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["CR 5.2.4"],
+            "wcag_full": "WCAG 2.2 Conformance Requirement 5.2.4 - Focus Appearance (Minimum)",
+            "category": "event_handling",
+            "description": "Element with tabindex uses box-shadow on only one side (top, right, bottom, or left) for focus indicator",
+            "why_it_matters": "Single-sided focus indicators violate WCAG 2.2's Conformance Requirement 5.2.4 which requires focus indicators to have sufficient area. A focus indicator appearing on only one edge may not meet the minimum 2 CSS pixel area requirement relative to the element's perimeter. Users may miss single-sided indicators, especially when scanning quickly or when the indicator side is outside their field of view in screen magnifiers.",
+            "who_it_affects": "Screen magnifier users who may not see the indicator side when zoomed in, users with tunnel vision or reduced peripheral vision, users scanning pages quickly who miss partial indicators, keyboard users who need obvious focus cues, and users with attention disorders who benefit from complete visual boundaries",
+            "how_to_fix": "Use box-shadow that appears on all sides: 'box-shadow: 0 0 0 3px #0066cc' (uniform around element) instead of offset shadows like 'box-shadow: 3px 0 0 #0066cc' (single side). Alternatively, use outline which automatically appears on all sides. If design requires directional emphasis, combine it with a full-perimeter indicator."
+        },
+        "ErrTabindexOutlineWidthInsufficient": {
+            "id": "ErrTabindexOutlineWidthInsufficient",
+            "title": "Focus outline on tabindex element is thinner than 2 pixels",
+            "type": "Error",
+            "impact": "Medium",
+            "wcag": ["2.4.11"],
+            "wcag_full": "2.4.11 Focus Appearance (Level AAA)",
+            "category": "event_handling",
+            "description": "Element with tabindex has a focus outline less than 2 CSS pixels thick",
+            "why_it_matters": "WCAG 2.2 Success Criterion 2.4.11 (Level AAA) recommends focus indicators be at least 2 pixels thick to ensure visibility. Thin outlines (1px) can be difficult to see, especially at distance, in bright conditions, or for users with mild vision impairments. While Level AAA is not always required, thicker focus indicators significantly improve usability for a broader range of users with minimal design impact.",
+            "who_it_affects": "Users with mild to moderate vision impairments, older users with age-related vision changes, users viewing screens at non-optimal distances or angles, users in bright environments where thin lines are hard to see, and users with attention disorders who benefit from more prominent visual cues",
+            "how_to_fix": "Increase outline width to at least 2px: 'outline: 2px solid #0066cc' instead of '1px'. Consider 3px for even better visibility. Use outline-offset to add space between the element and outline for better visibility: 'outline-offset: 2px'. For box-shadow alternatives, use at least 2px spread: 'box-shadow: 0 0 0 2px #0066cc'."
+        },
+        "ErrTabindexColorChangeOnly": {
+            "id": "ErrTabindexColorChangeOnly",
+            "title": "Focus on tabindex element relies solely on color change",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["1.4.1"],
+            "wcag_full": "1.4.1 Use of Color (Level A)",
+            "category": "event_handling",
+            "description": "Element with tabindex indicates focus only through color change without structural change (outline, border, shape)",
+            "why_it_matters": "WCAG 1.4.1 requires that color is not the only visual means of conveying information. Users with color blindness (affecting ~8% of men and 0.5% of women) may not perceive color-only changes. Users with monochrome displays, users who override colors for readability, and users in poor lighting conditions also cannot rely on color alone. Focus indicators must include structural changes like outlines, borders, underlines, or shapes.",
+            "who_it_affects": "Users with color blindness (protanopia, deuteranopia, tritanopia), users with low vision using high contrast modes, users with monochrome displays, users who have customized system colors for readability, users in bright sunlight where color distinction is reduced, and users with cognitive disabilities who rely on multiple visual cues",
+            "how_to_fix": "Add a structural change in addition to color: use outline ('outline: 2px solid color'), add border ('border: 2px solid color'), add box-shadow ('box-shadow: 0 0 0 3px color'), add underline for text elements, or change shape/size. Ensure the structural change is visible independent of color perception. Test by viewing in grayscale mode."
+        },
+        "ErrTabindexTransparentOutline": {
+            "id": "ErrTabindexTransparentOutline",
+            "title": "Focus outline on tabindex element is semi-transparent",
+            "type": "Error",
+            "impact": "Medium",
+            "wcag": ["1.4.11", "2.4.7"],
+            "wcag_full": "1.4.11 Non-text Contrast (Level AA), 2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Element with tabindex uses semi-transparent (alpha < 0.5) focus outline or box-shadow",
+            "why_it_matters": "Semi-transparent focus indicators have reduced visibility and may fail to meet the 3:1 contrast requirement depending on what content appears behind them. Transparency makes contrast unpredictable - an indicator might pass on one background but fail on another. Users with low vision need consistent, high-visibility focus indicators that don't vary based on background content. Fully opaque indicators ensure reliable visibility.",
+            "who_it_affects": "Users with low vision who need high-visibility focus indicators, users with color blindness who may not perceive subtle transparent overlays, users in bright viewing conditions where transparency reduces visibility further, screen magnifier users tracking focus location, and keyboard users who depend on obvious focus cues",
+            "how_to_fix": "Use fully opaque colors (alpha = 1.0) for focus indicators: 'outline: 2px solid rgb(0, 102, 204)' instead of 'rgba(0, 102, 204, 0.3)'. If transparency is desired for aesthetic reasons, keep it above 0.8 alpha and verify 3:1 contrast on all possible backgrounds. Test with various background colors and images. Consider using solid colors with outline-offset for spacing rather than transparency for softness."
+        },
+        "WarnTabindexDefaultFocus": {
+            "id": "WarnTabindexDefaultFocus",
+            "title": "Tabindex element relies on default browser focus styles",
+            "type": "Warning",
+            "impact": "Low",
+            "wcag": ["2.4.7"],
+            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Element with tabindex has no custom focus styles and relies on browser default focus indicator",
+            "why_it_matters": "Default browser focus styles vary significantly across browsers (Chrome: blue outline, Firefox: dotted outline, Safari: blue ring) and may not match your site's design or branding. While technically WCAG compliant, inconsistent focus indicators across browsers can confuse users and appear unprofessional. Custom focus styles ensure consistent user experience and can be optimized for your site's color scheme and contrast requirements.",
+            "who_it_affects": "All users benefit from consistent focus indicators across browsers, users who switch between browsers and expect consistent interfaces, users of specific browsers with less visible default focus styles, branding-conscious users who notice inconsistent design, and developers maintaining consistent user experience standards",
+            "how_to_fix": "Define custom :focus styles that match your site's design: 'element:focus { outline: 2px solid #your-brand-color; outline-offset: 2px; }'. Ensure custom styles meet 3:1 contrast requirements. Test across all major browsers (Chrome, Firefox, Safari, Edge). Document focus style standards in your design system. Consider using CSS custom properties for focus colors to maintain consistency."
+        },
+        "WarnTabindexNoBorderOutline": {
+            "id": "WarnTabindexNoBorderOutline",
+            "title": "Tabindex element uses outline-only focus (screen magnifier concern)",
+            "type": "Warning",
+            "impact": "Low",
+            "wcag": ["2.4.7"],
+            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Element with tabindex uses only CSS outline for focus with no border or size change",
+            "why_it_matters": "Screen magnifier users zoomed to 200-400% may not see CSS outline which appears outside the element boundaries. When magnified, the outline may fall outside the visible viewport while the element itself remains visible. Combining outline with border changes or size changes ensures focus is visible even when the element edges are at the viewport boundary. This is a best practice to improve focus visibility for magnified views.",
+            "who_it_affects": "Screen magnifier users zoomed to 200%+ who may have element visible but outline outside viewport, users with low vision using browser zoom at high levels, users with tunnel vision who focus on element center, mobile users in zoomed mode, and users with cognitive disabilities who benefit from multiple focus indicators",
+            "how_to_fix": "Combine outline with visible changes inside element boundaries: add border thickness change ('border: 3px solid color' on focus vs 1px normal), add padding adjustment to prevent layout shift, add background color change, or add inner box-shadow ('box-shadow: inset 0 0 0 2px color'). Use outline-offset with positive value to keep outline closer to element. Test with browser zoom at 200%+ to verify visibility."
+        },
+
+        # ============================================================================
+        # Event Handler Interactive Element Focus Indicators
+        # ============================================================================
+        "ErrHandlerNoVisibleFocus": {
+            "id": "ErrHandlerNoVisibleFocus",
+            "title": "Element with event handler has no visible focus indicator",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["2.4.7"],
+            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Non-interactive element with event handler (onclick, etc.) lacks a visible focus indicator",
+            "why_it_matters": "When elements have event handlers but no visible focus indicator, keyboard users cannot determine which element has focus or know the element is interactive. This is especially problematic for click handlers on <div> or <span> elements that appear interactive but lack focus indicators. Without visible focus, keyboard navigation becomes impossible and users may not realize the element is clickable.",
+            "who_it_affects": "Keyboard-only users who cannot use a mouse, users with motor disabilities relying on keyboard navigation, screen magnifier users tracking focus location, users with attention disorders following focus visually, and assistive technology users whose tools follow keyboard focus",
+            "how_to_fix": "Add tabindex='0' to make the element keyboard-focusable, then add :focus styles with visible indicators: outline, box-shadow, or border changes. Better yet, use semantic HTML elements (<button>, <a>) which are natively keyboard-accessible. If using div/span for interactive elements, add role='button' and handle keyboard events (Enter/Space). Ensure focus indicator has 3:1 contrast."
+        },
+        "ErrHandlerFocusContrastFail": {
+            "id": "ErrHandlerFocusContrastFail",
+            "title": "Focus indicator on event handler element has insufficient contrast",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["1.4.11", "2.4.7"],
+            "wcag_full": "1.4.11 Non-text Contrast (Level AA), 2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Focus indicator on element with event handler has less than 3:1 contrast ratio with adjacent colors",
+            "why_it_matters": "Low contrast focus indicators are difficult or impossible to see for users with low vision, color blindness, or in bright lighting conditions. For elements made interactive with event handlers, visible focus is even more critical since users may not expect the element to be interactive. A 3:1 contrast ratio is the minimum required by WCAG 2.1 for non-text elements including focus indicators.",
+            "who_it_affects": "Users with low vision who cannot perceive low-contrast indicators, users with color blindness who may not distinguish certain color combinations, older users experiencing age-related vision decline, users viewing screens in bright sunlight or poor lighting, and keyboard users who need to track focus visually",
+            "how_to_fix": "Increase focus indicator contrast to at least 3:1 against adjacent colors. Use contrast checking tools to verify. Consider high-contrast color combinations like dark blue (#0066cc) on white, or white/yellow on dark backgrounds. Test with various background colors if the element appears in different contexts. Ensure the indicator contrasts with both the element background and surrounding content."
+        },
+        "ErrHandlerOutlineNoneNoBoxShadow": {
+            "id": "ErrHandlerOutlineNoneNoBoxShadow",
+            "title": "Event handler element sets outline:none without alternative indicator",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["2.4.7"],
+            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Element with event handler removes default outline with 'outline:none' but provides no alternative focus indicator",
+            "why_it_matters": "Removing the browser's default focus outline without providing an alternative completely eliminates the focus indicator, making keyboard navigation impossible. This is especially problematic for elements made interactive with event handlers, as they may not have had focus indicators originally. Users cannot tell if these elements have focus or are even interactive without a visible indicator.",
+            "who_it_affects": "All keyboard-only users who cannot navigate without visible focus, users with motor disabilities using alternative input devices, screen magnifier users tracking focus location, users with attention disorders following focus visually, and assistive technology users whose tools follow keyboard focus",
+            "how_to_fix": "Never use outline:none without providing an alternative. Add box-shadow ('box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5)'), border changes, or background color changes when removing outline. Better yet, keep and enhance the outline: 'outline: 2px solid #0066cc; outline-offset: 2px'. Ensure any alternative indicator is clearly visible and meets contrast requirements."
+        },
+        "ErrHandlerSingleSideBoxShadow": {
+            "id": "ErrHandlerSingleSideBoxShadow",
+            "title": "Event handler element uses single-sided box-shadow for focus",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["CR 5.2.4"],
+            "wcag_full": "WCAG 2.2 Conformance Requirement 5.2.4 - Focus Appearance (Minimum)",
+            "category": "event_handling",
+            "description": "Element with event handler uses box-shadow on only one side for focus indicator",
+            "why_it_matters": "Single-sided focus indicators violate WCAG 2.2's Conformance Requirement 5.2.4 which requires focus indicators to have sufficient area. A focus indicator appearing on only one edge may not meet the minimum 2 CSS pixel area requirement. For elements made interactive with event handlers, clear focus indicators are critical since users may not expect them to be focusable.",
+            "who_it_affects": "Screen magnifier users who may not see the indicator side when zoomed in, users with tunnel vision or reduced peripheral vision, users scanning pages quickly who miss partial indicators, keyboard users who need obvious focus cues, and users with attention disorders who benefit from complete visual boundaries",
+            "how_to_fix": "Use box-shadow that appears on all sides: 'box-shadow: 0 0 0 3px #0066cc' instead of offset shadows like 'box-shadow: 3px 0 0 #0066cc'. Alternatively, use outline which automatically appears on all sides. If design requires directional emphasis, combine it with a full-perimeter indicator. Test with screen magnifiers to verify visibility at high zoom levels."
+        },
+        "ErrHandlerOutlineWidthInsufficient": {
+            "id": "ErrHandlerOutlineWidthInsufficient",
+            "title": "Focus outline on event handler element is thinner than 2 pixels",
+            "type": "Error",
+            "impact": "Medium",
+            "wcag": ["2.4.11"],
+            "wcag_full": "2.4.11 Focus Appearance (Level AAA)",
+            "category": "event_handling",
+            "description": "Element with event handler has a focus outline less than 2 CSS pixels thick",
+            "why_it_matters": "WCAG 2.2 Success Criterion 2.4.11 (Level AAA) recommends focus indicators be at least 2 pixels thick. Thin outlines (1px) can be difficult to see, especially for elements that users don't expect to be interactive. For event handler elements, prominent focus indicators help users understand the element is focusable and interactive.",
+            "who_it_affects": "Users with mild to moderate vision impairments, older users with age-related vision changes, users viewing screens at non-optimal distances or angles, users in bright environments where thin lines are hard to see, and users with attention disorders who benefit from more prominent visual cues",
+            "how_to_fix": "Increase outline width to at least 2px: 'outline: 2px solid #0066cc'. Consider 3px for better visibility on interactive elements. Use outline-offset to add space: 'outline-offset: 2px'. For box-shadow alternatives, use at least 2px spread: 'box-shadow: 0 0 0 2px #0066cc'. Test visibility at various screen sizes and zoom levels."
+        },
+        "ErrHandlerColorChangeOnly": {
+            "id": "ErrHandlerColorChangeOnly",
+            "title": "Focus on event handler element relies solely on color change",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["1.4.1"],
+            "wcag_full": "1.4.1 Use of Color (Level A)",
+            "category": "event_handling",
+            "description": "Element with event handler indicates focus only through color change without structural change",
+            "why_it_matters": "WCAG 1.4.1 requires that color is not the only visual means of conveying information. Users with color blindness cannot perceive color-only changes. For elements made interactive with event handlers, relying solely on color changes makes it impossible for color-blind users to see focus or understand that the element is interactive.",
+            "who_it_affects": "Users with color blindness (affecting ~8% of men and 0.5% of women), users with low vision using high contrast modes, users with monochrome displays, users who have customized system colors, users in bright sunlight where color distinction is reduced, and users with cognitive disabilities who rely on multiple visual cues",
+            "how_to_fix": "Add structural changes in addition to color: use outline, add border, add box-shadow, add underline for text, or change shape/size. Ensure the structural change is visible independent of color perception. Test by viewing in grayscale mode. For example: 'element:focus { outline: 2px solid #0066cc; background-color: #f0f0f0; }' provides both structural (outline) and color changes."
+        },
+        "ErrHandlerTransparentOutline": {
+            "id": "ErrHandlerTransparentOutline",
+            "title": "Focus outline on event handler element is semi-transparent",
+            "type": "Error",
+            "impact": "Medium",
+            "wcag": ["1.4.11", "2.4.7"],
+            "wcag_full": "1.4.11 Non-text Contrast (Level AA), 2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Element with event handler uses semi-transparent (alpha < 0.5) focus outline or box-shadow",
+            "why_it_matters": "Semi-transparent focus indicators have reduced visibility and may fail contrast requirements depending on background content. For elements made interactive with event handlers, users may not expect them to be focusable - a clear, opaque focus indicator helps users understand the element is interactive. Transparency makes contrast unpredictable and unreliable.",
+            "who_it_affects": "Users with low vision who need high-visibility focus indicators, users with color blindness who may not perceive subtle transparent overlays, users in bright viewing conditions, screen magnifier users tracking focus location, and keyboard users who depend on obvious focus cues",
+            "how_to_fix": "Use fully opaque colors (alpha = 1.0) for focus indicators: 'outline: 2px solid rgb(0, 102, 204)' instead of 'rgba(0, 102, 204, 0.3)'. If transparency is desired, keep it above 0.8 alpha and verify 3:1 contrast on all possible backgrounds. Use solid colors with outline-offset for spacing rather than transparency. Test with various backgrounds."
+        },
+        "WarnHandlerDefaultFocus": {
+            "id": "WarnHandlerDefaultFocus",
+            "title": "Event handler element relies on default browser focus styles",
+            "type": "Warning",
+            "impact": "Low",
+            "wcag": ["2.4.7"],
+            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Element with event handler has no custom focus styles and relies on browser default focus indicator",
+            "why_it_matters": "Default browser focus styles vary across browsers and may not make it obvious that non-standard elements (like divs with click handlers) are interactive. Custom focus styles ensure consistent user experience and can be designed to clearly indicate interactivity. Users may not expect divs/spans to be clickable without clear custom styling.",
+            "who_it_affects": "All users benefit from consistent focus indicators, users who switch between browsers, users of browsers with less visible default focus styles, users with cognitive disabilities who need clear affordances for interactive elements, and developers maintaining consistent user experience",
+            "how_to_fix": "Define custom :focus styles that clearly indicate interactivity: 'element:focus { outline: 2px solid #your-brand-color; outline-offset: 2px; background-color: #f0f0f0; }'. Make focus styles more prominent than typical elements since users don't expect these elements to be interactive. Ensure 3:1 contrast. Test across browsers. Consider using semantic HTML (<button>) instead."
+        },
+        "WarnHandlerNoBorderOutline": {
+            "id": "WarnHandlerNoBorderOutline",
+            "title": "Event handler element uses outline-only focus (screen magnifier concern)",
+            "type": "Warning",
+            "impact": "Low",
+            "wcag": ["2.4.7"],
+            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Element with event handler uses only CSS outline for focus with no border or size change",
+            "why_it_matters": "Screen magnifier users zoomed to 200-400% may not see CSS outline which appears outside element boundaries. For elements made interactive with event handlers, this is especially problematic as users may not know these elements are focusable. Combining outline with border or size changes ensures focus is visible even when magnified.",
+            "who_it_affects": "Screen magnifier users zoomed to 200%+ who may have element visible but outline outside viewport, users with low vision using browser zoom at high levels, users with tunnel vision who focus on element center, mobile users in zoomed mode, and users who need multiple visual cues to identify interactive elements",
+            "how_to_fix": "Combine outline with visible changes inside element boundaries: add border thickness change, add padding adjustment, add background color change, or add inner box-shadow. Use outline-offset with positive value to keep outline closer. For event handler elements, consider more prominent focus styles than typical interactive elements to compensate for unexpected interactivity. Test with browser zoom at 200%+."
+        },
     }
     
     @classmethod

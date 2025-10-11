@@ -8,6 +8,7 @@ from .test_forms import test_forms, TEST_DOCUMENTATION as FORMS_DOCS
 from .test_accessible_names import test_accessible_names, TEST_DOCUMENTATION as ACCESSIBLE_NAMES_DOCS
 from .test_aria import test_aria, TEST_DOCUMENTATION as ARIA_DOCS
 from .test_animations import test_animations, TEST_DOCUMENTATION as ANIMATIONS_DOCS
+from .test_buttons import test_buttons, TEST_DOCUMENTATION as BUTTONS_DOCS
 from .test_colors import test_colors, TEST_DOCUMENTATION as COLORS_DOCS
 from .test_document_links import test_document_links, TEST_DOCUMENTATION as DOCUMENT_LINKS_DOCS
 from .test_event_handlers import test_event_handlers, TEST_DOCUMENTATION as EVENT_HANDLERS_DOCS
@@ -37,6 +38,7 @@ TOUCHPOINT_TESTS = {
     'accessible_names': test_accessible_names,
     'aria': test_aria,
     'animations': test_animations,
+    'buttons': test_buttons,
     'colors': test_colors,
     'document_links': test_document_links,
     'event_handlers': test_event_handlers,
@@ -67,6 +69,7 @@ TEST_DOCUMENTATION = {
     'accessible_names': ACCESSIBLE_NAMES_DOCS,
     'aria': ARIA_DOCS,
     'animations': ANIMATIONS_DOCS,
+    'buttons': BUTTONS_DOCS,
     'colors': COLORS_DOCS,
     'document_links': DOCUMENT_LINKS_DOCS,
     'event_handlers': EVENT_HANDLERS_DOCS,
@@ -96,6 +99,7 @@ __all__ = [
     'test_accessible_names',
     'test_aria',
     'test_animations',
+    'test_buttons',
     'test_colors',
     'test_document_links',
     'test_event_handlers',

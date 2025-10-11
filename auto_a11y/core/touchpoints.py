@@ -15,6 +15,7 @@ class TouchpointID(Enum):
     """Enumeration of all accessibility touchpoints"""
     ACCESSIBLE_NAMES = "accessible_names"
     ANIMATION = "animation"
+    BUTTONS = "buttons"
     COLORS = "colors"
     DIALOGS = "dialogs"
     ELECTRONIC_DOCUMENTS = "electronic_documents"
@@ -79,6 +80,15 @@ TOUCHPOINTS = {
         js_tests=[],  # No direct JS tests for animation
         ai_tests=["animation_detection", "auto_play_content", "parallax_scrolling"],
         wcag_criteria=["2.2.2", "2.3.1", "2.3.3"]
+    ),
+
+    TouchpointID.BUTTONS: Touchpoint(
+        id=TouchpointID.BUTTONS,
+        name="Buttons",
+        description="Evaluates button focus indicators and keyboard accessibility",
+        js_tests=["buttons.js"],
+        ai_tests=[],
+        wcag_criteria=["2.4.7"]
     ),
     
     TouchpointID.COLORS: Touchpoint(
@@ -376,6 +386,7 @@ class TouchpointMapper:
         'ErrUnlabelledField': TouchpointID.FORMS,
         'ErrButtonEmpty': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need accessible names
         'ErrButtonNoText': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need text for accessibility
+        'ErrButtonNoVisibleFocus': TouchpointID.BUTTONS,  # Button focus indicators
         'ErrMissingCloseButton': TouchpointID.DIALOGS,  # Close button is for dialogs
         'WarnButtonTextInsufficient': TouchpointID.ACCESSIBLE_NAMES,  # Button text quality is about naming
         'WarnMissingRequiredIndication': TouchpointID.FORMS,

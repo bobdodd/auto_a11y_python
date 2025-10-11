@@ -75,6 +75,7 @@ TOUCHPOINT_TEST_MAPPING = {
     'buttons': [
         'ErrButtonEmpty',
         'ErrButtonNoText',
+        'ErrButtonNoVisibleFocus',
         'ErrMissingCloseButton',
         'WarnButtonTextInsufficient',
         'WarnLinkLooksLikeButton',

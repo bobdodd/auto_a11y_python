@@ -584,15 +584,111 @@ How to fix: Move banner to top level
 
 ---
 
-ID: ErrButtonNoVisibleFocus
+ID: ErrButtonOutlineNoneNoBoxShadow
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible, 1.4.1 Use of Color
+Touchpoint: buttons
+Description: Button has outline:none on focus with no box-shadow, relying only on color change which fails WCAG 1.4.1
+Why it matters: Relying solely on color change for focus indication fails WCAG 1.4.1 Use of Color. Users with color blindness, low vision, or monochrome displays cannot perceive focus state. Box-shadow or outline is required to provide a non-color visual indicator that wraps the element.
+Who it affects: Users with color blindness (8% of males, 0.5% of females), users with low vision, users on monochrome displays, keyboard navigation users
+How to fix: Add a box-shadow focus indicator (e.g., box-shadow: 0 0 0 3px rgba(0,102,204,0.5)) or use an outline with outline-offset of at least 2px. Do not rely on color change alone.
+
+---
+
+ID: ErrButtonFocusContrastFail
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible, 1.4.11 Non-text Contrast
+Touchpoint: buttons
+Description: Button focus outline has insufficient contrast (less than 3:1) against the button's current background color
+Why it matters: Focus indicators must have at least 3:1 contrast ratio against adjacent colors per WCAG 1.4.11. Without sufficient contrast, keyboard users cannot see which button has focus, making the interface unusable for keyboard navigation.
+Who it affects: Users with low vision, users with color vision deficiencies, keyboard navigation users, users in bright lighting conditions
+How to fix: Choose an outline color with at least 3:1 contrast against the button background. Test against all button states (default, hover, active). Consider using a high-contrast color like dark blue (#0066cc) on light buttons or white on dark buttons.
+
+---
+
+ID: ErrButtonOutlineWidthInsufficient
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible, 2.4.11 Focus Appearance
+Touchpoint: buttons
+Description: Button focus outline has outline-width less than 2px, making it too thin to be clearly visible
+Why it matters: Focus indicators must be thick enough to be clearly visible to keyboard users. Outlines thinner than 2px can be difficult or impossible to see, especially for users with low vision or on high-resolution displays. WCAG 2.4.11 Level AAA requires focus indicators to be at least 2 CSS pixels thick.
+Who it affects: Keyboard navigation users, users with low vision, users on high-DPI displays, users with cognitive disabilities
+How to fix: Set outline-width to at least 2px (e.g., outline: 2px solid #0066cc). For better visibility, consider 3px width. Test on various screen sizes and resolutions to ensure visibility.
+
+---
+
+ID: ErrButtonOutlineOffsetInsufficient
 Type: Error
 Impact: High
 WCAG: 2.4.7 Focus Visible
 Touchpoint: buttons
-Description: Button lacks visible focus indicator when focused
-Why it matters: Keyboard users need visible focus indicators to know which element is currently selected. Without clear focus indication on buttons, users cannot tell which button will be activated when they press Enter or Space, leading to errors and inability to use the interface effectively.
-Who it affects: Users with motor disabilities using keyboard navigation, users who cannot use a mouse, power users who prefer keyboard navigation, and users of assistive technologies
-How to fix: Ensure buttons have a clearly visible focus indicator with at least 3:1 contrast against the background. The indicator should be at least 2 pixels thick and not rely on color alone. Never remove focus indicators without providing an alternative. Consider using :focus-visible for refined focus management.
+Description: Button focus outline has outline-offset less than 2px, causing the outline to be lost within the button element
+Why it matters: When outline-offset is less than 2px, the focus outline sits too close to or inside the button border, making it difficult or impossible to see, especially on colored or image buttons. The outline can blend with the button's edge, defeating its purpose.
+Who it affects: Keyboard navigation users, users with low vision, users with cognitive disabilities who rely on clear visual cues
+How to fix: Set outline-offset to at least 2px (e.g., outline-offset: 2px) to create clear space between the button and its focus indicator. This ensures the outline is visible regardless of button styling.
+
+---
+
+ID: ErrButtonFocusObscured
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button focus indicator is partially or fully obscured by other elements due to z-index stacking
+Why it matters: If the focus indicator is hidden behind other elements, keyboard users cannot see which button has focus. This completely breaks keyboard navigation and makes the interface unusable for non-mouse users.
+Who it affects: Keyboard navigation users, screen magnifier users, users with motor disabilities, power users
+How to fix: Review z-index values and stacking contexts. Ensure focused buttons have appropriate z-index to keep focus indicators visible. Use isolation or adjust parent stacking contexts if needed. Test with actual keyboard navigation.
+
+---
+
+ID: WarnButtonOutlineNoneWithBoxShadow
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button uses outline:none with box-shadow for focus, which may not provide clear indication on all sides
+Why it matters: While box-shadow provides a focus indicator, it may not be visible on all sides of the button depending on shadow direction and spread. A clear outline on all four sides is preferred for maximum clarity. Box-shadow can also be harder to see in certain contexts.
+Who it affects: Keyboard navigation users, users with low vision, users with cognitive disabilities
+How to fix: Replace box-shadow with outline and outline-offset (e.g., outline: 2px solid #0066cc; outline-offset: 2px) to ensure a clear border on all sides of the focused button.
+
+---
+
+ID: WarnButtonDefaultFocus
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button uses browser default focus outline which may not meet contrast requirements on all backgrounds
+Why it matters: Browser default outlines (typically thin blue or dotted lines) often fail to meet 3:1 contrast requirements depending on the background. Different browsers use different default styles, leading to inconsistent and potentially inaccessible experiences.
+Who it affects: Keyboard navigation users, users with low vision, users on different browsers and operating systems
+How to fix: Define explicit focus styles with outline and outline-offset that meet 3:1 contrast ratio. Example: button:focus { outline: 2px solid #0066cc; outline-offset: 2px; }
+
+---
+
+ID: WarnButtonFocusGradientBackground
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible, 1.4.11 Non-text Contrast
+Touchpoint: buttons
+Description: Button with gradient background has focus outline - contrast cannot be automatically verified against gradient
+Why it matters: CSS gradients have varying colors across the button, making it impossible to programmatically verify that the focus outline meets 3:1 contrast against all parts of the gradient. The outline may meet contrast at some points but fail at others.
+Who it affects: Keyboard navigation users, users with low vision, users with color vision deficiencies
+How to fix: Manually verify focus outline has at least 3:1 contrast against the lightest AND darkest colors in the gradient. Consider using a solid background color, or add outline-offset to separate the outline from the gradient. Use tools like WebAIM Contrast Checker for verification.
+
+---
+
+ID: WarnButtonFocusImageBackground
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible, 1.4.11 Non-text Contrast
+Touchpoint: buttons
+Description: Button with background image has focus outline - contrast cannot be automatically verified against image
+Why it matters: Background images have varying colors and patterns, making it impossible to programmatically verify focus outline contrast. The outline may be invisible against certain parts of the image, creating unusable focus indicators for keyboard users.
+Who it affects: Keyboard navigation users, users with low vision, users with color vision deficiencies
+How to fix: Manually test focus visibility against all parts of the background image. Consider adding a semi-transparent overlay behind the outline, using outline-offset for separation, or avoiding background images on focusable buttons. Test with multiple users if possible.
 
 ---
 
@@ -4391,15 +4487,95 @@ Why it matters: Non-semantic buttons are not keyboard accessible and invisible t
 Who it affects: Keyboard users, screen reader users
 How to fix: Replace {element_tag} with <button> element or add role="button" and tabindex="0"
 
-ID: ErrButtonNoVisibleFocus
+ID: ErrButtonOutlineNoneNoBoxShadow
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible, 1.4.1 Use of Color
+Touchpoint: buttons
+Description: Button has outline:none on focus with no box-shadow, relying only on color change which fails WCAG 1.4.1
+Why it matters: Relying solely on color change for focus indication fails WCAG 1.4.1 Use of Color. Users with color blindness, low vision, or monochrome displays cannot perceive focus state. Box-shadow or outline is required to provide a non-color visual indicator that wraps the element.
+Who it affects: Users with color blindness (8% of males, 0.5% of females), users with low vision, users on monochrome displays, keyboard navigation users
+How to fix: Add a box-shadow focus indicator (e.g., box-shadow: 0 0 0 3px rgba(0,102,204,0.5)) or use an outline with outline-offset of at least 2px. Do not rely on color change alone.
+
+ID: ErrButtonFocusContrastFail
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible, 1.4.11 Non-text Contrast
+Touchpoint: buttons
+Description: Button focus outline has insufficient contrast (less than 3:1) against the button's current background color
+Why it matters: Focus indicators must have at least 3:1 contrast ratio against adjacent colors per WCAG 1.4.11. Without sufficient contrast, keyboard users cannot see which button has focus, making the interface unusable for keyboard navigation.
+Who it affects: Users with low vision, users with color vision deficiencies, keyboard navigation users, users in bright lighting conditions
+How to fix: Choose an outline color with at least 3:1 contrast against the button background. Test against all button states (default, hover, active). Consider using a high-contrast color like dark blue (#0066cc) on light buttons or white on dark buttons.
+
+ID: ErrButtonOutlineWidthInsufficient
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible, 2.4.11 Focus Appearance
+Touchpoint: buttons
+Description: Button focus outline has outline-width less than 2px, making it too thin to be clearly visible
+Why it matters: Focus indicators must be thick enough to be clearly visible to keyboard users. Outlines thinner than 2px can be difficult or impossible to see, especially for users with low vision or on high-resolution displays. WCAG 2.4.11 Level AAA requires focus indicators to be at least 2 CSS pixels thick.
+Who it affects: Keyboard navigation users, users with low vision, users on high-DPI displays, users with cognitive disabilities
+How to fix: Set outline-width to at least 2px (e.g., outline: 2px solid #0066cc). For better visibility, consider 3px width. Test on various screen sizes and resolutions to ensure visibility.
+
+ID: ErrButtonOutlineOffsetInsufficient
 Type: Error
 Impact: High
 WCAG: 2.4.7 Focus Visible
 Touchpoint: buttons
-Description: Button lacks visible focus indicator when focused
-Why it matters: Keyboard users need visible focus indicators to know which element is currently selected. Without clear focus indication on buttons, users cannot tell which button will be activated when they press Enter or Space, leading to errors and inability to use the interface effectively.
-Who it affects: Users with motor disabilities using keyboard navigation, users who cannot use a mouse, power users who prefer keyboard navigation, and users of assistive technologies
-How to fix: Ensure buttons have a clearly visible focus indicator with at least 3:1 contrast against the background. The indicator should be at least 2 pixels thick and not rely on color alone. Never remove focus indicators without providing an alternative. Consider using :focus-visible for refined focus management.
+Description: Button focus outline has outline-offset less than 2px, causing the outline to be lost within the button element
+Why it matters: When outline-offset is less than 2px, the focus outline sits too close to or inside the button border, making it difficult or impossible to see, especially on colored or image buttons. The outline can blend with the button's edge, defeating its purpose.
+Who it affects: Keyboard navigation users, users with low vision, users with cognitive disabilities who rely on clear visual cues
+How to fix: Set outline-offset to at least 2px (e.g., outline-offset: 2px) to create clear space between the button and its focus indicator. This ensures the outline is visible regardless of button styling.
+
+ID: ErrButtonFocusObscured
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button focus indicator is partially or fully obscured by other elements due to z-index stacking
+Why it matters: If the focus indicator is hidden behind other elements, keyboard users cannot see which button has focus. This completely breaks keyboard navigation and makes the interface unusable for non-mouse users.
+Who it affects: Keyboard navigation users, screen magnifier users, users with motor disabilities, power users
+How to fix: Review z-index values and stacking contexts. Ensure focused buttons have appropriate z-index to keep focus indicators visible. Use isolation or adjust parent stacking contexts if needed. Test with actual keyboard navigation.
+
+ID: WarnButtonOutlineNoneWithBoxShadow
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button uses outline:none with box-shadow for focus, which may not provide clear indication on all sides
+Why it matters: While box-shadow provides a focus indicator, it may not be visible on all sides of the button depending on shadow direction and spread. A clear outline on all four sides is preferred for maximum clarity. Box-shadow can also be harder to see in certain contexts.
+Who it affects: Keyboard navigation users, users with low vision, users with cognitive disabilities
+How to fix: Replace box-shadow with outline and outline-offset (e.g., outline: 2px solid #0066cc; outline-offset: 2px) to ensure a clear border on all sides of the focused button.
+
+ID: WarnButtonDefaultFocus
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button uses browser default focus outline which may not meet contrast requirements on all backgrounds
+Why it matters: Browser default outlines (typically thin blue or dotted lines) often fail to meet 3:1 contrast requirements depending on the background. Different browsers use different default styles, leading to inconsistent and potentially inaccessible experiences.
+Who it affects: Keyboard navigation users, users with low vision, users on different browsers and operating systems
+How to fix: Define explicit focus styles with outline and outline-offset that meet 3:1 contrast ratio. Example: button:focus { outline: 2px solid #0066cc; outline-offset: 2px; }
+
+ID: WarnButtonFocusGradientBackground
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible, 1.4.11 Non-text Contrast
+Touchpoint: buttons
+Description: Button with gradient background has focus outline - contrast cannot be automatically verified against gradient
+Why it matters: CSS gradients have varying colors across the button, making it impossible to programmatically verify that the focus outline meets 3:1 contrast against all parts of the gradient. The outline may meet contrast at some points but fail at others.
+Who it affects: Keyboard navigation users, users with low vision, users with color vision deficiencies
+How to fix: Manually verify focus outline has at least 3:1 contrast against the lightest AND darkest colors in the gradient. Consider using a solid background color, or add outline-offset to separate the outline from the gradient. Use tools like WebAIM Contrast Checker for verification.
+
+ID: WarnButtonFocusImageBackground
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible, 1.4.11 Non-text Contrast
+Touchpoint: buttons
+Description: Button with background image has focus outline - contrast cannot be automatically verified against image
+Why it matters: Background images have varying colors and patterns, making it impossible to programmatically verify focus outline contrast. The outline may be invisible against certain parts of the image, creating unusable focus indicators for keyboard users.
+Who it affects: Keyboard navigation users, users with low vision, users with color vision deficiencies
+How to fix: Manually test focus visibility against all parts of the background image. Consider adding a semi-transparent overlay behind the outline, using outline-offset for separation, or avoiding background images on focusable buttons. Test with multiple users if possible.
 
 ID: ErrButtonTextLowContrast
 Type: Error

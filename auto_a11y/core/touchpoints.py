@@ -386,7 +386,15 @@ class TouchpointMapper:
         'ErrUnlabelledField': TouchpointID.FORMS,
         'ErrButtonEmpty': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need accessible names
         'ErrButtonNoText': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need text for accessibility
-        'ErrButtonNoVisibleFocus': TouchpointID.BUTTONS,  # Button focus indicators
+        'ErrButtonOutlineNoneNoBoxShadow': TouchpointID.BUTTONS,  # Button focus indicators
+        'ErrButtonFocusContrastFail': TouchpointID.BUTTONS,  # Button focus indicators
+        'ErrButtonOutlineWidthInsufficient': TouchpointID.BUTTONS,  # Button focus indicators
+        'ErrButtonOutlineOffsetInsufficient': TouchpointID.BUTTONS,  # Button focus indicators
+        'ErrButtonFocusObscured': TouchpointID.BUTTONS,  # Button focus indicators
+        'WarnButtonOutlineNoneWithBoxShadow': TouchpointID.BUTTONS,  # Button focus indicators
+        'WarnButtonDefaultFocus': TouchpointID.BUTTONS,  # Button focus indicators
+        'WarnButtonFocusGradientBackground': TouchpointID.BUTTONS,  # Button focus indicators
+        'WarnButtonFocusImageBackground': TouchpointID.BUTTONS,  # Button focus indicators
         'ErrMissingCloseButton': TouchpointID.DIALOGS,  # Close button is for dialogs
         'WarnButtonTextInsufficient': TouchpointID.ACCESSIBLE_NAMES,  # Button text quality is about naming
         'WarnMissingRequiredIndication': TouchpointID.FORMS,

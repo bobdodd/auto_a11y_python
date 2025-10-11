@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonOutlineOffsetInsufficient - Em/Rem Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonOutlineOffsetInsufficient_004_correct_em_rem",
+    "issueId": "ErrButtonOutlineOffsetInsufficient",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with outline-offset using em/rem that computes to ≥ 2px",
+    "wcag": "2.4.7",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        html {
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+
+        .em-offset-minimum:focus {
+            outline: 2px solid #ff6b6b;
+            outline-offset: 0.125em; /* 0.125 × 16px = 2px (meets minimum) */
+        }
+
+        .rem-offset-comfortable:focus {
+            outline: 2px solid #ff6b6b;
+            outline-offset: 0.15rem; /* 0.15 × 16px = 2.4px (comfortable) */
+        }
+
+        .em-offset-generous:focus {
+            outline: 3px solid #ff6b6b;
+            outline-offset: 0.25em; /* 0.25 × 16px = 4px (generous) */
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Outline Offset with Em/Rem (Sufficient)</h1>
+
+    <p>These buttons use em or rem units for outline-offset that compute to at least 2px,
+       ensuring clear visual separation between the button and its focus indicator.</p>
+
+    <section>
+        <h2>0.125em Offset (Exactly 2px on 16px font)</h2>
+        <button class="em-offset-minimum"
+                data-expected-pass="true">
+            Submit Form
+        </button>
+        <p>0.125em on 16px font = 2px - meets minimum separation requirement.</p>
+    </section>
+
+    <section>
+        <h2>0.15rem Offset (2.4px - Comfortable)</h2>
+        <button class="rem-offset-comfortable"
+                data-expected-pass="true">
+            Save Changes
+        </button>
+        <p>0.15rem on 16px root = 2.4px - comfortable separation.</p>
+    </section>
+
+    <section>
+        <h2>0.25em Offset (4px - Generous)</h2>
+        <button class="em-offset-generous"
+                data-expected-pass="true">
+            Delete Item
+        </button>
+        <p>0.25em on 16px font = 4px - generous separation for excellent visibility.</p>
+    </section>
+
+    <p><strong>Best Practice:</strong> Use 0.125-0.15em/rem minimum for outline-offset,
+       or 0.2-0.25em/rem for better visibility across different button styles and backgrounds.</p>
+</body>
+</html>

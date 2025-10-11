@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonTransparentOutline - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonTransparentOutline_001_violations_semi_transparent",
+    "issueId": "ErrButtonTransparentOutline",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Buttons with semi-transparent outlines (alpha < 0.5) that cannot guarantee contrast",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+        }
+
+        .alpha-10:focus {
+            outline: 3px solid rgba(0, 102, 204, 0.1);
+            outline-offset: 2px;
+        }
+
+        .alpha-20:focus {
+            outline: 2px solid rgba(204, 0, 102, 0.2);
+            outline-offset: 2px;
+        }
+
+        .alpha-30:focus {
+            outline: 3px solid rgba(0, 150, 0, 0.3);
+            outline-offset: 2px;
+        }
+
+        .alpha-40:focus {
+            outline: 2px solid rgba(255, 100, 0, 0.4);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Semi-Transparent Focus Outlines</h1>
+
+    <p>These buttons use focus outlines with transparency (alpha < 0.5), making it impossible
+       to guarantee they meet the 3:1 contrast requirement in all contexts. As backgrounds change
+       (scrolling, overlays, animations), the outline's effective contrast varies, potentially
+       becoming invisible.</p>
+
+    <section>
+        <h2>10% Opacity (Alpha = 0.1)</h2>
+        <button class="alpha-10"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonTransparentOutline"
+                data-violation-reason="rgba with alpha=0.1 - nearly invisible">
+            Submit Form
+        </button>
+        <p>Outline is 90% transparent - barely visible on any background.</p>
+    </section>
+
+    <section>
+        <h2>20% Opacity (Alpha = 0.2)</h2>
+        <button class="alpha-20"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonTransparentOutline"
+                data-violation-reason="rgba with alpha=0.2 - very faint">
+            Save Changes
+        </button>
+        <p>Outline is 80% transparent - very faint and inconsistent visibility.</p>
+    </section>
+
+    <section>
+        <h2>30% Opacity (Alpha = 0.3)</h2>
+        <button class="alpha-30"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonTransparentOutline"
+                data-violation-reason="rgba with alpha=0.3 - insufficient opacity">
+            Delete Item
+        </button>
+        <p>Outline is 70% transparent - cannot guarantee contrast across contexts.</p>
+    </section>
+
+    <section>
+        <h2>40% Opacity (Alpha = 0.4)</h2>
+        <button class="alpha-40"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonTransparentOutline"
+                data-violation-reason="rgba with alpha=0.4 - below threshold">
+            Cancel
+        </button>
+        <p>Outline is 60% transparent - just below the 50% threshold, still problematic.</p>
+    </section>
+
+    <p><strong>Problem:</strong> Try viewing these buttons against different backgrounds
+       (scroll the page, place content behind them) and notice how the outline visibility changes.</p>
+</body>
+</html>

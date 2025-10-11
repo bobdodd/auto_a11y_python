@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonClipPathWithOutline - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonClipPathWithOutline_001_violations_nonrect_shapes",
+    "issueId": "ErrButtonClipPathWithOutline",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Non-rectangular buttons (clip-path) using outline for focus - fails WCAG Conformance Requirement 5.2.4",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+
+        .circle-button {
+            clip-path: circle(50%);
+        }
+        .circle-button:focus {
+            outline: 3px solid #ff6b6b;
+            outline-offset: 2px;
+        }
+
+        .ellipse-button {
+            clip-path: ellipse(60% 50%);
+        }
+        .ellipse-button:focus {
+            outline: 2px solid #ff6b6b;
+            outline-offset: 3px;
+        }
+
+        .polygon-button {
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+        .polygon-button:focus {
+            outline: 2px solid #ff6b6b;
+            outline-offset: 2px;
+        }
+
+        .hexagon-button {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+        .hexagon-button:focus {
+            outline: 3px solid #ff6b6b;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Clip-Path Buttons with Outline (WCAG 5.2.4 Violation)</h1>
+
+    <p>These buttons use clip-path to create non-rectangular shapes, but use CSS outline for
+       focus indication. The outline draws a rectangular box that doesn't follow the clipped shape,
+       creating disconnected "ears" or gaps. At high magnification (400%+), users may see only
+       the outline without the button, making it impossible to determine what has focus.
+       This fails WCAG Conformance Requirement 5.2.4.</p>
+
+    <section>
+        <h2>Circular Button with Outline</h2>
+        <button class="circle-button"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonClipPathWithOutline"
+                data-violation-reason="clip-path: circle() with outline - rectangular outline doesn't follow circle">
+            Click Me
+        </button>
+        <p>Circular button with rectangular outline - creates visible "corners" disconnected from button.</p>
+    </section>
+
+    <section>
+        <h2>Ellipse Button with Outline</h2>
+        <button class="ellipse-button"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonClipPathWithOutline"
+                data-violation-reason="clip-path: ellipse() with outline - rectangular outline on oval shape">
+            Submit
+        </button>
+        <p>Elliptical button with rectangular outline - outline doesn't match button shape.</p>
+    </section>
+
+    <section>
+        <h2>Diamond (Polygon) Button with Outline</h2>
+        <button class="polygon-button"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonClipPathWithOutline"
+                data-violation-reason="clip-path: polygon() (diamond) with outline - rectangular outline on diamond">
+            Save
+        </button>
+        <p>Diamond-shaped button with rectangular outline - severe mismatch at corners.</p>
+    </section>
+
+    <section>
+        <h2>Hexagon Button with Outline</h2>
+        <button class="hexagon-button"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonClipPathWithOutline"
+                data-violation-reason="clip-path: polygon() (hexagon) with outline - rectangular outline doesn't follow hexagon">
+            Delete
+        </button>
+        <p>Hexagonal button with rectangular outline - creates confusing focus indicator at high zoom.</p>
+    </section>
+
+    <p><strong>Note:</strong> Test these buttons at 400% zoom to see how the rectangular outline
+       becomes disconnected from the button shape, failing WCAG Conformance Requirement 5.2.4.</p>
+</body>
+</html>

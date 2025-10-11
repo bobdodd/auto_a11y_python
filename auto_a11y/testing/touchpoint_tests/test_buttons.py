@@ -123,9 +123,17 @@ async def test_buttons(page) -> Dict[str, Any]:
                 return allButtons.map(button => {
                     const normalStyle = window.getComputedStyle(button);
 
+                    // Get font size for em/rem calculations
+                    const fontSize = parseFloat(normalStyle.fontSize) || 16;
+                    const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
+
+                    // Get clip-path for non-rectangular button detection
+                    const clipPath = normalStyle.clipPath;
+
                     // Get background color of button's container for contrast calculation
                     let bgElement = button.parentElement;
                     let backgroundColor = normalStyle.backgroundColor;
+                    let backgroundImage = normalStyle.backgroundImage; // For gradient/image detection
 
                     // Walk up the DOM to find a non-transparent background
                     while (bgElement && backgroundColor === 'rgba(0, 0, 0, 0)') {
@@ -138,10 +146,14 @@ async def test_buttons(page) -> Dict[str, Any]:
                         backgroundColor = 'rgb(255, 255, 255)';
                     }
 
+                    // Also get the full background property for gradient/image detection
+                    const fullBackground = normalStyle.background;
+
                     // Try to get focus styles by checking stylesheets
                     let focusOutlineStyle = null;
                     let focusOutlineWidth = null;
                     let focusOutlineColor = null;
+                    let focusOutlineOffset = null;
                     let focusBackgroundColor = null;
                     let focusBorderColor = null;
                     let focusBoxShadow = null;
@@ -165,6 +177,9 @@ async def test_buttons(page) -> Dict[str, Any]:
                                             }
                                             if (rule.style.outlineColor !== undefined && rule.style.outlineColor !== '') {
                                                 focusOutlineColor = rule.style.outlineColor;
+                                            }
+                                            if (rule.style.outlineOffset !== undefined && rule.style.outlineOffset !== '') {
+                                                focusOutlineOffset = rule.style.outlineOffset;
                                             }
                                             if (rule.style.outline !== undefined && rule.style.outline !== '') {
                                                 const outlineValue = rule.style.outline;
@@ -199,17 +214,23 @@ async def test_buttons(page) -> Dict[str, Any]:
                         xpath: getXPath(button),
                         html: button.outerHTML.substring(0, 200),
                         className: button.className,
+                        fontSize: fontSize,
+                        rootFontSize: rootFontSize,
+                        clipPath: clipPath,
                         normalOutlineStyle: normalStyle.outlineStyle,
                         normalOutlineWidth: normalStyle.outlineWidth,
                         normalOutlineColor: normalStyle.outlineColor,
                         focusOutlineStyle: focusOutlineStyle,
                         focusOutlineWidth: focusOutlineWidth,
                         focusOutlineColor: focusOutlineColor,
+                        focusOutlineOffset: focusOutlineOffset,
                         focusBackgroundColor: focusBackgroundColor,
                         focusBorderColor: focusBorderColor,
                         focusBoxShadow: focusBoxShadow,
                         backgroundColor: backgroundColor,
-                        normalBackgroundColor: normalStyle.backgroundColor
+                        normalBackgroundColor: normalStyle.backgroundColor,
+                        backgroundImage: backgroundImage,
+                        fullBackground: fullBackground
                     };
                 });
             }
@@ -282,56 +303,258 @@ async def test_buttons(page) -> Dict[str, Any]:
             darker = min(lum1, lum2)
             return (lighter + 0.05) / (darker + 0.05)
 
+        # Helper function to parse px values (including em/rem)
+        def parse_px(value_str, font_size=16, root_font_size=16):
+            """Parse CSS pixel values, return float or 0
+
+            Args:
+                value_str: CSS value string (e.g., '2px', '1.5em', '2rem', 'thin')
+                font_size: Element font size in pixels (for em)
+                root_font_size: Root font size in pixels (for rem)
+            """
+            if not value_str:
+                return 0.0
+            if value_str == '0' or value_str == 'none':
+                return 0.0
+
+            value_str = str(value_str).strip()
+
+            # Handle px values
+            if 'px' in value_str:
+                try:
+                    return float(value_str.replace('px', '').strip())
+                except:
+                    return 0.0
+
+            # Handle em values (relative to element font size)
+            if 'em' in value_str and 'rem' not in value_str:
+                try:
+                    em_value = float(value_str.replace('em', '').strip())
+                    return em_value * font_size
+                except:
+                    return 0.0
+
+            # Handle rem values (relative to root font size)
+            if 'rem' in value_str:
+                try:
+                    rem_value = float(value_str.replace('rem', '').strip())
+                    return rem_value * root_font_size
+                except:
+                    return 0.0
+
+            # Handle keywords: thin=1px, medium=3px, thick=5px
+            if value_str == 'thin':
+                return 1.0
+            if value_str == 'medium':
+                return 3.0
+            if value_str == 'thick':
+                return 5.0
+
+            # Try parsing as plain number (assume px)
+            try:
+                return float(value_str)
+            except:
+                return 0.0
+
+        # Helper to detect gradient backgrounds
+        def has_gradient_background(bg_str):
+            if not bg_str:
+                return False
+            return 'gradient' in bg_str.lower()
+
+        # Helper to detect image backgrounds
+        def has_image_background(bg_str):
+            if not bg_str:
+                return False
+            return 'url(' in bg_str.lower()
+
+        # Helper to analyze box-shadow (check if it's on all sides)
+        def is_single_side_box_shadow(box_shadow_str):
+            """Check if box-shadow only appears on one side (not all around)"""
+            if not box_shadow_str or box_shadow_str == 'none':
+                return False
+
+            # Parse box-shadow: x-offset y-offset blur spread color
+            # If x-offset or y-offset is non-zero, it's directional (one-sided)
+            # Examples:
+            #   "0 0 0 3px blue" - all sides (spread with no offset)
+            #   "0 4px 0 0 blue" - bottom only (y-offset=4px)
+            #   "2px 0 0 0 blue" - right only (x-offset=2px)
+            import re
+
+            # Simple heuristic: if x or y offset is non-zero, it's single-sided
+            # Note: browsers return box-shadow as "color x y blur spread" so we need to search not match
+            # Match: number(unit)? number(unit)? (these are x and y offsets)
+            match = re.search(r'(-?\d+(?:\.\d+)?(?:px|em|rem)?)\s+(-?\d+(?:\.\d+)?(?:px|em|rem)?)', box_shadow_str)
+            if match:
+                x_offset_str = match.group(1)
+                y_offset_str = match.group(2)
+
+                # Simple px parser for box-shadow (usually in px)
+                def simple_parse_px(val_str):
+                    if not val_str:
+                        return 0.0
+                    val_str = val_str.strip()
+                    if val_str == '0':
+                        return 0.0
+                    # Remove px suffix if present
+                    if 'px' in val_str:
+                        val_str = val_str.replace('px', '').strip()
+                    try:
+                        return float(val_str)
+                    except:
+                        return 0.0
+
+                x_val = simple_parse_px(x_offset_str)
+                y_val = simple_parse_px(y_offset_str)
+
+                # If either offset is non-zero, it's directional
+                if abs(x_val) > 0 or abs(y_val) > 0:
+                    return True
+
+            return False
+
+        # Helper to detect clip-path (non-rectangular buttons)
+        def has_clip_path(clip_path_str):
+            """Check if button has non-rectangular clip-path"""
+            if not clip_path_str or clip_path_str == 'none':
+                return False
+            # Any clip-path that's not 'none' is potentially problematic
+            # Common: circle(), ellipse(), polygon(), path(), inset()
+            return True
+
         # Test each button for focus indicators
         for button in button_data:
             tag = button['tagName'].lower()
+            error_code = None
             violation_reason = None
 
+            # Get font sizes for em/rem calculations
+            font_size = button.get('fontSize', 16)
+            root_font_size = button.get('rootFontSize', 16)
+
+            # Check for gradient or image backgrounds first (for warnings)
+            button_background = button.get('fullBackground', '') or button.get('normalBackgroundColor', '')
+            button_bg_image = button.get('backgroundImage', '')
+            has_gradient = has_gradient_background(button_background) or has_gradient_background(button_bg_image)
+            has_image = has_image_background(button_background) or has_image_background(button_bg_image)
+
+            # Check for clip-path (non-rectangular buttons)
+            button_clip_path = button.get('clipPath', 'none')
+            has_nonrect_clip = has_clip_path(button_clip_path)
+
+            # Check if this button is using browser default focus (no custom styles)
+            has_custom_focus = (
+                button['focusOutlineStyle'] is not None or
+                button['focusOutlineWidth'] is not None or
+                button['focusOutlineColor'] is not None or
+                button['focusBackgroundColor'] is not None or
+                button['focusBoxShadow'] is not None
+            )
+
+            # Error: clip-path with outline (fails Conformance Requirement 5.2.4)
+            # Only flag if button has clip-path AND is using outline (not box-shadow or other methods)
+            uses_outline_for_focus = (
+                button['focusOutlineStyle'] is not None and
+                button['focusOutlineStyle'] != 'none' and
+                button['focusOutlineStyle'] != ''
+            )
+            if has_nonrect_clip and uses_outline_for_focus:
+                error_code = 'ErrButtonClipPathWithOutline'
+                violation_reason = f'Button has clip-path ({button_clip_path}) but uses outline for focus - outline does not follow clipped shape and may appear disconnected (fails WCAG Conformance Requirement 5.2.4 for magnification users)'
+
+            # Warning: Browser default focus (no custom styles)
+            elif not has_custom_focus:
+                error_code = 'WarnButtonDefaultFocus'
+                violation_reason = 'Button uses browser default focus styles which may not meet 3:1 contrast on all backgrounds (best practice: define explicit focus styles)'
+
             # Check if outline is explicitly set to none on focus
-            if button['focusOutlineStyle'] == 'none':
-                # Check if there are alternative focus indicators
-                has_alternative = False
+            elif button['focusOutlineStyle'] == 'none':
+                # Check if there's a box-shadow (acceptable alternative)
+                has_box_shadow = button['focusBoxShadow'] and button['focusBoxShadow'] != 'none'
 
-                # Check for background color change
-                if button['focusBackgroundColor'] and button['focusBackgroundColor'] != button['normalBackgroundColor']:
-                    bg_color = parse_color(button['backgroundColor'])
-                    focus_bg = parse_color(button['focusBackgroundColor'])
-                    contrast = get_contrast_ratio(bg_color, focus_bg)
-                    if contrast >= 3.0:
-                        has_alternative = True
-
-                # Check for border color change
-                if button['focusBorderColor']:
-                    has_alternative = True
-
-                # Check for box-shadow
-                if button['focusBoxShadow'] and button['focusBoxShadow'] != 'none':
-                    has_alternative = True
-
-                if not has_alternative:
-                    violation_reason = 'Button has outline:none on focus with no alternative focus indicator'
-
-            # If outline is not none but is specified, check its contrast
-            elif button['focusOutlineColor']:
-                outline_color = parse_color(button['focusOutlineColor'])
-                bg_color = parse_color(button['backgroundColor'])
-
-                # Check if outline color is transparent/invisible
-                if outline_color['a'] == 0:
-                    violation_reason = 'Button focus outline is transparent/invisible'
+                if has_box_shadow:
+                    # Check if box-shadow is single-sided (insufficient)
+                    if is_single_side_box_shadow(button['focusBoxShadow']):
+                        error_code = 'ErrButtonSingleSideBoxShadow'
+                        violation_reason = 'Button uses outline:none with single-side box-shadow (only visible on one edge, insufficient for all users)'
+                    else:
+                        # Has all-around box-shadow - issue warning but not error
+                        error_code = 'WarnButtonOutlineNoneWithBoxShadow'
+                        violation_reason = 'Button uses outline:none with box-shadow instead of outline (suboptimal but acceptable)'
                 else:
-                    contrast = get_contrast_ratio(outline_color, bg_color)
-                    if contrast < 3.0:
-                        violation_reason = f'Button focus outline has insufficient contrast ({contrast:.2f}:1, needs 3:1)'
+                    # No box-shadow - check if only using color changes (WCAG 1.4.1 violation)
+                    has_color_change = (
+                        button['focusBackgroundColor'] and
+                        button['focusBackgroundColor'] != button['normalBackgroundColor']
+                    ) or button['focusBorderColor']
 
-            # If no focus styles were explicitly set, browser default is used (which is good)
-            # So we only report violations if we found problems above
+                    if has_color_change:
+                        # Color change only - WCAG 1.4.1 Use of Color violation
+                        error_code = 'ErrButtonOutlineNoneNoBoxShadow'
+                        violation_reason = 'Button has outline:none with only color change (violates WCAG 1.4.1 Use of Color - users with color blindness cannot perceive focus)'
+                    else:
+                        # No visible focus indicator at all
+                        error_code = 'ErrButtonNoVisibleFocus'
+                        violation_reason = 'Button has outline:none with no alternative focus indicator'
 
-            # If we found a violation
-            if violation_reason:
-                results['errors'].append({
-                    'err': 'ErrButtonNoVisibleFocus',
-                    'type': 'err',
+            # If outline is present, check its properties
+            elif button['focusOutlineColor'] and button['focusOutlineWidth']:
+                # Parse with em/rem support
+                outline_width = parse_px(button['focusOutlineWidth'], font_size, root_font_size)
+                outline_offset = parse_px(button.get('focusOutlineOffset', '0px'), font_size, root_font_size)
+
+                # Check outline width (must be >= 2px per WCAG 2.4.11)
+                if outline_width > 0 and outline_width < 2.0:
+                    error_code = 'ErrButtonOutlineWidthInsufficient'
+                    violation_reason = f'Button focus outline is too thin ({outline_width:.2f}px, needs ≥2px per WCAG 2.4.11)'
+
+                # Check outline offset (should be >= 2px when outline is present)
+                elif outline_width >= 2.0 and outline_offset < 2.0:
+                    error_code = 'ErrButtonOutlineOffsetInsufficient'
+                    violation_reason = f'Button focus outline offset is too small ({outline_offset:.2f}px, needs ≥2px for clear separation from button)'
+
+                # Check outline contrast (only if width and offset are sufficient)
+                else:
+                    # Warning: Gradient background (cannot auto-verify contrast)
+                    if has_gradient:
+                        error_code = 'WarnButtonFocusGradientBackground'
+                        violation_reason = 'Button has gradient background - focus outline contrast cannot be automatically verified (manual testing required against lightest and darkest gradient colors)'
+
+                    # Warning: Image background (cannot auto-verify contrast)
+                    elif has_image:
+                        error_code = 'WarnButtonFocusImageBackground'
+                        violation_reason = 'Button has background image - focus outline contrast cannot be automatically verified (manual testing required against all parts of image)'
+
+                    # Check contrast against solid background
+                    else:
+                        outline_color = parse_color(button['focusOutlineColor'])
+                        bg_color = parse_color(button['backgroundColor'])
+
+                        # Check if outline color is fully transparent
+                        if outline_color['a'] == 0:
+                            error_code = 'ErrButtonNoVisibleFocus'
+                            violation_reason = 'Button focus outline is transparent/invisible'
+                        # Check if outline is semi-transparent (< 50% opacity) - Error, not warning
+                        elif outline_color['a'] < 0.5:
+                            error_code = 'ErrButtonTransparentOutline'
+                            violation_reason = f'Button focus outline is semi-transparent (alpha={outline_color["a"]:.2f}) which cannot guarantee 3:1 contrast in all contexts (fails WCAG 1.4.11)'
+                        else:
+                            # For semi-transparent colors, we should ideally blend with background
+                            # For now, just calculate contrast with the opaque version
+                            contrast = get_contrast_ratio(outline_color, bg_color)
+                            if contrast < 3.0:
+                                error_code = 'ErrButtonFocusContrastFail'
+                                violation_reason = f'Button focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1 per WCAG 1.4.11)'
+
+            # If we found a violation or warning
+            if error_code:
+                result_type = 'warn' if error_code.startswith('Warn') else 'err'
+                result_list = results['warnings'] if result_type == 'warn' else results['errors']
+
+                result_list.append({
+                    'err': error_code,
+                    'type': result_type,
                     'cat': 'buttons',
                     'element': tag,
                     'xpath': button['xpath'],

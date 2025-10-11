@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkColorChangeOnly - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkColorChangeOnly_001_violations_color_only",
+    "issueId": "ErrLinkColorChangeOnly",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Links that rely solely on color change for focus indication",
+    "wcag": "2.4.7, 1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Text color change only */
+        .text-color-only {
+            color: #0066cc;
+        }
+        .text-color-only:focus {
+            outline: none;
+            text-decoration: none; /* Remove default underline */
+            color: #cc0000; /* Color change only - violates 1.4.1 Use of Color */
+        }
+
+        /* Background color change only */
+        .bg-color-only {
+            color: #333;
+        }
+        .bg-color-only:focus {
+            outline: none;
+            text-decoration: none; /* Remove default underline */
+            background-color: #ffff00; /* Background color change only */
+        }
+
+        /* Both text and background color change (still no structural indicator) */
+        .both-colors {
+            color: #0066cc;
+            background: transparent;
+        }
+        .both-colors:focus {
+            outline: none;
+            text-decoration: none; /* Remove default underline */
+            color: white;
+            background-color: #0066cc; /* Both colors change but no outline/border/box-shadow/underline */
+        }
+
+        /* Bold + color change (still insufficient without structural indicator) */
+        .bold-and-color {
+            color: #0066cc;
+        }
+        .bold-and-color:focus {
+            outline: none;
+            text-decoration: none; /* Remove default underline */
+            color: #cc0000;
+            font-weight: bold; /* Bold is not a valid focus indicator without outline/border/etc */
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Color Change Only (Violates WCAG 1.4.1)</h1>
+
+    <p>These links rely solely on color to indicate focus, which fails WCAG 1.4.1 Use of Color.
+       Users with color blindness cannot perceive the focus.</p>
+
+    <section>
+        <h2>Text Color Change Only</h2>
+        <p>This link changes text color but has no structural indicator:
+            <a href="#" class="text-color-only"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkColorChangeOnly"
+               data-violation-reason="Focus relies on text color change only - violates WCAG 1.4.1 Use of Color">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Background Color Change Only</h2>
+        <p>This link changes background color but has no structural indicator:
+            <a href="#" class="bg-color-only"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkColorChangeOnly"
+               data-violation-reason="Focus relies on background color change only - no outline/border/box-shadow/underline">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Both Text and Background Color Change</h2>
+        <p>This link changes both text and background color but still has no structural indicator:
+            <a href="#" class="both-colors"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkColorChangeOnly"
+               data-violation-reason="Focus relies on color changes only (text + background) without structural indicator">
+                Contact Us
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Bold + Color Change (Still Insufficient)</h2>
+        <p>This link becomes bold and changes color, but still lacks a valid structural indicator:
+            <a href="#" class="bold-and-color"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkColorChangeOnly"
+               data-violation-reason="Bold + color change without outline/border/box-shadow/underline is insufficient">
+                About Us
+            </a>
+        </p>
+    </section>
+</body>
+</html>

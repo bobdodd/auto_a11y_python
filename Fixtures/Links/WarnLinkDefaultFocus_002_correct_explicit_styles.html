@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnLinkDefaultFocus - Correct Examples</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkDefaultFocus_002_correct_explicit_styles",
+    "issueId": "WarnLinkDefaultFocus",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Links with explicit focus styles that ensure consistent, accessible focus indication",
+    "wcag": "2.4.7",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Explicit focus styles */
+        .explicit-outline {
+            color: #0066cc;
+        }
+        .explicit-outline:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .dark-section {
+            background: #333;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .explicit-white-outline {
+            color: #66b3ff;
+        }
+        .explicit-white-outline:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        .blue-section {
+            background: #0066cc;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .explicit-white-outline-2 {
+            color: #003d7a;
+        }
+        .explicit-white-outline-2:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        section {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Explicit Focus Styles (Correct)</h1>
+
+    <p>These links define explicit :focus styles, ensuring consistent, accessible focus
+       indication across all browsers and backgrounds.</p>
+
+    <section>
+        <h2>Link with Explicit Outline</h2>
+        <p>This link has explicit focus styles:
+            <a href="#" class="explicit-outline"
+               data-expected-pass="true">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section class="dark-section">
+        <h2 style="color: white;">Link on Dark Background with Explicit White Outline</h2>
+        <p style="color: white;">This link has explicit white outline on dark background:
+            <a href="#" class="explicit-white-outline"
+               data-expected-pass="true">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section class="blue-section">
+        <h2 style="color: white;">Link on Blue Background with White Outline</h2>
+        <p style="color: white;">This link has explicit white outline (not default blue):
+            <a href="#" class="explicit-white-outline-2"
+               data-expected-pass="true">
+                Contact Us
+            </a>
+        </p>
+    </section>
+</body>
+</html>

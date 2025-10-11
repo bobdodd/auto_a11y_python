@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonFocusGradientBackground - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonFocusGradientBackground_002_correct_solid_background",
+    "issueId": "WarnButtonFocusGradientBackground",
+    "expectedViolationCount": 0,
+    "expectedWarningCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with solid backgrounds - contrast can be auto-verified",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        .solid-light {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+        }
+        .solid-light:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .solid-dark {
+            padding: 10px 20px;
+            background: #333333;
+            color: white;
+            border: 1px solid #555;
+        }
+        .solid-dark:focus {
+            outline: 2px solid #66b3ff;
+            outline-offset: 2px;
+        }
+
+        .solid-colored {
+            padding: 10px 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+        }
+        .solid-colored:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Solid Background Buttons</h1>
+
+    <p>These buttons have solid color backgrounds, allowing automated contrast verification
+       between the focus outline and background color.</p>
+
+    <section>
+        <h2>Light Gray Background</h2>
+        <button class="solid-light"
+                data-expected-pass="true">
+            Submit Form
+        </button>
+        <p>Blue outline on light gray background - high contrast.</p>
+    </section>
+
+    <section>
+        <h2>Dark Gray Background</h2>
+        <button class="solid-dark"
+                data-expected-pass="true">
+            Save Changes
+        </button>
+        <p>Light blue outline on dark background - high contrast.</p>
+    </section>
+
+    <section>
+        <h2>Blue Background</h2>
+        <button class="solid-colored"
+                data-expected-pass="true">
+            Delete Item
+        </button>
+        <p>White outline on blue background - high contrast.</p>
+    </section>
+</body>
+</html>

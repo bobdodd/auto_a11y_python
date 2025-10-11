@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonOutlineWidthInsufficient - Em/Rem Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonOutlineWidthInsufficient_003_violations_em_rem",
+    "issueId": "ErrButtonOutlineWidthInsufficient",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with outline-width using em/rem that computes to < 2px",
+    "wcag": "2.4.7, 2.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Root font-size for rem calculations */
+        html {
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+            font-size: 16px; /* For em calculations */
+        }
+
+        .em-insufficient:focus {
+            outline: 0.1em solid #0066cc; /* 0.1 × 16px = 1.6px (insufficient) */
+            outline-offset: 2px;
+        }
+
+        .rem-insufficient:focus {
+            outline: 0.1rem solid #0066cc; /* 0.1 × 16px = 1.6px (insufficient) */
+            outline-offset: 2px;
+        }
+
+        .em-borderline:focus {
+            outline: 0.11em solid #0066cc; /* 0.11 × 16px = 1.76px (still < 2px) */
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Outline Width with Em/Rem (Insufficient)</h1>
+
+    <p>These buttons use em or rem units for outline-width that compute to less than 2px.
+       Developers may assume these relative units are sufficient, but they fail to meet
+       the WCAG 2.4.11 requirement of at least 2 CSS pixels.</p>
+
+    <section>
+        <h2>0.1em Width (Computes to 1.6px on 16px font)</h2>
+        <button class="em-insufficient"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineWidthInsufficient"
+                data-violation-reason="outline-width: 0.1em = 1.6px (< 2px required)">
+            Submit Form
+        </button>
+        <p>0.1em on 16px font = 1.6px - too thin.</p>
+    </section>
+
+    <section>
+        <h2>0.1rem Width (Computes to 1.6px on 16px root)</h2>
+        <button class="rem-insufficient"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineWidthInsufficient"
+                data-violation-reason="outline-width: 0.1rem = 1.6px (< 2px required)">
+            Save Changes
+        </button>
+        <p>0.1rem on 16px root font-size = 1.6px - too thin.</p>
+    </section>
+
+    <section>
+        <h2>0.11em Width (Computes to 1.76px - Still Insufficient)</h2>
+        <button class="em-borderline"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineWidthInsufficient"
+                data-violation-reason="outline-width: 0.11em = 1.76px (still < 2px)">
+            Delete Item
+        </button>
+        <p>0.11em on 16px font = 1.76px - close but still fails threshold.</p>
+    </section>
+
+    <p><strong>Note:</strong> To meet the 2px requirement, use at least 0.125em or 0.125rem
+       (which equals exactly 2px on a 16px base font).</p>
+</body>
+</html>

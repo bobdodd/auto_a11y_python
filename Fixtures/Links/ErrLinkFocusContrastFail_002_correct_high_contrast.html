@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkFocusContrastFail - Correct Examples</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkFocusContrastFail_002_correct_high_contrast",
+    "issueId": "ErrLinkFocusContrastFail",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Links with focus indicators that have >= 3:1 contrast ratio",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            background: #ffffff;
+        }
+
+        /* Dark blue outline on white - high contrast */
+        .dark-blue-outline {
+            padding: 10px;
+        }
+        .dark-blue-outline:focus {
+            outline: 2px solid #0066cc; /* High contrast */
+            outline-offset: 2px;
+        }
+
+        /* Black outline on white - maximum contrast */
+        .black-outline {
+            padding: 10px;
+        }
+        .black-outline:focus {
+            outline: 2px solid #000000; /* Maximum contrast */
+            outline-offset: 2px;
+        }
+
+        .dark-section {
+            background: #333333;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        /* White outline on dark background - high contrast */
+        .white-outline {
+            color: white;
+        }
+        .white-outline:focus {
+            outline: 2px solid #ffffff; /* High contrast against dark background */
+            outline-offset: 2px;
+        }
+
+        /* Image link with high contrast outline */
+        .image-high-contrast:focus {
+            outline: 3px solid #0066cc; /* High contrast */
+            outline-offset: 2px;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+        }
+
+        section {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with High Contrast Focus Indicators (Correct)</h1>
+
+    <p>These links have focus indicators with contrast ratios >= 3:1, meeting WCAG requirements.</p>
+
+    <section>
+        <h2>Dark Blue Outline on White Background (>= 3:1)</h2>
+        <p>This link has a dark blue outline with sufficient contrast:
+            <a href="#" class="dark-blue-outline"
+               data-expected-pass="true">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Black Outline on White Background (21:1)</h2>
+        <p>This link has a black outline with maximum contrast:
+            <a href="#" class="black-outline"
+               data-expected-pass="true">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section class="dark-section">
+        <h2 style="color: white;">White Outline on Dark Background (>= 3:1)</h2>
+        <p style="color: white;">This link has a white outline on dark background:
+            <a href="#" class="white-outline"
+               data-expected-pass="true">
+                Contact Us
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Image Link - High Contrast Outline</h2>
+        <a href="#" class="image-high-contrast"
+           data-expected-pass="true">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%230066cc' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3ELogo%3C/text%3E%3C/svg%3E" alt="Company Logo">
+        </a>
+    </section>
+</body>
+</html>

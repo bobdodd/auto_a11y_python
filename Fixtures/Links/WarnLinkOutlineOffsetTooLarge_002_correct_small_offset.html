@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnLinkOutlineOffsetTooLarge - Correct Examples</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkOutlineOffsetTooLarge_002_correct_small_offset",
+    "issueId": "WarnLinkOutlineOffsetTooLarge",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Links with underline and small outline-offset (0-1px) OR no underline",
+    "wcag": "2.4.7",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Underline + 0px offset - cohesive */
+        .underline-zero-offset {
+            text-decoration: underline;
+        }
+        .underline-zero-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 0px; /* Good - no gap */
+            text-decoration: underline;
+        }
+
+        /* Underline + 1px offset - acceptable */
+        .underline-one-px-offset {
+            text-decoration: underline;
+        }
+        .underline-one-px-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 1px; /* Acceptable - minimal gap */
+            text-decoration: underline;
+        }
+
+        /* No underline + large offset - fine */
+        .no-underline-large-offset {
+            text-decoration: none;
+        }
+        .no-underline-large-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 3px; /* Large offset is fine when no underline */
+        }
+
+        /* Just underline on focus - no outline */
+        .underline-only:focus {
+            text-decoration: underline; /* Underline only - no outline needed */
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Proper Focus Indicators (Correct)</h1>
+
+    <p>These links either have small outline-offset (0-1px) when combined with underline,
+       or use large offset without underline, creating clear focus indication.</p>
+
+    <section>
+        <h2>Underline + 0px Outline Offset</h2>
+        <p>This link has underline with 0px outline offset - creates cohesive unit:
+            <a href="#" class="underline-zero-offset"
+               data-expected-pass="true">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Underline + 1px Outline Offset</h2>
+        <p>This link has underline with 1px outline offset - acceptable:
+            <a href="#" class="underline-one-px-offset"
+               data-expected-pass="true">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>No Underline + Large Offset (Fine)</h2>
+        <p>This link has no underline, so large offset is acceptable:
+            <a href="#" class="no-underline-large-offset"
+               data-expected-pass="true">
+                Contact Us
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Underline Only (No Outline)</h2>
+        <p>This link uses underline as the only focus indicator (acceptable for text links):
+            <a href="#" class="underline-only"
+               data-expected-pass="true">
+                About Us
+            </a>
+        </p>
+    </section>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonOutlineNoneWithBoxShadow - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonOutlineNoneWithBoxShadow_002_correct_with_outline",
+    "issueId": "WarnButtonOutlineNoneWithBoxShadow",
+    "expectedViolationCount": 0,
+    "expectedWarningCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with proper outline focus indicators (optimal pattern)",
+    "wcag": "2.4.7",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        .outline-focus:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .outline-thick:focus {
+            outline: 3px solid #0066cc;
+            outline-offset: 3px;
+        }
+
+        .outline-color:focus {
+            outline: 2px solid #cc0066;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Correct Outline Implementation</h1>
+
+    <p>These buttons use proper outline with outline-offset for focus indicators.
+       This is the optimal pattern as it provides clear, visible borders on all four sides.</p>
+
+    <section>
+        <h2>Standard Outline (2px)</h2>
+        <button class="outline-focus"
+                data-expected-pass="true">
+            Submit Form
+        </button>
+        <p>This button uses a standard 2px outline with 2px offset.</p>
+    </section>
+
+    <section>
+        <h2>Thick Outline (3px)</h2>
+        <button class="outline-thick"
+                data-expected-pass="true">
+            Save Changes
+        </button>
+        <p>This button uses a thicker 3px outline for better visibility.</p>
+    </section>
+
+    <section>
+        <h2>Colored Outline</h2>
+        <button class="outline-color"
+                data-expected-pass="true">
+            Delete Item
+        </button>
+        <p>This button uses a different color for the outline.</p>
+    </section>
+</body>
+</html>

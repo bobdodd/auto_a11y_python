@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonOutlineOffsetInsufficient - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonOutlineOffsetInsufficient_002_correct_sufficient_offset",
+    "issueId": "ErrButtonOutlineOffsetInsufficient",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with sufficient outline-offset (≥2px) for clear visual separation",
+    "wcag": "2.4.7",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        .two-px-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px; /* Minimum acceptable */
+        }
+
+        .three-px-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 3px; /* Better - more separation */
+        }
+
+        .four-px-offset:focus {
+            outline: 3px solid #0066cc;
+            outline-offset: 4px; /* Excellent visibility */
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Correct Outline Offset Implementation</h1>
+
+    <p>These buttons have focus outlines with sufficient offset (≥2px) from the button edge,
+       ensuring clear visual separation and visibility.</p>
+
+    <section>
+        <h2>2px Offset (minimum acceptable)</h2>
+        <button class="two-px-offset"
+                data-expected-pass="true">
+            Submit Form
+        </button>
+        <p>This button has 2px offset, meeting the minimum requirement.</p>
+    </section>
+
+    <section>
+        <h2>3px Offset (good)</h2>
+        <button class="three-px-offset"
+                data-expected-pass="true">
+            Save Changes
+        </button>
+        <p>This button has 3px offset, providing good visual separation.</p>
+    </section>
+
+    <section>
+        <h2>4px Offset (excellent)</h2>
+        <button class="four-px-offset"
+                data-expected-pass="true">
+            Delete Item
+        </button>
+        <p>This button has 4px offset with thick outline, providing excellent visibility.</p>
+    </section>
+</body>
+</html>

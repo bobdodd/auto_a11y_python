@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonFocusImageBackground - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonFocusImageBackground_001_violations_image",
+    "issueId": "WarnButtonFocusImageBackground",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with background images - focus contrast cannot be auto-verified",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .data-uri-pattern {
+            padding: 10px 20px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23e0e0e0" width="50" height="50"/><rect fill="%23ffffff" x="50" width="50" height="50"/><rect fill="%23ffffff" y="50" width="50" height="50"/><rect fill="%23e0e0e0" x="50" y="50" width="50" height="50"/></svg>');
+            background-size: 20px 20px;
+            border: 1px solid #999;
+        }
+        .data-uri-pattern:focus {
+            outline: 2px solid #888888;
+            outline-offset: 2px;
+        }
+
+        .external-image {
+            padding: 10px 20px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgb(70,130,180);stop-opacity:1" /><stop offset="100%" style="stop-color:rgb(135,206,250);stop-opacity:1" /></linearGradient></defs><rect fill="url(%23grad)" width="200" height="100"/></svg>');
+            background-size: cover;
+            color: white;
+            border: none;
+        }
+        .external-image:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        .repeating-pattern {
+            padding: 10px 20px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="5" cy="5" r="2" fill="%23cccccc"/></svg>');
+            background-repeat: repeat;
+            background-color: #f5f5f5;
+            border: 1px solid #999;
+        }
+        .repeating-pattern:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Background Image Buttons</h1>
+
+    <p>These buttons have background images, making it impossible to programmatically
+       verify that focus outlines are visible against all parts of the image.
+       Manual visual testing is required.</p>
+
+    <section>
+        <h2>Checkerboard Pattern Background</h2>
+        <button class="data-uri-pattern"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonFocusImageBackground"
+                data-warning-reason="Gray outline may blend with light squares">
+            Submit Form
+        </button>
+        <p>Pattern background has varying light and dark areas.</p>
+    </section>
+
+    <section>
+        <h2>Gradient Image Background</h2>
+        <button class="external-image"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonFocusImageBackground"
+                data-warning-reason="White outline may blend with light blue areas">
+            Save Changes
+        </button>
+        <p>Image contains a gradient that varies in lightness.</p>
+    </section>
+
+    <section>
+        <h2>Repeating Pattern Background</h2>
+        <button class="repeating-pattern"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonFocusImageBackground"
+                data-warning-reason="Outline visibility depends on pattern alignment">
+            Delete Item
+        </button>
+        <p>Repeating patterns can obscure outlines in certain positions.</p>
+    </section>
+</body>
+</html>

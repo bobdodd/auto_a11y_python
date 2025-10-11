@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonOutlineWidthInsufficient - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonOutlineWidthInsufficient_001_violations_thin_outline",
+    "issueId": "ErrButtonOutlineWidthInsufficient",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with outline-width < 2px (too thin per WCAG 2.4.11)",
+    "wcag": "2.4.7, 2.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .one-px-outline:focus {
+            outline: 1px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .half-px-outline:focus {
+            outline: 0.5px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .thin-keyword:focus {
+            outline: thin solid #0066cc; /* 'thin' is usually 1px */
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Outline Width Less Than 2px</h1>
+
+    <p>These buttons have focus outlines thinner than 2px, which are difficult to see and fail
+       WCAG 2.4.11 Focus Appearance (Level AAA) requirements.</p>
+
+    <section>
+        <h2>1px Outline Width</h2>
+        <button class="one-px-outline"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineWidthInsufficient"
+                data-violation-reason="outline-width: 1px is less than required 2px minimum">
+            Submit Form
+        </button>
+        <p>This button has a 1px outline, which is too thin to be clearly visible.</p>
+    </section>
+
+    <section>
+        <h2>0.5px Outline Width</h2>
+        <button class="half-px-outline"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineWidthInsufficient"
+                data-violation-reason="outline-width: 0.5px is less than required 2px minimum">
+            Save Changes
+        </button>
+        <p>This button has a 0.5px outline, which is extremely thin and barely visible.</p>
+    </section>
+
+    <section>
+        <h2>'thin' Keyword (typically 1px)</h2>
+        <button class="thin-keyword"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineWidthInsufficient"
+                data-violation-reason="outline-width: thin is typically 1px, less than required 2px">
+            Delete Item
+        </button>
+        <p>This button uses 'thin' keyword which is usually interpreted as 1px by browsers.</p>
+    </section>
+</body>
+</html>

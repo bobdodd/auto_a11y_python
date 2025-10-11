@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonFocusImageBackground - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonFocusImageBackground_002_correct_no_image",
+    "issueId": "WarnButtonFocusImageBackground",
+    "expectedViolationCount": 0,
+    "expectedWarningCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons without background images - contrast can be auto-verified",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        .solid-button {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+        }
+        .solid-button:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .no-background {
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px solid #0066cc;
+        }
+        .no-background:focus {
+            outline: 2px solid #cc0066;
+            outline-offset: 2px;
+        }
+
+        .colored-button {
+            padding: 10px 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+        }
+        .colored-button:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Buttons Without Background Images</h1>
+
+    <p>These buttons use solid colors or no background, allowing automated verification
+       that focus outlines have sufficient contrast.</p>
+
+    <section>
+        <h2>Solid Background (No Image)</h2>
+        <button class="solid-button"
+                data-expected-pass="true">
+            Submit Form
+        </button>
+        <p>Simple solid color background - contrast is verifiable.</p>
+    </section>
+
+    <section>
+        <h2>Transparent Background (No Image)</h2>
+        <button class="no-background"
+                data-expected-pass="true">
+            Save Changes
+        </button>
+        <p>Transparent button inherits page background - contrast is verifiable.</p>
+    </section>
+
+    <section>
+        <h2>Colored Background (No Image)</h2>
+        <button class="colored-button"
+                data-expected-pass="true">
+            Delete Item
+        </button>
+        <p>Solid blue background - contrast is verifiable.</p>
+    </section>
+</body>
+</html>

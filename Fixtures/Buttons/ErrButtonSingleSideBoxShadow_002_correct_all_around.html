@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonSingleSideBoxShadow - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonSingleSideBoxShadow_002_correct_all_around",
+    "issueId": "ErrButtonSingleSideBoxShadow",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with all-around box-shadow (zero offset with spread) or outline",
+    "wcag": "2.4.7",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        .box-shadow-spread:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5); /* All around - zero offset, spread only */
+        }
+
+        .box-shadow-inset:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px #0066cc; /* Inset all around */
+        }
+
+        .proper-outline:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Correct All-Around Focus Indicators</h1>
+
+    <p>These buttons use focus indicators that appear on all sides, ensuring visibility
+       from any direction and providing clear focus indication.</p>
+
+    <section>
+        <h2>Box-Shadow with Spread (All Around)</h2>
+        <button class="box-shadow-spread"
+                data-expected-pass="true">
+            Submit Form
+        </button>
+        <p>Uses box-shadow with zero x/y offset and spread value (appears on all sides).</p>
+    </section>
+
+    <section>
+        <h2>Inset Box-Shadow (All Around)</h2>
+        <button class="box-shadow-inset"
+                data-expected-pass="true">
+            Save Changes
+        </button>
+        <p>Uses inset box-shadow which appears evenly on all sides.</p>
+    </section>
+
+    <section>
+        <h2>Proper Outline (Optimal)</h2>
+        <button class="proper-outline"
+                data-expected-pass="true">
+            Delete Item
+        </button>
+        <p>Uses proper outline with offset - the recommended approach.</p>
+    </section>
+</body>
+</html>

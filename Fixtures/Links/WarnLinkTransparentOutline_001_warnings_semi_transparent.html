@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnLinkTransparentOutline - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkTransparentOutline_001_warnings_semi_transparent",
+    "issueId": "WarnLinkTransparentOutline",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Links with semi-transparent outlines (alpha < 0.5) that cannot guarantee sufficient contrast",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            background: #ffffff;
+        }
+
+        /* Alpha 0.1 - very transparent */
+        .alpha-01 {
+            padding: 5px;
+        }
+        .alpha-01:focus {
+            outline: 2px solid rgba(0, 102, 204, 0.1);
+            outline-offset: 2px;
+        }
+
+        /* Alpha 0.2 - too transparent */
+        .alpha-02 {
+            padding: 5px;
+        }
+        .alpha-02:focus {
+            outline: 2px solid rgba(0, 102, 204, 0.2);
+            outline-offset: 2px;
+        }
+
+        /* Alpha 0.3 - still too transparent */
+        .alpha-03 {
+            padding: 5px;
+        }
+        .alpha-03:focus {
+            outline: 2px solid rgba(204, 0, 0, 0.3);
+            outline-offset: 2px;
+        }
+
+        /* Alpha 0.4 - under threshold */
+        .alpha-04 {
+            padding: 5px;
+        }
+        .alpha-04:focus {
+            outline: 2px solid rgba(0, 153, 0, 0.4);
+            outline-offset: 2px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Semi-Transparent Outlines</h1>
+
+    <p>These links have outlines with alpha values < 0.5, making them too transparent to guarantee
+       sufficient contrast in all contexts. The effective color varies based on the background.</p>
+
+    <section>
+        <h2>Outline with Alpha 0.1 (Very Transparent)</h2>
+        <p>This link has rgba(0,102,204,0.1) outline:
+            <a href="#" class="alpha-01"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkTransparentOutline"
+               data-warning-reason="Outline has alpha 0.1 - essentially invisible">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Outline with Alpha 0.2</h2>
+        <p>This link has rgba(0,102,204,0.2) outline:
+            <a href="#" class="alpha-02"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkTransparentOutline"
+               data-warning-reason="Outline has alpha 0.2 - too transparent">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Outline with Alpha 0.3</h2>
+        <p>This link has rgba(204,0,0,0.3) outline:
+            <a href="#" class="alpha-03"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkTransparentOutline"
+               data-warning-reason="Outline has alpha 0.3 - still too transparent">
+                Contact Us
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Outline with Alpha 0.4 (Just Under Threshold)</h2>
+        <p>This link has rgba(0,153,0,0.4) outline:
+            <a href="#" class="alpha-04"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkTransparentOutline"
+               data-warning-reason="Outline has alpha 0.4 - just under 0.5 threshold">
+                About Us
+            </a>
+        </p>
+    </section>
+</body>
+</html>

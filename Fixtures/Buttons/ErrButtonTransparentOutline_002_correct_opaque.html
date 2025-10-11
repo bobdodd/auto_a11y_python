@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonTransparentOutline - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonTransparentOutline_002_correct_opaque",
+    "issueId": "ErrButtonTransparentOutline",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Buttons with fully opaque outlines (alpha = 1.0 or no alpha) that guarantee visibility",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+        }
+
+        .opaque-rgb:focus {
+            outline: 2px solid rgb(0, 102, 204);
+            outline-offset: 2px;
+        }
+
+        .opaque-rgba:focus {
+            outline: 3px solid rgba(204, 0, 102, 1.0);
+            outline-offset: 2px;
+        }
+
+        .opaque-hex:focus {
+            outline: 2px solid #009900;
+            outline-offset: 2px;
+        }
+
+        .acceptable-alpha:focus {
+            outline: 3px solid rgba(255, 100, 0, 0.9);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Opaque Focus Outlines (Correct)</h1>
+
+    <p>These buttons use fully opaque or nearly opaque focus outlines that maintain
+       consistent visibility across all contexts and backgrounds.</p>
+
+    <section>
+        <h2>RGB (Implicitly Opaque)</h2>
+        <button class="opaque-rgb"
+                data-expected-pass="true">
+            Submit Form
+        </button>
+        <p>Uses rgb() without alpha - implicitly 100% opaque.</p>
+    </section>
+
+    <section>
+        <h2>RGBA with Alpha = 1.0 (Explicitly Opaque)</h2>
+        <button class="opaque-rgba"
+                data-expected-pass="true">
+            Save Changes
+        </button>
+        <p>Uses rgba() with alpha=1.0 - explicitly 100% opaque.</p>
+    </section>
+
+    <section>
+        <h2>Hex Color (Always Opaque)</h2>
+        <button class="opaque-hex"
+                data-expected-pass="true">
+            Delete Item
+        </button>
+        <p>Uses hex color - always 100% opaque (no transparency support in 6-digit hex).</p>
+    </section>
+
+    <section>
+        <h2>High Opacity (Alpha = 0.9, Acceptable)</h2>
+        <button class="acceptable-alpha"
+                data-expected-pass="true">
+            Cancel
+        </button>
+        <p>Uses rgba() with alpha=0.9 - above 50% threshold, acceptable for most contexts.</p>
+    </section>
+
+    <p><strong>Best Practice:</strong> Use fully opaque colors (alpha = 1.0 or no alpha channel)
+       for focus indicators to ensure consistent visibility across all contexts.</p>
+</body>
+</html>

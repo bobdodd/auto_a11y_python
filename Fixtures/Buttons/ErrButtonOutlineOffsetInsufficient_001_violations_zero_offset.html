@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonOutlineOffsetInsufficient - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonOutlineOffsetInsufficient_001_violations_zero_offset",
+    "issueId": "ErrButtonOutlineOffsetInsufficient",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with outline-offset < 2px (outline too close to button edge)",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .zero-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 0px; /* Too close - gets lost in button */
+        }
+
+        .one-px-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 1px; /* Too close */
+        }
+
+        .negative-offset:focus {
+            outline: 3px solid #0066cc;
+            outline-offset: -1px; /* Goes inside button */
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Outline Offset Less Than 2px</h1>
+
+    <p>These buttons have focus outlines with insufficient offset from the button edge,
+       causing the outline to blend with the button border or get lost visually.</p>
+
+    <section>
+        <h2>Zero Offset (outline touches button edge)</h2>
+        <button class="zero-offset"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineOffsetInsufficient"
+                data-violation-reason="outline-offset: 0px causes outline to touch button edge">
+            Submit Form
+        </button>
+        <p>This button has 0px offset, making the outline touch the button edge.</p>
+    </section>
+
+    <section>
+        <h2>1px Offset (too close)</h2>
+        <button class="one-px-offset"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineOffsetInsufficient"
+                data-violation-reason="outline-offset: 1px is less than required 2px minimum">
+            Save Changes
+        </button>
+        <p>This button has 1px offset, which is insufficient for clear visual separation.</p>
+    </section>
+
+    <section>
+        <h2>Negative Offset (goes inside button)</h2>
+        <button class="negative-offset"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineOffsetInsufficient"
+                data-violation-reason="outline-offset: -1px places outline inside button">
+            Delete Item
+        </button>
+        <p>This button has negative offset, placing the outline inside the button boundary.</p>
+    </section>
+</body>
+</html>

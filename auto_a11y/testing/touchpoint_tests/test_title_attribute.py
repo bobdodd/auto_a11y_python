@@ -208,7 +208,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
 
             # Handle non-iframe elements with title attributes
 
-            # ErrTitleAsOnlyLabel: Form field with ONLY title as label (HIGH severity)
+            # ErrTitleAsOnlyLabel: Form field with ONLY title as label (kept for backward compatibility)
             if element['isFormField'] and not element['hasLabel'] and not element['hasAriaLabel'] and not element['hasAriaLabelledby']:
                 results['errors'].append({
                     'err': 'ErrTitleAsOnlyLabel',
@@ -223,52 +223,19 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 results['elements_failed'] += 1
                 continue
 
-            # WarnRedundantTitleAttr: Title duplicates visible text
-            visible_text = element['visibleText']
-            if visible_text:
-                title_lower = title_value.lower()
-                text_lower = visible_text.lower()
-
-                if title_lower == text_lower or text_lower in title_lower or title_lower in text_lower:
-                    results['warnings'].append({
-                        'err': 'WarnRedundantTitleAttr',
-                        'type': 'warn',
-                        'cat': 'title',
-                        'element': tag,
-                        'xpath': element['xpath'],
-                        'html': element['html'],
-                        'description': 'Title attribute duplicates visible text, creating inaccessible tooltip',
-                        'titleValue': title_value,
-                        'visibleText': visible_text[:100]
-                    })
-                    results['elements_failed'] += 1
-                    continue
-                else:
-                    # Title adds different info - still problematic but less severe
-                    results['warnings'].append({
-                        'err': 'WarnTitleAttrFound',
-                        'type': 'warn',
-                        'cat': 'title',
-                        'element': tag,
-                        'xpath': element['xpath'],
-                        'html': element['html'],
-                        'description': 'Title attribute has accessibility limitations',
-                        'titleValue': title_value,
-                        'visibleText': visible_text[:100]
-                    })
-                    results['elements_failed'] += 1
-                    continue
-
-            # WarnTitleAttrFound: General case - title on element without visible text
-            results['warnings'].append({
-                'err': 'WarnTitleAttrFound',
-                'type': 'warn',
+            # ErrTitleAttrFound: Title attribute used - fundamentally inaccessible
+            # Fails WCAG Conformance requirement 5.2.4 - not accessible to screen magnifier users
+            # At high magnification, tooltip content goes off-screen and disappears when mouse moves
+            results['errors'].append({
+                'err': 'ErrTitleAttrFound',
+                'type': 'err',
                 'cat': 'title',
                 'element': tag,
                 'xpath': element['xpath'],
                 'html': element['html'],
-                'description': 'Title attribute has accessibility limitations',
-                'titleValue': title_value
+                'description': 'Title attribute is fundamentally inaccessible to screen magnifier users and fails WCAG Conformance 5.2.4. Use visible text or proper labels instead',
+                'titleValue': title_value,
+                'visibleText': element['visibleText'][:100] if element['visibleText'] else None
             })
             results['elements_failed'] += 1
 

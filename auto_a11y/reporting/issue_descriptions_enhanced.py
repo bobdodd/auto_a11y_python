@@ -1810,13 +1810,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add a proper visible <label> element associated with the form field using the \'for\' attribute. If space is limited, use placeholder text in addition to (not instead of) a label. For complex layouts, consider using aria-labelledby to reference existing visible text. If you must use aria-label, ensure it\'s descriptive and consider adding visible text for sighted users. Never rely solely on title attributes for labeling form fields - they should only supplement proper labels, not replace them."
         },
         'ErrTitleAttrFound': {
-            'title': "Title attribute used for important information",
-            'what': "Title attribute used for important information",
-            'why': "Title attributes are not reliably accessible",
-            'who': "Mobile users, keyboard users, some screen readers",
-            'impact': ImpactScale.LOW.value,
-            'wcag': ['3.3.2', '4.1.2'],
-            'remediation': "Use visible text or proper labels instead"
+            'title': "Title attribute used - fundamentally inaccessible to assistive technology",
+            'what': "Title attribute used - fundamentally inaccessible to assistive technology",
+            'why': "Title attributes fail WCAG Conformance requirement 5.2.4 as they are not accessible with regular assistive technology. For screen magnifier users at high magnification, tooltip content extends off-screen and disappears when mouse moves to read it, making content completely inaccessible",
+            'who': "Screen magnifier users (tooltip goes off-screen at high magnification), mobile and touch screen users (no hover), keyboard-only users (cannot trigger tooltip), screen reader users (inconsistent support), users with motor disabilities (tooltip disappears when mouse moves), users with cognitive disabilities (tooltip disappears too quickly)",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['5.2.4', '4.1.2'],
+            'remediation': "Never use title attributes. Use visible text, proper <label> elements for forms, aria-label for icons, or visible helper text. For abbreviations, provide full text on first use or use <dfn> element"
         },
         'ErrTransparentFocusIndicator': {
             'title': "Focus indicator uses transparent or nearly transparent color, making it effectively invisible",
@@ -2582,15 +2582,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.LOW.value,
             'wcag': ['3.3.2'],
             'remediation': "Remove the title attribute entirely since the visible text already provides the necessary information. Title attributes should only be used: (1) on <iframe> elements to provide accessible names, or (2) in the <head> element as the page title. For all other use cases, use visible, persistent text that all users can access. If you need supplementary information, use visible helper text, aria-describedby, or clickable info icons instead of title attributes."
-        },
-        'WarnTitleAttrFound': {
-            'title': "Title attribute is being used on an element, which has significant accessibility limitations",
-            'what': "Title attribute is being used on an element, which has significant accessibility limitations",
-            'why': "Title attributes are problematic for accessibility: they don\'t appear on mobile devices or touch screens, keyboard users cannot access them without a mouse, screen readers handle them inconsistently (some ignore them, some read them), they disappear quickly making them hard to read for users with motor or cognitive disabilities, they cannot be styled or resized for users with low vision, and they\'re not translated by browser translation tools. The general rule is: never use title attributes except on iframes (where they serve as accessible names) and in the <head> element (where \"title\" has a completely different meaning as the page title element).",
-            'who': "Mobile and touch screen users who never see title tooltips, keyboard-only users who cannot hover to trigger tooltips, screen reader users who may not hear title content reliably, users with motor disabilities who cannot hover precisely, users with cognitive disabilities who need more time to read, users with low vision who cannot resize tooltip text, and users relying on translation tools",
-            'impact': ImpactScale.LOW.value,
-            'wcag': ['3.3.2', '4.1.2'],
-            'remediation': "Remove title attributes and replace with visible, persistent text that all users can access. Title attributes should only be used: (1) on <iframe> elements to provide accessible names, or (2) in the <head> element as the page title. For form fields, use visible <label> elements or aria-label. For links and buttons, ensure the visible text is descriptive. For abbreviations, provide the full text on first use. For supplementary information, use visible helper text, details/summary elements, aria-describedby, or clickable info icons. Never rely on title attributes for important information."
         },
         'WarnUnlabelledForm': {
             'title': "Form element lacks accessible name",

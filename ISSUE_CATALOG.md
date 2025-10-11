@@ -2290,13 +2290,13 @@ How to fix: Add a proper visible <label> element associated with the form field 
 
 ID: ErrTitleAttrFound
 Type: Error
-Impact: Low
-WCAG: 3.3.2, 4.1.2
+Impact: Medium
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 4.1.2 Name, Role, Value (Level A)
 Touchpoint: title
-Description: Title attribute used for important information
-Why it matters: Title attributes are not reliably accessible
-Who it affects: Mobile users, keyboard users, some screen readers
-How to fix: Use visible text or proper labels instead
+Description: Title attribute used - fundamentally inaccessible to assistive technology
+Why it matters: Title attributes fail WCAG Conformance requirement 5.2.4 as they are not accessible with regular assistive technology. For screen magnifier users at high magnification, tooltip content extends off-screen and disappears when mouse moves to read it, making content completely inaccessible. Additionally, title attributes are not accessible on mobile/touch devices, inconsistently announced by screen readers, and cannot be accessed by keyboard-only users
+Who it affects: Screen magnifier users (tooltip goes off-screen at high magnification), mobile and touch screen users (no hover), keyboard-only users (cannot trigger tooltip), screen reader users (inconsistent support), users with motor disabilities (tooltip disappears when mouse moves), users with cognitive disabilities (tooltip disappears too quickly)
+How to fix: Never use title attributes. Use visible text, proper <label> elements for forms, aria-label for icons, or visible helper text. For abbreviations, provide full text on first use or use <dfn> element
 
 ---
 
@@ -3293,18 +3293,6 @@ Description: Table missing thead element for headers
 Why it matters: Thead helps screen readers distinguish headers from data rows.
 Who it affects: Screen reader users navigating tables.
 How to fix: Wrap header rows in thead element, data rows in tbody.
-
----
-
-ID: WarnTitleAttrFound
-Type: Warning
-Impact: Low
-WCAG: 3.3.2 Labels or Instructions (Level A), 4.1.2 Name, Role, Value (Level A)
-Touchpoint: title
-Description: Title attribute is being used on an element, which has significant accessibility limitations
-Why it matters: Title attributes are problematic for accessibility: they don't appear on mobile devices or touch screens, keyboard users cannot access them without a mouse, screen readers handle them inconsistently (some ignore them, some read them), they disappear quickly making them hard to read for users with motor or cognitive disabilities, they cannot be styled or resized for users with low vision, and they're not translated by browser translation tools. Using title attributes for important information excludes many users from accessing that content.
-Who it affects: Mobile and touch screen users who never see title tooltips, keyboard-only users who cannot hover to trigger tooltips, screen reader users who may not hear title content reliably, users with motor disabilities who cannot hover precisely, users with cognitive disabilities who need more time to read, users with low vision who cannot resize tooltip text, and users relying on translation tools
-How to fix: Replace title attributes with visible, persistent text that all users can access. For form fields, use visible <label> elements or aria-label. For links and buttons, ensure the visible text is descriptive. For abbreviations, provide the full text on first use. For supplementary information, use visible helper text, details/summary elements, or clickable info icons. Only use title attributes for progressive enhancement where the information duplicates visible content. Never rely on title alone for important information.
 
 ---
 
@@ -6295,13 +6283,13 @@ How to fix: Add a title attribute to every iframe that concisely describes its c
 
 ID: ErrTitleAttrFound
 Type: Error
-Impact: Low
-WCAG: 3.3.2, 4.1.2
+Impact: Medium
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 4.1.2 Name, Role, Value (Level A)
 Touchpoint: title
-Description: Title attribute used for important information
-Why it matters: Title attributes are not reliably accessible
-Who it affects: Mobile users, keyboard users, some screen readers
-How to fix: Use visible text or proper labels instead
+Description: Title attribute used - fundamentally inaccessible to assistive technology
+Why it matters: Title attributes fail WCAG Conformance requirement 5.2.4 as they are not accessible with regular assistive technology. For screen magnifier users at high magnification, tooltip content extends off-screen and disappears when mouse moves to read it, making content completely inaccessible. Additionally, title attributes are not accessible on mobile/touch devices, inconsistently announced by screen readers, and cannot be accessed by keyboard-only users
+Who it affects: Screen magnifier users (tooltip goes off-screen at high magnification), mobile and touch screen users (no hover), keyboard-only users (cannot trigger tooltip), screen reader users (inconsistent support), users with motor disabilities (tooltip disappears when mouse moves), users with cognitive disabilities (tooltip disappears too quickly)
+How to fix: Never use title attributes. Use visible text, proper <label> elements for forms, aria-label for icons, or visible helper text. For abbreviations, provide full text on first use or use <dfn> element
 
 ID: WarnIframeTitleNotDescriptive
 Type: Warning
@@ -6342,18 +6330,6 @@ Description: Page title "{found}" is only {length} characters, potentially not d
 Why it matters: The title "{found}" with only {length} characters doesn't provide enough context, especially when users have multiple tabs open or are browsing history. Users can't distinguish between different sites with the same generic titles. Screen reader users hearing page titles announced need more descriptive information to understand where they are.
 Who it affects: Users with multiple browser tabs who need to distinguish between pages, screen reader users who rely on descriptive titles for context, users browsing history or bookmarks, users with cognitive disabilities who need clear page identification
 How to fix: Expand "{found}" to be more descriptive by including the site name and page purpose. Aim for 20-60 characters that clearly describe the page content. Ensure each page has a unique, descriptive title that makes sense out of context.
-
-ID: WarnTitleAttrFound
-Type: Warning
-Impact: Low
-WCAG: 3.3.2 Labels or Instructions (Level A), 4.1.2 Name, Role, Value (Level A)
-Touchpoint: title
-Description: Title attribute is being used on an element, which has significant accessibility limitations
-Why it matters: Title attributes are problematic for accessibility: they don't appear on mobile devices or touch screens, keyboard users cannot access them without a mouse, screen readers handle them inconsistently (some ignore them, some read them), they disappear quickly making them hard to read for users with motor or cognitive disabilities, they cannot be styled or resized for users with low vision, and they're not translated by browser translation tools. Using title attributes for important information excludes many users from accessing that content.
-Who it affects: Mobile and touch screen users who never see title tooltips, keyboard-only users who cannot hover to trigger tooltips, screen reader users who may not hear title content reliably, users with motor disabilities who cannot hover precisely, users with cognitive disabilities who need more time to read, users with low vision who cannot resize tooltip text, and users relying on translation tools
-How to fix: Replace title attributes with visible, persistent text that all users can access. For form fields, use visible <label> elements or aria-label. For links and buttons, ensure the visible text is descriptive. For abbreviations, provide the full text on first use. For supplementary information, use visible helper text, details/summary elements, or clickable info icons. Only use title attributes for progressive enhancement where the information duplicates visible content. Never rely on title alone for important information.
-
----
 
 ### visual
 

@@ -256,7 +256,7 @@ TOUCHPOINT_TEST_MAPPING = {
     'title_attributes': [
         'ErrEmptyTitleAttr',
         'ErrImproperTitleAttribute',
-        'WarnTitleAttrFound',
+        'ErrTitleAttrFound',
         'WarnRedundantTitleAttr',
         'WarnVagueTitleAttribute',
     ],

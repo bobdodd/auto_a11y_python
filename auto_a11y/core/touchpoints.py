@@ -449,7 +449,7 @@ class TouchpointMapper:
         'ErrImproperTitleAttribute': TouchpointID.TITLE_ATTRIBUTES,
         'ErrEmptyTitleAttr': TouchpointID.TITLE_ATTRIBUTES,
         'ErrTitleAsOnlyLabel': TouchpointID.TITLE_ATTRIBUTES,
-        'WarnTitleAttrFound': TouchpointID.TITLE_ATTRIBUTES,
+        'ErrTitleAttrFound': TouchpointID.TITLE_ATTRIBUTES,
         'WarnRedundantTitleAttr': TouchpointID.TITLE_ATTRIBUTES,
         'WarnVagueTitleAttribute': TouchpointID.TITLE_ATTRIBUTES,
 

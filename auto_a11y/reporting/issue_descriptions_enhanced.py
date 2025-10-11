@@ -1036,13 +1036,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Replace the URL with descriptive text that conveys what the image shows or its function (change alt=\"https://example.com/images/team-photo.jpg\" to alt=\"Marketing team at annual conference\"), focus on describing the image content rather than its location or technical details, ensure the description makes sense in the page context, and never use the image\'s web address as its alternative text"
         },
         'ErrImproperTitleAttribute': {
-            'title': "Title attribute used improperly as primary labeling mechanism",
-            'what': "Title attribute used improperly as primary labeling mechanism",
-            'why': "Title attributes are not reliably announced by all assistive technologies and should not be the only way to provide essential information.",
-            'who': "Screen reader users who may not receive title attribute content, mobile users who cannot hover to see tooltips.",
-            'impact': ImpactScale.LOW.value,
-            'wcag': ['3.3.2'],
-            'remediation': "Use proper labeling techniques (label elements, aria-label) instead of relying on title attributes for essential information."
+            'title': "Title attribute used in particularly problematic patterns (on non-focusable elements or duplicating visible text)",
+            'what': "Title attribute used in particularly problematic patterns: on non-focusable container elements (div, span, p) where users cannot even trigger the tooltip, or redundant titles that duplicate visible text providing no value",
+            'why': "Title attributes fundamentally fail WCAG Conformance requirement 5.2.4 as they are inaccessible to screen magnifier users. At high magnification, tooltip content extends off-screen and disappears when mouse moves, making content completely inaccessible. This error flags especially egregious patterns: (1) titles on non-focusable elements where even keyboard users with perfect hover capability cannot access the content, and (2) redundant titles that duplicate visible text, demonstrating fundamental misunderstanding of accessibility",
+            'who': "Screen magnifier users at high magnification (tooltip goes off-screen and disappears), mobile and touch screen users (no hover capability), keyboard-only users (cannot trigger tooltips on non-focusable elements), screen reader users (inconsistent announcement), users with motor disabilities (tooltip disappears when mouse moves), users with cognitive disabilities (tooltip disappears too quickly)",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['5.2.4', '3.3.2'],
+            'remediation': "Never use title attributes on body elements. For non-focusable containers (div, span, p), remove the title attribute entirely and make the information visible as regular text. For redundant titles that duplicate visible text, simply delete the title attribute. Use visible text, proper <label> elements for form fields, aria-label for interactive elements like icon buttons, or visible helper text with aria-describedby for supplementary information. These patterns should never exist in production code"
         },
         'ErrInappropriateMenuRole': {
             'title': "Menu role used inappropriately for navigation links",

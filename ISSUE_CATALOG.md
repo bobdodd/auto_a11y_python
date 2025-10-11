@@ -1294,13 +1294,13 @@ How to fix: Replace the URL with descriptive text that conveys what the image sh
 
 ID: ErrImproperTitleAttribute
 Type: Error
-Impact: Low
-WCAG: 3.3.2 Labels or Instructions (Level A)
-Touchpoint: semantic_structure
-Description: Title attribute used improperly as primary labeling mechanism
-Why it matters: Title attributes are not reliably announced by all assistive technologies and should not be the only way to provide essential information.
-Who it affects: Screen reader users who may not receive title attribute content, mobile users who cannot hover to see tooltips.
-How to fix: Use proper labeling techniques (label elements, aria-label) instead of relying on title attributes for essential information.
+Impact: Medium
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 3.3.2 Labels or Instructions (Level A)
+Touchpoint: title_attributes
+Description: Title attribute used in particularly problematic patterns (on non-focusable elements or duplicating visible text)
+Why it matters: Title attributes fundamentally fail WCAG Conformance requirement 5.2.4 as they are inaccessible to screen magnifier users. At high magnification, tooltip content extends off-screen and disappears when mouse moves, making content completely inaccessible. This error flags specific patterns that are especially problematic: (1) title on non-focusable elements like div/span where users cannot even trigger the tooltip, and (2) redundant titles that duplicate visible text providing no value. These patterns demonstrate particularly poor understanding of accessibility requirements and should never be used
+Who it affects: Screen magnifier users at high magnification (tooltip goes off-screen and disappears), mobile and touch screen users (no hover capability), keyboard-only users (cannot trigger non-focusable element tooltips), screen reader users (inconsistent announcement), users with motor disabilities (tooltip disappears when mouse moves)
+How to fix: Never use title attributes on body elements. For non-focusable containers (div, span), remove the title entirely and make information visible. For redundant titles, simply remove the title attribute. Use visible text, proper label elements, aria-label for interactive elements, or visible helper text instead
 
 ---
 

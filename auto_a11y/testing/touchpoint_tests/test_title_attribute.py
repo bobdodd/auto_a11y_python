@@ -81,6 +81,14 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                     // Check if element is in <head> section
                     const isInHead = el.closest('head') !== null;
 
+                    // Check if element is focusable (interactive)
+                    const isFocusable = el.tabIndex >= 0 ||
+                                       ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'IFRAME'].includes(el.tagName) ||
+                                       el.hasAttribute('tabindex');
+
+                    // Check if it's a non-interactive container element
+                    const isNonInteractiveContainer = ['DIV', 'SPAN', 'P', 'SECTION', 'ARTICLE'].includes(el.tagName);
+
                     // Get associated label for form fields
                     let hasLabel = false;
                     if (isFormField && el.id) {
@@ -104,6 +112,8 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                         visibleText: visibleText,
                         isFormField: isFormField,
                         isInHead: isInHead,
+                        isFocusable: isFocusable,
+                        isNonInteractiveContainer: isNonInteractiveContainer,
                         hasLabel: hasLabel,
                         hasAriaLabel: el.hasAttribute('aria-label'),
                         hasAriaLabelledby: el.hasAttribute('aria-labelledby'),
@@ -232,6 +242,41 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 })
                 results['elements_failed'] += 1
                 continue
+
+            # ErrImproperTitleAttribute: Specific problematic patterns (educational error)
+            # These are particularly egregious examples that help developers understand the problems
+            improper_patterns = []
+
+            # Pattern 1: Title on non-focusable/non-interactive elements (div, span, p, etc.)
+            if element.get('isNonInteractiveContainer', False) and not element.get('isFocusable', False):
+                improper_patterns.append('non-focusable container element')
+
+            # Pattern 2: Title duplicates visible text (redundant)
+            visible_text = element['visibleText']
+            if visible_text and title_value:
+                title_lower = title_value.lower().strip()
+                text_lower = visible_text.lower().strip()
+                # Check for exact match or very close match
+                if title_lower == text_lower or (title_lower in text_lower and len(title_lower) > len(text_lower) * 0.8):
+                    improper_patterns.append('redundant title duplicating visible text')
+
+            # If we found specific improper patterns, emit ErrImproperTitleAttribute
+            if improper_patterns:
+                pattern_desc = ' and '.join(improper_patterns)
+                results['errors'].append({
+                    'err': 'ErrImproperTitleAttribute',
+                    'type': 'err',
+                    'cat': 'title',
+                    'element': tag,
+                    'xpath': element['xpath'],
+                    'html': element['html'],
+                    'description': f'Title attribute on {pattern_desc}. Fails WCAG 5.2.4 - screen magnifier users at high magnification cannot read tooltips as content goes off-screen and disappears when mouse moves. Additionally, this specific pattern makes the issue worse',
+                    'titleValue': title_value,
+                    'visibleText': visible_text[:100] if visible_text else None,
+                    'pattern': pattern_desc
+                })
+                results['elements_failed'] += 1
+                continue  # Don't also emit ErrTitleAttrFound for the same element
 
             # ErrTitleAttrFound: Title attribute used - fundamentally inaccessible
             # Fails WCAG Conformance requirement 5.2.4 - not accessible to screen magnifier users

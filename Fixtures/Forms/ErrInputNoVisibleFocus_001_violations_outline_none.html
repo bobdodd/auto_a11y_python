@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputNoVisibleFocus - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInputNoVisibleFocus_001_violations_outline_none",
+    "issueId": "ErrInputNoVisibleFocus",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Input fields with outline:none and no alternative focus indicator",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        /* VIOLATION 1: outline:none with no replacement */
+        .no-focus-indicator:focus {
+            outline: none;
+        }
+
+        /* VIOLATION 2: outline:0 with no replacement */
+        .outline-zero:focus {
+            outline: 0;
+        }
+
+        /* VIOLATION 3: outline-style:none */
+        .outline-style-none:focus {
+            outline-style: none;
+        }
+
+        /* VIOLATION 4: outline-width:0 */
+        .outline-width-zero:focus {
+            outline-width: 0;
+        }
+
+        /* VIOLATION 5: textarea with outline:none */
+        .textarea-no-focus:focus {
+            outline: none;
+        }
+
+        /* Basic input styling */
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Input Fields with No Visible Focus</h1>
+
+    <p>These input fields have outline:none without any alternative focus indicator,
+       violating WCAG 2.4.7 Focus Visible.</p>
+
+    <section>
+        <h2>VIOLATION 1: outline:none</h2>
+        <label for="input1">First Name</label>
+        <input type="text"
+               id="input1"
+               class="no-focus-indicator"
+               data-expected-violation="true"
+               data-violation-id="ErrInputNoVisibleFocus"
+               data-violation-reason="Input has outline:none with no alternative focus indicator">
+    </section>
+
+    <section>
+        <h2>VIOLATION 2: outline:0</h2>
+        <label for="input2">Last Name</label>
+        <input type="text"
+               id="input2"
+               class="outline-zero"
+               data-expected-violation="true"
+               data-violation-id="ErrInputNoVisibleFocus"
+               data-violation-reason="Input has outline:0 with no alternative focus indicator">
+    </section>
+
+    <section>
+        <h2>VIOLATION 3: outline-style:none</h2>
+        <label for="input3">Email</label>
+        <input type="email"
+               id="input3"
+               class="outline-style-none"
+               data-expected-violation="true"
+               data-violation-id="ErrInputNoVisibleFocus"
+               data-violation-reason="Input has outline-style:none with no alternative focus indicator">
+    </section>
+
+    <section>
+        <h2>VIOLATION 4: outline-width:0</h2>
+        <label for="input4">Phone</label>
+        <input type="tel"
+               id="input4"
+               class="outline-width-zero"
+               data-expected-violation="true"
+               data-violation-id="ErrInputNoVisibleFocus"
+               data-violation-reason="Input has outline-width:0 with no alternative focus indicator">
+    </section>
+
+    <section>
+        <h2>VIOLATION 5: textarea with outline:none</h2>
+        <label for="textarea1">Comments</label>
+        <textarea id="textarea1"
+                  class="textarea-no-focus"
+                  rows="4"
+                  data-expected-violation="true"
+                  data-violation-id="ErrInputNoVisibleFocus"
+                  data-violation-reason="Textarea has outline:none with no alternative focus indicator"></textarea>
+    </section>
+</body>
+</html>

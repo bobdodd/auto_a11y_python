@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputNoVisibleFocus - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInputNoVisibleFocus_002_correct_with_indicators",
+    "issueId": "ErrInputNoVisibleFocus",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Input fields with proper visible focus indicators",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        /* CORRECT 1: Custom outline */
+        .custom-outline:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 1px;
+        }
+
+        /* CORRECT 2: Border thickening (1px increase) */
+        .border-thickens {
+            border: 1px solid #ccc;
+        }
+        .border-thickens:focus {
+            border: 2px solid #0066cc;
+            outline: none; /* OK because border provides indicator */
+        }
+
+        /* CORRECT 3: Box-shadow all around */
+        .box-shadow-focus:focus {
+            outline: none; /* OK because box-shadow provides indicator */
+            box-shadow: 0 0 0 2px #0066cc;
+        }
+
+        /* CORRECT 4: Default browser outline (no override) */
+        .default-focus {
+            /* No focus styles - uses browser default */
+        }
+
+        /* CORRECT 5: textarea with custom outline */
+        .textarea-custom-focus:focus {
+            outline: 3px solid #ff6600;
+            outline-offset: 2px;
+        }
+
+        /* Basic input styling */
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Input Fields with Proper Focus Indicators</h1>
+
+    <p>These input fields have visible focus indicators that meet WCAG 2.4.7 requirements.</p>
+
+    <section>
+        <h2>CORRECT 1: Custom outline</h2>
+        <label for="input1">First Name</label>
+        <input type="text"
+               id="input1"
+               class="custom-outline"
+               data-expected-pass="true">
+    </section>
+
+    <section>
+        <h2>CORRECT 2: Border thickening</h2>
+        <label for="input2">Last Name</label>
+        <input type="text"
+               id="input2"
+               class="border-thickens"
+               data-expected-pass="true">
+    </section>
+
+    <section>
+        <h2>CORRECT 3: Box-shadow all around</h2>
+        <label for="input3">Email</label>
+        <input type="email"
+               id="input3"
+               class="box-shadow-focus"
+               data-expected-pass="true">
+    </section>
+
+    <section>
+        <h2>CORRECT 4: Default browser outline</h2>
+        <label for="input4">Phone</label>
+        <input type="tel"
+               id="input4"
+               class="default-focus"
+               data-expected-pass="true">
+    </section>
+
+    <section>
+        <h2>CORRECT 5: Textarea with custom outline</h2>
+        <label for="textarea1">Comments</label>
+        <textarea id="textarea1"
+                  class="textarea-custom-focus"
+                  rows="4"
+                  data-expected-pass="true"></textarea>
+    </section>
+</body>
+</html>

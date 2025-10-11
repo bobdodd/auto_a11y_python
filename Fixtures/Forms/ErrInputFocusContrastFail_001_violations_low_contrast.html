@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputFocusContrastFail - Violations: Low Contrast Focus Indicators</title>
+    <meta name="expected_issues" content="ErrInputFocusContrastFail">
+    <meta name="description" content="Text input fields with focus indicators that have insufficient contrast against background (less than 3:1). Violates WCAG 2.4.7 Focus Visible and 1.4.11 Non-text Contrast.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)">
+    <meta name="count" content="5">
+    <meta name="test_type" content="positive">
+    <meta name="touchpoint" content="forms">
+    <meta name="severity" content="error">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* VIOLATION 1: Light gray outline on white background (1.5:1 contrast) */
+        .low-contrast-outline:focus {
+            outline: 2px solid #d0d0d0;
+            outline-offset: 1px;
+        }
+
+        /* VIOLATION 2: Light blue outline on white (2.1:1 contrast) */
+        .light-blue-outline:focus {
+            outline: 2px solid #a0c0ff;
+        }
+
+        /* VIOLATION 3: Light gray box-shadow on white (2.5:1 contrast) */
+        .low-contrast-shadow:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px #c8c8c8;
+        }
+
+        /* VIOLATION 4: Pale yellow outline on white (1.8:1 contrast) */
+        .pale-yellow:focus {
+            outline: 3px solid #ffffaa;
+        }
+
+        /* VIOLATION 5: Light pink border on white (2.2:1 contrast) */
+        .light-pink-border {
+            background: white;
+        }
+        .light-pink-border:focus {
+            outline: none;
+            border: 3px solid #ffb8c0;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrInputFocusContrastFail - Violations</h1>
+    <p>This page contains text input fields with focus indicators that have insufficient contrast (less than 3:1) against their background. All 5 inputs should be flagged as violations.</p>
+
+    <section>
+        <h2>Low Contrast Focus Indicators</h2>
+
+        <label for="input1">Violation 1: Light Gray Outline (1.5:1 contrast)</label>
+        <input type="text" id="input1" class="low-contrast-outline" placeholder="#d0d0d0 outline on white">
+
+        <label for="input2">Violation 2: Light Blue Outline (2.1:1 contrast)</label>
+        <input type="email" id="input2" class="light-blue-outline" placeholder="#a0c0ff outline on white">
+
+        <label for="input3">Violation 3: Light Gray Box-Shadow (2.5:1 contrast)</label>
+        <input type="text" id="input3" class="low-contrast-shadow" placeholder="#c8c8c8 box-shadow on white">
+
+        <label for="input4">Violation 4: Pale Yellow Outline (1.8:1 contrast)</label>
+        <input type="tel" id="input4" class="pale-yellow" placeholder="#ffffaa outline on white">
+
+        <label for="textarea1">Violation 5: Light Pink Border (2.2:1 contrast)</label>
+        <textarea id="textarea1" class="light-pink-border" rows="3" placeholder="#ffb8c0 border on white"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> ErrInputFocusContrastFail</li>
+            <li><strong>Count:</strong> 5 violations</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)</li>
+            <li><strong>Why:</strong> WCAG 1.4.11 requires non-text elements (including focus indicators) to have at least 3:1 contrast ratio against adjacent colors</li>
+        </ul>
+    </footer>
+</body>
+</html>

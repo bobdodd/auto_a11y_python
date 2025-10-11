@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputSingleSideBoxShadow - Violations: Single-Sided Box-Shadow</title>
+    <meta name="expected_issues" content="ErrInputSingleSideBoxShadow">
+    <meta name="description" content="Text input fields with box-shadow focus indicators on only one side. Violates WCAG Conformance Requirement 5.2.4 (indicator must follow element shape).">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA), Conformance Requirement 5.2.4">
+    <meta name="count" content="5">
+    <meta name="test_type" content="positive">
+    <meta name="touchpoint" content="forms">
+    <meta name="severity" content="error">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* VIOLATION 1: Shadow on left side only */
+        .shadow-left:focus {
+            outline: none;
+            box-shadow: -3px 0 0 0 #0066cc;
+        }
+
+        /* VIOLATION 2: Shadow on right side only */
+        .shadow-right:focus {
+            outline: none;
+            box-shadow: 3px 0 0 0 #0066cc;
+        }
+
+        /* VIOLATION 3: Shadow on top only */
+        .shadow-top:focus {
+            outline: none;
+            box-shadow: 0 -3px 0 0 #0066cc;
+        }
+
+        /* VIOLATION 4: Shadow on bottom only */
+        .shadow-bottom:focus {
+            outline: none;
+            box-shadow: 0 3px 0 0 #0066cc;
+        }
+
+        /* VIOLATION 5: Shadow on top-left diagonal only */
+        .shadow-diagonal:focus {
+            outline: none;
+            box-shadow: -2px -2px 0 0 #ff6600;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrInputSingleSideBoxShadow - Violations</h1>
+    <p>This page contains text input fields with box-shadow focus indicators on only one side. WCAG Conformance Requirement 5.2.4 requires focus indicators to follow the element shape (all sides). All 5 inputs should be flagged.</p>
+
+    <section>
+        <h2>Single-Sided Box-Shadow Focus Indicators</h2>
+
+        <label for="input1">Violation 1: Shadow on Left Side Only</label>
+        <input type="text" id="input1" class="shadow-left" placeholder="box-shadow: -3px 0 0 0 #0066cc">
+
+        <label for="input2">Violation 2: Shadow on Right Side Only</label>
+        <input type="email" id="input2" class="shadow-right" placeholder="box-shadow: 3px 0 0 0 #0066cc">
+
+        <label for="input3">Violation 3: Shadow on Top Only</label>
+        <input type="text" id="input3" class="shadow-top" placeholder="box-shadow: 0 -3px 0 0 #0066cc">
+
+        <label for="input4">Violation 4: Shadow on Bottom Only</label>
+        <input type="tel" id="input4" class="shadow-bottom" placeholder="box-shadow: 0 3px 0 0 #0066cc">
+
+        <label for="textarea1">Violation 5: Shadow on Diagonal Only</label>
+        <textarea id="textarea1" class="shadow-diagonal" rows="3" placeholder="box-shadow: -2px -2px 0 0 #ff6600"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> ErrInputSingleSideBoxShadow</li>
+            <li><strong>Count:</strong> 5 violations</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA), Conformance Requirement 5.2.4</li>
+            <li><strong>Why:</strong> Single-sided box-shadows don't follow the element shape. Focus indicators must surround the element on all sides.</li>
+            <li><strong>Horizontal offset:</strong> Should be 0 OR vertical offset should be 0, but not both non-zero in same direction</li>
+        </ul>
+    </footer>
+</body>
+</html>

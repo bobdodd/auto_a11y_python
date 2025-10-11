@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputDefaultFocus - Correct: Custom Focus Styles</title>
+    <meta name="expected_issues" content="">
+    <meta name="description" content="Text input fields with custom focus styles defined. These should NOT trigger WarnInputDefaultFocus.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA)">
+    <meta name="count" content="0">
+    <meta name="test_type" content="negative">
+    <meta name="touchpoint" content="forms">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+
+        /* CORRECT 1: Custom outline */
+        .custom-outline:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 1px;
+        }
+
+        /* CORRECT 2: Custom border thickening */
+        .custom-border {
+            border: 1px solid #ccc;
+        }
+        .custom-border:focus {
+            outline: none;
+            border: 3px solid #0066cc;
+        }
+
+        /* CORRECT 3: Custom box-shadow */
+        .custom-shadow:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px #ff6600;
+        }
+
+        /* CORRECT 4: Custom outline (different color) */
+        .custom-outline-green:focus {
+            outline: 3px solid #006400;
+        }
+
+        /* CORRECT 5: Combined custom styles */
+        .custom-combined {
+            border: 1px solid #ccc;
+        }
+        .custom-combined:focus {
+            border: 2px solid #0066cc;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputDefaultFocus - Correct Examples</h1>
+    <p>This page contains text input fields with custom focus styles defined. None of these should generate warnings.</p>
+
+    <section>
+        <h2>Custom Focus Styles</h2>
+
+        <label for="input1">Correct 1: Custom Outline</label>
+        <input type="text" id="input1" class="custom-outline" placeholder="outline: 2px solid #0066cc">
+
+        <label for="input2">Correct 2: Custom Border Thickening</label>
+        <input type="email" id="input2" class="custom-border" placeholder="Border 1px → 3px">
+
+        <label for="input3">Correct 3: Custom Box-Shadow</label>
+        <input type="text" id="input3" class="custom-shadow" placeholder="box-shadow: 0 0 0 3px #ff6600">
+
+        <label for="input4">Correct 4: Custom Green Outline</label>
+        <input type="tel" id="input4" class="custom-outline-green" placeholder="outline: 3px solid #006400">
+
+        <label for="textarea1">Correct 5: Combined Custom Styles</label>
+        <textarea id="textarea1" class="custom-combined" rows="3" placeholder="Border + box-shadow"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 warnings</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> All inputs have custom focus styles defined, ensuring visual consistency across browsers</li>
+            <li><strong>Best Practice:</strong> Custom focus styles are RECOMMENDED for design consistency</li>
+        </ul>
+    </footer>
+</body>
+</html>

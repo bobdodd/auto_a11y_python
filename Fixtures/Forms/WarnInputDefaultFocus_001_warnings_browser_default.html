@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputDefaultFocus - Warnings: Default Browser Focus Styles</title>
+    <meta name="expected_issues" content="WarnInputDefaultFocus">
+    <meta name="description" content="Text input fields relying on default browser focus styles. While functional, default styles vary across browsers and may be inconsistent with site design.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA)">
+    <meta name="count" content="4">
+    <meta name="test_type" content="positive">
+    <meta name="touchpoint" content="forms">
+    <meta name="severity" content="warning">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* WARNING 1-4: No focus styles defined = browser default */
+        .default-focus-1 {
+            /* No focus styles - uses browser default */
+        }
+
+        .default-focus-2 {
+            /* No focus styles - uses browser default */
+        }
+
+        .default-focus-3 {
+            /* No focus styles - uses browser default */
+        }
+
+        .default-focus-4 {
+            /* No focus styles - uses browser default */
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputDefaultFocus - Warnings</h1>
+    <p>This page contains text input fields that rely on default browser focus styles (no custom :focus styles defined). While browser defaults are functional, they vary across browsers (Chrome: blue outline, Firefox: blue dotted, Safari: blue ring) and may not match your site's design. Custom focus styles are RECOMMENDED for consistency. All 4 inputs should generate warnings.</p>
+
+    <section>
+        <h2>Default Browser Focus Styles</h2>
+
+        <label for="input1">Warning 1: Default Browser Focus (Text Input)</label>
+        <input type="text" id="input1" class="default-focus-1" placeholder="No custom focus styles">
+
+        <label for="input2">Warning 2: Default Browser Focus (Email Input)</label>
+        <input type="email" id="input2" class="default-focus-2" placeholder="Browser handles focus">
+
+        <label for="input3">Warning 3: Default Browser Focus (Tel Input)</label>
+        <input type="tel" id="input3" class="default-focus-3" placeholder="Uses browser default">
+
+        <label for="textarea1">Warning 4: Default Browser Focus (Textarea)</label>
+        <textarea id="textarea1" class="default-focus-4" rows="3" placeholder="Default browser styles"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #fffacd; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> WarnInputDefaultFocus</li>
+            <li><strong>Count:</strong> 4 warnings</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA) - technically passes</li>
+            <li><strong>Why:</strong> Default browser focus styles vary across browsers and may not match your site's design or branding</li>
+            <li><strong>Browser Variations:</strong>
+                <ul>
+                    <li>Chrome/Edge: Blue outline (rgb(0, 103, 244)) ~1px</li>
+                    <li>Firefox: Blue dotted outline (rgb(94, 158, 214))</li>
+                    <li>Safari: Blue ring (rgb(77, 144, 254))</li>
+                </ul>
+            </li>
+            <li><strong>Recommendation:</strong> Define custom focus styles for visual consistency</li>
+            <li><strong>Note:</strong> This is a design/consistency concern, not a WCAG violation</li>
+        </ul>
+    </footer>
+</body>
+</html>

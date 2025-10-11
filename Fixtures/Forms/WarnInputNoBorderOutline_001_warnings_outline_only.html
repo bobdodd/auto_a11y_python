@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputNoBorderOutline - Warnings: Outline-Only Focus Indicators</title>
+    <meta name="expected_issues" content="WarnInputNoBorderOutline">
+    <meta name="description" content="Text input fields that use outline-only focus indicators without border or box-shadow changes. Screen magnifier users may not see comparison between focused/unfocused states.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA)">
+    <meta name="count" content="4">
+    <meta name="test_type" content="positive">
+    <meta name="touchpoint" content="forms">
+    <meta name="severity" content="warning">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* WARNING 1: Outline with high contrast, but no border change */
+        .outline-only-blue:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 1px;
+        }
+
+        /* WARNING 2: Outline only, different color */
+        .outline-only-orange:focus {
+            outline: 3px solid #ff6600;
+        }
+
+        /* WARNING 3: Outline only with offset */
+        .outline-with-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        /* WARNING 4: Thick outline but still outline-only */
+        .thick-outline:focus {
+            outline: 4px solid #333333;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputNoBorderOutline - Warnings</h1>
+    <p>This page contains text input fields that use outline-only focus indicators. While these meet WCAG 2.4.7 technically, they're not ideal for screen magnifier users who may only see one field at a time and cannot compare focused vs unfocused states. Border thickening or box-shadow additions are RECOMMENDED. All 4 inputs should generate warnings.</p>
+
+    <section>
+        <h2>Outline-Only Focus Indicators</h2>
+
+        <label for="input1">Warning 1: Outline Only (with offset)</label>
+        <input type="text" id="input1" class="outline-only-blue" placeholder="outline: 2px solid #0066cc">
+
+        <label for="input2">Warning 2: Outline Only (different color)</label>
+        <input type="email" id="input2" class="outline-only-orange" placeholder="outline: 3px solid #ff6600">
+
+        <label for="input3">Warning 3: Outline with Large Offset</label>
+        <input type="text" id="input3" class="outline-with-offset" placeholder="outline-offset: 2px">
+
+        <label for="textarea1">Warning 4: Thick Outline Only</label>
+        <textarea id="textarea1" class="thick-outline" rows="3" placeholder="outline: 4px solid #333"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #fffacd; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> WarnInputNoBorderOutline</li>
+            <li><strong>Count:</strong> 4 warnings</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> Screen magnifier users may only see one input field at a time (zoomed to 400%) and cannot compare focused vs unfocused visual states</li>
+            <li><strong>Recommendation:</strong> Use border thickening or box-shadow in addition to or instead of outline</li>
+            <li><strong>Note:</strong> This is a usability concern, not a strict WCAG violation</li>
+        </ul>
+    </footer>
+</body>
+</html>

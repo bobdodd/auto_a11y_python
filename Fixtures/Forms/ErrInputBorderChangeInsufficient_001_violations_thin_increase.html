@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputBorderChangeInsufficient - Violations: Border Increase Less Than 1px</title>
+    <meta name="expected_issues" content="ErrInputBorderChangeInsufficient">
+    <meta name="description" content="Text input fields with border thickness increases less than 1px on focus. Changes must be manifest (noticeable) to users. Violates WCAG 2.4.7 Focus Visible.">
+    <meta name="wcag" content="2.4.7 Focus Visible (Level AA)">
+    <meta name="count" content="4">
+    <meta name="test_type" content="positive">
+    <meta name="touchpoint" content="forms">
+    <meta name="severity" content="error">
+    <meta name="issue_category" content="focus_indicators">
+    <meta name="author" content="Auto A11y Test Suite">
+    <meta name="date_created" content="2025-10-11">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+
+        /* VIOLATION 1: Border increases by 0.5px (1px to 1.5px) */
+        .tiny-increase-half {
+            border: 1px solid #ccc;
+        }
+        .tiny-increase-half:focus {
+            outline: none;
+            border: 1.5px solid #0066cc;
+        }
+
+        /* VIOLATION 2: Border increases by 0.2px (2px to 2.2px) */
+        .tiny-increase-fifth {
+            border: 2px solid #999;
+        }
+        .tiny-increase-fifth:focus {
+            outline: none;
+            border: 2.2px solid #0066cc;
+        }
+
+        /* VIOLATION 3: Border increases by 0.8px (1px to 1.8px) */
+        .small-increase {
+            border: 1px solid #ccc;
+        }
+        .small-increase:focus {
+            outline: none;
+            border: 1.8px solid #ff6600;
+        }
+
+        /* VIOLATION 4: Border increases by 0.3px (1px to 1.3px) */
+        .minimal-increase {
+            border: 1px solid #ccc;
+        }
+        .minimal-increase:focus {
+            outline: none;
+            border: 1.3px solid #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrInputBorderChangeInsufficient - Violations</h1>
+    <p>This page contains text input fields where the border thickness increases by less than 1px on focus. Border thickening is acceptable as a focus indicator, but the change must be manifest (≥1px) so users can clearly notice the difference. All 4 inputs should be flagged.</p>
+
+    <section>
+        <h2>Insufficient Border Thickness Increases</h2>
+
+        <label for="input1">Violation 1: Border Increases 0.5px (1px → 1.5px)</label>
+        <input type="text" id="input1" class="tiny-increase-half" placeholder="Change too small to notice">
+
+        <label for="input2">Violation 2: Border Increases 0.2px (2px → 2.2px)</label>
+        <input type="email" id="input2" class="tiny-increase-fifth" placeholder="Barely perceptible change">
+
+        <label for="input3">Violation 3: Border Increases 0.8px (1px → 1.8px)</label>
+        <input type="text" id="input3" class="small-increase" placeholder="Close but still less than 1px">
+
+        <label for="textarea1">Violation 4: Border Increases 0.3px (1px → 1.3px)</label>
+        <textarea id="textarea1" class="minimal-increase" rows="3" placeholder="Minimal change"></textarea>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> ErrInputBorderChangeInsufficient</li>
+            <li><strong>Count:</strong> 4 violations</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> Border thickness increase must be ≥1px to be manifest (clearly noticeable) to users</li>
+            <li><strong>Note:</strong> Input fields often have borders to identify the input area, so border thickening is acceptable, but only if the change is noticeable</li>
+        </ul>
+    </footer>
+</body>
+</html>

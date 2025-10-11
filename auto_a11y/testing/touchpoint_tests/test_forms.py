@@ -640,13 +640,19 @@ async def test_forms(page) -> Dict[str, Any]:
 
                 is_single_side_shadow = False
                 if box_shadow_changed and focus_box_shadow and focus_box_shadow != 'none':
-                    shadow_parts = focus_box_shadow.split('rgb')
-                    if shadow_parts and shadow_parts[0] and shadow_parts[0].strip():
-                        shadow_values = shadow_parts[0].strip().split()
-                        if len(shadow_values) >= 2:
+                    # Parse box-shadow: "h-offset v-offset blur spread color"
+                    # Split by rgb/rgba to get offset values, or just take first 2 tokens
+                    shadow_str = focus_box_shadow.split('rgb')[0] if 'rgb' in focus_box_shadow else focus_box_shadow
+                    # Remove hex colors like #0066cc
+                    shadow_str = re.sub(r'#[0-9a-fA-F]{3,6}', '', shadow_str)
+                    shadow_values = shadow_str.strip().split()
+                    if len(shadow_values) >= 2:
+                        try:
                             h_offset = parse_px(shadow_values[0])
                             v_offset = parse_px(shadow_values[1])
                             is_single_side_shadow = (h_offset != 0 and v_offset == 0) or (h_offset == 0 and v_offset != 0)
+                        except:
+                            is_single_side_shadow = False
 
                 has_outline = (
                     field['focusOutlineStyle'] not in ['none', 'hidden'] and

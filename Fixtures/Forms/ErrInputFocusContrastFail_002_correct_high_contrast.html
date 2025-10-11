@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ErrInputFocusContrastFail - Correct: High Contrast Focus Indicators</title>
-    <meta name="expected_issues" content="">
-    <meta name="description" content="Text input fields with focus indicators that have sufficient contrast (≥3:1) against background. These should NOT trigger ErrInputFocusContrastFail.">
-    <meta name="wcag" content="2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)">
-    <meta name="count" content="0">
-    <meta name="test_type" content="negative">
-    <meta name="touchpoint" content="forms">
-    <meta name="issue_category" content="focus_indicators">
-    <meta name="author" content="Auto A11y Test Suite">
-    <meta name="date_created" content="2025-10-11">
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInputFocusContrastFail_002_correct_high_contrast",
+    "issueId": "ErrInputFocusContrastFail",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Input fields with high contrast focus indicators (≥3:1) - should NOT trigger error",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;

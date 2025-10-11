@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonDefaultFocus - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonDefaultFocus_001_violations_browser_default",
+    "issueId": "WarnButtonDefaultFocus",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons using browser default focus styles (may fail contrast on some backgrounds)",
+    "wcag": "2.4.7",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* No custom focus styles defined - relies on browser defaults */
+        .default-button {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+        }
+
+        .dark-button {
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        .light-button {
+            padding: 10px 20px;
+            background: #fafafa;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Browser Default Focus Styles</h1>
+
+    <p>These buttons have no custom :focus styles defined and rely on browser defaults.
+       Browser defaults vary (Chrome: thin blue, Firefox: dotted, Safari: glow) and may not
+       meet 3:1 contrast requirements on all backgrounds.</p>
+
+    <section>
+        <h2>Gray Button with Default Focus</h2>
+        <button class="default-button"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonDefaultFocus"
+                data-warning-reason="Relies on browser default focus (may not meet contrast)">
+            Submit Form
+        </button>
+        <p>This button has no custom focus styles.</p>
+    </section>
+
+    <section style="background: #111; padding: 20px;">
+        <h2>Dark Button with Default Focus</h2>
+        <button class="dark-button"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonDefaultFocus"
+                data-warning-reason="Relies on browser default focus on dark background">
+            Save Changes
+        </button>
+        <p style="color: white;">This dark button has no custom focus styles.</p>
+    </section>
+
+    <section>
+        <h2>Light Button with Default Focus</h2>
+        <button class="light-button"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonDefaultFocus"
+                data-warning-reason="Relies on browser default focus on light background">
+            Delete Item
+        </button>
+        <p>This light button has no custom focus styles.</p>
+    </section>
+</body>
+</html>

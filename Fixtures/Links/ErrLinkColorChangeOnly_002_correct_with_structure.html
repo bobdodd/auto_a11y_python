@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkColorChangeOnly - Correct Examples</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkColorChangeOnly_002_correct_with_structure",
+    "issueId": "ErrLinkColorChangeOnly",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Links with color change PLUS structural indicator (outline, border, box-shadow, underline)",
+    "wcag": "2.4.7, 1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Color change + outline */
+        .color-plus-outline {
+            color: #0066cc;
+        }
+        .color-plus-outline:focus {
+            color: #cc0000; /* Color change is fine when combined with structural indicator */
+            outline: 2px solid #cc0000;
+            outline-offset: 2px;
+        }
+
+        /* Color change + underline */
+        .color-plus-underline {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .color-plus-underline:focus {
+            color: #cc0000;
+            text-decoration: underline; /* Underline is a valid structural indicator */
+        }
+
+        /* Color change + border */
+        .color-plus-border {
+            color: #0066cc;
+            padding: 5px;
+            border: 2px solid transparent;
+        }
+        .color-plus-border:focus {
+            color: white;
+            background-color: #0066cc;
+            border: 2px solid #003d7a; /* Border is a valid structural indicator */
+        }
+
+        /* Color change + box-shadow */
+        .color-plus-boxshadow {
+            color: #0066cc;
+        }
+        .color-plus-boxshadow:focus {
+            color: #cc0000;
+            box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.3); /* Box-shadow is acceptable */
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Color Change Plus Structural Indicator (Correct)</h1>
+
+    <p>These links can change color on focus, but they also include a structural indicator
+       (outline, border, box-shadow, or underline), making them accessible.</p>
+
+    <section>
+        <h2>Color Change + Outline</h2>
+        <p>This link changes color AND has an outline:
+            <a href="#" class="color-plus-outline"
+               data-expected-pass="true">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Color Change + Underline</h2>
+        <p>This link changes color AND adds underline:
+            <a href="#" class="color-plus-underline"
+               data-expected-pass="true">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Color Change + Border</h2>
+        <p>This link changes color AND has a border:
+            <a href="#" class="color-plus-border"
+               data-expected-pass="true">
+                Contact Us
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Color Change + Box Shadow</h2>
+        <p>This link changes color AND has a box-shadow:
+            <a href="#" class="color-plus-boxshadow"
+               data-expected-pass="true">
+                About Us
+            </a>
+        </p>
+    </section>
+</body>
+</html>

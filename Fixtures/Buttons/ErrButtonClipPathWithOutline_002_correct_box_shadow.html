@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonClipPathWithOutline - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonClipPathWithOutline_002_correct_box_shadow",
+    "issueId": "ErrButtonClipPathWithOutline",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Non-rectangular buttons using box-shadow or border (follows shape) or rectangular buttons with outline",
+    "wcag": "2.4.7",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+
+        /* Circular button with box-shadow (follows shape) */
+        .circle-correct {
+            clip-path: circle(50%);
+        }
+        .circle-correct:focus {
+            box-shadow: 0 0 0 3px #ff6b6b;
+        }
+
+        /* Polygon button with border (follows shape) */
+        .polygon-correct {
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            border: 2px solid transparent;
+        }
+        .polygon-correct:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 2px #ff9999;
+        }
+
+        /* Rounded rectangle (border-radius) with outline - OK */
+        .rounded-rect {
+            border-radius: 25px;
+        }
+        .rounded-rect:focus {
+            outline: 3px solid #ff6b6b;
+            outline-offset: 2px;
+        }
+
+        /* Regular rectangular button with outline - optimal */
+        .rectangle {
+            /* No clip-path */
+        }
+        .rectangle:focus {
+            outline: 2px solid #ff6b6b;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Correct Focus Indicators for Non-Rectangular Buttons</h1>
+
+    <p>These buttons use appropriate focus indicators that follow their shapes, ensuring
+       the focus indicator stays connected to the button even at high magnification.</p>
+
+    <section>
+        <h2>Circular Button with Box-Shadow (Follows Shape)</h2>
+        <button class="circle-correct"
+                data-expected-pass="true">
+            Click Me
+        </button>
+        <p>Circular button with box-shadow - follows the circular shape perfectly.</p>
+    </section>
+
+    <section>
+        <h2>Diamond Button with Border + Box-Shadow</h2>
+        <button class="polygon-correct"
+                data-expected-pass="true">
+            Submit
+        </button>
+        <p>Diamond button with border and box-shadow - both follow the diamond shape.</p>
+    </section>
+
+    <section>
+        <h2>Rounded Rectangle with Outline (Acceptable)</h2>
+        <button class="rounded-rect"
+                data-expected-pass="true">
+            Save
+        </button>
+        <p>Border-radius creates soft corners - outline follows reasonably well (no severe mismatch).</p>
+    </section>
+
+    <section>
+        <h2>Regular Rectangle with Outline (Optimal)</h2>
+        <button class="rectangle"
+                data-expected-pass="true">
+            Delete
+        </button>
+        <p>Standard rectangular button with outline - the recommended approach.</p>
+    </section>
+
+    <p><strong>Best Practice:</strong> For non-rectangular buttons, use box-shadow or border
+       instead of outline. These CSS properties follow the element's actual shape.</p>
+</body>
+</html>

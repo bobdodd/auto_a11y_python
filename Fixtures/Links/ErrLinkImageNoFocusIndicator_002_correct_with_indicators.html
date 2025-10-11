@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkImageNoFocusIndicator - Correct Examples</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkImageNoFocusIndicator_002_correct_with_indicators",
+    "issueId": "ErrLinkImageNoFocusIndicator",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Image links with proper focus indicators (outline, border, or box-shadow)",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Image link with outline */
+        .with-outline:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        /* Image link with border on image */
+        .with-border:focus img {
+            border: 3px solid #0066cc;
+        }
+
+        /* Image link with box-shadow */
+        .with-boxshadow:focus {
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.6);
+        }
+
+        /* ARIA link with image and proper focus */
+        .aria-with-focus {
+            display: inline-block;
+            cursor: pointer;
+        }
+        .aria-with-focus:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Image Links with Proper Focus Indicators (Correct)</h1>
+
+    <p>These image links have visible focus indicators (outline, border, or box-shadow).</p>
+
+    <section>
+        <h2>Image Link - Outline on Link</h2>
+        <a href="#" class="with-outline"
+           data-expected-pass="true">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%230066cc' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3ELogo%3C/text%3E%3C/svg%3E" alt="Company Logo">
+        </a>
+    </section>
+
+    <section>
+        <h2>Image Link - Border on Image</h2>
+        <a href="#" class="with-border"
+           data-expected-pass="true">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300aa00' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3EIcon%3C/text%3E%3C/svg%3E" alt="Download Icon">
+        </a>
+    </section>
+
+    <section>
+        <h2>Image Link - Box Shadow on Link</h2>
+        <a href="#" class="with-boxshadow"
+           data-expected-pass="true">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff6600' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3EButton%3C/text%3E%3C/svg%3E" alt="Action Button">
+        </a>
+    </section>
+
+    <section>
+        <h2>ARIA role="link" with Image and Focus Indicator</h2>
+        <span role="link" tabindex="0" class="aria-with-focus"
+              data-expected-pass="true">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23cc00cc' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3EARIA%3C/text%3E%3C/svg%3E" alt="ARIA Link Image">
+        </span>
+    </section>
+</body>
+</html>

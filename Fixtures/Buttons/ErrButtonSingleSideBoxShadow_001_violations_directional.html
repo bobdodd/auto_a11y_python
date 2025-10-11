@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonSingleSideBoxShadow - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonSingleSideBoxShadow_001_violations_directional",
+    "issueId": "ErrButtonSingleSideBoxShadow",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Buttons with outline:none and single-side box-shadow (directional focus indicator)",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .bottom-shadow:focus {
+            outline: none;
+            box-shadow: 0 4px 0 0 #0066cc; /* Only bottom edge */
+        }
+
+        .right-shadow:focus {
+            outline: none;
+            box-shadow: 4px 0 0 0 #0066cc; /* Only right edge */
+        }
+
+        .top-left-shadow:focus {
+            outline: none;
+            box-shadow: -2px -2px 0 0 #cc0066; /* Only top-left corner */
+        }
+
+        .bottom-right-blur:focus {
+            outline: none;
+            box-shadow: 3px 3px 5px rgba(0, 102, 204, 0.8); /* Bottom-right with blur */
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Single-Side Box-Shadow Focus Indicators</h1>
+
+    <p>These buttons use outline:none with box-shadow that only appears on one side or edge.
+       This fails to provide a visible focus indicator from all directions, making focus
+       ambiguous or invisible depending on viewing angle and surrounding elements.</p>
+
+    <section>
+        <h2>Bottom Shadow Only</h2>
+        <button class="bottom-shadow"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonSingleSideBoxShadow"
+                data-violation-reason="box-shadow: 0 4px 0 0 (y-offset=4px, only shows on bottom)">
+            Submit Form
+        </button>
+        <p>Shadow only appears on the bottom edge (y-offset = 4px).</p>
+    </section>
+
+    <section>
+        <h2>Right Shadow Only</h2>
+        <button class="right-shadow"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonSingleSideBoxShadow"
+                data-violation-reason="box-shadow: 4px 0 0 0 (x-offset=4px, only shows on right)">
+            Save Changes
+        </button>
+        <p>Shadow only appears on the right edge (x-offset = 4px).</p>
+    </section>
+
+    <section>
+        <h2>Top-Left Shadow (Negative Offset)</h2>
+        <button class="top-left-shadow"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonSingleSideBoxShadow"
+                data-violation-reason="box-shadow: -2px -2px (negative offsets, top-left corner only)">
+            Delete Item
+        </button>
+        <p>Shadow appears on top-left corner only (negative x and y offsets).</p>
+    </section>
+
+    <section>
+        <h2>Directional Shadow with Blur</h2>
+        <button class="bottom-right-blur"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonSingleSideBoxShadow"
+                data-violation-reason="box-shadow: 3px 3px 5px (directional blur, bottom-right only)">
+            Cancel
+        </button>
+        <p>Blurred shadow on bottom-right corner only (x=3px, y=3px with blur).</p>
+    </section>
+</body>
+</html>

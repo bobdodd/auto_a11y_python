@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnLinkTransparentOutline - Correct Examples</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkTransparentOutline_002_correct_opaque",
+    "issueId": "WarnLinkTransparentOutline",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Links with opaque outlines (alpha >= 0.5 or no alpha channel)",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            background: #ffffff;
+        }
+
+        /* RGB (no alpha) - fully opaque */
+        .rgb-opaque {
+            padding: 5px;
+        }
+        .rgb-opaque:focus {
+            outline: 2px solid rgb(0, 102, 204);
+            outline-offset: 2px;
+        }
+
+        /* RGBA with alpha 1.0 - fully opaque */
+        .rgba-full-opaque {
+            padding: 5px;
+        }
+        .rgba-full-opaque:focus {
+            outline: 2px solid rgba(204, 0, 0, 1.0);
+            outline-offset: 2px;
+        }
+
+        /* Hex color - fully opaque */
+        .hex-opaque {
+            padding: 5px;
+        }
+        .hex-opaque:focus {
+            outline: 2px solid #009900;
+            outline-offset: 2px;
+        }
+
+        /* RGBA with alpha 0.9 - mostly opaque, acceptable */
+        .rgba-90 {
+            padding: 5px;
+        }
+        .rgba-90:focus {
+            outline: 3px solid rgba(0, 102, 204, 0.9);
+            outline-offset: 2px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Opaque Outlines (Correct)</h1>
+
+    <p>These links have fully or mostly opaque outlines that guarantee consistent contrast.</p>
+
+    <section>
+        <h2>RGB Outline (No Alpha Channel)</h2>
+        <p>This link has rgb(0,102,204) outline - fully opaque:
+            <a href="#" class="rgb-opaque"
+               data-expected-pass="true">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>RGBA with Alpha 1.0 (Fully Opaque)</h2>
+        <p>This link has rgba(204,0,0,1.0) outline:
+            <a href="#" class="rgba-full-opaque"
+               data-expected-pass="true">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Hex Color (Fully Opaque)</h2>
+        <p>This link has #009900 outline:
+            <a href="#" class="hex-opaque"
+               data-expected-pass="true">
+                Contact Us
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>RGBA with Alpha 0.9 (Mostly Opaque)</h2>
+        <p>This link has rgba(0,102,204,0.9) outline - acceptable:
+            <a href="#" class="rgba-90"
+               data-expected-pass="true">
+                About Us
+            </a>
+        </p>
+    </section>
+</body>
+</html>

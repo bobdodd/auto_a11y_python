@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonOutlineNoneNoBoxShadow - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonOutlineNoneNoBoxShadow_002_correct_with_alternatives",
+    "issueId": "ErrButtonOutlineNoneNoBoxShadow",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with proper structural focus indicators (outline or box-shadow)",
+    "wcag": "2.4.7, 1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .proper-outline:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .proper-box-shadow:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5);
+        }
+
+        .both-indicators:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Proper Structural Focus Indicators</h1>
+
+    <p>These buttons use proper structural indicators (outline or box-shadow) that don't rely on color alone.</p>
+
+    <section>
+        <h2>Button with Outline</h2>
+        <button class="proper-outline"
+                data-expected-pass="true"
+                data-pass-reason="Has proper outline with offset">
+            Submit Form
+        </button>
+        <p>This button uses a proper outline with offset, providing clear structural indication.</p>
+    </section>
+
+    <section>
+        <h2>Button with Box-Shadow</h2>
+        <button class="proper-box-shadow"
+                data-expected-pass="true"
+                data-pass-reason="Has box-shadow as alternative to outline">
+            Save Changes
+        </button>
+        <p>This button uses box-shadow as an acceptable alternative to outline.</p>
+    </section>
+
+    <section>
+        <h2>Button with Both Outline and Box-Shadow</h2>
+        <button class="both-indicators"
+                data-expected-pass="true"
+                data-pass-reason="Has both outline and box-shadow">
+            Delete Item
+        </button>
+        <p>This button uses both outline and box-shadow for enhanced visibility.</p>
+    </section>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnLinkFocusGradientBackground - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkFocusGradientBackground_001_warnings_gradient",
+    "issueId": "WarnLinkFocusGradientBackground",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links with gradient backgrounds - focus contrast cannot be auto-verified",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .linear-gradient {
+            padding: 10px 20px;
+            background: linear-gradient(to right, #e0e0e0, #ffffff);
+            text-decoration: none;
+        }
+        .linear-gradient:focus {
+            outline: 2px solid #888888;
+            outline-offset: 2px;
+        }
+
+        .radial-gradient {
+            padding: 10px 20px;
+            background: radial-gradient(circle, #4a90e2, #1a5490);
+            color: white;
+            text-decoration: none;
+        }
+        .radial-gradient:focus {
+            outline: 2px solid #66b3ff;
+            outline-offset: 2px;
+        }
+
+        .multi-stop-gradient {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            text-decoration: none;
+        }
+        .multi-stop-gradient:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        section {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Gradient Backgrounds</h1>
+
+    <p>These links have gradient backgrounds, making it impossible to programmatically verify
+       that focus outlines meet 3:1 contrast against all parts of the gradient. Manual
+       verification is required at the lightest and darkest gradient stops.</p>
+
+    <section>
+        <h2>Linear Gradient (Light to White)</h2>
+        <a href="#" class="linear-gradient"
+           data-expected-warning="true"
+           data-warning-id="WarnLinkFocusGradientBackground"
+           data-warning-reason="Gray outline may not have 3:1 contrast against white part of gradient">
+            Privacy Policy
+        </a>
+        <p>Outline must be checked against both lightest and darkest gradient colors.</p>
+    </section>
+
+    <section>
+        <h2>Radial Gradient (Blue Shades)</h2>
+        <a href="#" class="radial-gradient"
+           data-expected-warning="true"
+           data-warning-id="WarnLinkFocusGradientBackground"
+           data-warning-reason="Light blue outline may fail against lighter blue parts">
+            Terms of Service
+        </a>
+        <p>Radial gradients have varying colors from center to edge.</p>
+    </section>
+
+    <section>
+        <h2>Multi-Stop Gradient (Purple-Pink)</h2>
+        <a href="#" class="multi-stop-gradient"
+           data-expected-warning="true"
+           data-warning-id="WarnLinkFocusGradientBackground"
+           data-warning-reason="White outline may fail against light pink parts">
+            Contact Us
+        </a>
+        <p>Complex gradients with multiple color stops need testing at each stop.</p>
+    </section>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnLinkDefaultFocus - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkDefaultFocus_001_warnings_browser_default",
+    "issueId": "WarnLinkDefaultFocus",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links using browser default focus styles (vary across browsers, may fail contrast)",
+    "wcag": "2.4.7",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* No custom focus styles defined - relies on browser defaults */
+        .default-link {
+            color: #0066cc;
+        }
+
+        .dark-bg-link {
+            color: #66b3ff;
+        }
+
+        .blue-bg-link {
+            color: #003d7a;
+        }
+
+        .dark-section {
+            background: #333;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .blue-section {
+            background: #0066cc;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        section {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links Using Browser Default Focus Styles</h1>
+
+    <p>These links have no custom :focus styles and rely on browser defaults. Browser defaults
+       vary significantly (Chrome: thin blue outline, Firefox: dotted, Safari: glow) and may not
+       meet 3:1 contrast requirements on all backgrounds, especially blue backgrounds where blue
+       outlines disappear.</p>
+
+    <section>
+        <h2>Standard Link with Default Focus</h2>
+        <p>This link relies on browser default focus:
+            <a href="#" class="default-link"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkDefaultFocus"
+               data-warning-reason="Relies on browser default focus (varies across browsers, may not meet contrast)">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section class="dark-section">
+        <h2 style="color: white;">Link on Dark Background with Default Focus</h2>
+        <p style="color: white;">This link has no custom focus styles on dark background:
+            <a href="#" class="dark-bg-link"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkDefaultFocus"
+               data-warning-reason="Relies on browser default focus on dark background">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section class="blue-section">
+        <h2 style="color: white;">Link on Blue Background (Problematic)</h2>
+        <p style="color: white;">This link has no custom focus styles on blue background
+           (default blue outline may be invisible):
+            <a href="#" class="blue-bg-link"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkDefaultFocus"
+               data-warning-reason="Relies on browser default focus on blue background - default blue outline invisible">
+                Contact Us
+            </a>
+        </p>
+    </section>
+</body>
+</html>

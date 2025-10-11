@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonFocusContrastFail - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonFocusContrastFail_001_violations_low_contrast",
+    "issueId": "ErrButtonFocusContrastFail",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with focus outline contrast < 3:1 against background",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .light-on-white {
+            background: white;
+        }
+        .light-on-white:focus {
+            outline: 2px solid #f0f0f0; /* 1.2:1 contrast - too low */
+            outline-offset: 2px;
+        }
+
+        .dark-on-black {
+            background: black;
+            color: white;
+        }
+        .dark-on-black:focus {
+            outline: 2px solid #333333; /* 1.5:1 contrast - too low */
+            outline-offset: 2px;
+        }
+
+        .gray-on-gray {
+            background: #888888;
+            color: white;
+        }
+        .gray-on-gray:focus {
+            outline: 2px solid #999999; /* 1.1:1 contrast - too low */
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Low Contrast Focus Outlines</h1>
+
+    <p>These buttons have focus outlines with less than 3:1 contrast ratio against their backgrounds,
+       failing WCAG 1.4.11 Non-text Contrast.</p>
+
+    <section style="background: #f5f5f5; padding: 20px;">
+        <h2>Light Gray Outline on White Background</h2>
+        <button class="light-on-white"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonFocusContrastFail"
+                data-violation-reason="Outline color #f0f0f0 has only 1.2:1 contrast against white background">
+            Submit Form
+        </button>
+        <p>Outline color #f0f0f0 has approximately 1.2:1 contrast against white background.</p>
+    </section>
+
+    <section style="background: #111; padding: 20px;">
+        <h2>Dark Gray Outline on Black Background</h2>
+        <button class="dark-on-black"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonFocusContrastFail"
+                data-violation-reason="Outline color #333333 has only 1.5:1 contrast against black background">
+            Save Changes
+        </button>
+        <p>Outline color #333333 has approximately 1.5:1 contrast against black background.</p>
+    </section>
+
+    <section style="background: #666; padding: 20px;">
+        <h2>Similar Gray Outline on Gray Background</h2>
+        <button class="gray-on-gray"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonFocusContrastFail"
+                data-violation-reason="Outline color #999999 has only 1.1:1 contrast against #888888 background">
+            Delete Item
+        </button>
+        <p>Outline color #999999 has approximately 1.1:1 contrast against #888888 background.</p>
+    </section>
+</body>
+</html>

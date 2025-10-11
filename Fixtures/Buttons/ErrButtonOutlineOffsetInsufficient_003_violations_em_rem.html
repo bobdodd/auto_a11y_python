@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonOutlineOffsetInsufficient - Em/Rem Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonOutlineOffsetInsufficient_003_violations_em_rem",
+    "issueId": "ErrButtonOutlineOffsetInsufficient",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with outline-offset using em/rem that computes to < 2px",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        html {
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+
+        .em-offset-tiny:focus {
+            outline: 2px solid #ff6b6b;
+            outline-offset: 0.05em; /* 0.05 × 16px = 0.8px (way too small) */
+        }
+
+        .rem-offset-insufficient:focus {
+            outline: 2px solid #ff6b6b;
+            outline-offset: 0.1rem; /* 0.1 × 16px = 1.6px (< 2px required) */
+        }
+
+        .em-offset-borderline:focus {
+            outline: 2px solid #ff6b6b;
+            outline-offset: 0.11em; /* 0.11 × 16px = 1.76px (still < 2px) */
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Outline Offset with Em/Rem (Insufficient)</h1>
+
+    <p>These buttons use em or rem units for outline-offset that compute to less than 2px.
+       The outline sits too close to the button edge, getting lost within the button border
+       or blending with the button itself.</p>
+
+    <section>
+        <h2>0.05em Offset (0.8px - Too Close)</h2>
+        <button class="em-offset-tiny"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineOffsetInsufficient"
+                data-violation-reason="outline-offset: 0.05em = 0.8px (way too small)">
+            Submit Form
+        </button>
+        <p>0.05em on 16px font = 0.8px - outline almost touches button edge.</p>
+    </section>
+
+    <section>
+        <h2>0.1rem Offset (1.6px - Insufficient)</h2>
+        <button class="rem-offset-insufficient"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineOffsetInsufficient"
+                data-violation-reason="outline-offset: 0.1rem = 1.6px (< 2px required)">
+            Save Changes
+        </button>
+        <p>0.1rem on 16px root = 1.6px - insufficient separation from button.</p>
+    </section>
+
+    <section>
+        <h2>0.11em Offset (1.76px - Still Insufficient)</h2>
+        <button class="em-offset-borderline"
+                data-expected-violation="true"
+                data-violation-id="ErrButtonOutlineOffsetInsufficient"
+                data-violation-reason="outline-offset: 0.11em = 1.76px (< 2px)">
+            Delete Item
+        </button>
+        <p>0.11em on 16px font = 1.76px - close but still fails threshold.</p>
+    </section>
+
+    <p><strong>Note:</strong> Use at least 0.125em or 0.125rem (= 2px on 16px font) for
+       outline-offset to ensure clear visual separation.</p>
+</body>
+</html>

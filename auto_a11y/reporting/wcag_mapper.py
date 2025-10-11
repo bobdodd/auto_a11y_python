@@ -80,6 +80,30 @@ WCAG_MAPPINGS = {
     'ErrInvalidTabindex': ['2.4.3 Focus Order'],
     'ErrPositiveTabindex': ['2.4.3 Focus Order'],
     'WarnZeroOutlineOffset': ['2.4.7 Focus Visible'],
+
+    # Button Focus Issues
+    'ErrButtonOutlineNoneNoBoxShadow': ['2.4.7 Focus Visible', '1.4.1 Use of Color'],
+    'ErrButtonFocusContrastFail': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'ErrButtonOutlineWidthInsufficient': ['2.4.7 Focus Visible', '2.4.11 Focus Appearance'],
+    'ErrButtonOutlineOffsetInsufficient': ['2.4.7 Focus Visible'],
+    'ErrButtonFocusObscured': ['2.4.7 Focus Visible'],
+    'ErrButtonSingleSideBoxShadow': ['2.4.7 Focus Visible', '1.4.1 Use of Color'],
+    'ErrButtonClipPathWithOutline': ['2.4.7 Focus Visible'],
+    'ErrButtonTransparentOutline': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnButtonOutlineNoneWithBoxShadow': ['2.4.7 Focus Visible'],
+    'WarnButtonDefaultFocus': ['2.4.7 Focus Visible'],
+    'WarnButtonFocusGradientBackground': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnButtonFocusImageBackground': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+
+    # Link Focus Issues
+    'ErrLinkFocusContrastFail': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'ErrLinkOutlineWidthInsufficient': ['2.4.7 Focus Visible', '2.4.11 Focus Appearance'],
+    'ErrLinkImageNoFocusIndicator': ['2.4.7 Focus Visible'],
+    'ErrLinkColorChangeOnly': ['2.4.7 Focus Visible', '1.4.1 Use of Color'],
+    'WarnLinkOutlineOffsetTooLarge': ['2.4.7 Focus Visible'],
+    'WarnLinkDefaultFocus': ['2.4.7 Focus Visible'],
+    'WarnLinkFocusGradientBackground': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnLinkTransparentOutline': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
     
     # Language Issues
     'ErrNoPageLanguage': ['3.1.1 Language of Page'],
@@ -222,6 +246,7 @@ def enrich_wcag_criteria(criteria_list: list) -> list:
         '2.4.3': '2.4.3 Focus Order',
         '2.4.6': '2.4.6 Headings and Labels',
         '2.4.7': '2.4.7 Focus Visible',
+        '2.4.11': '2.4.11 Focus Appearance',
         '2.5.3': '2.5.3 Label in Name',
         '3.1.1': '3.1.1 Language of Page',
         '3.1.2': '3.1.2 Language of Parts',

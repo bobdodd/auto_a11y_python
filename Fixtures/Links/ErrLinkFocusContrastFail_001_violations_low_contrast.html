@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkFocusContrastFail - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkFocusContrastFail_001_violations_low_contrast",
+    "issueId": "ErrLinkFocusContrastFail",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Links with focus indicators that have < 3:1 contrast ratio",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            background: #ffffff;
+        }
+
+        /* Light gray outline on white - ~1.2:1 contrast */
+        .light-gray-outline {
+            padding: 10px;
+        }
+        .light-gray-outline:focus {
+            outline: 2px solid #f0f0f0; /* Very low contrast against white */
+            outline-offset: 2px;
+        }
+
+        /* Light blue outline on white - ~1.5:1 contrast */
+        .light-blue-outline {
+            padding: 10px;
+        }
+        .light-blue-outline:focus {
+            outline: 2px solid #d0e8ff; /* Low contrast */
+            outline-offset: 2px;
+        }
+
+        /* Yellow outline on white - ~1.1:1 contrast */
+        .yellow-outline {
+            padding: 10px;
+        }
+        .yellow-outline:focus {
+            outline: 2px solid #ffffcc; /* Very low contrast */
+            outline-offset: 2px;
+        }
+
+        /* Image link with low contrast border */
+        .image-low-contrast:focus {
+            outline: 3px solid #e0e0e0; /* Low contrast against white background */
+            outline-offset: 2px;
+        }
+
+        .dark-section {
+            background: #333333;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        /* Dark gray outline on dark background - ~1.3:1 contrast */
+        .dark-outline {
+            color: white;
+        }
+        .dark-outline:focus {
+            outline: 2px solid #555555; /* Low contrast against #333 */
+            outline-offset: 2px;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+        }
+
+        section {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Low Contrast Focus Indicators</h1>
+
+    <p>These links have focus indicators with contrast ratios below 3:1, making them
+       difficult or impossible to see for users with low vision.</p>
+
+    <section>
+        <h2>Light Gray Outline on White Background (~1.2:1)</h2>
+        <p>This link has a light gray outline that has insufficient contrast against white:
+            <a href="#" class="light-gray-outline"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkFocusContrastFail"
+               data-violation-reason="Light gray outline (#f0f0f0) on white background - contrast ~1.2:1">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Light Blue Outline on White Background (~1.5:1)</h2>
+        <p>This link has a light blue outline with low contrast:
+            <a href="#" class="light-blue-outline"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkFocusContrastFail"
+               data-violation-reason="Light blue outline (#d0e8ff) on white background - contrast ~1.5:1">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Yellow Outline on White Background (~1.1:1)</h2>
+        <p>This link has a yellow outline that is nearly invisible:
+            <a href="#" class="yellow-outline"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkFocusContrastFail"
+               data-violation-reason="Yellow outline (#ffffcc) on white background - contrast ~1.1:1">
+                Contact Us
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Image Link - Low Contrast Outline</h2>
+        <a href="#" class="image-low-contrast"
+           data-expected-violation="true"
+           data-violation-id="ErrLinkFocusContrastFail"
+           data-violation-reason="Light gray outline (#e0e0e0) on white background - contrast ~1.4:1">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%230066cc' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3ELogo%3C/text%3E%3C/svg%3E" alt="Company Logo">
+        </a>
+    </section>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkOutlineWidthInsufficient - Correct Examples</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkOutlineWidthInsufficient_002_correct_thick_outline",
+    "issueId": "ErrLinkOutlineWidthInsufficient",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Links with outline-width >= 2px (including em/rem correct cases)",
+    "wcag": "2.4.7, 2.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        html {
+            font-size: 16px; /* root font size for rem calculations */
+        }
+
+        body {
+            font-size: 16px;
+        }
+
+        /* 2px outline - correct */
+        .two-px-outline {
+            font-size: 16px;
+        }
+        .two-px-outline:focus {
+            outline: 2px solid #0066cc; /* Meets 2px minimum */
+            outline-offset: 2px;
+        }
+
+        /* 3px outline - even better */
+        .three-px-outline {
+            font-size: 16px;
+        }
+        .three-px-outline:focus {
+            outline: 3px solid #0066cc; /* Exceeds minimum */
+            outline-offset: 2px;
+        }
+
+        /* 0.125em outline = 2px (16px font * 0.125 = 2px) - correct */
+        .em-correct {
+            font-size: 16px;
+        }
+        .em-correct:focus {
+            outline: 0.125em solid #0066cc; /* 2px - meets minimum */
+            outline-offset: 2px;
+        }
+
+        /* 0.15rem outline = 2.4px (16px root * 0.15 = 2.4px) - correct */
+        .rem-correct {
+            font-size: 20px; /* Different font size doesn't affect rem */
+        }
+        .rem-correct:focus {
+            outline: 0.15rem solid #0066cc; /* 2.4px - exceeds minimum */
+            outline-offset: 2px;
+        }
+
+        /* Image link with proper outline */
+        .image-thick-outline:focus {
+            outline: 3px solid #0066cc; /* Thick enough */
+            outline-offset: 2px;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Sufficient Outline Width (Correct)</h1>
+
+    <p>These links have outlines that are >= 2px, meeting WCAG 2.4.11 requirements.</p>
+
+    <section>
+        <h2>2px Outline (Minimum Required)</h2>
+        <p>This link has a 2px outline:
+            <a href="#" class="two-px-outline"
+               data-expected-pass="true">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>3px Outline (Even Better)</h2>
+        <p>This link has a 3px outline:
+            <a href="#" class="three-px-outline"
+               data-expected-pass="true">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>0.125em Outline = 2px (Font size 16px)</h2>
+        <p>This link has 0.125em outline which resolves to exactly 2px:
+            <a href="#" class="em-correct"
+               data-expected-pass="true">
+                Contact Us
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>0.15rem Outline = 2.4px (Root font size 16px)</h2>
+        <p>This link has 0.15rem outline which resolves to 2.4px:
+            <a href="#" class="rem-correct"
+               data-expected-pass="true">
+                About Us
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Image Link - 3px Outline</h2>
+        <a href="#" class="image-thick-outline"
+           data-expected-pass="true">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%230066cc' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3ELogo%3C/text%3E%3C/svg%3E" alt="Company Logo">
+        </a>
+    </section>
+</body>
+</html>

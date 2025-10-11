@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnLinkOutlineOffsetTooLarge - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkOutlineOffsetTooLarge_001_warnings_large_offset",
+    "issueId": "WarnLinkOutlineOffsetTooLarge",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links with underline AND outline-offset > 1px creating confusing gap",
+    "wcag": "2.4.7",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Underline + 3px offset - confusing gap */
+        .underline-large-offset {
+            text-decoration: underline;
+        }
+        .underline-large-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 3px; /* Too large when underline present */
+            text-decoration: underline;
+        }
+
+        /* Underline + 5px offset - very confusing */
+        .underline-huge-offset {
+            text-decoration: underline;
+        }
+        .underline-huge-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 5px; /* Way too large */
+            text-decoration: underline;
+        }
+
+        /* Link gets underline on focus + large offset */
+        .adds-underline-large-offset {
+            text-decoration: none;
+        }
+        .adds-underline-large-offset:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 4px; /* Too large when underline added */
+            text-decoration: underline; /* Adds underline on focus */
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Links with Underline and Large Outline Offset</h1>
+
+    <p>These links have both an underline and an outline with offset > 1px, creating a confusing
+       visual gap between the underlined text and the outline. For text links with underline,
+       outline-offset should be 0-1px to create a cohesive visual unit.</p>
+
+    <section>
+        <h2>Underline + 3px Outline Offset</h2>
+        <p>This link has an underline and 3px outline offset:
+            <a href="#" class="underline-large-offset"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkOutlineOffsetTooLarge"
+               data-warning-reason="Has underline and outline-offset 3px - creates confusing gap">
+                Privacy Policy
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Underline + 5px Outline Offset</h2>
+        <p>This link has an underline and 5px outline offset:
+            <a href="#" class="underline-huge-offset"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkOutlineOffsetTooLarge"
+               data-warning-reason="Has underline and outline-offset 5px - very confusing gap">
+                Terms of Service
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Adds Underline on Focus + 4px Offset</h2>
+        <p>This link adds underline on focus with 4px outline offset:
+            <a href="#" class="adds-underline-large-offset"
+               data-expected-warning="true"
+               data-warning-id="WarnLinkOutlineOffsetTooLarge"
+               data-warning-reason="Adds underline on focus and has outline-offset 4px - creates gap">
+                Contact Us
+            </a>
+        </p>
+    </section>
+</body>
+</html>

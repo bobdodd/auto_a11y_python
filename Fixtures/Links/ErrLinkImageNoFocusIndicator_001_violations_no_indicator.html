@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkImageNoFocusIndicator - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkImageNoFocusIndicator_001_violations_no_indicator",
+    "issueId": "ErrLinkImageNoFocusIndicator",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Image links with no outline, border, or box-shadow on focus",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Image link with no focus indicator */
+        .no-indicator:focus {
+            outline: none;
+        }
+
+        /* Image link with color change only (not acceptable for images) */
+        .color-only:focus {
+            outline: none;
+            background-color: #e6f2ff; /* Background color change - not valid for image links */
+        }
+
+        /* Image link with opacity change only */
+        .opacity-only:focus {
+            outline: none;
+            opacity: 0.8; /* Opacity change - not a valid focus indicator */
+        }
+
+        /* ARIA link with image, no focus indicator */
+        .aria-image-link {
+            display: inline-block;
+            cursor: pointer;
+        }
+        .aria-image-link:focus {
+            outline: none;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Image Links with No Focus Indicator</h1>
+
+    <p>These image links have no outline, border, or box-shadow on focus. Since images cannot
+       use underline as a focus indicator, they must have a structural indicator.</p>
+
+    <section>
+        <h2>Image Link - No Focus Indicator</h2>
+        <a href="#" class="no-indicator"
+           data-expected-violation="true"
+           data-violation-id="ErrLinkImageNoFocusIndicator"
+           data-violation-reason="Image link with no outline, border, or box-shadow">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%230066cc' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3ELogo%3C/text%3E%3C/svg%3E" alt="Company Logo">
+        </a>
+    </section>
+
+    <section>
+        <h2>Image Link - Background Color Change Only</h2>
+        <a href="#" class="color-only"
+           data-expected-violation="true"
+           data-violation-id="ErrLinkImageNoFocusIndicator"
+           data-violation-reason="Image link with only background color change - no outline/border/box-shadow">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300aa00' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3EIcon%3C/text%3E%3C/svg%3E" alt="Download Icon">
+        </a>
+    </section>
+
+    <section>
+        <h2>Image Link - Opacity Change Only</h2>
+        <a href="#" class="opacity-only"
+           data-expected-violation="true"
+           data-violation-id="ErrLinkImageNoFocusIndicator"
+           data-violation-reason="Image link with only opacity change - no outline/border/box-shadow">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff6600' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3EButton%3C/text%3E%3C/svg%3E" alt="Action Button">
+        </a>
+    </section>
+
+    <section>
+        <h2>ARIA role="link" with Image - No Focus Indicator</h2>
+        <span role="link" tabindex="0" class="aria-image-link"
+              data-expected-violation="true"
+              data-violation-id="ErrLinkImageNoFocusIndicator"
+              data-violation-reason="ARIA link with image but no focus indicator">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23cc00cc' width='100' height='100'/%3E%3Ctext x='50' y='55' text-anchor='middle' fill='white' font-size='14'%3EARIA%3C/text%3E%3C/svg%3E" alt="ARIA Link Image">
+        </span>
+    </section>
+</body>
+</html>

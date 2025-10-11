@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonFocusContrastFail - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonFocusContrastFail_002_correct_high_contrast",
+    "issueId": "ErrButtonFocusContrastFail",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with focus outline contrast >= 3:1 against background",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .blue-on-white {
+            background: white;
+        }
+        .blue-on-white:focus {
+            outline: 2px solid #0066cc; /* High contrast */
+            outline-offset: 2px;
+        }
+
+        .white-on-black {
+            background: black;
+            color: white;
+        }
+        .white-on-black:focus {
+            outline: 2px solid #ffffff; /* High contrast */
+            outline-offset: 2px;
+        }
+
+        .yellow-on-blue {
+            background: #0066cc;
+            color: white;
+        }
+        .yellow-on-blue:focus {
+            outline: 3px solid #ffcc00; /* High contrast */
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: High Contrast Focus Outlines</h1>
+
+    <p>These buttons have focus outlines with at least 3:1 contrast ratio against their backgrounds,
+       meeting WCAG 1.4.11 Non-text Contrast requirements.</p>
+
+    <section style="background: #f5f5f5; padding: 20px;">
+        <h2>Blue Outline on White Background</h2>
+        <button class="blue-on-white"
+                data-expected-pass="true"
+                data-pass-reason="Outline color #0066cc has sufficient contrast against white">
+            Submit Form
+        </button>
+        <p>Outline color #0066cc has approximately 5.7:1 contrast against white background.</p>
+    </section>
+
+    <section style="background: #111; padding: 20px;">
+        <h2>White Outline on Black Background</h2>
+        <button class="white-on-black"
+                data-expected-pass="true"
+                data-pass-reason="Outline color #ffffff has maximum contrast against black">
+            Save Changes
+        </button>
+        <p>Outline color #ffffff has 21:1 contrast (maximum) against black background.</p>
+    </section>
+
+    <section style="background: #003366; padding: 20px;">
+        <h2>Yellow Outline on Blue Background</h2>
+        <button class="yellow-on-blue"
+                data-expected-pass="true"
+                data-pass-reason="Outline color #ffcc00 has sufficient contrast against blue">
+            Delete Item
+        </button>
+        <p>Outline color #ffcc00 has approximately 8.5:1 contrast against #0066cc background.</p>
+    </section>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonDefaultFocus - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonDefaultFocus_002_correct_custom_focus",
+    "issueId": "WarnButtonDefaultFocus",
+    "expectedViolationCount": 0,
+    "expectedWarningCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with custom focus styles meeting contrast requirements",
+    "wcag": "2.4.7",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        .custom-button {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+        }
+        .custom-button:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .dark-button {
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+        }
+        .dark-button:focus {
+            outline: 2px solid #66b3ff;
+            outline-offset: 2px;
+        }
+
+        .light-button {
+            padding: 10px 20px;
+            background: #fafafa;
+            border: 1px solid #ddd;
+        }
+        .light-button:focus {
+            outline: 2px solid #003d7a;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Custom Focus Styles</h1>
+
+    <p>These buttons have explicit custom focus styles with appropriate contrast
+       for their backgrounds, ensuring consistent and accessible focus indication.</p>
+
+    <section>
+        <h2>Gray Button with Custom Focus</h2>
+        <button class="custom-button"
+                data-expected-pass="true">
+            Submit Form
+        </button>
+        <p>This button has custom focus with high contrast blue outline.</p>
+    </section>
+
+    <section style="background: #111; padding: 20px;">
+        <h2>Dark Button with Custom Focus</h2>
+        <button class="dark-button"
+                data-expected-pass="true">
+            Save Changes
+        </button>
+        <p style="color: white;">This dark button has custom light blue focus outline.</p>
+    </section>
+
+    <section>
+        <h2>Light Button with Custom Focus</h2>
+        <button class="light-button"
+                data-expected-pass="true">
+            Delete Item
+        </button>
+        <p>This light button has custom dark blue focus outline.</p>
+    </section>
+</body>
+</html>

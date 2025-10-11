@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonOutlineWidthInsufficient - Em/Rem Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonOutlineWidthInsufficient_004_correct_em_rem",
+    "issueId": "ErrButtonOutlineWidthInsufficient",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with outline-width using em/rem that computes to ≥ 2px",
+    "wcag": "2.4.7, 2.4.11",
+    "impact": "N/A"
+}
+    </script>
+    <style>
+        /* Root font-size for rem calculations */
+        html {
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #e0e0e0;
+            border: 1px solid #999;
+            font-size: 16px;
+        }
+
+        .em-sufficient:focus {
+            outline: 0.125em solid #0066cc; /* 0.125 × 16px = 2px (exactly meets threshold) */
+            outline-offset: 2px;
+        }
+
+        .rem-sufficient:focus {
+            outline: 0.15rem solid #0066cc; /* 0.15 × 16px = 2.4px (above threshold) */
+            outline-offset: 2px;
+        }
+
+        .em-generous:focus {
+            outline: 0.2em solid #0066cc; /* 0.2 × 16px = 3.2px (generous) */
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Outline Width with Em/Rem (Sufficient)</h1>
+
+    <p>These buttons use em or rem units for outline-width that compute to at least 2px,
+       meeting WCAG 2.4.11 requirements while maintaining responsiveness to font-size changes.</p>
+
+    <section>
+        <h2>0.125em Width (Exactly 2px on 16px font)</h2>
+        <button class="em-sufficient"
+                data-expected-pass="true">
+            Submit Form
+        </button>
+        <p>0.125em on 16px font = 2px - meets minimum requirement.</p>
+    </section>
+
+    <section>
+        <h2>0.15rem Width (2.4px on 16px root)</h2>
+        <button class="rem-sufficient"
+                data-expected-pass="true">
+            Save Changes
+        </button>
+        <p>0.15rem on 16px root font-size = 2.4px - comfortable margin above minimum.</p>
+    </section>
+
+    <section>
+        <h2>0.2em Width (3.2px - Generous)</h2>
+        <button class="em-generous"
+                data-expected-pass="true">
+            Delete Item
+        </button>
+        <p>0.2em on 16px font = 3.2px - generous width for excellent visibility.</p>
+    </section>
+
+    <p><strong>Best Practice:</strong> Use 0.125em/rem minimum (= 2px on 16px font), or better
+       yet 0.15-0.2em/rem for comfortable visibility across different font sizes.</p>
+</body>
+</html>

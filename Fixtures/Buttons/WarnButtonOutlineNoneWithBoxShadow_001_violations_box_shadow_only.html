@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonOutlineNoneWithBoxShadow - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonOutlineNoneWithBoxShadow_001_violations_box_shadow_only",
+    "issueId": "WarnButtonOutlineNoneWithBoxShadow",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with outline:none using box-shadow instead (suboptimal but acceptable)",
+    "wcag": "2.4.7",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .box-shadow-focus:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5);
+        }
+
+        .box-shadow-inset:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px #0066cc;
+        }
+
+        .box-shadow-offset:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #0066cc, 0 0 0 4px rgba(0, 102, 204, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: outline:none with box-shadow (Suboptimal Pattern)</h1>
+
+    <p>These buttons remove the outline and use box-shadow instead. While this provides a focus indicator,
+       it's suboptimal because box-shadow may not be visible on all sides and is harder to see in some contexts.
+       A proper outline on all four sides is preferred.</p>
+
+    <section>
+        <h2>Box Shadow Focus (standard)</h2>
+        <button class="box-shadow-focus"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonOutlineNoneWithBoxShadow"
+                data-warning-reason="Uses box-shadow instead of outline (acceptable but not optimal)">
+            Submit Form
+        </button>
+        <p>This button uses a standard box-shadow for focus indication.</p>
+    </section>
+
+    <section>
+        <h2>Inset Box Shadow</h2>
+        <button class="box-shadow-inset"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonOutlineNoneWithBoxShadow"
+                data-warning-reason="Uses inset box-shadow instead of outline">
+            Save Changes
+        </button>
+        <p>This button uses an inset box-shadow (goes inside the button).</p>
+    </section>
+
+    <section>
+        <h2>Multiple Box Shadows</h2>
+        <button class="box-shadow-offset"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonOutlineNoneWithBoxShadow"
+                data-warning-reason="Uses multiple box-shadows instead of outline">
+            Delete Item
+        </button>
+        <p>This button uses multiple box-shadows to create a layered effect.</p>
+    </section>
+</body>
+</html>

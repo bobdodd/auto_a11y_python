@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonOutlineWidthInsufficient - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonOutlineWidthInsufficient_002_correct_thick_outline",
+    "issueId": "ErrButtonOutlineWidthInsufficient",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with outline-width >= 2px (meets WCAG 2.4.11)",
+    "wcag": "2.4.7, 2.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .two-px-outline:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .three-px-outline:focus {
+            outline: 3px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        .medium-keyword:focus {
+            outline: medium solid #0066cc; /* 'medium' is usually 3px */
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Outline Width 2px or Greater</h1>
+
+    <p>These buttons have focus outlines of 2px or thicker, meeting WCAG 2.4.11 Focus Appearance
+       requirements for clearly visible focus indicators.</p>
+
+    <section>
+        <h2>2px Outline Width (Minimum)</h2>
+        <button class="two-px-outline"
+                data-expected-pass="true"
+                data-pass-reason="outline-width: 2px meets minimum requirement">
+            Submit Form
+        </button>
+        <p>This button has a 2px outline, meeting the minimum thickness requirement.</p>
+    </section>
+
+    <section>
+        <h2>3px Outline Width (Better)</h2>
+        <button class="three-px-outline"
+                data-expected-pass="true"
+                data-pass-reason="outline-width: 3px exceeds minimum for better visibility">
+            Save Changes
+        </button>
+        <p>This button has a 3px outline, providing even better visibility than the minimum.</p>
+    </section>
+
+    <section>
+        <h2>'medium' Keyword (typically 3px)</h2>
+        <button class="medium-keyword"
+                data-expected-pass="true"
+                data-pass-reason="outline-width: medium is typically 3px, exceeding minimum">
+            Delete Item
+        </button>
+        <p>This button uses 'medium' keyword which is usually interpreted as 3px by browsers.</p>
+    </section>
+</body>
+</html>

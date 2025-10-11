@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonFocusGradientBackground - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonFocusGradientBackground_001_violations_gradient",
+    "issueId": "WarnButtonFocusGradientBackground",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with gradient backgrounds - focus contrast cannot be auto-verified",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .linear-gradient {
+            padding: 10px 20px;
+            background: linear-gradient(to right, #e0e0e0, #ffffff);
+            border: 1px solid #999;
+        }
+        .linear-gradient:focus {
+            outline: 2px solid #888888;
+            outline-offset: 2px;
+        }
+
+        .radial-gradient {
+            padding: 10px 20px;
+            background: radial-gradient(circle, #4a90e2, #1a5490);
+            color: white;
+            border: 1px solid #003d7a;
+        }
+        .radial-gradient:focus {
+            outline: 2px solid #66b3ff;
+            outline-offset: 2px;
+        }
+
+        .multi-stop-gradient {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            border: none;
+        }
+        .multi-stop-gradient:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Gradient Background Buttons</h1>
+
+    <p>These buttons have gradient backgrounds, making it impossible to programmatically
+       verify that focus outlines meet 3:1 contrast against all parts of the gradient.
+       Manual verification is required.</p>
+
+    <section>
+        <h2>Linear Gradient (Light to White)</h2>
+        <button class="linear-gradient"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonFocusGradientBackground"
+                data-warning-reason="Gray outline may not have 3:1 contrast against white part of gradient">
+            Submit Form
+        </button>
+        <p>Outline must be checked against both the lightest and darkest gradient colors.</p>
+    </section>
+
+    <section>
+        <h2>Radial Gradient (Blue Shades)</h2>
+        <button class="radial-gradient"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonFocusGradientBackground"
+                data-warning-reason="Light blue outline may fail against lighter blue parts">
+            Save Changes
+        </button>
+        <p>Radial gradients have varying colors from center to edge.</p>
+    </section>
+
+    <section>
+        <h2>Multi-Stop Gradient (Purple-Pink)</h2>
+        <button class="multi-stop-gradient"
+                data-expected-warning="true"
+                data-warning-id="WarnButtonFocusGradientBackground"
+                data-warning-reason="White outline may fail against light pink parts">
+            Delete Item
+        </button>
+        <p>Complex gradients with multiple color stops need testing at each stop.</p>
+    </section>
+</body>
+</html>

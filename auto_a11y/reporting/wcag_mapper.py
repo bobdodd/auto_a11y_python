@@ -46,7 +46,6 @@ WCAG_MAPPINGS = {
     'WarnFormHasNoLabel': ['1.3.1 Info and Relationships'],
     'WarnFieldLabelledByMultipleElements': ['1.3.1 Info and Relationships'],
     'WarnFieldLabelledByElementThatIsNotALabel': ['1.3.1 Info and Relationships'],
-    'WarnTitleAttrFound': ['3.3.2 Labels or Instructions'],
     'InfoFieldLabelledUsingAriaLabel': [],  # Info only
     'DiscoFormOnPage': [],  # Discovery
     

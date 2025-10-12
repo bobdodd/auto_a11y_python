@@ -9,39 +9,66 @@
     "id": "WarnButtonGenericText_002_correct_descriptive",
     "issueId": "WarnButtonGenericText",
     "expectedViolationCount": 0,
-    "expectedPassCount": 5,
-    "description": "Buttons with descriptive, context-specific text",
+    "expectedPassCount": 10,
+    "description": "Buttons with descriptive text or standard form actions that are acceptable",
     "wcag": "2.4.6",
     "impact": "Medium"
 }
     </script>
 </head>
 <body>
-    <h1>Account Settings</h1>
+    <h1>Product Features</h1>
 
+    <!-- Descriptive button text -->
+    <div class="feature">
+        <h2>Advanced Analytics</h2>
+        <p>Track your performance with detailed reports and insights.</p>
+        <button data-expected-pass="true"
+                data-pass-reason="Descriptive text explains what analytics features will be shown">View analytics features</button>
+    </div>
+
+    <div class="feature">
+        <h2>Cloud Storage</h2>
+        <p>Store all your files securely in the cloud with unlimited space.</p>
+        <button data-expected-pass="true"
+                data-pass-reason="Specific text indicates cloud storage details will be shown">Read about cloud storage</button>
+    </div>
+
+    <div class="feature">
+        <h2>Team Collaboration</h2>
+        <p>Work together with your team in real-time on shared projects.</p>
+        <button data-expected-pass="true"
+                data-pass-reason="Clear indication of what will be learned">Learn about collaboration tools</button>
+    </div>
+
+    <!-- Standard form buttons (acceptable) -->
     <form>
-        <label for="email">Email Address</label>
+        <h2>Contact Form</h2>
+        <label for="email">Email</label>
         <input type="email" id="email">
 
         <button type="submit"
                 data-expected-pass="true"
-                data-pass-reason="Descriptive text explains action">Update email address</button>
+                data-pass-reason="Submit is an acceptable standard form action">Submit</button>
+        <button type="reset"
+                data-expected-pass="true"
+                data-pass-reason="Reset is an acceptable standard form action">Reset</button>
+        <button type="button"
+                data-expected-pass="true"
+                data-pass-reason="Cancel is an acceptable standard form action">Cancel</button>
     </form>
 
-    <p>Would you like to proceed with deleting your account?</p>
-    <button data-expected-pass="true"
-            data-pass-reason="Descriptive text confirms action">Yes, delete my account</button>
-    <button data-expected-pass="true"
-            data-pass-reason="Descriptive text explains cancellation">No, keep my account</button>
-
-    <div class="article">
-        <h2>Privacy Policy Updates</h2>
-        <p>We've updated our privacy policy...</p>
+    <!-- Standard dialog/modal buttons (acceptable) -->
+    <div class="dialog">
+        <p>Are you sure you want to delete this item?</p>
         <button data-expected-pass="true"
-                data-pass-reason="Descriptive text explains destination">Read updated privacy policy</button>
+                data-pass-reason="OK is acceptable for dialog confirmations">OK</button>
+        <button data-expected-pass="true"
+                data-pass-reason="Yes/No are acceptable for dialog confirmations">Yes</button>
+        <button data-expected-pass="true"
+                data-pass-reason="Previous/Next are acceptable for navigation">Previous</button>
+        <button data-expected-pass="true"
+                data-pass-reason="Continue is acceptable for multi-step processes">Continue</button>
     </div>
-
-    <button data-expected-pass="true"
-            data-pass-reason="Descriptive text explains next step">Continue to payment</button>
 </body>
 </html>

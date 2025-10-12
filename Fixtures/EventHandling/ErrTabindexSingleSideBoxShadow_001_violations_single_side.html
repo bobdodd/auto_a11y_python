@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexSingleSideBoxShadow - Violations: Single-Sided Box-Shadow</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexSingleSideBoxShadow_001_violations_single_side",
+    "issueId": "ErrTabindexSingleSideBoxShadow",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test fixture for ErrTabindexSingleSideBoxShadow - elements with tabindex that have single-sided box-shadow focus indicators",
+    "wcag": "2.4.11",
+    "impact": "Moderate"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* VIOLATION 1: Left side only - box-shadow with negative X offset */
+        .left-only:focus {
+            outline: none;
+            box-shadow: -3px 0 0 0 #0066cc;
+        }
+
+        /* VIOLATION 2: Right side only - box-shadow with positive X offset */
+        .right-only:focus {
+            outline: none;
+            box-shadow: 3px 0 0 0 #cc0000;
+        }
+
+        /* VIOLATION 3: Top side only - box-shadow with negative Y offset */
+        .top-only:focus {
+            outline: none;
+            box-shadow: 0 -3px 0 0 #006600;
+        }
+
+        /* VIOLATION 4: Bottom side only - box-shadow with positive Y offset */
+        .bottom-only:focus {
+            outline: none;
+            box-shadow: 0 3px 0 0 #cc6600;
+        }
+
+        /* VIOLATION 5: Left side with blur - still single-sided */
+        .left-blur:focus {
+            outline: none;
+            box-shadow: -4px 0 8px 0 rgba(0, 102, 204, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexSingleSideBoxShadow - Violation Examples</h1>
+    <p>This page contains elements with tabindex that use single-sided box-shadow for focus indicators. All should generate errors per CR 5.2.4 requirements.</p>
+
+    <section>
+        <h2>Single-Sided Box-Shadow Focus Indicators</h2>
+
+        <div class="card left-only" tabindex="0" id="violation1">
+            <h3>Violation 1: Left Side Only</h3>
+            <p>box-shadow: -3px 0 0 0 #0066cc (negative X offset only)</p>
+        </div>
+
+        <div class="menu-item right-only" tabindex="0" id="violation2">
+            <h3>Violation 2: Right Side Only</h3>
+            <p>box-shadow: 3px 0 0 0 #cc0000 (positive X offset only)</p>
+        </div>
+
+        <div class="panel top-only" tabindex="0" id="violation3">
+            <h3>Violation 3: Top Side Only</h3>
+            <p>box-shadow: 0 -3px 0 0 #006600 (negative Y offset only)</p>
+        </div>
+
+        <div class="card bottom-only" tabindex="-1" id="violation4">
+            <h3>Violation 4: Bottom Side Only</h3>
+            <p>box-shadow: 0 3px 0 0 #cc6600 (positive Y offset only)</p>
+        </div>
+
+        <div class="menu-item left-blur" tabindex="0" id="violation5">
+            <h3>Violation 5: Left Side with Blur</h3>
+            <p>box-shadow: -4px 0 8px 0 rgba(...) - blur doesn't fix single-sided issue</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> ErrTabindexSingleSideBoxShadow</li>
+            <li><strong>Count:</strong> 5 violations detected</li>
+            <li><strong>WCAG:</strong> CR 5.2.4 (Common Requirement for focus indicators)</li>
+            <li><strong>Why:</strong> Single-sided focus indicators can be cropped by zoom/magnification</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Violation 1: Left side only (-3px X offset)</li>
+                    <li>Violation 2: Right side only (+3px X offset)</li>
+                    <li>Violation 3: Top side only (-3px Y offset)</li>
+                    <li>Violation 4: Bottom side only (+3px Y offset)</li>
+                    <li>Violation 5: Left side with blur (still single-sided)</li>
+                </ul>
+            </li>
+            <li><strong>Impact:</strong> Screen magnifier users may not see indicator if it's on cropped side</li>
+            <li><strong>Fix:</strong> Use box-shadow: 0 0 0 Npx (uniform on all sides) or outline instead</li>
+        </ul>
+    </footer>
+</body>
+</html>

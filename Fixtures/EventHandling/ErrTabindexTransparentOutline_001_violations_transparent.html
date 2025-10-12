@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexTransparentOutline - Violations: Transparent Focus Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexTransparentOutline_001_violations_transparent",
+    "issueId": "ErrTabindexTransparentOutline",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test fixture for ErrTabindexTransparentOutline - elements with tabindex that have semi-transparent focus indicators (alpha < 0.5)",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* VIOLATION 1: Very transparent outline (alpha 0.2) */
+        .very-transparent:focus {
+            outline: 3px solid rgba(0, 102, 204, 0.2);
+        }
+
+        /* VIOLATION 2: Moderately transparent outline (alpha 0.4) */
+        .moderate-transparent:focus {
+            outline: 3px solid rgba(204, 0, 0, 0.4);
+        }
+
+        /* VIOLATION 3: Transparent box-shadow (alpha 0.3) */
+        .transparent-shadow:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 102, 0, 0.3);
+        }
+
+        /* VIOLATION 4: Nearly invisible (alpha 0.1) */
+        .nearly-invisible:focus {
+            outline: 3px solid rgba(204, 102, 0, 0.1);
+        }
+
+        /* VIOLATION 5: Transparent with color keyword "transparent" */
+        .keyword-transparent:focus {
+            outline: 3px solid transparent;  /* Completely transparent */
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexTransparentOutline - Violation Examples</h1>
+    <p>This page contains elements with tabindex that have semi-transparent focus indicators (alpha < 0.5). All should generate errors.</p>
+
+    <section>
+        <h2>Transparent Focus Indicators</h2>
+
+        <div class="card very-transparent" tabindex="0" id="violation1">
+            <h3>Violation 1: Very Transparent (alpha 0.2)</h3>
+            <p>outline: 3px solid rgba(0, 102, 204, 0.2) - barely visible</p>
+        </div>
+
+        <div class="menu-item moderate-transparent" tabindex="0" id="violation2">
+            <h3>Violation 2: Moderately Transparent (alpha 0.4)</h3>
+            <p>outline: 3px solid rgba(204, 0, 0, 0.4) - still below 0.5 threshold</p>
+        </div>
+
+        <div class="panel transparent-shadow" tabindex="0" id="violation3">
+            <h3>Violation 3: Transparent Box-Shadow (alpha 0.3)</h3>
+            <p>box-shadow with rgba(0, 102, 0, 0.3) - too transparent</p>
+        </div>
+
+        <div class="card nearly-invisible" tabindex="-1" id="violation4">
+            <h3>Violation 4: Nearly Invisible (alpha 0.1)</h3>
+            <p>outline with alpha 0.1 - effectively invisible</p>
+        </div>
+
+        <div class="menu-item keyword-transparent" tabindex="0" id="violation5">
+            <h3>Violation 5: Transparent Keyword</h3>
+            <p>outline: 3px solid transparent - completely invisible</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> ErrTabindexTransparentOutline</li>
+            <li><strong>Count:</strong> 5 violations detected</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> Semi-transparent focus indicators may not be perceptible</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Violation 1: alpha 0.2 (very transparent)</li>
+                    <li>Violation 2: alpha 0.4 (below threshold)</li>
+                    <li>Violation 3: alpha 0.3 box-shadow</li>
+                    <li>Violation 4: alpha 0.1 (nearly invisible)</li>
+                    <li>Violation 5: "transparent" keyword (alpha 0)</li>
+                </ul>
+            </li>
+            <li><strong>Impact:</strong> Low vision users cannot perceive transparent focus indicators</li>
+            <li><strong>Fix:</strong> Use alpha ≥ 0.5 for semi-transparent indicators, or use fully opaque colors</li>
+        </ul>
+    </footer>
+</body>
+</html>

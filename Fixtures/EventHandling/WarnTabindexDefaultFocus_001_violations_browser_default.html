@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnTabindexDefaultFocus - Warnings: Browser Default Focus</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnTabindexDefaultFocus_001_violations_browser_default",
+    "issueId": "WarnTabindexDefaultFocus",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test fixture for WarnTabindexDefaultFocus - elements with tabindex relying on browser default focus indicators",
+    "wcag": "2.4.7",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* WARNING 1: No focus styles at all - browser default */
+        /* .no-styles:focus - no rule defined */
+
+        /* WARNING 2: Empty focus rule - browser default */
+        .empty-focus-rule:focus {
+            /* No properties defined */
+        }
+
+        /* WARNING 3: Only non-indicator properties changed */
+        .non-indicator-only:focus {
+            cursor: pointer;
+            user-select: none;
+            /* No outline, box-shadow, or border changes */
+        }
+
+        /* WARNING 4: Comment only in focus rule */
+        .comment-only:focus {
+            /* TODO: Add custom focus indicator */
+        }
+
+        /* WARNING 5: Unrelated properties only */
+        .unrelated-props:focus {
+            z-index: 10;
+            position: relative;
+            /* No visual focus indicator */
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnTabindexDefaultFocus - Warning Examples</h1>
+    <p>This page contains elements with tabindex that rely on browser default focus indicators without custom styling. All should generate warnings.</p>
+
+    <section>
+        <h2>Browser Default Focus Indicators</h2>
+
+        <div class="card no-styles" tabindex="0" id="warning1">
+            <h3>Warning 1: No Focus Styles Defined</h3>
+            <p>No :focus rule at all - relies entirely on browser default</p>
+        </div>
+
+        <div class="menu-item empty-focus-rule" tabindex="0" id="warning2">
+            <h3>Warning 2: Empty Focus Rule</h3>
+            <p>:focus rule exists but has no properties - browser default used</p>
+        </div>
+
+        <div class="panel non-indicator-only" tabindex="0" id="warning3">
+            <h3>Warning 3: Non-Indicator Properties Only</h3>
+            <p>Focus rule changes cursor and user-select but no visual indicator</p>
+        </div>
+
+        <div class="card comment-only" tabindex="-1" id="warning4">
+            <h3>Warning 4: Comment Only</h3>
+            <p>Focus rule contains only comments - no actual styles</p>
+        </div>
+
+        <div class="menu-item unrelated-props" tabindex="0" id="warning5">
+            <h3>Warning 5: Unrelated Properties</h3>
+            <p>Focus rule changes z-index and position but no visual indicator</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #fff9e6; border-radius: 5px; border-left: 4px solid #ffcc00;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> WarnTabindexDefaultFocus</li>
+            <li><strong>Count:</strong> 5 warnings detected</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> Relying on browser defaults can be inconsistent across browsers/platforms</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Warning 1: No :focus rule defined</li>
+                    <li>Warning 2: Empty focus rule (no properties)</li>
+                    <li>Warning 3: Only non-visual properties changed</li>
+                    <li>Warning 4: Only comments in focus rule</li>
+                    <li>Warning 5: Unrelated properties (z-index, position)</li>
+                </ul>
+            </li>
+            <li><strong>Impact:</strong> Browser defaults vary - may not be consistent or visible enough</li>
+            <li><strong>Recommendation:</strong> Define explicit focus indicators (outline, box-shadow) for consistency</li>
+            <li><strong>Note:</strong> This is a WARNING, not an error - browser defaults are functional but not ideal</li>
+        </ul>
+    </footer>
+</body>
+</html>

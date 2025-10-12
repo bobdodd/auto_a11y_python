@@ -30,6 +30,7 @@ from .test_title_attribute import test_title_attribute, TEST_DOCUMENTATION as TI
 from .test_videos import test_videos, TEST_DOCUMENTATION as VIDEOS_DOCS
 from .test_page import test_page, TEST_DOCUMENTATION as PAGE_DOCS
 from .test_language import test_language, TEST_DOCUMENTATION as LANGUAGE_DOCS
+from .test_semantic_structure import test_semantic_structure, TEST_DOCUMENTATION as SEMANTIC_STRUCTURE_DOCS
 
 # Map touchpoint IDs to test functions
 TOUCHPOINT_TESTS = {
@@ -61,6 +62,7 @@ TOUCHPOINT_TESTS = {
     'videos': test_videos,
     'page': test_page,
     'language': test_language,
+    'semantic_structure': test_semantic_structure,
 }
 
 # Export all test documentation
@@ -93,6 +95,7 @@ TEST_DOCUMENTATION = {
     'videos': VIDEOS_DOCS,
     'page': PAGE_DOCS,
     'language': LANGUAGE_DOCS,
+    'semantic_structure': SEMANTIC_STRUCTURE_DOCS,
 }
 
 __all__ = [
@@ -124,6 +127,7 @@ __all__ = [
     'test_videos',
     'test_page',
     'test_language',
+    'test_semantic_structure',
     'TOUCHPOINT_TESTS',
     'TEST_DOCUMENTATION'
 ]

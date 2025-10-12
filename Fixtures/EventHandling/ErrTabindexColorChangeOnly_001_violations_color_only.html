@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexColorChangeOnly - Violations: Color-Only Focus Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexColorChangeOnly_001_violations_color_only",
+    "issueId": "ErrTabindexColorChangeOnly",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test fixture for ErrTabindexColorChangeOnly - elements with tabindex that use only color change for focus indicator",
+    "wcag": "1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* VIOLATION 1: Background color change only */
+        .bg-color-only {
+            background: #ffffff;
+        }
+        .bg-color-only:focus {
+            outline: none;
+            background: #e6f2ff;  /* Light blue background */
+        }
+
+        /* VIOLATION 2: Text color change only */
+        .text-color-only {
+            color: #333333;
+        }
+        .text-color-only:focus {
+            outline: none;
+            color: #0066cc;  /* Blue text */
+        }
+
+        /* VIOLATION 3: Border color change only (same width) */
+        .border-color-only {
+            border: 2px solid #cccccc;
+        }
+        .border-color-only:focus {
+            outline: none;
+            border-color: #0066cc;  /* Color changes but no width/structure change */
+        }
+
+        /* VIOLATION 4: Multiple color changes (background + text) but no structural indicator */
+        .multi-color-only {
+            background: #ffffff;
+            color: #333333;
+        }
+        .multi-color-only:focus {
+            outline: none;
+            background: #0066cc;
+            color: #ffffff;
+        }
+
+        /* VIOLATION 5: Border and background color change - still no structural indicator */
+        .border-bg-color {
+            background: #f8f8f8;
+            border: 2px solid #ddd;
+        }
+        .border-bg-color:focus {
+            outline: none;
+            background: #e6f2ff;
+            border-color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexColorChangeOnly - Violation Examples</h1>
+    <p>This page contains elements with tabindex that use ONLY color changes for focus indicators. All should generate errors per WCAG 1.4.1 Use of Color.</p>
+
+    <section>
+        <h2>Color-Only Focus Indicators</h2>
+
+        <div class="card bg-color-only" tabindex="0" id="violation1">
+            <h3>Violation 1: Background Color Change Only</h3>
+            <p>Focus changes background from white to light blue - no outline/border/shadow</p>
+        </div>
+
+        <div class="menu-item text-color-only" tabindex="0" id="violation2">
+            <h3>Violation 2: Text Color Change Only</h3>
+            <p>Focus changes text from black to blue - violates Use of Color</p>
+        </div>
+
+        <div class="panel border-color-only" tabindex="0" id="violation3">
+            <h3>Violation 3: Border Color Change Only</h3>
+            <p>Border color changes but width stays same - no structural change</p>
+        </div>
+
+        <div class="card multi-color-only" tabindex="-1" id="violation4">
+            <h3>Violation 4: Multiple Color Changes</h3>
+            <p>Both background and text color change - still color-only indicator</p>
+        </div>
+
+        <div class="menu-item border-bg-color" tabindex="0" id="violation5">
+            <h3>Violation 5: Border + Background Color</h3>
+            <p>Border and background colors change - no outline/box-shadow added</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> ErrTabindexColorChangeOnly</li>
+            <li><strong>Count:</strong> 5 violations detected</li>
+            <li><strong>WCAG:</strong> 1.4.1 Use of Color (Level A)</li>
+            <li><strong>Why:</strong> Focus indicated by color alone, without structural changes</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Violation 1: Background color change only</li>
+                    <li>Violation 2: Text color change only</li>
+                    <li>Violation 3: Border color change (same width)</li>
+                    <li>Violation 4: Multiple colors change (still color-only)</li>
+                    <li>Violation 5: Border + background color change</li>
+                </ul>
+            </li>
+            <li><strong>Impact:</strong> Users with color blindness or monochrome displays cannot perceive focus</li>
+            <li><strong>Fix:</strong> MUST add structural indicator: outline, box-shadow, or border width change</li>
+        </ul>
+    </footer>
+</body>
+</html>

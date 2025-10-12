@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexFocusContrastFail - Violations: Low Contrast Focus Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexFocusContrastFail_001_violations_low_contrast",
+    "issueId": "ErrTabindexFocusContrastFail",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test fixture for ErrTabindexFocusContrastFail - elements with tabindex but low contrast focus indicators",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #ffffff;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* VIOLATION 1: Very low contrast outline (1.5:1) - light gray on white */
+        .low-contrast-outline:focus {
+            outline: 3px solid #d0d0d0;  /* Light gray on white background */
+            outline-offset: 2px;
+        }
+
+        /* VIOLATION 2: Low contrast box-shadow (2.2:1) - medium gray on white */
+        .low-contrast-shadow:focus {
+            box-shadow: 0 0 0 3px #a8a8a8;  /* Medium gray */
+        }
+
+        /* VIOLATION 3: Very subtle border change (1.8:1) */
+        .subtle-border {
+            border: 2px solid #e0e0e0;
+        }
+        .subtle-border:focus {
+            border-color: #b8b8b8;  /* Barely darker */
+            outline: none;
+        }
+
+        /* VIOLATION 4: Low contrast combined with transparency (2.5:1) */
+        .transparent-low:focus {
+            outline: 3px solid rgba(160, 160, 160, 0.6);
+        }
+
+        /* VIOLATION 5: Colored but still low contrast (2.8:1) - light blue on white */
+        .colored-low:focus {
+            box-shadow: 0 0 0 4px #b8d4f0;  /* Very light blue */
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexFocusContrastFail - Violation Examples</h1>
+    <p>This page contains elements with tabindex that have focus indicators with insufficient contrast (< 3:1 against background). All should generate errors.</p>
+
+    <section>
+        <h2>Low Contrast Focus Indicators</h2>
+
+        <div class="card low-contrast-outline" tabindex="0" id="violation1">
+            <h3>Violation 1: Very Low Contrast Outline (1.5:1)</h3>
+            <p>Light gray (#d0d0d0) outline on white background - nearly invisible</p>
+        </div>
+
+        <div class="menu-item low-contrast-shadow" tabindex="0" id="violation2">
+            <h3>Violation 2: Low Contrast Box-Shadow (2.2:1)</h3>
+            <p>Medium gray (#a8a8a8) shadow - still below 3:1 requirement</p>
+        </div>
+
+        <div class="panel subtle-border" tabindex="0" id="violation3">
+            <h3>Violation 3: Subtle Border Change (1.8:1)</h3>
+            <p>Border changes from #e0e0e0 to #b8b8b8 - not enough contrast</p>
+        </div>
+
+        <div class="card transparent-low" tabindex="0" id="violation4">
+            <h3>Violation 4: Transparent Low Contrast (2.5:1)</h3>
+            <p>Semi-transparent gray outline - combined issues of transparency and low contrast</p>
+        </div>
+
+        <div class="menu-item colored-low" tabindex="-1" id="violation5">
+            <h3>Violation 5: Colored But Low Contrast (2.8:1)</h3>
+            <p>Very light blue box-shadow - color doesn't help if contrast is too low</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> ErrTabindexFocusContrastFail</li>
+            <li><strong>Count:</strong> 5 violations detected</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)</li>
+            <li><strong>Why:</strong> All focus indicators have contrast ratios below 3:1 against their backgrounds</li>
+            <li><strong>Contrast Ratios:</strong>
+                <ul>
+                    <li>Violation 1: ~1.5:1 (light gray outline)</li>
+                    <li>Violation 2: ~2.2:1 (medium gray shadow)</li>
+                    <li>Violation 3: ~1.8:1 (subtle border change)</li>
+                    <li>Violation 4: ~2.5:1 (transparent + low contrast)</li>
+                    <li>Violation 5: ~2.8:1 (light blue - close but still fails)</li>
+                </ul>
+            </li>
+            <li><strong>Requirement:</strong> Focus indicators must have ≥3:1 contrast ratio against background</li>
+            <li><strong>Impact:</strong> Users with low vision cannot perceive keyboard focus location</li>
+        </ul>
+    </footer>
+</body>
+</html>

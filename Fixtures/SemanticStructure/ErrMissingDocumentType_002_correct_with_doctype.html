@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingDocumentType - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingDocumentType_002_correct_with_doctype",
+    "issueId": "ErrMissingDocumentType",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "HTML document with proper DOCTYPE declaration",
+    "wcag": "4.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Document has proper HTML5 DOCTYPE declaration. Browsers render in standards mode ensuring predictable behavior. HTML validator passes. Assistive technologies interpret page correctly. Modern standards requirement met. Complies with WCAG 4.1.1 by having valid HTML structure">
+    <h1>Correct DOCTYPE Example</h1>
+    <main>
+        <p>This page has the proper DOCTYPE declaration for HTML5, ensuring standards-compliant rendering.</p>
+    </main>
+</body>
+</html>

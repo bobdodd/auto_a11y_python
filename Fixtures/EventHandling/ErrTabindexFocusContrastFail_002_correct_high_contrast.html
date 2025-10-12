@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexFocusContrastFail - Correct: High Contrast Focus Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexFocusContrastFail_002_correct_high_contrast",
+    "issueId": "ErrTabindexFocusContrastFail",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Test fixture for ErrTabindexFocusContrastFail - elements with tabindex and high contrast focus indicators",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #ffffff;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* CORRECT 1: High contrast outline (7:1) - dark blue on white */
+        .high-contrast-outline:focus {
+            outline: 3px solid #0066cc;  /* Dark blue - excellent contrast */
+            outline-offset: 2px;
+        }
+
+        /* CORRECT 2: High contrast box-shadow (10:1) - nearly black */
+        .high-contrast-shadow:focus {
+            box-shadow: 0 0 0 3px #333333;  /* Very dark gray, almost black */
+        }
+
+        /* CORRECT 3: Strong border change (8:1) */
+        .strong-border {
+            border: 2px solid #e0e0e0;
+        }
+        .strong-border:focus {
+            border-color: #006600;  /* Dark green */
+            outline: none;
+        }
+
+        /* CORRECT 4: Bright color with good contrast (5.5:1) */
+        .bright-focus:focus {
+            outline: 3px solid #cc0000;  /* Bright red with good contrast */
+        }
+
+        /* CORRECT 5: Multiple high contrast indicators (12:1) */
+        .multi-indicator:focus {
+            outline: 2px solid #000000;  /* Black outline */
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px #ffcc00;  /* Yellow background behind outline */
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexFocusContrastFail - Correct Examples</h1>
+    <p>This page contains elements with tabindex that have focus indicators with sufficient contrast (≥ 3:1 against background). None should generate errors.</p>
+
+    <section>
+        <h2>High Contrast Focus Indicators</h2>
+
+        <div class="card high-contrast-outline" tabindex="0" id="correct1">
+            <h3>Correct 1: High Contrast Outline (7:1)</h3>
+            <p>Dark blue (#0066cc) outline on white - clearly visible</p>
+        </div>
+
+        <div class="menu-item high-contrast-shadow" tabindex="0" id="correct2">
+            <h3>Correct 2: Very High Contrast Box-Shadow (10:1)</h3>
+            <p>Very dark gray (#333333) shadow - excellent visibility</p>
+        </div>
+
+        <div class="panel strong-border" tabindex="0" id="correct3">
+            <h3>Correct 3: Strong Border Change (8:1)</h3>
+            <p>Border changes to dark green (#006600) - highly visible</p>
+        </div>
+
+        <div class="card bright-focus" tabindex="0" id="correct4">
+            <h3>Correct 4: Bright Color with Good Contrast (5.5:1)</h3>
+            <p>Bright red (#cc0000) outline - vibrant and accessible</p>
+        </div>
+
+        <div class="menu-item multi-indicator" tabindex="-1" id="correct5">
+            <h3>Correct 5: Multiple High Contrast Indicators (12:1)</h3>
+            <p>Black outline with yellow background - maximum visibility</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 errors</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA), 1.4.11 Non-text Contrast (Level AA)</li>
+            <li><strong>Why:</strong> All focus indicators exceed the 3:1 contrast requirement</li>
+            <li><strong>Contrast Ratios:</strong>
+                <ul>
+                    <li>Correct 1: ~7:1 (dark blue outline) - Exceeds AA</li>
+                    <li>Correct 2: ~10:1 (very dark gray shadow) - Exceeds AAA</li>
+                    <li>Correct 3: ~8:1 (dark green border) - Exceeds AAA</li>
+                    <li>Correct 4: ~5.5:1 (bright red) - Exceeds AA</li>
+                    <li>Correct 5: ~12:1+ (black + yellow) - Maximum accessibility</li>
+                </ul>
+            </li>
+            <li><strong>Best Practice:</strong> Aim for 4.5:1+ contrast for optimal visibility across diverse user needs</li>
+        </ul>
+    </footer>
+</body>
+</html>

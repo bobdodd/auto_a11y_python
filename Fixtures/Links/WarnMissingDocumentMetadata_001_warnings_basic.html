@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingDocumentMetadata - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingDocumentMetadata_001_warnings_basic",
+    "issueId": "WarnMissingDocumentMetadata",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Document links with file type but missing size/metadata",
+    "wcag": "2.4.4",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Resource Downloads</h1>
+
+    <main>
+        <section>
+            <h2>Annual Report</h2>
+            <p>Our company's financial performance for the year.</p>
+            <a href="/reports/annual-2023.pdf"
+               data-expected-warning="true"
+               data-warning-reason="Link includes file type (PDF) but does not provide file size or page count. Users on mobile or metered connections benefit from knowing file size before downloading. Warning for WCAG 2.4.4 - link should include metadata like 'Annual Report 2023 (PDF, 3.2 MB, 48 pages)'">
+                Annual Report 2023 (PDF)
+            </a>
+        </section>
+
+        <section>
+            <h2>User Guide</h2>
+            <p>Instructions for using our product effectively.</p>
+            <a href="/docs/user-guide.docx"
+               data-expected-warning="true"
+               data-warning-reason="Link indicates file type (Word) but missing file size information. Users cannot make informed decisions about download without knowing file size. Especially important for mobile users. Warning for WCAG 2.4.4 - should include 'User Guide (Word, 1.5 MB)'">
+                User Guide (Word)
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

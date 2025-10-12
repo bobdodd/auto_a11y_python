@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexOutlineWidthInsufficient - Violations: Thin Outline</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexOutlineWidthInsufficient_001_violations_thin_outline",
+    "issueId": "ErrTabindexOutlineWidthInsufficient",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test fixture for ErrTabindexOutlineWidthInsufficient - elements with tabindex that have outline width < 2px",
+    "wcag": "2.4.11",
+    "impact": "Moderate"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* VIOLATION 1: 1px outline - too thin for AAA */
+        .thin-1px:focus {
+            outline: 1px solid #0066cc;
+        }
+
+        /* VIOLATION 2: 0.5px outline - extremely thin */
+        .thin-half:focus {
+            outline: 0.5px solid #cc0000;
+        }
+
+        /* VIOLATION 3: 1.5px outline - below 2px threshold */
+        .thin-1-5px:focus {
+            outline: 1.5px solid #006600;
+        }
+
+        /* VIOLATION 4: thin keyword outline */
+        .thin-keyword:focus {
+            outline: thin solid #cc6600;  /* 'thin' typically renders as 1px */
+        }
+
+        /* VIOLATION 5: 1px with offset - still too thin */
+        .thin-with-offset:focus {
+            outline: 1px solid #0066cc;
+            outline-offset: 3px;  /* Offset doesn't fix thin width */
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexOutlineWidthInsufficient - Violation Examples</h1>
+    <p>This page contains elements with tabindex that have outline widths less than 2px. All should generate errors per WCAG 2.4.11 (AAA).</p>
+
+    <section>
+        <h2>Insufficient Outline Width</h2>
+
+        <div class="card thin-1px" tabindex="0" id="violation1">
+            <h3>Violation 1: 1px Outline</h3>
+            <p>outline: 1px solid #0066cc - below 2px AAA requirement</p>
+        </div>
+
+        <div class="menu-item thin-half" tabindex="0" id="violation2">
+            <h3>Violation 2: 0.5px Outline</h3>
+            <p>outline: 0.5px solid #cc0000 - extremely thin, hard to perceive</p>
+        </div>
+
+        <div class="panel thin-1-5px" tabindex="0" id="violation3">
+            <h3>Violation 3: 1.5px Outline</h3>
+            <p>outline: 1.5px solid #006600 - still below 2px threshold</p>
+        </div>
+
+        <div class="card thin-keyword" tabindex="-1" id="violation4">
+            <h3>Violation 4: "thin" Keyword</h3>
+            <p>outline: thin solid #cc6600 - typically renders as 1px</p>
+        </div>
+
+        <div class="menu-item thin-with-offset" tabindex="0" id="violation5">
+            <h3>Violation 5: 1px with Offset</h3>
+            <p>outline: 1px with outline-offset: 3px - offset doesn't fix width issue</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> ErrTabindexOutlineWidthInsufficient</li>
+            <li><strong>Count:</strong> 5 violations detected</li>
+            <li><strong>WCAG:</strong> 2.4.11 Focus Appearance (Level AAA)</li>
+            <li><strong>Why:</strong> Outline width < 2px fails AAA focus appearance requirements</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Violation 1: 1px outline</li>
+                    <li>Violation 2: 0.5px outline (extremely thin)</li>
+                    <li>Violation 3: 1.5px outline</li>
+                    <li>Violation 4: "thin" keyword (~1px)</li>
+                    <li>Violation 5: 1px with offset (offset doesn't help width)</li>
+                </ul>
+            </li>
+            <li><strong>Impact:</strong> Users with low vision may struggle to perceive thin focus indicators</li>
+            <li><strong>Fix:</strong> Use outline-width ≥ 2px for AAA conformance (or ≥ 3px for better visibility)</li>
+        </ul>
+    </footer>
+</body>
+</html>

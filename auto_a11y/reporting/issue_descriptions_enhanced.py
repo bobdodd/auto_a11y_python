@@ -1323,14 +1323,32 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.1.2'],
             'remediation': "Add visible close button to all modals and dialogs, ensure it\'s keyboard accessible and properly labeled."
         },
+        'ErrDocumentLinkMissingFileType': {
+            'title': "Document link missing file type indication",
+            'what': "Link to downloadable document does not indicate the file type in its accessible name",
+            'why': "Users need to know they're about to download a file and what type before activating the link. Without this information, users experience unexpected downloads, which is problematic for mobile users with limited data plans and screen reader users who cannot see file icons.",
+            'who': "Screen reader users who cannot see file type icons, mobile users managing data usage, users with cognitive disabilities who benefit from explicit warnings, users on metered connections.",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.4'],
+            'remediation': "Include the file type in the link text (e.g., 'Annual Report (PDF)' or 'Budget Spreadsheet (Excel)'). Alternatively, use aria-label to provide this information (e.g., aria-label='Annual Report PDF document')."
+        },
+        'WarnMissingDocumentMetadata': {
+            'title': "Document link missing file size or metadata",
+            'what': "Link to downloadable document does not provide file size or other helpful metadata",
+            'why': "Users benefit from knowing file size to make informed download decisions, especially on mobile devices or metered connections. Page count or document length helps users understand time commitment.",
+            'who': "Mobile users on limited data plans, users with slow internet connections, users with limited device storage, users with cognitive disabilities who benefit from clear expectations.",
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['2.4.4'],
+            'remediation': "Include file size and optionally page count in the link text or nearby (e.g., 'Annual Report (PDF, 3.2 MB, 48 pages)'). This can be in the link text, aria-describedby content, or adjacent text."
+        },
         'ErrMissingDocumentType': {
             'title': "HTML document missing DOCTYPE declaration",
-            'what': "HTML document missing DOCTYPE declaration",
-            'why': "Missing DOCTYPE can cause browsers to render in quirks mode, leading to unpredictable behavior and accessibility issues.",
-            'who': "All users due to potential rendering issues, assistive technology users affected by parsing errors.",
+            'what': "HTML document is missing the DOCTYPE declaration (<!DOCTYPE html>) at the beginning",
+            'why': "Missing DOCTYPE causes browsers to render in 'quirks mode' using outdated parsing rules, leading to unpredictable rendering behavior, CSS inconsistencies, JavaScript issues, and broken assistive technology compatibility.",
+            'who': "All users due to unpredictable rendering behavior, assistive technology users whose tools may not parse correctly, screen reader users experiencing navigation issues, keyboard users with incorrect focus indicators.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['4.1.1'],
-            'remediation': "Add <!DOCTYPE html> as the first line of all HTML documents."
+            'remediation': "Add <!DOCTYPE html> as the very first line of every HTML document, before the <html> tag. Ensure no characters (including spaces or byte-order marks) appear before the DOCTYPE."
         },
         'ErrMissingMainLandmark': {
             'title': "Page missing main landmark for primary content",

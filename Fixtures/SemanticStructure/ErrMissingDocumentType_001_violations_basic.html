@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingDocumentType - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingDocumentType_001_violations_basic",
+    "issueId": "ErrMissingDocumentType",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "HTML document missing DOCTYPE declaration",
+    "wcag": "4.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="ErrMissingDocumentType"
+      data-violation-reason="Document has no DOCTYPE declaration at top. Browsers may render in quirks mode causing unpredictable behavior. HTML validator flags as error. Assistive technologies may not interpret page correctly. Modern standards require DOCTYPE for proper parsing. Violates WCAG 4.1.1 by lacking required HTML structure">
+    <h1>Missing DOCTYPE Example</h1>
+    <main>
+        <p>This page is missing the DOCTYPE declaration, which can cause rendering issues.</p>
+    </main>
+</body>
+</html>

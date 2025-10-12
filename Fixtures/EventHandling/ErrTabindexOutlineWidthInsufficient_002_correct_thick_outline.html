@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexOutlineWidthInsufficient - Correct: Sufficient Outline Width</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexOutlineWidthInsufficient_002_correct_thick_outline",
+    "issueId": "ErrTabindexOutlineWidthInsufficient",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Test fixture for ErrTabindexOutlineWidthInsufficient - elements with tabindex that have outline width ≥ 2px",
+    "wcag": "2.4.11",
+    "impact": "Moderate"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* CORRECT 1: 2px outline - meets AAA minimum */
+        .outline-2px:focus {
+            outline: 2px solid #0066cc;
+        }
+
+        /* CORRECT 2: 3px outline - exceeds requirement */
+        .outline-3px:focus {
+            outline: 3px solid #cc0000;
+        }
+
+        /* CORRECT 3: 4px outline - excellent visibility */
+        .outline-4px:focus {
+            outline: 4px solid #006600;
+        }
+
+        /* CORRECT 4: medium keyword outline */
+        .outline-medium:focus {
+            outline: medium solid #cc6600;  /* 'medium' typically renders as 3px */
+        }
+
+        /* CORRECT 5: Box-shadow instead of outline (not subject to width check) */
+        .box-shadow-instead:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexOutlineWidthInsufficient - Correct Examples</h1>
+    <p>This page contains elements with tabindex that have sufficient outline widths (≥ 2px) or use box-shadow. None should generate errors.</p>
+
+    <section>
+        <h2>Sufficient Outline Width</h2>
+
+        <div class="card outline-2px" tabindex="0" id="correct1">
+            <h3>Correct 1: 2px Outline</h3>
+            <p>outline: 2px solid #0066cc - meets AAA minimum requirement</p>
+        </div>
+
+        <div class="menu-item outline-3px" tabindex="0" id="correct2">
+            <h3>Correct 2: 3px Outline</h3>
+            <p>outline: 3px solid #cc0000 - exceeds minimum, great visibility</p>
+        </div>
+
+        <div class="panel outline-4px" tabindex="0" id="correct3">
+            <h3>Correct 3: 4px Outline</h3>
+            <p>outline: 4px solid #006600 - excellent visibility for all users</p>
+        </div>
+
+        <div class="card outline-medium" tabindex="-1" id="correct4">
+            <h3>Correct 4: "medium" Keyword</h3>
+            <p>outline: medium solid #cc6600 - typically 3px, exceeds requirement</p>
+        </div>
+
+        <div class="menu-item box-shadow-instead" tabindex="0" id="correct5">
+            <h3>Correct 5: Box-Shadow Alternative</h3>
+            <p>box-shadow: 0 0 0 3px #0066cc - box-shadow not subject to outline width check</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 errors</li>
+            <li><strong>WCAG:</strong> 2.4.11 Focus Appearance (Level AAA)</li>
+            <li><strong>Why:</strong> All outline widths meet or exceed 2px requirement</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Correct 1: 2px outline - minimum AAA</li>
+                    <li>Correct 2: 3px outline - exceeds AAA</li>
+                    <li>Correct 3: 4px outline - excellent</li>
+                    <li>Correct 4: "medium" keyword (~3px)</li>
+                    <li>Correct 5: Box-shadow alternative (not subject to outline width check)</li>
+                </ul>
+            </li>
+            <li><strong>Best Practice:</strong> Use 3px or greater for optimal visibility across diverse user needs</li>
+        </ul>
+    </footer>
+</body>
+</html>

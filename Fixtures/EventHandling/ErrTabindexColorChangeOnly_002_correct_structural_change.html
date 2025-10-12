@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexColorChangeOnly - Correct: Structural Focus Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexColorChangeOnly_002_correct_structural_change",
+    "issueId": "ErrTabindexColorChangeOnly",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Test fixture for ErrTabindexColorChangeOnly - elements with tabindex that have structural changes (not just color)",
+    "wcag": "1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* CORRECT 1: Outline added (structural change) + color change */
+        .outline-plus-color {
+            background: #ffffff;
+        }
+        .outline-plus-color:focus {
+            outline: 3px solid #0066cc;
+            background: #e6f2ff;  /* Color change is OK when combined with structural */
+        }
+
+        /* CORRECT 2: Box-shadow added (structural change) */
+        .box-shadow-structural:focus {
+            box-shadow: 0 0 0 3px #0066cc;  /* Structural indicator */
+            background: #e6f2ff;  /* Color change allowed as enhancement */
+        }
+
+        /* CORRECT 3: Border width change (structural) + color */
+        .border-width-change {
+            border: 1px solid #ddd;
+        }
+        .border-width-change:focus {
+            outline: none;
+            border: 3px solid #0066cc;  /* Width AND color change = structural */
+        }
+
+        /* CORRECT 4: Outline only (no color change needed) */
+        .outline-only:focus {
+            outline: 3px solid #0066cc;
+        }
+
+        /* CORRECT 5: Box-shadow only (structural without color change) */
+        .shadow-only:focus {
+            box-shadow: 0 0 0 3px #333333;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexColorChangeOnly - Correct Examples</h1>
+    <p>This page contains elements with tabindex that have structural focus indicators (outline, box-shadow, or border width change). None should generate errors.</p>
+
+    <section>
+        <h2>Structural Focus Indicators</h2>
+
+        <div class="card outline-plus-color" tabindex="0" id="correct1">
+            <h3>Correct 1: Outline + Color Change</h3>
+            <p>Adds outline (structural) AND changes background color - compliant</p>
+        </div>
+
+        <div class="menu-item box-shadow-structural" tabindex="0" id="correct2">
+            <h3>Correct 2: Box-Shadow + Color</h3>
+            <p>Box-shadow provides structural indicator, color enhances it</p>
+        </div>
+
+        <div class="panel border-width-change" tabindex="0" id="correct3">
+            <h3>Correct 3: Border Width Change</h3>
+            <p>Border width changes from 1px to 3px - structural change</p>
+        </div>
+
+        <div class="card outline-only" tabindex="-1" id="correct4">
+            <h3>Correct 4: Outline Only</h3>
+            <p>Outline provides structural indicator without needing color change</p>
+        </div>
+
+        <div class="menu-item shadow-only" tabindex="0" id="correct5">
+            <h3>Correct 5: Box-Shadow Only</h3>
+            <p>Box-shadow alone provides sufficient structural indicator</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 errors</li>
+            <li><strong>WCAG:</strong> 1.4.1 Use of Color (Level A)</li>
+            <li><strong>Why:</strong> All have structural indicators, not relying on color alone</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Correct 1: Outline + color (structural present)</li>
+                    <li>Correct 2: Box-shadow + color (structural present)</li>
+                    <li>Correct 3: Border width change (structural)</li>
+                    <li>Correct 4: Outline only (no color needed)</li>
+                    <li>Correct 5: Box-shadow only (no color needed)</li>
+                </ul>
+            </li>
+            <li><strong>Best Practice:</strong> Always provide outline or box-shadow; color changes can enhance but not replace structural indicators</li>
+        </ul>
+    </footer>
+</body>
+</html>

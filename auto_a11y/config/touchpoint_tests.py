@@ -84,7 +84,6 @@ TOUCHPOINT_TEST_MAPPING = {
         'WarnButtonDefaultFocus',
         'WarnButtonFocusGradientBackground',
         'WarnButtonFocusImageBackground',
-        'ErrMissingCloseButton',
         'WarnButtonTextInsufficient',
         'WarnLinkLooksLikeButton',
     ],
@@ -168,6 +167,7 @@ TOUCHPOINT_TEST_MAPPING = {
     ],
     
     'dialogs': [
+        'ErrMissingCloseButton',
         'ErrModalMissingClose',
         'ErrModalMissingHeading',
         'ErrModalWithoutEscape',

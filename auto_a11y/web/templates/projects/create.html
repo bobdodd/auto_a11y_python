@@ -8,19 +8,57 @@
         opacity: 0.5;
         text-decoration: line-through;
     }
-    
+
     .test-debug-override {
         opacity: 0.7;
     }
-    
+
     .fixture-status-badge {
         font-size: 0.7rem;
         padding: 0.1rem 0.3rem;
         margin-left: 0.5rem;
     }
-    
+
     .touchpoint-disabled .form-check-label {
         color: #6c757d;
+    }
+
+    .test-help-btn {
+        font-size: 0.85rem;
+        padding: 0.1rem 0.4rem;
+        margin-left: 0.5rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .test-help-btn:hover {
+        opacity: 1;
+    }
+
+    .test-details-modal .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .test-details-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .test-details-section h6 {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .test-details-section p {
+        margin-bottom: 0;
+        line-height: 1.6;
+    }
+
+    .impact-badge {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
     }
 </style>
 {% endblock %}
@@ -28,7 +66,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="col-md-10 col-lg-9 mx-auto">
             <h1 class="h2 mb-4">Create New Project</h1>
             
             <!-- Fixture Status Notice -->
@@ -104,7 +142,7 @@
                             </div>
                             
                             <!-- Touchpoint Tree -->
-                            <div class="touchpoint-tree border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                            <div class="touchpoint-tree border rounded p-3" style="max-height: 500px; overflow-y: auto; max-width: 100%;">
                                 {% for touchpoint_id, touchpoint_name in touchpoint_names.items()|sort(attribute='1') %}
                                 {% set test_ids = tests_by_touchpoint.get(touchpoint_id, []) %}
                                 {% if test_ids %}
@@ -148,28 +186,46 @@
                                         {% set test_available = test_passed or debug_mode %}
                                         {% set is_debug_override = not test_passed and debug_mode %}
                                         
-                                        <div class="form-check {% if not test_available %}test-disabled{% elif is_debug_override %}test-debug-override{% endif %}">
-                                            <input class="form-check-input test-checkbox" type="checkbox" 
-                                                   id="test_{{ touchpoint_id }}_{{ test_id }}" 
-                                                   name="test_{{ touchpoint_id }}_{{ test_id }}"
-                                                   data-touchpoint="{{ touchpoint_id }}"
-                                                   {% if test_available %}checked{% else %}disabled{% endif %}>
-                                            <label class="form-check-label small" for="test_{{ touchpoint_id }}_{{ test_id }}">
-                                                <i class="bi bi-file-earmark-code me-1"></i>
-                                                <code>{{ test_id }}</code>
-                                                {% if not test_passed %}
-                                                    {% if test_status %}
-                                                        <span class="badge bg-danger fixture-status-badge" title="Failed fixture test">✗</span>
-                                                    {% else %}
-                                                        <span class="badge bg-warning fixture-status-badge" title="No fixture test">?</span>
-                                                    {% endif %}
-                                                    {% if is_debug_override %}
-                                                        <span class="badge bg-info fixture-status-badge" title="Enabled in debug mode">DEBUG</span>
-                                                    {% endif %}
+                                        <div class="d-flex align-items-center {% if not test_available %}test-disabled{% elif is_debug_override %}test-debug-override{% endif %}">
+                                            <div class="form-check">
+                                                <input class="form-check-input test-checkbox" type="checkbox"
+                                                       id="test_{{ touchpoint_id }}_{{ test_id }}"
+                                                       name="test_{{ touchpoint_id }}_{{ test_id }}"
+                                                       data-touchpoint="{{ touchpoint_id }}"
+                                                       {% if test_available %}checked{% else %}disabled{% endif %}>
+                                                <label class="form-check-label small" for="test_{{ touchpoint_id }}_{{ test_id }}">
+                                                    <i class="bi bi-file-earmark-code me-1"></i>
+                                                    <code>{{ test_id }}</code>
+                                                </label>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-info test-help-btn"
+                                                    onclick="showTestDetails('{{ test_id }}')"
+                                                    title="View test details">
+                                                <i class="bi bi-question-circle"></i>
+                                            </button>
+                                            {% if not test_passed %}
+                                                {% if test_status %}
+                                                    <span class="badge bg-danger fixture-status-badge" title="Failed fixture test">✗</span>
                                                 {% else %}
-                                                    <span class="badge bg-success fixture-status-badge" title="Passed fixture test">✓</span>
+                                                    <span class="badge bg-warning fixture-status-badge" title="No fixture test">?</span>
                                                 {% endif %}
-                                            </label>
+                                                {% if is_debug_override %}
+                                                    <span class="badge bg-info fixture-status-badge" title="Enabled in debug mode">DEBUG</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="badge bg-success fixture-status-badge" title="Passed fixture test">✓</span>
+                                            {% endif %}
+                                            {% set is_production_ready = production_ready_statuses.get(test_id, False) %}
+                                            <div class="form-check ms-2">
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="prod_ready_{{ test_id }}"
+                                                       {% if is_production_ready %}checked{% endif %}
+                                                       onclick="toggleProductionReadyInline('{{ test_id }}', this.checked)"
+                                                       title="Production ready documentation">
+                                                <label class="form-check-label small text-muted" for="prod_ready_{{ test_id }}" title="Production ready">
+                                                    <small>Prod Ready</small>
+                                                </label>
+                                            </div>
                                         </div>
                                         {% endfor %}
                                     </div>
@@ -254,6 +310,33 @@
         </div>
     </div>
 </div>
+
+<!-- Test Details Modal -->
+<div class="modal fade test-details-modal" id="testDetailsModal" tabindex="-1" aria-labelledby="testDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="testDetailsModalLabel">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <span id="testDetailsTitle">Test Details</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="testDetailsBody">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading test details...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -342,6 +425,401 @@ function deselectAllAITests(event) {
     event.preventDefault();
     document.querySelectorAll('.ai-test-checkbox').forEach(cb => {
         cb.checked = false;
+    });
+}
+
+// Show test details in modal
+function showTestDetails(testId) {
+    const modal = new bootstrap.Modal(document.getElementById('testDetailsModal'));
+    const titleEl = document.getElementById('testDetailsTitle');
+    const bodyEl = document.getElementById('testDetailsBody');
+
+    // Set title
+    titleEl.textContent = testId;
+
+    // Show loading state
+    bodyEl.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading test details...</p>
+        </div>
+    `;
+
+    // Show modal
+    modal.show();
+
+    // Fetch test details
+    fetch(`/projects/api/test-details/${testId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const test = data.test;
+
+                // Build impact badge
+                let impactClass = 'secondary';
+                if (test.impact === 'High' || test.impact === 'Critical') impactClass = 'danger';
+                else if (test.impact === 'Medium') impactClass = 'warning';
+                else if (test.impact === 'Low') impactClass = 'info';
+
+                // Build WCAG badges
+                let wcagBadges = '';
+                if (test.wcag && test.wcag.length > 0) {
+                    wcagBadges = test.wcag.map(w => `<span class="badge bg-primary me-1">${w}</span>`).join('');
+                }
+
+                // Build modal content
+                // Build production ready toggle
+                const productionReadyBadge = test.production_ready ?
+                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1"></i>Production Ready</span>' :
+                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1"></i>Pending Review</span>';
+
+                bodyEl.innerHTML = `
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div>
+                                <span class="badge bg-${impactClass} impact-badge me-2">${test.impact} Impact</span>
+                                <span class="badge bg-secondary me-2">${test.type}</span>
+                                ${wcagBadges}
+                            </div>
+                            <div>
+                                ${productionReadyBadge}
+                            </div>
+                        </div>
+                        ${test.wcag_full ? `<small class="text-muted">${test.wcag_full}</small>` : ''}
+                    </div>
+
+                    <div class="alert alert-${test.production_ready ? 'success' : 'warning'} alert-dismissible fade show" role="alert">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="flex-grow-1">
+                                <strong>Documentation Status:</strong>
+                                ${test.production_ready ?
+                                    'This test has production-ready documentation.' :
+                                    'This test documentation is pending review and may be incomplete.'}
+                            </div>
+                            <button type="button" class="btn btn-sm btn-${test.production_ready ? 'outline-warning' : 'outline-success'} ms-3"
+                                    onclick="toggleProductionReady('${test.id}', ${!test.production_ready})"
+                                    id="productionReadyToggle">
+                                <i class="bi bi-${test.production_ready ? 'x-circle' : 'check-circle'} me-1"></i>
+                                Mark as ${test.production_ready ? 'Pending' : 'Ready'}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-info-circle me-2"></i>What This Test Detects</h6>
+                        <p>${test.description}</p>
+                    </div>
+
+                    ${test.why_it_matters ? `
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>Why It Matters</h6>
+                        <p>${test.why_it_matters}</p>
+                    </div>
+                    ` : ''}
+
+                    ${test.who_it_affects ? `
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-people me-2"></i>Who It Affects</h6>
+                        <p>${test.who_it_affects}</p>
+                    </div>
+                    ` : ''}
+
+                    ${test.how_to_fix ? `
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-wrench me-2"></i>How to Fix</h6>
+                        <p>${test.how_to_fix}</p>
+                    </div>
+                    ` : ''}
+
+                    ${test.message_template && (test.message_template.title || test.message_template.what) ? `
+                    <div class="test-details-section bg-light border rounded p-3">
+                        <h6><i class="bi bi-chat-square-text me-2"></i>Violation Message Templates</h6>
+                        <p class="text-muted small mb-3">These are the actual message templates shown to users when violations are detected. Placeholders like <code>{totalCount}</code>, <code>{role}</code>, <code>{element}</code>, etc. are filled in dynamically.</p>
+
+                        ${test.message_template.title ? `
+                        <div class="mb-2">
+                            <strong class="d-block mb-1">Title Template:</strong>
+                            <code class="d-block bg-white p-2 rounded">${test.message_template.title}</code>
+                        </div>
+                        ` : ''}
+
+                        ${test.message_template.what ? `
+                        <div class="mb-2">
+                            <strong class="d-block mb-1">What (Description) Template:</strong>
+                            <code class="d-block bg-white p-2 rounded">${test.message_template.what}</code>
+                        </div>
+                        ` : ''}
+
+                        ${test.message_template.why ? `
+                        <div class="mb-2">
+                            <strong class="d-block mb-1">Why (Rationale) Template:</strong>
+                            <code class="d-block bg-white p-2 rounded">${test.message_template.why}</code>
+                        </div>
+                        ` : ''}
+
+                        ${test.message_template.remediation ? `
+                        <div>
+                            <strong class="d-block mb-1">Remediation Template:</strong>
+                            <code class="d-block bg-white p-2 rounded">${test.message_template.remediation}</code>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ` : ''}
+                `;
+            } else {
+                bodyEl.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Test Information Not Available</strong>
+                        <p class="mb-0 mt-2">Details for test <code>${testId}</code> are not available in the catalog.</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching test details:', error);
+            bodyEl.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-x-circle me-2"></i>
+                    <strong>Error Loading Test Details</strong>
+                    <p class="mb-0 mt-2">An error occurred while loading the test details. Please try again.</p>
+                </div>
+            `;
+        });
+}
+
+// Toggle production ready status (from modal)
+function toggleProductionReady(testId, newValue) {
+    const button = document.getElementById('productionReadyToggle');
+    if (!button) return;
+
+    // Disable button during update
+    button.disabled = true;
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Updating...';
+
+    // Make API call to update status
+    fetch(`/projects/api/test-details/${testId}/production-ready`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            production_ready: newValue
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the inline checkbox if it exists
+            const inlineCheckbox = document.getElementById('prod_ready_' + testId);
+            if (inlineCheckbox) {
+                inlineCheckbox.checked = newValue;
+            }
+
+            // Refresh the modal content without creating a new modal instance
+            refreshTestDetailsContent(testId);
+        } else {
+            alert('Error updating status: ' + (data.error || 'Unknown error'));
+            button.disabled = false;
+            button.innerHTML = originalHTML;
+        }
+    })
+    .catch(error => {
+        console.error('Error updating production ready status:', error);
+        alert('Error updating status. Please try again.');
+        button.disabled = false;
+        button.innerHTML = originalHTML;
+    });
+}
+
+// Refresh modal content without creating new modal instance
+function refreshTestDetailsContent(testId) {
+    const bodyEl = document.getElementById('testDetailsBody');
+    if (!bodyEl) return;
+
+    // Show loading state
+    bodyEl.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Refreshing...</p>
+        </div>
+    `;
+
+    // Fetch updated test details
+    fetch(`/projects/api/test-details/${testId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const test = data.test;
+
+                // Build impact badge
+                let impactClass = 'secondary';
+                if (test.impact === 'High' || test.impact === 'Critical') impactClass = 'danger';
+                else if (test.impact === 'Medium') impactClass = 'warning';
+                else if (test.impact === 'Low') impactClass = 'info';
+
+                // Build WCAG badges
+                let wcagBadges = '';
+                if (test.wcag && test.wcag.length > 0) {
+                    wcagBadges = test.wcag.map(w => `<span class="badge bg-primary me-1">${w}</span>`).join('');
+                }
+
+                // Build production ready toggle
+                const productionReadyBadge = test.production_ready ?
+                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1"></i>Production Ready</span>' :
+                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1"></i>Pending Review</span>';
+
+                bodyEl.innerHTML = `
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div>
+                                <span class="badge bg-${impactClass} impact-badge me-2">${test.impact} Impact</span>
+                                <span class="badge bg-secondary me-2">${test.type}</span>
+                                ${wcagBadges}
+                            </div>
+                            <div>
+                                ${productionReadyBadge}
+                            </div>
+                        </div>
+                        ${test.wcag_full ? `<small class="text-muted">${test.wcag_full}</small>` : ''}
+                    </div>
+
+                    <div class="alert alert-${test.production_ready ? 'success' : 'warning'} alert-dismissible fade show" role="alert">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="flex-grow-1">
+                                <strong>Documentation Status:</strong>
+                                ${test.production_ready ?
+                                    'This test has production-ready documentation.' :
+                                    'This test documentation is pending review and may be incomplete.'}
+                            </div>
+                            <button type="button" class="btn btn-sm btn-${test.production_ready ? 'outline-warning' : 'outline-success'} ms-3"
+                                    onclick="toggleProductionReady('${test.id}', ${!test.production_ready})"
+                                    id="productionReadyToggle">
+                                <i class="bi bi-${test.production_ready ? 'x-circle' : 'check-circle'} me-1"></i>
+                                Mark as ${test.production_ready ? 'Pending' : 'Ready'}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-info-circle me-2"></i>What This Test Detects</h6>
+                        <p>${test.description}</p>
+                    </div>
+
+                    ${test.why_it_matters ? `
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>Why It Matters</h6>
+                        <p>${test.why_it_matters}</p>
+                    </div>
+                    ` : ''}
+
+                    ${test.who_it_affects ? `
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-people me-2"></i>Who It Affects</h6>
+                        <p>${test.who_it_affects}</p>
+                    </div>
+                    ` : ''}
+
+                    ${test.how_to_fix ? `
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-wrench me-2"></i>How to Fix</h6>
+                        <p>${test.how_to_fix}</p>
+                    </div>
+                    ` : ''}
+
+                    ${test.message_template && (test.message_template.title || test.message_template.what) ? `
+                    <div class="test-details-section bg-light border rounded p-3">
+                        <h6><i class="bi bi-chat-square-text me-2"></i>Violation Message Templates</h6>
+                        <p class="text-muted small mb-3">These are the actual message templates shown to users when violations are detected. Placeholders like <code>{totalCount}</code>, <code>{role}</code>, <code>{element}</code>, etc. are filled in dynamically.</p>
+
+                        ${test.message_template.title ? `
+                        <div class="mb-2">
+                            <strong class="d-block mb-1">Title Template:</strong>
+                            <code class="d-block bg-white p-2 rounded">${test.message_template.title}</code>
+                        </div>
+                        ` : ''}
+
+                        ${test.message_template.what ? `
+                        <div class="mb-2">
+                            <strong class="d-block mb-1">What (Description) Template:</strong>
+                            <code class="d-block bg-white p-2 rounded">${test.message_template.what}</code>
+                        </div>
+                        ` : ''}
+
+                        ${test.message_template.why ? `
+                        <div class="mb-2">
+                            <strong class="d-block mb-1">Why (Rationale) Template:</strong>
+                            <code class="d-block bg-white p-2 rounded">${test.message_template.why}</code>
+                        </div>
+                        ` : ''}
+
+                        ${test.message_template.remediation ? `
+                        <div>
+                            <strong class="d-block mb-1">Remediation Template:</strong>
+                            <code class="d-block bg-white p-2 rounded">${test.message_template.remediation}</code>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ` : ''}
+                `;
+            } else {
+                bodyEl.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Test Information Not Available</strong>
+                        <p class="mb-0 mt-2">Details for test <code>${testId}</code> are not available in the catalog.</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching test details:', error);
+            bodyEl.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-x-circle me-2"></i>
+                    <strong>Error Loading Test Details</strong>
+                    <p class="mb-0 mt-2">An error occurred while loading the test details. Please try again.</p>
+                </div>
+            `;
+        });
+}
+
+// Toggle production ready status (from inline checkbox)
+function toggleProductionReadyInline(testId, newValue) {
+    const checkbox = document.getElementById('prod_ready_' + testId);
+    if (!checkbox) return;
+
+    // Store original state in case we need to revert
+    const originalState = !newValue;
+
+    // Make API call to update status
+    fetch(`/projects/api/test-details/${testId}/production-ready`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            production_ready: newValue
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            // Revert checkbox on error
+            checkbox.checked = originalState;
+            alert('Error updating status: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error updating production ready status:', error);
+        // Revert checkbox on error
+        checkbox.checked = originalState;
+        alert('Error updating status. Please try again.');
     });
 }
 </script>

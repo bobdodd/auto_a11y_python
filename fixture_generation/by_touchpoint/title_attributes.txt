@@ -1,22 +1,42 @@
 # TITLE_ATTRIBUTES Touchpoint
 
-Total issues: 1
+Total issues: 2
+
+================================================================================
+
+## ErrImproperTitleAttribute
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/TitleAttributes/ErrImproperTitleAttribute_002_correct_usage.html
+  - Fixtures/TitleAttributes/ErrImproperTitleAttribute_001_violations_basic.html
+
+ID: ErrImproperTitleAttribute
+Type: Error
+Impact: Medium
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 3.3.2 Labels or Instructions (Level A)
+Touchpoint: title_attributes
+Description: Title attribute used in particularly problematic patterns (on non-focusable elements or duplicating visible text)
+Why it matters: Title attributes fundamentally fail WCAG Conformance requirement 5.2.4 as they are inaccessible to screen magnifier users. At high magnification, tooltip content extends off-screen and disappears when mouse moves, making content completely inaccessible. This error flags specific patterns that are especially problematic: (1) title on non-focusable elements like div/span where users cannot even trigger the tooltip, and (2) redundant titles that duplicate visible text providing no value. These patterns demonstrate particularly poor understanding of accessibility requirements and should never be used
+Who it affects: Screen magnifier users at high magnification (tooltip goes off-screen and disappears), mobile and touch screen users (no hover capability), keyboard-only users (cannot trigger non-focusable element tooltips), screen reader users (inconsistent announcement), users with motor disabilities (tooltip disappears when mouse moves)
+How to fix: Never use title attributes on body elements. For non-focusable containers (div, span), remove the title entirely and make information visible. For redundant titles, simply remove the title attribute. Use visible text, proper label elements, aria-label for interactive elements, or visible helper text instead
 
 ================================================================================
 
 ## WarnVagueTitleAttribute
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/TitleAttributes/WarnVagueTitleAttribute_001_violations_basic.html
+  - Fixtures/TitleAttributes/WarnVagueTitleAttribute_002_correct_informative.html
 
 ID: WarnVagueTitleAttribute
 Type: Warning
 Impact: Low
-WCAG: 3.3.2 Labels or Instructions (Level A)
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 3.3.2 Labels or Instructions (Level A)
 Touchpoint: title_attributes
-Description: Title attribute contains vague or redundant information
-Why it matters: Vague titles don't provide useful supplementary information.
-Who it affects: Users who rely on tooltips for additional context.
-How to fix: Make title attributes informative or remove if redundant with visible text.
+Description: Title attribute contains vague or generic text that provides no useful information
+Why it matters: Title attributes fundamentally fail WCAG 5.2.4 - screen magnifier users at high magnification cannot read tooltips as content goes off-screen and disappears when mouse moves. This warning flags titles with particularly uninformative content like "Click here", "Link", "Button", or other generic phrases. While all title attributes are problematic due to magnification issues, vague titles compound the problem by providing no value even for users who can access them. This represents poor quality content that demonstrates misunderstanding of accessible design
+Who it affects: Screen magnifier users at high magnification (fundamental inaccessibility), mobile and touch users (no hover), keyboard users (inconsistent access), and all users who would benefit from clear, descriptive supplementary information but instead get generic phrases
+How to fix: Never use title attributes in the first place (they fail WCAG 5.2.4). If you must use them despite accessibility concerns, at minimum avoid vague generic phrases like "Click here", "Link", or "Button". Better solution: Remove title attributes entirely and use visible text, proper labels, aria-label for interactive elements, or visible helper text. Don't hide important information in tooltips that many users cannot access
 
 ================================================================================
 

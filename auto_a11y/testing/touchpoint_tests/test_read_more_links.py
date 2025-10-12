@@ -172,8 +172,10 @@ async def test_read_more_links(page) -> Dict[str, Any]:
                 
                 genericElements.forEach(item => {
                     const { element, visibleText, accessibleName, isValid } = item;
-                    
+
                     // Check for violations
+                    // isValid means the link has been improved with aria-label or screen-reader-only text
+                    // that extends beyond the visible text (e.g., "Read more" becomes "Read more about our 2024 report")
                     if (!isValid) {
                         invalidAccessibleNames++;
                         results.errors.push({
@@ -183,7 +185,7 @@ async def test_read_more_links(page) -> Dict[str, Any]:
                             element: element.tagName.toLowerCase(),
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
-                            description: 'Link text does not adequately describe the link\'s destination or purpose',
+                            description: "Link text does not adequately describe the link's destination or purpose - consider adding aria-label or visually hidden text with more context",
                             visibleText: visibleText,
                             accessibleName: accessibleName,
                             href: element.href || null
@@ -191,20 +193,6 @@ async def test_read_more_links(page) -> Dict[str, Any]:
                         results.elements_failed++;
                     } else {
                         results.elements_passed++;
-                    }
-                    
-                    // Additional warnings for improvement
-                    if (isValid && accessibleName === visibleText) {
-                        results.warnings.push({
-                            err: 'WarnGenericLinkNoImprovement',
-                            type: 'warn',
-                            cat: 'read_more_links',
-                            element: element.tagName.toLowerCase(),
-                            xpath: getFullXPath(element),
-                            html: element.outerHTML.substring(0, 200),
-                            description: 'Generic link could be improved with more descriptive text',
-                            visibleText: visibleText
-                        });
                     }
                 });
                 

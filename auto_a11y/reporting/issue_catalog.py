@@ -2053,6 +2053,42 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users who may not notice the context change, users with cognitive disabilities who may become disoriented, users with motor disabilities who have difficulty managing multiple windows, and novice computer users",
             "how_to_fix": "Add visible text or an icon indicating the link opens in a new window. Include this information in the accessible name (e.g., \"Annual report (opens in new window)\"). Consider whether opening in a new window is necessary - often it's better to open in the same window and let users control this behavior."
         },
+        "ErrAnchorTargetTabindex": {
+            "id": "ErrAnchorTargetTabindex",
+            "type": "Error",
+            "impact": "Medium",
+            "wcag": ["2.4.3"],
+            "wcag_full": "2.4.3 Focus Order (Level A)",
+            "category": "links",
+            "description": "In-page link target (element with id referenced by href=\"#id\") is not keyboard accessible - non-interactive element needs tabindex=\"-1\"",
+            "why_it_matters": "When users click an in-page anchor link (like \"Jump to Section 2\"), the browser scrolls to the target element. However, if the target is a non-interactive element (div, section, h2, etc.) without tabindex=\"-1\", keyboard users and screen reader users won't receive focus at the destination. This means they don't know where they've jumped to, and keyboard navigation doesn't continue from that point. The jump appears to do nothing for keyboard users, breaking the expected behavior and making in-page navigation inaccessible.",
+            "who_it_affects": "Keyboard-only users who cannot determine where in-page links navigated to, screen reader users who need focus to move to the destination for proper announcement, users with motor disabilities using keyboard navigation, users with cognitive disabilities who need clear feedback about navigation actions, and speech input users who rely on programmatic focus",
+            "how_to_fix": "Add tabindex=\"-1\" to the target element of in-page anchor links. For example, if you have <a href=\"#section2\">Jump to Section 2</a>, ensure the target has <div id=\"section2\" tabindex=\"-1\">. The tabindex=\"-1\" makes the element programmatically focusable without adding it to the normal tab order, allowing the browser to move focus there when the link is activated. Already-interactive elements (a, button, input, select, textarea) don't need this as they're naturally focusable."
+        },
+        "WarnColorOnlyLink": {
+            "id": "WarnColorOnlyLink",
+            "type": "Warning",
+            "impact": "High",
+            "wcag": ["1.4.1"],
+            "wcag_full": "1.4.1 Use of Color (Level A)",
+            "category": "links",
+            "description": "Link in flowing text is distinguished from surrounding text only by color, without underline, border, or other non-color visual indicator",
+            "why_it_matters": "WCAG 1.4.1 requires that color is not the only visual means of conveying information or distinguishing elements. Links that rely solely on color cannot be perceived by users with color blindness (affecting ~8% of men and ~0.5% of women), users viewing in monochrome, users with low vision, or users who have customized their color schemes. Without additional visual indicators like underlines or borders, these users cannot identify which text is clickable. Note: This applies to links within flowing text (paragraphs), not navigation menus where context makes link purpose clear.",
+            "who_it_affects": "Users with color blindness (protanopia, deuteranopia, tritanopia) who cannot distinguish color differences, users with low vision using high contrast modes that override colors, users with monochrome displays, users who have customized system colors for readability, users viewing in bright sunlight where color distinction is reduced, and users with cognitive disabilities who benefit from multiple visual cues",
+            "how_to_fix": "Add a non-color visual indicator to links in flowing text. Best practice: keep the default underline (text-decoration: underline). Alternatives include: adding a border (border-bottom: 2px solid), adding an outline, using icons before/after the link, or ensuring sufficient font-weight difference. Note: font-weight, bold, and text-shadow alone are considered weak indicators and will generate a separate warning - prefer underline or border for clarity."
+        },
+        "WarnColorOnlyLinkWeakIndicator": {
+            "id": "WarnColorOnlyLinkWeakIndicator",
+            "type": "Warning",
+            "impact": "Medium",
+            "wcag": ["1.4.1"],
+            "wcag_full": "1.4.1 Use of Color (Level A)",
+            "category": "links",
+            "description": "Link in flowing text uses only subtle visual indicators (font-weight, bold, or text-shadow) in addition to color - these can be difficult for users to recognize as links",
+            "why_it_matters": "While font-weight changes, bold text, or text-shadows technically satisfy the 'non-color indicator' requirement, they are often too subtle for users to recognize as link indicators, especially in flowing text. Users with low vision may not notice these subtle differences, and many users simply don't associate bold text or shadows with clickability. Underlines and borders are universally recognized as link indicators, while font-weight and shadows require users to scan and compare text weights across the page.",
+            "who_it_affects": "Users with low vision who may not perceive subtle font-weight differences, users with cognitive disabilities who rely on familiar link conventions, novice computer users who expect traditional underlines, users scanning pages quickly who miss subtle indicators, and older users familiar with standard web conventions",
+            "how_to_fix": "Use stronger visual indicators that are universally recognized: add underline (text-decoration: underline), add border-bottom (border-bottom: 2px solid), or use a combination of indicators. If design constraints require removing underlines, consider adding them on hover/focus at minimum, or use a prominent border style. Font-weight changes should be supplementary to, not replacements for, underlines or borders."
+        },
         "WarnLinkLooksLikeButton": {
             "id": "WarnLinkLooksLikeButton",
             "type": "Warning",
@@ -2064,6 +2100,18 @@ class IssueCatalog:
             "why_it_matters": "Links and buttons have different behaviors - links navigate to new locations while buttons trigger actions. When links look like buttons, users may have incorrect expectations about what will happen. Keyboard users expect Space key to activate buttons but it doesn't work on links.",
             "who_it_affects": "Keyboard users who expect button behavior, screen reader users who hear it announced as a link but see it as a button, and users with cognitive disabilities who rely on consistent interactions",
             "how_to_fix": "If the element performs an action (submit form, open dialog), use a button element. If it navigates to a new URL, keep it as a link but consider whether button styling is appropriate. Ensure keyboard behavior matches the element type."
+        },
+        "ErrLinkButtonMissingSpaceHandler": {
+            "id": "ErrLinkButtonMissingSpaceHandler",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["2.1.1", "4.1.2"],
+            "wcag_full": "2.1.1 Keyboard (Level A), 4.1.2 Name, Role, Value (Level A)",
+            "category": "links",
+            "description": "Link is styled to look like a button but lacks Space key handler - keyboard users expect Space key to activate button-like elements",
+            "why_it_matters": "When a link is visually styled to look like a button, users expect button keyboard behavior. Buttons are activated by both Enter AND Space keys, while links only respond to Enter. Keyboard users who see a button-styled element will naturally press Space to activate it, but on links this will scroll the page instead - a confusing and broken experience. This violates WCAG 2.1.1 (Keyboard) because the expected keyboard functionality doesn't work, and WCAG 4.1.2 (Name, Role, Value) because the visual presentation (button) conflicts with the programmatic role (link). Users with motor disabilities who rely on keyboard navigation are particularly impacted as they cannot efficiently activate these elements.",
+            "who_it_affects": "Keyboard-only users who cannot activate button-styled links with Space key, users with motor disabilities using keyboard navigation, users with cognitive disabilities who rely on consistent interaction patterns, speech input users who say 'press space' expecting button behavior, and screen reader users who expect Space key to work on button-looking elements",
+            "how_to_fix": "Best solution: Use semantic HTML - if it performs an action, use <button>; if it navigates, use <a> with link styling. If you must style a link as a button, add a keydown event handler that listens for Space key (keyCode 32 or key ' ') and prevents default scroll behavior while triggering the link's action: element.addEventListener('keydown', (e) => { if (e.key === ' ' || e.keyCode === 32) { e.preventDefault(); element.click(); } }). However, this is a workaround - proper semantic HTML is always preferred."
         },
         "ErrLinkFocusContrastFail": {
             "id": "ErrLinkFocusContrastFail",
@@ -2184,6 +2232,18 @@ class IssueCatalog:
             "why_it_matters": "Users need to know they're about to download a file and what type of file it is before activating the link. Without file type indication, users may experience unexpected downloads, particularly problematic for mobile users with limited data plans or users on screen readers who cannot see file icons. Knowing the file type helps users decide if they have appropriate software to open it, if they want to download it on their current device, and how much bandwidth it will consume. This is especially critical for users who cannot easily perceive visual file type indicators like icons or extensions.",
             "who_it_affects": "Screen reader users who cannot see file type icons, mobile users who need to manage downloads and data usage, users with cognitive disabilities who benefit from explicit warnings about downloads, users on metered connections who need to know file sizes, users without appropriate software who need to know file types before downloading, and users with slow connections who cannot afford unexpected large downloads",
             "how_to_fix": "Include the file type in the link text (e.g., \"Annual Report (PDF)\" or \"Budget Spreadsheet (Excel)\"), or use aria-label to provide this information (e.g., aria-label=\"Annual Report PDF document\"). The file type should be part of the accessible name that screen readers announce. Common patterns: \"Download [Document Name] ([FILE TYPE])\" or \"[Document Name] - [FILE TYPE] format\". Ensure the file type is announced to screen readers, not just shown visually as an icon or file extension in the URL."
+        },
+        "ErrDocumentLinkWrongLanguage": {
+            "id": "ErrDocumentLinkWrongLanguage",
+            "type": "Error",
+            "impact": "Medium",
+            "wcag": ["3.1.2"],
+            "wcag_full": "3.1.2 Language of Parts (Level AA)",
+            "category": "links",
+            "description": "Link to a downloadable document in a different language than the page language lacks lang attribute or language indication",
+            "why_it_matters": "When a page links to a document in a different language, screen reader users need advance warning so they can switch to the appropriate voice or pronunciation engine. Without language indication, screen readers attempt to read foreign language content with the wrong pronunciation rules, making documents unintelligible. Users with cognitive disabilities benefit from knowing a document is in a different language before opening it, allowing them to prepare translation tools or decide not to access content they cannot understand. This also helps all users make informed decisions about whether to download documents they may not be able to read.",
+            "who_it_affects": "Screen reader users who need to switch voice engines for different languages, multilingual users who need to know which language a document is in, users with cognitive disabilities who need preparation for language changes, users who rely on automatic translation tools, users with limited language proficiency who need advance warning, and international users navigating multilingual websites",
+            "how_to_fix": "Add a lang attribute to links pointing to documents in different languages (e.g., <a href=\"report.pdf\" lang=\"fr\">Rapport Annuel</a> on an English page). Alternatively or additionally, indicate the language in the link text (e.g., \"Annual Report (PDF, French)\" or \"Rapport Annuel (PDF, en français)\"). For hreflang, use it for alternate language versions of the same content. The lang attribute ensures screen readers use correct pronunciation. Always include both visual and programmatic language indication for maximum accessibility."
         },
         "WarnMissingDocumentMetadata": {
             "id": "WarnMissingDocumentMetadata",

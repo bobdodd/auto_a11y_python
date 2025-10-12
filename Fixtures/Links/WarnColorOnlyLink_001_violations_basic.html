@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnColorOnlyLink - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorOnlyLink_001_violations_basic",
+    "issueId": "WarnColorOnlyLink",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links in flowing text distinguished only by color without underline or other indicators",
+    "wcag": "1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        a.color-only {
+            color: blue;
+            text-decoration: none;
+        }
+
+        p {
+            color: black;
+        }
+
+        /* Navigation links should NOT be flagged */
+        nav a {
+            color: blue;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Links Distinguished Only By Color</h1>
+
+    <!-- Navigation - should be SKIPPED -->
+    <nav>
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- VIOLATION 1: Link in paragraph with only color -->
+        <section>
+            <h2>Product Information</h2>
+            <p>
+                Our new laptop has amazing features. Check out
+                <a href="/laptop"
+                   class="color-only"
+                   data-expected-violation="true"
+                   data-violation-id="WarnColorOnlyLink"
+                   data-violation-reason="Link in flowing text distinguished only by blue color, no underline or border">the specifications</a>
+                to learn more about performance and design.
+            </p>
+        </section>
+
+        <!-- VIOLATION 2: Link in list item with only color -->
+        <section>
+            <h2>Features</h2>
+            <ul>
+                <li>
+                    Fast processor - see
+                    <a href="/cpu"
+                       class="color-only"
+                       data-expected-violation="true"
+                       data-violation-id="WarnColorOnlyLink"
+                       data-violation-reason="Link in list item distinguished only by color">processor details</a>
+                    for benchmarks
+                </li>
+            </ul>
+        </section>
+
+        <!-- VIOLATION 3: Link in article with only color -->
+        <article>
+            <h2>Review</h2>
+            <p>
+                The device performs well in tests. Read our
+                <a href="/review"
+                   class="color-only"
+                   data-expected-violation="true"
+                   data-violation-id="WarnColorOnlyLink"
+                   data-violation-reason="Link in article text distinguished only by color">full review</a>
+                for complete analysis.
+            </p>
+        </article>
+    </main>
+</body>
+</html>

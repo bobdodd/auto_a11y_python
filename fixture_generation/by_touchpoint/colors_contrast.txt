@@ -7,7 +7,9 @@ Total issues: 4
 ## ErrInsufficientContrast
 
 ⚠️  Has old fixtures to replace:
-  - Fixtures/Colors and Contrast/ErrInsufficientContrast.html
+  - Fixtures/Colors/ErrInsufficientContrast.html
+  - Fixtures/Colors/ErrInsufficientContrast_001_violations_basic.html
+  - Fixtures/Colors/ErrInsufficientContrast_002_correct_sufficient_contrast.html
 
 ID: ErrInsufficientContrast
 Type: Error
@@ -24,7 +26,8 @@ How to fix: Ensure 4.5:1 contrast ratio for normal text, 3:1 for large text (18p
 ## InfoNoColorSchemeSupport
 
 ⚠️  Has old fixtures to replace:
-  - Fixtures/Colors and Contrast/InfoNoColorSchemeSupport.html
+  - Fixtures/Colors/InfoNoColorSchemeSupport_002_with_support.html
+  - Fixtures/Colors/InfoNoColorSchemeSupport_001_info_basic.html
 
 ID: InfoNoColorSchemeSupport
 Type: Info
@@ -41,7 +44,8 @@ How to fix: Implement CSS prefers-color-scheme media query to support dark/light
 ## InfoNoContrastSupport
 
 ⚠️  Has old fixtures to replace:
-  - Fixtures/Colors and Contrast/InfoNoContrastSupport.html
+  - Fixtures/Colors/InfoNoContrastSupport_001_info_basic.html
+  - Fixtures/Colors/InfoNoContrastSupport_002_with_support.html
 
 ID: InfoNoContrastSupport
 Type: Info
@@ -58,7 +62,11 @@ How to fix: Test site in high contrast mode, ensure it remains usable, consider 
 ## WarnColorOnlyLink
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Colors/WarnColorOnlyLink_002_correct_with_indicators.html
+  - Fixtures/Colors/WarnColorOnlyLink_001_violations_basic.html
+  - Fixtures/Links/WarnColorOnlyLink_002_correct_with_indicators.html
   - Fixtures/Links/WarnColorOnlyLink.html
+  - Fixtures/Links/WarnColorOnlyLink_001_violations_basic.html
 
 ID: WarnColorOnlyLink
 Type: Warning

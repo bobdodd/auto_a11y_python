@@ -209,16 +209,16 @@ async def test_focus_management(page) -> Dict[str, Any]:
                     if (target) {
                         const tabindex = target.getAttribute('tabindex');
                         const isInteractive = ['a', 'button', 'input', 'select', 'textarea'].includes(target.tagName.toLowerCase());
-                        
+
                         if (!isInteractive && tabindex !== '-1') {
-                            results.warnings.push({
-                                err: 'WarnAnchorTargetTabindex',
-                                type: 'warn',
-                                cat: 'focus_management',
+                            results.errors.push({
+                                err: 'ErrAnchorTargetTabindex',
+                                type: 'err',
+                                cat: 'links',
                                 element: target.tagName.toLowerCase(),
                                 xpath: getFullXPath(target),
                                 html: target.outerHTML.substring(0, 200),
-                                description: 'In-page link target should have tabindex="-1" for keyboard accessibility',
+                                description: 'In-page link target needs tabindex="-1" for keyboard accessibility - non-interactive element must be programmatically focusable',
                                 targetId: targetId,
                                 currentTabindex: tabindex || 'not set'
                             });

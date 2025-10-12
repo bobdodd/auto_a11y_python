@@ -217,7 +217,23 @@ async def test_links(page):
                     fullBackground: fullBackground,
                     target: link.getAttribute('target') || '',
                     ariaLabel: link.getAttribute('aria-label') || '',
-                    title: link.getAttribute('title') || ''
+                    title: link.getAttribute('title') || '',
+                    // Button-styling detection
+                    padding: normalStyle.padding,
+                    border: normalStyle.border,
+                    borderRadius: normalStyle.borderRadius,
+                    borderStyle: normalStyle.borderStyle,
+                    display: normalStyle.display,
+                    cursor: normalStyle.cursor,
+                    // Event handler detection
+                    hasOnKeyDown: !!link.onkeydown || link.hasAttribute('onkeydown'),
+                    hasOnKeyPress: !!link.onkeypress || link.hasAttribute('onkeypress'),
+                    hasOnKeyUp: !!link.onkeyup || link.hasAttribute('onkeyup'),
+                    onKeyDownAttr: link.getAttribute('onkeydown') || '',
+                    onKeyPressAttr: link.getAttribute('onkeypress') || '',
+                    onKeyUpAttr: link.getAttribute('onkeyup') || '',
+                    elementId: link.id || '',
+                    className: link.className || ''
                 };
             });
         }
@@ -227,6 +243,93 @@ async def test_links(page):
         return results
 
     results['elements_tested'] = len(link_data)
+
+    # Get page source/scripts to detect addEventListener for Space key handlers
+    page_scripts = await page.evaluate('''
+        () => {
+            const scripts = [];
+            // Get inline scripts
+            document.querySelectorAll('script').forEach(script => {
+                if (script.textContent) {
+                    scripts.push(script.textContent);
+                }
+            });
+            return scripts.join('\\n');
+        }
+    ''')
+
+    # Helper function to check if element has Space key handler
+    def has_space_key_handler(link):
+        """Check if link has a Space key (keyCode 32 or key ' ') handler"""
+        import re
+
+        # Check inline event attributes
+        on_keydown = link.get('onKeyDownAttr', '')
+        on_keypress = link.get('onKeyPressAttr', '')
+        on_keyup = link.get('onKeyUpAttr', '')
+
+        # Check for Space key code (32) or key value (' ')
+        space_patterns = [
+            r'keyCode\s*===?\s*32',
+            r'keyCode\s*==\s*32',
+            r'which\s*===?\s*32',
+            r'key\s*===?\s*["\']\\s["\']',
+            r'key\s*===?\s*["\'] ["\']',
+            r'charCode\s*===?\s*32'
+        ]
+
+        for attr in [on_keydown, on_keypress, on_keyup]:
+            if attr:
+                for pattern in space_patterns:
+                    if re.search(pattern, attr, re.IGNORECASE):
+                        return True
+
+        # Check for addEventListener in page scripts
+        if page_scripts and link.get('elementId'):
+            # Look for addEventListener on this element's ID
+            element_id = link.get('elementId')
+            # Patterns: document.getElementById('id').addEventListener('keydown', ...)
+            # or $('#id').on('keydown', ...) or element.addEventListener
+            patterns = [
+                rf'getElementById\(["\']?{re.escape(element_id)}["\']?\)\.addEventListener\s*\(\s*["\']key(down|press|up)["\']',
+                rf'#{re.escape(element_id)}.*\.on\s*\(\s*["\']key(down|press|up)["\']'
+            ]
+
+            for pattern in patterns:
+                if re.search(pattern, page_scripts, re.IGNORECASE):
+                    # Found a key handler, now check if it handles Space
+                    # Extract the handler function (rough heuristic)
+                    match = re.search(pattern, page_scripts, re.IGNORECASE)
+                    if match:
+                        # Get next 200 characters after the match to check for space handling
+                        start_pos = match.end()
+                        handler_snippet = page_scripts[start_pos:start_pos + 200]
+                        for space_pattern in space_patterns:
+                            if re.search(space_pattern, handler_snippet, re.IGNORECASE):
+                                return True
+
+        # Check for className-based event handlers
+        if page_scripts and link.get('className'):
+            class_names = link.get('className', '').split()
+            for class_name in class_names:
+                if class_name:
+                    patterns = [
+                        rf'\.{re.escape(class_name)}.*\.addEventListener\s*\(\s*["\']key(down|press|up)["\']',
+                        rf'\.{re.escape(class_name)}.*\.on\s*\(\s*["\']key(down|press|up)["\']',
+                        rf'querySelector.*\.{re.escape(class_name)}.*addEventListener'
+                    ]
+
+                    for pattern in patterns:
+                        if re.search(pattern, page_scripts, re.IGNORECASE):
+                            match = re.search(pattern, page_scripts, re.IGNORECASE)
+                            if match:
+                                start_pos = match.end()
+                                handler_snippet = page_scripts[start_pos:start_pos + 200]
+                                for space_pattern in space_patterns:
+                                    if re.search(space_pattern, handler_snippet, re.IGNORECASE):
+                                        return True
+
+        return False
 
     # Helper function to parse colors
     def parse_color(color_str):
@@ -510,5 +613,87 @@ async def test_links(page):
             results['elements_failed'] += 1
         else:
             results['elements_passed'] += 1
+
+        # Check for button-like styling (independent check - separate from focus indicators)
+        looks_like_button = False
+        button_indicators = []
+
+        # Check for button-like characteristics
+        padding = link.get('padding', '')
+        border_radius = link.get('borderRadius', '0px')
+        background_color = link.get('normalBackgroundColor', '')
+        display = link.get('display', 'inline')
+        cursor = link.get('cursor', 'auto')
+
+        # Parse padding values
+        has_substantial_padding = False
+        if padding and padding != '0px':
+            # Check if any padding value is >= 8px
+            import re
+            px_values = re.findall(r'(\d+(?:\.\d+)?)px', padding)
+            if any(float(val) >= 8 for val in px_values):
+                has_substantial_padding = True
+                button_indicators.append('substantial padding')
+
+        # Check for border-radius (rounded corners typical of buttons)
+        if border_radius and border_radius != '0px':
+            # Parse border-radius
+            try:
+                radius_val = float(border_radius.replace('px', '').strip())
+                if radius_val >= 3:
+                    button_indicators.append('border-radius')
+            except:
+                pass
+
+        # Check for solid background color (not transparent/default)
+        has_solid_background = False
+        if background_color and background_color not in ['transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'initial']:
+            # Parse to see if it's not fully transparent
+            bg_parsed = parse_color(background_color)
+            if bg_parsed['a'] > 0.5:  # More than 50% opaque
+                has_solid_background = True
+                button_indicators.append('solid background color')
+
+        # Check for block/inline-block display
+        if display in ['block', 'inline-block', 'flex', 'inline-flex']:
+            button_indicators.append('block-level display')
+
+        # Check for pointer cursor
+        if cursor == 'pointer':
+            button_indicators.append('pointer cursor')
+
+        # Determine if link looks like a button
+        # Heuristic: Has solid background + padding, OR has multiple button indicators
+        if (has_solid_background and has_substantial_padding) or len(button_indicators) >= 3:
+            looks_like_button = True
+
+        if looks_like_button:
+            # First, check for Space key handler (ERROR if missing)
+            has_space_handler = has_space_key_handler(link)
+
+            if not has_space_handler:
+                # ERROR: Button-styled link without Space key handler
+                results['errors'].append({
+                    'err': 'ErrLinkButtonMissingSpaceHandler',
+                    'type': 'err',
+                    'cat': 'links',
+                    'element': tag,
+                    'xpath': link['xpath'],
+                    'html': link['html'],
+                    'description': f'Link is styled as a button ({", ".join(button_indicators)}) but lacks Space key handler - keyboard users expect Space to activate button-like elements',
+                    'text': link['text']
+                })
+            else:
+                # Has Space handler, but still warn about semantic mismatch
+                results['warnings'].append({
+                    'err': 'WarnLinkLooksLikeButton',
+                    'type': 'warn',
+                    'cat': 'links',
+                    'element': tag,
+                    'xpath': link['xpath'],
+                    'html': link['html'],
+                    'description': f'Link is styled to look like a button ({", ".join(button_indicators)}) but uses anchor element - consider using <button> for actions or keeping link styling for navigation',
+                    'text': link['text']
+                })
 
     return results

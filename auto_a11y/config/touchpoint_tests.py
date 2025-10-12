@@ -85,15 +85,26 @@ TOUCHPOINT_TEST_MAPPING = {
         'WarnButtonFocusGradientBackground',
         'WarnButtonFocusImageBackground',
         'WarnButtonTextInsufficient',
-        'WarnLinkLooksLikeButton',
     ],
-    
+
     'links': [
-        'ErrInvalidGenericLinkName',
-        'WarnAnchorTargetTabindex',
+        'ErrAnchorTargetTabindex',
+        'ErrDocumentLinkMissingFileType',
+        'ErrDocumentLinkWrongLanguage',
+        'ErrLinkButtonMissingSpaceHandler',
+        'ErrLinkColorChangeOnly',
+        'ErrLinkFocusContrastFail',
+        'ErrLinkImageNoFocusIndicator',
+        'ErrLinkOutlineWidthInsufficient',
         'WarnColorOnlyLink',
+        'WarnColorOnlyLinkWeakIndicator',
         'WarnGenericDocumentLinkText',
-        'WarnGenericLinkNoImprovement',
+        'WarnLinkDefaultFocus',
+        'WarnLinkFocusGradientBackground',
+        'WarnLinkLooksLikeButton',
+        'WarnLinkOutlineOffsetTooLarge',
+        'WarnLinkTransparentOutline',
+        'WarnMissingDocumentMetadata',
     ],
     
     'navigation': [
@@ -137,11 +148,11 @@ TOUCHPOINT_TEST_MAPPING = {
     ],
     
     'language': [
+        'ErrDocumentLinkWrongLanguage',
         'ErrHreflangAttrEmpty',
         'ErrHreflangNotOnLink',
         'ErrIncorrectlyFormattedPrimaryLang',
         'ErrNoDocumentLanguage',
-        'WarnMissingDocumentMetadata',
     ],
     
     'tables': [
@@ -239,6 +250,9 @@ TOUCHPOINT_TEST_MAPPING = {
     ],
     
     'documents': [
+        'DiscoPDFLinksFound',
+        'ErrDocumentLinkMissingFileType',
+        'ErrDocumentLinkWrongLanguage',
         'ErrMissingDocumentType',
         'WarnGenericDocumentLinkText',
         'WarnMissingDocumentMetadata',

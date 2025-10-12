@@ -7,6 +7,8 @@ Total issues: 5
 ## ErrAutoStartTimers
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Animation/ErrAutoStartTimers_001_violations_basic.html
+  - Fixtures/Animation/ErrAutoStartTimers_002_correct_with_controls.html
   - Fixtures/Timing/ErrAutoStartTimers.html
 
 ID: ErrAutoStartTimers
@@ -24,6 +26,8 @@ How to fix: Provide controls to pause, stop, or extend time limits, avoid auto-s
 ## ErrInfiniteAnimation
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Animation/ErrInfiniteAnimation_002_correct_with_controls.html
+  - Fixtures/Animation/ErrInfiniteAnimation_001_violations_basic.html
   - Fixtures/Animation/ErrInfiniteAnimation.html
 
 ID: ErrInfiniteAnimation
@@ -41,7 +45,9 @@ How to fix: Provide pause/stop controls for all animations, respect prefers-redu
 ## ErrNoReducedMotionSupport
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Animation/ErrNoReducedMotionSupport_001_violations_basic.html
   - Fixtures/Animation/ErrNoReducedMotionSupport.html
+  - Fixtures/Animation/ErrNoReducedMotionSupport_002_correct_with_media_query.html
 
 ID: ErrNoReducedMotionSupport
 Type: Error
@@ -57,7 +63,9 @@ How to fix: Use CSS @media (prefers-reduced-motion: reduce) to disable or reduce
 
 ## WarnFastInterval
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Animation/WarnFastInterval_001_violations_basic.html
+  - Fixtures/Animation/WarnFastInterval_002_correct_slower_updates.html
 
 ID: WarnFastInterval
 Type: Warning
@@ -74,6 +82,8 @@ How to fix: Slow down update intervals, provide pause controls for rapid updates
 ## WarnLongAnimation
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Animation/WarnLongAnimation_001_violations_basic.html
+  - Fixtures/Animation/WarnLongAnimation_002_correct_short_or_skippable.html
   - Fixtures/Animation/WarnLongAnimation.html
 
 ID: WarnLongAnimation

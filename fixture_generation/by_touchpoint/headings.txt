@@ -1,22 +1,6 @@
 # HEADINGS Touchpoint
 
-Total issues: 22
-
-================================================================================
-
-## AI_ErrEmptyHeading
-
-✨ New fixtures needed
-
-ID: AI_ErrEmptyHeading
-Type: Error
-Impact: High
-WCAG: 1.3.1, 2.4.6
-Touchpoint: headings
-Description: Heading element {element_tag} at level {heading_level} is empty or contains no text
-Why it matters: Empty headings break document structure and confuse screen reader users who navigate by headings
-Who it affects: Screen reader users, users who navigate by headings
-How to fix: Remove empty heading or add meaningful text content
+Total issues: 20
 
 ================================================================================
 
@@ -68,27 +52,13 @@ How to fix: Use appropriate HTML heading tags (h1-h6) for text that serves as he
 
 ================================================================================
 
-## DiscoHeadingWithID
-
-⚠️  Has old fixtures to replace:
-  - Fixtures/Headings/DiscoHeadingWithID.html
-
-ID: DiscoHeadingWithID
-Type: Discovery
-Impact: N/A
-WCAG: N/A
-Touchpoint: headings
-Description: Heading element has an ID attribute that may be used for in-page navigation
-Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
-Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
-How to fix: Ensure that the ID attribute is referenced and its use is valid.
-
-================================================================================
-
 ## ErrEmptyHeading
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Headings/ErrEmptyHeading.html
+  - Fixtures/Headings/ErrEmptyHeading_001_violations_basic.html
+  - Fixtures/Headings/ErrEmptyHeading_002_correct_with_text.html
+  - Fixtures/Headings/ErrEmptyHeading_003_edge_image_only.html
 
 ID: ErrEmptyHeading
 Type: Error
@@ -105,6 +75,8 @@ How to fix: Either replace "{text}" with meaningful text content that describes 
 ## ErrFoundAriaLevelButNoRoleAppliedAtAll
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrFoundAriaLevelButNoRoleAppliedAtAll_002_correct_with_role.html
+  - Fixtures/Headings/ErrFoundAriaLevelButNoRoleAppliedAtAll_001_violations_basic.html
   - Fixtures/ARIA/ErrFoundAriaLevelButNoRoleAppliedAtAll.html
 
 ID: ErrFoundAriaLevelButNoRoleAppliedAtAll
@@ -121,7 +93,9 @@ How to fix: Add role="heading" or use native heading element
 
 ## ErrFoundAriaLevelButRoleIsNotHeading
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrFoundAriaLevelButRoleIsNotHeading_001_violations_basic.html
+  - Fixtures/Headings/ErrFoundAriaLevelButRoleIsNotHeading_002_correct_heading_role.html
 
 ID: ErrFoundAriaLevelButRoleIsNotHeading
 Type: Error
@@ -139,6 +113,8 @@ How to fix: Add role="heading" or remove aria-level
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Headings/ErrIncorrectHeadingLevel.html
+  - Fixtures/Headings/ErrIncorrectHeadingLevel_002_correct_css_styled.html
+  - Fixtures/Headings/ErrIncorrectHeadingLevel_001_violations_basic.html
 
 ID: ErrIncorrectHeadingLevel
 Type: Error
@@ -154,7 +130,9 @@ How to fix: Use heading levels to convey document structure (h1 > h2 > h3), not 
 
 ## ErrInvalidAriaLevel
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrInvalidAriaLevel_002_correct_valid_levels.html
+  - Fixtures/Headings/ErrInvalidAriaLevel_001_violations_basic.html
 
 ID: ErrInvalidAriaLevel
 Type: Error
@@ -172,6 +150,8 @@ How to fix: Use aria-level values 1 through 6 only
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Headings/ErrMultipleH1.html
+  - Fixtures/Headings/ErrMultipleH1_002_correct_single_h1.html
+  - Fixtures/Headings/ErrMultipleH1_001_violations_basic.html
 
 ID: ErrMultipleH1
 Type: Error
@@ -181,13 +161,16 @@ Touchpoint: headings
 Description: Page contains {count} h1 elements instead of just one
 Why it matters: Having {count} h1 elements creates confusion about the page's main topic. Each h1 represents a primary heading, and multiple h1s suggest multiple main topics, breaking the document hierarchy. Screen readers users won't know which h1 represents the actual page topic.
 Who it affects: Screen reader users who expect a single h1 to identify the page topic, users navigating by headings who see multiple "top level" items, SEO and search engines that look for a single main topic
-How to fix: Keep only one h1 that represents the main page topic. Change the other {count-1} h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
+How to fix: Keep only one h1 that represents the main page topic. Change the other h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
 
 ================================================================================
 
 ## ErrNoH1
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrNoH1_002_correct_with_h1.html
+  - Fixtures/Headings/ErrNoH1_001_violations_basic.html
+  - Fixtures/Headings/ErrNoH1_003_aria_heading.html
   - Fixtures/Headings/ErrNoH1.html
 
 ID: ErrNoH1
@@ -204,7 +187,9 @@ How to fix: Add exactly one h1 heading that describes the main content or purpos
 
 ## ErrNoHeadingsOnPage
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrNoHeadingsOnPage_002_correct_with_headings.html
+  - Fixtures/Headings/ErrNoHeadingsOnPage_001_violations_basic.html
 
 ID: ErrNoHeadingsOnPage
 Type: Error
@@ -220,7 +205,9 @@ How to fix: Add semantic heading elements (h1-h6) to structure your content. Sta
 
 ## ErrRoleOfHeadingButNoLevelGiven
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrRoleOfHeadingButNoLevelGiven_001_violations_basic.html
+  - Fixtures/Headings/ErrRoleOfHeadingButNoLevelGiven_002_correct_with_level.html
 
 ID: ErrRoleOfHeadingButNoLevelGiven
 Type: Error
@@ -234,10 +221,30 @@ How to fix: Add aria-level attribute with value 1-6
 
 ================================================================================
 
+## ErrHeadingOrder
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrHeadingOrder_002_correct_logical_order.html
+  - Fixtures/Headings/ErrHeadingOrder_001_violations_basic.html
+
+ID: ErrHeadingOrder
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships
+Touchpoint: headings
+Description: Headings appear in illogical order - high-level headings (H1, H2) appear after lower-level headings (H3, H4, H5, H6)
+Why it matters: Document structure should be logical and predictable. When high-level headings like H1 or H2 appear after lower-level headings, it creates a backwards or inverted hierarchy. This is like reading a book where chapter titles appear after section headings, or where the main title appears at the end. Screen reader users navigating by headings expect the most important headings first, followed by progressively more detailed subsections. When headings appear out of logical order, users cannot understand the content structure, may miss important navigation landmarks, and cannot build an accurate mental model of how the page is organized.
+Who it affects: Screen reader users who rely on heading navigation and expect logical document structure, users with cognitive disabilities who need predictable content organization, users who generate document outlines from headings, and users who navigate by heading levels to understand content hierarchy
+How to fix: Restructure your content so that high-level headings (H1, H2) appear before lower-level headings. Start with H1 for the main page title, then H2 for major sections, then H3 for subsections within those. Headings should appear in a logical, top-down hierarchy that matches how users would naturally read and understand the content structure.
+
+================================================================================
+
 ## ErrSkippedHeadingLevel
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Headings/ErrSkippedHeadingLevel.html
+  - Fixtures/Headings/ErrSkippedHeadingLevel_002_correct_sequential.html
+  - Fixtures/Headings/ErrSkippedHeadingLevel_001_violations_basic.html
 
 ID: ErrSkippedHeadingLevel
 Type: Error
@@ -254,7 +261,9 @@ How to fix: Insert an h{expectedLevel} heading between the h{skippedFrom} and h{
 ## InfoHeadingNearLengthLimit
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/InfoHeadingNearLengthLimit_002_correct_short.html
   - Fixtures/Headings/InfoHeadingNearLengthLimit.html
+  - Fixtures/Headings/InfoHeadingNearLengthLimit_001_violations_basic.html
 
 ID: InfoHeadingNearLengthLimit
 Type: Info
@@ -268,25 +277,29 @@ How to fix: Consider shortening headings to be more concise while maintaining cl
 
 ================================================================================
 
-## VisibleHeadingDoesNotMatchA11yName
+## ErrHeadingAccessibleNameMismatch
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/ErrHeadingAccessibleNameMismatch_001_violations_basic.html
+  - Fixtures/Headings/ErrHeadingAccessibleNameMismatch_002_correct_matching.html
 
-ID: VisibleHeadingDoesNotMatchA11yName
-Type: Warning
-Impact: Medium
+ID: ErrHeadingAccessibleNameMismatch
+Type: Error
+Impact: High
 WCAG: 2.5.3
 Touchpoint: headings
 Description: Visible heading text doesn't match its accessible name
 Why it matters: Voice control users may not be able to reference the heading by its visible text
 Who it affects: Voice control users, screen reader users
-How to fix: Ensure visible text matches or is contained within the accessible name
+How to fix: Ensure visible text starts the accessible name (e.g., visible 'Support' should be at the start of aria-label, like 'Support: Customer Service')
 
 ================================================================================
 
 ## WarnHeadingInsideDisplayNone
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/WarnHeadingInsideDisplayNone_001_violations_basic.html
+  - Fixtures/Headings/WarnHeadingInsideDisplayNone_002_correct_visible.html
   - Fixtures/Headings/WarnHeadingInsideDisplayNone.html
 
 ID: WarnHeadingInsideDisplayNone
@@ -304,7 +317,9 @@ How to fix: Remove unused headings or make them visible
 ## WarnHeadingOver60CharsLong
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/WarnHeadingOver60CharsLong_002_correct_concise.html
   - Fixtures/Headings/WarnHeadingOver60CharsLong.html
+  - Fixtures/Headings/WarnHeadingOver60CharsLong_001_violations_basic.html
 
 ID: WarnHeadingOver60CharsLong
 Type: Warning
@@ -318,25 +333,10 @@ How to fix: Shorten the heading to under 60 characters while preserving its mean
 
 ================================================================================
 
-## WarnNoH1
-
-✨ New fixtures needed
-
-ID: WarnNoH1
-Type: Warning
-Impact: High
-WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
-Touchpoint: headings
-Description: Page is missing an h1 element to identify the main topic
-Why it matters: The h1 is the most important heading on a page - it tells users what the page is about, similar to a chapter title in a book. Screen reader users often navigate directly to the h1 first to understand the page purpose. Without it, users must guess the page topic from other cues like the title or URL. The h1 also establishes the starting point for the heading hierarchy. Search engines use the h1 to understand page content, and browser extensions that generate page outlines will be missing the top level. Think of the h1 as answering "What is this page about?" - without it, users lack this fundamental context.
-Who it affects: Screen reader users who jump to the h1 to understand page purpose, users with cognitive disabilities who need clear indication of page topic, SEO and users finding your content through search engines, users of browser tools that generate page outlines or tables of contents
-How to fix: Add exactly one h1 element that describes the main topic or purpose of the page. It should be unique to that page (not the same site-wide). Place it at the beginning of your main content, typically inside the main landmark. The h1 text should make sense if read in isolation and match user expectations based on how they arrived at the page. Don't use the site name as the h1 - use the specific page topic.
-
-================================================================================
-
 ## DiscoHeadingWithID
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/DiscoHeadingWithID_001_discovery_basic.html
   - Fixtures/Headings/DiscoHeadingWithID.html
 
 ID: DiscoHeadingWithID
@@ -351,19 +351,19 @@ How to fix: Ensure that the ID attribute is referenced and its use is valid.
 
 ================================================================================
 
-## AI_ErrEmptyHeading
+## AI_ErrHeadingLevelMismatch
 
 ✨ New fixtures needed
 
-ID: AI_ErrEmptyHeading
+ID: AI_ErrHeadingLevelMismatch
 Type: Error
-Impact: High
-WCAG: 1.3.1, 2.4.6
+Impact: Medium
+WCAG: 1.3.1, 2.4.1
 Touchpoint: headings
-Description: Heading element {element_tag} at level {heading_level} is empty or contains no text
-Why it matters: Empty headings break document structure and confuse screen reader users who navigate by headings
+Description: Heading level {current_level} doesn't match visual hierarchy (should be level {suggested_level})
+Why it matters: Incorrect heading levels create confusing document structure for screen reader users
 Who it affects: Screen reader users, users who navigate by headings
-How to fix: Remove empty heading or add meaningful text content
+How to fix: Adjust heading level to match the visual hierarchy of the page
 
 ================================================================================
 

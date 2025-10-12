@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrDocumentLinkWrongLanguage - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDocumentLinkWrongLanguage_001_violations_basic",
+    "issueId": "ErrDocumentLinkWrongLanguage",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links to documents in different languages without lang attributes or language indication",
+    "wcag": "3.1.2",
+    "impact": "Medium",
+    "documentMetadata": {
+        "file:///reports/rapport-annuel-2024.pdf": {
+            "language": "fr",
+            "confidence": 0.95
+        },
+        "file:///docs/manual-de-usuario.pdf": {
+            "language": "es",
+            "confidence": 0.92
+        },
+        "file:///docs/installationsanleitung.pdf": {
+            "language": "de",
+            "confidence": 0.90
+        }
+    }
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Document Links in Different Languages</h1>
+
+    <main>
+        <section>
+            <h2>Company Reports</h2>
+            <p>Download our annual reports:</p>
+            <ul>
+                <li>
+                    <a href="/reports/rapport-annuel-2024.pdf"
+                       data-expected-violation="true"
+                       data-violation-id="ErrDocumentLinkWrongLanguage"
+                       data-violation-reason="French PDF document linked from English page without lang attribute or language indication">
+                        Annual Report 2024
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Product Documentation</h2>
+            <p>Access our product manuals:</p>
+            <ul>
+                <li>
+                    <a href="/docs/manual-de-usuario.pdf"
+                       data-expected-violation="true"
+                       data-violation-id="ErrDocumentLinkWrongLanguage"
+                       data-violation-reason="Spanish document linked from English page without lang attribute or language indication">
+                        User Manual
+                    </a>
+                </li>
+                <li>
+                    <a href="/docs/installationsanleitung.pdf"
+                       data-expected-violation="true"
+                       data-violation-id="ErrDocumentLinkWrongLanguage"
+                       data-violation-reason="German document linked from English page without lang attribute or language indication">
+                        Installation Guide
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Case Studies</h2>
+            <p>International case studies available for download.</p>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrDocumentLinkWrongLanguage - Correct with Lang Attribute</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDocumentLinkWrongLanguage_002_correct_with_lang_attr",
+    "issueId": "ErrDocumentLinkWrongLanguage",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Links to documents in different languages correctly marked with lang attribute",
+    "wcag": "3.1.2",
+    "impact": "Medium",
+    "documentMetadata": {
+        "file:///reports/rapport-annuel-2024.pdf": {
+            "language": "fr",
+            "confidence": 0.95
+        },
+        "file:///docs/manual-de-usuario.pdf": {
+            "language": "es",
+            "confidence": 0.92
+        },
+        "file:///docs/installationsanleitung.pdf": {
+            "language": "de",
+            "confidence": 0.90
+        }
+    }
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Correctly Marked Document Links</h1>
+
+    <main>
+        <section>
+            <h2>Company Reports</h2>
+            <p>Download our annual reports:</p>
+            <ul>
+                <li>
+                    <a href="/reports/rapport-annuel-2024.pdf"
+                       lang="fr"
+                       data-expected-pass="true"
+                       data-pass-reason="French document has lang='fr' attribute">
+                        Rapport Annuel 2024
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Product Documentation</h2>
+            <p>Access our product manuals:</p>
+            <ul>
+                <li>
+                    <a href="/docs/manual-de-usuario.pdf"
+                       lang="es"
+                       data-expected-pass="true"
+                       data-pass-reason="Spanish document has lang='es' attribute">
+                        Manual de Usuario
+                    </a>
+                </li>
+                <li>
+                    <a href="/docs/installationsanleitung.pdf"
+                       lang="de"
+                       data-expected-pass="true"
+                       data-pass-reason="German document has lang='de' attribute">
+                        Installationsanleitung
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

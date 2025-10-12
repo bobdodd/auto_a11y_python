@@ -1,13 +1,15 @@
 # SEMANTIC_STRUCTURE Touchpoint
 
-Total issues: 4
+Total issues: 3
 
 ================================================================================
 
 ## ErrHeaderMissingScope
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Tables/ErrHeaderMissingScope_001_violations_basic.html
   - Fixtures/Tables/ErrHeaderMissingScope.html
+  - Fixtures/Tables/ErrHeaderMissingScope_002_correct_with_scope.html
 
 ID: ErrHeaderMissingScope
 Type: Error
@@ -21,26 +23,12 @@ How to fix: Add scope="col" for column headers and scope="row" for row headers t
 
 ================================================================================
 
-## ErrImproperTitleAttribute
-
-✨ New fixtures needed
-
-ID: ErrImproperTitleAttribute
-Type: Error
-Impact: Low
-WCAG: 3.3.2 Labels or Instructions (Level A)
-Touchpoint: semantic_structure
-Description: Title attribute used improperly as primary labeling mechanism
-Why it matters: Title attributes are not reliably announced by all assistive technologies and should not be the only way to provide essential information.
-Who it affects: Screen reader users who may not receive title attribute content, mobile users who cannot hover to see tooltips.
-How to fix: Use proper labeling techniques (label elements, aria-label) instead of relying on title attributes for essential information.
-
-================================================================================
-
 ## WarnVisualHierarchy
 
 ⚠️  Has old fixtures to replace:
-  - Fixtures/Headings/WarnVisualHierarchy.html
+  - Fixtures/Headings/WarnVisualHierarchy_001_violations_basic.html
+  - Fixtures/Semantic/WarnVisualHierarchy_002_correct_sequential_headings.html
+  - Fixtures/Semantic/WarnVisualHierarchy_001_violations_basic.html
 
 ID: WarnVisualHierarchy
 Type: Warning
@@ -57,7 +45,9 @@ How to fix: Ensure visual presentation matches HTML semantic structure.
 ## WarnVisualHierarchy
 
 ⚠️  Has old fixtures to replace:
-  - Fixtures/Headings/WarnVisualHierarchy.html
+  - Fixtures/Headings/WarnVisualHierarchy_001_violations_basic.html
+  - Fixtures/Semantic/WarnVisualHierarchy_002_correct_sequential_headings.html
+  - Fixtures/Semantic/WarnVisualHierarchy_001_violations_basic.html
 
 ID: WarnVisualHierarchy
 Type: Warning

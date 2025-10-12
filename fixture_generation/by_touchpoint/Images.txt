@@ -8,6 +8,8 @@ Total issues: 6
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Images/ErrAltTooLong.html
+  - Fixtures/Images/ErrAltTooLong_001_violations_basic.html
+  - Fixtures/Images/ErrAltTooLong_002_correct_concise.html
 
 ID: ErrAltTooLong
 Type: Error
@@ -24,6 +26,8 @@ How to fix: Limit alt text to 150 characters or less, use longdesc or aria-descr
 ## ErrNoAlt
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Images/ErrNoAlt_002_correct_with_alt.html
+  - Fixtures/Images/ErrNoAlt_001_violations_basic.html
   - Fixtures/Images/ErrNoAlt.html
 
 ID: ErrNoAlt
@@ -41,6 +45,8 @@ How to fix: Add alt attribute to all img elements; use alt="" for decorative ima
 ## ErrRedundantAlt
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Images/ErrRedundantAlt_002_correct_concise.html
+  - Fixtures/Images/ErrRedundantAlt_001_violations_basic.html
   - Fixtures/Images/ErrRedundantAlt.html
 
 ID: ErrRedundantAlt
@@ -59,6 +65,8 @@ How to fix: Remove "image of", "picture of", "graphic of" from alt text; describ
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Images/ErrSVGNoAccessibleName.html
+  - Fixtures/Images/ErrSVGNoAccessibleName_002_correct_with_names.html
+  - Fixtures/Images/ErrSVGNoAccessibleName_001_violations_basic.html
 
 ID: ErrSVGNoAccessibleName
 Type: Error
@@ -75,6 +83,8 @@ How to fix: Add <title> element with aria-labelledby, or use role="img" with ari
 ## WarnSVGNoRole
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Images/WarnSVGNoRole_002_correct_with_role.html
+  - Fixtures/Images/WarnSVGNoRole_001_violations_basic.html
   - Fixtures/Images/WarnSVGNoRole.html
 
 ID: WarnSVGNoRole
@@ -92,7 +102,9 @@ How to fix: Add role="img" for informative SVGs, use aria-hidden="true" for deco
 ## WarnSvgPositiveTabindex
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Images/WarnSvgPositiveTabindex_002_correct_no_tabindex.html
   - Fixtures/Images/WarnSvgPositiveTabindex.html
+  - Fixtures/Images/WarnSvgPositiveTabindex_001_violations_basic.html
 
 ID: WarnSvgPositiveTabindex
 Type: Warning

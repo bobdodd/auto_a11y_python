@@ -38,8 +38,7 @@ How to fix: Add link text, aria-label, or aria-labelledby attribute
 
 ## ErrInvalidGenericLinkName
 
-⚠️  Has old fixtures to replace:
-  - Fixtures/Links/ErrInvalidGenericLinkName.html
+✨ New fixtures needed
 
 ID: ErrInvalidGenericLinkName
 Type: Error
@@ -55,7 +54,9 @@ How to fix: Use descriptive link text that explains the destination or action, a
 
 ## ErrLinkOpensNewWindowNoWarning
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Links/ErrLinkOpensNewWindowNoWarning_002_correct_with_warning.html
+  - Fixtures/Links/ErrLinkOpensNewWindowNoWarning_001_violations_basic.html
 
 ID: ErrLinkOpensNewWindowNoWarning
 Type: Error
@@ -71,7 +72,10 @@ How to fix: Add visible text or an icon indicating the link opens in a new windo
 
 ## ErrLinkTextNotDescriptive
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Links/ErrLinkTextNotDescriptive_003_correct_with_aria_label.html
+  - Fixtures/Links/ErrLinkTextNotDescriptive_001_violations_basic.html
+  - Fixtures/Links/ErrLinkTextNotDescriptive_002_correct_descriptive.html
 
 ID: ErrLinkTextNotDescriptive
 Type: Error
@@ -87,8 +91,7 @@ How to fix: Write link text that describes the destination or action (e.g., "Dow
 
 ## WarnAnchorTargetTabindex
 
-⚠️  Has old fixtures to replace:
-  - Fixtures/Links/WarnAnchorTargetTabindex.html
+✨ New fixtures needed
 
 ID: WarnAnchorTargetTabindex
 Type: Warning
@@ -104,8 +107,7 @@ How to fix: Remove tabindex from elements that are only link targets, not intera
 
 ## WarnGenericLinkNoImprovement
 
-⚠️  Has old fixtures to replace:
-  - Fixtures/Links/WarnGenericLinkNoImprovement.html
+✨ New fixtures needed
 
 ID: WarnGenericLinkNoImprovement
 Type: Warning
@@ -122,7 +124,9 @@ How to fix: Rewrite link text to be descriptive, or ensure surrounding text prov
 ## WarnLinkLooksLikeButton
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Links/WarnLinkLooksLikeButton_001_violations_basic.html
   - Fixtures/Links/WarnLinkLooksLikeButton.html
+  - Fixtures/Links/WarnLinkLooksLikeButton_002_correct_semantic_elements.html
 
 ID: WarnLinkLooksLikeButton
 Type: Warning

@@ -100,20 +100,26 @@ async def test_document_links(page) -> Dict[str, Any]:
                 
                 // Find all links
                 const allLinks = Array.from(document.querySelectorAll('a[href]'));
-                
+
                 // Filter for document links
                 const documentLinks = allLinks.filter(link => {
                     const href = link.href.toLowerCase();
                     return documentExtensions.some(ext => href.endsWith(ext));
                 });
-                
+
                 if (documentLinks.length === 0) {
                     results.applicable = false;
                     results.not_applicable_reason = 'No document links found on the page';
                     return results;
                 }
-                
+
                 results.elements_tested = documentLinks.length;
+
+                // Get page language from html element
+                const pageLanguage = (document.documentElement.lang || 'en').toLowerCase().split('-')[0];
+
+                // Get document metadata (injected by test runner)
+                const documentMetadata = window.DOCUMENT_METADATA || {};
                 
                 // Check each document link
                 documentLinks.forEach(link => {
@@ -181,6 +187,56 @@ async def test_document_links(page) -> Dict[str, Any]:
                             description: `Document link has generic text that may not be descriptive enough`,
                             linkText: text
                         });
+                    }
+
+                    // Check for document language mismatch
+                    const linkLang = (link.getAttribute('lang') || '').toLowerCase().split('-')[0];
+                    const docMetadata = documentMetadata[href];
+
+                    if (docMetadata && docMetadata.language) {
+                        const docLanguage = docMetadata.language.toLowerCase().split('-')[0];
+
+                        // Check if document is in a different language than the page
+                        if (docLanguage !== pageLanguage) {
+                            // Check if link has lang attribute indicating the document language
+                            if (!linkLang || linkLang !== docLanguage) {
+                                // Check if link text mentions the language
+                                const languageNames = {
+                                    'en': ['english', 'anglais'],
+                                    'fr': ['french', 'français', 'francais'],
+                                    'es': ['spanish', 'español', 'espanol', 'castellano'],
+                                    'de': ['german', 'deutsch', 'allemand'],
+                                    'it': ['italian', 'italiano', 'italien'],
+                                    'pt': ['portuguese', 'português', 'portugues'],
+                                    'zh': ['chinese', '中文', 'chinois'],
+                                    'ja': ['japanese', '日本語', 'japonais'],
+                                    'ar': ['arabic', 'العربية', 'arabe'],
+                                    'ru': ['russian', 'русский', 'russe']
+                                };
+
+                                const linkContent = (text + ' ' + (ariaLabel || '') + ' ' + (title || '')).toLowerCase();
+                                const docLangNames = languageNames[docLanguage] || [];
+                                const hasLanguageIndication = docLangNames.some(name => linkContent.includes(name.toLowerCase()));
+
+                                if (!hasLanguageIndication) {
+                                    results.errors.push({
+                                        err: 'ErrDocumentLinkWrongLanguage',
+                                        type: 'err',
+                                        cat: 'links',
+                                        element: 'A',
+                                        xpath: getFullXPath(link),
+                                        html: link.outerHTML.substring(0, 200),
+                                        description: `Document is in ${docLanguage.toUpperCase()} but page is in ${pageLanguage.toUpperCase()}. Link needs lang="${docLanguage}" attribute or language indication in text`,
+                                        linkText: text,
+                                        pageLanguage: pageLanguage.toUpperCase(),
+                                        documentLanguage: docLanguage.toUpperCase(),
+                                        hasLangAttribute: !!linkLang,
+                                        href: href
+                                    });
+                                    results.elements_failed++;
+                                }
+                            }
+                        }
                     }
                 });
                 

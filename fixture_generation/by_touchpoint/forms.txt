@@ -55,7 +55,9 @@ How to fix: Add aria-expanded="true/false" and update it when state changes
 ## DiscoFormOnPage
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/DiscoFormOnPage_001_discovery_basic.html
   - Fixtures/Forms/DiscoFormOnPage.html
+  - Fixtures/Forms/DiscoFormOnPage_002_discovery_login.html
 
 ID: DiscoFormOnPage
 Type: Discovery
@@ -88,6 +90,8 @@ How to fix: Manually test all forms with keyboard and screen reader
 ## ErrEmptyAriaLabelOnField
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrEmptyAriaLabelOnField_002_correct_with_label.html
+  - Fixtures/Forms/ErrEmptyAriaLabelOnField_001_violations_basic.html
   - Fixtures/Forms/ErrEmptyAriaLabelOnField.html
 
 ID: ErrEmptyAriaLabelOnField
@@ -105,7 +109,9 @@ How to fix: Add descriptive text to aria-label or use visible label
 ## ErrEmptyAriaLabelledByOnField
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrEmptyAriaLabelledByOnField_001_violations_basic.html
   - Fixtures/Forms/ErrEmptyAriaLabelledByOnField.html
+  - Fixtures/Forms/ErrEmptyAriaLabelledByOnField_002_correct_with_ids.html
 
 ID: ErrEmptyAriaLabelledByOnField
 Type: Error
@@ -123,6 +129,8 @@ How to fix: Reference valid element IDs or use direct labeling
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Forms/ErrEmptyLabel.html
+  - Fixtures/Forms/ErrEmptyLabel_001_violations_basic.html
+  - Fixtures/Forms/ErrEmptyLabel_002_correct_with_text.html
 
 ID: ErrEmptyLabel
 Type: Error
@@ -140,6 +148,8 @@ How to fix: Add descriptive text to all label elements that clearly identifies t
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Forms/ErrFielLabelledBySomethingNotALabel.html
+  - Fixtures/Forms/ErrFielLabelledBySomethingNotALabel_002_correct_proper_labels.html
+  - Fixtures/Forms/ErrFielLabelledBySomethingNotALabel_001_violations_basic.html
 
 ID: ErrFielLabelledBySomethingNotALabel
 Type: Error
@@ -156,6 +166,8 @@ How to fix: Use proper <label> elements or appropriate ARIA labeling
 ## ErrFieldAriaRefDoesNotExist
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFieldAriaRefDoesNotExist_002_correct_valid_refs.html
+  - Fixtures/Forms/ErrFieldAriaRefDoesNotExist_001_violations_basic.html
   - Fixtures/Forms/ErrFieldAriaRefDoesNotExist.html
 
 ID: ErrFieldAriaRefDoesNotExist
@@ -174,6 +186,8 @@ How to fix: Either create an element with id="{found}" to serve as the label, fi
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Forms/ErrFieldLabelledUsinAriaLabel.html
+  - Fixtures/Forms/ErrFieldLabelledUsinAriaLabel_001_violations_basic.html
+  - Fixtures/Forms/ErrFieldLabelledUsinAriaLabel_002_correct_visible_labels.html
 
 ID: ErrFieldLabelledUsinAriaLabel
 Type: Error
@@ -190,7 +204,9 @@ How to fix: Use visible <label> elements instead of aria-label when possible
 ## ErrFieldReferenceDoesNotExist
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFieldReferenceDoesNotExist_001_violations_basic.html
   - Fixtures/Forms/ErrFieldReferenceDoesNotExist.html
+  - Fixtures/Forms/ErrFieldReferenceDoesNotExist_002_correct_matching_ids.html
 
 ID: ErrFieldReferenceDoesNotExist
 Type: Error
@@ -207,7 +223,9 @@ How to fix: Fix the for/id relationship
 ## ErrFormAriaLabelledByReferenceDoesNotExist
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDoesNotExist_002_correct_valid_references.html
   - Fixtures/Forms/ErrFormAriaLabelledByReferenceDoesNotExist.html
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDoesNotExist_001_violations_basic.html
 
 ID: ErrFormAriaLabelledByReferenceDoesNotExist
 Type: Error
@@ -225,6 +243,8 @@ How to fix: Fix ID reference or use different labeling method
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Forms/ErrFormEmptyHasNoChildNodes.html
+  - Fixtures/Forms/ErrFormEmptyHasNoChildNodes_002_correct_with_content.html
+  - Fixtures/Forms/ErrFormEmptyHasNoChildNodes_001_violations_basic.html
 
 ID: ErrFormEmptyHasNoChildNodes
 Type: Error
@@ -241,6 +261,8 @@ How to fix: Remove empty form elements or add appropriate form controls
 ## ErrFormEmptyHasNoInteractiveElements
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormEmptyHasNoInteractiveElements_001_violations_basic.html
+  - Fixtures/Forms/ErrFormEmptyHasNoInteractiveElements_002_correct_with_controls.html
   - Fixtures/Forms/ErrFormEmptyHasNoInteractiveElements.html
 
 ID: ErrFormEmptyHasNoInteractiveElements
@@ -258,6 +280,8 @@ How to fix: Add appropriate input fields, buttons, or other form controls
 ## ErrFormUsesAriaLabelInsteadOfVisibleElement
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormUsesAriaLabelInsteadOfVisibleElement_002_correct_visible_labels.html
+  - Fixtures/Forms/ErrFormUsesAriaLabelInsteadOfVisibleElement_001_violations_basic.html
   - Fixtures/Forms/ErrFormUsesAriaLabelInsteadOfVisibleElement.html
 
 ID: ErrFormUsesAriaLabelInsteadOfVisibleElement
@@ -275,6 +299,8 @@ How to fix: Use visible heading with aria-labelledby
 ## ErrFormUsesTitleAttribute
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormUsesTitleAttribute_001_violations_basic.html
+  - Fixtures/Forms/ErrFormUsesTitleAttribute_002_correct_aria_labeling.html
   - Fixtures/Forms/ErrFormUsesTitleAttribute.html
 
 ID: ErrFormUsesTitleAttribute
@@ -292,7 +318,9 @@ How to fix: Use aria-label or aria-labelledby instead
 ## ErrLabelContainsMultipleFields
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrLabelContainsMultipleFields_002_correct_individual_labels.html
   - Fixtures/Forms/ErrLabelContainsMultipleFields.html
+  - Fixtures/Forms/ErrLabelContainsMultipleFields_001_violations_basic.html
 
 ID: ErrLabelContainsMultipleFields
 Type: Error
@@ -309,7 +337,9 @@ How to fix: Split the label so each of the {count} fields has its own dedicated 
 ## ErrLabelMismatchOfAccessibleNameAndLabelText
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrLabelMismatchOfAccessibleNameAndLabelText_002_correct_matching_names.html
   - Fixtures/Forms/ErrLabelMismatchOfAccessibleNameAndLabelText.html
+  - Fixtures/Forms/ErrLabelMismatchOfAccessibleNameAndLabelText_001_violations_basic.html
 
 ID: ErrLabelMismatchOfAccessibleNameAndLabelText
 Type: Error
@@ -326,7 +356,9 @@ How to fix: Make accessible name match visible text
 ## ErrNoLabel
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrNoLabel_002_correct_with_labels.html
   - Fixtures/Forms/ErrNoLabel.html
+  - Fixtures/Forms/ErrNoLabel_001_violations_basic.html
 
 ID: ErrNoLabel
 Type: Error
@@ -344,6 +376,8 @@ How to fix: Add label elements with for attribute, or use aria-label/aria-labell
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Forms/ErrOrphanLabelWithNoId.html
+  - Fixtures/Forms/ErrOrphanLabelWithNoId_002_correct_with_for.html
+  - Fixtures/Forms/ErrOrphanLabelWithNoId_001_violations_basic.html
 
 ID: ErrOrphanLabelWithNoId
 Type: Error
@@ -360,6 +394,8 @@ How to fix: Add for attribute pointing to field ID
 ## ErrPlaceholderAsLabel
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrPlaceholderAsLabel_001_violations_basic.html
+  - Fixtures/Forms/ErrPlaceholderAsLabel_002_correct_with_labels.html
   - Fixtures/Forms/ErrPlaceholderAsLabel.html
 
 ID: ErrPlaceholderAsLabel
@@ -377,7 +413,10 @@ How to fix: Add proper label elements or aria-label, use placeholder only for su
 ## ErrTitleAsOnlyLabel
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrTitleAsOnlyLabel_001_violations_basic.html
+  - Fixtures/Forms/ErrTitleAsOnlyLabel_003_violations_various_inputs.html
   - Fixtures/Forms/ErrTitleAsOnlyLabel.html
+  - Fixtures/Forms/ErrTitleAsOnlyLabel_002_correct_proper_labels.html
 
 ID: ErrTitleAsOnlyLabel
 Type: Error
@@ -394,6 +433,8 @@ How to fix: Add a proper visible <label> element associated with the form field 
 ## ErrUnlabelledField
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrUnlabelledField_002_correct_with_labels.html
+  - Fixtures/Forms/ErrUnlabelledField_001_violations_basic.html
   - Fixtures/Forms/ErrUnlabelledField.html
 
 ID: ErrUnlabelledField
@@ -411,7 +452,8 @@ How to fix: Add explicit <label> elements with for attribute matching the input'
 ## InfoFieldLabelledUsingAriaLabel
 
 ⚠️  Has old fixtures to replace:
-  - Fixtures/Forms/InfoFieldLabelledUsingAriaLabel.html
+  - Fixtures/Forms/InfoFieldLabelledUsingAriaLabel_001_violations_basic.html
+  - Fixtures/Forms/InfoFieldLabelledUsingAriaLabel_002_correct_visible_labels.html
 
 ID: InfoFieldLabelledUsingAriaLabel
 Type: Info
@@ -428,6 +470,8 @@ How to fix: Consider if a visible label showing "{found}" would better serve all
 ## WarnFieldLabelledByElementThatIsNotALabel
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnFieldLabelledByElementThatIsNotALabel_002_correct_label_elements.html
+  - Fixtures/Forms/WarnFieldLabelledByElementThatIsNotALabel_001_violations_basic.html
   - Fixtures/Forms/WarnFieldLabelledByElementThatIsNotALabel.html
 
 ID: WarnFieldLabelledByElementThatIsNotALabel
@@ -445,7 +489,10 @@ How to fix: Consider using a proper <label> element, or ensure the element '{fou
 ## WarnFieldLabelledByMultipleElements
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnFieldLabelledByMultipleElements_002_correct_simple_labels.html
   - Fixtures/Forms/WarnFieldLabelledByMultipleElements.html
+  - Fixtures/Forms/WarnFieldLabelledByMultipleElements_001_violations_basic.html
+  - Fixtures/Forms/WarnFieldLabelledByMultipleElements_002_correct_single_label.html
 
 ID: WarnFieldLabelledByMultipleElements
 Type: Warning
@@ -463,6 +510,8 @@ How to fix: Review the {count} labeling elements to ensure they make sense when 
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Forms/WarnFormHasNoLabel.html
+  - Fixtures/Forms/WarnFormHasNoLabel_002_correct_with_labels.html
+  - Fixtures/Forms/WarnFormHasNoLabel_001_violations_basic.html
 
 ID: WarnFormHasNoLabel
 Type: Warning
@@ -479,6 +528,9 @@ How to fix: Add an accessible name to the form element using aria-label (e.g., a
 ## WarnFormHasNoLabelSoIsNotLandmark
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark_001_violations_basic.html
+  - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark_002_correct_with_labels.html
+  - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark_002_correct_as_landmarks.html
   - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark.html
 
 ID: WarnFormHasNoLabelSoIsNotLandmark
@@ -496,7 +548,10 @@ How to fix: Add aria-label or aria-labelledby to make it a landmark
 ## WarnFormLandmarkAccessibleNameUsesForm
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm_001_violations_basic.html
+  - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm_002_correct_descriptive_labels.html
   - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm.html
+  - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm_002_correct_descriptive.html
 
 ID: WarnFormLandmarkAccessibleNameUsesForm
 Type: Warning
@@ -513,7 +568,10 @@ How to fix: Use descriptive labels like "Contact form" or "Search form"
 ## WarnMissingAriaLabelledby
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnMissingAriaLabelledby_002_correct_with_associations.html
   - Fixtures/Forms/WarnMissingAriaLabelledby.html
+  - Fixtures/Forms/WarnMissingAriaLabelledby_001_violations_basic.html
+  - Fixtures/Forms/WarnMissingAriaLabelledby_002_correct_with_labelledby.html
 
 ID: WarnMissingAriaLabelledby
 Type: Warning
@@ -529,7 +587,9 @@ How to fix: Use aria-labelledby to associate multiple labels or aria-describedby
 
 ## WarnMissingRequiredIndication
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnMissingRequiredIndication_001_violations_basic.html
+  - Fixtures/Forms/WarnMissingRequiredIndication_002_correct_with_indicators.html
 
 ID: WarnMissingRequiredIndication
 Type: Warning
@@ -545,7 +605,10 @@ How to fix: Mark required fields with aria-required="true" and visual indicators
 
 ## WarnModalMissingAriaLabelledby
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnModalMissingAriaLabelledby_002_correct_with_aria.html
+  - Fixtures/Forms/WarnModalMissingAriaLabelledby_001_violations_basic.html
+  - Fixtures/Forms/WarnModalMissingAriaLabelledby_002_correct_with_labelledby.html
 
 ID: WarnModalMissingAriaLabelledby
 Type: Warning
@@ -561,7 +624,9 @@ How to fix: Add aria-labelledby pointing to the modal's heading element.
 
 ## WarnNoFieldset
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnNoFieldset_001_violations_basic.html
+  - Fixtures/Forms/WarnNoFieldset_002_correct_with_fieldset.html
 
 ID: WarnNoFieldset
 Type: Warning
@@ -577,7 +642,10 @@ How to fix: Use fieldset and legend elements to group related form fields like r
 
 ## WarnNoLegend
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnNoLegend_002_correct_with_legend.html
+  - Fixtures/Forms/WarnNoLegend_002_correct_with_legends.html
+  - Fixtures/Forms/WarnNoLegend_001_violations_basic.html
 
 ID: WarnNoLegend
 Type: Warning
@@ -593,7 +661,9 @@ How to fix: Add legend as first child of fieldset to label the group.
 
 ## WarnUnlabelledForm
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnUnlabelledForm_001_violations_basic.html
+  - Fixtures/Forms/WarnUnlabelledForm_002_correct_with_labels.html
 
 ID: WarnUnlabelledForm
 Type: Warning
@@ -609,7 +679,9 @@ How to fix: Add aria-label or aria-labelledby to form elements.
 
 ## WarnUnlabelledRegion
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/WarnUnlabelledRegion_002_correct_with_labels.html
+  - Fixtures/Forms/WarnUnlabelledRegion_001_violations_basic.html
 
 ID: WarnUnlabelledRegion
 Type: Warning

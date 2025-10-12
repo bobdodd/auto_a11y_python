@@ -1,12 +1,14 @@
 # TITLE Touchpoint
 
-Total issues: 9
+Total issues: 8
 
 ================================================================================
 
 ## ErrEmptyTitleAttr
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/TitleAttributes/ErrEmptyTitleAttr_001_violations_basic.html
+  - Fixtures/TitleAttributes/ErrEmptyTitleAttr_002_correct_descriptive.html
 
 ID: ErrEmptyTitleAttr
 Type: Error
@@ -22,7 +24,9 @@ How to fix: Remove empty title attributes
 
 ## ErrIframeWithNoTitleAttr
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/IFrames/ErrIframeWithNoTitleAttr_002_correct_with_title.html
+  - Fixtures/IFrames/ErrIframeWithNoTitleAttr_001_violations_basic.html
 
 ID: ErrIframeWithNoTitleAttr
 Type: Error
@@ -38,23 +42,30 @@ How to fix: Add a title attribute to every iframe that concisely describes its c
 
 ## ErrTitleAttrFound
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_004_correct_head_metadata.html
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_003_correct_iframe_with_title.html
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_005_violations_body_elements.html
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_002_correct_visible_text.html
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_001_violations_basic.html
 
 ID: ErrTitleAttrFound
 Type: Error
-Impact: Low
-WCAG: 3.3.2, 4.1.2
+Impact: Medium
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 4.1.2 Name, Role, Value (Level A)
 Touchpoint: title
-Description: Title attribute used for important information
-Why it matters: Title attributes are not reliably accessible
-Who it affects: Mobile users, keyboard users, some screen readers
-How to fix: Use visible text or proper labels instead
+Description: Title attribute used - fundamentally inaccessible to assistive technology
+Why it matters: Title attributes fail WCAG Conformance requirement 5.2.4 as they are not accessible with regular assistive technology. For screen magnifier users at high magnification, tooltip content extends off-screen and disappears when mouse moves to read it, making content completely inaccessible. Additionally, title attributes are not accessible on mobile/touch devices, inconsistently announced by screen readers, and cannot be accessed by keyboard-only users
+Who it affects: Screen magnifier users (tooltip goes off-screen at high magnification), mobile and touch screen users (no hover), keyboard-only users (cannot trigger tooltip), screen reader users (inconsistent support), users with motor disabilities (tooltip disappears when mouse moves), users with cognitive disabilities (tooltip disappears too quickly)
+How to fix: Never use title attributes. Use visible text, proper <label> elements for forms, aria-label for icons, or visible helper text. For abbreviations, provide full text on first use or use <dfn> element
 
 ================================================================================
 
 ## WarnIframeTitleNotDescriptive
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/IFrames/WarnIframeTitleNotDescriptive_002_correct_descriptive.html
+  - Fixtures/IFrames/WarnIframeTitleNotDescriptive_001_violations_basic.html
 
 ID: WarnIframeTitleNotDescriptive
 Type: Warning
@@ -86,7 +97,9 @@ How to fix: Remove {count-1} duplicate <title> elements, keeping only one in the
 
 ## WarnPageTitleTooLong
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Page/WarnPageTitleTooLong_002_correct_concise.html
+  - Fixtures/Page/WarnPageTitleTooLong_001_violations_basic.html
 
 ID: WarnPageTitleTooLong
 Type: Warning
@@ -102,7 +115,9 @@ How to fix: Shorten the title from {length} to under 60 characters. Place the mo
 
 ## WarnPageTitleTooShort
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Page/WarnPageTitleTooShort_002_correct_descriptive.html
+  - Fixtures/Page/WarnPageTitleTooShort_001_violations_basic.html
 
 ID: WarnPageTitleTooShort
 Type: Warning
@@ -116,25 +131,11 @@ How to fix: Expand "{found}" to be more descriptive by including the site name a
 
 ================================================================================
 
-## WarnTitleAttrFound
-
-✨ New fixtures needed
-
-ID: WarnTitleAttrFound
-Type: Warning
-Impact: Low
-WCAG: 3.3.2 Labels or Instructions (Level A), 4.1.2 Name, Role, Value (Level A)
-Touchpoint: title
-Description: Title attribute is being used on an element, which has significant accessibility limitations
-Why it matters: Title attributes are problematic for accessibility: they don't appear on mobile devices or touch screens, keyboard users cannot access them without a mouse, screen readers handle them inconsistently (some ignore them, some read them), they disappear quickly making them hard to read for users with motor or cognitive disabilities, they cannot be styled or resized for users with low vision, and they're not translated by browser translation tools. Using title attributes for important information excludes many users from accessing that content.
-Who it affects: Mobile and touch screen users who never see title tooltips, keyboard-only users who cannot hover to trigger tooltips, screen reader users who may not hear title content reliably, users with motor disabilities who cannot hover precisely, users with cognitive disabilities who need more time to read, users with low vision who cannot resize tooltip text, and users relying on translation tools
-How to fix: Replace title attributes with visible, persistent text that all users can access. For form fields, use visible <label> elements or aria-label. For links and buttons, ensure the visible text is descriptive. For abbreviations, provide the full text on first use. For supplementary information, use visible helper text, details/summary elements, or clickable info icons. Only use title attributes for progressive enhancement where the information duplicates visible content. Never rely on title alone for important information.
-
-================================================================================
-
 ## ErrEmptyTitleAttr
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/TitleAttributes/ErrEmptyTitleAttr_001_violations_basic.html
+  - Fixtures/TitleAttributes/ErrEmptyTitleAttr_002_correct_descriptive.html
 
 ID: ErrEmptyTitleAttr
 Type: Error

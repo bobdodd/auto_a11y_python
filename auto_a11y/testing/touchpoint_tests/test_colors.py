@@ -141,10 +141,81 @@ async def test_colors(page) -> Dict[str, Any]:
                 
                 function hasNonColorDistinction(element) {
                     const style = window.getComputedStyle(element);
-                    return style.textDecoration !== 'none' || 
-                           style.textDecorationLine !== 'none' ||
-                           style.border !== 'none' ||
-                           style.outline !== 'none';
+
+                    // Strong indicators (pass without warning)
+                    const hasUnderline = style.textDecoration !== 'none' && style.textDecoration.includes('underline');
+                    const hasTextDecorationLine = style.textDecorationLine !== 'none' && style.textDecorationLine !== '';
+                    const hasBorder = style.borderWidth && style.borderWidth !== '0px' &&
+                                    (style.borderStyle !== 'none' && style.borderStyle !== '');
+                    const hasOutline = style.outlineWidth && style.outlineWidth !== '0px' &&
+                                     (style.outlineStyle !== 'none' && style.outlineStyle !== '');
+
+                    if (hasUnderline || hasTextDecorationLine || hasBorder || hasOutline) {
+                        return { hasIndicator: true, isWeak: false };
+                    }
+
+                    // Weak indicators (pass but generate warning)
+                    const parentStyle = element.parentElement ? window.getComputedStyle(element.parentElement) : null;
+                    const linkWeight = parseInt(style.fontWeight) || 400;
+                    const parentWeight = parentStyle ? (parseInt(parentStyle.fontWeight) || 400) : 400;
+                    const hasWeightDifference = linkWeight > parentWeight;
+
+                    const hasBoldTag = element.querySelector('b, strong') !== null ||
+                                      element.tagName === 'B' || element.tagName === 'STRONG';
+
+                    const hasTextShadow = style.textShadow && style.textShadow !== 'none';
+
+                    if (hasWeightDifference || hasBoldTag || hasTextShadow) {
+                        return { hasIndicator: true, isWeak: true };
+                    }
+
+                    return { hasIndicator: false, isWeak: false };
+                }
+
+                function isInNavigationContext(element) {
+                    // Check if link is within navigation regions where context makes purpose clear
+                    let current = element;
+                    while (current && current !== document.body) {
+                        const role = current.getAttribute('role');
+                        const tagName = current.tagName.toLowerCase();
+
+                        // Check for navigation landmarks
+                        if (role === 'navigation' || tagName === 'nav') {
+                            return true;
+                        }
+
+                        // Check for common navigation class names
+                        const className = current.className || '';
+                        if (typeof className === 'string' &&
+                            (className.includes('nav') || className.includes('menu') ||
+                             className.includes('header') || className.includes('footer'))) {
+                            return true;
+                        }
+
+                        current = current.parentElement;
+                    }
+                    return false;
+                }
+
+                function isInFlowingText(element) {
+                    // Check if link is within flowing text (paragraphs, list items, etc.)
+                    let current = element.parentElement;
+                    while (current && current !== document.body) {
+                        const tagName = current.tagName.toLowerCase();
+
+                        // Flowing text containers
+                        if (['p', 'li', 'td', 'th', 'dd', 'dt', 'blockquote', 'figcaption'].includes(tagName)) {
+                            return true;
+                        }
+
+                        // Article content
+                        if (tagName === 'article' || current.getAttribute('role') === 'article') {
+                            return true;
+                        }
+
+                        current = current.parentElement;
+                    }
+                    return false;
                 }
                 
                 // Get all text elements
@@ -230,21 +301,48 @@ async def test_colors(page) -> Dict[str, Any]:
                     }
                 });
                 
-                // Test links for color-only distinction
+                // Test links for color-only distinction (only in flowing text, not navigation)
                 const links = Array.from(document.querySelectorAll('a[href]'));
                 let colorOnlyLinks = 0;
-                
+                let weakIndicatorLinks = 0;
+
                 links.forEach(link => {
-                    if (!hasNonColorDistinction(link)) {
+                    // Skip links in navigation contexts - they have clear context
+                    if (isInNavigationContext(link)) {
+                        return;
+                    }
+
+                    // Only check links within flowing text (paragraphs, articles, etc.)
+                    if (!isInFlowingText(link)) {
+                        return;
+                    }
+
+                    const distinction = hasNonColorDistinction(link);
+
+                    if (!distinction.hasIndicator) {
+                        // No non-color indicator at all - this is a violation
                         colorOnlyLinks++;
                         results.warnings.push({
                             err: 'WarnColorOnlyLink',
                             type: 'warn',
-                            cat: 'colors',
-                            element: 'A',
+                            cat: 'links',
+                            element: 'a',
                             xpath: getFullXPath(link),
                             html: link.outerHTML.substring(0, 200),
-                            description: 'Link is distinguished only by color without additional visual cues',
+                            description: 'Link in flowing text is distinguished only by color without underline, border, or other non-color visual indicator',
+                            linkText: link.textContent.trim()
+                        });
+                    } else if (distinction.isWeak) {
+                        // Has weak indicator (font-weight, bold, text-shadow) - passes but warn
+                        weakIndicatorLinks++;
+                        results.warnings.push({
+                            err: 'WarnColorOnlyLinkWeakIndicator',
+                            type: 'warn',
+                            cat: 'links',
+                            element: 'a',
+                            xpath: getFullXPath(link),
+                            html: link.outerHTML.substring(0, 200),
+                            description: 'Link in flowing text uses only subtle visual indicators (font-weight, bold, or text-shadow) - these can be difficult for users to recognize as links. Consider using underline or border for clearer indication.',
                             linkText: link.textContent.trim()
                         });
                     }

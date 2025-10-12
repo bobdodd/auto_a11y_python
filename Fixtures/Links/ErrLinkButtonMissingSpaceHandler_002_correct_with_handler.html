@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkButtonMissingSpaceHandler - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkButtonMissingSpaceHandler_002_correct_with_handler",
+    "issueId": "ErrLinkButtonMissingSpaceHandler",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Links styled as buttons WITH proper Space key handlers, or using semantic buttons",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .button-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .button-style {
+            padding: 12px 24px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Actions with Proper Keyboard Support</h1>
+
+    <!-- PASS 1: Button-styled link WITH inline Space handler -->
+    <p data-expected-pass="true" data-pass-reason="Link has inline onkeydown with Space key handler">
+        <a href="submit.php"
+           id="submit-link"
+           class="button-link"
+           onkeydown="if (event.keyCode === 32) { event.preventDefault(); this.click(); }">
+            Submit Form (with inline handler)
+        </a>
+    </p>
+
+    <!-- PASS 2: Button-styled link WITH addEventListener Space handler -->
+    <p data-expected-pass="true" data-pass-reason="Link has addEventListener with Space key handling">
+        <a href="save.php"
+           id="save-link"
+           class="button-link">
+            Save Changes (with addEventListener)
+        </a>
+    </p>
+
+    <!-- PASS 3: Semantic button element (naturally supports Space) -->
+    <p data-expected-pass="true" data-pass-reason="Uses semantic button element which naturally supports Space key">
+        <button onclick="window.location.href='delete.php'"
+                class="button-style">
+            Delete (semantic button)
+        </button>
+    </p>
+
+    <script>
+        // Add Space key handler using addEventListener
+        document.getElementById('save-link').addEventListener('keydown', function(e) {
+            if (e.keyCode === 32 || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+    </script>
+</body>
+</html>

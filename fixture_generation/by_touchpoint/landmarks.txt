@@ -1,12 +1,103 @@
 # LANDMARKS Touchpoint
 
-Total issues: 65
+Total issues: 70
+
+================================================================================
+
+## DiscoAsideFound
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/DiscoAsideFound_002_discovery_role_complementary.html
+  - Fixtures/Landmarks/DiscoAsideFound_001_discovery_single_aside.html
+
+ID: DiscoAsideFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Complementary region detected (signature: {asideSignature}) - requires manual accessibility review
+Why it matters: Complementary regions (<aside> or role="complementary") provide supporting content related to the main content. They must be properly labeled when multiple exist, contain relevant supplementary information, and be distinguishable from main content for screen reader users who navigate by landmarks.
+Who it affects: Screen reader users who navigate by landmarks to find supporting content, users with cognitive disabilities who benefit from clear content organization and separation of main vs. supplementary information.
+How to fix: Verify the aside contains truly complementary content (related to but separate from main content). If multiple complementary regions exist on the page, ensure each has a unique accessible name using aria-label or aria-labelledby. Test with screen reader to confirm the region is announced correctly and its purpose is clear.
+
+================================================================================
+
+## DiscoSectionFound
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/DiscoSectionFound_001_discovery_labeled_section.html
+
+ID: DiscoSectionFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Section region detected (signature: {sectionSignature}) - requires manual accessibility review
+Why it matters: Section elements with accessible names become region landmarks (<section> with aria-label/aria-labelledby or role="region"). They must have meaningful, unique labels to help screen reader users navigate between distinct areas of content. Sections without accessible names are not landmarks and won't appear in landmark navigation.
+Who it affects: Screen reader users who navigate by landmarks to jump between major page sections, users with cognitive disabilities who benefit from clearly labeled and organized content regions.
+How to fix: Verify each section has a descriptive, unique accessible name (aria-label or aria-labelledby) that clearly identifies its purpose. Ensure the label is concise and meaningful. If the section doesn't represent a significant region of content, consider if it should be a landmark at all. Test with screen reader to confirm the region is announced with its label.
+
+================================================================================
+
+## DiscoHeaderFound
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/DiscoHeaderFound_001_discovery_header_banner.html
+  - Fixtures/Landmarks/DiscoHeaderFound_002_discovery_role_banner.html
+
+ID: DiscoHeaderFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Banner region detected (signature: {headerSignature}) - requires manual accessibility review
+Why it matters: Banner landmarks (<header> at top level or role="banner") identify the main header of the page, typically containing site logo, main navigation, and site-wide utilities. There should be only one banner per page. It must be properly labeled if the site identity isn't obvious, and should not be nested inside other landmarks (which would prevent it from being a banner).
+Who it affects: Screen reader users who navigate by landmarks to quickly access site-wide navigation and branding, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who rely on consistent banner placement for orientation.
+How to fix: Verify there is only one banner landmark per page (scoped to top-level <header> or explicit role="banner"). Ensure the banner contains site-level content (logo, main nav, site utilities) rather than page-specific content. If multiple headers exist, ensure only the site-level one is a banner. Test with screen reader to confirm banner is announced correctly.
+
+================================================================================
+
+## DiscoFooterFound
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/DiscoFooterFound_002_discovery_role_contentinfo.html
+  - Fixtures/Landmarks/DiscoFooterFound_001_discovery_footer_contentinfo.html
+
+ID: DiscoFooterFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Contentinfo region detected (signature: {footerSignature}) - requires manual accessibility review
+Why it matters: Contentinfo landmarks (<footer> at top level or role="contentinfo") identify site-wide footer information such as copyright, privacy policy, and contact links. There should be only one contentinfo per page. It must contain site-level information rather than page-specific footers, and should not be nested inside other landmarks (which would prevent it from being contentinfo).
+Who it affects: Screen reader users who navigate by landmarks to quickly access site-wide footer information and legal links, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who rely on consistent footer placement for finding important site information.
+How to fix: Verify there is only one contentinfo landmark per page (scoped to top-level <footer> or explicit role="contentinfo"). Ensure the footer contains site-level information (copyright, privacy, contact) rather than article-specific or section-specific footers. If multiple footers exist, ensure only the site-level one is contentinfo. Test with screen reader to confirm contentinfo is announced correctly.
+
+================================================================================
+
+## DiscoSearchFound
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/DiscoSearchFound_001_discovery_search_element.html
+  - Fixtures/Landmarks/DiscoSearchFound_002_discovery_role_search.html
+
+ID: DiscoSearchFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Search region detected (signature: {searchSignature}) - requires manual accessibility review
+Why it matters: Search landmarks (<search> or role="search") identify search functionality on the page. They help screen reader users quickly locate search features. The search region must have a clear accessible name if multiple search regions exist, contain appropriate search form controls, and be easily discoverable through landmark navigation.
+Who it affects: Screen reader users who navigate by landmarks to quickly find search functionality, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who benefit from clearly marked search areas.
+How to fix: Verify the search region contains actual search functionality (typically a form with input and submit button). If multiple search regions exist, ensure each has a unique accessible name using aria-label or aria-labelledby. Ensure search form controls are properly labeled and keyboard accessible. Test with screen reader to confirm search region is announced correctly and search controls are accessible.
 
 ================================================================================
 
 ## ErrBannerLandmarkAccessibleNameIsBlank
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrBannerLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Landmarks/ErrBannerLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
 
 ID: ErrBannerLandmarkAccessibleNameIsBlank
 Type: Error
@@ -24,6 +115,8 @@ How to fix: Add aria-label or aria-labelledby
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Landmarks/ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+  - Fixtures/Landmarks/ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Landmarks/ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
 
 ID: ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs
 Type: Error
@@ -39,7 +132,9 @@ How to fix: Use only one labeling method
 
 ## ErrBannerLandmarkMayNotBeChildOfAnotherLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrBannerLandmarkMayNotBeChildOfAnotherLandmark_002_correct_top_level.html
+  - Fixtures/Landmarks/ErrBannerLandmarkMayNotBeChildOfAnotherLandmark_001_violations_basic.html
 
 ID: ErrBannerLandmarkMayNotBeChildOfAnotherLandmark
 Type: Error
@@ -55,7 +150,10 @@ How to fix: Move banner to top level
 
 ## ErrComplementaryLandmarkAccessibleNameIsBlank
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrComplementaryLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkAccessibleNameIsBlank_002_correct_meaningful_labels.html
 
 ID: ErrComplementaryLandmarkAccessibleNameIsBlank
 Type: Error
@@ -73,6 +171,8 @@ How to fix: Add meaningful label text
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Landmarks/ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
 
 ID: ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs
 Type: Error
@@ -88,7 +188,9 @@ How to fix: Use only one labeling method
 
 ## ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark_002_correct_top_level.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark_001_violations_basic.html
 
 ID: ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark
 Type: Error
@@ -104,7 +206,9 @@ How to fix: Move complementary landmark outside of other landmarks
 
 ## ErrCompletelyEmptyNavLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrCompletelyEmptyNavLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/ErrCompletelyEmptyNavLandmark_002_correct_with_content.html
 
 ID: ErrCompletelyEmptyNavLandmark
 Type: Error
@@ -120,7 +224,9 @@ How to fix: Add navigation content or remove empty landmark
 
 ## ErrContentInfoLandmarkAccessibleNameIsBlank
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrContentInfoLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Landmarks/ErrContentInfoLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
 
 ID: ErrContentInfoLandmarkAccessibleNameIsBlank
 Type: Error
@@ -138,6 +244,8 @@ How to fix: Add meaningful label text
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Landmarks/ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+  - Fixtures/Landmarks/ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
+  - Fixtures/Landmarks/ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
 
 ID: ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs
 Type: Error
@@ -153,7 +261,9 @@ How to fix: Use only one labeling method
 
 ## ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark_002_correct_top_level.html
+  - Fixtures/Landmarks/ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark_001_violations_basic.html
 
 ID: ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark
 Type: Error
@@ -170,6 +280,8 @@ How to fix: Move contentinfo to top level
 ## ErrDuplicateLabelForBannerLandmark
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForBannerLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForBannerLandmark_002_correct_unique_labels.html
   - Fixtures/Landmarks/ErrDuplicateLabelForBannerLandmark.html
 
 ID: ErrDuplicateLabelForBannerLandmark
@@ -188,6 +300,8 @@ How to fix: Only one banner should typically exist per page
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Landmarks/ErrDuplicateLabelForComplementaryLandmark.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForComplementaryLandmark_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForComplementaryLandmark_001_violations_basic.html
 
 ID: ErrDuplicateLabelForComplementaryLandmark
 Type: Error
@@ -204,6 +318,8 @@ How to fix: Provide unique labels for each complementary landmark
 ## ErrDuplicateLabelForContentinfoLandmark
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForContentinfoLandmark_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForContentinfoLandmark_001_violations_basic.html
   - Fixtures/Landmarks/ErrDuplicateLabelForContentinfoLandmark.html
 
 ID: ErrDuplicateLabelForContentinfoLandmark
@@ -222,6 +338,8 @@ How to fix: Typically only one contentinfo should exist per page
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Landmarks/ErrDuplicateLabelForFormLandmark.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForFormLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForFormLandmark_002_correct_unique_labels.html
 
 ID: ErrDuplicateLabelForFormLandmark
 Type: Error
@@ -238,7 +356,9 @@ How to fix: Provide unique labels for each form
 ## ErrDuplicateLabelForNavLandmark
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForNavLandmark_002_correct_unique_labels.html
   - Fixtures/Landmarks/ErrDuplicateLabelForNavLandmark.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForNavLandmark_001_violations_basic.html
 
 ID: ErrDuplicateLabelForNavLandmark
 Type: Error
@@ -255,6 +375,8 @@ How to fix: Provide unique labels like "Main navigation" and "Footer navigation"
 ## ErrDuplicateLabelForRegionLandmark
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForRegionLandmark_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForRegionLandmark_001_violations_basic.html
   - Fixtures/Landmarks/ErrDuplicateLabelForRegionLandmark.html
 
 ID: ErrDuplicateLabelForRegionLandmark
@@ -272,6 +394,8 @@ How to fix: Provide unique labels for each region
 ## ErrDuplicateLabelForSearchLandmark
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLabelForSearchLandmark_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForSearchLandmark_001_violations_basic.html
   - Fixtures/Landmarks/ErrDuplicateLabelForSearchLandmark.html
 
 ID: ErrDuplicateLabelForSearchLandmark
@@ -288,7 +412,9 @@ How to fix: Provide unique labels for each search landmark
 
 ## ErrDuplicateLandmarkWithoutName
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrDuplicateLandmarkWithoutName_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLandmarkWithoutName_001_violations_basic.html
 
 ID: ErrDuplicateLandmarkWithoutName
 Type: Error
@@ -304,7 +430,9 @@ How to fix: Add aria-label or aria-labelledby to distinguish multiple landmarks 
 
 ## ErrElementNotContainedInALandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrElementNotContainedInALandmark_001_violations_basic.html
+  - Fixtures/Landmarks/ErrElementNotContainedInALandmark_002_correct_in_landmarks.html
 
 ID: ErrElementNotContainedInALandmark
 Type: Error
@@ -321,6 +449,8 @@ How to fix: Ensure all content is within appropriate landmarks
 ## ErrFormAriaLabelledByIsBlank
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormAriaLabelledByIsBlank_002_correct_with_label.html
+  - Fixtures/Forms/ErrFormAriaLabelledByIsBlank_001_violations_basic.html
   - Fixtures/Forms/ErrFormAriaLabelledByIsBlank.html
 
 ID: ErrFormAriaLabelledByIsBlank
@@ -338,6 +468,8 @@ How to fix: Reference element with actual text content
 ## ErrFormAriaLabelledByReferenceDIsHidden
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDIsHidden_002_correct_visible_label.html
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDIsHidden_001_violations_basic.html
   - Fixtures/Forms/ErrFormAriaLabelledByReferenceDIsHidden.html
 
 ID: ErrFormAriaLabelledByReferenceDIsHidden
@@ -354,7 +486,9 @@ How to fix: Reference visible elements only
 
 ## ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading_002_correct_references_heading.html
+  - Fixtures/Landmarks/ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading_001_violations_basic.html
 
 ID: ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading
 Type: Error
@@ -371,6 +505,8 @@ How to fix: Reference a heading element when possible
 ## ErrFormLandmarkAccessibleNameIsBlank
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Forms/ErrFormLandmarkAccessibleNameIsBlank_002_correct_with_name.html
   - Fixtures/Landmarks/ErrFormLandmarkAccessibleNameIsBlank.html
 
 ID: ErrFormLandmarkAccessibleNameIsBlank
@@ -388,6 +524,8 @@ How to fix: Add meaningful label describing form purpose
 ## ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Forms/ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Forms/ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
   - Fixtures/Landmarks/ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
 
 ID: ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs
@@ -405,7 +543,9 @@ How to fix: Use only one labeling method
 ## ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
   - Fixtures/Landmarks/ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+  - Fixtures/Landmarks/ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
 
 ID: ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs
 Type: Error
@@ -421,7 +561,9 @@ How to fix: Use only one labeling method - either aria-label or aria-labelledby
 
 ## ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost_002_correct_no_tabindex.html
+  - Fixtures/Landmarks/ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost_001_violations_basic.html
 
 ID: ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost
 Type: Error
@@ -437,7 +579,9 @@ How to fix: Remove tabindex or use tabindex="-1" if programmatic focus is needed
 
 ## ErrMainLandmarkIsHidden
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrMainLandmarkIsHidden_001_violations_basic.html
+  - Fixtures/Landmarks/ErrMainLandmarkIsHidden_002_correct_visible.html
 
 ID: ErrMainLandmarkIsHidden
 Type: Error
@@ -453,7 +597,9 @@ How to fix: Ensure main landmark is visible or remove if not needed
 
 ## ErrMainLandmarkMayNotbeChildOfAnotherLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrMainLandmarkMayNotbeChildOfAnotherLandmark_002_correct_top_level.html
+  - Fixtures/Landmarks/ErrMainLandmarkMayNotbeChildOfAnotherLandmark_001_violations_basic.html
 
 ID: ErrMainLandmarkMayNotbeChildOfAnotherLandmark
 Type: Error
@@ -469,7 +615,9 @@ How to fix: Move main outside of other landmarks
 
 ## ErrMissingMainLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrMissingMainLandmark_002_correct_with_main.html
+  - Fixtures/Landmarks/ErrMissingMainLandmark_001_violations_basic.html
 
 ID: ErrMissingMainLandmark
 Type: Error
@@ -485,7 +633,9 @@ How to fix: Add <main> element or role="main" to identify the primary content ar
 
 ## ErrMultipleBannerLandmarks
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrMultipleBannerLandmarks_002_correct_single_banner.html
+  - Fixtures/Landmarks/ErrMultipleBannerLandmarks_001_violations_basic.html
 
 ID: ErrMultipleBannerLandmarks
 Type: Error
@@ -501,7 +651,9 @@ How to fix: Use only one banner landmark
 
 ## ErrMultipleContentinfoLandmarks
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrMultipleContentinfoLandmarks_001_violations_basic.html
+  - Fixtures/Landmarks/ErrMultipleContentinfoLandmarks_002_correct_single_footer.html
 
 ID: ErrMultipleContentinfoLandmarks
 Type: Error
@@ -517,7 +669,9 @@ How to fix: Use only one contentinfo landmark
 
 ## ErrMultipleMainLandmarks
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrMultipleMainLandmarks_001_violations_basic.html
+  - Fixtures/Landmarks/ErrMultipleMainLandmarks_002_correct_single_main.html
 
 ID: ErrMultipleMainLandmarks
 Type: Error
@@ -533,7 +687,9 @@ How to fix: Use only one <main> element or role="main" per page. Identify which 
 
 ## ErrNavLandmarkAccessibleNameIsBlank
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrNavLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
+  - Fixtures/Landmarks/ErrNavLandmarkAccessibleNameIsBlank_001_violations_basic.html
 
 ID: ErrNavLandmarkAccessibleNameIsBlank
 Type: Error
@@ -549,7 +705,9 @@ How to fix: Add aria-label like "Main navigation" or "Footer navigation"
 
 ## ErrNavLandmarkContainsOnlyWhiteSpace
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrNavLandmarkContainsOnlyWhiteSpace_002_correct_with_content.html
+  - Fixtures/Landmarks/ErrNavLandmarkContainsOnlyWhiteSpace_001_violations_basic.html
 
 ID: ErrNavLandmarkContainsOnlyWhiteSpace
 Type: Error
@@ -566,6 +724,8 @@ How to fix: Add navigation links or remove the landmark
 ## ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Landmarks/ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
   - Fixtures/Landmarks/ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
 
 ID: ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs
@@ -582,7 +742,9 @@ How to fix: Use only one labeling method
 
 ## ErrNestedNavLandmarks
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrNestedNavLandmarks_001_violations_basic.html
+  - Fixtures/Landmarks/ErrNestedNavLandmarks_002_correct_flat_structure.html
 
 ID: ErrNestedNavLandmarks
 Type: Error
@@ -598,7 +760,9 @@ How to fix: Flatten navigation structure
 
 ## ErrNoBannerLandmarkOnPage
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrNoBannerLandmarkOnPage_001_violations_basic.html
+  - Fixtures/Landmarks/ErrNoBannerLandmarkOnPage_002_correct_with_banner.html
 
 ID: ErrNoBannerLandmarkOnPage
 Type: Error
@@ -614,7 +778,9 @@ How to fix: Use the HTML5 <header> element for your site header (it has an impli
 
 ## ErrNoMainLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrNoMainLandmark_002_correct_with_main.html
+  - Fixtures/Landmarks/ErrNoMainLandmark_001_violations_basic.html
 
 ID: ErrNoMainLandmark
 Type: Error
@@ -631,6 +797,8 @@ How to fix: Add a <main> element around the primary content area, or use role="m
 ## ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Landmarks/ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
   - Fixtures/Landmarks/ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
 
 ID: ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs
@@ -647,7 +815,9 @@ How to fix: Use only one labeling method
 
 ## RegionLandmarkAccessibleNameIsBlank
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/RegionLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
+  - Fixtures/Landmarks/RegionLandmarkAccessibleNameIsBlank_001_violations_basic.html
 
 ID: RegionLandmarkAccessibleNameIsBlank
 Type: Error
@@ -663,7 +833,9 @@ How to fix: Add meaningful label text
 
 ## WarnBannerLandmarkAccessibleNameUsesBanner
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnBannerLandmarkAccessibleNameUsesBanner_002_correct_descriptive_labels.html
+  - Fixtures/Landmarks/WarnBannerLandmarkAccessibleNameUsesBanner_001_violations_basic.html
 
 ID: WarnBannerLandmarkAccessibleNameUsesBanner
 Type: Warning
@@ -679,7 +851,9 @@ How to fix: Use descriptive label or rely on implicit role
 
 ## WarnComplementaryLandmarkAccessibleNameUsesComplementary
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnComplementaryLandmarkAccessibleNameUsesComplementary_001_violations_basic.html
+  - Fixtures/Landmarks/WarnComplementaryLandmarkAccessibleNameUsesComplementary_002_correct_descriptive_labels.html
 
 ID: WarnComplementaryLandmarkAccessibleNameUsesComplementary
 Type: Warning
@@ -696,7 +870,9 @@ How to fix: Use descriptive labels like "Related articles" or "Sidebar"
 ## WarnComplementaryLandmarkHasNoLabel
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnComplementaryLandmarkHasNoLabel_001_violations_basic.html
   - Fixtures/Landmarks/WarnComplementaryLandmarkHasNoLabel.html
+  - Fixtures/Landmarks/WarnComplementaryLandmarkHasNoLabel_002_correct_with_labels.html
 
 ID: WarnComplementaryLandmarkHasNoLabel
 Type: Warning
@@ -713,6 +889,8 @@ How to fix: Add aria-label or aria-labelledby to identify the purpose
 ## WarnContentInfoLandmarkHasNoLabel
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnContentInfoLandmarkHasNoLabel_002_correct_with_labels.html
+  - Fixtures/Landmarks/WarnContentInfoLandmarkHasNoLabel_001_violations_basic.html
   - Fixtures/Landmarks/WarnContentInfoLandmarkHasNoLabel.html
 
 ID: WarnContentInfoLandmarkHasNoLabel
@@ -729,7 +907,9 @@ How to fix: Add descriptive label if multiple contentinfo exist
 
 ## WarnContentOutsideLandmarks
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnContentOutsideLandmarks_001_violations_basic.html
+  - Fixtures/Landmarks/WarnContentOutsideLandmarks_002_correct_in_landmarks.html
 
 ID: WarnContentOutsideLandmarks
 Type: Warning
@@ -745,7 +925,9 @@ How to fix: Ensure all content is within appropriate landmarks (header, nav, mai
 
 ## WarnContentinfoLandmarkAccessibleNameUsesContentinfo
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnContentinfoLandmarkAccessibleNameUsesContentinfo_002_correct_descriptive_labels.html
+  - Fixtures/Landmarks/WarnContentinfoLandmarkAccessibleNameUsesContentinfo_001_violations_basic.html
 
 ID: WarnContentinfoLandmarkAccessibleNameUsesContentinfo
 Type: Warning
@@ -761,7 +943,9 @@ How to fix: Use descriptive label or rely on implicit role
 
 ## WarnElementNotInLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnElementNotInLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/WarnElementNotInLandmark_002_correct_in_landmarks.html
 
 ID: WarnElementNotInLandmark
 Type: Warning
@@ -777,7 +961,9 @@ How to fix: Ensure all meaningful content is contained within appropriate landma
 
 ## WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy_001_violations_basic.html
+  - Fixtures/Landmarks/WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy_002_correct_heading_as_label.html
 
 ID: WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy
 Type: Error
@@ -793,7 +979,9 @@ How to fix: Use the heading as the landmark label
 
 ## WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark_002_correct_heading_labels.html
+  - Fixtures/Landmarks/WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark_001_violations_basic.html
 
 ID: WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark
 Type: Warning
@@ -809,7 +997,9 @@ How to fix: Consider using heading as landmark label via aria-labelledby
 
 ## WarnMissingBannerLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnMissingBannerLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/WarnMissingBannerLandmark_002_correct_with_banner.html
 
 ID: WarnMissingBannerLandmark
 Type: Warning
@@ -825,7 +1015,9 @@ How to fix: Use <header> element or role="banner" for page header content.
 
 ## WarnMissingContentinfoLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnMissingContentinfoLandmark_002_correct_with_contentinfo.html
+  - Fixtures/Landmarks/WarnMissingContentinfoLandmark_001_violations_basic.html
 
 ID: WarnMissingContentinfoLandmark
 Type: Warning
@@ -841,7 +1033,9 @@ How to fix: Use <footer> element or role="contentinfo" for page footer.
 
 ## WarnMultipleBannerLandmarksButNotAllHaveLabels
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnMultipleBannerLandmarksButNotAllHaveLabels_001_violations_basic.html
+  - Fixtures/Landmarks/WarnMultipleBannerLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
 
 ID: WarnMultipleBannerLandmarksButNotAllHaveLabels
 Type: Warning
@@ -857,7 +1051,9 @@ How to fix: Ensure all banner landmarks have labels or reduce to single banner
 
 ## WarnMultipleComplementaryLandmarksButNotAllHaveLabels
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnMultipleComplementaryLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
+  - Fixtures/Landmarks/WarnMultipleComplementaryLandmarksButNotAllHaveLabels_001_violations_basic.html
 
 ID: WarnMultipleComplementaryLandmarksButNotAllHaveLabels
 Type: Warning
@@ -873,7 +1069,9 @@ How to fix: Ensure all complementary landmarks have unique labels
 
 ## WarnMultipleContentInfoLandmarksButNotAllHaveLabels
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnMultipleContentInfoLandmarksButNotAllHaveLabels_001_violations_basic.html
+  - Fixtures/Landmarks/WarnMultipleContentInfoLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
 
 ID: WarnMultipleContentInfoLandmarksButNotAllHaveLabels
 Type: Warning
@@ -889,7 +1087,9 @@ How to fix: Ensure all contentinfo landmarks have labels or reduce to single con
 
 ## WarnMultipleNavLandmarksButNotAllHaveLabels
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnMultipleNavLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
+  - Fixtures/Landmarks/WarnMultipleNavLandmarksButNotAllHaveLabels_001_violations_basic.html
 
 ID: WarnMultipleNavLandmarksButNotAllHaveLabels
 Type: Warning
@@ -905,7 +1105,9 @@ How to fix: Label all navigation landmarks uniquely
 
 ## WarnMultipleNavNeedsLabel
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnMultipleNavNeedsLabel_002_correct_all_labeled.html
+  - Fixtures/Landmarks/WarnMultipleNavNeedsLabel_001_violations_basic.html
 
 ID: WarnMultipleNavNeedsLabel
 Type: Warning
@@ -921,7 +1123,9 @@ How to fix: Add unique aria-label attributes to each <nav> element or role="navi
 
 ## WarnMultipleRegionLandmarksButNotAllHaveLabels
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnMultipleRegionLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
+  - Fixtures/Landmarks/WarnMultipleRegionLandmarksButNotAllHaveLabels_001_violations_basic.html
 
 ID: WarnMultipleRegionLandmarksButNotAllHaveLabels
 Type: Warning
@@ -937,7 +1141,9 @@ How to fix: Ensure all regions have labels or use different elements
 
 ## WarnNavLandmarkAccessibleNameUsesNavigation
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnNavLandmarkAccessibleNameUsesNavigation_001_violations_basic.html
+  - Fixtures/Landmarks/WarnNavLandmarkAccessibleNameUsesNavigation_002_correct_descriptive_labels.html
 
 ID: WarnNavLandmarkAccessibleNameUsesNavigation
 Type: Warning
@@ -953,7 +1159,9 @@ How to fix: Use more descriptive labels like "Product categories" or "User accou
 
 ## WarnNavLandmarkHasNoLabel
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnNavLandmarkHasNoLabel_002_correct_with_labels.html
+  - Fixtures/Landmarks/WarnNavLandmarkHasNoLabel_001_violations_basic.html
 
 ID: WarnNavLandmarkHasNoLabel
 Type: Warning
@@ -969,7 +1177,9 @@ How to fix: Add descriptive aria-label
 
 ## WarnNoBannerLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnNoBannerLandmark_002_correct_with_banner.html
+  - Fixtures/Landmarks/WarnNoBannerLandmark_001_violations_basic.html
 
 ID: WarnNoBannerLandmark
 Type: Warning
@@ -985,7 +1195,9 @@ How to fix: Use the HTML5 <header> element at the page level (not within article
 
 ## WarnNoContentinfoLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnNoContentinfoLandmark_002_correct_with_footer.html
+  - Fixtures/Landmarks/WarnNoContentinfoLandmark_001_violations_basic.html
 
 ID: WarnNoContentinfoLandmark
 Type: Warning
@@ -1001,7 +1213,9 @@ How to fix: Use the HTML5 <footer> element for your page footer (it has an impli
 
 ## WarnNoNavigationLandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnNoNavigationLandmark_002_correct_with_nav.html
+  - Fixtures/Landmarks/WarnNoNavigationLandmark_001_violations_basic.html
 
 ID: WarnNoNavigationLandmark
 Type: Warning
@@ -1017,7 +1231,9 @@ How to fix: Wrap navigation areas in <nav> elements or add role="navigation" to 
 
 ## WarnRegionLandmarkAccessibleNameUsesNavigation
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnRegionLandmarkAccessibleNameUsesNavigation_001_violations_basic.html
+  - Fixtures/Landmarks/WarnRegionLandmarkAccessibleNameUsesNavigation_002_correct_descriptive_labels.html
 
 ID: WarnRegionLandmarkAccessibleNameUsesNavigation
 Type: Warning
@@ -1033,7 +1249,9 @@ How to fix: Use appropriate label or change to nav landmark
 
 ## WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark_002_correct_with_labels.html
+  - Fixtures/Landmarks/WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark_001_violations_basic.html
 
 ID: WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark
 Type: Warning
@@ -1049,7 +1267,9 @@ How to fix: Add aria-label or aria-labelledby, or use a different landmark type
 
 ## ErrBannerLandmarkAccessibleNameIsBlank
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Landmarks/ErrBannerLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Landmarks/ErrBannerLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
 
 ID: ErrBannerLandmarkAccessibleNameIsBlank
 Type: Error

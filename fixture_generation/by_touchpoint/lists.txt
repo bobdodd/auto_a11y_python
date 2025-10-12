@@ -7,6 +7,8 @@ Total issues: 4
 ## ErrEmptyList
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Lists/ErrEmptyList_001_violations_basic.html
+  - Fixtures/Lists/ErrEmptyList_002_correct_with_items.html
   - Fixtures/Lists/ErrEmptyList.html
 
 ID: ErrEmptyList
@@ -24,6 +26,8 @@ How to fix: Remove empty list elements or populate them with appropriate list it
 ## ErrFakeListImplementation
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Lists/ErrFakeListImplementation_002_correct_semantic_lists.html
+  - Fixtures/Lists/ErrFakeListImplementation_001_violations_basic.html
   - Fixtures/Lists/ErrFakeListImplementation.html
 
 ID: ErrFakeListImplementation
@@ -40,7 +44,15 @@ How to fix: Use proper ul/ol elements with li items for lists, avoid using visua
 
 ## WarnCustomBulletStyling
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Lists/WarnCustomBulletStyling_001_violations_basic.html
+  - Fixtures/Lists/WarnCustomBulletStyling_002_correct_semantic_preserved.html
+  - Fixtures/Lists/WarnCustomBulletStyling_004_violation_img_element.html
+  - Fixtures/Lists/WarnCustomBulletStyling_003_violation_background_image.html
+  - Fixtures/Lists/WarnCustomBulletStyling_002_violation_icon_font.html
+  - Fixtures/Lists/WarnCustomBulletStyling_006_correct_standard_bullets.html
+  - Fixtures/Lists/WarnCustomBulletStyling_001_violation_before_custom_content.html
+  - Fixtures/Lists/WarnCustomBulletStyling_005_violation_svg_element.html
 
 ID: WarnCustomBulletStyling
 Type: Warning
@@ -56,7 +68,9 @@ How to fix: Use CSS ::marker pseudo-element for custom bullets, ensure list sema
 
 ## WarnDeepListNesting
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Lists/WarnDeepListNesting_002_correct_shallow_nesting.html
+  - Fixtures/Lists/WarnDeepListNesting_001_violations_basic.html
 
 ID: WarnDeepListNesting
 Type: Warning

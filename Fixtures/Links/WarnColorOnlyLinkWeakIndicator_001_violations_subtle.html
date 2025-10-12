@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnColorOnlyLinkWeakIndicator - Weak Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorOnlyLinkWeakIndicator_001_violations_subtle",
+    "issueId": "WarnColorOnlyLinkWeakIndicator",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links in flowing text using only subtle indicators (font-weight, bold, text-shadow)",
+    "wcag": "1.4.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        p {
+            color: black;
+            font-weight: 400;
+        }
+
+        a.bold-link {
+            color: blue;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        a.shadow-link {
+            color: blue;
+            text-decoration: none;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Links with Weak Indicators</h1>
+
+    <main>
+        <!-- WARNING 1: Link with bold/font-weight only -->
+        <section>
+            <h2>Bold Link</h2>
+            <p>
+                This paragraph contains
+                <a href="/page1"
+                   class="bold-link"
+                   data-expected-violation="true"
+                   data-violation-id="WarnColorOnlyLinkWeakIndicator"
+                   data-violation-reason="Link uses heavier font-weight which is subtle and hard to recognize as a link">a bold link</a>
+                that uses only font-weight as a non-color indicator.
+            </p>
+        </section>
+
+        <!-- WARNING 2: Link with text-shadow only -->
+        <section>
+            <h2>Shadow Link</h2>
+            <p>
+                Check out
+                <a href="/page2"
+                   class="shadow-link"
+                   data-expected-violation="true"
+                   data-violation-id="WarnColorOnlyLinkWeakIndicator"
+                   data-violation-reason="Link uses text-shadow which is subtle and may not be recognized as a link">this link with shadow</a>
+                that uses only text-shadow as indicator.
+            </p>
+        </section>
+
+        <!-- WARNING 3: Link with bold tag -->
+        <section>
+            <h2>Strong Tag</h2>
+            <p>
+                Visit our
+                <a href="/page3"
+                   style="color: blue; text-decoration: none;"
+                   data-expected-violation="true"
+                   data-violation-id="WarnColorOnlyLinkWeakIndicator"
+                   data-violation-reason="Link uses strong/bold tag which is subtle"><strong>company page</strong></a>
+                for more information.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

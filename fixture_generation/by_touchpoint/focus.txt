@@ -22,7 +22,9 @@ How to fix: Add CSS :focus styles with visible outline, border, or background ch
 
 ## ErrInvalidTabindex
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Interactive/ErrInvalidTabindex_002_correct_values.html
+  - Fixtures/Interactive/ErrInvalidTabindex_001_violations_basic.html
 
 ID: ErrInvalidTabindex
 Type: Error
@@ -38,7 +40,9 @@ How to fix: Use only valid integer values for tabindex: "0" to include in natura
 
 ## ErrNegativeTabindex
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Focus/ErrNegativeTabindex_002_correct_usage.html
+  - Fixtures/Focus/ErrNegativeTabindex_001_violations_basic.html
 
 ID: ErrNegativeTabindex
 Type: Error
@@ -55,6 +59,8 @@ How to fix: Use tabindex="0" for interactive elements
 ## ErrNoFocusIndicator
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Focus/ErrNoFocusIndicator_002_correct_with_indicator.html
+  - Fixtures/Focus/ErrNoFocusIndicator_001_violations_basic.html
   - Fixtures/Keyboard/ErrNoFocusIndicator.html
 
 ID: ErrNoFocusIndicator
@@ -71,7 +77,9 @@ How to fix: Ensure all interactive elements have a visible focus indicator using
 
 ## ErrNoOutlineOffsetDefined
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Focus/ErrNoOutlineOffsetDefined_002_correct_with_offset.html
+  - Fixtures/Focus/ErrNoOutlineOffsetDefined_001_violations_basic.html
 
 ID: ErrNoOutlineOffsetDefined
 Type: Error
@@ -88,6 +96,8 @@ How to fix: Add outline-offset for better visibility
 ## ErrOutlineIsNoneOnInteractiveElement
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Focus/ErrOutlineIsNoneOnInteractiveElement_001_violations_basic.html
+  - Fixtures/Focus/ErrOutlineIsNoneOnInteractiveElement_002_correct_with_focus.html
   - Fixtures/Focus/ErrOutlineIsNoneOnInteractiveElement.html
 
 ID: ErrOutlineIsNoneOnInteractiveElement
@@ -105,6 +115,8 @@ How to fix: Never use outline:none without providing an alternative visible focu
 ## ErrPositiveTabindex
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Focus/ErrPositiveTabindex_001_violations_basic.html
+  - Fixtures/Focus/ErrPositiveTabindex_002_correct_tabindex.html
   - Fixtures/Keyboard/ErrPositiveTabindex.html
 
 ID: ErrPositiveTabindex
@@ -121,7 +133,9 @@ How to fix: Remove positive tabindex values and use only tabindex="0" (adds elem
 
 ## ErrTTabindexOnNonInteractiveElement
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Tabindex/ErrTTabindexOnNonInteractiveElement_002_correct_usage.html
+  - Fixtures/Tabindex/ErrTTabindexOnNonInteractiveElement_001_violations_basic.html
 
 ID: ErrTTabindexOnNonInteractiveElement
 Type: Error
@@ -137,7 +151,9 @@ How to fix: Remove tabindex from non-interactive elements or make them properly 
 
 ## ErrTabindexOfZeroOnNonInteractiveElement
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Tabindex/ErrTabindexOfZeroOnNonInteractiveElement_001_violations_basic.html
+  - Fixtures/Tabindex/ErrTabindexOfZeroOnNonInteractiveElement_002_correct_usage.html
 
 ID: ErrTabindexOfZeroOnNonInteractiveElement
 Type: Error
@@ -153,7 +169,9 @@ How to fix: Remove tabindex from non-interactive elements
 
 ## ErrTransparentFocusIndicator
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Focus/ErrTransparentFocusIndicator_001_violations_basic.html
+  - Fixtures/Focus/ErrTransparentFocusIndicator_002_correct_opaque_indicator.html
 
 ID: ErrTransparentFocusIndicator
 Type: Error
@@ -169,7 +187,9 @@ How to fix: Use opaque colors with sufficient contrast for focus indicators. Rep
 
 ## ErrWrongTabindexForInteractiveElement
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Tabindex/ErrWrongTabindexForInteractiveElement_001_violations_basic.html
+  - Fixtures/Tabindex/ErrWrongTabindexForInteractiveElement_002_correct_natural_tabindex.html
 
 ID: ErrWrongTabindexForInteractiveElement
 Type: Error
@@ -185,7 +205,9 @@ How to fix: Let natural tab order work, avoid tabindex
 
 ## WarnZeroOutlineOffset
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Focus/WarnZeroOutlineOffset_002_correct_positive_offset.html
+  - Fixtures/Focus/WarnZeroOutlineOffset_001_violations_basic.html
 
 ID: WarnZeroOutlineOffset
 Type: Warning

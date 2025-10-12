@@ -8,6 +8,8 @@ Total issues: 7
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Keyboard/ErrMissingTabindex.html
+  - Fixtures/Keyboard/ErrMissingTabindex_001_violations_basic.html
+  - Fixtures/Keyboard/ErrMissingTabindex_002_correct_with_tabindex.html
 
 ID: ErrMissingTabindex
 Type: Error
@@ -24,6 +26,8 @@ How to fix: Add tabindex="0" to custom interactive elements, or use native inter
 ## ErrNonInteractiveZeroTabindex
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/ErrNonInteractiveZeroTabindex_001_violations_basic.html
+  - Fixtures/Keyboard/ErrNonInteractiveZeroTabindex_002_correct_no_tabindex.html
   - Fixtures/Keyboard/ErrNonInteractiveZeroTabindex.html
 
 ID: ErrNonInteractiveZeroTabindex
@@ -41,7 +45,11 @@ How to fix: Remove tabindex="0" from non-interactive elements, only make element
 ## ErrTabOrderViolation
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/TabOrder/ErrTabOrderViolation_002_pass_correct_order.html
+  - Fixtures/TabOrder/ErrTabOrderViolation_001_buttons_wrong_order.html
   - Fixtures/Keyboard/ErrTabOrderViolation.html
+  - Fixtures/Keyboard/ErrTabOrderViolation_001_violations_basic.html
+  - Fixtures/Keyboard/ErrTabOrderViolation_002_correct_natural_order.html
 
 ID: ErrTabOrderViolation
 Type: Error
@@ -59,6 +67,8 @@ How to fix: Ensure DOM order matches visual order, avoid positive tabindex value
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Keyboard/WarnHighTabindex.html
+  - Fixtures/Keyboard/WarnHighTabindex_001_violations_basic.html
+  - Fixtures/Keyboard/WarnHighTabindex_002_correct_natural_order.html
 
 ID: WarnHighTabindex
 Type: Warning
@@ -75,7 +85,10 @@ How to fix: Remove positive tabindex values, restructure DOM for natural tab ord
 ## WarnMissingNegativeTabindex
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Tabindex/WarnMissingNegativeTabindex_001_skip_target_no_tabindex.html
+  - Fixtures/Keyboard/WarnMissingNegativeTabindex_002_correct_with_tabindex.html
   - Fixtures/Keyboard/WarnMissingNegativeTabindex.html
+  - Fixtures/Keyboard/WarnMissingNegativeTabindex_001_violations_basic.html
 
 ID: WarnMissingNegativeTabindex
 Type: Warning
@@ -93,6 +106,8 @@ How to fix: Add tabindex="-1" to elements that should be focusable by script but
 
 ⚠️  Has old fixtures to replace:
   - Fixtures/Keyboard/WarnModalNoFocusableElements.html
+  - Fixtures/Keyboard/WarnModalNoFocusableElements_002_correct_with_controls.html
+  - Fixtures/Keyboard/WarnModalNoFocusableElements_001_violations_basic.html
 
 ID: WarnModalNoFocusableElements
 Type: Warning
@@ -109,6 +124,8 @@ How to fix: Ensure modals contain at least one focusable element (close button, 
 ## WarnNegativeTabindex
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Keyboard/WarnNegativeTabindex_001_violations_basic.html
+  - Fixtures/Keyboard/WarnNegativeTabindex_002_correct_keyboard_accessible.html
   - Fixtures/Keyboard/WarnNegativeTabindex.html
 
 ID: WarnNegativeTabindex

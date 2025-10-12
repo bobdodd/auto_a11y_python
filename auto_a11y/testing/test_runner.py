@@ -132,6 +132,34 @@ class TestRunner:
                     window.WCAG_LEVEL = "{wcag_level}";
                     console.log("Testing with WCAG Level:", window.WCAG_LEVEL);
                 ''')
+
+                # Inject document metadata for document link language testing
+                try:
+                    # Get all document references for this website
+                    document_refs = self.db.get_document_references(page.website_id)
+
+                    # Build a map of document URL to language metadata
+                    doc_metadata = {}
+                    for doc_ref in document_refs:
+                        if doc_ref.language:
+                            # Store with both full URL and just the filename for flexible matching
+                            doc_metadata[doc_ref.document_url] = {
+                                'language': doc_ref.language,
+                                'confidence': doc_ref.language_confidence
+                            }
+
+                    # Inject into page context as JSON
+                    import json
+                    metadata_json = json.dumps(doc_metadata)
+                    await browser_page.evaluate(f'''
+                        window.DOCUMENT_METADATA = {metadata_json};
+                    ''')
+                    logger.debug(f"Injected metadata for {len(doc_metadata)} documents")
+                except Exception as e:
+                    logger.warning(f"Could not inject document metadata: {e}")
+                    await browser_page.evaluate('''
+                        window.DOCUMENT_METADATA = {{}};
+                    ''')
                 
                 # Run all tests
                 # Running JavaScript tests

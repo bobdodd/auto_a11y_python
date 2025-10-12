@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkButtonMissingSpaceHandler - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkButtonMissingSpaceHandler_001_violations_basic",
+    "issueId": "ErrLinkButtonMissingSpaceHandler",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Links styled as buttons without Space key handlers",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .button-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Actions</h1>
+
+    <!-- VIOLATION 1: Button-styled link with no Space handler -->
+    <p>
+        <a href="submit.php"
+           class="button-link"
+           data-expected-violation="true"
+           data-violation-id="ErrLinkButtonMissingSpaceHandler"
+           data-violation-reason="Link styled as button but lacks Space key handler">
+            Submit Form
+        </a>
+    </p>
+
+    <!-- VIOLATION 2: Another button-styled link without Space handler -->
+    <p>
+        <a href="delete.php"
+           class="button-link"
+           data-expected-violation="true"
+           data-violation-id="ErrLinkButtonMissingSpaceHandler"
+           data-violation-reason="Link styled as button without keyboard support">
+            Delete Account
+        </a>
+    </p>
+</body>
+</html>

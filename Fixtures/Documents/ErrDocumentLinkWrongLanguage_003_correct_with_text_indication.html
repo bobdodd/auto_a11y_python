@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrDocumentLinkWrongLanguage - Correct with Text Indication</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDocumentLinkWrongLanguage_003_correct_with_text_indication",
+    "issueId": "ErrDocumentLinkWrongLanguage",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Links to documents in different languages with language indicated in link text",
+    "wcag": "3.1.2",
+    "impact": "Medium",
+    "documentMetadata": {
+        "file:///reports/rapport-annuel-2024.pdf": {
+            "language": "fr",
+            "confidence": 0.95
+        },
+        "file:///reports/informe-anual-2024.pdf": {
+            "language": "es",
+            "confidence": 0.92
+        },
+        "file:///docs/manual-de-usuario.pdf": {
+            "language": "es",
+            "confidence": 0.92
+        },
+        "file:///docs/installationsanleitung.pdf": {
+            "language": "de",
+            "confidence": 0.90
+        }
+    }
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Document Links with Language in Text</h1>
+
+    <main>
+        <section>
+            <h2>Company Reports</h2>
+            <p>Download our annual reports:</p>
+            <ul>
+                <li>
+                    <a href="/reports/rapport-annuel-2024.pdf"
+                       data-expected-pass="true"
+                       data-pass-reason="Link text indicates French language">
+                        Annual Report 2024 (PDF, French)
+                    </a>
+                </li>
+                <li>
+                    <a href="/reports/informe-anual-2024.pdf"
+                       data-expected-pass="true"
+                       data-pass-reason="Link text indicates document is in Spanish">
+                        Annual Report 2024 (PDF, en español)
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Product Documentation</h2>
+            <p>Access our product manuals:</p>
+            <ul>
+                <li>
+                    <a href="/docs/manual-de-usuario.pdf"
+                       aria-label="User Manual - Spanish version"
+                       data-expected-pass="true"
+                       data-pass-reason="aria-label indicates Spanish language">
+                        User Manual
+                    </a>
+                </li>
+                <li>
+                    <a href="/docs/installationsanleitung.pdf"
+                       title="Installation Guide in German"
+                       data-expected-pass="true"
+                       data-pass-reason="title attribute indicates German language">
+                        Installation Guide
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>English Documents</h2>
+            <p>These documents are in English (same as page language):</p>
+            <ul>
+                <li><a href="/docs/user-guide.pdf">User Guide (PDF)</a></li>
+                <li><a href="/docs/technical-specs.pdf">Technical Specifications (PDF)</a></li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

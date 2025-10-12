@@ -1,6 +1,6 @@
 # NAVIGATION Touchpoint
 
-Total issues: 9
+Total issues: 11
 
 ================================================================================
 
@@ -68,9 +68,48 @@ How to fix: Add role="tablist" to container, role="tab" to tabs, role="tabpanel"
 
 ================================================================================
 
+## DiscoNavFound
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Navigation/DiscoNavFound_001_discovery_single_nav.html
+  - Fixtures/Navigation/DiscoNavFound_003_discovery_role_navigation.html
+  - Fixtures/Navigation/DiscoNavFound_002_discovery_multiple_navs.html
+
+ID: DiscoNavFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: navigation
+Description: Navigation region detected (signature: {navSignature}) - requires manual accessibility review
+Why it matters: Navigation regions are critical wayfinding tools that must be keyboard accessible, properly labeled, and work with screen readers. Each navigation area needs verification that links are organized logically, focus order is correct, current page indication is provided (aria-current="page"), and the navigation can be easily understood and operated by all users. Multiple navigation regions must be distinguishable via unique accessible names.
+Who it affects: Screen reader users who navigate by landmarks and need clear labels to distinguish navigation regions, keyboard users who must efficiently tab through navigation links, users with motor disabilities who need consistent and predictable navigation patterns, users with cognitive disabilities who benefit from clear, well-organized navigation structures.
+How to fix: Verify navigation has a clear accessible name (aria-label or aria-labelledby) if multiple nav regions exist. Test keyboard navigation through all links (Tab order should be logical). Ensure current page is indicated with aria-current="page". Verify focus indicators are visible. Test with screen reader to confirm navigation is announced correctly and links are understandable out of context.
+
+================================================================================
+
+## DiscoHeadingWithID
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Headings/DiscoHeadingWithID_001_discovery_basic.html
+  - Fixtures/Headings/DiscoHeadingWithID.html
+
+ID: DiscoHeadingWithID
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: navigation
+Description: Heading element has an ID attribute that may be used for in-page navigation
+Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
+Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
+How to fix: Ensure that the ID attribute is referenced and its use is valid.
+
+================================================================================
+
 ## ErrDuplicateNavNames
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Navigation/ErrDuplicateNavNames_001_violations_basic.html
+  - Fixtures/Navigation/ErrDuplicateNavNames_002_correct_unique_labels.html
 
 ID: ErrDuplicateNavNames
 Type: Error
@@ -86,7 +125,9 @@ How to fix: Provide unique accessible names for each navigation element using ar
 
 ## ErrInappropriateMenuRole
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Interactive/ErrInappropriateMenuRole_001_violations_basic.html
+  - Fixtures/Interactive/ErrInappropriateMenuRole_002_correct_list_navigation.html
 
 ID: ErrInappropriateMenuRole
 Type: Error
@@ -102,7 +143,9 @@ How to fix: Use nav element or role="navigation" for site navigation, reserve ro
 
 ## ErrNavMissingAccessibleName
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Navigation/ErrNavMissingAccessibleName_002_correct_with_labels.html
+  - Fixtures/Navigation/ErrNavMissingAccessibleName_001_violations_basic.html
 
 ID: ErrNavMissingAccessibleName
 Type: Error
@@ -118,7 +161,9 @@ How to fix: Add aria-label or aria-labelledby to nav elements to identify their 
 
 ## WarnNoCurrentPageIndicator
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Navigation/WarnNoCurrentPageIndicator_001_violations_basic.html
+  - Fixtures/Navigation/WarnNoCurrentPageIndicator_002_correct_with_indicator.html
 
 ID: WarnNoCurrentPageIndicator
 Type: Warning

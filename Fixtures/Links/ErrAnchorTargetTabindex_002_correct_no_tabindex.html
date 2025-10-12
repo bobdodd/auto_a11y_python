@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAnchorTargetTabindex - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAnchorTargetTabindex_002_correct_no_tabindex",
+    "issueId": "ErrAnchorTargetTabindex",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Anchor target elements with proper tabindex=\"-1\" for keyboard accessibility",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Proper In-Page Link Targets</h1>
+
+    <nav>
+        <ul>
+            <li><a href="#section1">Jump to Section 1</a></li>
+            <li><a href="#section2">Jump to Section 2</a></li>
+            <li><a href="#button1">Jump to Interactive Button</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- PASS 1: Non-interactive element with proper tabindex="-1" -->
+        <div id="section1"
+             tabindex="-1"
+             data-expected-pass="true"
+             data-pass-reason="Non-interactive anchor target correctly has tabindex='-1'">
+            <h2>Section 1: Introduction</h2>
+            <p>This div is an anchor target with tabindex="-1", making it programmatically focusable.</p>
+        </div>
+
+        <!-- PASS 2: Section with proper tabindex="-1" -->
+        <section id="section2"
+                 tabindex="-1"
+                 data-expected-pass="true"
+                 data-pass-reason="Section anchor target correctly has tabindex='-1'">
+            <h2>Section 2: Details</h2>
+            <p>This section has tabindex="-1" which allows keyboard focus without being in tab order.</p>
+        </section>
+
+        <!-- PASS 3: Interactive element doesn't need tabindex - naturally focusable -->
+        <button id="button1"
+                data-expected-pass="true"
+                data-pass-reason="Interactive element is naturally focusable, doesn't need tabindex">
+            Section 3: Interactive Element
+        </button>
+        <p>This button is naturally focusable and doesn't require tabindex="-1".</p>
+    </main>
+</body>
+</html>

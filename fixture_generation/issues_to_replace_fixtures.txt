@@ -1,15 +1,56 @@
 # Issues with Old Fixtures to Replace
 
-Total: 141 issues
+Total: 269 issues
 
 Note: These have simple old-style fixtures that need enhancement
+
+================================================================================
+
+## WarnProblematicAnimation
+
+Existing fixtures:
+  - Fixtures/Animation/WarnProblematicAnimation.html
+  - Fixtures/Animations/WarnProblematicAnimation_001_violations_basic.html
+  - Fixtures/Animations/WarnProblematicAnimation_002_correct_safe_animations.html
+  - Fixtures/Media/WarnProblematicAnimation_002_correct_with_controls.html
+  - Fixtures/Media/WarnProblematicAnimation_001_violations_basic.html
+
+ID: WarnProblematicAnimation
+Type: Warning
+Impact: Medium
+WCAG: 2.2.2, 2.3.1
+Touchpoint: animations
+Description: Animation detected that may cause accessibility issues
+Why it matters: Animations can trigger seizures or make content difficult to read
+Who it affects: Users with vestibular disorders, photosensitive epilepsy, or cognitive disabilities
+How to fix: Provide pause/stop controls and respect prefers-reduced-motion preference
+
+================================================================================
+
+## DiscoFontFound
+
+Existing fixtures:
+  - Fixtures/Fonts/DiscoFontFound_002_accessible_fonts.html
+  - Fixtures/Fonts/DiscoFontFound_001_discovery_basic.html
+
+ID: DiscoFontFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: fonts
+Description: Font '{found}' detected in use on the page for accessibility review
+Why it matters: Tracking font usage helps identify typography choices that may affect readability. This discovery item documents which fonts are in use so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.
+Who it affects: Users with dyslexia and dyscalculia who benefit from clear readable fonts.
+How to fix: Consider current advice on what is considered an accessible font.
 
 ================================================================================
 
 ## DiscoFormOnPage
 
 Existing fixtures:
+  - Fixtures/Forms/DiscoFormOnPage_001_discovery_basic.html
   - Fixtures/Forms/DiscoFormOnPage.html
+  - Fixtures/Forms/DiscoFormOnPage_002_discovery_login.html
 
 ID: DiscoFormOnPage
 Type: Discovery
@@ -26,6 +67,8 @@ How to fix: Manually test form with keyboard and screen reader
 ## DiscoFoundInlineSvg
 
 Existing fixtures:
+  - Fixtures/SVG/DiscoFoundInlineSvg_001_discovery_basic.html
+  - Fixtures/SVG/DiscoFoundInlineSvg_002_examples_accessible.html
   - Fixtures/Images/DiscoFoundInlineSvg.html
 
 ID: DiscoFoundInlineSvg
@@ -40,10 +83,30 @@ How to fix: Evaluate the SVG's purpose and complexity - for simple images ensure
 
 ================================================================================
 
+## DiscoFoundJS
+
+Existing fixtures:
+  - Fixtures/JavaScript/DiscoFoundJS_002_progressive_enhancement.html
+  - Fixtures/JavaScript/DiscoFoundJS_001_discovery_basic.html
+
+ID: DiscoFoundJS
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: javascript
+Description: JavaScript detected on page
+Why it matters: Functionality should work without JavaScript
+Who it affects: Users with JavaScript disabled
+How to fix: Ensure progressive enhancement
+
+================================================================================
+
 ## DiscoFoundSvgImage
 
 Existing fixtures:
   - Fixtures/Images/DiscoFoundSvgImage.html
+  - Fixtures/Images/DiscoFoundSvgImage_002_correct_with_labels.html
+  - Fixtures/Images/DiscoFoundSvgImage_001_violations_basic.html
 
 ID: DiscoFoundSvgImage
 Type: Discovery
@@ -57,16 +120,125 @@ How to fix: Verify the SVG with role="img" has appropriate accessible names thro
 
 ================================================================================
 
+## DiscoNavFound
+
+Existing fixtures:
+  - Fixtures/Navigation/DiscoNavFound_001_discovery_single_nav.html
+  - Fixtures/Navigation/DiscoNavFound_003_discovery_role_navigation.html
+  - Fixtures/Navigation/DiscoNavFound_002_discovery_multiple_navs.html
+
+ID: DiscoNavFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: navigation
+Description: Navigation region detected (signature: {navSignature}) - requires manual accessibility review
+Why it matters: Navigation regions are critical wayfinding tools that must be keyboard accessible, properly labeled, and work with screen readers. Each navigation area needs verification that links are organized logically, focus order is correct, current page indication is provided (aria-current="page"), and the navigation can be easily understood and operated by all users. Multiple navigation regions must be distinguishable via unique accessible names.
+Who it affects: Screen reader users who navigate by landmarks and need clear labels to distinguish navigation regions, keyboard users who must efficiently tab through navigation links, users with motor disabilities who need consistent and predictable navigation patterns, users with cognitive disabilities who benefit from clear, well-organized navigation structures.
+How to fix: Verify navigation has a clear accessible name (aria-label or aria-labelledby) if multiple nav regions exist. Test keyboard navigation through all links (Tab order should be logical). Ensure current page is indicated with aria-current="page". Verify focus indicators are visible. Test with screen reader to confirm navigation is announced correctly and links are understandable out of context.
+
+================================================================================
+
+## DiscoAsideFound
+
+Existing fixtures:
+  - Fixtures/Landmarks/DiscoAsideFound_002_discovery_role_complementary.html
+  - Fixtures/Landmarks/DiscoAsideFound_001_discovery_single_aside.html
+
+ID: DiscoAsideFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Complementary region detected (signature: {asideSignature}) - requires manual accessibility review
+Why it matters: Complementary regions (<aside> or role="complementary") provide supporting content related to the main content. They must be properly labeled when multiple exist, contain relevant supplementary information, and be distinguishable from main content for screen reader users who navigate by landmarks.
+Who it affects: Screen reader users who navigate by landmarks to find supporting content, users with cognitive disabilities who benefit from clear content organization and separation of main vs. supplementary information.
+How to fix: Verify the aside contains truly complementary content (related to but separate from main content). If multiple complementary regions exist on the page, ensure each has a unique accessible name using aria-label or aria-labelledby. Test with screen reader to confirm the region is announced correctly and its purpose is clear.
+
+================================================================================
+
+## DiscoSectionFound
+
+Existing fixtures:
+  - Fixtures/Landmarks/DiscoSectionFound_001_discovery_labeled_section.html
+
+ID: DiscoSectionFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Section region detected (signature: {sectionSignature}) - requires manual accessibility review
+Why it matters: Section elements with accessible names become region landmarks (<section> with aria-label/aria-labelledby or role="region"). They must have meaningful, unique labels to help screen reader users navigate between distinct areas of content. Sections without accessible names are not landmarks and won't appear in landmark navigation.
+Who it affects: Screen reader users who navigate by landmarks to jump between major page sections, users with cognitive disabilities who benefit from clearly labeled and organized content regions.
+How to fix: Verify each section has a descriptive, unique accessible name (aria-label or aria-labelledby) that clearly identifies its purpose. Ensure the label is concise and meaningful. If the section doesn't represent a significant region of content, consider if it should be a landmark at all. Test with screen reader to confirm the region is announced with its label.
+
+================================================================================
+
+## DiscoHeaderFound
+
+Existing fixtures:
+  - Fixtures/Landmarks/DiscoHeaderFound_001_discovery_header_banner.html
+  - Fixtures/Landmarks/DiscoHeaderFound_002_discovery_role_banner.html
+
+ID: DiscoHeaderFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Banner region detected (signature: {headerSignature}) - requires manual accessibility review
+Why it matters: Banner landmarks (<header> at top level or role="banner") identify the main header of the page, typically containing site logo, main navigation, and site-wide utilities. There should be only one banner per page. It must be properly labeled if the site identity isn't obvious, and should not be nested inside other landmarks (which would prevent it from being a banner).
+Who it affects: Screen reader users who navigate by landmarks to quickly access site-wide navigation and branding, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who rely on consistent banner placement for orientation.
+How to fix: Verify there is only one banner landmark per page (scoped to top-level <header> or explicit role="banner"). Ensure the banner contains site-level content (logo, main nav, site utilities) rather than page-specific content. If multiple headers exist, ensure only the site-level one is a banner. Test with screen reader to confirm banner is announced correctly.
+
+================================================================================
+
+## DiscoFooterFound
+
+Existing fixtures:
+  - Fixtures/Landmarks/DiscoFooterFound_002_discovery_role_contentinfo.html
+  - Fixtures/Landmarks/DiscoFooterFound_001_discovery_footer_contentinfo.html
+
+ID: DiscoFooterFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Contentinfo region detected (signature: {footerSignature}) - requires manual accessibility review
+Why it matters: Contentinfo landmarks (<footer> at top level or role="contentinfo") identify site-wide footer information such as copyright, privacy policy, and contact links. There should be only one contentinfo per page. It must contain site-level information rather than page-specific footers, and should not be nested inside other landmarks (which would prevent it from being contentinfo).
+Who it affects: Screen reader users who navigate by landmarks to quickly access site-wide footer information and legal links, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who rely on consistent footer placement for finding important site information.
+How to fix: Verify there is only one contentinfo landmark per page (scoped to top-level <footer> or explicit role="contentinfo"). Ensure the footer contains site-level information (copyright, privacy, contact) rather than article-specific or section-specific footers. If multiple footers exist, ensure only the site-level one is contentinfo. Test with screen reader to confirm contentinfo is announced correctly.
+
+================================================================================
+
+## DiscoSearchFound
+
+Existing fixtures:
+  - Fixtures/Landmarks/DiscoSearchFound_001_discovery_search_element.html
+  - Fixtures/Landmarks/DiscoSearchFound_002_discovery_role_search.html
+
+ID: DiscoSearchFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: landmarks
+Description: Search region detected (signature: {searchSignature}) - requires manual accessibility review
+Why it matters: Search landmarks (<search> or role="search") identify search functionality on the page. They help screen reader users quickly locate search features. The search region must have a clear accessible name if multiple search regions exist, contain appropriate search form controls, and be easily discoverable through landmark navigation.
+Who it affects: Screen reader users who navigate by landmarks to quickly find search functionality, keyboard users who use landmarks for efficient page navigation, users with cognitive disabilities who benefit from clearly marked search areas.
+How to fix: Verify the search region contains actual search functionality (typically a form with input and submit button). If multiple search regions exist, ensure each has a unique accessible name using aria-label or aria-labelledby. Ensure search form controls are properly labeled and keyboard accessible. Test with screen reader to confirm search region is announced correctly and search controls are accessible.
+
+================================================================================
+
 ## DiscoHeadingWithID
 
 Existing fixtures:
+  - Fixtures/Headings/DiscoHeadingWithID_001_discovery_basic.html
   - Fixtures/Headings/DiscoHeadingWithID.html
 
 ID: DiscoHeadingWithID
 Type: Discovery
 Impact: N/A
 WCAG: N/A
-Touchpoint: headings
+Touchpoint: navigation
 Description: Heading element has an ID attribute that may be used for in-page navigation
 Why it matters: Headings with IDs are often link targets for navigation, requiring verification that they work correctly and provide meaningful navigation points.
 Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
@@ -74,9 +246,65 @@ How to fix: Ensure that the ID attribute is referenced and its use is valid.
 
 ================================================================================
 
+## DiscoPDFLinksFound
+
+Existing fixtures:
+  - Fixtures/PDF/DiscoPDFLinksFound_001_discovery_basic.html
+  - Fixtures/PDF/DiscoPDFLinksFound_002_accessible_links.html
+
+ID: DiscoPDFLinksFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: pdf
+Description: Links to PDF documents detected on page
+Why it matters: PDF documents often have accessibility issues and may not be accessible to all users
+Who it affects: Screen reader users who have higher cognitive load when reading PDFs
+How to fix: Ensure PDFs are accessible (tagged, structured, with text content) or provide HTML alternatives. Ensure that the user knows the link is to a PDF. Ensure the attribute hreflang is provided if the PDF is in a different language to that of the current page and that the language of the PDF is indicated in the link text.
+
+================================================================================
+
+## DiscoStyleAttrOnElements
+
+Existing fixtures:
+  - Fixtures/Style/DiscoStyleAttrOnElements_001_violations_basic.html
+  - Fixtures/Style/DiscoStyleAttrOnElements_002_correct_external.html
+
+ID: DiscoStyleAttrOnElements
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: style
+Description: Inline styles detected
+Why it matters: May affect responsive design and user customization
+Who it affects: Users with custom stylesheets
+How to fix: Consider moving to CSS classes
+
+================================================================================
+
+## DiscoStyleElementOnPage
+
+Existing fixtures:
+  - Fixtures/Style/DiscoStyleElementOnPage_001_violations_basic.html
+  - Fixtures/Style/DiscoStyleElementOnPage_002_correct_external.html
+
+ID: DiscoStyleElementOnPage
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: style
+Description: Style element found in page
+Why it matters: Embedded styles harder to override
+Who it affects: Users needing custom styles
+How to fix: Consider external stylesheets
+
+================================================================================
+
 ## ErrAltOnElementThatDoesntTakeIt
 
 Existing fixtures:
+  - Fixtures/Images/ErrAltOnElementThatDoesntTakeIt_002_correct_no_alt.html
+  - Fixtures/Images/ErrAltOnElementThatDoesntTakeIt_001_violations_basic.html
   - Fixtures/Images/ErrAltOnElementThatDoesntTakeIt.html
 
 ID: ErrAltOnElementThatDoesntTakeIt
@@ -95,6 +323,8 @@ How to fix: Remove alt attributes from non-supporting elements and use appropria
 
 Existing fixtures:
   - Fixtures/Images/ErrAltTooLong.html
+  - Fixtures/Images/ErrAltTooLong_001_violations_basic.html
+  - Fixtures/Images/ErrAltTooLong_002_correct_concise.html
 
 ID: ErrAltTooLong
 Type: Error
@@ -112,6 +342,8 @@ How to fix: Limit alt text to 150 characters or less, use longdesc or aria-descr
 
 Existing fixtures:
   - Fixtures/Forms/ErrAriaLabelMayNotBeFoundByVoiceControl.html
+  - Fixtures/ARIA/ErrAriaLabelMayNotBeFoundByVoiceControl_001_violations_basic.html
+  - Fixtures/ARIA/ErrAriaLabelMayNotBeFoundByVoiceControl_002_correct_matching_labels.html
 
 ID: ErrAriaLabelMayNotBeFoundByVoiceControl
 Type: Error
@@ -128,6 +360,8 @@ How to fix: Ensure aria-label includes visible text
 ## ErrAutoStartTimers
 
 Existing fixtures:
+  - Fixtures/Animation/ErrAutoStartTimers_001_violations_basic.html
+  - Fixtures/Animation/ErrAutoStartTimers_002_correct_with_controls.html
   - Fixtures/Timing/ErrAutoStartTimers.html
 
 ID: ErrAutoStartTimers
@@ -142,10 +376,30 @@ How to fix: Provide controls to pause, stop, or extend time limits, avoid auto-s
 
 ================================================================================
 
+## ErrBannerLandmarkAccessibleNameIsBlank
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrBannerLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Landmarks/ErrBannerLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
+
+ID: ErrBannerLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Banner landmark has blank accessible name
+Why it matters: Multiple banners need labels to distinguish them
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby
+
+================================================================================
+
 ## ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 Existing fixtures:
   - Fixtures/Landmarks/ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+  - Fixtures/Landmarks/ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Landmarks/ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
 
 ID: ErrBannerLandmarkHasAriaLabelAndAriaLabelledByAttrs
 Type: Error
@@ -159,26 +413,177 @@ How to fix: Use only one labeling method
 
 ================================================================================
 
-## ErrButtonNoVisibleFocus
+## ErrBannerLandmarkMayNotBeChildOfAnotherLandmark
 
 Existing fixtures:
-  - Fixtures/Buttons/ErrButtonNoVisibleFocus.html
+  - Fixtures/Landmarks/ErrBannerLandmarkMayNotBeChildOfAnotherLandmark_002_correct_top_level.html
+  - Fixtures/Landmarks/ErrBannerLandmarkMayNotBeChildOfAnotherLandmark_001_violations_basic.html
 
-ID: ErrButtonNoVisibleFocus
+ID: ErrBannerLandmarkMayNotBeChildOfAnotherLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Banner landmark nested inside another landmark
+Why it matters: Invalid nesting breaks page structure
+Who it affects: Screen reader users
+How to fix: Move banner to top level
+
+================================================================================
+
+## ErrButtonOutlineNoneNoBoxShadow
+
+Existing fixtures:
+  - Fixtures/Buttons/ErrButtonOutlineNoneNoBoxShadow_002_correct_with_alternatives.html
+  - Fixtures/Buttons/ErrButtonOutlineNoneNoBoxShadow_001_violations_color_only.html
+
+ID: ErrButtonOutlineNoneNoBoxShadow
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible, 1.4.1 Use of Color
+Touchpoint: buttons
+Description: Button has outline:none on focus with no box-shadow, relying only on color change which fails WCAG 1.4.1
+Why it matters: Relying solely on color change for focus indication fails WCAG 1.4.1 Use of Color. Users with color blindness, low vision, or monochrome displays cannot perceive focus state. Box-shadow or outline is required to provide a non-color visual indicator that wraps the element.
+Who it affects: Users with color blindness (8% of males, 0.5% of females), users with low vision, users on monochrome displays, keyboard navigation users
+How to fix: Add a box-shadow focus indicator (e.g., box-shadow: 0 0 0 3px rgba(0,102,204,0.5)) or use an outline with outline-offset of at least 2px. Do not rely on color change alone.
+
+================================================================================
+
+## ErrButtonFocusContrastFail
+
+Existing fixtures:
+  - Fixtures/Buttons/ErrButtonFocusContrastFail_002_correct_high_contrast.html
+  - Fixtures/Buttons/ErrButtonFocusContrastFail_001_violations_low_contrast.html
+
+ID: ErrButtonFocusContrastFail
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible, 1.4.11 Non-text Contrast
+Touchpoint: buttons
+Description: Button focus outline has insufficient contrast (less than 3:1) against the button's current background color
+Why it matters: Focus indicators must have at least 3:1 contrast ratio against adjacent colors per WCAG 1.4.11. Without sufficient contrast, keyboard users cannot see which button has focus, making the interface unusable for keyboard navigation.
+Who it affects: Users with low vision, users with color vision deficiencies, keyboard navigation users, users in bright lighting conditions
+How to fix: Choose an outline color with at least 3:1 contrast against the button background. Test against all button states (default, hover, active). Consider using a high-contrast color like dark blue (#0066cc) on light buttons or white on dark buttons.
+
+================================================================================
+
+## ErrButtonOutlineWidthInsufficient
+
+Existing fixtures:
+  - Fixtures/Buttons/ErrButtonOutlineWidthInsufficient_004_correct_em_rem.html
+  - Fixtures/Buttons/ErrButtonOutlineWidthInsufficient_002_correct_thick_outline.html
+  - Fixtures/Buttons/ErrButtonOutlineWidthInsufficient_001_violations_thin_outline.html
+  - Fixtures/Buttons/ErrButtonOutlineWidthInsufficient_003_violations_em_rem.html
+
+ID: ErrButtonOutlineWidthInsufficient
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible, 2.4.11 Focus Appearance
+Touchpoint: buttons
+Description: Button focus outline has outline-width less than 2px, making it too thin to be clearly visible
+Why it matters: Focus indicators must be thick enough to be clearly visible to keyboard users. Outlines thinner than 2px can be difficult or impossible to see, especially for users with low vision or on high-resolution displays. WCAG 2.4.11 Level AAA requires focus indicators to be at least 2 CSS pixels thick.
+Who it affects: Keyboard navigation users, users with low vision, users on high-DPI displays, users with cognitive disabilities
+How to fix: Set outline-width to at least 2px (e.g., outline: 2px solid #0066cc). For better visibility, consider 3px width. Test on various screen sizes and resolutions to ensure visibility.
+
+================================================================================
+
+## ErrButtonOutlineOffsetInsufficient
+
+Existing fixtures:
+  - Fixtures/Buttons/ErrButtonOutlineOffsetInsufficient_001_violations_zero_offset.html
+  - Fixtures/Buttons/ErrButtonOutlineOffsetInsufficient_004_correct_em_rem.html
+  - Fixtures/Buttons/ErrButtonOutlineOffsetInsufficient_002_correct_sufficient_offset.html
+  - Fixtures/Buttons/ErrButtonOutlineOffsetInsufficient_003_violations_em_rem.html
+
+ID: ErrButtonOutlineOffsetInsufficient
 Type: Error
 Impact: High
 WCAG: 2.4.7 Focus Visible
 Touchpoint: buttons
-Description: Button lacks visible focus indicator when focused
-Why it matters: Keyboard users need visible focus indicators to know which element is currently selected. Without clear focus indication on buttons, users cannot tell which button will be activated when they press Enter or Space, leading to errors and inability to use the interface effectively.
-Who it affects: Users with motor disabilities using keyboard navigation, users who cannot use a mouse, power users who prefer keyboard navigation, and users of assistive technologies
-How to fix: Ensure buttons have a clearly visible focus indicator with at least 3:1 contrast against the background. The indicator should be at least 2 pixels thick and not rely on color alone. Never remove focus indicators without providing an alternative. Consider using :focus-visible for refined focus management.
+Description: Button focus outline has outline-offset less than 2px, causing the outline to be lost within the button element
+Why it matters: When outline-offset is less than 2px, the focus outline sits too close to or inside the button border, making it difficult or impossible to see, especially on colored or image buttons. The outline can blend with the button's edge, defeating its purpose.
+Who it affects: Keyboard navigation users, users with low vision, users with cognitive disabilities who rely on clear visual cues
+How to fix: Set outline-offset to at least 2px (e.g., outline-offset: 2px) to create clear space between the button and its focus indicator. This ensures the outline is visible regardless of button styling.
+
+================================================================================
+
+## WarnButtonOutlineNoneWithBoxShadow
+
+Existing fixtures:
+  - Fixtures/Buttons/WarnButtonOutlineNoneWithBoxShadow_001_violations_box_shadow_only.html
+  - Fixtures/Buttons/WarnButtonOutlineNoneWithBoxShadow_002_correct_with_outline.html
+
+ID: WarnButtonOutlineNoneWithBoxShadow
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button uses outline:none with box-shadow for focus, which may not provide clear indication on all sides
+Why it matters: While box-shadow provides a focus indicator, it may not be visible on all sides of the button depending on shadow direction and spread. A clear outline on all four sides is preferred for maximum clarity. Box-shadow can also be harder to see in certain contexts.
+Who it affects: Keyboard navigation users, users with low vision, users with cognitive disabilities
+How to fix: Replace box-shadow with outline and outline-offset (e.g., outline: 2px solid #0066cc; outline-offset: 2px) to ensure a clear border on all sides of the focused button.
+
+================================================================================
+
+## WarnButtonDefaultFocus
+
+Existing fixtures:
+  - Fixtures/Buttons/WarnButtonDefaultFocus_001_violations_browser_default.html
+  - Fixtures/Buttons/WarnButtonDefaultFocus_002_correct_custom_focus.html
+
+ID: WarnButtonDefaultFocus
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible
+Touchpoint: buttons
+Description: Button uses browser default focus outline which may not meet contrast requirements on all backgrounds
+Why it matters: Browser default outlines (typically thin blue or dotted lines) often fail to meet 3:1 contrast requirements depending on the background. Different browsers use different default styles, leading to inconsistent and potentially inaccessible experiences.
+Who it affects: Keyboard navigation users, users with low vision, users on different browsers and operating systems
+How to fix: Define explicit focus styles with outline and outline-offset that meet 3:1 contrast ratio. Example: button:focus { outline: 2px solid #0066cc; outline-offset: 2px; }
+
+================================================================================
+
+## WarnButtonFocusGradientBackground
+
+Existing fixtures:
+  - Fixtures/Buttons/WarnButtonFocusGradientBackground_001_violations_gradient.html
+  - Fixtures/Buttons/WarnButtonFocusGradientBackground_002_correct_solid_background.html
+
+ID: WarnButtonFocusGradientBackground
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible, 1.4.11 Non-text Contrast
+Touchpoint: buttons
+Description: Button with gradient background has focus outline - contrast cannot be automatically verified against gradient
+Why it matters: CSS gradients have varying colors across the button, making it impossible to programmatically verify that the focus outline meets 3:1 contrast against all parts of the gradient. The outline may meet contrast at some points but fail at others.
+Who it affects: Keyboard navigation users, users with low vision, users with color vision deficiencies
+How to fix: Manually verify focus outline has at least 3:1 contrast against the lightest AND darkest colors in the gradient. Consider using a solid background color, or add outline-offset to separate the outline from the gradient. Use tools like WebAIM Contrast Checker for verification.
+
+================================================================================
+
+## WarnButtonFocusImageBackground
+
+Existing fixtures:
+  - Fixtures/Buttons/WarnButtonFocusImageBackground_002_correct_no_image.html
+  - Fixtures/Buttons/WarnButtonFocusImageBackground_001_violations_image.html
+
+ID: WarnButtonFocusImageBackground
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7 Focus Visible, 1.4.11 Non-text Contrast
+Touchpoint: buttons
+Description: Button with background image has focus outline - contrast cannot be automatically verified against image
+Why it matters: Background images have varying colors and patterns, making it impossible to programmatically verify focus outline contrast. The outline may be invisible against certain parts of the image, creating unusable focus indicators for keyboard users.
+Who it affects: Keyboard navigation users, users with low vision, users with color vision deficiencies
+How to fix: Manually test focus visibility against all parts of the background image. Consider adding a semi-transparent overlay behind the outline, using outline-offset for separation, or avoiding background images on focusable buttons. Test with multiple users if possible.
 
 ================================================================================
 
 ## ErrButtonTextLowContrast
 
 Existing fixtures:
+  - Fixtures/Buttons/ErrButtonTextLowContrast_001_violations_basic.html
+  - Fixtures/Buttons/ErrButtonTextLowContrast_002_correct_sufficient_contrast.html
   - Fixtures/Buttons/ErrButtonTextLowContrast.html
 
 ID: ErrButtonTextLowContrast
@@ -196,7 +601,8 @@ How to fix: Ensure button text has at least 4.5:1 contrast ratio with the button
 ## ErrColorStyleDefinedExplicitlyInElement
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/ErrColorStyleDefinedExplicitlyInElement.html
+  - Fixtures/Style/ErrColorStyleDefinedExplicitlyInElement_001_violations_basic.html
+  - Fixtures/Style/ErrColorStyleDefinedExplicitlyInElement_002_correct_css.html
 
 ID: ErrColorStyleDefinedExplicitlyInElement
 Type: Error
@@ -213,7 +619,8 @@ How to fix: Use CSS classes instead of inline styles
 ## ErrColorStyleDefinedExplicitlyInStyleTag
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/ErrColorStyleDefinedExplicitlyInStyleTag.html
+  - Fixtures/Style/ErrColorStyleDefinedExplicitlyInStyleTag_002_correct_paired_colors.html
+  - Fixtures/Style/ErrColorStyleDefinedExplicitlyInStyleTag_001_violations_basic.html
 
 ID: ErrColorStyleDefinedExplicitlyInStyleTag
 Type: Error
@@ -227,10 +634,31 @@ How to fix: Use external stylesheets for better maintainability
 
 ================================================================================
 
+## ErrComplementaryLandmarkAccessibleNameIsBlank
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrComplementaryLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkAccessibleNameIsBlank_002_correct_meaningful_labels.html
+
+ID: ErrComplementaryLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Complementary landmark has blank accessible name
+Why it matters: Empty labels provide no information
+Who it affects: Screen reader users
+How to fix: Add meaningful label text
+
+================================================================================
+
 ## ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 Existing fixtures:
   - Fixtures/Landmarks/ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
 
 ID: ErrComplementaryLandmarkHasAriaLabelAndAriaLabelledByAttrs
 Type: Error
@@ -244,10 +672,66 @@ How to fix: Use only one labeling method
 
 ================================================================================
 
+## ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark_002_correct_top_level.html
+  - Fixtures/Landmarks/ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark_001_violations_basic.html
+
+ID: ErrComplementaryLandmarkMayNotBeChildOfAnotherLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Complementary landmark is nested inside another landmark
+Why it matters: Invalid nesting breaks landmark structure
+Who it affects: Screen reader users
+How to fix: Move complementary landmark outside of other landmarks
+
+================================================================================
+
+## ErrCompletelyEmptyNavLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrCompletelyEmptyNavLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/ErrCompletelyEmptyNavLandmark_002_correct_with_content.html
+
+ID: ErrCompletelyEmptyNavLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Navigation landmark contains no content
+Why it matters: Empty navigation serves no purpose
+Who it affects: All users
+How to fix: Add navigation content or remove empty landmark
+
+================================================================================
+
+## ErrContentInfoLandmarkAccessibleNameIsBlank
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrContentInfoLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Landmarks/ErrContentInfoLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
+
+ID: ErrContentInfoLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Contentinfo landmark has blank accessible name
+Why it matters: Blank labels provide no information
+Who it affects: Screen reader users
+How to fix: Add meaningful label text
+
+================================================================================
+
 ## ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 Existing fixtures:
   - Fixtures/Landmarks/ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+  - Fixtures/Landmarks/ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
+  - Fixtures/Landmarks/ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
 
 ID: ErrContentInfoLandmarkHasAriaLabelAndAriaLabelledByAttrs
 Type: Error
@@ -265,6 +749,8 @@ How to fix: Use only one labeling method
 
 Existing fixtures:
   - Fixtures/Focus/ErrContentObscuring.html
+  - Fixtures/Focus/ErrContentObscuring_001_violations_basic.html
+  - Fixtures/Focus/ErrContentObscuring_002_correct_no_obscuring.html
 
 ID: ErrContentObscuring
 Type: Error
@@ -278,9 +764,29 @@ How to fix: Fix z-index and positioning issues, ensure modals and overlays don't
 
 ================================================================================
 
+## ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark_002_correct_top_level.html
+  - Fixtures/Landmarks/ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark_001_violations_basic.html
+
+ID: ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Contentinfo landmark is nested inside another landmark
+Why it matters: Invalid nesting breaks landmark structure
+Who it affects: Screen reader users
+How to fix: Move contentinfo to top level
+
+================================================================================
+
 ## ErrDivMapMissingAttributes
 
 Existing fixtures:
+  - Fixtures/Maps/ErrDivMapMissingAttributes_001_violations_basic.html
+  - Fixtures/Maps/ErrDivMapMissingAttributes_002_correct_with_aria.html
   - Fixtures/Maps/ErrDivMapMissingAttributes.html
 
 ID: ErrDivMapMissingAttributes
@@ -298,6 +804,8 @@ How to fix: Add appropriate ARIA labels and descriptions, provide text alternati
 ## ErrDuplicateLabelForBannerLandmark
 
 Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForBannerLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForBannerLandmark_002_correct_unique_labels.html
   - Fixtures/Landmarks/ErrDuplicateLabelForBannerLandmark.html
 
 ID: ErrDuplicateLabelForBannerLandmark
@@ -316,6 +824,8 @@ How to fix: Only one banner should typically exist per page
 
 Existing fixtures:
   - Fixtures/Landmarks/ErrDuplicateLabelForComplementaryLandmark.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForComplementaryLandmark_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForComplementaryLandmark_001_violations_basic.html
 
 ID: ErrDuplicateLabelForComplementaryLandmark
 Type: Error
@@ -332,6 +842,8 @@ How to fix: Provide unique labels for each complementary landmark
 ## ErrDuplicateLabelForContentinfoLandmark
 
 Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForContentinfoLandmark_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForContentinfoLandmark_001_violations_basic.html
   - Fixtures/Landmarks/ErrDuplicateLabelForContentinfoLandmark.html
 
 ID: ErrDuplicateLabelForContentinfoLandmark
@@ -350,6 +862,8 @@ How to fix: Typically only one contentinfo should exist per page
 
 Existing fixtures:
   - Fixtures/Landmarks/ErrDuplicateLabelForFormLandmark.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForFormLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForFormLandmark_002_correct_unique_labels.html
 
 ID: ErrDuplicateLabelForFormLandmark
 Type: Error
@@ -366,7 +880,9 @@ How to fix: Provide unique labels for each form
 ## ErrDuplicateLabelForNavLandmark
 
 Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForNavLandmark_002_correct_unique_labels.html
   - Fixtures/Landmarks/ErrDuplicateLabelForNavLandmark.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForNavLandmark_001_violations_basic.html
 
 ID: ErrDuplicateLabelForNavLandmark
 Type: Error
@@ -383,6 +899,8 @@ How to fix: Provide unique labels like "Main navigation" and "Footer navigation"
 ## ErrDuplicateLabelForRegionLandmark
 
 Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForRegionLandmark_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForRegionLandmark_001_violations_basic.html
   - Fixtures/Landmarks/ErrDuplicateLabelForRegionLandmark.html
 
 ID: ErrDuplicateLabelForRegionLandmark
@@ -400,6 +918,8 @@ How to fix: Provide unique labels for each region
 ## ErrDuplicateLabelForSearchLandmark
 
 Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLabelForSearchLandmark_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLabelForSearchLandmark_001_violations_basic.html
   - Fixtures/Landmarks/ErrDuplicateLabelForSearchLandmark.html
 
 ID: ErrDuplicateLabelForSearchLandmark
@@ -414,9 +934,83 @@ How to fix: Provide unique labels for each search landmark
 
 ================================================================================
 
+## ErrDuplicateLandmarkWithoutName
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrDuplicateLandmarkWithoutName_002_correct_unique_labels.html
+  - Fixtures/Landmarks/ErrDuplicateLandmarkWithoutName_001_violations_basic.html
+
+ID: ErrDuplicateLandmarkWithoutName
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Multiple landmarks of the same type without distinguishing accessible names
+Why it matters: When multiple navigation or other landmarks exist without unique names, screen reader users cannot distinguish between them.
+Who it affects: Screen reader users who navigate by landmarks, keyboard users who use landmark navigation shortcuts.
+How to fix: Add aria-label or aria-labelledby to distinguish multiple landmarks of the same type (e.g., "Main navigation" vs "Footer navigation").
+
+================================================================================
+
+## ErrDuplicateNavNames
+
+Existing fixtures:
+  - Fixtures/Navigation/ErrDuplicateNavNames_001_violations_basic.html
+  - Fixtures/Navigation/ErrDuplicateNavNames_002_correct_unique_labels.html
+
+ID: ErrDuplicateNavNames
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: navigation
+Description: Multiple navigation elements have identical accessible names
+Why it matters: Users cannot distinguish between different navigation areas when they have the same name, causing confusion about page structure.
+Who it affects: Screen reader users navigating by landmarks, users with cognitive disabilities who rely on clear labeling.
+How to fix: Provide unique accessible names for each navigation element using aria-label or aria-labelledby.
+
+================================================================================
+
+## ErrElementNotContainedInALandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrElementNotContainedInALandmark_001_violations_basic.html
+  - Fixtures/Landmarks/ErrElementNotContainedInALandmark_002_correct_in_landmarks.html
+
+ID: ErrElementNotContainedInALandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Content exists outside of any landmark
+Why it matters: Content may be missed when navigating by landmarks
+Who it affects: Screen reader users using landmark navigation
+How to fix: Ensure all content is within appropriate landmarks
+
+================================================================================
+
+## ErrElementRegionQualifierNotRecognized
+
+Existing fixtures:
+  - Fixtures/Language/ErrElementRegionQualifierNotRecognized_002_correct_valid_regions.html
+  - Fixtures/Language/ErrElementRegionQualifierNotRecognized_001_violations_basic.html
+
+ID: ErrElementRegionQualifierNotRecognized
+Type: Error
+Impact: Low
+WCAG: 3.1.2
+Touchpoint: language
+Description: Element lang attribute has unrecognized region qualifier
+Why it matters: Invalid region codes may affect pronunciation
+Who it affects: Screen reader users
+How to fix: Use valid ISO 3166-1 region codes
+
+================================================================================
+
 ## ErrEmptyAriaLabelOnField
 
 Existing fixtures:
+  - Fixtures/Forms/ErrEmptyAriaLabelOnField_002_correct_with_label.html
+  - Fixtures/Forms/ErrEmptyAriaLabelOnField_001_violations_basic.html
   - Fixtures/Forms/ErrEmptyAriaLabelOnField.html
 
 ID: ErrEmptyAriaLabelOnField
@@ -434,7 +1028,9 @@ How to fix: Add descriptive text to aria-label or use visible label
 ## ErrEmptyAriaLabelledByOnField
 
 Existing fixtures:
+  - Fixtures/Forms/ErrEmptyAriaLabelledByOnField_001_violations_basic.html
   - Fixtures/Forms/ErrEmptyAriaLabelledByOnField.html
+  - Fixtures/Forms/ErrEmptyAriaLabelledByOnField_002_correct_with_ids.html
 
 ID: ErrEmptyAriaLabelledByOnField
 Type: Error
@@ -452,6 +1048,9 @@ How to fix: Reference valid element IDs or use direct labeling
 
 Existing fixtures:
   - Fixtures/Headings/ErrEmptyHeading.html
+  - Fixtures/Headings/ErrEmptyHeading_001_violations_basic.html
+  - Fixtures/Headings/ErrEmptyHeading_002_correct_with_text.html
+  - Fixtures/Headings/ErrEmptyHeading_003_edge_image_only.html
 
 ID: ErrEmptyHeading
 Type: Error
@@ -469,6 +1068,8 @@ How to fix: Either replace "{text}" with meaningful text content that describes 
 
 Existing fixtures:
   - Fixtures/Forms/ErrEmptyLabel.html
+  - Fixtures/Forms/ErrEmptyLabel_001_violations_basic.html
+  - Fixtures/Forms/ErrEmptyLabel_002_correct_with_text.html
 
 ID: ErrEmptyLabel
 Type: Error
@@ -482,9 +1083,29 @@ How to fix: Add descriptive text to all label elements that clearly identifies t
 
 ================================================================================
 
+## ErrHtmlLangEmpty
+
+Existing fixtures:
+  - Fixtures/Language/ErrHtmlLangEmpty_002_correct_with_valid_lang.html
+  - Fixtures/Language/ErrHtmlLangEmpty_001_violations_basic.html
+
+ID: ErrHtmlLangEmpty
+Type: Error
+Impact: High
+WCAG: 3.1.1 Language of Page (Level A)
+Touchpoint: language
+Description: HTML element has a lang attribute present but with no value (lang=""), preventing screen readers from determining the page language
+Why it matters: An empty lang attribute is worse than no lang attribute because it explicitly tells assistive technologies there's no language specified, potentially causing screen readers to use incorrect pronunciation rules or fail to switch language synthesizers. This can make content completely unintelligible when read aloud.
+Who it affects: Blind and low vision users using screen readers who need proper language identification for correct pronunciation, multilingual users who rely on automatic language switching in assistive technologies, users with dyslexia using reading tools that depend on language settings, and users of translation services
+How to fix: Add a valid language code to the lang attribute (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. For the HTML element, always specify the primary document language. If the language is truly unknown, remove the lang attribute entirely rather than leaving it empty.
+
+================================================================================
+
 ## ErrEmptyList
 
 Existing fixtures:
+  - Fixtures/Lists/ErrEmptyList_001_violations_basic.html
+  - Fixtures/Lists/ErrEmptyList_002_correct_with_items.html
   - Fixtures/Lists/ErrEmptyList.html
 
 ID: ErrEmptyList
@@ -502,6 +1123,8 @@ How to fix: Remove empty list elements or populate them with appropriate list it
 ## ErrEmptyPageTitle
 
 Existing fixtures:
+  - Fixtures/Page/ErrEmptyPageTitle_002_correct_with_title.html
+  - Fixtures/Page/ErrEmptyPageTitle_001_violations_basic.html
   - Fixtures/Semantic/ErrEmptyPageTitle.html
 
 ID: ErrEmptyPageTitle
@@ -516,9 +1139,47 @@ How to fix: Add descriptive text to title element
 
 ================================================================================
 
+## ErrEmptyTitleAttr
+
+Existing fixtures:
+  - Fixtures/TitleAttributes/ErrEmptyTitleAttr_001_violations_basic.html
+  - Fixtures/TitleAttributes/ErrEmptyTitleAttr_002_correct_descriptive.html
+
+ID: ErrEmptyTitleAttr
+Type: Error
+Impact: Low
+WCAG: 3.3.2
+Touchpoint: title
+Description: Empty title attribute
+Why it matters: Empty titles provide no information
+Who it affects: Users expecting tooltip information
+How to fix: Remove empty title attributes
+
+================================================================================
+
+## ErrEmptyXmlLangAttr
+
+Existing fixtures:
+  - Fixtures/Language/ErrEmptyXmlLangAttr_002_correct_with_xmllang.html
+  - Fixtures/Language/ErrEmptyXmlLangAttr_001_violations_basic.html
+
+ID: ErrEmptyXmlLangAttr
+Type: Error
+Impact: High
+WCAG: 3.1.1
+Touchpoint: language
+Description: xml:lang attribute is empty
+Why it matters: Empty xml:lang provides no language information
+Who it affects: Screen reader users using XML/XHTML parsers
+How to fix: Add valid language code to xml:lang attribute
+
+================================================================================
+
 ## ErrFakeListImplementation
 
 Existing fixtures:
+  - Fixtures/Lists/ErrFakeListImplementation_002_correct_semantic_lists.html
+  - Fixtures/Lists/ErrFakeListImplementation_001_violations_basic.html
   - Fixtures/Lists/ErrFakeListImplementation.html
 
 ID: ErrFakeListImplementation
@@ -537,6 +1198,8 @@ How to fix: Use proper ul/ol elements with li items for lists, avoid using visua
 
 Existing fixtures:
   - Fixtures/Forms/ErrFielLabelledBySomethingNotALabel.html
+  - Fixtures/Forms/ErrFielLabelledBySomethingNotALabel_002_correct_proper_labels.html
+  - Fixtures/Forms/ErrFielLabelledBySomethingNotALabel_001_violations_basic.html
 
 ID: ErrFielLabelledBySomethingNotALabel
 Type: Error
@@ -553,6 +1216,8 @@ How to fix: Use proper <label> elements or appropriate ARIA labeling
 ## ErrFieldAriaRefDoesNotExist
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFieldAriaRefDoesNotExist_002_correct_valid_refs.html
+  - Fixtures/Forms/ErrFieldAriaRefDoesNotExist_001_violations_basic.html
   - Fixtures/Forms/ErrFieldAriaRefDoesNotExist.html
 
 ID: ErrFieldAriaRefDoesNotExist
@@ -571,6 +1236,8 @@ How to fix: Either create an element with id="{found}" to serve as the label, fi
 
 Existing fixtures:
   - Fixtures/Forms/ErrFieldLabelledUsinAriaLabel.html
+  - Fixtures/Forms/ErrFieldLabelledUsinAriaLabel_001_violations_basic.html
+  - Fixtures/Forms/ErrFieldLabelledUsinAriaLabel_002_correct_visible_labels.html
 
 ID: ErrFieldLabelledUsinAriaLabel
 Type: Error
@@ -587,7 +1254,9 @@ How to fix: Use visible <label> elements instead of aria-label when possible
 ## ErrFieldReferenceDoesNotExist
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFieldReferenceDoesNotExist_001_violations_basic.html
   - Fixtures/Forms/ErrFieldReferenceDoesNotExist.html
+  - Fixtures/Forms/ErrFieldReferenceDoesNotExist_002_correct_matching_ids.html
 
 ID: ErrFieldReferenceDoesNotExist
 Type: Error
@@ -604,6 +1273,8 @@ How to fix: Fix the for/id relationship
 ## ErrFormAriaLabelledByIsBlank
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFormAriaLabelledByIsBlank_002_correct_with_label.html
+  - Fixtures/Forms/ErrFormAriaLabelledByIsBlank_001_violations_basic.html
   - Fixtures/Forms/ErrFormAriaLabelledByIsBlank.html
 
 ID: ErrFormAriaLabelledByIsBlank
@@ -621,6 +1292,8 @@ How to fix: Reference element with actual text content
 ## ErrFormAriaLabelledByReferenceDIsHidden
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDIsHidden_002_correct_visible_label.html
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDIsHidden_001_violations_basic.html
   - Fixtures/Forms/ErrFormAriaLabelledByReferenceDIsHidden.html
 
 ID: ErrFormAriaLabelledByReferenceDIsHidden
@@ -638,7 +1311,9 @@ How to fix: Reference visible elements only
 ## ErrFormAriaLabelledByReferenceDoesNotExist
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDoesNotExist_002_correct_valid_references.html
   - Fixtures/Forms/ErrFormAriaLabelledByReferenceDoesNotExist.html
+  - Fixtures/Forms/ErrFormAriaLabelledByReferenceDoesNotExist_001_violations_basic.html
 
 ID: ErrFormAriaLabelledByReferenceDoesNotExist
 Type: Error
@@ -652,10 +1327,30 @@ How to fix: Fix ID reference or use different labeling method
 
 ================================================================================
 
+## ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading_002_correct_references_heading.html
+  - Fixtures/Landmarks/ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading_001_violations_basic.html
+
+ID: ErrFormAriaLabelledByReferenceDoesNotReferenceAHeading
+Type: Error
+Impact: Low
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Form aria-labelledby doesn't reference a heading element
+Why it matters: Best practice is to reference headings for form landmarks
+Who it affects: Screen reader users
+How to fix: Reference a heading element when possible
+
+================================================================================
+
 ## ErrFormEmptyHasNoChildNodes
 
 Existing fixtures:
   - Fixtures/Forms/ErrFormEmptyHasNoChildNodes.html
+  - Fixtures/Forms/ErrFormEmptyHasNoChildNodes_002_correct_with_content.html
+  - Fixtures/Forms/ErrFormEmptyHasNoChildNodes_001_violations_basic.html
 
 ID: ErrFormEmptyHasNoChildNodes
 Type: Error
@@ -672,6 +1367,8 @@ How to fix: Remove empty form elements or add appropriate form controls
 ## ErrFormEmptyHasNoInteractiveElements
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFormEmptyHasNoInteractiveElements_001_violations_basic.html
+  - Fixtures/Forms/ErrFormEmptyHasNoInteractiveElements_002_correct_with_controls.html
   - Fixtures/Forms/ErrFormEmptyHasNoInteractiveElements.html
 
 ID: ErrFormEmptyHasNoInteractiveElements
@@ -689,6 +1386,8 @@ How to fix: Add appropriate input fields, buttons, or other form controls
 ## ErrFormLandmarkAccessibleNameIsBlank
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFormLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Forms/ErrFormLandmarkAccessibleNameIsBlank_002_correct_with_name.html
   - Fixtures/Landmarks/ErrFormLandmarkAccessibleNameIsBlank.html
 
 ID: ErrFormLandmarkAccessibleNameIsBlank
@@ -706,6 +1405,8 @@ How to fix: Add meaningful label describing form purpose
 ## ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Forms/ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
   - Fixtures/Landmarks/ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
 
 ID: ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs
@@ -723,6 +1424,8 @@ How to fix: Use only one labeling method
 ## ErrFormUsesAriaLabelInsteadOfVisibleElement
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFormUsesAriaLabelInsteadOfVisibleElement_002_correct_visible_labels.html
+  - Fixtures/Forms/ErrFormUsesAriaLabelInsteadOfVisibleElement_001_violations_basic.html
   - Fixtures/Forms/ErrFormUsesAriaLabelInsteadOfVisibleElement.html
 
 ID: ErrFormUsesAriaLabelInsteadOfVisibleElement
@@ -740,6 +1443,8 @@ How to fix: Use visible heading with aria-labelledby
 ## ErrFormUsesTitleAttribute
 
 Existing fixtures:
+  - Fixtures/Forms/ErrFormUsesTitleAttribute_001_violations_basic.html
+  - Fixtures/Forms/ErrFormUsesTitleAttribute_002_correct_aria_labeling.html
   - Fixtures/Forms/ErrFormUsesTitleAttribute.html
 
 ID: ErrFormUsesTitleAttribute
@@ -757,6 +1462,8 @@ How to fix: Use aria-label or aria-labelledby instead
 ## ErrFoundAriaLevelButNoRoleAppliedAtAll
 
 Existing fixtures:
+  - Fixtures/Headings/ErrFoundAriaLevelButNoRoleAppliedAtAll_002_correct_with_role.html
+  - Fixtures/Headings/ErrFoundAriaLevelButNoRoleAppliedAtAll_001_violations_basic.html
   - Fixtures/ARIA/ErrFoundAriaLevelButNoRoleAppliedAtAll.html
 
 ID: ErrFoundAriaLevelButNoRoleAppliedAtAll
@@ -771,10 +1478,30 @@ How to fix: Add role="heading" or use native heading element
 
 ================================================================================
 
+## ErrFoundAriaLevelButRoleIsNotHeading
+
+Existing fixtures:
+  - Fixtures/Headings/ErrFoundAriaLevelButRoleIsNotHeading_001_violations_basic.html
+  - Fixtures/Headings/ErrFoundAriaLevelButRoleIsNotHeading_002_correct_heading_role.html
+
+ID: ErrFoundAriaLevelButRoleIsNotHeading
+Type: Error
+Impact: High
+WCAG: 1.3.1, 4.1.2
+Touchpoint: headings
+Description: aria-level on element without heading role
+Why it matters: aria-level requires heading role to work
+Who it affects: Screen reader users
+How to fix: Add role="heading" or remove aria-level
+
+================================================================================
+
 ## ErrHeaderMissingScope
 
 Existing fixtures:
+  - Fixtures/Tables/ErrHeaderMissingScope_001_violations_basic.html
   - Fixtures/Tables/ErrHeaderMissingScope.html
+  - Fixtures/Tables/ErrHeaderMissingScope_002_correct_with_scope.html
 
 ID: ErrHeaderMissingScope
 Type: Error
@@ -788,10 +1515,66 @@ How to fix: Add scope="col" for column headers and scope="row" for row headers t
 
 ================================================================================
 
+## ErrHreflangAttrEmpty
+
+Existing fixtures:
+  - Fixtures/Language/ErrHreflangAttrEmpty_001_violations_basic.html
+  - Fixtures/Language/ErrHreflangAttrEmpty_002_correct_with_codes.html
+
+ID: ErrHreflangAttrEmpty
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: hreflang attribute is empty on link
+Why it matters: Empty hreflang provides no language information for the linked resource
+Who it affects: Screen reader users, search engines
+How to fix: Add valid language code or remove empty hreflang attribute
+
+================================================================================
+
+## ErrHreflangNotOnLink
+
+Existing fixtures:
+  - Fixtures/Language/ErrHreflangNotOnLink_002_correct_on_links.html
+  - Fixtures/Language/ErrHreflangNotOnLink_001_violations_basic.html
+
+ID: ErrHreflangNotOnLink
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: hreflang attribute on non-link element
+Why it matters: hreflang only works on links
+Who it affects: Screen reader users
+How to fix: Move hreflang to anchor elements only
+
+================================================================================
+
+## ErrIframeWithNoTitleAttr
+
+Existing fixtures:
+  - Fixtures/IFrames/ErrIframeWithNoTitleAttr_002_correct_with_title.html
+  - Fixtures/IFrames/ErrIframeWithNoTitleAttr_001_violations_basic.html
+
+ID: ErrIframeWithNoTitleAttr
+Type: Error
+Impact: High
+WCAG: 2.4.1 Bypass Blocks, 4.1.2 Name, Role, Value
+Touchpoint: title
+Description: Iframe element is missing the required title attribute
+Why it matters: Iframes embed external content like videos, maps, or forms within your page. Without a title attribute, screen reader users hear only "iframe" with no indication of what content it contains. This is like having a door with no label - users don't know what's behind it. They must enter the iframe and explore its content to understand its purpose, which is time-consuming and may be confusing if the iframe content lacks context. For pages with multiple iframes, users cannot distinguish between them or decide which ones are worth exploring.
+Who it affects: Screen reader users who need to understand what each iframe contains before deciding whether to interact with it, keyboard users navigating through iframes who need context about embedded content, users with cognitive disabilities who need clear labeling of all page regions, and users on slow connections who may experience delays loading iframe content
+How to fix: Add a title attribute to every iframe that concisely describes its content or purpose (e.g., title="YouTube video: Product demonstration", title="Google Maps: Office location", title="Payment form"). The title should be unique if there are multiple iframes. Keep it brief but descriptive enough that users understand what the iframe contains without having to enter it. For decorative iframes (rare), you can use title="" and add tabindex="-1" to remove it from tab order.
+
+================================================================================
+
 ## ErrImageAltContainsHTML
 
 Existing fixtures:
+  - Fixtures/Images/ErrImageAltContainsHTML_001_violations_basic.html
   - Fixtures/Images/ErrImageAltContainsHTML.html
+  - Fixtures/Images/ErrImageAltContainsHTML_002_correct_plain_text.html
 
 ID: ErrImageAltContainsHTML
 Type: Error
@@ -808,7 +1591,9 @@ How to fix: Remove all HTML markup from alt attributes and use only plain text. 
 ## ErrImageWithEmptyAlt
 
 Existing fixtures:
+  - Fixtures/Images/ErrImageWithEmptyAlt_001_violations_basic.html
   - Fixtures/Images/ErrImageWithEmptyAlt.html
+  - Fixtures/Images/ErrImageWithEmptyAlt_002_correct_usage.html
 
 ID: ErrImageWithEmptyAlt
 Type: Error
@@ -825,7 +1610,9 @@ How to fix: Determine the image's purpose and apply appropriate alt text - for i
 ## ErrImageWithImgFileExtensionAlt
 
 Existing fixtures:
+  - Fixtures/Images/ErrImageWithImgFileExtensionAlt_002_correct_descriptive.html
   - Fixtures/Images/ErrImageWithImgFileExtensionAlt.html
+  - Fixtures/Images/ErrImageWithImgFileExtensionAlt_001_violations_basic.html
 
 ID: ErrImageWithImgFileExtensionAlt
 Type: Error
@@ -842,7 +1629,9 @@ How to fix: Replace the filename with descriptive text that conveys the image's 
 ## ErrImageWithNoAlt
 
 Existing fixtures:
+  - Fixtures/Images/ErrImageWithNoAlt_001_violations_basic.html
   - Fixtures/Images/ErrImageWithNoAlt.html
+  - Fixtures/Images/ErrImageWithNoAlt_002_correct_with_alt.html
 
 ID: ErrImageWithNoAlt
 Type: Error
@@ -859,6 +1648,8 @@ How to fix: Add descriptive alt attributes for informative images (alt="Sales ch
 ## ErrImageWithURLAsAlt
 
 Existing fixtures:
+  - Fixtures/Images/ErrImageWithURLAsAlt_001_violations_basic.html
+  - Fixtures/Images/ErrImageWithURLAsAlt_002_correct_descriptive.html
   - Fixtures/Images/ErrImageWithURLAsAlt.html
 
 ID: ErrImageWithURLAsAlt
@@ -873,10 +1664,48 @@ How to fix: Replace the URL with descriptive text that conveys what the image sh
 
 ================================================================================
 
+## ErrImproperTitleAttribute
+
+Existing fixtures:
+  - Fixtures/TitleAttributes/ErrImproperTitleAttribute_002_correct_usage.html
+  - Fixtures/TitleAttributes/ErrImproperTitleAttribute_001_violations_basic.html
+
+ID: ErrImproperTitleAttribute
+Type: Error
+Impact: Medium
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 3.3.2 Labels or Instructions (Level A)
+Touchpoint: title_attributes
+Description: Title attribute used in particularly problematic patterns (on non-focusable elements or duplicating visible text)
+Why it matters: Title attributes fundamentally fail WCAG Conformance requirement 5.2.4 as they are inaccessible to screen magnifier users. At high magnification, tooltip content extends off-screen and disappears when mouse moves, making content completely inaccessible. This error flags specific patterns that are especially problematic: (1) title on non-focusable elements like div/span where users cannot even trigger the tooltip, and (2) redundant titles that duplicate visible text providing no value. These patterns demonstrate particularly poor understanding of accessibility requirements and should never be used
+Who it affects: Screen magnifier users at high magnification (tooltip goes off-screen and disappears), mobile and touch screen users (no hover capability), keyboard-only users (cannot trigger non-focusable element tooltips), screen reader users (inconsistent announcement), users with motor disabilities (tooltip disappears when mouse moves)
+How to fix: Never use title attributes on body elements. For non-focusable containers (div, span), remove the title entirely and make information visible. For redundant titles, simply remove the title attribute. Use visible text, proper label elements, aria-label for interactive elements, or visible helper text instead
+
+================================================================================
+
+## ErrInappropriateMenuRole
+
+Existing fixtures:
+  - Fixtures/Interactive/ErrInappropriateMenuRole_001_violations_basic.html
+  - Fixtures/Interactive/ErrInappropriateMenuRole_002_correct_list_navigation.html
+
+ID: ErrInappropriateMenuRole
+Type: Error
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: navigation
+Description: Menu role used inappropriately for navigation links
+Why it matters: Menu role is for application menus, not navigation. Misuse causes incorrect keyboard behavior and screen reader announcements.
+Who it affects: Screen reader users expecting application menu behavior, keyboard users expecting arrow key navigation.
+How to fix: Use nav element or role="navigation" for site navigation, reserve role="menu" for actual application menus with proper ARIA patterns.
+
+================================================================================
+
 ## ErrIncorrectHeadingLevel
 
 Existing fixtures:
   - Fixtures/Headings/ErrIncorrectHeadingLevel.html
+  - Fixtures/Headings/ErrIncorrectHeadingLevel_002_correct_css_styled.html
+  - Fixtures/Headings/ErrIncorrectHeadingLevel_001_violations_basic.html
 
 ID: ErrIncorrectHeadingLevel
 Type: Error
@@ -893,7 +1722,9 @@ How to fix: Use heading levels to convey document structure (h1 > h2 > h3), not 
 ## ErrIncorrectlyFormattedPrimaryLang
 
 Existing fixtures:
+  - Fixtures/Language/ErrIncorrectlyFormattedPrimaryLang_001_violations_basic.html
   - Fixtures/Language/ErrIncorrectlyFormattedPrimaryLang.html
+  - Fixtures/Language/ErrIncorrectlyFormattedPrimaryLang_002_correct_formatting.html
 
 ID: ErrIncorrectlyFormattedPrimaryLang
 Type: Error
@@ -910,6 +1741,8 @@ How to fix: Use correct format: "en-US" or "en"
 ## ErrInfiniteAnimation
 
 Existing fixtures:
+  - Fixtures/Animation/ErrInfiniteAnimation_002_correct_with_controls.html
+  - Fixtures/Animation/ErrInfiniteAnimation_001_violations_basic.html
   - Fixtures/Animation/ErrInfiniteAnimation.html
 
 ID: ErrInfiniteAnimation
@@ -927,7 +1760,9 @@ How to fix: Provide pause/stop controls for all animations, respect prefers-redu
 ## ErrInsufficientContrast
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/ErrInsufficientContrast.html
+  - Fixtures/Colors/ErrInsufficientContrast.html
+  - Fixtures/Colors/ErrInsufficientContrast_001_violations_basic.html
+  - Fixtures/Colors/ErrInsufficientContrast_002_correct_sufficient_contrast.html
 
 ID: ErrInsufficientContrast
 Type: Error
@@ -941,27 +1776,66 @@ How to fix: Ensure 4.5:1 contrast ratio for normal text, 3:1 for large text (18p
 
 ================================================================================
 
-## ErrInvalidGenericLinkName
+## ErrInvalidAriaLevel
 
 Existing fixtures:
-  - Fixtures/Links/ErrInvalidGenericLinkName.html
+  - Fixtures/Headings/ErrInvalidAriaLevel_002_correct_valid_levels.html
+  - Fixtures/Headings/ErrInvalidAriaLevel_001_violations_basic.html
 
-ID: ErrInvalidGenericLinkName
+ID: ErrInvalidAriaLevel
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 4.1.2
+Touchpoint: headings
+Description: Invalid aria-level value (not 1-6)
+Why it matters: Invalid levels break heading hierarchy
+Who it affects: Screen reader users
+How to fix: Use aria-level values 1 through 6 only
+
+================================================================================
+
+## ErrInvalidLanguageCode
+
+Existing fixtures:
+  - Fixtures/Language/ErrInvalidLanguageCode_002_correct_valid_codes.html
+  - Fixtures/Language/ErrInvalidLanguageCode_001_violations_basic.html
+
+ID: ErrInvalidLanguageCode
 Type: Error
 Impact: High
-WCAG: 2.4.4 Link Purpose (In Context) (Level A)
-Touchpoint: links
-Description: Link text is generic and provides no information about destination
-Why it matters: Generic link text like "click here" provides no context when links are reviewed out of context.
-Who it affects: Screen reader users navigating by links, users with cognitive disabilities who need clear link purposes.
-How to fix: Use descriptive link text that explains the destination or action, avoid generic phrases like "click here" or "read more".
+WCAG: 3.1.1 Language of Page (Level A), 3.1.2 Language of Parts (Level AA)
+Touchpoint: language
+Description: Language attribute contains invalid code '{found}' that doesn't conform to ISO 639 standards
+Why it matters: The language code '{found}' is not recognized as a valid ISO 639 language code. This prevents assistive technologies from properly processing content, causing screen readers to mispronounce words, use incorrect inflection patterns, or fail to switch language engines. This can make content difficult or impossible to understand when read aloud, especially if the content is in a non-English language but gets read with English pronunciation rules.
+Who it affects: Blind and low vision users relying on screen readers for accurate pronunciation, multilingual users who need proper language identification for comprehension, users with reading disabilities using text-to-speech tools, and international users accessing content in multiple languages
+How to fix: Replace '{found}' with a valid ISO 639-1 or ISO 639-2 language code. If '{found}' appears to be English, use "en". Common corrections: "english" → "en", "spanish" → "es", "french" → "fr", "deutsch" → "de", "eng" → "en". For regional variants use BCP 47 format (e.g., "en-US", "en-GB", "es-MX"). Check the official ISO 639 registry for the correct code.
+
+================================================================================
+
+## ErrInvalidTabindex
+
+Existing fixtures:
+  - Fixtures/Interactive/ErrInvalidTabindex_002_correct_values.html
+  - Fixtures/Interactive/ErrInvalidTabindex_001_violations_basic.html
+
+ID: ErrInvalidTabindex
+Type: Error
+Impact: High
+WCAG: 2.4.3 Focus Order (Level A)
+Touchpoint: focus
+Description: Element has a tabindex attribute with an invalid value (non-numeric or decimal)
+Why it matters: Invalid tabindex values are ignored by browsers, potentially making interactive elements unreachable by keyboard or creating unpredictable focus behavior. This can completely block keyboard users from accessing functionality. The element might be skipped during tabbing, receive focus unexpectedly, or behave differently across browsers.
+Who it affects: Keyboard users who cannot reach or interact with the element, screen reader users who may miss important interactive controls, users with motor disabilities relying on keyboard navigation, and users who cannot use a mouse
+How to fix: Use only valid integer values for tabindex: "0" to include in natural tab order, "-1" to remove from tab order but allow programmatic focus, or remove the tabindex attribute entirely if the element shouldn't be focusable. Never use decimal values (1.5), text ("first"), or empty values (tabindex="").
 
 ================================================================================
 
 ## ErrLabelContainsMultipleFields
 
 Existing fixtures:
+  - Fixtures/Forms/ErrLabelContainsMultipleFields_002_correct_individual_labels.html
   - Fixtures/Forms/ErrLabelContainsMultipleFields.html
+  - Fixtures/Forms/ErrLabelContainsMultipleFields_001_violations_basic.html
 
 ID: ErrLabelContainsMultipleFields
 Type: Error
@@ -978,7 +1852,9 @@ How to fix: Split the label so each of the {count} fields has its own dedicated 
 ## ErrLabelMismatchOfAccessibleNameAndLabelText
 
 Existing fixtures:
+  - Fixtures/Forms/ErrLabelMismatchOfAccessibleNameAndLabelText_002_correct_matching_names.html
   - Fixtures/Forms/ErrLabelMismatchOfAccessibleNameAndLabelText.html
+  - Fixtures/Forms/ErrLabelMismatchOfAccessibleNameAndLabelText_001_violations_basic.html
 
 ID: ErrLabelMismatchOfAccessibleNameAndLabelText
 Type: Error
@@ -995,7 +1871,9 @@ How to fix: Make accessible name match visible text
 ## ErrLargeTextContrastAA
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/ErrLargeTextContrastAA.html
+  - Fixtures/Colors/ErrLargeTextContrastAA.html
+  - Fixtures/Colors/ErrLargeTextContrastAA_002_correct_contrast.html
+  - Fixtures/Colors/ErrLargeTextContrastAA_001_violations_basic.html
 
 ID: ErrLargeTextContrastAA
 Type: Error
@@ -1012,7 +1890,9 @@ How to fix: Current contrast is {ratio}:1, but WCAG Level AA requires at least 3
 ## ErrLargeTextContrastAAA
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/ErrLargeTextContrastAAA.html
+  - Fixtures/Colors/ErrLargeTextContrastAAA_001_violations_basic.html
+  - Fixtures/Colors/ErrLargeTextContrastAAA_002_correct_contrast.html
+  - Fixtures/Colors/ErrLargeTextContrastAAA.html
 
 ID: ErrLargeTextContrastAAA
 Type: Error
@@ -1026,10 +1906,49 @@ How to fix: Current contrast is {ratio}:1, but WCAG Level AAA requires at least 
 
 ================================================================================
 
+## ErrLinkOpensNewWindowNoWarning
+
+Existing fixtures:
+  - Fixtures/Links/ErrLinkOpensNewWindowNoWarning_002_correct_with_warning.html
+  - Fixtures/Links/ErrLinkOpensNewWindowNoWarning_001_violations_basic.html
+
+ID: ErrLinkOpensNewWindowNoWarning
+Type: Error
+Impact: Medium
+WCAG: 3.2.2 On Input
+Touchpoint: links
+Description: Link opens in new window/tab without warning users
+Why it matters: Unexpectedly opening new windows can disorient users, especially those using screen readers or magnification. Users may not realize a new window opened and become confused when the back button doesn't work. This is particularly problematic for users with cognitive disabilities or those unfamiliar with browser behaviors.
+Who it affects: Screen reader users who may not notice the context change, users with cognitive disabilities who may become disoriented, users with motor disabilities who have difficulty managing multiple windows, and novice computer users
+How to fix: Add visible text or an icon indicating the link opens in a new window. Include this information in the accessible name (e.g., "Annual report (opens in new window)"). Consider whether opening in a new window is necessary - often it's better to open in the same window and let users control this behavior.
+
+================================================================================
+
+## ErrLinkTextNotDescriptive
+
+Existing fixtures:
+  - Fixtures/Links/ErrLinkTextNotDescriptive_003_correct_with_aria_label.html
+  - Fixtures/Links/ErrLinkTextNotDescriptive_001_violations_basic.html
+  - Fixtures/Links/ErrLinkTextNotDescriptive_002_correct_descriptive.html
+
+ID: ErrLinkTextNotDescriptive
+Type: Error
+Impact: High
+WCAG: 2.4.4 Link Purpose (In Context)
+Touchpoint: links
+Description: Link text does not adequately describe the link's destination or purpose
+Why it matters: Users need to understand where a link will take them before activating it. Vague link text like "click here" or "read more" provides no information about the destination. Screen reader users often navigate by pulling up a list of all links, where non-descriptive text becomes meaningless out of context.
+Who it affects: Screen reader users navigating by links list, users with cognitive disabilities who need clear navigation cues, and users with motor disabilities who need to make informed decisions before activating links
+How to fix: Write link text that describes the destination or action (e.g., "Download 2024 annual report" instead of "Download"). Avoid generic phrases. If design constraints require short link text, provide additional context through aria-label or aria-describedby, or ensure surrounding text provides context.
+
+================================================================================
+
 ## ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 Existing fixtures:
+  - Fixtures/Landmarks/ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
   - Fixtures/Landmarks/ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
+  - Fixtures/Landmarks/ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
 
 ID: ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs
 Type: Error
@@ -1043,10 +1962,66 @@ How to fix: Use only one labeling method - either aria-label or aria-labelledby
 
 ================================================================================
 
+## ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost_002_correct_no_tabindex.html
+  - Fixtures/Landmarks/ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost_001_violations_basic.html
+
+ID: ErrMainLandmarkHasTabindexOfZeroCanOnlyHaveMinusOneAtMost
+Type: Error
+Impact: Medium
+WCAG: 2.4.3
+Touchpoint: landmarks
+Description: Main landmark has tabindex="0" which is inappropriate
+Why it matters: Landmarks should not be in the tab order
+Who it affects: Keyboard users
+How to fix: Remove tabindex or use tabindex="-1" if programmatic focus is needed
+
+================================================================================
+
+## ErrMainLandmarkIsHidden
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrMainLandmarkIsHidden_001_violations_basic.html
+  - Fixtures/Landmarks/ErrMainLandmarkIsHidden_002_correct_visible.html
+
+ID: ErrMainLandmarkIsHidden
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Main landmark is hidden from view
+Why it matters: Hidden main content defeats the purpose of the landmark
+Who it affects: All users
+How to fix: Ensure main landmark is visible or remove if not needed
+
+================================================================================
+
+## ErrMainLandmarkMayNotbeChildOfAnotherLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrMainLandmarkMayNotbeChildOfAnotherLandmark_002_correct_top_level.html
+  - Fixtures/Landmarks/ErrMainLandmarkMayNotbeChildOfAnotherLandmark_001_violations_basic.html
+
+ID: ErrMainLandmarkMayNotbeChildOfAnotherLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Main landmark nested inside another landmark
+Why it matters: Invalid landmark nesting breaks structure
+Who it affects: Screen reader users
+How to fix: Move main outside of other landmarks
+
+================================================================================
+
 ## ErrMapAriaHidden
 
 Existing fixtures:
   - Fixtures/ARIA/ErrMapAriaHidden.html
+  - Fixtures/ARIA/ErrMapAriaHidden_002_correct_accessible_maps.html
+  - Fixtures/ARIA/ErrMapAriaHidden_001_violations_basic.html
 
 ID: ErrMapAriaHidden
 Type: Error
@@ -1064,6 +2039,8 @@ How to fix: Remove aria-hidden from maps, provide appropriate text alternatives 
 
 Existing fixtures:
   - Fixtures/Maps/ErrMapMissingTitle.html
+  - Fixtures/Maps/ErrMapMissingTitle_002_correct_with_title.html
+  - Fixtures/Maps/ErrMapMissingTitle_001_violations_basic.html
 
 ID: ErrMapMissingTitle
 Type: Error
@@ -1080,7 +2057,24 @@ How to fix: Add descriptive title attribute to map iframes (e.g., title="Map sho
 ## ErrMissingAccessibleName
 
 Existing fixtures:
-  - Fixtures/Accessible Names/ErrMissingAccessibleName.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_008_correct_label_wrapping.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_019_correct_html5_elements.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_003_correct_image_alt.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_017_correct_all_input_types.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_005_correct_aria_label.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_010_violations_placeholder_only.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_015_correct_event_handlers.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_006_correct_aria_labelledby.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_018_violations_html5_elements.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_013_correct_aria_widget_roles.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_001_violations_basic.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_009_correct_mixed_techniques.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_004_violations_image_empty_alt.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_007_correct_label_for.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_012_violations_aria_widget_roles.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_014_violations_event_handlers.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_002_correct_with_names.html
+  - Fixtures/AccessibleNames/ErrMissingAccessibleName_016_violations_all_input_types.html
 
 ID: ErrMissingAccessibleName
 Type: Error
@@ -1097,7 +2091,8 @@ How to fix: Add aria-label, aria-labelledby, or visible text labels to all inter
 ## ErrMissingCloseButton
 
 Existing fixtures:
-  - Fixtures/Buttons/ErrMissingCloseButton.html
+  - Fixtures/Modals/ErrMissingCloseButton_001_violations_basic.html
+  - Fixtures/Modals/ErrMissingCloseButton_002_correct_with_close.html
 
 ID: ErrMissingCloseButton
 Type: Error
@@ -1114,6 +2109,10 @@ How to fix: Add visible close button to all modals and dialogs, ensure it's keyb
 ## ErrMissingDocumentType
 
 Existing fixtures:
+  - Fixtures/SemanticStructure/ErrMissingDocumentType_002_correct_with_doctype.html
+  - Fixtures/SemanticStructure/ErrMissingDocumentType_001_violations_basic.html
+  - Fixtures/DocumentType/ErrMissingDocumentType_002_correct_with_doctype.html
+  - Fixtures/DocumentType/ErrMissingDocumentType_001_violations_basic.html
   - Fixtures/Documents/ErrMissingDocumentType.html
 
 ID: ErrMissingDocumentType
@@ -1128,10 +2127,30 @@ How to fix: Add <!DOCTYPE html> as the first line of all HTML documents.
 
 ================================================================================
 
+## ErrMissingMainLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrMissingMainLandmark_002_correct_with_main.html
+  - Fixtures/Landmarks/ErrMissingMainLandmark_001_violations_basic.html
+
+ID: ErrMissingMainLandmark
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Page missing main landmark for primary content
+Why it matters: Without a main landmark, screen reader users cannot quickly navigate to the primary content area.
+Who it affects: Screen reader users who navigate by landmarks, keyboard users using landmark navigation.
+How to fix: Add <main> element or role="main" to identify the primary content area of each page.
+
+================================================================================
+
 ## ErrMissingTabindex
 
 Existing fixtures:
   - Fixtures/Keyboard/ErrMissingTabindex.html
+  - Fixtures/Keyboard/ErrMissingTabindex_001_violations_basic.html
+  - Fixtures/Keyboard/ErrMissingTabindex_002_correct_with_tabindex.html
 
 ID: ErrMissingTabindex
 Type: Error
@@ -1148,7 +2167,9 @@ How to fix: Add tabindex="0" to custom interactive elements, or use native inter
 ## ErrModalMissingClose
 
 Existing fixtures:
-  - Fixtures/Dialogs and Modals/ErrModalMissingClose.html
+  - Fixtures/DialogsAndModals/ErrModalMissingClose.html
+  - Fixtures/Modals/ErrModalMissingClose_001_violations_basic.html
+  - Fixtures/Modals/ErrModalMissingClose_002_correct_with_close.html
 
 ID: ErrModalMissingClose
 Type: Error
@@ -1165,6 +2186,8 @@ How to fix: Provide at least one clear way to close modals (close button, escape
 ## ErrModalMissingHeading
 
 Existing fixtures:
+  - Fixtures/Modals/ErrModalMissingHeading_001_violations_basic.html
+  - Fixtures/Modals/ErrModalMissingHeading_002_correct_with_heading.html
   - Fixtures/Headings/ErrModalMissingHeading.html
 
 ID: ErrModalMissingHeading
@@ -1182,7 +2205,9 @@ How to fix: Add a heading (h1-h6) at the beginning of modal content that clearly
 ## ErrModalWithoutEscape
 
 Existing fixtures:
-  - Fixtures/Dialogs and Modals/ErrModalWithoutEscape.html
+  - Fixtures/DialogsAndModals/ErrModalWithoutEscape.html
+  - Fixtures/Modals/ErrModalWithoutEscape_001_violations_basic.html
+  - Fixtures/Modals/ErrModalWithoutEscape_002_correct_with_escape.html
 
 ID: ErrModalWithoutEscape
 Type: Error
@@ -1199,7 +2224,8 @@ How to fix: Implement Escape key handler to close modals, ensure it works even w
 ## ErrMouseOnlyHandler
 
 Existing fixtures:
-  - Fixtures/Event Handlng/ErrMouseOnlyHandler.html
+  - Fixtures/EventHandling/ErrMouseOnlyHandler_002_correct_with_keyboard.html
+  - Fixtures/EventHandling/ErrMouseOnlyHandler_001_violations_basic.html
 
 ID: ErrMouseOnlyHandler
 Type: Error
@@ -1213,10 +2239,48 @@ How to fix: Provide keyboard equivalents for all mouse interactions, use click e
 
 ================================================================================
 
+## ErrMultipleBannerLandmarks
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrMultipleBannerLandmarks_002_correct_single_banner.html
+  - Fixtures/Landmarks/ErrMultipleBannerLandmarks_001_violations_basic.html
+
+ID: ErrMultipleBannerLandmarks
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Multiple banner landmarks found
+Why it matters: Multiple headers confuse page structure
+Who it affects: Screen reader users
+How to fix: Use only one banner landmark
+
+================================================================================
+
+## ErrMultipleContentinfoLandmarks
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrMultipleContentinfoLandmarks_001_violations_basic.html
+  - Fixtures/Landmarks/ErrMultipleContentinfoLandmarks_002_correct_single_footer.html
+
+ID: ErrMultipleContentinfoLandmarks
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Multiple contentinfo landmarks found
+Why it matters: Multiple footers confuse page structure
+Who it affects: Screen reader users
+How to fix: Use only one contentinfo landmark
+
+================================================================================
+
 ## ErrMultipleH1
 
 Existing fixtures:
   - Fixtures/Headings/ErrMultipleH1.html
+  - Fixtures/Headings/ErrMultipleH1_002_correct_single_h1.html
+  - Fixtures/Headings/ErrMultipleH1_001_violations_basic.html
 
 ID: ErrMultipleH1
 Type: Error
@@ -1226,13 +2290,35 @@ Touchpoint: headings
 Description: Page contains {count} h1 elements instead of just one
 Why it matters: Having {count} h1 elements creates confusion about the page's main topic. Each h1 represents a primary heading, and multiple h1s suggest multiple main topics, breaking the document hierarchy. Screen readers users won't know which h1 represents the actual page topic.
 Who it affects: Screen reader users who expect a single h1 to identify the page topic, users navigating by headings who see multiple "top level" items, SEO and search engines that look for a single main topic
-How to fix: Keep only one h1 that represents the main page topic. Change the other {count-1} h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
+How to fix: Keep only one h1 that represents the main page topic. Change the other h1 elements to h2 or appropriate lower levels based on their relationship to the main topic.
+
+================================================================================
+
+## ErrMultipleMainLandmarks
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrMultipleMainLandmarks_001_violations_basic.html
+  - Fixtures/Landmarks/ErrMultipleMainLandmarks_002_correct_single_main.html
+
+ID: ErrMultipleMainLandmarks
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships
+Touchpoint: landmarks
+Description: Multiple main landmark regions found on the page
+Why it matters: The main landmark should contain THE primary content of the page - having multiple main landmarks is like having multiple "Chapter 1" sections in a book. It confuses the page structure and defeats the purpose of landmarks. Screen reader users expecting to jump to the main content won't know which landmark contains the actual primary content. They might land in the wrong section, miss important content, or have to check multiple "main" areas. This ambiguity makes the landmark system unreliable and forces users back to linear navigation.
+Who it affects: Screen reader users relying on the main landmark to skip to primary content, keyboard users using landmark navigation extensions, users with cognitive disabilities who need clear, unambiguous page structure, and developers trying to understand the intended page structure
+How to fix: Use only one <main> element or role="main" per page. Identify which content is truly the primary, unique content for that page and wrap only that in the main landmark. If you have multiple important sections, use other appropriate landmarks (article, section) or headings to structure them within the single main landmark. The main should contain all unique page content but exclude repeated elements like headers, navigation, and footers.
 
 ================================================================================
 
 ## ErrMultiplePageTitles
 
 Existing fixtures:
+  - Fixtures/Page/ErrMultiplePageTitles_001_violations_basic.html
+  - Fixtures/Page/ErrMultiplePageTitles_002_violations_multiple.html
+  - Fixtures/Page/ErrMultiplePageTitles_002_correct_single_title.html
+  - Fixtures/Page/ErrMultiplePageTitles_003_correct_single.html
   - Fixtures/Semantic/ErrMultiplePageTitles.html
 
 ID: ErrMultiplePageTitles
@@ -1250,7 +2336,9 @@ How to fix: Use only one title element per page
 ## ErrNativeVideoMissingControls
 
 Existing fixtures:
+  - Fixtures/Media/ErrNativeVideoMissingControls_001_violations_basic.html
   - Fixtures/Media/ErrNativeVideoMissingControls.html
+  - Fixtures/Media/ErrNativeVideoMissingControls_002_correct_with_controls.html
 
 ID: ErrNativeVideoMissingControls
 Type: Error
@@ -1264,9 +2352,47 @@ How to fix: Add controls attribute to all video elements, or provide custom acce
 
 ================================================================================
 
+## ErrNavLandmarkAccessibleNameIsBlank
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrNavLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
+  - Fixtures/Landmarks/ErrNavLandmarkAccessibleNameIsBlank_001_violations_basic.html
+
+ID: ErrNavLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Navigation landmark has blank accessible name
+Why it matters: Multiple nav areas need labels
+Who it affects: Screen reader users
+How to fix: Add aria-label like "Main navigation" or "Footer navigation"
+
+================================================================================
+
+## ErrNavLandmarkContainsOnlyWhiteSpace
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrNavLandmarkContainsOnlyWhiteSpace_002_correct_with_content.html
+  - Fixtures/Landmarks/ErrNavLandmarkContainsOnlyWhiteSpace_001_violations_basic.html
+
+ID: ErrNavLandmarkContainsOnlyWhiteSpace
+Type: Error
+Impact: High
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Navigation landmark contains only whitespace
+Why it matters: Whitespace-only navigation is not functional
+Who it affects: All users
+How to fix: Add navigation links or remove the landmark
+
+================================================================================
+
 ## ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 Existing fixtures:
+  - Fixtures/Landmarks/ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Landmarks/ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
   - Fixtures/Landmarks/ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
 
 ID: ErrNavLandmarkHasAriaLabelAndAriaLabelledByAttrs
@@ -1281,9 +2407,65 @@ How to fix: Use only one labeling method
 
 ================================================================================
 
+## ErrNavMissingAccessibleName
+
+Existing fixtures:
+  - Fixtures/Navigation/ErrNavMissingAccessibleName_002_correct_with_labels.html
+  - Fixtures/Navigation/ErrNavMissingAccessibleName_001_violations_basic.html
+
+ID: ErrNavMissingAccessibleName
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: navigation
+Description: Navigation element lacks accessible name to distinguish it
+Why it matters: When pages have multiple navigation areas, users need to distinguish between them.
+Who it affects: Screen reader users navigating by landmarks, users who need to understand page structure.
+How to fix: Add aria-label or aria-labelledby to nav elements to identify their purpose (e.g., "Main navigation", "Breadcrumb").
+
+================================================================================
+
+## ErrNegativeTabindex
+
+Existing fixtures:
+  - Fixtures/Focus/ErrNegativeTabindex_002_correct_usage.html
+  - Fixtures/Focus/ErrNegativeTabindex_001_violations_basic.html
+
+ID: ErrNegativeTabindex
+Type: Error
+Impact: Medium
+WCAG: 2.4.3
+Touchpoint: focus
+Description: Negative tabindex on interactive element
+Why it matters: Element removed from tab order
+Who it affects: Keyboard users
+How to fix: Use tabindex="0" for interactive elements
+
+================================================================================
+
+## ErrNestedNavLandmarks
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrNestedNavLandmarks_001_violations_basic.html
+  - Fixtures/Landmarks/ErrNestedNavLandmarks_002_correct_flat_structure.html
+
+ID: ErrNestedNavLandmarks
+Type: Error
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Navigation landmarks are nested
+Why it matters: Confusing navigation structure
+Who it affects: Screen reader users
+How to fix: Flatten navigation structure
+
+================================================================================
+
 ## ErrNoAlt
 
 Existing fixtures:
+  - Fixtures/Images/ErrNoAlt_002_correct_with_alt.html
+  - Fixtures/Images/ErrNoAlt_001_violations_basic.html
   - Fixtures/Images/ErrNoAlt.html
 
 ID: ErrNoAlt
@@ -1298,9 +2480,29 @@ How to fix: Add alt attribute to all img elements; use alt="" for decorative ima
 
 ================================================================================
 
+## ErrNoBannerLandmarkOnPage
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrNoBannerLandmarkOnPage_001_violations_basic.html
+  - Fixtures/Landmarks/ErrNoBannerLandmarkOnPage_002_correct_with_banner.html
+
+ID: ErrNoBannerLandmarkOnPage
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
+Touchpoint: landmarks
+Description: Page is missing a banner landmark to identify the site header region
+Why it matters: The banner landmark identifies the site header which typically contains the site logo, main navigation, and search functionality. This content appears consistently across pages and users expect to find it at the top. Without proper banner markup, screen reader users cannot quickly jump to the header area using landmark navigation shortcuts. They must instead navigate through all content linearly or guess where the header content begins and ends. This makes it difficult to access primary navigation or return to the site homepage via the logo link, tasks that sighted users can do instantly by looking at the top of the page.
+Who it affects: Screen reader users who use landmark navigation to quickly access site navigation and branding, keyboard users who want to efficiently navigate to header elements, users with cognitive disabilities who rely on consistent page structure to orient themselves, and users with low vision using screen magnifiers who need to quickly locate navigation elements
+How to fix: Use the HTML5 <header> element for your site header (it has an implicit role of banner when it's not nested inside article, aside, main, nav, or section elements). Alternatively, add role="banner" to the container holding your header content. There should typically be only one banner landmark per page at the top level. Include site-wide content like logo, primary navigation, and site search within the banner landmark.
+
+================================================================================
+
 ## ErrNoFocusIndicator
 
 Existing fixtures:
+  - Fixtures/Focus/ErrNoFocusIndicator_002_correct_with_indicator.html
+  - Fixtures/Focus/ErrNoFocusIndicator_001_violations_basic.html
   - Fixtures/Keyboard/ErrNoFocusIndicator.html
 
 ID: ErrNoFocusIndicator
@@ -1318,6 +2520,9 @@ How to fix: Ensure all interactive elements have a visible focus indicator using
 ## ErrNoH1
 
 Existing fixtures:
+  - Fixtures/Headings/ErrNoH1_002_correct_with_h1.html
+  - Fixtures/Headings/ErrNoH1_001_violations_basic.html
+  - Fixtures/Headings/ErrNoH1_003_aria_heading.html
   - Fixtures/Headings/ErrNoH1.html
 
 ID: ErrNoH1
@@ -1332,10 +2537,30 @@ How to fix: Add exactly one h1 heading that describes the main content or purpos
 
 ================================================================================
 
+## ErrNoHeadingsOnPage
+
+Existing fixtures:
+  - Fixtures/Headings/ErrNoHeadingsOnPage_002_correct_with_headings.html
+  - Fixtures/Headings/ErrNoHeadingsOnPage_001_violations_basic.html
+
+ID: ErrNoHeadingsOnPage
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships, 2.4.6 Headings and Labels
+Touchpoint: headings
+Description: No heading elements (h1-h6) found anywhere on the page
+Why it matters: Headings create the structural outline of your content, like a table of contents. They allow users to understand how information is organized and navigate directly to sections of interest. Without any headings, screen reader users cannot use heading navigation shortcuts (one of their primary navigation methods) and must read through all content linearly. This is like forcing someone to read an entire book without chapter titles or section breaks. Users cannot skim content, jump to relevant sections, or understand the information hierarchy. For users with cognitive disabilities, the lack of visual structure makes content overwhelming and hard to process.
+Who it affects: Screen reader users who lose a critical navigation method and cannot understand content structure, users with cognitive disabilities who need clear visual organization to process information, users with attention disorders who rely on headings to focus on relevant sections, and users with reading disabilities who use headings to break content into manageable chunks
+How to fix: Add semantic heading elements (h1-h6) to structure your content. Start with one h1 that describes the main page topic. Use h2 for major sections, h3 for subsections, and so on. Don't skip levels (e.g., h1 to h3). Ensure headings describe the content that follows them. Never use headings just for visual styling - they must represent actual content structure. If you need large text without semantic meaning, use CSS instead.
+
+================================================================================
+
 ## ErrNoLabel
 
 Existing fixtures:
+  - Fixtures/Forms/ErrNoLabel_002_correct_with_labels.html
   - Fixtures/Forms/ErrNoLabel.html
+  - Fixtures/Forms/ErrNoLabel_001_violations_basic.html
 
 ID: ErrNoLabel
 Type: Error
@@ -1349,9 +2574,65 @@ How to fix: Add label elements with for attribute, or use aria-label/aria-labell
 
 ================================================================================
 
+## ErrNoMainLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrNoMainLandmark_002_correct_with_main.html
+  - Fixtures/Landmarks/ErrNoMainLandmark_001_violations_basic.html
+
+ID: ErrNoMainLandmark
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
+Touchpoint: landmarks
+Description: Page is missing a main landmark region to identify the primary content area
+Why it matters: Screen reader users rely on landmarks to understand page layout and quickly navigate to important sections. The main landmark allows users to skip repeated content like headers and navigation to jump directly to the unique page content. Without it, users must navigate through all repeated elements on every page, which is time-consuming and frustrating. The main landmark should contain all content that is unique to the page, including the h1 heading.
+Who it affects: Blind and low vision users using screen readers who navigate by landmarks, users with motor disabilities who need efficient keyboard navigation to skip repeated content, and users with cognitive disabilities who benefit from clear page structure
+How to fix: Add a <main> element around the primary content area, or use role="main" on an appropriate container element. Ensure there is only one main landmark per page, position it as a top-level landmark (not nested inside other landmarks), and include all unique page content within it, including the h1 heading. The main landmark should not include repeated content like site headers, navigation, or footers.
+
+================================================================================
+
+## ErrNoOutlineOffsetDefined
+
+Existing fixtures:
+  - Fixtures/Focus/ErrNoOutlineOffsetDefined_002_correct_with_offset.html
+  - Fixtures/Focus/ErrNoOutlineOffsetDefined_001_violations_basic.html
+
+ID: ErrNoOutlineOffsetDefined
+Type: Error
+Impact: Medium
+WCAG: 2.4.7
+Touchpoint: focus
+Description: No outline offset defined for focus
+Why it matters: Focus indicator may be hard to see
+Who it affects: Keyboard users
+How to fix: Add outline-offset for better visibility
+
+================================================================================
+
+## ErrNoPageLanguage
+
+Existing fixtures:
+  - Fixtures/Language/ErrNoPageLanguage_001_violations_basic.html
+  - Fixtures/Language/ErrNoPageLanguage_002_correct_with_lang.html
+
+ID: ErrNoPageLanguage
+Type: Error
+Impact: High
+WCAG: 3.1.1 Language of Page (Level A)
+Touchpoint: language
+Description: HTML element is missing the lang attribute, preventing assistive technologies from determining the primary language of the page
+Why it matters: Without a declared language, screen readers cannot determine which pronunciation rules and voice synthesizer to use, often defaulting to the user's system language which may be incorrect. This causes mispronunciation, incorrect inflection, and can make content unintelligible, especially for pages in languages different from the user's default settings.
+Who it affects: Blind and low vision users using screen readers who need correct pronunciation for comprehension, international users accessing content in different languages, users with dyslexia or reading disabilities using assistive reading tools, and users of automatic translation services
+How to fix: Add the lang attribute to the <html> element with the appropriate language code (e.g., <html lang="en"> for English, <html lang="fr"> for French). Use ISO 639-1 two-letter codes for modern languages. For XHTML, also include xml:lang with the same value. Ensure the declared language matches the actual primary language of your content. For multilingual pages, use the language that represents the majority of the content.
+
+================================================================================
+
 ## ErrNoPageTitle
 
 Existing fixtures:
+  - Fixtures/Page/ErrNoPageTitle_001_violations_basic.html
+  - Fixtures/Page/ErrNoPageTitle_002_correct_with_title.html
   - Fixtures/Semantic/ErrNoPageTitle.html
 
 ID: ErrNoPageTitle
@@ -1369,7 +2650,9 @@ How to fix: Add a <title> element within the <head> section of your HTML. Create
 ## ErrNoReducedMotionSupport
 
 Existing fixtures:
+  - Fixtures/Animation/ErrNoReducedMotionSupport_001_violations_basic.html
   - Fixtures/Animation/ErrNoReducedMotionSupport.html
+  - Fixtures/Animation/ErrNoReducedMotionSupport_002_correct_with_media_query.html
 
 ID: ErrNoReducedMotionSupport
 Type: Error
@@ -1386,6 +2669,8 @@ How to fix: Use CSS @media (prefers-reduced-motion: reduce) to disable or reduce
 ## ErrNonInteractiveZeroTabindex
 
 Existing fixtures:
+  - Fixtures/Keyboard/ErrNonInteractiveZeroTabindex_001_violations_basic.html
+  - Fixtures/Keyboard/ErrNonInteractiveZeroTabindex_002_correct_no_tabindex.html
   - Fixtures/Keyboard/ErrNonInteractiveZeroTabindex.html
 
 ID: ErrNonInteractiveZeroTabindex
@@ -1404,6 +2689,8 @@ How to fix: Remove tabindex="0" from non-interactive elements, only make element
 
 Existing fixtures:
   - Fixtures/Forms/ErrOrphanLabelWithNoId.html
+  - Fixtures/Forms/ErrOrphanLabelWithNoId_002_correct_with_for.html
+  - Fixtures/Forms/ErrOrphanLabelWithNoId_001_violations_basic.html
 
 ID: ErrOrphanLabelWithNoId
 Type: Error
@@ -1420,6 +2707,8 @@ How to fix: Add for attribute pointing to field ID
 ## ErrOutlineIsNoneOnInteractiveElement
 
 Existing fixtures:
+  - Fixtures/Focus/ErrOutlineIsNoneOnInteractiveElement_001_violations_basic.html
+  - Fixtures/Focus/ErrOutlineIsNoneOnInteractiveElement_002_correct_with_focus.html
   - Fixtures/Focus/ErrOutlineIsNoneOnInteractiveElement.html
 
 ID: ErrOutlineIsNoneOnInteractiveElement
@@ -1437,6 +2726,8 @@ How to fix: Never use outline:none without providing an alternative visible focu
 ## ErrPlaceholderAsLabel
 
 Existing fixtures:
+  - Fixtures/Forms/ErrPlaceholderAsLabel_001_violations_basic.html
+  - Fixtures/Forms/ErrPlaceholderAsLabel_002_correct_with_labels.html
   - Fixtures/Forms/ErrPlaceholderAsLabel.html
 
 ID: ErrPlaceholderAsLabel
@@ -1454,6 +2745,8 @@ How to fix: Add proper label elements or aria-label, use placeholder only for su
 ## ErrPositiveTabindex
 
 Existing fixtures:
+  - Fixtures/Focus/ErrPositiveTabindex_001_violations_basic.html
+  - Fixtures/Focus/ErrPositiveTabindex_002_correct_tabindex.html
   - Fixtures/Keyboard/ErrPositiveTabindex.html
 
 ID: ErrPositiveTabindex
@@ -1468,9 +2761,83 @@ How to fix: Remove positive tabindex values and use only tabindex="0" (adds elem
 
 ================================================================================
 
+## ErrPrimaryHrefLangNotRecognized
+
+Existing fixtures:
+  - Fixtures/Language/ErrPrimaryHrefLangNotRecognized_002_correct_valid_codes.html
+  - Fixtures/Language/ErrPrimaryHrefLangNotRecognized_001_violations_basic.html
+
+ID: ErrPrimaryHrefLangNotRecognized
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: hreflang language code not recognized
+Why it matters: Invalid hreflang codes provide incorrect information about linked resources
+Who it affects: Screen reader users, search engines
+How to fix: Use valid ISO 639-1 language codes
+
+================================================================================
+
+## ErrPrimaryLangAndXmlLangMismatch
+
+Existing fixtures:
+  - Fixtures/Language/ErrPrimaryLangAndXmlLangMismatch_002_correct_matching.html
+  - Fixtures/Language/ErrPrimaryLangAndXmlLangMismatch_001_violations_basic.html
+
+ID: ErrPrimaryLangAndXmlLangMismatch
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: lang and xml:lang attributes don't match
+Why it matters: Conflicting language information
+Who it affects: Screen reader users
+How to fix: Ensure both attributes have same value
+
+================================================================================
+
+## ErrPrimaryLangUnrecognized
+
+Existing fixtures:
+  - Fixtures/Language/ErrPrimaryLangUnrecognized_002_correct_recognized_codes.html
+  - Fixtures/Language/ErrPrimaryLangUnrecognized_001_violations_basic.html
+
+ID: ErrPrimaryLangUnrecognized
+Type: Error
+Impact: High
+WCAG: 3.1.1
+Touchpoint: language
+Description: Language code not recognized
+Why it matters: Invalid language codes prevent proper pronunciation
+Who it affects: Screen reader users
+How to fix: Use valid ISO 639-1 language codes
+
+================================================================================
+
+## ErrPrimaryXmlLangUnrecognized
+
+Existing fixtures:
+  - Fixtures/Language/ErrPrimaryXmlLangUnrecognized_002_correct_recognized_codes.html
+  - Fixtures/Language/ErrPrimaryXmlLangUnrecognized_001_violations_basic.html
+
+ID: ErrPrimaryXmlLangUnrecognized
+Type: Error
+Impact: High
+WCAG: 3.1.1
+Touchpoint: language
+Description: xml:lang language code not recognized
+Why it matters: Invalid xml:lang codes prevent proper pronunciation
+Who it affects: Screen reader users in XML/XHTML contexts
+How to fix: Use valid ISO 639-1 language codes
+
+================================================================================
+
 ## ErrRedundantAlt
 
 Existing fixtures:
+  - Fixtures/Images/ErrRedundantAlt_002_correct_concise.html
+  - Fixtures/Images/ErrRedundantAlt_001_violations_basic.html
   - Fixtures/Images/ErrRedundantAlt.html
 
 ID: ErrRedundantAlt
@@ -1488,6 +2855,8 @@ How to fix: Remove "image of", "picture of", "graphic of" from alt text; describ
 ## ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs
 
 Existing fixtures:
+  - Fixtures/Landmarks/ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs_001_violations_basic.html
+  - Fixtures/Landmarks/ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs_002_correct_single_method.html
   - Fixtures/Landmarks/ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs.html
 
 ID: ErrRegionLandmarkHasAriaLabelAndAriaLabelledByAttrs
@@ -1502,10 +2871,84 @@ How to fix: Use only one labeling method
 
 ================================================================================
 
+## ErrRegionQualifierForHreflangUnrecognized
+
+Existing fixtures:
+  - Fixtures/Language/ErrRegionQualifierForHreflangUnrecognized_001_violations_basic.html
+  - Fixtures/Language/ErrRegionQualifierForHreflangUnrecognized_002_correct_valid_regions.html
+
+ID: ErrRegionQualifierForHreflangUnrecognized
+Type: Error
+Impact: Low
+WCAG: 3.1.1
+Touchpoint: language
+Description: hreflang region qualifier not recognized
+Why it matters: Invalid region codes in hreflang attributes
+Who it affects: Screen reader users, search engines
+How to fix: Use valid ISO 3166-1 region codes
+
+================================================================================
+
+## ErrRegionQualifierForPrimaryLangNotRecognized
+
+Existing fixtures:
+  - Fixtures/Language/ErrRegionQualifierForPrimaryLangNotRecognized_001_violations_basic.html
+  - Fixtures/Language/ErrRegionQualifierForPrimaryLangNotRecognized_002_correct_valid_regions.html
+
+ID: ErrRegionQualifierForPrimaryLangNotRecognized
+Type: Error
+Impact: Medium
+WCAG: 3.1.1
+Touchpoint: language
+Description: Region qualifier in primary language code not recognized (e.g., "en-XY")
+Why it matters: Invalid region codes may cause incorrect pronunciation
+Who it affects: Screen reader users
+How to fix: Use valid ISO 3166-1 region codes like "en-US", "en-GB"
+
+================================================================================
+
+## ErrRegionQualifierForPrimaryXmlLangNotRecognized
+
+Existing fixtures:
+  - Fixtures/Language/ErrRegionQualifierForPrimaryXmlLangNotRecognized_002_correct_valid_regions.html
+  - Fixtures/Language/ErrRegionQualifierForPrimaryXmlLangNotRecognized_001_violations_basic.html
+
+ID: ErrRegionQualifierForPrimaryXmlLangNotRecognized
+Type: Error
+Impact: Medium
+WCAG: 3.1.1
+Touchpoint: language
+Description: Region qualifier in xml:lang not recognized
+Why it matters: Invalid region codes in xml:lang may cause issues
+Who it affects: Screen reader users
+How to fix: Use valid ISO 3166-1 region codes
+
+================================================================================
+
+## ErrRoleOfHeadingButNoLevelGiven
+
+Existing fixtures:
+  - Fixtures/Headings/ErrRoleOfHeadingButNoLevelGiven_001_violations_basic.html
+  - Fixtures/Headings/ErrRoleOfHeadingButNoLevelGiven_002_correct_with_level.html
+
+ID: ErrRoleOfHeadingButNoLevelGiven
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 4.1.2
+Touchpoint: headings
+Description: role="heading" without aria-level
+Why it matters: Heading level is undefined
+Who it affects: Screen reader users
+How to fix: Add aria-level attribute with value 1-6
+
+================================================================================
+
 ## ErrSVGNoAccessibleName
 
 Existing fixtures:
   - Fixtures/Images/ErrSVGNoAccessibleName.html
+  - Fixtures/Images/ErrSVGNoAccessibleName_002_correct_with_names.html
+  - Fixtures/Images/ErrSVGNoAccessibleName_001_violations_basic.html
 
 ID: ErrSVGNoAccessibleName
 Type: Error
@@ -1519,10 +2962,30 @@ How to fix: Add <title> element with aria-labelledby, or use role="img" with ari
 
 ================================================================================
 
+## ErrHeadingOrder
+
+Existing fixtures:
+  - Fixtures/Headings/ErrHeadingOrder_002_correct_logical_order.html
+  - Fixtures/Headings/ErrHeadingOrder_001_violations_basic.html
+
+ID: ErrHeadingOrder
+Type: Error
+Impact: High
+WCAG: 1.3.1 Info and Relationships
+Touchpoint: headings
+Description: Headings appear in illogical order - high-level headings (H1, H2) appear after lower-level headings (H3, H4, H5, H6)
+Why it matters: Document structure should be logical and predictable. When high-level headings like H1 or H2 appear after lower-level headings, it creates a backwards or inverted hierarchy. This is like reading a book where chapter titles appear after section headings, or where the main title appears at the end. Screen reader users navigating by headings expect the most important headings first, followed by progressively more detailed subsections. When headings appear out of logical order, users cannot understand the content structure, may miss important navigation landmarks, and cannot build an accurate mental model of how the page is organized.
+Who it affects: Screen reader users who rely on heading navigation and expect logical document structure, users with cognitive disabilities who need predictable content organization, users who generate document outlines from headings, and users who navigate by heading levels to understand content hierarchy
+How to fix: Restructure your content so that high-level headings (H1, H2) appear before lower-level headings. Start with H1 for the main page title, then H2 for major sections, then H3 for subsections within those. Headings should appear in a logical, top-down hierarchy that matches how users would naturally read and understand the content structure.
+
+================================================================================
+
 ## ErrSkippedHeadingLevel
 
 Existing fixtures:
   - Fixtures/Headings/ErrSkippedHeadingLevel.html
+  - Fixtures/Headings/ErrSkippedHeadingLevel_002_correct_sequential.html
+  - Fixtures/Headings/ErrSkippedHeadingLevel_001_violations_basic.html
 
 ID: ErrSkippedHeadingLevel
 Type: Error
@@ -1539,7 +3002,9 @@ How to fix: Insert an h{expectedLevel} heading between the h{skippedFrom} and h{
 ## ErrSmallText
 
 Existing fixtures:
-  - Fixtures/Typography/ErrSmallText.html
+  - Fixtures/Fonts/ErrSmallText.html
+  - Fixtures/Fonts/ErrSmallText_002_correct_readable_size.html
+  - Fixtures/Fonts/ErrSmallText_001_violations_basic.html
 
 ID: ErrSmallText
 Type: Error
@@ -1556,7 +3021,9 @@ How to fix: Use minimum 14px (preferably 16px) for body text, ensure text can be
 ## ErrSvgImageNoLabel
 
 Existing fixtures:
+  - Fixtures/Images/ErrSvgImageNoLabel_002_correct_with_label.html
   - Fixtures/Images/ErrSvgImageNoLabel.html
+  - Fixtures/Images/ErrSvgImageNoLabel_001_violations_basic.html
 
 ID: ErrSvgImageNoLabel
 Type: Error
@@ -1570,10 +3037,32 @@ How to fix: For simple SVGs, add role="img" and aria-label with descriptive text
 
 ================================================================================
 
+## ErrTTabindexOnNonInteractiveElement
+
+Existing fixtures:
+  - Fixtures/Tabindex/ErrTTabindexOnNonInteractiveElement_002_correct_usage.html
+  - Fixtures/Tabindex/ErrTTabindexOnNonInteractiveElement_001_violations_basic.html
+
+ID: ErrTTabindexOnNonInteractiveElement
+Type: Error
+Impact: Medium
+WCAG: 2.4.3
+Touchpoint: focus
+Description: Tabindex attribute on non-interactive element
+Why it matters: Non-interactive elements should not be in tab order unless they serve a specific purpose
+Who it affects: Keyboard users
+How to fix: Remove tabindex from non-interactive elements or make them properly interactive
+
+================================================================================
+
 ## ErrTabOrderViolation
 
 Existing fixtures:
+  - Fixtures/TabOrder/ErrTabOrderViolation_002_pass_correct_order.html
+  - Fixtures/TabOrder/ErrTabOrderViolation_001_buttons_wrong_order.html
   - Fixtures/Keyboard/ErrTabOrderViolation.html
+  - Fixtures/Keyboard/ErrTabOrderViolation_001_violations_basic.html
+  - Fixtures/Keyboard/ErrTabOrderViolation_002_correct_natural_order.html
 
 ID: ErrTabOrderViolation
 Type: Error
@@ -1587,10 +3076,48 @@ How to fix: Ensure DOM order matches visual order, avoid positive tabindex value
 
 ================================================================================
 
+## ErrTabindexOfZeroOnNonInteractiveElement
+
+Existing fixtures:
+  - Fixtures/Tabindex/ErrTabindexOfZeroOnNonInteractiveElement_001_violations_basic.html
+  - Fixtures/Tabindex/ErrTabindexOfZeroOnNonInteractiveElement_002_correct_usage.html
+
+ID: ErrTabindexOfZeroOnNonInteractiveElement
+Type: Error
+Impact: Low
+WCAG: 2.4.3
+Touchpoint: focus
+Description: tabindex="0" on non-interactive element
+Why it matters: Non-interactive elements in tab order
+Who it affects: Keyboard users
+How to fix: Remove tabindex from non-interactive elements
+
+================================================================================
+
+## ErrTableMissingCaption
+
+Existing fixtures:
+  - Fixtures/Tables/ErrTableMissingCaption_002_correct_with_caption.html
+  - Fixtures/Tables/ErrTableMissingCaption_001_violations_basic.html
+
+ID: ErrTableMissingCaption
+Type: Error
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: tables
+Description: Data table lacks caption element to describe its content
+Why it matters: Without captions, users may not understand the table's purpose or content before navigating through it.
+Who it affects: Screen reader users who need table context, users with cognitive disabilities.
+How to fix: Add <caption> element as first child of table describing what data the table contains.
+
+================================================================================
+
 ## ErrTableNoColumnHeaders
 
 Existing fixtures:
   - Fixtures/Tables/ErrTableNoColumnHeaders.html
+  - Fixtures/Tables/ErrTableNoColumnHeaders_001_violations_basic.html
+  - Fixtures/Tables/ErrTableNoColumnHeaders_002_correct_with_headers.html
 
 ID: ErrTableNoColumnHeaders
 Type: Error
@@ -1607,7 +3134,9 @@ How to fix: Use <th> elements for column headers in first row, add scope="col" t
 ## ErrTextContrastAA
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/ErrTextContrastAA.html
+  - Fixtures/Colors/ErrTextContrastAA_002_correct_contrast.html
+  - Fixtures/Colors/ErrTextContrastAA_001_violations_basic.html
+  - Fixtures/Colors/ErrTextContrastAA.html
 
 ID: ErrTextContrastAA
 Type: Error
@@ -1624,7 +3153,9 @@ How to fix: Current contrast is {ratio}:1, but WCAG Level AA requires at least 4
 ## ErrTextContrastAAA
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/ErrTextContrastAAA.html
+  - Fixtures/Colors/ErrTextContrastAAA_001_violations_basic.html
+  - Fixtures/Colors/ErrTextContrastAAA_002_correct_contrast.html
+  - Fixtures/Colors/ErrTextContrastAAA.html
 
 ID: ErrTextContrastAAA
 Type: Error
@@ -1638,10 +3169,31 @@ How to fix: Current contrast is {ratio}:1, but WCAG Level AAA requires at least 
 
 ================================================================================
 
+## ErrTimersWithoutControls
+
+Existing fixtures:
+  - Fixtures/Timing/ErrTimersWithoutControls_002_correct_with_controls.html
+  - Fixtures/Timing/ErrTimersWithoutControls_001_violations_basic.html
+
+ID: ErrTimersWithoutControls
+Type: Error
+Impact: High
+WCAG: 2.2.1 Timing Adjustable (Level A)
+Touchpoint: timing
+Description: Time-based content lacks user controls
+Why it matters: Users need control over timed content to have enough time to read and interact with it.
+Who it affects: Users with cognitive disabilities, users with reading disabilities, screen reader users.
+How to fix: Provide controls to pause, stop, or extend time limits; avoid unnecessary time constraints.
+
+================================================================================
+
 ## ErrTitleAsOnlyLabel
 
 Existing fixtures:
+  - Fixtures/Forms/ErrTitleAsOnlyLabel_001_violations_basic.html
+  - Fixtures/Forms/ErrTitleAsOnlyLabel_003_violations_various_inputs.html
   - Fixtures/Forms/ErrTitleAsOnlyLabel.html
+  - Fixtures/Forms/ErrTitleAsOnlyLabel_002_correct_proper_labels.html
 
 ID: ErrTitleAsOnlyLabel
 Type: Error
@@ -1655,9 +3207,50 @@ How to fix: Add a proper visible <label> element associated with the form field 
 
 ================================================================================
 
+## ErrTitleAttrFound
+
+Existing fixtures:
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_004_correct_head_metadata.html
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_003_correct_iframe_with_title.html
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_005_violations_body_elements.html
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_002_correct_visible_text.html
+  - Fixtures/TitleAttributes/ErrTitleAttrFound_001_violations_basic.html
+
+ID: ErrTitleAttrFound
+Type: Error
+Impact: Medium
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 4.1.2 Name, Role, Value (Level A)
+Touchpoint: title
+Description: Title attribute used - fundamentally inaccessible to assistive technology
+Why it matters: Title attributes fail WCAG Conformance requirement 5.2.4 as they are not accessible with regular assistive technology. For screen magnifier users at high magnification, tooltip content extends off-screen and disappears when mouse moves to read it, making content completely inaccessible. Additionally, title attributes are not accessible on mobile/touch devices, inconsistently announced by screen readers, and cannot be accessed by keyboard-only users
+Who it affects: Screen magnifier users (tooltip goes off-screen at high magnification), mobile and touch screen users (no hover), keyboard-only users (cannot trigger tooltip), screen reader users (inconsistent support), users with motor disabilities (tooltip disappears when mouse moves), users with cognitive disabilities (tooltip disappears too quickly)
+How to fix: Never use title attributes. Use visible text, proper <label> elements for forms, aria-label for icons, or visible helper text. For abbreviations, provide full text on first use or use <dfn> element
+
+================================================================================
+
+## ErrTransparentFocusIndicator
+
+Existing fixtures:
+  - Fixtures/Focus/ErrTransparentFocusIndicator_001_violations_basic.html
+  - Fixtures/Focus/ErrTransparentFocusIndicator_002_correct_opaque_indicator.html
+
+ID: ErrTransparentFocusIndicator
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible (Level AA)
+Touchpoint: focus
+Description: Focus indicator uses transparent or nearly transparent color, making it effectively invisible
+Why it matters: A transparent focus indicator is functionally the same as no focus indicator - users cannot see where keyboard focus is located. This might occur from using rgba with 0 or very low alpha values, setting outline-color to transparent, or using colors that match the background. The focus indicator exists technically but provides no practical benefit to users trying to navigate.
+Who it affects: Keyboard users who need visible focus indicators to navigate, users with low vision who need clear visual cues, users with color blindness who may already struggle with certain color combinations, and users with cognitive disabilities who need obvious focus indicators
+How to fix: Use opaque colors with sufficient contrast for focus indicators. Replace transparent outlines with visible colors, ensure at least 3:1 contrast ratio between focus indicator and background, use solid colors or high alpha values (0.7 or higher) for rgba colors. Test focus indicators on different backgrounds across your site. Consider using box-shadow or background changes as additional focus indicators.
+
+================================================================================
+
 ## ErrUnlabelledField
 
 Existing fixtures:
+  - Fixtures/Forms/ErrUnlabelledField_002_correct_with_labels.html
+  - Fixtures/Forms/ErrUnlabelledField_001_violations_basic.html
   - Fixtures/Forms/ErrUnlabelledField.html
 
 ID: ErrUnlabelledField
@@ -1675,7 +3268,9 @@ How to fix: Add explicit <label> elements with for attribute matching the input'
 ## ErrVideoIframeMissingTitle
 
 Existing fixtures:
+  - Fixtures/IFrames/ErrVideoIframeMissingTitle_001_violations_basic.html
   - Fixtures/IFrames/ErrVideoIframeMissingTitle.html
+  - Fixtures/IFrames/ErrVideoIframeMissingTitle_002_correct_with_title.html
   - Fixtures/Media/ErrVideoIframeMissingTitle.html
 
 ID: ErrVideoIframeMissingTitle
@@ -1690,10 +3285,29 @@ How to fix: Add descriptive title attribute to video iframes describing the vide
 
 ================================================================================
 
+## ErrWrongTabindexForInteractiveElement
+
+Existing fixtures:
+  - Fixtures/Tabindex/ErrWrongTabindexForInteractiveElement_001_violations_basic.html
+  - Fixtures/Tabindex/ErrWrongTabindexForInteractiveElement_002_correct_natural_tabindex.html
+
+ID: ErrWrongTabindexForInteractiveElement
+Type: Error
+Impact: Medium
+WCAG: 2.4.3
+Touchpoint: focus
+Description: Inappropriate tabindex on interactive element
+Why it matters: Tab order doesn't match visual order
+Who it affects: Keyboard users
+How to fix: Let natural tab order work, avoid tabindex
+
+================================================================================
+
 ## InfoFieldLabelledUsingAriaLabel
 
 Existing fixtures:
-  - Fixtures/Forms/InfoFieldLabelledUsingAriaLabel.html
+  - Fixtures/Forms/InfoFieldLabelledUsingAriaLabel_001_violations_basic.html
+  - Fixtures/Forms/InfoFieldLabelledUsingAriaLabel_002_correct_visible_labels.html
 
 ID: InfoFieldLabelledUsingAriaLabel
 Type: Info
@@ -1710,7 +3324,9 @@ How to fix: Consider if a visible label showing "{found}" would better serve all
 ## InfoHeadingNearLengthLimit
 
 Existing fixtures:
+  - Fixtures/Headings/InfoHeadingNearLengthLimit_002_correct_short.html
   - Fixtures/Headings/InfoHeadingNearLengthLimit.html
+  - Fixtures/Headings/InfoHeadingNearLengthLimit_001_violations_basic.html
 
 ID: InfoHeadingNearLengthLimit
 Type: Info
@@ -1727,7 +3343,8 @@ How to fix: Consider shortening headings to be more concise while maintaining cl
 ## InfoNoColorSchemeSupport
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/InfoNoColorSchemeSupport.html
+  - Fixtures/Colors/InfoNoColorSchemeSupport_002_with_support.html
+  - Fixtures/Colors/InfoNoColorSchemeSupport_001_info_basic.html
 
 ID: InfoNoColorSchemeSupport
 Type: Info
@@ -1744,7 +3361,8 @@ How to fix: Implement CSS prefers-color-scheme media query to support dark/light
 ## InfoNoContrastSupport
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/InfoNoContrastSupport.html
+  - Fixtures/Colors/InfoNoContrastSupport_001_info_basic.html
+  - Fixtures/Colors/InfoNoContrastSupport_002_with_support.html
 
 ID: InfoNoContrastSupport
 Type: Info
@@ -1758,26 +3376,65 @@ How to fix: Test site in high contrast mode, ensure it remains usable, consider 
 
 ================================================================================
 
-## WarnAnchorTargetTabindex
+## RegionLandmarkAccessibleNameIsBlank
 
 Existing fixtures:
-  - Fixtures/Links/WarnAnchorTargetTabindex.html
+  - Fixtures/Landmarks/RegionLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
+  - Fixtures/Landmarks/RegionLandmarkAccessibleNameIsBlank_001_violations_basic.html
 
-ID: WarnAnchorTargetTabindex
+ID: RegionLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Region landmark has blank accessible name
+Why it matters: Blank labels provide no information
+Who it affects: Screen reader users
+How to fix: Add meaningful label text
+
+================================================================================
+
+## ErrHeadingAccessibleNameMismatch
+
+Existing fixtures:
+  - Fixtures/Headings/ErrHeadingAccessibleNameMismatch_001_violations_basic.html
+  - Fixtures/Headings/ErrHeadingAccessibleNameMismatch_002_correct_matching.html
+
+ID: ErrHeadingAccessibleNameMismatch
+Type: Error
+Impact: High
+WCAG: 2.5.3
+Touchpoint: headings
+Description: Visible heading text doesn't match its accessible name
+Why it matters: Voice control users may not be able to reference the heading by its visible text
+Who it affects: Voice control users, screen reader users
+How to fix: Ensure visible text starts the accessible name (e.g., visible 'Support' should be at the start of aria-label, like 'Support: Customer Service')
+
+================================================================================
+
+## WarnBannerLandmarkAccessibleNameUsesBanner
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnBannerLandmarkAccessibleNameUsesBanner_002_correct_descriptive_labels.html
+  - Fixtures/Landmarks/WarnBannerLandmarkAccessibleNameUsesBanner_001_violations_basic.html
+
+ID: WarnBannerLandmarkAccessibleNameUsesBanner
 Type: Warning
 Impact: Low
-WCAG: 2.1.1 Keyboard (Level A)
-Touchpoint: links
-Description: Anchor target element has unnecessary tabindex
-Why it matters: Elements that are link targets don't need tabindex; adding it may create confusion.
-Who it affects: Keyboard users encountering unexpected tab stops.
-How to fix: Remove tabindex from elements that are only link targets, not interactive controls.
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Banner landmark uses generic term "banner" in label
+Why it matters: Redundant labeling
+Who it affects: Screen reader users
+How to fix: Use descriptive label or rely on implicit role
 
 ================================================================================
 
 ## WarnButtonGenericText
 
 Existing fixtures:
+  - Fixtures/Buttons/WarnButtonGenericText_002_correct_descriptive.html
+  - Fixtures/Buttons/WarnButtonGenericText_001_violations_basic.html
   - Fixtures/Buttons/WarnButtonGenericText.html
 
 ID: WarnButtonGenericText
@@ -1795,7 +3452,11 @@ How to fix: Use descriptive button text that explains the action (e.g., "Submit 
 ## WarnColorOnlyLink
 
 Existing fixtures:
+  - Fixtures/Colors/WarnColorOnlyLink_002_correct_with_indicators.html
+  - Fixtures/Colors/WarnColorOnlyLink_001_violations_basic.html
+  - Fixtures/Links/WarnColorOnlyLink_002_correct_with_indicators.html
   - Fixtures/Links/WarnColorOnlyLink.html
+  - Fixtures/Links/WarnColorOnlyLink_001_violations_basic.html
 
 ID: WarnColorOnlyLink
 Type: Warning
@@ -1812,7 +3473,8 @@ How to fix: Add underlines to links, use other visual indicators beyond color, e
 ## WarnColorRelatedStyleDefinedExplicitlyInElement
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/WarnColorRelatedStyleDefinedExplicitlyInElement.html
+  - Fixtures/Style/WarnColorRelatedStyleDefinedExplicitlyInElement_001_violations_basic.html
+  - Fixtures/Style/WarnColorRelatedStyleDefinedExplicitlyInElement_002_correct_css_classes.html
 
 ID: WarnColorRelatedStyleDefinedExplicitlyInElement
 Type: Warning
@@ -1829,7 +3491,8 @@ How to fix: Move color-related styles (color, background-color, border-color, et
 ## WarnColorRelatedStyleDefinedExplicitlyInStyleTag
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/WarnColorRelatedStyleDefinedExplicitlyInStyleTag.html
+  - Fixtures/Style/WarnColorRelatedStyleDefinedExplicitlyInStyleTag_001_violations_basic.html
+  - Fixtures/Style/WarnColorRelatedStyleDefinedExplicitlyInStyleTag_002_correct_css_variables.html
 
 ID: WarnColorRelatedStyleDefinedExplicitlyInStyleTag
 Type: Warning
@@ -1843,10 +3506,30 @@ How to fix: Move color styles to external CSS files linked with <link> tags. Org
 
 ================================================================================
 
+## WarnComplementaryLandmarkAccessibleNameUsesComplementary
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnComplementaryLandmarkAccessibleNameUsesComplementary_001_violations_basic.html
+  - Fixtures/Landmarks/WarnComplementaryLandmarkAccessibleNameUsesComplementary_002_correct_descriptive_labels.html
+
+ID: WarnComplementaryLandmarkAccessibleNameUsesComplementary
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Complementary landmark label uses generic term "complementary"
+Why it matters: Generic labels don't describe specific content
+Who it affects: Screen reader users
+How to fix: Use descriptive labels like "Related articles" or "Sidebar"
+
+================================================================================
+
 ## WarnComplementaryLandmarkHasNoLabel
 
 Existing fixtures:
+  - Fixtures/Landmarks/WarnComplementaryLandmarkHasNoLabel_001_violations_basic.html
   - Fixtures/Landmarks/WarnComplementaryLandmarkHasNoLabel.html
+  - Fixtures/Landmarks/WarnComplementaryLandmarkHasNoLabel_002_correct_with_labels.html
 
 ID: WarnComplementaryLandmarkHasNoLabel
 Type: Warning
@@ -1863,6 +3546,8 @@ How to fix: Add aria-label or aria-labelledby to identify the purpose
 ## WarnContentInfoLandmarkHasNoLabel
 
 Existing fixtures:
+  - Fixtures/Landmarks/WarnContentInfoLandmarkHasNoLabel_002_correct_with_labels.html
+  - Fixtures/Landmarks/WarnContentInfoLandmarkHasNoLabel_001_violations_basic.html
   - Fixtures/Landmarks/WarnContentInfoLandmarkHasNoLabel.html
 
 ID: WarnContentInfoLandmarkHasNoLabel
@@ -1877,9 +3562,143 @@ How to fix: Add descriptive label if multiple contentinfo exist
 
 ================================================================================
 
+## WarnContentOutsideLandmarks
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnContentOutsideLandmarks_001_violations_basic.html
+  - Fixtures/Landmarks/WarnContentOutsideLandmarks_002_correct_in_landmarks.html
+
+ID: WarnContentOutsideLandmarks
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Content exists outside of landmark regions
+Why it matters: Content outside landmarks is harder to find and navigate for screen reader users.
+Who it affects: Screen reader users who navigate by landmarks.
+How to fix: Ensure all content is within appropriate landmarks (header, nav, main, footer, aside).
+
+================================================================================
+
+## WarnContentinfoLandmarkAccessibleNameUsesContentinfo
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnContentinfoLandmarkAccessibleNameUsesContentinfo_002_correct_descriptive_labels.html
+  - Fixtures/Landmarks/WarnContentinfoLandmarkAccessibleNameUsesContentinfo_001_violations_basic.html
+
+ID: WarnContentinfoLandmarkAccessibleNameUsesContentinfo
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Contentinfo landmark uses generic term "contentinfo" in label
+Why it matters: Redundant labeling
+Who it affects: Screen reader users
+How to fix: Use descriptive label or rely on implicit role
+
+================================================================================
+
+## WarnCustomBulletStyling
+
+Existing fixtures:
+  - Fixtures/Lists/WarnCustomBulletStyling_001_violations_basic.html
+  - Fixtures/Lists/WarnCustomBulletStyling_002_correct_semantic_preserved.html
+  - Fixtures/Lists/WarnCustomBulletStyling_004_violation_img_element.html
+  - Fixtures/Lists/WarnCustomBulletStyling_003_violation_background_image.html
+  - Fixtures/Lists/WarnCustomBulletStyling_002_violation_icon_font.html
+  - Fixtures/Lists/WarnCustomBulletStyling_006_correct_standard_bullets.html
+  - Fixtures/Lists/WarnCustomBulletStyling_001_violation_before_custom_content.html
+  - Fixtures/Lists/WarnCustomBulletStyling_005_violation_svg_element.html
+
+ID: WarnCustomBulletStyling
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: lists
+Description: List uses custom bullet styling that may not be accessible
+Why it matters: Custom bullets using CSS or images may not be announced correctly by screen readers.
+Who it affects: Screen reader users who may miss list semantics.
+How to fix: Use CSS ::marker pseudo-element for custom bullets, ensure list semantics are preserved.
+
+================================================================================
+
+## WarnDeepListNesting
+
+Existing fixtures:
+  - Fixtures/Lists/WarnDeepListNesting_002_correct_shallow_nesting.html
+  - Fixtures/Lists/WarnDeepListNesting_001_violations_basic.html
+
+ID: WarnDeepListNesting
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: lists
+Description: Lists nested more than 3 levels deep
+Why it matters: Deeply nested lists are difficult to understand and navigate.
+Who it affects: Screen reader users, users with cognitive disabilities.
+How to fix: Simplify list structure, consider alternative presentations for complex hierarchies.
+
+================================================================================
+
+## WarnElementNotInLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnElementNotInLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/WarnElementNotInLandmark_002_correct_in_landmarks.html
+
+ID: WarnElementNotInLandmark
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Important content found outside of any landmark region, making it harder for screen reader users to find and navigate to
+Why it matters: Landmarks create a navigable structure for your page, like a table of contents. Content outside landmarks is like having chapters missing from the table of contents - users may never find it when navigating by landmarks. Screen reader users often jump between landmarks to quickly scan page structure, and content outside landmarks requires them to read through the entire page linearly to discover it. This particularly affects users who are familiar with your site and want to quickly navigate to specific content areas.
+Who it affects: Screen reader users who navigate by landmarks to efficiently explore pages, keyboard users using browser extensions for landmark navigation, users with cognitive disabilities who rely on consistent page structure, and power users who use landmarks for quick navigation
+How to fix: Ensure all meaningful content is contained within appropriate landmark regions. Typically: use <header> or role="banner" for site headers, <nav> or role="navigation" for navigation menus, <main> or role="main" for primary content, <aside> or role="complementary" for sidebar content, <footer> or role="contentinfo" for footers. Decorative content or spacers can remain outside landmarks. Review your page structure to ensure no important content is orphaned outside the landmark structure.
+
+================================================================================
+
+## ErrEmptyLanguageAttribute
+
+Existing fixtures:
+  - Fixtures/Language/ErrEmptyLanguageAttribute_002_correct_with_valid_lang.html
+  - Fixtures/Language/ErrEmptyLanguageAttribute_001_violations_basic.html
+
+ID: ErrEmptyLanguageAttribute
+Type: Error
+Impact: High
+WCAG: 3.1.2 Language of Parts (Level AA)
+Touchpoint: language
+Description: Element (non-HTML) has a lang attribute present but with no value (lang=""), preventing screen readers from determining language changes
+Why it matters: An empty lang attribute on elements prevents screen readers from properly switching pronunciation rules for content in different languages. Screen readers cannot adjust pronunciation rules for content sections in different languages. This can make multilingual content difficult or impossible to understand when read aloud.
+Who it affects: Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech
+How to fix: Add a valid language code to the lang attribute (e.g., lang="fr" for French, lang="es" for Spanish). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. If the language matches the page language, remove the lang attribute entirely rather than leaving it empty.
+
+================================================================================
+
+## WarnFastInterval
+
+Existing fixtures:
+  - Fixtures/Animation/WarnFastInterval_001_violations_basic.html
+  - Fixtures/Animation/WarnFastInterval_002_correct_slower_updates.html
+
+ID: WarnFastInterval
+Type: Warning
+Impact: Medium
+WCAG: 2.2.2 Pause, Stop, Hide (Level A)
+Touchpoint: animation
+Description: JavaScript interval running faster than once per second
+Why it matters: Rapid updates can be distracting and difficult to process.
+Who it affects: Users with cognitive disabilities, users with attention disorders.
+How to fix: Slow down update intervals, provide pause controls for rapid updates.
+
+================================================================================
+
 ## WarnFieldLabelledByElementThatIsNotALabel
 
 Existing fixtures:
+  - Fixtures/Forms/WarnFieldLabelledByElementThatIsNotALabel_002_correct_label_elements.html
+  - Fixtures/Forms/WarnFieldLabelledByElementThatIsNotALabel_001_violations_basic.html
   - Fixtures/Forms/WarnFieldLabelledByElementThatIsNotALabel.html
 
 ID: WarnFieldLabelledByElementThatIsNotALabel
@@ -1897,7 +3716,10 @@ How to fix: Consider using a proper <label> element, or ensure the element '{fou
 ## WarnFieldLabelledByMultipleElements
 
 Existing fixtures:
+  - Fixtures/Forms/WarnFieldLabelledByMultipleElements_002_correct_simple_labels.html
   - Fixtures/Forms/WarnFieldLabelledByMultipleElements.html
+  - Fixtures/Forms/WarnFieldLabelledByMultipleElements_001_violations_basic.html
+  - Fixtures/Forms/WarnFieldLabelledByMultipleElements_002_correct_single_label.html
 
 ID: WarnFieldLabelledByMultipleElements
 Type: Warning
@@ -1915,6 +3737,8 @@ How to fix: Review the {count} labeling elements to ensure they make sense when 
 
 Existing fixtures:
   - Fixtures/Forms/WarnFormHasNoLabel.html
+  - Fixtures/Forms/WarnFormHasNoLabel_002_correct_with_labels.html
+  - Fixtures/Forms/WarnFormHasNoLabel_001_violations_basic.html
 
 ID: WarnFormHasNoLabel
 Type: Warning
@@ -1931,6 +3755,9 @@ How to fix: Add an accessible name to the form element using aria-label (e.g., a
 ## WarnFormHasNoLabelSoIsNotLandmark
 
 Existing fixtures:
+  - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark_001_violations_basic.html
+  - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark_002_correct_with_labels.html
+  - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark_002_correct_as_landmarks.html
   - Fixtures/Forms/WarnFormHasNoLabelSoIsNotLandmark.html
 
 ID: WarnFormHasNoLabelSoIsNotLandmark
@@ -1948,7 +3775,10 @@ How to fix: Add aria-label or aria-labelledby to make it a landmark
 ## WarnFormLandmarkAccessibleNameUsesForm
 
 Existing fixtures:
+  - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm_001_violations_basic.html
+  - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm_002_correct_descriptive_labels.html
   - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm.html
+  - Fixtures/Forms/WarnFormLandmarkAccessibleNameUsesForm_002_correct_descriptive.html
 
 ID: WarnFormLandmarkAccessibleNameUsesForm
 Type: Warning
@@ -1965,7 +3795,8 @@ How to fix: Use descriptive labels like "Contact form" or "Search form"
 ## WarnGenericAccessibleName
 
 Existing fixtures:
-  - Fixtures/Accessible Names/WarnGenericAccessibleName.html
+  - Fixtures/AccessibleNames/WarnGenericAccessibleName_002_correct_descriptive.html
+  - Fixtures/AccessibleNames/WarnGenericAccessibleName_001_violations_basic.html
 
 ID: WarnGenericAccessibleName
 Type: Warning
@@ -1982,7 +3813,9 @@ How to fix: Provide descriptive accessible names that explain the element's spec
 ## WarnGenericDocumentLinkText
 
 Existing fixtures:
+  - Fixtures/Links/WarnGenericDocumentLinkText_001_violations_basic.html
   - Fixtures/Links/WarnGenericDocumentLinkText.html
+  - Fixtures/Links/WarnGenericDocumentLinkText_002_correct_descriptive_text.html
 
 ID: WarnGenericDocumentLinkText
 Type: Warning
@@ -1996,26 +3829,47 @@ How to fix: Include document title and format in link text (e.g., "Annual Report
 
 ================================================================================
 
-## WarnGenericLinkNoImprovement
+## WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy
 
 Existing fixtures:
-  - Fixtures/Links/WarnGenericLinkNoImprovement.html
+  - Fixtures/Landmarks/WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy_001_violations_basic.html
+  - Fixtures/Landmarks/WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy_002_correct_heading_as_label.html
 
-ID: WarnGenericLinkNoImprovement
-Type: Warning
+ID: WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy
+Type: Error
 Impact: Medium
-WCAG: 2.4.4 Link Purpose (In Context) (Level A)
-Touchpoint: links
-Description: Generic link text with no surrounding context to clarify purpose
-Why it matters: Generic links without context force users to explore further to understand destinations.
-Who it affects: Screen reader users navigating by links, users with cognitive disabilities.
-How to fix: Rewrite link text to be descriptive, or ensure surrounding text provides clear context.
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Landmark has heading but uses different element for label
+Why it matters: Confusing when heading doesn't match landmark label
+Who it affects: Screen reader users
+How to fix: Use the heading as the landmark label
+
+================================================================================
+
+## WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark_002_correct_heading_labels.html
+  - Fixtures/Landmarks/WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark_001_violations_basic.html
+
+ID: WarnHeadingFoundInsideLandmarkButDoesntLabelLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Heading inside landmark doesn't label the landmark
+Why it matters: Missed opportunity for clear landmark labeling
+Who it affects: Screen reader users
+How to fix: Consider using heading as landmark label via aria-labelledby
 
 ================================================================================
 
 ## WarnHeadingInsideDisplayNone
 
 Existing fixtures:
+  - Fixtures/Headings/WarnHeadingInsideDisplayNone_001_violations_basic.html
+  - Fixtures/Headings/WarnHeadingInsideDisplayNone_002_correct_visible.html
   - Fixtures/Headings/WarnHeadingInsideDisplayNone.html
 
 ID: WarnHeadingInsideDisplayNone
@@ -2033,7 +3887,9 @@ How to fix: Remove unused headings or make them visible
 ## WarnHeadingOver60CharsLong
 
 Existing fixtures:
+  - Fixtures/Headings/WarnHeadingOver60CharsLong_002_correct_concise.html
   - Fixtures/Headings/WarnHeadingOver60CharsLong.html
+  - Fixtures/Headings/WarnHeadingOver60CharsLong_001_violations_basic.html
 
 ID: WarnHeadingOver60CharsLong
 Type: Warning
@@ -2051,6 +3907,8 @@ How to fix: Shorten the heading to under 60 characters while preserving its mean
 
 Existing fixtures:
   - Fixtures/Keyboard/WarnHighTabindex.html
+  - Fixtures/Keyboard/WarnHighTabindex_001_violations_basic.html
+  - Fixtures/Keyboard/WarnHighTabindex_002_correct_natural_order.html
 
 ID: WarnHighTabindex
 Type: Warning
@@ -2064,10 +3922,30 @@ How to fix: Remove positive tabindex values, restructure DOM for natural tab ord
 
 ================================================================================
 
+## WarnIframeTitleNotDescriptive
+
+Existing fixtures:
+  - Fixtures/IFrames/WarnIframeTitleNotDescriptive_002_correct_descriptive.html
+  - Fixtures/IFrames/WarnIframeTitleNotDescriptive_001_violations_basic.html
+
+ID: WarnIframeTitleNotDescriptive
+Type: Warning
+Impact: Medium
+WCAG: 2.4.1 Bypass Blocks (Level A), 4.1.2 Name, Role, Value (Level A)
+Touchpoint: title
+Description: Iframe has a title attribute but it's generic or not descriptive (e.g., "iframe", "frame", "embedded content")
+Why it matters: Generic iframe titles like "iframe" or "embedded" provide no useful information about the embedded content. Screen reader users hear these unhelpful titles and must enter the iframe to understand what it contains. With multiple iframes, users cannot distinguish between them or determine which ones are worth exploring. This wastes time and creates confusion, especially if iframes contain important functionality like payment forms or videos.
+Who it affects: Screen reader users trying to understand and navigate between multiple iframes, keyboard users who encounter iframes in tab order, users with cognitive disabilities who need clear labeling of all content regions, and users trying to navigate efficiently through complex pages
+How to fix: Replace generic titles with descriptive ones that explain the iframe's content or purpose. Use specific descriptions like title="YouTube video: Product demo", title="Customer feedback form", title="Live chat support", or title="Interactive map of office locations". Each iframe title should be unique if there are multiple iframes. Avoid redundant words like "iframe" in the title since the element type is already announced.
+
+================================================================================
+
 ## WarnItalicText
 
 Existing fixtures:
-  - Fixtures/Typography/WarnItalicText.html
+  - Fixtures/Fonts/WarnItalicText_001_violations_basic.html
+  - Fixtures/Fonts/WarnItalicText_002_correct_minimal_italic.html
+  - Fixtures/Fonts/WarnItalicText.html
 
 ID: WarnItalicText
 Type: Warning
@@ -2081,10 +3959,30 @@ How to fix: Limit italic text to short emphasis, use bold for stronger emphasis.
 
 ================================================================================
 
+## WarnJustifiedText
+
+Existing fixtures:
+  - Fixtures/Fonts/WarnJustifiedText_001_violations_basic.html
+  - Fixtures/Fonts/WarnJustifiedText_002_correct_left_aligned.html
+
+ID: WarnJustifiedText
+Type: Warning
+Impact: Medium
+WCAG: 1.4.8 Visual Presentation (Level AAA)
+Touchpoint: typography
+Description: Text uses full justification affecting readability
+Why it matters: Justified text creates uneven spacing that makes reading difficult.
+Who it affects: Users with dyslexia, users with cognitive disabilities.
+How to fix: Use left-aligned text for body content, avoid full justification.
+
+================================================================================
+
 ## WarnLinkLooksLikeButton
 
 Existing fixtures:
+  - Fixtures/Links/WarnLinkLooksLikeButton_001_violations_basic.html
   - Fixtures/Links/WarnLinkLooksLikeButton.html
+  - Fixtures/Links/WarnLinkLooksLikeButton_002_correct_semantic_elements.html
 
 ID: WarnLinkLooksLikeButton
 Type: Warning
@@ -2101,6 +3999,8 @@ How to fix: If the element performs an action (submit form, open dialog), use a 
 ## WarnLongAnimation
 
 Existing fixtures:
+  - Fixtures/Animation/WarnLongAnimation_001_violations_basic.html
+  - Fixtures/Animation/WarnLongAnimation_002_correct_short_or_skippable.html
   - Fixtures/Animation/WarnLongAnimation.html
 
 ID: WarnLongAnimation
@@ -2118,7 +4018,10 @@ How to fix: Shorten animation duration or provide pause/stop controls.
 ## WarnMissingAriaLabelledby
 
 Existing fixtures:
+  - Fixtures/Forms/WarnMissingAriaLabelledby_002_correct_with_associations.html
   - Fixtures/Forms/WarnMissingAriaLabelledby.html
+  - Fixtures/Forms/WarnMissingAriaLabelledby_001_violations_basic.html
+  - Fixtures/Forms/WarnMissingAriaLabelledby_002_correct_with_labelledby.html
 
 ID: WarnMissingAriaLabelledby
 Type: Warning
@@ -2135,7 +4038,9 @@ How to fix: Use aria-labelledby to associate multiple labels or aria-describedby
 ## WarnMissingAriaModal
 
 Existing fixtures:
-  - Fixtures/Dialogs and Modals/WarnMissingAriaModal.html
+  - Fixtures/DialogsAndModals/WarnMissingAriaModal.html
+  - Fixtures/ARIA/WarnMissingAriaModal_002_correct_with_aria_modal.html
+  - Fixtures/ARIA/WarnMissingAriaModal_001_violations_basic.html
 
 ID: WarnMissingAriaModal
 Type: Warning
@@ -2149,10 +4054,49 @@ How to fix: Add aria-modal="true" to modal containers along with proper focus ma
 
 ================================================================================
 
+## WarnMissingBannerLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnMissingBannerLandmark_001_violations_basic.html
+  - Fixtures/Landmarks/WarnMissingBannerLandmark_002_correct_with_banner.html
+
+ID: WarnMissingBannerLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Page missing banner landmark for header content
+Why it matters: Banner landmark helps users quickly navigate to page header/branding.
+Who it affects: Screen reader users navigating by landmarks.
+How to fix: Use <header> element or role="banner" for page header content.
+
+================================================================================
+
+## WarnMissingContentinfoLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnMissingContentinfoLandmark_002_correct_with_contentinfo.html
+  - Fixtures/Landmarks/WarnMissingContentinfoLandmark_001_violations_basic.html
+
+ID: WarnMissingContentinfoLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Page missing contentinfo landmark for footer
+Why it matters: Contentinfo landmark helps users find footer information like copyright and links.
+Who it affects: Screen reader users navigating by landmarks.
+How to fix: Use <footer> element or role="contentinfo" for page footer.
+
+================================================================================
+
 ## WarnMissingDocumentMetadata
 
 Existing fixtures:
+  - Fixtures/Links/WarnMissingDocumentMetadata_001_warnings_basic.html
   - Fixtures/Documents/WarnMissingDocumentMetadata.html
+  - Fixtures/Metadata/WarnMissingDocumentMetadata_001_violations_basic.html
+  - Fixtures/Metadata/WarnMissingDocumentMetadata_002_correct_metadata.html
 
 ID: WarnMissingDocumentMetadata
 Type: Warning
@@ -2169,7 +4113,10 @@ How to fix: Include file type and size in link text or adjacent text.
 ## WarnMissingNegativeTabindex
 
 Existing fixtures:
+  - Fixtures/Tabindex/WarnMissingNegativeTabindex_001_skip_target_no_tabindex.html
+  - Fixtures/Keyboard/WarnMissingNegativeTabindex_002_correct_with_tabindex.html
   - Fixtures/Keyboard/WarnMissingNegativeTabindex.html
+  - Fixtures/Keyboard/WarnMissingNegativeTabindex_001_violations_basic.html
 
 ID: WarnMissingNegativeTabindex
 Type: Warning
@@ -2183,10 +4130,49 @@ How to fix: Add tabindex="-1" to elements that should be focusable by script but
 
 ================================================================================
 
+## WarnMissingRequiredIndication
+
+Existing fixtures:
+  - Fixtures/Forms/WarnMissingRequiredIndication_001_violations_basic.html
+  - Fixtures/Forms/WarnMissingRequiredIndication_002_correct_with_indicators.html
+
+ID: WarnMissingRequiredIndication
+Type: Warning
+Impact: Medium
+WCAG: 3.3.2 Labels or Instructions (Level A)
+Touchpoint: forms
+Description: Required form fields not clearly indicated
+Why it matters: Users need to know which fields are required before submitting forms.
+Who it affects: All users, especially those using screen readers.
+How to fix: Mark required fields with aria-required="true" and visual indicators.
+
+================================================================================
+
+## WarnModalMissingAriaLabelledby
+
+Existing fixtures:
+  - Fixtures/Forms/WarnModalMissingAriaLabelledby_002_correct_with_aria.html
+  - Fixtures/Forms/WarnModalMissingAriaLabelledby_001_violations_basic.html
+  - Fixtures/Forms/WarnModalMissingAriaLabelledby_002_correct_with_labelledby.html
+
+ID: WarnModalMissingAriaLabelledby
+Type: Warning
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: forms
+Description: Modal lacks aria-labelledby pointing to its heading
+Why it matters: Screen readers need to announce the modal's title when it opens.
+Who it affects: Screen reader users who need modal context.
+How to fix: Add aria-labelledby pointing to the modal's heading element.
+
+================================================================================
+
 ## WarnModalMissingAriaModal
 
 Existing fixtures:
-  - Fixtures/Dialogs and Modals/WarnModalMissingAriaModal.html
+  - Fixtures/DialogsAndModals/WarnModalMissingAriaModal.html
+  - Fixtures/Modals/WarnModalMissingAriaModal_002_correct_with_aria_modal.html
+  - Fixtures/Modals/WarnModalMissingAriaModal_001_violations_basic.html
 
 ID: WarnModalMissingAriaModal
 Type: Warning
@@ -2204,6 +4190,8 @@ How to fix: Add aria-modal="true" to modal containers.
 
 Existing fixtures:
   - Fixtures/Keyboard/WarnModalNoFocusableElements.html
+  - Fixtures/Keyboard/WarnModalNoFocusableElements_002_correct_with_controls.html
+  - Fixtures/Keyboard/WarnModalNoFocusableElements_001_violations_basic.html
 
 ID: WarnModalNoFocusableElements
 Type: Warning
@@ -2217,9 +4205,155 @@ How to fix: Ensure modals contain at least one focusable element (close button, 
 
 ================================================================================
 
+## WarnMultipleBannerLandmarksButNotAllHaveLabels
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnMultipleBannerLandmarksButNotAllHaveLabels_001_violations_basic.html
+  - Fixtures/Landmarks/WarnMultipleBannerLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
+
+ID: WarnMultipleBannerLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple banner landmarks exist but not all have labels
+Why it matters: Inconsistent labeling makes navigation difficult
+Who it affects: Screen reader users
+How to fix: Ensure all banner landmarks have labels or reduce to single banner
+
+================================================================================
+
+## WarnMultipleComplementaryLandmarksButNotAllHaveLabels
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnMultipleComplementaryLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
+  - Fixtures/Landmarks/WarnMultipleComplementaryLandmarksButNotAllHaveLabels_001_violations_basic.html
+
+ID: WarnMultipleComplementaryLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple complementary landmarks but not all labeled
+Why it matters: Inconsistent labeling makes navigation difficult
+Who it affects: Screen reader users
+How to fix: Ensure all complementary landmarks have unique labels
+
+================================================================================
+
+## WarnMultipleContentInfoLandmarksButNotAllHaveLabels
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnMultipleContentInfoLandmarksButNotAllHaveLabels_001_violations_basic.html
+  - Fixtures/Landmarks/WarnMultipleContentInfoLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
+
+ID: WarnMultipleContentInfoLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple contentinfo landmarks exist but not all have labels
+Why it matters: Inconsistent labeling makes navigation difficult
+Who it affects: Screen reader users
+How to fix: Ensure all contentinfo landmarks have labels or reduce to single contentinfo
+
+================================================================================
+
+## WarnMultipleNavLandmarksButNotAllHaveLabels
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnMultipleNavLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
+  - Fixtures/Landmarks/WarnMultipleNavLandmarksButNotAllHaveLabels_001_violations_basic.html
+
+ID: WarnMultipleNavLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple navigation landmarks but not all labeled
+Why it matters: Users cannot distinguish between navigation areas
+Who it affects: Screen reader users
+How to fix: Label all navigation landmarks uniquely
+
+================================================================================
+
+## WarnMultipleNavNeedsLabel
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnMultipleNavNeedsLabel_002_correct_all_labeled.html
+  - Fixtures/Landmarks/WarnMultipleNavNeedsLabel_001_violations_basic.html
+
+ID: WarnMultipleNavNeedsLabel
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: landmarks
+Description: Multiple navigation landmarks found without distinguishing labels
+Why it matters: When a page has multiple navigation areas (main menu, footer links, breadcrumbs, sidebar navigation), users need to distinguish between them. Without unique labels, screen reader users hear "navigation" multiple times with no indication of which navigation area they're entering. This creates confusion about which menu contains the desired links and requires users to explore each navigation to understand its purpose.
+Who it affects: Screen reader users who need to distinguish between different navigation areas, keyboard users navigating between multiple menus, users with cognitive disabilities who need clear labeling, and frequent users who want to quickly access specific navigation areas
+How to fix: Add unique aria-label attributes to each <nav> element or role="navigation" container. Use descriptive labels like aria-label="Main menu", aria-label="Footer links", aria-label="Breadcrumb", aria-label="Related articles". The labels should clearly indicate the purpose or location of each navigation. Test with screen readers to ensure each navigation is announced with its unique label.
+
+================================================================================
+
+## WarnMultipleRegionLandmarksButNotAllHaveLabels
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnMultipleRegionLandmarksButNotAllHaveLabels_002_correct_all_labeled.html
+  - Fixtures/Landmarks/WarnMultipleRegionLandmarksButNotAllHaveLabels_001_violations_basic.html
+
+ID: WarnMultipleRegionLandmarksButNotAllHaveLabels
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Multiple region landmarks but not all labeled
+Why it matters: Regions without labels are not exposed as landmarks
+Who it affects: Screen reader users
+How to fix: Ensure all regions have labels or use different elements
+
+================================================================================
+
+## WarnNavLandmarkAccessibleNameUsesNavigation
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnNavLandmarkAccessibleNameUsesNavigation_001_violations_basic.html
+  - Fixtures/Landmarks/WarnNavLandmarkAccessibleNameUsesNavigation_002_correct_descriptive_labels.html
+
+ID: WarnNavLandmarkAccessibleNameUsesNavigation
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Navigation landmark uses generic term "navigation" in label
+Why it matters: Generic labels don't describe specific purpose
+Who it affects: Screen reader users
+How to fix: Use more descriptive labels like "Product categories" or "User account menu"
+
+================================================================================
+
+## WarnNavLandmarkHasNoLabel
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnNavLandmarkHasNoLabel_002_correct_with_labels.html
+  - Fixtures/Landmarks/WarnNavLandmarkHasNoLabel_001_violations_basic.html
+
+ID: WarnNavLandmarkHasNoLabel
+Type: Warning
+Impact: Low
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Navigation landmark lacks label
+Why it matters: Hard to distinguish multiple navigation areas
+Who it affects: Screen reader users
+How to fix: Add descriptive aria-label
+
+================================================================================
+
 ## WarnNegativeTabindex
 
 Existing fixtures:
+  - Fixtures/Keyboard/WarnNegativeTabindex_001_violations_basic.html
+  - Fixtures/Keyboard/WarnNegativeTabindex_002_correct_keyboard_accessible.html
   - Fixtures/Keyboard/WarnNegativeTabindex.html
 
 ID: WarnNegativeTabindex
@@ -2234,9 +4368,228 @@ How to fix: Use tabindex="0" for keyboard-accessible elements, only use -1 for p
 
 ================================================================================
 
+## WarnNoBannerLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnNoBannerLandmark_002_correct_with_banner.html
+  - Fixtures/Landmarks/WarnNoBannerLandmark_001_violations_basic.html
+
+ID: WarnNoBannerLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A), 2.4.1 Bypass Blocks (Level A)
+Touchpoint: landmarks
+Description: Page is missing a banner landmark to identify the header/masthead region
+Why it matters: The banner landmark identifies the site header containing the logo, primary navigation, and other site-wide content. Without it, screen reader users cannot quickly jump to the header area using landmark navigation. They must read through content linearly to find navigation and branding elements. This is especially frustrating when users want to access the main navigation or return to the homepage via the logo.
+Who it affects: Screen reader users who navigate by landmarks to quickly access header content, keyboard users with assistive technology looking for navigation, users with cognitive disabilities who rely on consistent page structure, and users who frequently need to access header elements like search or main navigation
+How to fix: Use the HTML5 <header> element at the page level (not within article, aside, main, nav, or section) as it has an implicit banner role. Alternatively, add role="banner" to your header container. Include site-wide elements like logo, primary navigation, site search, and utility navigation within the banner. Ensure only one banner landmark exists per page at the top level.
+
+================================================================================
+
+## WarnNoContentinfoLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnNoContentinfoLandmark_002_correct_with_footer.html
+  - Fixtures/Landmarks/WarnNoContentinfoLandmark_001_violations_basic.html
+
+ID: WarnNoContentinfoLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
+Touchpoint: landmarks
+Description: Page is missing a contentinfo landmark to identify the footer region
+Why it matters: The contentinfo landmark (typically a footer) contains important information about the page or site such as copyright notices, privacy policies, contact information, and site maps. Screen reader users rely on landmarks to quickly navigate to these common elements without having to read through the entire page. When the footer lacks proper landmark markup, users must search manually through the content to find this information, which is inefficient and may cause them to miss important legal notices or helpful links. The contentinfo landmark provides a consistent, predictable way to access this supplementary information across all pages.
+Who it affects: Screen reader users who navigate by landmarks to quickly find footer information, keyboard users who want to efficiently skip to footer content, users with cognitive disabilities who rely on consistent page structure, and users who need to frequently access footer links like privacy policies or contact information
+How to fix: Use the HTML5 <footer> element for your page footer (it has an implicit role of contentinfo when it's not nested inside article, aside, main, nav, or section elements). Alternatively, add role="contentinfo" to the container holding your footer content. Ensure there's only one contentinfo landmark per page at the top level. The footer should contain information about the page or site, not primary content.
+
+================================================================================
+
+## WarnNoCurrentPageIndicator
+
+Existing fixtures:
+  - Fixtures/Navigation/WarnNoCurrentPageIndicator_001_violations_basic.html
+  - Fixtures/Navigation/WarnNoCurrentPageIndicator_002_correct_with_indicator.html
+
+ID: WarnNoCurrentPageIndicator
+Type: Warning
+Impact: Low
+WCAG: 2.4.8 Location (Level AAA)
+Touchpoint: navigation
+Description: Navigation doesn't indicate current page
+Why it matters: Users need to know their current location within the site navigation.
+Who it affects: Users with cognitive disabilities, screen reader users.
+How to fix: Use aria-current="page" and visual styling to indicate current page in navigation.
+
+================================================================================
+
+## WarnNoCursorPointer
+
+Existing fixtures:
+  - Fixtures/Focus/WarnNoCursorPointer_001_violations_basic.html
+  - Fixtures/Focus/WarnNoCursorPointer_002_correct_with_pointer.html
+
+ID: WarnNoCursorPointer
+Type: Warning
+Impact: Low
+WCAG: 2.1.1 Keyboard (Level A)
+Touchpoint: focus_management
+Description: Clickable element doesn't show pointer cursor
+Why it matters: Cursor changes help users identify interactive elements.
+Who it affects: Mouse users who rely on cursor changes.
+How to fix: Add cursor: pointer CSS to all clickable elements.
+
+================================================================================
+
+## WarnNoFieldset
+
+Existing fixtures:
+  - Fixtures/Forms/WarnNoFieldset_001_violations_basic.html
+  - Fixtures/Forms/WarnNoFieldset_002_correct_with_fieldset.html
+
+ID: WarnNoFieldset
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: forms
+Description: Related form fields not grouped with fieldset
+Why it matters: Fieldsets help users understand relationships between form controls.
+Who it affects: Screen reader users, users with cognitive disabilities.
+How to fix: Use fieldset and legend elements to group related form fields like radio buttons.
+
+================================================================================
+
+## WarnNoLegend
+
+Existing fixtures:
+  - Fixtures/Forms/WarnNoLegend_002_correct_with_legend.html
+  - Fixtures/Forms/WarnNoLegend_002_correct_with_legends.html
+  - Fixtures/Forms/WarnNoLegend_001_violations_basic.html
+
+ID: WarnNoLegend
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: forms
+Description: Fieldset missing legend element
+Why it matters: Legends provide context for grouped form fields.
+Who it affects: Screen reader users who need group labels.
+How to fix: Add legend as first child of fieldset to label the group.
+
+================================================================================
+
+## WarnNoNavigationLandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnNoNavigationLandmark_002_correct_with_nav.html
+  - Fixtures/Landmarks/WarnNoNavigationLandmark_001_violations_basic.html
+
+ID: WarnNoNavigationLandmark
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks
+Touchpoint: landmarks
+Description: Page has no navigation landmarks to identify navigation regions
+Why it matters: Navigation landmarks identify areas containing navigation links, allowing users to quickly jump to menus without reading through other content. Most web pages have multiple navigation areas (main menu, footer links, sidebar navigation, breadcrumbs) but without proper markup, these are just lists of links mixed with other content. Screen reader users must hunt for navigation areas or listen to all links to find what they need. Navigation landmarks make these areas immediately discoverable and allow users to skip between different navigation regions efficiently.
+Who it affects: Screen reader users who use landmarks to find navigation menus quickly, keyboard users navigating complex sites with multiple menus, users with cognitive disabilities who need clear identification of navigation areas, and users with motor disabilities who need to minimize unnecessary navigation
+How to fix: Wrap navigation areas in <nav> elements or add role="navigation" to containers with navigation links. If you have multiple navigation areas, label each one with aria-label to distinguish them (e.g., aria-label="Main navigation", aria-label="Footer links", aria-label="Breadcrumb"). Not every group of links needs to be a navigation landmark - use it for major navigation blocks that users would want to find quickly.
+
+================================================================================
+
+## WarnPageTitleTooLong
+
+Existing fixtures:
+  - Fixtures/Page/WarnPageTitleTooLong_002_correct_concise.html
+  - Fixtures/Page/WarnPageTitleTooLong_001_violations_basic.html
+
+ID: WarnPageTitleTooLong
+Type: Warning
+Impact: Low
+WCAG: 2.4.2 Page Titled (Level A)
+Touchpoint: title
+Description: Page title is {length} characters long, exceeding the recommended 60 character limit
+Why it matters: The title "{title}" with {length} characters will get cut off in browser tabs (typically around 30 characters) and search engine results (typically 50-60 characters), losing important information. The most important information might be at the end and never seen. Screen reader users have to listen to lengthy titles repeatedly.
+Who it affects: Users with multiple tabs open who see truncated titles, users searching for content who can't see full titles in results, screen reader users who must listen to long titles repeatedly, mobile users with even less space for title display
+How to fix: Shorten the title from {length} to under 60 characters. Place the most important, unique information first. Remove unnecessary words like "Welcome to" or "This page contains". Test how titles appear in browser tabs and search results to ensure key information is visible.
+
+================================================================================
+
+## WarnPageTitleTooShort
+
+Existing fixtures:
+  - Fixtures/Page/WarnPageTitleTooShort_002_correct_descriptive.html
+  - Fixtures/Page/WarnPageTitleTooShort_001_violations_basic.html
+
+ID: WarnPageTitleTooShort
+Type: Warning
+Impact: Low
+WCAG: 2.4.2 Page Titled (Level A)
+Touchpoint: title
+Description: Page title "{found}" is only {length} characters, potentially not descriptive enough
+Why it matters: The title "{found}" with only {length} characters doesn't provide enough context, especially when users have multiple tabs open or are browsing history. Users can't distinguish between different sites with the same generic titles. Screen reader users hearing page titles announced need more descriptive information to understand where they are.
+Who it affects: Users with multiple browser tabs who need to distinguish between pages, screen reader users who rely on descriptive titles for context, users browsing history or bookmarks, users with cognitive disabilities who need clear page identification
+How to fix: Expand "{found}" to be more descriptive by including the site name and page purpose. Aim for 20-60 characters that clearly describe the page content. Ensure each page has a unique, descriptive title that makes sense out of context.
+
+================================================================================
+
+## WarnRegionLandmarkAccessibleNameUsesNavigation
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnRegionLandmarkAccessibleNameUsesNavigation_001_violations_basic.html
+  - Fixtures/Landmarks/WarnRegionLandmarkAccessibleNameUsesNavigation_002_correct_descriptive_labels.html
+
+ID: WarnRegionLandmarkAccessibleNameUsesNavigation
+Type: Warning
+Impact: Low
+WCAG: 2.4.6
+Touchpoint: landmarks
+Description: Region landmark incorrectly uses "navigation" in its label
+Why it matters: Confusing landmark type and purpose
+Who it affects: Screen reader users
+How to fix: Use appropriate label or change to nav landmark
+
+================================================================================
+
+## WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark
+
+Existing fixtures:
+  - Fixtures/Landmarks/WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark_002_correct_with_labels.html
+  - Fixtures/Landmarks/WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark_001_violations_basic.html
+
+ID: WarnRegionLandmarkHasNoLabelSoIsNotConsideredALandmark
+Type: Warning
+Impact: Medium
+WCAG: 1.3.1
+Touchpoint: landmarks
+Description: Region landmark lacks required label to be considered a landmark
+Why it matters: Regions without labels are not exposed as landmarks
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby, or use a different landmark type
+
+================================================================================
+
+## WarnRightAlignedText
+
+Existing fixtures:
+  - Fixtures/Fonts/WarnRightAlignedText_001_violations_basic.html
+  - Fixtures/Fonts/WarnRightAlignedText_002_correct_left_aligned.html
+
+ID: WarnRightAlignedText
+Type: Warning
+Impact: Low
+WCAG: 1.4.8 Visual Presentation (Level AAA)
+Touchpoint: typography
+Description: Body text is right-aligned affecting readability
+Why it matters: Right-aligned text is difficult to read for extended content.
+Who it affects: Users with dyslexia, users with reading disabilities.
+How to fix: Use left alignment for body text in left-to-right languages.
+
+================================================================================
+
 ## WarnSVGNoRole
 
 Existing fixtures:
+  - Fixtures/Images/WarnSVGNoRole_002_correct_with_role.html
+  - Fixtures/Images/WarnSVGNoRole_001_violations_basic.html
   - Fixtures/Images/WarnSVGNoRole.html
 
 ID: WarnSVGNoRole
@@ -2251,10 +4604,30 @@ How to fix: Add role="img" for informative SVGs, use aria-hidden="true" for deco
 
 ================================================================================
 
+## WarnSmallLineHeight
+
+Existing fixtures:
+  - Fixtures/Fonts/WarnSmallLineHeight_002_correct_spacing.html
+  - Fixtures/Fonts/WarnSmallLineHeight_001_violations_basic.html
+
+ID: WarnSmallLineHeight
+Type: Warning
+Impact: Medium
+WCAG: 1.4.12 Text Spacing (Level AA)
+Touchpoint: typography
+Description: Line height less than 1.5 times font size
+Why it matters: Tight line spacing makes text difficult to read and track.
+Who it affects: Users with dyslexia, users with low vision.
+How to fix: Set line-height to at least 1.5 for body text.
+
+================================================================================
+
 ## WarnSvgPositiveTabindex
 
 Existing fixtures:
+  - Fixtures/Images/WarnSvgPositiveTabindex_002_correct_no_tabindex.html
   - Fixtures/Images/WarnSvgPositiveTabindex.html
+  - Fixtures/Images/WarnSvgPositiveTabindex_001_violations_basic.html
 
 ID: WarnSvgPositiveTabindex
 Type: Warning
@@ -2268,10 +4641,102 @@ How to fix: Remove tabindex from non-interactive SVGs, use tabindex="0" only for
 
 ================================================================================
 
+## WarnTableMissingThead
+
+Existing fixtures:
+  - Fixtures/Tables/WarnTableMissingThead_002_correct_with_thead.html
+  - Fixtures/Tables/WarnTableMissingThead_001_violations_basic.html
+
+ID: WarnTableMissingThead
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: tables
+Description: Table missing thead element for headers
+Why it matters: Thead helps screen readers distinguish headers from data rows.
+Who it affects: Screen reader users navigating tables.
+How to fix: Wrap header rows in thead element, data rows in tbody.
+
+================================================================================
+
+## WarnUnlabelledForm
+
+Existing fixtures:
+  - Fixtures/Forms/WarnUnlabelledForm_001_violations_basic.html
+  - Fixtures/Forms/WarnUnlabelledForm_002_correct_with_labels.html
+
+ID: WarnUnlabelledForm
+Type: Warning
+Impact: Medium
+WCAG: 4.1.2 Name, Role, Value (Level A)
+Touchpoint: forms
+Description: Form element lacks accessible name
+Why it matters: Forms need names to help users understand their purpose.
+Who it affects: Screen reader users.
+How to fix: Add aria-label or aria-labelledby to form elements.
+
+================================================================================
+
+## WarnUnlabelledRegion
+
+Existing fixtures:
+  - Fixtures/Forms/WarnUnlabelledRegion_002_correct_with_labels.html
+  - Fixtures/Forms/WarnUnlabelledRegion_001_violations_basic.html
+
+ID: WarnUnlabelledRegion
+Type: Warning
+Impact: Low
+WCAG: 1.3.1 Info and Relationships (Level A)
+Touchpoint: forms
+Description: Region landmark lacks accessible name
+Why it matters: Named regions help users understand content structure.
+Who it affects: Screen reader users navigating by landmarks.
+How to fix: Add aria-label or aria-labelledby to region landmarks.
+
+================================================================================
+
+## WarnVagueTitleAttribute
+
+Existing fixtures:
+  - Fixtures/TitleAttributes/WarnVagueTitleAttribute_001_violations_basic.html
+  - Fixtures/TitleAttributes/WarnVagueTitleAttribute_002_correct_informative.html
+
+ID: WarnVagueTitleAttribute
+Type: Warning
+Impact: Low
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement), 3.3.2 Labels or Instructions (Level A)
+Touchpoint: title_attributes
+Description: Title attribute contains vague or generic text that provides no useful information
+Why it matters: Title attributes fundamentally fail WCAG 5.2.4 - screen magnifier users at high magnification cannot read tooltips as content goes off-screen and disappears when mouse moves. This warning flags titles with particularly uninformative content like "Click here", "Link", "Button", or other generic phrases. While all title attributes are problematic due to magnification issues, vague titles compound the problem by providing no value even for users who can access them. This represents poor quality content that demonstrates misunderstanding of accessible design
+Who it affects: Screen magnifier users at high magnification (fundamental inaccessibility), mobile and touch users (no hover), keyboard users (inconsistent access), and all users who would benefit from clear, descriptive supplementary information but instead get generic phrases
+How to fix: Never use title attributes in the first place (they fail WCAG 5.2.4). If you must use them despite accessibility concerns, at minimum avoid vague generic phrases like "Click here", "Link", or "Button". Better solution: Remove title attributes entirely and use visible text, proper labels, aria-label for interactive elements, or visible helper text. Don't hide important information in tooltips that many users cannot access
+
+================================================================================
+
+## WarnVideoAutoplay
+
+Existing fixtures:
+  - Fixtures/Media/WarnVideoAutoplay_002_correct_no_autoplay.html
+  - Fixtures/Media/WarnVideoAutoplay_001_violations_unmuted.html
+
+ID: WarnVideoAutoplay
+Type: Warning
+Impact: Medium
+WCAG: 1.4.2 Audio Control (Level A)
+Touchpoint: media
+Description: Video set to autoplay which may distract users
+Why it matters: Autoplay video can be disruptive and use bandwidth unexpectedly.
+Who it affects: Users with cognitive disabilities, users on limited data plans.
+How to fix: Remove autoplay or mute autoplaying videos, provide clear play controls.
+
+================================================================================
+
 ## WarnVisualHierarchy
 
 Existing fixtures:
-  - Fixtures/Headings/WarnVisualHierarchy.html
+  - Fixtures/Headings/WarnVisualHierarchy_001_violations_basic.html
+  - Fixtures/Semantic/WarnVisualHierarchy_002_correct_sequential_headings.html
+  - Fixtures/Semantic/WarnVisualHierarchy_001_violations_basic.html
 
 ID: WarnVisualHierarchy
 Type: Warning
@@ -2285,10 +4750,30 @@ How to fix: Ensure visual presentation matches HTML semantic structure.
 
 ================================================================================
 
+## WarnZeroOutlineOffset
+
+Existing fixtures:
+  - Fixtures/Focus/WarnZeroOutlineOffset_002_correct_positive_offset.html
+  - Fixtures/Focus/WarnZeroOutlineOffset_001_violations_basic.html
+
+ID: WarnZeroOutlineOffset
+Type: Warning
+Impact: Medium
+WCAG: 2.4.7
+Touchpoint: focus
+Description: Outline offset is set to zero
+Why it matters: Focus indicator touches element edge
+Who it affects: Keyboard users with low vision
+How to fix: Use positive outline-offset value
+
+================================================================================
+
 ## DiscoFoundSvgImage
 
 Existing fixtures:
   - Fixtures/Images/DiscoFoundSvgImage.html
+  - Fixtures/Images/DiscoFoundSvgImage_002_correct_with_labels.html
+  - Fixtures/Images/DiscoFoundSvgImage_001_violations_basic.html
 
 ID: DiscoFoundSvgImage
 Type: Discovery
@@ -2305,6 +4790,7 @@ How to fix: Verify the SVG with role="img" has appropriate accessible names thro
 ## DiscoHeadingWithID
 
 Existing fixtures:
+  - Fixtures/Headings/DiscoHeadingWithID_001_discovery_basic.html
   - Fixtures/Headings/DiscoHeadingWithID.html
 
 ID: DiscoHeadingWithID
@@ -2322,7 +4808,9 @@ How to fix: Ensure that the ID attribute is referenced and its use is valid.
 ## WarnVisualHierarchy
 
 Existing fixtures:
-  - Fixtures/Headings/WarnVisualHierarchy.html
+  - Fixtures/Headings/WarnVisualHierarchy_001_violations_basic.html
+  - Fixtures/Semantic/WarnVisualHierarchy_002_correct_sequential_headings.html
+  - Fixtures/Semantic/WarnVisualHierarchy_001_violations_basic.html
 
 ID: WarnVisualHierarchy
 Type: Warning
@@ -2336,10 +4824,33 @@ How to fix: Ensure visual presentation matches HTML semantic structure.
 
 ================================================================================
 
+## WarnProblematicAnimation
+
+Existing fixtures:
+  - Fixtures/Animation/WarnProblematicAnimation.html
+  - Fixtures/Animations/WarnProblematicAnimation_001_violations_basic.html
+  - Fixtures/Animations/WarnProblematicAnimation_002_correct_safe_animations.html
+  - Fixtures/Media/WarnProblematicAnimation_002_correct_with_controls.html
+  - Fixtures/Media/WarnProblematicAnimation_001_violations_basic.html
+
+ID: WarnProblematicAnimation
+Type: Warning
+Impact: Medium
+WCAG: 2.2.2, 2.3.1
+Touchpoint: animations
+Description: Animation detected that may cause accessibility issues
+Why it matters: Animations can trigger seizures or make content difficult to read
+Who it affects: Users with vestibular disorders, photosensitive epilepsy, or cognitive disabilities
+How to fix: Provide pause/stop controls and respect prefers-reduced-motion preference
+
+================================================================================
+
 ## ErrAriaLabelMayNotBeFoundByVoiceControl
 
 Existing fixtures:
   - Fixtures/Forms/ErrAriaLabelMayNotBeFoundByVoiceControl.html
+  - Fixtures/ARIA/ErrAriaLabelMayNotBeFoundByVoiceControl_001_violations_basic.html
+  - Fixtures/ARIA/ErrAriaLabelMayNotBeFoundByVoiceControl_002_correct_matching_labels.html
 
 ID: ErrAriaLabelMayNotBeFoundByVoiceControl
 Type: Error
@@ -2356,7 +4867,8 @@ How to fix: Ensure aria-label includes visible text
 ## ErrColorStyleDefinedExplicitlyInElement
 
 Existing fixtures:
-  - Fixtures/Colors and Contrast/ErrColorStyleDefinedExplicitlyInElement.html
+  - Fixtures/Style/ErrColorStyleDefinedExplicitlyInElement_001_violations_basic.html
+  - Fixtures/Style/ErrColorStyleDefinedExplicitlyInElement_002_correct_css.html
 
 ID: ErrColorStyleDefinedExplicitlyInElement
 Type: Error
@@ -2370,9 +4882,65 @@ How to fix: Use CSS classes instead of inline styles
 
 ================================================================================
 
+## DiscoFontFound
+
+Existing fixtures:
+  - Fixtures/Fonts/DiscoFontFound_002_accessible_fonts.html
+  - Fixtures/Fonts/DiscoFontFound_001_discovery_basic.html
+
+ID: DiscoFontFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: fonts
+Description: Font '{found}' detected in use on the page for accessibility review
+Why it matters: Tracking font usage helps identify typography choices that may affect readability. This discovery item documents which fonts are in use so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.
+Who it affects: Users with dyslexia and dyscalculia who benefit from clear readable fonts.
+How to fix: Consider current advice on what is considered an accessible font.
+
+================================================================================
+
+## DiscoFoundJS
+
+Existing fixtures:
+  - Fixtures/JavaScript/DiscoFoundJS_002_progressive_enhancement.html
+  - Fixtures/JavaScript/DiscoFoundJS_001_discovery_basic.html
+
+ID: DiscoFoundJS
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: javascript
+Description: JavaScript detected on page
+Why it matters: Functionality should work without JavaScript
+Who it affects: Users with JavaScript disabled
+How to fix: Ensure progressive enhancement
+
+================================================================================
+
+## ErrBannerLandmarkAccessibleNameIsBlank
+
+Existing fixtures:
+  - Fixtures/Landmarks/ErrBannerLandmarkAccessibleNameIsBlank_001_violations_basic.html
+  - Fixtures/Landmarks/ErrBannerLandmarkAccessibleNameIsBlank_002_correct_with_labels.html
+
+ID: ErrBannerLandmarkAccessibleNameIsBlank
+Type: Error
+Impact: Medium
+WCAG: 1.3.1, 2.4.6
+Touchpoint: landmarks
+Description: Banner landmark has blank accessible name
+Why it matters: Multiple banners need labels to distinguish them
+Who it affects: Screen reader users
+How to fix: Add aria-label or aria-labelledby
+
+================================================================================
+
 ## ErrEmptyPageTitle
 
 Existing fixtures:
+  - Fixtures/Page/ErrEmptyPageTitle_002_correct_with_title.html
+  - Fixtures/Page/ErrEmptyPageTitle_001_violations_basic.html
   - Fixtures/Semantic/ErrEmptyPageTitle.html
 
 ID: ErrEmptyPageTitle
@@ -2387,9 +4955,47 @@ How to fix: Add descriptive text to title element
 
 ================================================================================
 
+## DiscoPDFLinksFound
+
+Existing fixtures:
+  - Fixtures/PDF/DiscoPDFLinksFound_001_discovery_basic.html
+  - Fixtures/PDF/DiscoPDFLinksFound_002_accessible_links.html
+
+ID: DiscoPDFLinksFound
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: pdf
+Description: Links to PDF documents detected on page
+Why it matters: PDF documents often have accessibility issues and may not be accessible to all users
+Who it affects: Screen reader users who have higher cognitive load when reading PDFs
+How to fix: Ensure PDFs are accessible (tagged, structured, with text content) or provide HTML alternatives. Ensure that the user knows the link is to a PDF. Ensure the attribute hreflang is provided if the PDF is in a different language to that of the current page and that the language of the PDF is indicated in the link text.
+
+================================================================================
+
+## DiscoStyleAttrOnElements
+
+Existing fixtures:
+  - Fixtures/Style/DiscoStyleAttrOnElements_001_violations_basic.html
+  - Fixtures/Style/DiscoStyleAttrOnElements_002_correct_external.html
+
+ID: DiscoStyleAttrOnElements
+Type: Discovery
+Impact: N/A
+WCAG: N/A
+Touchpoint: style
+Description: Inline styles detected
+Why it matters: May affect responsive design and user customization
+Who it affects: Users with custom stylesheets
+How to fix: Consider moving to CSS classes
+
+================================================================================
+
 ## DiscoFoundInlineSvg
 
 Existing fixtures:
+  - Fixtures/SVG/DiscoFoundInlineSvg_001_discovery_basic.html
+  - Fixtures/SVG/DiscoFoundInlineSvg_002_examples_accessible.html
   - Fixtures/Images/DiscoFoundInlineSvg.html
 
 ID: DiscoFoundInlineSvg
@@ -2401,6 +5007,24 @@ Description: Inline SVG element detected that requires manual review to determin
 Why it matters: SVG elements serve diverse purposes from simple icons to complex interactive visualizations, each requiring different accessibility approaches. A decorative border needs different treatment than a data chart, which differs from an interactive map or scientific simulation. Automated tools cannot determine SVG purpose, whether it's decorative or informative, static or interactive, or if existing accessibility features adequately support user needs.
 Who it affects: Blind and low vision users using screen readers who need text alternatives for graphics or keyboard access to interactive elements, users with motor disabilities who require keyboard navigation for interactive SVG controls, users with cognitive disabilities who benefit from clear labeling and predictable interaction patterns.
 How to fix: Evaluate the SVG's purpose and complexity - for simple images ensure there is a role="img", use <title> for alt text with aria-labelledby on the SVG referencing an ID on the <title> (a workaround for some browsers), for decorative graphics use aria-hidden="true", for data visualizations provide <title> and <desc> plus consider adjacent detailed text alternatives, for interactive content ensure all controls are keyboard accessible with proper ARIA labels and focus management, for complex simulations provide instructions and state change announcements, and test with screen readers to verify the experience matches visual functionality.
+
+================================================================================
+
+## ErrEmptyTitleAttr
+
+Existing fixtures:
+  - Fixtures/TitleAttributes/ErrEmptyTitleAttr_001_violations_basic.html
+  - Fixtures/TitleAttributes/ErrEmptyTitleAttr_002_correct_descriptive.html
+
+ID: ErrEmptyTitleAttr
+Type: Error
+Impact: Low
+WCAG: 3.3.2
+Touchpoint: title
+Description: Empty title attribute
+Why it matters: Empty titles provide no information
+Who it affects: Users expecting tooltip information
+How to fix: Remove empty title attributes
 
 ================================================================================
 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAnchorTargetTabindex - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAnchorTargetTabindex_001_violations_basic",
+    "issueId": "ErrAnchorTargetTabindex",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "In-page link targets missing tabindex=\"-1\" for keyboard accessibility",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: In-Page Link Targets Missing Tabindex</h1>
+
+    <nav>
+        <ul>
+            <li><a href="#section1">Jump to Section 1</a></li>
+            <li><a href="#section2">Jump to Section 2</a></li>
+            <li><a href="#section3">Jump to Section 3</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- VIOLATION 1: div target with no tabindex -->
+        <div id="section1"
+             data-expected-violation="true"
+             data-violation-id="ErrAnchorTargetTabindex"
+             data-violation-reason="Non-interactive element is anchor target but missing tabindex='-1'">
+            <h2>Section 1: Introduction</h2>
+            <p>This div is an anchor target but has no tabindex="-1", so keyboard users won't receive focus here.</p>
+        </div>
+
+        <!-- VIOLATION 2: section target with tabindex="0" instead of "-1" -->
+        <section id="section2"
+                 tabindex="0"
+                 data-expected-violation="true"
+                 data-violation-id="ErrAnchorTargetTabindex"
+                 data-violation-reason="Anchor target has tabindex='0' instead of '-1'">
+            <h2>Section 2: Details</h2>
+            <p>This section has tabindex="0" which puts it in the tab order unnecessarily. It should be tabindex="-1".</p>
+        </section>
+
+        <!-- VIOLATION 3: h2 target with no tabindex -->
+        <h2 id="section3"
+            data-expected-violation="true"
+            data-violation-id="ErrAnchorTargetTabindex"
+            data-violation-reason="Heading is anchor target but missing tabindex='-1'">Section 3: Conclusion</h2>
+        <p>This heading is an anchor target but has no tabindex="-1".</p>
+    </main>
+</body>
+</html>

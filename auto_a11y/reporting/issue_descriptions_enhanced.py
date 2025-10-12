@@ -1170,15 +1170,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1', '4.1.2'],
             'remediation': "Use aria-level values 1 through 6 only"
         },
-        'ErrInvalidGenericLinkName': {
-            'title': "Link text is generic and provides no information about destination",
-            'what': "Link text is generic and provides no information about destination",
-            'why': "Generic link text like \"click here\" provides no context when links are reviewed out of context.",
-            'who': "Screen reader users navigating by links, users with cognitive disabilities who need clear link purposes.",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.4'],
-            'remediation': "Use descriptive link text that explains the destination or action, avoid generic phrases like \"click here\" or \"read more\"."
-        },
         'ErrInvalidLanguageCode': {
             'title': "Language attribute contains invalid code \'{found}\' that doesn\'t conform to ISO 639 standards",
             'what': "Language attribute contains invalid code \'{found}\' that doesn\'t conform to ISO 639 standards",
@@ -2213,15 +2204,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.4.4'],
             'remediation': "Include document title and format in link text (e.g., \"Annual Report 2023 (PDF, 2MB)\")."
-        },
-        'WarnGenericLinkNoImprovement': {
-            'title': "Generic link text with no surrounding context to clarify purpose",
-            'what': "Generic link text with no surrounding context to clarify purpose",
-            'why': "Generic links without context force users to explore further to understand destinations.",
-            'who': "Screen reader users navigating by links, users with cognitive disabilities.",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['2.4.4'],
-            'remediation': "Rewrite link text to be descriptive, or ensure surrounding text provides clear context."
         },
         'WarnHeadingFoundInLandmarkButIsLabelledByAnAriaLabelledBy': {
             'title': "Landmark has heading but uses different element for label",

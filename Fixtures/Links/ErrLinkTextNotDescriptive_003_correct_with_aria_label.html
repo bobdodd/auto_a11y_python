@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkTextNotDescriptive - Correct with aria-label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkTextNotDescriptive_003_correct_with_aria_label",
+    "issueId": "ErrLinkTextNotDescriptive",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Generic link text improved with aria-label that extends the context",
+    "wcag": "2.4.4",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Generic Links with Proper Context</h1>
+
+    <main>
+        <!-- PASS 1: Generic text with aria-label extension -->
+        <section>
+            <h2>Product Information</h2>
+            <p>Our new laptop has amazing features.
+            <a href="specs.html"
+               aria-label="Read more about laptop specifications"
+               data-expected-pass="true"
+               data-pass-reason="Generic 'read more' extended with aria-label providing context">read more</a></p>
+        </section>
+
+        <!-- PASS 2: Generic text with sr-only extension -->
+        <section>
+            <h2>Annual Report</h2>
+            <p>We've published our financial results for 2024.
+            <a href="report-2024.pdf"
+               data-expected-pass="true"
+               data-pass-reason="Generic 'Read more' extended with visually hidden text">Read more<span class="sr-only"> about 2024 Annual Financial Report</span></a></p>
+        </section>
+
+        <!-- PASS 3: Generic text with aria-label -->
+        <section>
+            <h2>Services Offered</h2>
+            <p>We provide comprehensive consulting services.
+            <a href="services.html"
+               aria-label="Learn more about our consulting services"
+               data-expected-pass="true"
+               data-pass-reason="Generic 'learn more' extended with descriptive aria-label">learn more</a></p>
+        </section>
+
+        <!-- PASS 4: Generic download with context -->
+        <section>
+            <h2>Download Section</h2>
+            <p>Get the latest version of our software.
+            <a href="software-v2.zip"
+               aria-label="Download Software Version 2.0"
+               data-expected-pass="true"
+               data-pass-reason="Generic 'download' extended with file name in aria-label">download</a></p>
+        </section>
+
+        <!-- PASS 5: Click here with full context -->
+        <section>
+            <h2>Contact Information</h2>
+            <p>Questions? Get in touch with us by visiting our contact page.
+            <a href="contact.html"
+               aria-label="Click here to visit our contact page"
+               data-expected-pass="true"
+               data-pass-reason="Generic 'click here' extended with destination in aria-label">click here</a></p>
+        </section>
+    </main>
+</body>
+</html>

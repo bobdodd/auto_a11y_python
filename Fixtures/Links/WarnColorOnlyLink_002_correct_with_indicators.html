@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnColorOnlyLink - Correct with Strong Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorOnlyLink_002_correct_with_indicators",
+    "issueId": "WarnColorOnlyLink",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Links in flowing text with strong visual indicators (underline, border)",
+    "wcag": "1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        p {
+            color: black;
+        }
+
+        a.underlined {
+            color: blue;
+            text-decoration: underline;
+        }
+
+        a.bordered {
+            color: blue;
+            text-decoration: none;
+            border-bottom: 2px solid blue;
+        }
+
+        a.outlined {
+            color: blue;
+            text-decoration: none;
+            outline: 1px solid blue;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Links with Strong Indicators</h1>
+
+    <main>
+        <!-- PASS 1: Link with underline -->
+        <section>
+            <h2>Underlined Link</h2>
+            <p data-expected-pass="true" data-pass-reason="Link has underline in addition to color">
+                This paragraph contains
+                <a href="/page1" class="underlined">an underlined link</a>
+                that uses both color and underline.
+            </p>
+        </section>
+
+        <!-- PASS 2: Link with border-bottom -->
+        <section>
+            <h2>Bordered Link</h2>
+            <p data-expected-pass="true" data-pass-reason="Link has border-bottom as strong indicator">
+                Check out
+                <a href="/page2" class="bordered">this bordered link</a>
+                that uses color and a bottom border.
+            </p>
+        </section>
+
+        <!-- PASS 3: Default browser link (underline) -->
+        <section>
+            <h2>Default Link Style</h2>
+            <p data-expected-pass="true" data-pass-reason="Link uses default browser underline">
+                For more information, see
+                <a href="/page3">the documentation</a>
+                with default browser styling.
+            </p>
+        </section>
+
+        <!-- PASS 4: Link with outline -->
+        <section>
+            <h2>Outlined Link</h2>
+            <p data-expected-pass="true" data-pass-reason="Link has outline as strong indicator">
+                Visit our
+                <a href="/page4" class="outlined">outlined link page</a>
+                that uses outline for distinction.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

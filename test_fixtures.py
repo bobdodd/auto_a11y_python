@@ -116,11 +116,12 @@ class FixtureTestRunner:
                 "expected_code": result["expected_code"],
                 "found_codes": result["found_codes"],
                 "success": result["success"],
+                "passed": result["success"],  # Add passed field for fixture validator
                 "notes": result["notes"],
                 "tested_at": datetime.now(),
                 "test_run_id": self.test_run_id
             }
-            
+
             # Insert into fixture_tests collection
             result_id = self.db.db.fixture_tests.insert_one(doc).inserted_id
             return str(result_id)
@@ -199,7 +200,37 @@ class FixtureTestRunner:
                 status=PageStatus.DISCOVERED
             )
             page_id = self.db.create_page(page)
-            
+
+            # Create mock DocumentReference entries if this is a document language test
+            # Extract document metadata from test-metadata if present
+            if 'documentMetadata' in metadata:
+                from auto_a11y.models.document_reference import DocumentReference
+                doc_metadata = metadata.get('documentMetadata', {})
+                for doc_url, doc_info in doc_metadata.items():
+                    # Determine MIME type from URL extension
+                    mime_type = 'application/pdf'  # Default to PDF
+                    if doc_url.endswith('.doc'):
+                        mime_type = 'application/msword'
+                    elif doc_url.endswith('.docx'):
+                        mime_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    elif doc_url.endswith('.xls'):
+                        mime_type = 'application/vnd.ms-excel'
+                    elif doc_url.endswith('.xlsx'):
+                        mime_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+                    doc_ref = DocumentReference(
+                        website_id=website_id,
+                        document_url=doc_url,
+                        referring_page_url=f"file://{fixture_path.absolute()}",
+                        mime_type=mime_type,
+                        language=doc_info.get('language'),
+                        language_confidence=doc_info.get('confidence', 0.95),
+                        is_internal=True,
+                        discovered_at=datetime.now()
+                    )
+                    self.db.add_document_reference(doc_ref)
+                print(f"   Created {len(doc_metadata)} mock DocumentReference entries")
+
             # Run tests on the fixture with timeout
             print("   Running accessibility tests...")
 

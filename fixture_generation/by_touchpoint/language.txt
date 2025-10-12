@@ -1,6 +1,6 @@
 # LANGUAGE Touchpoint
 
-Total issues: 23
+Total issues: 19
 
 ================================================================================
 
@@ -20,25 +20,11 @@ How to fix: Add lang attributes to elements containing different languages
 
 ================================================================================
 
-## ErrElementPrimaryLangNotRecognized
-
-✨ New fixtures needed
-
-ID: ErrElementPrimaryLangNotRecognized
-Type: Error
-Impact: Medium
-WCAG: 3.1.1, 3.1.2
-Touchpoint: language
-Description: Element has unrecognized language code
-Why it matters: Language changes won't be announced properly
-Who it affects: Screen reader users
-How to fix: Use valid language codes
-
-================================================================================
-
 ## ErrElementRegionQualifierNotRecognized
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrElementRegionQualifierNotRecognized_002_correct_valid_regions.html
+  - Fixtures/Language/ErrElementRegionQualifierNotRecognized_001_violations_basic.html
 
 ID: ErrElementRegionQualifierNotRecognized
 Type: Error
@@ -52,25 +38,29 @@ How to fix: Use valid ISO 3166-1 region codes
 
 ================================================================================
 
-## ErrEmptyLangAttr
+## ErrHtmlLangEmpty
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrHtmlLangEmpty_002_correct_with_valid_lang.html
+  - Fixtures/Language/ErrHtmlLangEmpty_001_violations_basic.html
 
-ID: ErrEmptyLangAttr
+ID: ErrHtmlLangEmpty
 Type: Error
 Impact: High
-WCAG: 3.1.1
+WCAG: 3.1.1 Language of Page (Level A)
 Touchpoint: language
-Description: Lang attribute is empty
-Why it matters: Empty lang provides no language information
-Who it affects: Screen reader users
-How to fix: Add valid language code to lang attribute
+Description: HTML element has a lang attribute present but with no value (lang=""), preventing screen readers from determining the page language
+Why it matters: An empty lang attribute is worse than no lang attribute because it explicitly tells assistive technologies there's no language specified, potentially causing screen readers to use incorrect pronunciation rules or fail to switch language synthesizers. This can make content completely unintelligible when read aloud.
+Who it affects: Blind and low vision users using screen readers who need proper language identification for correct pronunciation, multilingual users who rely on automatic language switching in assistive technologies, users with dyslexia using reading tools that depend on language settings, and users of translation services
+How to fix: Add a valid language code to the lang attribute (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. For the HTML element, always specify the primary document language. If the language is truly unknown, remove the lang attribute entirely rather than leaving it empty.
 
 ================================================================================
 
 ## ErrEmptyXmlLangAttr
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrEmptyXmlLangAttr_002_correct_with_xmllang.html
+  - Fixtures/Language/ErrEmptyXmlLangAttr_001_violations_basic.html
 
 ID: ErrEmptyXmlLangAttr
 Type: Error
@@ -86,7 +76,9 @@ How to fix: Add valid language code to xml:lang attribute
 
 ## ErrHreflangAttrEmpty
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrHreflangAttrEmpty_001_violations_basic.html
+  - Fixtures/Language/ErrHreflangAttrEmpty_002_correct_with_codes.html
 
 ID: ErrHreflangAttrEmpty
 Type: Error
@@ -102,7 +94,9 @@ How to fix: Add valid language code or remove empty hreflang attribute
 
 ## ErrHreflangNotOnLink
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrHreflangNotOnLink_002_correct_on_links.html
+  - Fixtures/Language/ErrHreflangNotOnLink_001_violations_basic.html
 
 ID: ErrHreflangNotOnLink
 Type: Error
@@ -119,7 +113,9 @@ How to fix: Move hreflang to anchor elements only
 ## ErrIncorrectlyFormattedPrimaryLang
 
 ⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrIncorrectlyFormattedPrimaryLang_001_violations_basic.html
   - Fixtures/Language/ErrIncorrectlyFormattedPrimaryLang.html
+  - Fixtures/Language/ErrIncorrectlyFormattedPrimaryLang_002_correct_formatting.html
 
 ID: ErrIncorrectlyFormattedPrimaryLang
 Type: Error
@@ -135,7 +131,9 @@ How to fix: Use correct format: "en-US" or "en"
 
 ## ErrInvalidLanguageCode
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrInvalidLanguageCode_002_correct_valid_codes.html
+  - Fixtures/Language/ErrInvalidLanguageCode_001_violations_basic.html
 
 ID: ErrInvalidLanguageCode
 Type: Error
@@ -151,7 +149,9 @@ How to fix: Replace '{found}' with a valid ISO 639-1 or ISO 639-2 language code.
 
 ## ErrNoPageLanguage
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrNoPageLanguage_001_violations_basic.html
+  - Fixtures/Language/ErrNoPageLanguage_002_correct_with_lang.html
 
 ID: ErrNoPageLanguage
 Type: Error
@@ -165,25 +165,11 @@ How to fix: Add the lang attribute to the <html> element with the appropriate la
 
 ================================================================================
 
-## ErrNoPrimaryLangAttr
-
-✨ New fixtures needed
-
-ID: ErrNoPrimaryLangAttr
-Type: Error
-Impact: High
-WCAG: 3.1.1 Language of Page
-Touchpoint: language
-Description: HTML element is missing the required lang attribute to identify the page's primary language
-Why it matters: Both assistive technologies and browsers render text more accurately when the language is identified. Screen readers need to know which language pronunciation rules to use - without this, they may mispronounce words, use wrong inflections, or attempt to read content in the wrong language entirely. This can make content completely incomprehensible. Visual browsers need language information to display characters and scripts correctly, and search engines use it for proper indexing.
-Who it affects: Screen reader users who may hear garbled pronunciation if the page language doesn't match their assistive technology's default language, users relying on automatic translation tools, users of voice assistants, and users with dyslexia using reading assistance tools
-How to fix: Add the lang attribute to the html element with the appropriate ISO 639-1 language code (e.g., lang="en" for English, lang="es" for Spanish, lang="fr" for French). If the page uses multiple languages equally, use the language that appears first or is used for navigation.
-
-================================================================================
-
 ## ErrPrimaryHrefLangNotRecognized
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrPrimaryHrefLangNotRecognized_002_correct_valid_codes.html
+  - Fixtures/Language/ErrPrimaryHrefLangNotRecognized_001_violations_basic.html
 
 ID: ErrPrimaryHrefLangNotRecognized
 Type: Error
@@ -199,7 +185,9 @@ How to fix: Use valid ISO 639-1 language codes
 
 ## ErrPrimaryLangAndXmlLangMismatch
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrPrimaryLangAndXmlLangMismatch_002_correct_matching.html
+  - Fixtures/Language/ErrPrimaryLangAndXmlLangMismatch_001_violations_basic.html
 
 ID: ErrPrimaryLangAndXmlLangMismatch
 Type: Error
@@ -215,7 +203,9 @@ How to fix: Ensure both attributes have same value
 
 ## ErrPrimaryLangUnrecognized
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrPrimaryLangUnrecognized_002_correct_recognized_codes.html
+  - Fixtures/Language/ErrPrimaryLangUnrecognized_001_violations_basic.html
 
 ID: ErrPrimaryLangUnrecognized
 Type: Error
@@ -231,7 +221,9 @@ How to fix: Use valid ISO 639-1 language codes
 
 ## ErrPrimaryXmlLangUnrecognized
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrPrimaryXmlLangUnrecognized_002_correct_recognized_codes.html
+  - Fixtures/Language/ErrPrimaryXmlLangUnrecognized_001_violations_basic.html
 
 ID: ErrPrimaryXmlLangUnrecognized
 Type: Error
@@ -247,7 +239,9 @@ How to fix: Use valid ISO 639-1 language codes
 
 ## ErrRegionQualifierForHreflangUnrecognized
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrRegionQualifierForHreflangUnrecognized_001_violations_basic.html
+  - Fixtures/Language/ErrRegionQualifierForHreflangUnrecognized_002_correct_valid_regions.html
 
 ID: ErrRegionQualifierForHreflangUnrecognized
 Type: Error
@@ -263,7 +257,9 @@ How to fix: Use valid ISO 3166-1 region codes
 
 ## ErrRegionQualifierForPrimaryLangNotRecognized
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrRegionQualifierForPrimaryLangNotRecognized_001_violations_basic.html
+  - Fixtures/Language/ErrRegionQualifierForPrimaryLangNotRecognized_002_correct_valid_regions.html
 
 ID: ErrRegionQualifierForPrimaryLangNotRecognized
 Type: Error
@@ -279,7 +275,9 @@ How to fix: Use valid ISO 3166-1 region codes like "en-US", "en-GB"
 
 ## ErrRegionQualifierForPrimaryXmlLangNotRecognized
 
-✨ New fixtures needed
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrRegionQualifierForPrimaryXmlLangNotRecognized_002_correct_valid_regions.html
+  - Fixtures/Language/ErrRegionQualifierForPrimaryXmlLangNotRecognized_001_violations_basic.html
 
 ID: ErrRegionQualifierForPrimaryXmlLangNotRecognized
 Type: Error
@@ -290,6 +288,24 @@ Description: Region qualifier in xml:lang not recognized
 Why it matters: Invalid region codes in xml:lang may cause issues
 Who it affects: Screen reader users
 How to fix: Use valid ISO 3166-1 region codes
+
+================================================================================
+
+## ErrEmptyLanguageAttribute
+
+⚠️  Has old fixtures to replace:
+  - Fixtures/Language/ErrEmptyLanguageAttribute_002_correct_with_valid_lang.html
+  - Fixtures/Language/ErrEmptyLanguageAttribute_001_violations_basic.html
+
+ID: ErrEmptyLanguageAttribute
+Type: Error
+Impact: High
+WCAG: 3.1.2 Language of Parts (Level AA)
+Touchpoint: language
+Description: Element (non-HTML) has a lang attribute present but with no value (lang=""), preventing screen readers from determining language changes
+Why it matters: An empty lang attribute on elements prevents screen readers from properly switching pronunciation rules for content in different languages. Screen readers cannot adjust pronunciation rules for content sections in different languages. This can make multilingual content difficult or impossible to understand when read aloud.
+Who it affects: Screen reader users who need proper language identification for correct pronunciation, multilingual users relying on language switching, users of translation tools, and users with reading disabilities using text-to-speech
+How to fix: Add a valid language code to the lang attribute (e.g., lang="fr" for French, lang="es" for Spanish). Use the correct ISO 639-1 two-letter code or ISO 639-2 three-letter code. If the language matches the page language, remove the lang attribute entirely rather than leaving it empty.
 
 ================================================================================
 

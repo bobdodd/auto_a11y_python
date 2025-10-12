@@ -3,40 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anchor Target Tabindex Warning Test - WarnAnchorTargetTabindex</title>
+    <title>Anchor Target Tabindex Error Test - ErrAnchorTargetTabindex</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAnchorTargetTabindex",
+    "issueId": "ErrAnchorTargetTabindex",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "In-page link targets missing tabindex=\"-1\"",
+    "wcag": "2.4.3",
+    "impact": "Medium"
+}
+    </script>
 </head>
 <body>
-    <h1>Anchor Targets and Tabindex Issues</h1>
-    
+    <h1>Anchor Targets Missing Tabindex</h1>
+
     <!-- Anchor target without tabindex="-1" -->
     <a href="#section1">Go to Section 1</a>
-    <h2 id="section1">Section 1 (missing tabindex="-1")</h2>
-    
+    <h2 id="section1" data-expected-violation="true">Section 1 (missing tabindex="-1")</h2>
+
     <!-- Multiple anchor targets without proper tabindex -->
     <nav>
         <a href="#intro">Introduction</a>
         <a href="#content">Main Content</a>
         <a href="#conclusion">Conclusion</a>
     </nav>
-    
-    <section id="intro">
+
+    <section id="intro" data-expected-violation="true">
         <h2>Introduction (no tabindex)</h2>
     </section>
-    
-    <section id="content">
+
+    <section id="content" data-expected-violation="true">
         <h2>Main Content (no tabindex)</h2>
     </section>
-    
-    <section id="conclusion">
+
+    <section id="conclusion" data-expected-violation="true">
         <h2>Conclusion (no tabindex)</h2>
     </section>
-    
+
     <!-- Skip link target without tabindex -->
     <a href="#main" class="skip-link">Skip to main</a>
-    <main id="main">
+    <main id="main" data-expected-violation="true">
         Main content area (needs tabindex="-1")
     </main>
-    
+
     <p>Anchor targets should have tabindex="-1" for programmatic focus.</p>
 </body>
 </html>

@@ -214,7 +214,10 @@ async def test_links(page):
                     backgroundColor: backgroundColor,
                     normalBackgroundColor: normalStyle.backgroundColor,
                     backgroundImage: backgroundImage,
-                    fullBackground: fullBackground
+                    fullBackground: fullBackground,
+                    target: link.getAttribute('target') || '',
+                    ariaLabel: link.getAttribute('aria-label') || '',
+                    title: link.getAttribute('title') || ''
                 };
             });
         }
@@ -363,6 +366,38 @@ async def test_links(page):
         # Get font sizes for em/rem calculations
         font_size = link.get('fontSize', 16)
         root_font_size = link.get('rootFontSize', 16)
+
+        # Check for target="_blank" without warning (independent check)
+        target = link.get('target', '').lower()
+        if target == '_blank':
+            # Check if link text, aria-label, or title mentions "new window" or "new tab"
+            link_text = link.get('text', '').lower()
+            aria_label = link.get('ariaLabel', '').lower()
+            title = link.get('title', '').lower()
+            combined_text = f"{link_text} {aria_label} {title}"
+
+            # Check for warning indicators (be specific to avoid false positives)
+            new_window_indicators = [
+                'new window', 'new tab',
+                'opens in a new window', 'opens in a new tab',
+                'opens in new window', 'opens in new tab',
+                'external link',
+                '(opens in', '(new window', '(new tab'
+            ]
+
+            has_warning = any(indicator in combined_text for indicator in new_window_indicators)
+
+            if not has_warning:
+                results['errors'].append({
+                    'err': 'ErrLinkOpensNewWindowNoWarning',
+                    'type': 'err',
+                    'cat': 'links',
+                    'element': tag,
+                    'xpath': link['xpath'],
+                    'html': link['html'],
+                    'description': f'Link opens in new window (target="_blank") without warning users in link text, aria-label, or title',
+                    'text': link.get('text', '')
+                })
 
         # Check for gradient backgrounds
         link_background = link.get('fullBackground', '') or link.get('normalBackgroundColor', '')

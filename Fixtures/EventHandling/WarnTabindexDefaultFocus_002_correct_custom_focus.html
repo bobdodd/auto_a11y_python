@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnTabindexDefaultFocus - Correct: Custom Focus Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnTabindexDefaultFocus_002_correct_custom_focus",
+    "issueId": "WarnTabindexDefaultFocus",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Test fixture for WarnTabindexDefaultFocus - elements with tabindex that have custom focus indicators",
+    "wcag": "2.4.7",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* CORRECT 1: Custom outline defined */
+        .custom-outline:focus {
+            outline: 3px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        /* CORRECT 2: Custom box-shadow defined */
+        .custom-shadow:focus {
+            box-shadow: 0 0 0 3px #cc0000;
+        }
+
+        /* CORRECT 3: Custom border change */
+        .custom-border {
+            border: 1px solid #ddd;
+        }
+        .custom-border:focus {
+            border: 3px solid #006600;
+        }
+
+        /* CORRECT 4: Outline removed BUT box-shadow provided */
+        .custom-alternative:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px #cc6600;
+        }
+
+        /* CORRECT 5: Multiple custom indicators */
+        .multi-custom:focus {
+            outline: 2px solid #0066cc;
+            box-shadow: 0 0 8px rgba(0, 102, 204, 0.5);
+            background: #e6f2ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnTabindexDefaultFocus - Correct Examples</h1>
+    <p>This page contains elements with tabindex that define custom focus indicators. None should generate warnings.</p>
+
+    <section>
+        <h2>Custom Focus Indicators</h2>
+
+        <div class="card custom-outline" tabindex="0" id="correct1">
+            <h3>Correct 1: Custom Outline</h3>
+            <p>Explicitly defines outline: 3px solid #0066cc with offset</p>
+        </div>
+
+        <div class="menu-item custom-shadow" tabindex="0" id="correct2">
+            <h3>Correct 2: Custom Box-Shadow</h3>
+            <p>Custom box-shadow: 0 0 0 3px #cc0000 focus indicator</p>
+        </div>
+
+        <div class="panel custom-border" tabindex="0" id="correct3">
+            <h3>Correct 3: Custom Border Change</h3>
+            <p>Border width changes from 1px to 3px on focus</p>
+        </div>
+
+        <div class="card custom-alternative" tabindex="-1" id="correct4">
+            <h3>Correct 4: Custom Alternative (no outline)</h3>
+            <p>Removes outline but provides custom box-shadow alternative</p>
+        </div>
+
+        <div class="menu-item multi-custom" tabindex="0" id="correct5">
+            <h3>Correct 5: Multiple Custom Indicators</h3>
+            <p>Combines outline, box-shadow, and background color change</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 warnings</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> All elements define custom focus indicators</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Correct 1: Custom outline with offset</li>
+                    <li>Correct 2: Custom box-shadow</li>
+                    <li>Correct 3: Custom border width change</li>
+                    <li>Correct 4: Box-shadow alternative to outline</li>
+                    <li>Correct 5: Multiple custom indicators combined</li>
+                </ul>
+            </li>
+            <li><strong>Best Practice:</strong> Always define custom focus indicators for consistency across browsers and platforms</li>
+        </ul>
+    </footer>
+</body>
+</html>

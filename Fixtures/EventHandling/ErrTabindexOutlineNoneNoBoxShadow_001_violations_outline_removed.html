@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexOutlineNoneNoBoxShadow - Violations: Outline Removed Without Alternative</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexOutlineNoneNoBoxShadow_001_violations_outline_removed",
+    "issueId": "ErrTabindexOutlineNoneNoBoxShadow",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test fixture for ErrTabindexOutlineNoneNoBoxShadow - elements with tabindex where outline:none without box-shadow alternative",
+    "wcag": "2.4.7",
+    "impact": "Critical"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* VIOLATION 1: outline: none with no alternative */
+        .no-outline:focus {
+            outline: none;
+        }
+
+        /* VIOLATION 2: outline: 0 (equivalent to none) */
+        .outline-zero:focus {
+            outline: 0;
+        }
+
+        /* VIOLATION 3: outline-style: none */
+        .outline-style-none:focus {
+            outline-style: none;
+        }
+
+        /* VIOLATION 4: outline-width: 0 */
+        .outline-width-zero:focus {
+            outline-width: 0;
+        }
+
+        /* VIOLATION 5: outline: none with border change only (not box-shadow) */
+        .no-outline-border-only {
+            border: 2px solid #ddd;
+        }
+        .no-outline-border-only:focus {
+            outline: none;
+            border-color: #0066cc;  /* Border change alone isn't enough */
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexOutlineNoneNoBoxShadow - Violation Examples</h1>
+    <p>This page contains elements with tabindex that have outline:none (or equivalent) without a box-shadow alternative. All should generate errors.</p>
+
+    <section>
+        <h2>Outline Removed Without Alternative</h2>
+
+        <div class="card no-outline" tabindex="0" id="violation1">
+            <h3>Violation 1: outline: none</h3>
+            <p>Explicitly removes outline with no alternative focus indicator</p>
+        </div>
+
+        <div class="menu-item outline-zero" tabindex="0" id="violation2">
+            <h3>Violation 2: outline: 0</h3>
+            <p>Sets outline to 0, which is equivalent to 'none'</p>
+        </div>
+
+        <div class="panel outline-style-none" tabindex="0" id="violation3">
+            <h3>Violation 3: outline-style: none</h3>
+            <p>Removes outline by setting style to none</p>
+        </div>
+
+        <div class="card outline-width-zero" tabindex="-1" id="violation4">
+            <h3>Violation 4: outline-width: 0</h3>
+            <p>Makes outline invisible by setting width to 0</p>
+        </div>
+
+        <div class="menu-item no-outline-border-only" tabindex="0" id="violation5">
+            <h3>Violation 5: outline: none with border-only change</h3>
+            <p>Border changes color but no box-shadow alternative (border alone isn't sufficient)</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> ErrTabindexOutlineNoneNoBoxShadow</li>
+            <li><strong>Count:</strong> 5 violations detected</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> Outline removed without providing box-shadow alternative</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Violation 1: outline: none - no alternative</li>
+                    <li>Violation 2: outline: 0 - equivalent to none</li>
+                    <li>Violation 3: outline-style: none - outline suppressed</li>
+                    <li>Violation 4: outline-width: 0 - invisible outline</li>
+                    <li>Violation 5: outline: none with only border change (insufficient)</li>
+                </ul>
+            </li>
+            <li><strong>Impact:</strong> Keyboard users cannot see focus location - critical accessibility failure</li>
+            <li><strong>Fix:</strong> If removing outline, MUST provide box-shadow as alternative indicator</li>
+        </ul>
+    </footer>
+</body>
+</html>

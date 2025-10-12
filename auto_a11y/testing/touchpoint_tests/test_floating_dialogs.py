@@ -216,13 +216,51 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                 
                 // Check for close button
                 function hasCloseButton(dialog) {
-                    const closeButtons = dialog.querySelectorAll(
-                        'button[aria-label*="close" i], button[title*="close" i], ' +
-                        '[role="button"][aria-label*="close" i], [role="button"][title*="close" i], ' +
-                        'button.close, .close-button, .btn-close'
-                    );
-                    
-                    return closeButtons.length > 0;
+                    // Find potential close buttons using multiple selectors
+                    const closeButtons = dialog.querySelectorAll([
+                        // Semantic buttons with close labels (exclude "disclosure" false positives)
+                        'button[aria-label*="close" i]',
+                        'button[title*="close" i]',
+                        'button[aria-label*="dismiss" i]',
+
+                        // Role=button with close labels
+                        '[role="button"][aria-label*="close" i]',
+                        '[role="button"][title*="close" i]',
+                        '[role="button"][aria-label*="dismiss" i]',
+
+                        // Common close button classes
+                        'button.close',
+                        'button.btn-close',
+                        '.close-button',
+                        '.modal-close',
+
+                        // Data attributes (Bootstrap, Material UI, etc.)
+                        'button[data-dismiss="modal"]',
+                        'button[data-bs-dismiss="modal"]',
+                        '[data-dialog-close]',
+                    ].join(', '));
+
+                    // Filter to only visible, non-disabled buttons
+                    const visibleButtons = Array.from(closeButtons).filter(btn => {
+                        const style = window.getComputedStyle(btn);
+                        const isDisplayed = style.display !== 'none' &&
+                                          style.visibility !== 'hidden' &&
+                                          style.opacity !== '0';
+                        const isEnabled = !btn.disabled && !btn.hasAttribute('disabled');
+
+                        return isDisplayed && isEnabled;
+                    });
+
+                    // Also check for aria-label containing "close" after filtering out "disclosure"
+                    const filteredButtons = visibleButtons.filter(btn => {
+                        const label = (btn.getAttribute('aria-label') || '').toLowerCase();
+                        if (label.includes('close')) {
+                            return !label.includes('disclosure') && !label.includes('enclose');
+                        }
+                        return true;
+                    });
+
+                    return filteredButtons.length > 0;
                 }
                 
                 // Check for content overlap
@@ -256,24 +294,82 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                     return overlappingInteractive;
                 }
                 
-                // Find all potential dialogs
-                const dialogCandidates = [
+                // Find all potential dialogs using semantic selectors first
+                const semanticDialogs = [
                     ...Array.from(document.querySelectorAll('dialog')),
                     ...Array.from(document.querySelectorAll('[role="dialog"]')),
-                    ...Array.from(document.querySelectorAll('[class*="modal"]')),
-                    ...Array.from(document.querySelectorAll('div'))
-                        .filter(div => {
-                            const style = window.getComputedStyle(div);
-                            return style.zIndex !== 'auto' && parseInt(style.zIndex) > 100;
-                        })
+                    ...Array.from(document.querySelectorAll('[role="alertdialog"]')),
+                    ...Array.from(document.querySelectorAll('[aria-modal="true"]')),
                 ];
 
+                // Find heuristic-based dialogs (with filtering to avoid false positives)
+                const heuristicDialogs = Array.from(document.querySelectorAll('div'))
+                    .filter(div => {
+                        const style = window.getComputedStyle(div);
+                        const classes = (div.className || '').toLowerCase();
+
+                        // Must have high z-index
+                        if (style.zIndex === 'auto' || parseInt(style.zIndex) <= 100) {
+                            return false;
+                        }
+
+                        // Exclude common false positives by class name
+                        const excludePatterns = [
+                            'backdrop', 'overlay', 'mask', 'shade',
+                            'dropdown', 'tooltip', 'popover', 'menu',
+                            'nav', 'header', 'footer', 'sidebar'
+                        ];
+
+                        for (const pattern of excludePatterns) {
+                            if (classes.includes(pattern)) {
+                                return false;
+                            }
+                        }
+
+                        // Include only if class suggests it's a modal/dialog
+                        return classes.includes('modal') ||
+                               classes.includes('dialog') ||
+                               classes.includes('alert');
+                    });
+
+                // Combine all candidates
+                const allCandidates = [...semanticDialogs, ...heuristicDialogs];
+
                 // Deduplicate
-                const uniqueDialogs = Array.from(new Set(dialogCandidates));
+                const uniqueDialogs = Array.from(new Set(allCandidates));
+
+                // Filter out backdrops and false positives based on content
+                const contentDialogs = uniqueDialogs.filter(dialog => {
+                    const classes = (dialog.className || '').toLowerCase();
+                    const hasContent = dialog.textContent.trim().length > 0;
+                    const hasInteractive = dialog.querySelectorAll('button, a, input, select, textarea, [tabindex]').length > 0;
+                    const hasHeading = dialog.querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]').length > 0;
+
+                    // Exclude if class name explicitly indicates backdrop/overlay
+                    if (classes.includes('backdrop') ||
+                        classes.includes('overlay') ||
+                        classes.includes('mask') ||
+                        classes.includes('shade')) {
+                        return false;
+                    }
+
+                    // Exclude if it has no meaningful content (likely a backdrop)
+                    if (!hasContent && !hasInteractive && !hasHeading) {
+                        return false;
+                    }
+
+                    // Exclude if it's too small (likely a tooltip/dropdown)
+                    const rect = dialog.getBoundingClientRect();
+                    if (rect.width < 200 && rect.height < 100) {
+                        return false;
+                    }
+
+                    return true;
+                });
 
                 // Filter out nested dialogs - only keep outermost
-                const dialogs = uniqueDialogs.filter(dialog => {
-                    return !uniqueDialogs.some(otherDialog =>
+                const dialogs = contentDialogs.filter(dialog => {
+                    return !contentDialogs.some(otherDialog =>
                         otherDialog !== dialog && otherDialog.contains(dialog)
                     );
                 });

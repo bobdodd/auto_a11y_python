@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnTabindexNoBorderOutline - Warnings: Outline-Only Focus</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnTabindexNoBorderOutline_001_violations_outline_only",
+    "issueId": "WarnTabindexNoBorderOutline",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Test fixture for WarnTabindexNoBorderOutline - elements with tabindex that have outline-only focus (concern for screen magnifier users)",
+    "wcag": "2.4.7",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* WARNING 1: Outline only - no border/box-shadow/background */
+        .outline-only-basic:focus {
+            outline: 3px solid #0066cc;
+        }
+
+        /* WARNING 2: Outline with offset - still outline-only */
+        .outline-with-offset:focus {
+            outline: 3px solid #cc0000;
+            outline-offset: 2px;
+        }
+
+        /* WARNING 3: Thick outline - still outline-only */
+        .thick-outline:focus {
+            outline: 5px solid #006600;
+        }
+
+        /* WARNING 4: Dotted outline - still outline-only */
+        .dotted-outline:focus {
+            outline: 3px dotted #cc6600;
+        }
+
+        /* WARNING 5: Outline with non-indicator properties */
+        .outline-plus-other:focus {
+            outline: 3px solid #0066cc;
+            cursor: pointer;  /* Non-indicator property */
+            z-index: 10;  /* Non-indicator property */
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnTabindexNoBorderOutline - Warning Examples</h1>
+    <p>This page contains elements with tabindex that use ONLY outline for focus indication. Screen magnifier users may miss outline if zoomed. All should generate warnings.</p>
+
+    <section>
+        <h2>Outline-Only Focus Indicators</h2>
+
+        <div class="card outline-only-basic" tabindex="0" id="warning1">
+            <h3>Warning 1: Basic Outline Only</h3>
+            <p>outline: 3px solid - no border, box-shadow, or background change</p>
+        </div>
+
+        <div class="menu-item outline-with-offset" tabindex="0" id="warning2">
+            <h3>Warning 2: Outline with Offset</h3>
+            <p>Outline with offset but no border/box-shadow alternative</p>
+        </div>
+
+        <div class="panel thick-outline" tabindex="0" id="warning3">
+            <h3>Warning 3: Thick Outline (5px)</h3>
+            <p>Even thick outlines can be missed by screen magnifier users</p>
+        </div>
+
+        <div class="card dotted-outline" tabindex="-1" id="warning4">
+            <h3>Warning 4: Dotted Outline</h3>
+            <p>Different outline style but still outline-only</p>
+        </div>
+
+        <div class="menu-item outline-plus-other" tabindex="0" id="warning5">
+            <h3>Warning 5: Outline + Non-Indicator Props</h3>
+            <p>Has outline plus cursor/z-index but no border/box-shadow/background</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #fff9e6; border-radius: 5px; border-left: 4px solid #ffcc00;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> WarnTabindexNoBorderOutline</li>
+            <li><strong>Count:</strong> 5 warnings detected</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA) - edge case concern</li>
+            <li><strong>Why:</strong> Screen magnifier users may not see outline if element edge is off-screen</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Warning 1: Basic outline only</li>
+                    <li>Warning 2: Outline with offset (still outline-only)</li>
+                    <li>Warning 3: Thick outline (thickness doesn't address issue)</li>
+                    <li>Warning 4: Dotted outline (style doesn't address issue)</li>
+                    <li>Warning 5: Outline + non-indicator properties</li>
+                </ul>
+            </li>
+            <li><strong>Impact:</strong> Screen magnifier users zoomed in may not see outline around element edges</li>
+            <li><strong>Recommendation:</strong> Add box-shadow or background change as supplementary indicator</li>
+            <li><strong>Note:</strong> This is a WARNING for edge case - outline alone is generally acceptable</li>
+        </ul>
+    </footer>
+</body>
+</html>

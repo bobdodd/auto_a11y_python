@@ -137,9 +137,9 @@ async def test_document_links(page) -> Dict[str, Any]:
                     
                     if (!hasTypeIndication) {
                         results.errors.push({
-                            err: 'ErrMissingDocumentType',
+                            err: 'ErrDocumentLinkMissingFileType',
                             type: 'err',
-                            cat: 'document_links',
+                            cat: 'links',
                             element: 'A',
                             xpath: getFullXPath(link),
                             html: link.outerHTML.substring(0, 200),
@@ -151,13 +151,13 @@ async def test_document_links(page) -> Dict[str, Any]:
                         results.elements_failed++;
                     } else {
                         results.elements_passed++;
-                        
+
                         // Check for additional metadata
                         if (!hasMetadata) {
                             results.warnings.push({
                                 err: 'WarnMissingDocumentMetadata',
                                 type: 'warn',
-                                cat: 'document_links',
+                                cat: 'links',
                                 element: 'A',
                                 xpath: getFullXPath(link),
                                 html: link.outerHTML.substring(0, 200),

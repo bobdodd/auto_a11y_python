@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrDocumentLinkMissingFileType - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDocumentLinkMissingFileType_002_correct_with_file_type",
+    "issueId": "ErrDocumentLinkMissingFileType",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Links to documents that properly indicate file type in accessible name",
+    "wcag": "2.4.4",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Resource Downloads</h1>
+
+    <main>
+        <section>
+            <h2>Annual Report</h2>
+            <p>Our company's financial performance for the year.</p>
+            <a href="/reports/annual-2023.pdf"
+               data-expected-pass="true"
+               data-pass-reason="Link text includes file type '(PDF)' so users know they're downloading a PDF file">
+                Annual Report 2023 (PDF)
+            </a>
+        </section>
+
+        <section>
+            <h2>User Guide</h2>
+            <p>Instructions for using our product effectively.</p>
+            <a href="/docs/user-guide.docx"
+               data-expected-pass="true"
+               data-pass-reason="Link text includes file type 'Word Document' so users know the format">
+                User Guide - Word Document
+            </a>
+        </section>
+
+        <section>
+            <h2>Data Analysis</h2>
+            <p>Statistical data from our research project.</p>
+            <a href="/data/analysis-results.xlsx"
+               aria-label="View Results - Excel Spreadsheet"
+               data-expected-pass="true"
+               data-pass-reason="aria-label includes file type 'Excel' so screen reader users know the format">
+                View Results
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrDocumentLinkMissingFileType - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDocumentLinkMissingFileType_001_violations_basic",
+    "issueId": "ErrDocumentLinkMissingFileType",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links to documents without file type indication in accessible name",
+    "wcag": "2.4.4",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Resource Downloads</h1>
+
+    <main>
+        <section>
+            <h2>Annual Report</h2>
+            <p>Our company's financial performance for the year.</p>
+            <a href="/reports/annual-2023.pdf"
+               data-expected-violation="true"
+               data-violation-reason="Link to PDF document does not indicate file type in link text. Users have no way to know this link will download a PDF file. Screen reader users navigating by links hear 'Annual Report 2023' with no indication of file type. Users may not have PDF reader installed. Violates WCAG 2.4.4 Link Purpose In Context - link text should include file type like 'Annual Report 2023 (PDF)'">
+                Annual Report 2023
+            </a>
+        </section>
+
+        <section>
+            <h2>User Guide</h2>
+            <p>Instructions for using our product effectively.</p>
+            <a href="/docs/user-guide.docx"
+               data-expected-violation="true"
+               data-violation-reason="Link to Word document does not indicate file type in link text. Users don't know they're about to download a Word document. May cause confusion when file opens in Word instead of browser. Mobile users can't manage data usage without knowing file type. Violates WCAG 2.4.4 - link text should include format like 'User Guide (Word)'">
+                User Guide
+            </a>
+        </section>
+
+        <section>
+            <h2>Data Analysis</h2>
+            <p>Statistical data from our research project.</p>
+            <a href="/data/analysis-results.xlsx"
+               data-expected-violation="true"
+               data-violation-reason="Link to Excel spreadsheet does not indicate file type. Users cannot anticipate they're about to download Excel file. Screen reader users get no context about file format. Users may not have appropriate software to open file. Violates WCAG 2.4.4 Link Purpose In Context - link should indicate format like 'Data Analysis Results (Excel)'">
+                View Results
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

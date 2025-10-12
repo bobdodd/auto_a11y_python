@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnTabindexNoBorderOutline - Correct: Supplementary Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnTabindexNoBorderOutline_002_correct_supplementary",
+    "issueId": "WarnTabindexNoBorderOutline",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Test fixture for WarnTabindexNoBorderOutline - elements with tabindex that have supplementary indicators beyond outline",
+    "wcag": "2.4.7",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* CORRECT 1: Outline + box-shadow */
+        .outline-plus-shadow:focus {
+            outline: 3px solid #0066cc;
+            box-shadow: 0 0 8px rgba(0, 102, 204, 0.3);
+        }
+
+        /* CORRECT 2: Outline + background change */
+        .outline-plus-background {
+            background: #ffffff;
+        }
+        .outline-plus-background:focus {
+            outline: 3px solid #cc0000;
+            background: #ffe6e6;
+        }
+
+        /* CORRECT 3: Outline + border change */
+        .outline-plus-border {
+            border: 1px solid #ddd;
+        }
+        .outline-plus-border:focus {
+            outline: 2px solid #006600;
+            border: 3px solid #006600;
+        }
+
+        /* CORRECT 4: Box-shadow only (no outline) */
+        .shadow-only:focus {
+            box-shadow: 0 0 0 3px #cc6600;
+        }
+
+        /* CORRECT 5: Border + background (no outline) */
+        .border-background {
+            border: 1px solid #ddd;
+            background: #ffffff;
+        }
+        .border-background:focus {
+            border: 3px solid #0066cc;
+            background: #e6f2ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnTabindexNoBorderOutline - Correct Examples</h1>
+    <p>This page contains elements with tabindex that have supplementary indicators (box-shadow, background, or border) in addition to or instead of outline. None should generate warnings.</p>
+
+    <section>
+        <h2>Multi-Indicator Focus</h2>
+
+        <div class="card outline-plus-shadow" tabindex="0" id="correct1">
+            <h3>Correct 1: Outline + Box-Shadow</h3>
+            <p>Combines outline with box-shadow for magnifier compatibility</p>
+        </div>
+
+        <div class="menu-item outline-plus-background" tabindex="0" id="correct2">
+            <h3>Correct 2: Outline + Background Change</h3>
+            <p>Background change provides internal indicator visible when zoomed</p>
+        </div>
+
+        <div class="panel outline-plus-border" tabindex="0" id="correct3">
+            <h3>Correct 3: Outline + Border Change</h3>
+            <p>Border width change supplements outline</p>
+        </div>
+
+        <div class="card shadow-only" tabindex="-1" id="correct4">
+            <h3>Correct 4: Box-Shadow Only</h3>
+            <p>No outline but box-shadow provides indicator - acceptable</p>
+        </div>
+
+        <div class="menu-item border-background" tabindex="0" id="correct5">
+            <h3>Correct 5: Border + Background</h3>
+            <p>Multiple indicators without outline - magnifier-friendly</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Warning Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 warnings</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> All have supplementary indicators beyond outline alone</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Correct 1: Outline + box-shadow (dual indicators)</li>
+                    <li>Correct 2: Outline + background (internal indicator)</li>
+                    <li>Correct 3: Outline + border change (edge indicator)</li>
+                    <li>Correct 4: Box-shadow only (no outline needed)</li>
+                    <li>Correct 5: Border + background (magnifier-friendly)</li>
+                </ul>
+            </li>
+            <li><strong>Best Practice:</strong> Combine outline with box-shadow or background change for optimal magnifier support</li>
+        </ul>
+    </footer>
+</body>
+</html>

@@ -2173,6 +2173,42 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users, users with disabilities who have difficulty with PDF formats",
             "how_to_fix": "Ensure PDFs are accessible (tagged, structured, with text content) or provide HTML alternatives"
         },
+        "ErrDocumentLinkMissingFileType": {
+            "id": "ErrDocumentLinkMissingFileType",
+            "type": "Error",
+            "impact": "Medium",
+            "wcag": ["2.4.4"],
+            "wcag_full": "2.4.4 Link Purpose (In Context) (Level A)",
+            "category": "links",
+            "description": "Link to downloadable document (PDF, Word, Excel, PowerPoint, etc.) does not indicate the file type in its accessible name",
+            "why_it_matters": "Users need to know they're about to download a file and what type of file it is before activating the link. Without file type indication, users may experience unexpected downloads, particularly problematic for mobile users with limited data plans or users on screen readers who cannot see file icons. Knowing the file type helps users decide if they have appropriate software to open it, if they want to download it on their current device, and how much bandwidth it will consume. This is especially critical for users who cannot easily perceive visual file type indicators like icons or extensions.",
+            "who_it_affects": "Screen reader users who cannot see file type icons, mobile users who need to manage downloads and data usage, users with cognitive disabilities who benefit from explicit warnings about downloads, users on metered connections who need to know file sizes, users without appropriate software who need to know file types before downloading, and users with slow connections who cannot afford unexpected large downloads",
+            "how_to_fix": "Include the file type in the link text (e.g., \"Annual Report (PDF)\" or \"Budget Spreadsheet (Excel)\"), or use aria-label to provide this information (e.g., aria-label=\"Annual Report PDF document\"). The file type should be part of the accessible name that screen readers announce. Common patterns: \"Download [Document Name] ([FILE TYPE])\" or \"[Document Name] - [FILE TYPE] format\". Ensure the file type is announced to screen readers, not just shown visually as an icon or file extension in the URL."
+        },
+        "WarnMissingDocumentMetadata": {
+            "id": "WarnMissingDocumentMetadata",
+            "type": "Warning",
+            "impact": "Low",
+            "wcag": ["2.4.4"],
+            "wcag_full": "2.4.4 Link Purpose (In Context) (Level A)",
+            "category": "links",
+            "description": "Link to downloadable document does not provide additional metadata such as file size or page count",
+            "why_it_matters": "Beyond file type, users benefit from knowing file size (e.g., \"3.2 MB\") to make informed decisions about downloading, especially on mobile devices or metered connections. Page count or document length helps users understand time commitment. This metadata helps users avoid downloading unexpectedly large files, plan for download times, and determine if they have sufficient storage space.",
+            "who_it_affects": "Mobile users on limited data plans, users with slow internet connections, users with limited device storage, users with cognitive disabilities who benefit from clear expectations, and users who need to plan time for reviewing documents",
+            "how_to_fix": "Include file size and optionally page count or document length in the link text or nearby (e.g., \"Annual Report (PDF, 3.2 MB, 48 pages)\"). This can be in the link text itself, in aria-describedby content, or in immediately adjacent text. Ensure this metadata is accessible to screen readers."
+        },
+        "ErrMissingDocumentType": {
+            "id": "ErrMissingDocumentType",
+            "type": "Error",
+            "impact": "Medium",
+            "wcag": ["4.1.1"],
+            "wcag_full": "4.1.1 Parsing (Level A)",
+            "category": "page",
+            "description": "HTML document is missing the DOCTYPE declaration (<!DOCTYPE html>) at the beginning of the file",
+            "why_it_matters": "The DOCTYPE declaration tells browsers how to parse and render the page. Without it, browsers render in \"quirks mode\" which uses outdated parsing rules for backward compatibility with 1990s websites. Quirks mode causes unpredictable rendering behavior, CSS inconsistencies, JavaScript issues, and can break assistive technology compatibility. Modern assistive technologies expect standards-compliant HTML parsing. Missing DOCTYPE violates WCAG 4.1.1 Parsing which requires properly formed HTML. Quirks mode may cause form controls, focus indicators, ARIA attributes, and other accessibility features to behave incorrectly.",
+            "who_it_affects": "All users due to unpredictable rendering behavior, assistive technology users whose tools may not parse the page correctly, screen reader users who may experience navigation issues, keyboard users whose focus indicators may not display correctly, and users with cognitive disabilities who are confused by inconsistent behavior across browsers",
+            "how_to_fix": "Add <!DOCTYPE html> as the very first line of every HTML document, before the <html> tag. This is the HTML5 DOCTYPE and works for all modern HTML. Never omit this declaration. Ensure there are no characters (including spaces or byte-order marks) before the DOCTYPE. The declaration is case-insensitive but <!DOCTYPE html> is standard. Example: <!DOCTYPE html>\\n<html lang=\"en\">\\n<head>..."
+        },
         "ErrNoPageTitle": {
             "id": "ErrNoPageTitle",
             "type": "Error",

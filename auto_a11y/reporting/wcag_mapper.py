@@ -168,7 +168,14 @@ WCAG_MAPPINGS = {
     
     # PDF Issues
     'WarnPdfLinkFound': ['1.1.1 Non-text Content'],
-    
+
+    # Document Link Issues
+    'ErrDocumentLinkMissingFileType': ['2.4.4 Link Purpose (In Context)'],
+    'WarnMissingDocumentMetadata': ['2.4.4 Link Purpose (In Context)'],
+
+    # Semantic Structure Issues
+    'ErrMissingDocumentType': ['4.1.1 Parsing'],
+
     # Generic/Other Issues
     'ErrTitleAttrFound': ['3.3.2 Labels or Instructions'],
     'ErrElementHasNoText': ['1.3.1 Info and Relationships'],

@@ -547,6 +547,41 @@ async def test_buttons(page) -> Dict[str, Any]:
                                 error_code = 'ErrButtonFocusContrastFail'
                                 violation_reason = f'Button focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1 per WCAG 1.4.11)'
 
+            # Check for generic button text (independent check - can co-exist with other issues)
+            button_text = button.get('text', '').lower().strip()
+
+            # List of generic/vague terms that should be avoided
+            # Excludes standard form actions (submit, reset, cancel, ok, yes, no, etc.)
+            generic_terms = [
+                'click here', 'click', 'tap here', 'tap',
+                'read more', 'learn more', 'see more', 'view more', 'show more',
+                'more', 'less',
+                'go', 'here', 'there',
+                'link', 'button',
+                'info', 'details',
+                'get', 'download'  # only if standalone
+            ]
+
+            # Check if button text matches generic terms
+            is_generic = False
+            for term in generic_terms:
+                if button_text == term or button_text == term + '.':
+                    is_generic = True
+                    break
+
+            if is_generic:
+                results['warnings'].append({
+                    'err': 'WarnButtonGenericText',
+                    'type': 'warn',
+                    'cat': 'buttons',
+                    'element': tag,
+                    'xpath': button['xpath'],
+                    'html': button['html'],
+                    'description': f'Button uses generic text "{button.get("text", "")}" which provides no context about its purpose when read in isolation',
+                    'text': button['text']
+                })
+                # Note: Don't increment elements_failed here as it will be counted below
+
             # If we found a violation or warning
             if error_code:
                 result_type = 'warn' if error_code.startswith('Warn') else 'err'
@@ -564,7 +599,9 @@ async def test_buttons(page) -> Dict[str, Any]:
                 })
                 results['elements_failed'] += 1
             else:
-                results['elements_passed'] += 1
+                # Only increment passed if no issues found (including generic text)
+                if not is_generic:
+                    results['elements_passed'] += 1
 
         # Add check information for reporting
         results['checks'].append({

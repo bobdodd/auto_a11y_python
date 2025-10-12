@@ -481,11 +481,14 @@ class TouchpointMapper:
         'WarnMissingContentinfoLandmark': TouchpointID.LANDMARKS,
         'WarnContentOutsideLandmarks': TouchpointID.LANDMARKS,
         
-        # Document errors
+        # Document link errors (for downloadable documents)
         'DiscoPDFLinksFound': TouchpointID.ELECTRONIC_DOCUMENTS,
         'WarnGenericDocumentLinkText': TouchpointID.ELECTRONIC_DOCUMENTS,
-        'ErrMissingDocumentType': TouchpointID.ELECTRONIC_DOCUMENTS,
+        'ErrDocumentLinkMissingFileType': TouchpointID.ELECTRONIC_DOCUMENTS,
         'WarnMissingDocumentMetadata': TouchpointID.ELECTRONIC_DOCUMENTS,
+
+        # Semantic structure errors (for HTML DOCTYPE) - use PAGE for document-level structure
+        'ErrMissingDocumentType': TouchpointID.PAGE,
         
         # Modal/Dialog errors
         'ErrModalMissingClose': TouchpointID.DIALOGS,

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexTransparentOutline - Correct: Opaque Focus Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexTransparentOutline_002_correct_opaque",
+    "issueId": "ErrTabindexTransparentOutline",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Test fixture for ErrTabindexTransparentOutline - elements with tabindex that have opaque focus indicators (alpha ≥ 0.5)",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .card, .menu-item, .panel {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* CORRECT 1: Fully opaque outline (alpha 1.0) */
+        .fully-opaque:focus {
+            outline: 3px solid rgba(0, 102, 204, 1.0);
+        }
+
+        /* CORRECT 2: Minimum acceptable transparency (alpha 0.5) */
+        .minimum-opacity:focus {
+            outline: 3px solid rgba(204, 0, 0, 0.5);
+        }
+
+        /* CORRECT 3: Mostly opaque (alpha 0.8) */
+        .mostly-opaque:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 102, 0, 0.8);
+        }
+
+        /* CORRECT 4: Solid color (no alpha channel) */
+        .solid-color:focus {
+            outline: 3px solid #0066cc;
+        }
+
+        /* CORRECT 5: High opacity (alpha 0.9) */
+        .high-opacity:focus {
+            box-shadow: 0 0 0 3px rgba(204, 102, 0, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrTabindexTransparentOutline - Correct Examples</h1>
+    <p>This page contains elements with tabindex that have opaque or sufficiently visible focus indicators (alpha ≥ 0.5 or solid). None should generate errors.</p>
+
+    <section>
+        <h2>Opaque Focus Indicators</h2>
+
+        <div class="card fully-opaque" tabindex="0" id="correct1">
+            <h3>Correct 1: Fully Opaque (alpha 1.0)</h3>
+            <p>outline: rgba(0, 102, 204, 1.0) - completely visible</p>
+        </div>
+
+        <div class="menu-item minimum-opacity" tabindex="0" id="correct2">
+            <h3>Correct 2: Minimum Acceptable (alpha 0.5)</h3>
+            <p>outline: rgba(204, 0, 0, 0.5) - meets minimum threshold</p>
+        </div>
+
+        <div class="panel mostly-opaque" tabindex="0" id="correct3">
+            <h3>Correct 3: Mostly Opaque (alpha 0.8)</h3>
+            <p>box-shadow: rgba(0, 102, 0, 0.8) - highly visible</p>
+        </div>
+
+        <div class="card solid-color" tabindex="-1" id="correct4">
+            <h3>Correct 4: Solid Color</h3>
+            <p>outline: #0066cc - no alpha channel, fully opaque</p>
+        </div>
+
+        <div class="menu-item high-opacity" tabindex="0" id="correct5">
+            <h3>Correct 5: High Opacity (alpha 0.9)</h3>
+            <p>box-shadow: rgba(204, 102, 0, 0.9) - excellent visibility</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 40px; padding: 20px; background: #e8f4f8; border-radius: 5px;">
+        <h3>Expected Test Results:</h3>
+        <ul>
+            <li><strong>Error Code:</strong> None (negative test)</li>
+            <li><strong>Count:</strong> 0 errors</li>
+            <li><strong>WCAG:</strong> 2.4.7 Focus Visible (Level AA)</li>
+            <li><strong>Why:</strong> All focus indicators have sufficient opacity (alpha ≥ 0.5 or solid)</li>
+            <li><strong>Details:</strong>
+                <ul>
+                    <li>Correct 1: alpha 1.0 (fully opaque)</li>
+                    <li>Correct 2: alpha 0.5 (minimum threshold)</li>
+                    <li>Correct 3: alpha 0.8 (mostly opaque)</li>
+                    <li>Correct 4: Solid color (no alpha)</li>
+                    <li>Correct 5: alpha 0.9 (high opacity)</li>
+                </ul>
+            </li>
+            <li><strong>Best Practice:</strong> Prefer fully opaque colors (alpha 1.0 or solid hex/rgb) for maximum visibility</li>
+        </ul>
+    </footer>
+</body>
+</html>

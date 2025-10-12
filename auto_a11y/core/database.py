@@ -47,7 +47,8 @@ class Database:
         self.test_results: Collection = self.db.test_results
         self.document_references: Collection = self.db.document_references
         self.discovery_runs: Collection = self.db.discovery_runs
-        
+        self.issue_documentation_status: Collection = self.db.issue_documentation_status
+
         # Create indexes
         self._create_indexes()
         
@@ -82,6 +83,9 @@ class Database:
         self.discovery_runs.create_index("website_id")
         self.discovery_runs.create_index("started_at")
         self.discovery_runs.create_index("is_latest")
+
+        # Issue documentation status
+        self.issue_documentation_status.create_index("issue_code", unique=True)
         self.discovery_runs.create_index([("website_id", 1), ("is_latest", 1)])
         
         # Update pages index for discovery run
@@ -711,3 +715,48 @@ class Database:
             'removed_count': len(pages_removed),
             'unchanged_count': len(pages_unchanged)
         }
+
+    # Issue Documentation Status Methods
+
+    def get_issue_documentation_status(self, issue_code: str) -> Optional[Dict[str, Any]]:
+        """Get documentation status for an issue code"""
+        return self.issue_documentation_status.find_one({'issue_code': issue_code})
+
+    def set_issue_production_ready(self, issue_code: str, production_ready: bool, updated_by: str = "system") -> bool:
+        """Set the production_ready flag for an issue code"""
+        from datetime import datetime
+
+        result = self.issue_documentation_status.update_one(
+            {'issue_code': issue_code},
+            {
+                '$set': {
+                    'production_ready': production_ready,
+                    'updated_by': updated_by,
+                    'updated_at': datetime.now()
+                },
+                '$setOnInsert': {
+                    'issue_code': issue_code,
+                    'created_at': datetime.now()
+                }
+            },
+            upsert=True
+        )
+
+        return result.modified_count > 0 or result.upserted_id is not None
+
+    def get_all_issue_documentation_statuses(self) -> Dict[str, bool]:
+        """Get all issue documentation statuses as a dict of issue_code -> production_ready"""
+        statuses = {}
+        for doc in self.issue_documentation_status.find():
+            statuses[doc['issue_code']] = doc.get('production_ready', False)
+        return statuses
+
+    def get_production_ready_issues(self) -> List[str]:
+        """Get list of issue codes marked as production ready"""
+        docs = self.issue_documentation_status.find({'production_ready': True})
+        return [doc['issue_code'] for doc in docs]
+
+    def get_not_production_ready_issues(self) -> List[str]:
+        """Get list of issue codes not marked as production ready"""
+        docs = self.issue_documentation_status.find({'production_ready': {'$ne': True}})
+        return [doc['issue_code'] for doc in docs]

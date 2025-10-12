@@ -2,6 +2,48 @@
 
 {% block title %}Edit {{ project.name }} - Auto A11y{% endblock %}
 
+{% block extra_css %}
+<style>
+    .test-help-btn {
+        font-size: 0.85rem;
+        padding: 0.1rem 0.4rem;
+        margin-left: 0.5rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .test-help-btn:hover {
+        opacity: 1;
+    }
+
+    .test-details-modal .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .test-details-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .test-details-section h6 {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .test-details-section p {
+        margin-bottom: 0;
+        line-height: 1.6;
+    }
+
+    .impact-badge {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row">
@@ -247,14 +289,19 @@
                                     <div class="collapse ms-5 mt-1" id="tests_{{ touchpoint_id }}">
                                         {% for test_id in test_ids %}
                                         <div class="form-check">
-                                            <input class="form-check-input test-checkbox" type="checkbox" 
-                                                   id="test_{{ touchpoint_id }}_{{ test_id }}" 
+                                            <input class="form-check-input test-checkbox" type="checkbox"
+                                                   id="test_{{ touchpoint_id }}_{{ test_id }}"
                                                    name="test_{{ touchpoint_id }}_{{ test_id }}"
                                                    data-touchpoint="{{ touchpoint_id }}"
                                                    {% if project.config.get('touchpoints', {}).get(touchpoint_id, {}).get('tests', {}).get(test_id, True) %}checked{% endif %}>
                                             <label class="form-check-label small" for="test_{{ touchpoint_id }}_{{ test_id }}">
                                                 <i class="bi bi-file-earmark-code me-1"></i>
                                                 <code>{{ test_id }}</code>
+                                                <button type="button" class="btn btn-sm btn-outline-info test-help-btn"
+                                                        onclick="showTestDetails('{{ test_id }}')"
+                                                        title="View test details">
+                                                    <i class="bi bi-question-circle"></i>
+                                                </button>
                                             </label>
                                         </div>
                                         {% endfor %}
@@ -353,6 +400,33 @@
         </div>
     </div>
 </div>
+
+<!-- Test Details Modal -->
+<div class="modal fade test-details-modal" id="testDetailsModal" tabindex="-1" aria-labelledby="testDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="testDetailsModalLabel">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <span id="testDetailsTitle">Test Details</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="testDetailsBody">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading test details...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -478,6 +552,106 @@ function updateTouchpointCheckbox(touchpointId) {
         touchpointCheckbox.checked = true;
         touchpointCheckbox.indeterminate = true;
     }
+}
+
+// Show test details in modal
+function showTestDetails(testId) {
+    const modal = new bootstrap.Modal(document.getElementById('testDetailsModal'));
+    const titleEl = document.getElementById('testDetailsTitle');
+    const bodyEl = document.getElementById('testDetailsBody');
+
+    // Set title
+    titleEl.textContent = testId;
+
+    // Show loading state
+    bodyEl.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading test details...</p>
+        </div>
+    `;
+
+    // Show modal
+    modal.show();
+
+    // Fetch test details
+    fetch(`/projects/api/test-details/${testId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const test = data.test;
+
+                // Build impact badge
+                let impactClass = 'secondary';
+                if (test.impact === 'High' || test.impact === 'Critical') impactClass = 'danger';
+                else if (test.impact === 'Medium') impactClass = 'warning';
+                else if (test.impact === 'Low') impactClass = 'info';
+
+                // Build WCAG badges
+                let wcagBadges = '';
+                if (test.wcag && test.wcag.length > 0) {
+                    wcagBadges = test.wcag.map(w => `<span class="badge bg-primary me-1">${w}</span>`).join('');
+                }
+
+                // Build modal content
+                bodyEl.innerHTML = `
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-${impactClass} impact-badge me-2">${test.impact} Impact</span>
+                            <span class="badge bg-secondary me-2">${test.type}</span>
+                            ${wcagBadges}
+                        </div>
+                        ${test.wcag_full ? `<small class="text-muted">${test.wcag_full}</small>` : ''}
+                    </div>
+
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-info-circle me-2"></i>What This Test Detects</h6>
+                        <p>${test.description}</p>
+                    </div>
+
+                    ${test.why_it_matters ? `
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>Why It Matters</h6>
+                        <p>${test.why_it_matters}</p>
+                    </div>
+                    ` : ''}
+
+                    ${test.who_it_affects ? `
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-people me-2"></i>Who It Affects</h6>
+                        <p>${test.who_it_affects}</p>
+                    </div>
+                    ` : ''}
+
+                    ${test.how_to_fix ? `
+                    <div class="test-details-section">
+                        <h6><i class="bi bi-wrench me-2"></i>How to Fix</h6>
+                        <p>${test.how_to_fix}</p>
+                    </div>
+                    ` : ''}
+                `;
+            } else {
+                bodyEl.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Test Information Not Available</strong>
+                        <p class="mb-0 mt-2">Details for test <code>${testId}</code> are not available in the catalog.</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching test details:', error);
+            bodyEl.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-x-circle me-2"></i>
+                    <strong>Error Loading Test Details</strong>
+                    <p class="mb-0 mt-2">An error occurred while loading the test details. Please try again.</p>
+                </div>
+            `;
+        });
 }
 </script>
 {% endblock %}

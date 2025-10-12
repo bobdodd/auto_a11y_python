@@ -50,6 +50,151 @@ def api_project_websites(project_id):
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+@projects_bp.route('/api/test-details/<test_id>')
+def api_test_details(test_id):
+    """API endpoint to get detailed information about a test"""
+    try:
+        from auto_a11y.reporting.issue_catalog import IssueCatalog
+        from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+
+        # Get test details from the issue catalog
+        test_info = IssueCatalog.get_issue(test_id)
+
+        if not test_info:
+            return jsonify({
+                'success': False,
+                'error': f'Test {test_id} not found in catalog'
+            }), 404
+
+        # Get production_ready status from database
+        doc_status = current_app.db.get_issue_documentation_status(test_id)
+        production_ready = doc_status.get('production_ready', False) if doc_status else False
+
+        # Get enhanced description with message templates
+        enhanced_info = get_detailed_issue_description(test_id)
+
+        # Build response with both catalog and enhanced info
+        response_data = {
+            'id': test_info.get('id', test_id),
+            'type': test_info.get('type', 'Unknown'),
+            'impact': test_info.get('impact', 'Unknown'),
+            'wcag': test_info.get('wcag', []),
+            'wcag_full': test_info.get('wcag_full', ''),
+            'category': test_info.get('category', ''),
+            'description': test_info.get('description', 'No description available'),
+            'why_it_matters': test_info.get('why_it_matters', ''),
+            'who_it_affects': test_info.get('who_it_affects', ''),
+            'how_to_fix': test_info.get('how_to_fix', ''),
+            'production_ready': production_ready
+        }
+
+        # Add message template info if available
+        if enhanced_info:
+            response_data['message_template'] = {
+                'title': enhanced_info.get('title', ''),
+                'what': enhanced_info.get('what', ''),
+                'why': enhanced_info.get('why', ''),
+                'remediation': enhanced_info.get('remediation', '')
+            }
+
+        return jsonify({
+            'success': True,
+            'test': response_data
+        })
+    except Exception as e:
+        logger.error(f"Error getting test details for {test_id}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@projects_bp.route('/api/test-details/<test_id>/production-ready', methods=['POST'])
+def api_set_test_production_ready(test_id):
+    """API endpoint to toggle production_ready flag for a test"""
+    try:
+        from auto_a11y.reporting.issue_catalog import IssueCatalog
+
+        # Verify test exists in catalog
+        test_info = IssueCatalog.get_issue(test_id)
+        if not test_info:
+            return jsonify({
+                'success': False,
+                'error': f'Test {test_id} not found in catalog'
+            }), 404
+
+        # Get the new value from request
+        data = request.get_json()
+        production_ready = data.get('production_ready', False)
+
+        # Update in database
+        success = current_app.db.set_issue_production_ready(
+            test_id,
+            production_ready,
+            updated_by="web_user"
+        )
+
+        if success:
+            return jsonify({
+                'success': True,
+                'message': f'Production ready status updated for {test_id}',
+                'production_ready': production_ready
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to update production ready status'
+            }), 500
+
+    except Exception as e:
+        logger.error(f"Error setting production ready for {test_id}: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@projects_bp.route('/api/issue-documentation-stats')
+def api_issue_documentation_stats():
+    """API endpoint to get statistics about issue documentation status"""
+    try:
+        from auto_a11y.reporting.issue_catalog import IssueCatalog
+
+        # Get all issue codes from catalog
+        all_codes = list(IssueCatalog.ISSUES.keys())
+
+        # Get production ready statuses from database
+        statuses = current_app.db.get_all_issue_documentation_statuses()
+
+        # Calculate stats
+        production_ready_count = sum(1 for ready in statuses.values() if ready)
+        total_count = len(all_codes)
+        pending_count = total_count - production_ready_count
+
+        # Get lists
+        production_ready_codes = [code for code, ready in statuses.items() if ready]
+        pending_codes = [code for code in all_codes if not statuses.get(code, False)]
+
+        return jsonify({
+            'success': True,
+            'stats': {
+                'total': total_count,
+                'production_ready': production_ready_count,
+                'pending': pending_count,
+                'percentage_ready': round(production_ready_count * 100 / total_count, 1) if total_count > 0 else 0
+            },
+            'production_ready_codes': production_ready_codes,
+            'pending_codes': pending_codes
+        })
+
+    except Exception as e:
+        logger.error(f"Error getting documentation stats: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 @projects_bp.route('/')
 def list_projects():
     """List all projects"""
@@ -264,12 +409,25 @@ def create_project():
     for touchpoint in tests_by_touchpoint:
         tests_by_touchpoint[touchpoint].sort()
 
+    # Get production ready statuses for all tests
+    production_ready_statuses = current_app.db.get_all_issue_documentation_statuses()
+
+    # DEBUG: Log what we're passing to template
+    logger.warning(f"DEBUG: Create Project - tests_by_touchpoint keys: {sorted(tests_by_touchpoint.keys())}")
+    if 'links' in tests_by_touchpoint:
+        logger.warning(f"DEBUG: Links touchpoint has {len(tests_by_touchpoint['links'])} tests")
+    else:
+        logger.warning(f"DEBUG: 'links' key NOT in tests_by_touchpoint!")
+    logger.warning(f"DEBUG: Total passing_tests: {len(passing_tests)}")
+    logger.warning(f"DEBUG: Total test_statuses: {len(test_statuses)}")
+
     return render_template('projects/create.html',
                          test_statuses=test_statuses,
                          passing_tests=passing_tests,
                          debug_mode=debug_mode,
                          tests_by_touchpoint=dict(tests_by_touchpoint),
-                         touchpoint_names=touchpoint_names)
+                         touchpoint_names=touchpoint_names,
+                         production_ready_statuses=production_ready_statuses)
 
 
 @projects_bp.route('/<project_id>')

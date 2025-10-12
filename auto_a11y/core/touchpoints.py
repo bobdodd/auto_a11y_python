@@ -29,8 +29,10 @@ class TouchpointID(Enum):
     IMAGES = "images"
     LANDMARKS = "landmarks"
     LANGUAGE = "language"
+    LINKS = "links"
     LISTS = "lists"
     MAPS = "maps"
+    NAVIGATION = "navigation"
     PAGE = "page"
     READ_MORE_LINKS = "read_more_links"
     TABINDEX = "tabindex"
@@ -243,7 +245,25 @@ TOUCHPOINTS = {
         ai_tests=["ambiguous_link_detection"],
         wcag_criteria=["2.4.4", "2.4.9"]
     ),
-    
+
+    TouchpointID.LINKS: Touchpoint(
+        id=TouchpointID.LINKS,
+        name="Links",
+        description="Evaluates link accessibility including focus indicators, descriptive text, keyboard support, and document links",
+        js_tests=["links.js"],
+        ai_tests=[],
+        wcag_criteria=["2.4.4", "2.4.9", "3.1.2", "3.2.4"]
+    ),
+
+    TouchpointID.NAVIGATION: Touchpoint(
+        id=TouchpointID.NAVIGATION,
+        name="Navigation",
+        description="Evaluates navigation menus, landmarks, and accessible names for navigation elements",
+        js_tests=["navigation.js"],
+        ai_tests=[],
+        wcag_criteria=["2.4.1", "4.1.2"]
+    ),
+
     TouchpointID.TABINDEX: Touchpoint(
         id=TouchpointID.TABINDEX,
         name="Tabindex",
@@ -318,15 +338,15 @@ class TouchpointMapper:
         'lang': TouchpointID.LANGUAGE,
         'button': TouchpointID.FORMS,  # Buttons are part of forms
         'buttons': TouchpointID.FORMS,
-        'link': TouchpointID.ACCESSIBLE_NAMES,
-        'links': TouchpointID.ACCESSIBLE_NAMES,
+        'link': TouchpointID.LINKS,
+        'links': TouchpointID.LINKS,
         'page': TouchpointID.PAGE,
         'title': TouchpointID.TITLE_ATTRIBUTES,
         'title_attribute': TouchpointID.TITLE_ATTRIBUTES,
         'title_attributes': TouchpointID.TITLE_ATTRIBUTES,
         'titleattr': TouchpointID.TITLE_ATTRIBUTES,
         'tabindex': TouchpointID.TABINDEX,
-        'aria': TouchpointID.ACCESSIBLE_NAMES,
+        'aria': TouchpointID.ACCESSIBLE_NAMES,  # ARIA is about accessible names
         'svg': TouchpointID.IMAGES,
         'pdf': TouchpointID.ELECTRONIC_DOCUMENTS,
         'font': TouchpointID.FONTS,
@@ -336,7 +356,7 @@ class TouchpointMapper:
         'event_handlers': TouchpointID.EVENT_HANDLING,
         'style': TouchpointID.STYLES,
         'styles': TouchpointID.STYLES,
-        'navigation': TouchpointID.LANDMARKS,
+        'navigation': TouchpointID.NAVIGATION,
         'modal': TouchpointID.DIALOGS,
         'dialog': TouchpointID.DIALOGS,
         'animation': TouchpointID.ANIMATION,
@@ -485,7 +505,32 @@ class TouchpointMapper:
         'DiscoPDFLinksFound': TouchpointID.ELECTRONIC_DOCUMENTS,
         'WarnGenericDocumentLinkText': TouchpointID.ELECTRONIC_DOCUMENTS,
         'ErrDocumentLinkMissingFileType': TouchpointID.ELECTRONIC_DOCUMENTS,
+        'ErrDocumentLinkWrongLanguage': TouchpointID.ELECTRONIC_DOCUMENTS,
         'WarnMissingDocumentMetadata': TouchpointID.ELECTRONIC_DOCUMENTS,
+
+        # Link errors
+        'ErrAnchorTargetTabindex': TouchpointID.LINKS,
+        'ErrLinkButtonMissingSpaceHandler': TouchpointID.LINKS,
+        'ErrLinkColorChangeOnly': TouchpointID.LINKS,
+        'ErrLinkFocusContrastFail': TouchpointID.LINKS,
+        'ErrLinkImageNoFocusIndicator': TouchpointID.LINKS,
+        'ErrLinkOpensNewWindowNoWarning': TouchpointID.LINKS,
+        'ErrLinkOutlineWidthInsufficient': TouchpointID.LINKS,
+        'ErrLinkTextNotDescriptive': TouchpointID.LINKS,
+        'WarnColorOnlyLinkWeakIndicator': TouchpointID.LINKS,
+        'WarnLinkDefaultFocus': TouchpointID.LINKS,
+        'WarnLinkFocusGradientBackground': TouchpointID.LINKS,
+        'WarnLinkLooksLikeButton': TouchpointID.LINKS,
+        'WarnLinkOutlineOffsetTooLarge': TouchpointID.LINKS,
+        'WarnLinkTransparentOutline': TouchpointID.LINKS,
+
+        # Navigation errors
+        'AI_ErrAccordionWithoutARIA': TouchpointID.NAVIGATION,
+        'AI_ErrCarouselWithoutARIA': TouchpointID.NAVIGATION,
+        'AI_ErrDropdownWithoutARIA': TouchpointID.NAVIGATION,
+        'ErrNavMissingAccessibleName': TouchpointID.NAVIGATION,
+        'WarnNavMissingAccessibleName': TouchpointID.NAVIGATION,
+        'ErrInappropriateMenuRole': TouchpointID.NAVIGATION,
 
         # Semantic structure errors (for HTML DOCTYPE) - use PAGE for document-level structure
         'ErrMissingDocumentType': TouchpointID.PAGE,
@@ -536,26 +581,20 @@ class TouchpointMapper:
         'ErrVideoIframeMissingTitle': TouchpointID.VIDEOS,
         'ErrNativeVideoMissingControls': TouchpointID.VIDEOS,
         'WarnVideoAutoplay': TouchpointID.VIDEOS,
-        
-        # Navigation/Menu errors 
-        'ErrNavMissingAccessibleName': TouchpointID.ACCESSIBLE_NAMES,  # Nav needs accessible name
+
+        # Navigation-related errors mapped to LANDMARKS
         'ErrDuplicateNavNames': TouchpointID.LANDMARKS,  # This is about duplicate landmark names
-        'ErrInappropriateMenuRole': TouchpointID.ACCESSIBLE_NAMES,  # Role issues are accessibility naming
         'WarnNoCurrentPageIndicator': TouchpointID.LANDMARKS,  # Current page indicator is navigation structure
-        
-        # Link-specific errors
+
+        # Link-specific errors for accessible names and readability
         'WarnAnchorTargetTabindex': TouchpointID.TABINDEX,  # This is about tabindex, not names
-        'WarnGenericDocumentLinkText': TouchpointID.ELECTRONIC_DOCUMENTS,  # This is about document links
         'ErrEmptyLink': TouchpointID.ACCESSIBLE_NAMES,  # Links need accessible text
         'WarnAmbiguousLinkText': TouchpointID.READ_MORE_LINKS,  # Ambiguous link text issue
-        
+
         # ARIA errors (map to appropriate touchpoints based on context)
         'AI_ErrMissingInteractiveRole': TouchpointID.ACCESSIBLE_NAMES,
         'ErrAriaLabelMayNotBeFoundByVoiceControl': TouchpointID.ACCESSIBLE_NAMES,  # WCAG 2.5.3 Label in Name
         'ErrMapAriaHidden': TouchpointID.MAPS,  # This is specifically about maps
-        'AI_ErrAccordionWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,  # These need ARIA roles for accessibility
-        'AI_ErrCarouselWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
-        'AI_ErrDropdownWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
         
         # AI-detected content order/reading issues
         'AI_InfoContentOrder': TouchpointID.HEADINGS,

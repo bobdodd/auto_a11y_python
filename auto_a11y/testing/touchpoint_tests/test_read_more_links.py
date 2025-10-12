@@ -123,7 +123,12 @@ async def test_read_more_links(page) -> Dict[str, Any]:
                     /^link$/i,
                     /^view more$/i,
                     /^see more$/i,
-                    /^continue reading$/i
+                    /^continue reading$/i,
+                    /^download$/i,
+                    /^get$/i,
+                    /^go$/i,
+                    /^this$/i,
+                    /^that$/i
                 ];
                 
                 // Find all links and buttons
@@ -172,13 +177,13 @@ async def test_read_more_links(page) -> Dict[str, Any]:
                     if (!isValid) {
                         invalidAccessibleNames++;
                         results.errors.push({
-                            err: 'ErrInvalidGenericLinkName',
+                            err: 'ErrLinkTextNotDescriptive',
                             type: 'err',
-                            cat: 'read_more_links',
+                            cat: 'links',
                             element: element.tagName.toLowerCase(),
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
-                            description: 'Generic link text lacks proper accessible name with context',
+                            description: 'Link text does not adequately describe the link\'s destination or purpose',
                             visibleText: visibleText,
                             accessibleName: accessibleName,
                             href: element.href || null

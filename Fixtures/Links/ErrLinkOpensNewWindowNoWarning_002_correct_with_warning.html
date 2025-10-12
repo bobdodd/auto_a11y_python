@@ -36,10 +36,11 @@
     <p>Download <a href="/docs/guide.pdf"
                     target="_blank"
                     rel="noopener"
+                    aria-label="user guide (opens in new window)"
                     data-expected-pass="true"
-                    data-pass-reason="Visible icon and text indicate new window behavior">
+                    data-pass-reason="aria-label includes new window warning">
         user guide
-        <svg role="img" aria-label="opens in new window" width="16" height="16" viewBox="0 0 16 16">
+        <svg role="img" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
             <path d="M14 2H9v1h3.3L7 8.3l.7.7L13 3.7V7h1V2z"/>
             <path d="M12 14H2V4h5V3H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V9h-1v5z"/>
         </svg>

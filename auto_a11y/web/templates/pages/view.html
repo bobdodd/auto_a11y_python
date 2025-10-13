@@ -673,12 +673,20 @@
                                                                 </p>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                {% if violation.wcag_criteria %}
+                                                                {% if violation.metadata.wcag_full %}
+                                                                <p><strong>WCAG Criteria:</strong> 
+                                                                    {% for criterion in violation.metadata.wcag_full %}
+                                                                    <span class="badge bg-primary">
+                                                                        {{ criterion|safe }}
+                                                                    </span>
+                                                                    {% endfor %}
+                                                                </p>
+                                                                {% elif violation.wcag_criteria %}
                                                                 <p><strong>WCAG Criteria:</strong> 
                                                                     {% for criterion in violation.wcag_criteria %}
-                                                                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="badge bg-primary text-decoration-none">
+                                                                    <span class="badge bg-primary">
                                                                         {{ criterion }}
-                                                                    </a>
+                                                                    </span>
                                                                     {% endfor %}
                                                                 </p>
                                                                 {% endif %}
@@ -916,12 +924,20 @@
                                     </p>
                                 </div>
                                 <div class="col-md-6">
-                                    {% if violation.wcag_criteria %}
+                                    {% if violation.metadata.wcag_full %}
+                                    <p><strong>WCAG Criteria:</strong> 
+                                        {% for criterion in violation.metadata.wcag_full %}
+                                        <span class="badge bg-primary">
+                                            {{ criterion|safe }}
+                                        </span>
+                                        {% endfor %}
+                                    </p>
+                                    {% elif violation.wcag_criteria %}
                                     <p><strong>WCAG Criteria:</strong> 
                                         {% for criterion in violation.wcag_criteria %}
-                                        <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="badge bg-primary text-decoration-none">
+                                        <span class="badge bg-primary">
                                             {{ criterion }}
-                                        </a>
+                                        </span>
                                         {% endfor %}
                                     </p>
                                     {% endif %}

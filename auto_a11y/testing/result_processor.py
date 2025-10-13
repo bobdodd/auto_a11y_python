@@ -476,6 +476,7 @@ class ResultProcessor:
                     'full_remediation': enhanced_desc.get('remediation', ''),
                     **violation_data  # Include all original metadata from JS tests
                 }
+
             else:
                 # Try original description mapping
                 detailed_desc = get_issue_description(violation_id)

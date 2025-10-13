@@ -507,7 +507,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         'ErrButtonOutlineOffsetInsufficient': {
             'title': "Button focus outline-offset is too small (less than 2px)",
             'what': "Button focus outline has outline-offset less than 2px, causing the outline to be lost within or too close to the button element",
-            'why': "When outline-offset is less than 2px, the focus outline sits too close to or inside the button border, making it difficult or impossible to see, especially on colored or image buttons. The outline can blend with the button's edge, defeating its purpose as a focus indicator. This is particularly problematic for buttons with borders or rounded corners.",
+            'why': "When outline-offset is 0px or negative, the focus outline can overlap the button's border or background, making it difficult to distinguish from the button itself. On buttons with matching or similar colors between the outline and button background/border, the outline becomes invisible or barely perceptible. The outline can blend into colored buttons, defeating its purpose as a focus indicator. A minimum 2px offset ensures clear visual separation between the button and its focus indicator.",
             'who': "Keyboard navigation users, users with low vision, users with cognitive disabilities who rely on clear visual cues",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.4.7'],

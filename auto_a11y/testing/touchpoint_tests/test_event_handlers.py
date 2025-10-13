@@ -416,6 +416,30 @@ async def test_event_handlers(page) -> Dict[str, Any]:
             () => {
                 const elements = [];
 
+                // Function to generate XPath for elements
+                function getFullXPath(element) {
+                    if (!element) return '';
+
+                    function getElementIdx(el) {
+                        let count = 1;
+                        for (let sib = el.previousSibling; sib; sib = sib.previousSibling) {
+                            if (sib.nodeType === 1 && sib.tagName === el.tagName) {
+                                count++;
+                            }
+                        }
+                        return count;
+                    }
+
+                    let path = '';
+                    while (element && element.nodeType === 1) {
+                        const idx = getElementIdx(element);
+                        const tagName = element.tagName.toLowerCase();
+                        path = `/${tagName}[${idx}]${path}`;
+                        element = element.parentNode;
+                    }
+                    return path;
+                }
+
                 // Helper to parse color values to RGBA
                 function parseColor(colorStr) {
                     if (!colorStr || colorStr === 'transparent') {

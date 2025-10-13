@@ -565,6 +565,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         className: element.className || '',
                         tabindex: tabindex,
                         role: role || '',
+                        xpath: getFullXPath(element),
                         hasInlineHandler: hasInlineHandler,
                         normalOutlineStyle: computed.outlineStyle,
                         normalOutlineWidth: computed.outlineWidth,
@@ -770,6 +771,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         'type': result_type,
                         'cat': 'event_handlers',
                         'element': elem['tag'],
+                        'xpath': elem.get('xpath', ''),
                         'selector': element_id,
                         'metadata': {
                             'what': violation_reason,

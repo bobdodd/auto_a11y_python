@@ -557,7 +557,7 @@
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact.value|lower if first_violation.impact.value else first_violation.impact|lower] or 'secondary' }} me-2 impact-badge">
                                             {{ first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper }}
                                         </span>
-                                        <code class="me-2">{{ error_code }}</code>
+                                        <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if group_list|length > 1 %}
                                             {# For grouped issues, use generic title without instance-specific details #}
                                             {% set display_text = first_violation.metadata.title if first_violation.metadata and first_violation.metadata.title else first_violation.description %}
@@ -829,7 +829,7 @@
                                             <i class="bi bi-robot"></i> AI
                                         </span>
                                         {% endif %}
-                                        <code class="me-2">{{ error_code }}</code>
+                                        <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if violation.metadata and violation.metadata.title %}
                                             {{ violation.metadata.title }}
                                         {% elif violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
@@ -1099,7 +1099,7 @@
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact.value|lower if first_warning.impact.value else first_warning.impact|lower] or 'secondary' }} me-2 impact-badge">
                                             {{ first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper }}
                                         </span>
-                                        <code class="me-2">{{ error_code }}</code>
+                                        <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if first_warning.metadata and first_warning.metadata.title %}
                                             {{ first_warning.metadata.title }}
                                         {% elif first_warning.metadata and first_warning.metadata.what %}
@@ -1275,7 +1275,7 @@
                                             <i class="bi bi-robot"></i> AI
                                         </span>
                                         {% endif %}
-                                        <code class="me-2">{{ error_code }}</code>
+                                        <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if warning.metadata and warning.metadata.title %}
                                             {{ warning.metadata.title }}
                                         {% elif warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
@@ -1472,7 +1472,7 @@
                                             {{ first_info.impact.value|upper if first_info.impact.value else first_info.impact|upper }}
                                         </span>
                                         {% endif %}
-                                        <code class="me-2">{{ error_code }}</code>
+                                        <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if first_info.metadata and first_info.metadata.title %}
                                             {{ first_info.metadata.title }}
                                         {% elif first_info.metadata and first_info.metadata.what %}
@@ -1637,7 +1637,7 @@
                                     <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#info-single-{{ info_counter.value }}">
-                            <code class="me-2">{{ error_code }}</code>
+                            <code class="me-2">{{ error_code|error_code_only }}</code>
                             {% if info.metadata and info.metadata.title %}
                                 {{ info.metadata.title }}
                             {% elif info.metadata and info.metadata.what and info.metadata.what != "Accessibility issue: " + info.id.split('_')[1] %}

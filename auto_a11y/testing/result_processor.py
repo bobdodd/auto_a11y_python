@@ -449,10 +449,9 @@ class ResultProcessor:
                     ImpactLevel.MEDIUM if impact_str == 'Medium' else ImpactLevel.LOW
                 )
                 description = enhanced_desc.get('what', '')
-                # Keep full WCAG descriptions, not just numbers
-                wcag_full = enhanced_desc.get('wcag', [])
-                # Also extract just numbers for backward compatibility
-                wcag_criteria = [c.split()[0] for c in wcag_full] if wcag_full else []
+                # Get WCAG criteria and enrich with full names and levels
+                wcag_criteria = enhanced_desc.get('wcag', [])
+                wcag_full = enrich_wcag_criteria(wcag_criteria) if wcag_criteria else []
                 help_url = get_wcag_link(wcag_criteria[0]) if wcag_criteria else self._get_help_url(error_code)
                 failure_summary = enhanced_desc.get('remediation', '')
                 

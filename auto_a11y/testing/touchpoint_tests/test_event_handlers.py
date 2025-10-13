@@ -583,6 +583,31 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     const eventAttrs = ['onclick', 'onkeydown', 'onkeyup', 'onkeypress', 'onmousedown', 'onmouseup'];
                     const hasInlineHandler = eventAttrs.some(attr => element.hasAttribute(attr));
 
+                    // Check if parent has focus indicator (for child elements like SVG in buttons)
+                    let parentHasFocusIndicator = false;
+                    let parentTag = '';
+                    if (element.parentElement) {
+                        const parent = element.parentElement;
+                        parentTag = parent.tagName.toLowerCase();
+                        const parentTabindex = parseInt(parent.getAttribute('tabindex') || '-1');
+
+                        // Check if parent is interactive (button, link, or has tabindex)
+                        const parentInteractiveTags = ['button', 'a', 'input', 'select', 'textarea'];
+                        if (parentInteractiveTags.includes(parentTag) || parentTabindex >= 0) {
+                            // Check if parent has any focus indicator
+                            const parentComputed = window.getComputedStyle(parent);
+                            const parentOutline = parentComputed.outlineWidth;
+                            const parentBoxShadow = parentComputed.boxShadow;
+                            const parentBorder = parentComputed.borderWidth;
+
+                            if (parentOutline && parentOutline !== '0px' && parentOutline !== 'none' ||
+                                parentBoxShadow && parentBoxShadow !== 'none' ||
+                                parentBorder && parentBorder !== '0px') {
+                                parentHasFocusIndicator = true;
+                            }
+                        }
+                    }
+
                     elements.push({
                         tag: tagName,
                         id: element.id || '',
@@ -591,6 +616,8 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         role: role || '',
                         xpath: getFullXPath(element),
                         hasInlineHandler: hasInlineHandler,
+                        parentTag: parentTag,
+                        parentHasFocusIndicator: parentHasFocusIndicator,
                         normalOutlineStyle: computed.outlineStyle,
                         normalOutlineWidth: computed.outlineWidth,
                         normalBorderWidth: computed.borderWidth,
@@ -702,10 +729,19 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 # Run all checks independently
                 issues_found = []
 
+                # Check if parent has focus indicator (for child elements)
+                parent_has_focus = elem.get('parentHasFocusIndicator', False)
+                parent_tag = elem.get('parentTag', '')
+
                 # Check 1: No visible focus indicator
                 if not has_outline and not box_shadow_changed and not border_width_changed and not bg_color_changed:
-                    desc = f"Element with {'tabindex' if elem_type == 'tabindex' else 'event handler'} has no visible focus indicator"
-                    issues_found.append((f'{code_prefix}NoVisibleFocus', desc))
+                    if parent_has_focus:
+                        # Parent has focus indicator - downgrade to warning
+                        desc = f"Child element ({elem.get('tag')}) with {'tabindex' if elem_type == 'tabindex' else 'event handler'} inside {parent_tag} relies on parent's focus indicator (not recommended - prefer semantic HTML or ensure parent handles all interaction)"
+                        issues_found.append((f'Warn{code_prefix[3:]}ReliesOnParentFocus', desc))
+                    else:
+                        desc = f"Element with {'tabindex' if elem_type == 'tabindex' else 'event handler'} has no visible focus indicator"
+                        issues_found.append((f'{code_prefix}NoVisibleFocus', desc))
 
                 # Check 2: outline:none without alternative
                 if outline_is_none and not box_shadow_changed and not border_width_changed and not bg_color_changed:

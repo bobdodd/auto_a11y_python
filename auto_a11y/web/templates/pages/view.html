@@ -690,10 +690,16 @@
                                                                     {% endfor %}
                                                                 </p>
                                                                 {% endif %}
-                                                                {% if violation.help_url %}
-                                                                <p><strong>Learn More:</strong> 
-                                                                    <a href="{{ violation.help_url }}" target="_blank">
-                                                                        Documentation <i class="bi bi-box-arrow-up-right"></i>
+                                                                {% if violation.wcag_criteria %}
+                                                                {% set first_wcag = violation.wcag_criteria[0] %}
+                                                                <p>
+                                                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
+                                                                        More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                    </a>
+                                                                </p>
+                                                                <p>
+                                                                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
+                                                                        Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
                                                                     </a>
                                                                 </p>
                                                                 {% endif %}
@@ -941,10 +947,16 @@
                                         {% endfor %}
                                     </p>
                                     {% endif %}
-                                    {% if violation.help_url %}
-                                    <p><strong>Learn More:</strong> 
-                                        <a href="{{ violation.help_url }}" target="_blank">
-                                            Documentation <i class="bi bi-box-arrow-up-right"></i>
+                                    {% if violation.wcag_criteria %}
+                                    {% set first_wcag = violation.wcag_criteria[0] %}
+                                    <p>
+                                        <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
+                                            More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
+                                            Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
                                         </a>
                                     </p>
                                     {% endif %}
@@ -1425,8 +1437,18 @@
                             {% else %}
                             <!-- Standard description -->
                             <p><strong>Touchpoint:</strong> {{ warning.touchpoint }}</p>
-                            {% if warning.help_url %}
-                            <p><strong>Help:</strong> <a href="{{ warning.help_url }}" target="_blank">Learn more</a></p>
+                            {% if warning.wcag_criteria %}
+                            {% set first_wcag = warning.wcag_criteria[0] %}
+                            <p>
+                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
+                                    More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </p>
+                            <p>
+                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
+                                    Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </p>
                             {% endif %}
                             {% if warning.xpath %}
                             <p><strong>XPath:</strong> <code>{{ warning.xpath }}</code></p>
@@ -1787,8 +1809,18 @@
                             {% else %}
                             <!-- Standard description -->
                             <p><strong>Touchpoint:</strong> {{ info.touchpoint }}</p>
-                            {% if info.help_url %}
-                            <p><strong>Help:</strong> <a href="{{ info.help_url }}" target="_blank">Learn more</a></p>
+                            {% if info.wcag_criteria %}
+                            {% set first_wcag = info.wcag_criteria[0] %}
+                            <p>
+                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
+                                    More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </p>
+                            <p>
+                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
+                                    Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </p>
                             {% endif %}
                             {% if info.xpath %}
                             <p><strong>XPath:</strong> <code>{{ info.xpath }}</code></p>
@@ -2187,8 +2219,18 @@
                             <p class="text-muted">
                                 <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
                             </p>
-                            {% if discovery.help_url %}
-                            <p><strong>Help:</strong> <a href="{{ discovery.help_url }}" target="_blank">Learn more</a></p>
+                            {% if discovery.wcag_criteria %}
+                            {% set first_wcag = discovery.wcag_criteria[0] %}
+                            <p>
+                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
+                                    More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </p>
+                            <p>
+                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
+                                    Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </p>
                             {% endif %}
                             {% if discovery.xpath %}
                             <p><strong>XPath:</strong> <code>{{ discovery.xpath }}</code></p>

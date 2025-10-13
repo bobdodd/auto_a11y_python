@@ -82,33 +82,6 @@ def create_app(config):
         # If no match, return original
         return violation_id
 
-    @app.template_filter('format_remediation_css')
-    def format_remediation_css(text):
-        """Format remediation text with CSS code snippets highlighted"""
-        if not text:
-            return text
-
-        import re
-        from markupsafe import Markup
-
-        # Pattern to match CSS code blocks: selector { property: value; }
-        # Looks for patterns like "button:focus { outline: 2px solid #0066cc; }"
-        css_pattern = r'([a-zA-Z\-_#.\[\]:,\s>+~*]+\s*\{[^}]+\})'
-
-        def replace_css(match):
-            css_code = match.group(1).strip()
-            # Return CSS wrapped in a styled code block
-            return f'</p><div class="bg-dark text-light p-3 rounded my-2" style="font-family: monospace; white-space: pre-wrap;"><code>{css_code}</code></div><p>'
-
-        # Wrap text in paragraphs and replace CSS
-        result = f'<p>{text}</p>'
-        result = re.sub(css_pattern, replace_css, result)
-
-        # Clean up empty paragraphs
-        result = result.replace('<p></p>', '')
-
-        return Markup(result)
-
     # Main routes
     @app.route('/')
     def index():

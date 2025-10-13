@@ -91,7 +91,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add tabindex=\"0\" and implement onkeypress/onkeydown handlers for Enter and Space keys"
         },
         'AI_ErrDialogWithoutARIA': {
-            'title': "{element_tag} element \"{element_text}\" appears to be a dialog/modal but lacks proper ARIA markup",
+            'title': "Element appears to be a dialog/modal but lacks proper ARIA markup",
             'what': "{element_tag} element \"{element_text}\" appears to be a dialog/modal but lacks proper ARIA markup",
             'why': "Without proper ARIA attributes, screen readers cannot announce the dialog\'s purpose, state, or provide proper navigation",
             'who': "Screen reader users, keyboard users who need focus management",

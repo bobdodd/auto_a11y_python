@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexAriaHiddenFocusable - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexAriaHiddenFocusable_001_violations",
+    "issueId": "ErrTabindexAriaHiddenFocusable",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Elements with both tabindex and aria-hidden='true', which is illegal per ARIA specs",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            border: 2px solid #333;
+            background: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover, button:focus {
+            background: #f0f0f0;
+        }
+
+        .search-button {
+            background: #0066cc;
+            color: white;
+            border: none;
+        }
+
+        .search-button:hover, .search-button:focus {
+            background: #0052a3;
+        }
+
+        svg {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .search-icon-submit {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: aria-hidden='true' on Focusable Elements</h1>
+
+    <main>
+        <section>
+            <h2>Real-World Pattern: Search Button with SVG</h2>
+            <p>This matches production code with SVG icon that has tabindex="-1" and aria-hidden="true":</p>
+
+            <button
+                type="submit"
+                class="search-button"
+                data-expected-violation="true"
+                data-violation-id="ErrTabindexAriaHiddenFocusable"
+                data-violation-reason="SVG has tabindex and aria-hidden">
+                <svg tabindex="-1" aria-hidden="true" class="search-icon-submit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 99.8">
+                    <title>Submit Search</title>
+                    <path class="icon search" d="M63.4 10.9C48.9-3.8 25.1-3.8 10.5 11-2.6 24.3-3.7 45.9 8.2 60.4 20.5 75.5 42 78.5 57.8 67.9l29.8 29.6c2.8 2.7 7.3 2.6 9.8-.3l.6-.7c2.3-2.7 2.2-6.7-.3-9.2L67.9 57.7c9.9-14.7 8-34.3-4.5-46.8zm-7.8 44.7c-10.3 10.3-26.9 10.3-37.2 0s-10.3-26.9 0-37.2 26.9-10.3 37.2 0c10.2 10.4 10.2 27 0 37.2z"></path>
+                </svg>
+                Search
+            </button>
+        </section>
+
+        <section>
+            <h2>Other Violations</h2>
+
+            <button
+                data-expected-violation="true"
+                data-violation-id="ErrTabindexAriaHiddenFocusable"
+                data-violation-reason="Icon span has tabindex=0 and aria-hidden">
+                <span tabindex="0" aria-hidden="true" class="icon">🔍</span>
+                Find
+            </button>
+
+            <button
+                data-expected-violation="true"
+                data-violation-id="ErrTabindexAriaHiddenFocusable"
+                data-violation-reason="Decorative SVG has tabindex=0 and aria-hidden">
+                <svg tabindex="0" aria-hidden="true">
+                    <circle cx="10" cy="10" r="8" fill="#333"/>
+                </svg>
+                Settings
+            </button>
+
+            <div tabindex="0" aria-hidden="true"
+                 data-expected-violation="true"
+                 data-violation-id="ErrTabindexAriaHiddenFocusable"
+                 data-violation-reason="Div with tabindex and aria-hidden"
+                 style="padding: 10px; border: 1px solid #ccc; margin: 10px 0;">
+                Hidden but focusable div
+            </div>
+        </section>
+
+        <section>
+            <h2>Why This Is a Problem</h2>
+            <p>
+                <strong>It is illegal per ARIA specifications to use aria-hidden='true' on focusable elements.</strong>
+            </p>
+            <p>
+                When an element has both tabindex (making it focusable) and aria-hidden='true',
+                screen reader users may tab to the element but hear nothing announced, causing
+                "phantom focus" where they don't know what has focus or what will happen if
+                they press Enter or Space.
+            </p>
+            <p>
+                For the search button example: When the button is focused, the parent changes
+                background color, but screen magnifier users viewing only the SVG won't see
+                this change. Additionally, screen readers are told to ignore the SVG entirely,
+                creating confusion about focus location.
+            </p>
+        </section>
+
+        <section>
+            <h2>How to Fix</h2>
+            <ul>
+                <li><strong>Remove tabindex="-1"</strong> from the SVG - the button is already focusable</li>
+                <li><strong>Keep aria-hidden="true"</strong> on the decorative SVG (after removing tabindex)</li>
+                <li>The button's accessible name comes from the text "Search", so the SVG should remain decorative</li>
+            </ul>
+            <p>Correct code:</p>
+            <pre><code>&lt;button type="submit" class="search-button"&gt;
+  &lt;svg aria-hidden="true" class="search-icon-submit"&gt;
+    &lt;path.../&gt;
+  &lt;/svg&gt;
+  Search
+&lt;/button&gt;</code></pre>
+        </section>
+    </main>
+</body>
+</html>

@@ -239,6 +239,7 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrMouseOnlyHandler',
         'ErrTabindexNoVisibleFocus',
         'ErrTabindexChildOfInteractive',
+        'ErrTabindexAriaHiddenFocusable',
         'ErrTabindexFocusContrastFail',
         'ErrTabindexOutlineNoneNoBoxShadow',
         'ErrTabindexSingleSideBoxShadow',

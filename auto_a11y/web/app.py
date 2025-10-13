@@ -64,7 +64,24 @@ def create_app(config):
     app.register_blueprint(testing_bp, url_prefix='/testing')
     app.register_blueprint(reports_bp, url_prefix='/reports')
     app.register_blueprint(api_bp, url_prefix='/api/v1')
-    
+
+    # Custom Jinja filters
+    @app.template_filter('error_code_only')
+    def error_code_only(violation_id):
+        """Extract just the error code from full violation ID (e.g., 'event_handlers_WarnTabindexDefaultFocus' -> 'WarnTabindexDefaultFocus')"""
+        if not violation_id or '_' not in violation_id:
+            return violation_id
+
+        # Split by underscore and find the part that starts with Err/Warn/Info/Disco/AI
+        parts = violation_id.split('_')
+        for i, part in enumerate(parts):
+            if part.startswith(('Err', 'Warn', 'Info', 'Disco', 'AI')):
+                # Join from here to the end
+                return '_'.join(parts[i:])
+
+        # If no match, return original
+        return violation_id
+
     # Main routes
     @app.route('/')
     def index():

@@ -674,37 +674,41 @@
                                                             </div>
                                                             <div class="col-md-6">
                                                                 {% if violation.metadata.wcag_full %}
-                                                                <p><strong>WCAG Criteria:</strong> 
-                                                                    {% for criterion in violation.metadata.wcag_full %}
-                                                                    <span class="badge bg-primary">
-                                                                        {{ criterion|safe }}
-                                                                    </span>
+                                                                    {% for criterion in violation.metadata.wcag_full|sort %}
+                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                                                        <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                                                            WCAG {{ criterion|safe }}
+                                                                        </p>
+                                                                        <p style="margin: 0 0 5px 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion.split()[0].replace('.', '-') }}.html" target="_blank">
+                                                                                More about {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        <p style="margin: 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion.split()[0].replace('.', '-') }}" target="_blank">
+                                                                                Ways to meet {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                    </div>
                                                                     {% endfor %}
-                                                                </p>
                                                                 {% elif violation.wcag_criteria %}
-                                                                <p><strong>WCAG Criteria:</strong> 
-                                                                    {% for criterion in violation.wcag_criteria %}
-                                                                    <span class="badge bg-primary">
-                                                                        {{ criterion }}
-                                                                    </span>
+                                                                    {% for wcag_criterion in violation.wcag_criteria|sort %}
+                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                                                        <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                                                            WCAG {{ wcag_criterion }}
+                                                                        </p>
+                                                                        <p style="margin: 0 0 5px 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                                                                More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        <p style="margin: 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                                                                Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                    </div>
                                                                     {% endfor %}
-                                                                </p>
-                                                                {% endif %}
-                                                                {% if violation.wcag_criteria %}
-                                                                {% for wcag_criterion in violation.wcag_criteria|sort %}
-                                                                <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #0066cc;">
-                                                                    <p style="margin: 0 0 5px 0;">
-                                                                        <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
-                                                                            More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
-                                                                        </a>
-                                                                    </p>
-                                                                    <p style="margin: 0;">
-                                                                        <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
-                                                                            Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
-                                                                        </a>
-                                                                    </p>
-                                                                </div>
-                                                                {% endfor %}
                                                                 {% endif %}
                                                             </div>
                                                         </div>
@@ -934,37 +938,41 @@
                                 </div>
                                 <div class="col-md-6">
                                     {% if violation.metadata.wcag_full %}
-                                    <p><strong>WCAG Criteria:</strong> 
-                                        {% for criterion in violation.metadata.wcag_full %}
-                                        <span class="badge bg-primary">
-                                            {{ criterion|safe }}
-                                        </span>
+                                        {% for criterion in violation.metadata.wcag_full|sort %}
+                                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                            <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                                WCAG {{ criterion|safe }}
+                                            </p>
+                                            <p style="margin: 0 0 5px 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion.split()[0].replace('.', '-') }}.html" target="_blank">
+                                                    More about {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            <p style="margin: 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion.split()[0].replace('.', '-') }}" target="_blank">
+                                                    Ways to meet {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                        </div>
                                         {% endfor %}
-                                    </p>
                                     {% elif violation.wcag_criteria %}
-                                    <p><strong>WCAG Criteria:</strong> 
-                                        {% for criterion in violation.wcag_criteria %}
-                                        <span class="badge bg-primary">
-                                            {{ criterion }}
-                                        </span>
+                                        {% for wcag_criterion in violation.wcag_criteria|sort %}
+                                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                            <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                                WCAG {{ wcag_criterion }}
+                                            </p>
+                                            <p style="margin: 0 0 5px 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                                    More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            <p style="margin: 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                                    Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                        </div>
                                         {% endfor %}
-                                    </p>
-                                    {% endif %}
-                                    {% if violation.wcag_criteria %}
-                                    {% for wcag_criterion in violation.wcag_criteria|sort %}
-                                    <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #0066cc;">
-                                        <p style="margin: 0 0 5px 0;">
-                                            <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
-                                                More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
-                                            </a>
-                                        </p>
-                                        <p style="margin: 0;">
-                                            <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
-                                                Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
-                                            </a>
-                                        </p>
-                                    </div>
-                                    {% endfor %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -1445,7 +1453,10 @@
                             <p><strong>Touchpoint:</strong> {{ warning.touchpoint }}</p>
                             {% if warning.wcag_criteria %}
                             {% for wcag_criterion in warning.wcag_criteria|sort %}
-                            <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #ffc107;">
+                            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #ffc107;">
+                                <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                    WCAG {{ wcag_criterion }}
+                                </p>
                                 <p style="margin: 0 0 5px 0;">
                                     <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
                                         More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
@@ -1820,7 +1831,10 @@
                             <p><strong>Touchpoint:</strong> {{ info.touchpoint }}</p>
                             {% if info.wcag_criteria %}
                             {% for wcag_criterion in info.wcag_criteria|sort %}
-                            <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #17a2b8;">
+                            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #17a2b8;">
+                                <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                    WCAG {{ wcag_criterion }}
+                                </p>
                                 <p style="margin: 0 0 5px 0;">
                                     <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
                                         More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
@@ -2233,7 +2247,10 @@
                             </p>
                             {% if discovery.wcag_criteria %}
                             {% for wcag_criterion in discovery.wcag_criteria|sort %}
-                            <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #6c757d;">
+                            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #6c757d;">
+                                <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                    WCAG {{ wcag_criterion }}
+                                </p>
                                 <p style="margin: 0 0 5px 0;">
                                     <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
                                         More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>

@@ -583,6 +583,17 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     const eventAttrs = ['onclick', 'onkeydown', 'onkeyup', 'onkeypress', 'onmousedown', 'onmouseup'];
                     const hasInlineHandler = eventAttrs.some(attr => element.hasAttribute(attr));
 
+                    // Check if parent is an interactive element (for detecting redundant focusable children)
+                    let parentIsInteractive = false;
+                    let parentTag = '';
+                    if (element.parentElement) {
+                        const parent = element.parentElement;
+                        parentTag = parent.tagName.toLowerCase();
+                        const parentTabindex = parseInt(parent.getAttribute('tabindex') || '-1');
+                        const interactiveTags = ['button', 'a', 'summary'];
+                        parentIsInteractive = interactiveTags.includes(parentTag) || parentTabindex >= 0;
+                    }
+
                     elements.push({
                         tag: tagName,
                         id: element.id || '',
@@ -591,6 +602,8 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         role: role || '',
                         xpath: getFullXPath(element),
                         hasInlineHandler: hasInlineHandler,
+                        parentTag: parentTag,
+                        parentIsInteractive: parentIsInteractive,
                         normalOutlineStyle: computed.outlineStyle,
                         normalOutlineWidth: computed.outlineWidth,
                         normalBorderWidth: computed.borderWidth,
@@ -701,6 +714,12 @@ async def test_event_handlers(page) -> Dict[str, Any]:
 
                 # Run all checks independently
                 issues_found = []
+
+                # Check 0: Focusable child inside interactive parent
+                if elem.get('parentIsInteractive', False):
+                    parent_tag = elem.get('parentTag', 'unknown')
+                    desc = f"Child element with tabindex={elem.get('tabindex')} inside interactive <{parent_tag}> parent"
+                    issues_found.append((f'{code_prefix}ChildOfInteractive', desc))
 
                 # Check 1: No visible focus indicator
                 if not has_outline and not box_shadow_changed and not border_width_changed and not bg_color_changed:

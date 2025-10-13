@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexChildOfInteractive - Correct Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexChildOfInteractive_002_correct_no_child_tabindex",
+    "issueId": "ErrTabindexChildOfInteractive",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Interactive elements with children that do not have tabindex",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: 2px solid #333;
+            background: white;
+            cursor: pointer;
+        }
+
+        button:hover, button:focus {
+            background: #f0f0f0;
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            border: 2px solid #0066cc;
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover, a:focus {
+            background: #e6f2ff;
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+
+        svg {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Correct Implementation - No Child Tabindex</h1>
+
+    <main>
+        <section>
+            <h2>Buttons with SVG Children (Correct)</h2>
+            <p>These buttons contain SVG icons without tabindex:</p>
+
+            <button
+                data-expected-pass="true"
+                data-pass-reason="SVG child has no tabindex, button provides keyboard access">
+                <svg aria-hidden="true">
+                    <circle cx="10" cy="10" r="8" fill="#333"/>
+                </svg>
+                Search
+            </button>
+
+            <button
+                data-expected-pass="true"
+                data-pass-reason="SVG child has no tabindex, relies on button for focus">
+                Settings
+                <svg aria-hidden="true">
+                    <rect x="2" y="2" width="16" height="16" fill="#333"/>
+                </svg>
+            </button>
+        </section>
+
+        <section>
+            <h2>Links with Span Children (Correct)</h2>
+            <p>These links contain span elements without tabindex:</p>
+
+            <a href="#"
+               data-expected-pass="true"
+               data-pass-reason="Span child has no tabindex, link provides keyboard access">
+                <span>Click Here</span>
+            </a>
+
+            <a href="#page"
+               data-expected-pass="true"
+               data-pass-reason="Icon span has no tabindex, link is the only tab stop">
+                Learn More
+                <span class="icon" aria-hidden="true">→</span>
+            </a>
+        </section>
+
+        <section>
+            <h2>Why This Is Correct</h2>
+            <p>
+                Child elements inside buttons and links should not have tabindex.
+                The parent interactive element already provides keyboard access,
+                and its focus indicator is visible to all users including those
+                using screen magnifiers.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

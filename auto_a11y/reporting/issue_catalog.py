@@ -2370,6 +2370,19 @@ class IssueCatalog:
             "who_it_affects": "Keyboard-only users who cannot use a mouse, users with motor disabilities who rely on keyboard navigation, screen magnifier users who need to see focus location, users with attention disorders who track focus visually, and users navigating with assistive technologies that follow keyboard focus",
             "how_to_fix": "Add a :focus style with a visible indicator such as outline (e.g., 'outline: 2px solid #0066cc'), box-shadow (e.g., 'box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5)'), or border change. Ensure the indicator has at least 3:1 contrast ratio with adjacent colors. For elements with tabindex, treat them like buttons and provide clear visual feedback when focused."
         },
+        "ErrTabindexChildOfInteractive": {
+            "id": "ErrTabindexChildOfInteractive",
+            "title": "Focusable child element inside interactive parent",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["2.4.7"],
+            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "category": "event_handling",
+            "description": "Child element has tabindex making it focusable when it is already inside an interactive parent element (button, link, etc.)",
+            "why_it_matters": "When a child element (like an SVG or span) inside an interactive parent (like a button) has its own tabindex, it creates a redundant tab stop and relies on the parent's focus indicator. Screen magnifier users at high zoom levels may only see the child element without its parent context. If the child element lacks its own visible focus indicator, these users cannot determine when the element has focus. Even if the parent button changes color on focus, magnified users viewing only the SVG won't see this change. The child element needs either its own focus indicator or should not be independently focusable.",
+            "who_it_affects": "Screen magnifier users at 200%+ zoom who may only see the child element, users with tunnel vision or reduced peripheral vision, keyboard-only users who get confused by redundant tab stops, users with cognitive disabilities who may be confused by nested focusable elements, and users relying on focus indicators to track their position",
+            "how_to_fix": "Remove the tabindex attribute from the child element - the parent interactive element already provides keyboard access. If the child must be independently focusable (rare), add a distinct visible focus indicator directly to the child element using outline or box-shadow that is visible even when viewing only that element in isolation. In most cases, removing tabindex from children of buttons, links, and other interactive elements is the correct solution."
+        },
         "ErrTabindexFocusContrastFail": {
             "id": "ErrTabindexFocusContrastFail",
             "title": "Focus indicator on tabindex element has insufficient contrast",

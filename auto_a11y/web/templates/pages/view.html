@@ -691,17 +691,20 @@
                                                                 </p>
                                                                 {% endif %}
                                                                 {% if violation.wcag_criteria %}
-                                                                {% set first_wcag = violation.wcag_criteria[0] %}
-                                                                <p>
-                                                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
-                                                                        More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                                                    </a>
-                                                                </p>
-                                                                <p>
-                                                                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
-                                                                        Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                                                    </a>
-                                                                </p>
+                                                                {% for wcag_criterion in violation.wcag_criteria %}
+                                                                <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                                                    <p style="margin: 0 0 5px 0;">
+                                                                        <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                                                            More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                        </a>
+                                                                    </p>
+                                                                    <p style="margin: 0;">
+                                                                        <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                                                            Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                        </a>
+                                                                    </p>
+                                                                </div>
+                                                                {% endfor %}
                                                                 {% endif %}
                                                             </div>
                                                         </div>
@@ -948,17 +951,20 @@
                                     </p>
                                     {% endif %}
                                     {% if violation.wcag_criteria %}
-                                    {% set first_wcag = violation.wcag_criteria[0] %}
-                                    <p>
-                                        <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
-                                            More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                        </a>
-                                    </p>
-                                    <p>
-                                        <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
-                                            Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                        </a>
-                                    </p>
+                                    {% for wcag_criterion in violation.wcag_criteria %}
+                                    <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                        <p style="margin: 0 0 5px 0;">
+                                            <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                                More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                            </a>
+                                        </p>
+                                        <p style="margin: 0;">
+                                            <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                                Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                    {% endfor %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -1438,17 +1444,20 @@
                             <!-- Standard description -->
                             <p><strong>Touchpoint:</strong> {{ warning.touchpoint }}</p>
                             {% if warning.wcag_criteria %}
-                            {% set first_wcag = warning.wcag_criteria[0] %}
-                            <p>
-                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
-                                    More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                            </p>
-                            <p>
-                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
-                                    Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                            </p>
+                            {% for wcag_criterion in warning.wcag_criteria %}
+                            <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #ffc107;">
+                                <p style="margin: 0 0 5px 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                        More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                                <p style="margin: 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                        Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                            </div>
+                            {% endfor %}
                             {% endif %}
                             {% if warning.xpath %}
                             <p><strong>XPath:</strong> <code>{{ warning.xpath }}</code></p>
@@ -1810,17 +1819,20 @@
                             <!-- Standard description -->
                             <p><strong>Touchpoint:</strong> {{ info.touchpoint }}</p>
                             {% if info.wcag_criteria %}
-                            {% set first_wcag = info.wcag_criteria[0] %}
-                            <p>
-                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
-                                    More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                            </p>
-                            <p>
-                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
-                                    Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                            </p>
+                            {% for wcag_criterion in info.wcag_criteria %}
+                            <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #17a2b8;">
+                                <p style="margin: 0 0 5px 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                        More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                                <p style="margin: 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                        Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                            </div>
+                            {% endfor %}
                             {% endif %}
                             {% if info.xpath %}
                             <p><strong>XPath:</strong> <code>{{ info.xpath }}</code></p>
@@ -2220,17 +2232,20 @@
                                 <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
                             </p>
                             {% if discovery.wcag_criteria %}
-                            {% set first_wcag = discovery.wcag_criteria[0] %}
-                            <p>
-                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ first_wcag.replace('.', '-') }}.html" target="_blank">
-                                    More about {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                            </p>
-                            <p>
-                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ first_wcag.replace('.', '-') }}" target="_blank">
-                                    Ways to meet {{ first_wcag }} <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                            </p>
+                            {% for wcag_criterion in discovery.wcag_criteria %}
+                            <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-left: 3px solid #6c757d;">
+                                <p style="margin: 0 0 5px 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                        More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                                <p style="margin: 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                        Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                            </div>
+                            {% endfor %}
                             {% endif %}
                             {% if discovery.xpath %}
                             <p><strong>XPath:</strong> <code>{{ discovery.xpath }}</code></p>

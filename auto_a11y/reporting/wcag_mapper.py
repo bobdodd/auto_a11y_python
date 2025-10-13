@@ -264,48 +264,93 @@ def format_wcag_link(criterion: str) -> str:
 
 def enrich_wcag_criteria(criteria_list: list) -> list:
     """
-    Enrich a list of WCAG criteria with full names
-    
+    Enrich a list of WCAG criteria with full names and conformance levels
+
     Args:
         criteria_list: List of criterion numbers or full strings
-        
+
     Returns:
-        List of enriched criterion strings
+        List of enriched criterion strings with format "X.X.X Name (Level XX)"
     """
-    # Map of common criterion numbers to full names
+    # Map of criterion numbers to full names with conformance levels
+    # Format: "X.X.X Name (Level XX)"
     criterion_names = {
-        '1.1.1': '1.1.1 Non-text Content',
-        '1.3.1': '1.3.1 Info and Relationships',
-        '1.4.1': '1.4.1 Use of Color',
-        '1.4.3': '1.4.3 Contrast (Minimum)',
-        '1.4.4': '1.4.4 Resize Text',
-        '1.4.6': '1.4.6 Contrast (Enhanced)',
-        '1.4.11': '1.4.11 Non-text Contrast',
-        '2.1.1': '2.1.1 Keyboard',
-        '2.4.1': '2.4.1 Bypass Blocks',
-        '2.4.2': '2.4.2 Page Titled',
-        '2.4.3': '2.4.3 Focus Order',
-        '2.4.6': '2.4.6 Headings and Labels',
-        '2.4.7': '2.4.7 Focus Visible',
-        '2.4.11': '2.4.11 Focus Appearance',
-        '2.5.3': '2.5.3 Label in Name',
-        '3.1.1': '3.1.1 Language of Page',
-        '3.1.2': '3.1.2 Language of Parts',
-        '3.3.2': '3.3.2 Labels or Instructions',
-        '3.3.5': '3.3.5 Help',
-        '4.1.1': '4.1.1 Parsing',
-        '4.1.2': '4.1.2 Name, Role, Value',
+        '1.1.1': '1.1.1 Non-text Content (Level A)',
+        '1.2.1': '1.2.1 Audio-only and Video-only (Prerecorded) (Level A)',
+        '1.2.2': '1.2.2 Captions (Prerecorded) (Level A)',
+        '1.2.3': '1.2.3 Audio Description or Media Alternative (Prerecorded) (Level A)',
+        '1.2.4': '1.2.4 Captions (Live) (Level AA)',
+        '1.2.5': '1.2.5 Audio Description (Prerecorded) (Level AA)',
+        '1.3.1': '1.3.1 Info and Relationships (Level A)',
+        '1.3.2': '1.3.2 Meaningful Sequence (Level A)',
+        '1.3.3': '1.3.3 Sensory Characteristics (Level A)',
+        '1.3.4': '1.3.4 Orientation (Level AA)',
+        '1.3.5': '1.3.5 Identify Input Purpose (Level AA)',
+        '1.4.1': '1.4.1 Use of Color (Level A)',
+        '1.4.2': '1.4.2 Audio Control (Level A)',
+        '1.4.3': '1.4.3 Contrast (Minimum) (Level AA)',
+        '1.4.4': '1.4.4 Resize Text (Level AA)',
+        '1.4.5': '1.4.5 Images of Text (Level AA)',
+        '1.4.6': '1.4.6 Contrast (Enhanced) (Level AAA)',
+        '1.4.10': '1.4.10 Reflow (Level AA)',
+        '1.4.11': '1.4.11 Non-text Contrast (Level AA)',
+        '1.4.12': '1.4.12 Text Spacing (Level AA)',
+        '1.4.13': '1.4.13 Content on Hover or Focus (Level AA)',
+        '2.1.1': '2.1.1 Keyboard (Level A)',
+        '2.1.2': '2.1.2 No Keyboard Trap (Level A)',
+        '2.1.3': '2.1.3 Keyboard (No Exception) (Level AAA)',
+        '2.1.4': '2.1.4 Character Key Shortcuts (Level A)',
+        '2.2.1': '2.2.1 Timing Adjustable (Level A)',
+        '2.2.2': '2.2.2 Pause, Stop, Hide (Level A)',
+        '2.3.1': '2.3.1 Three Flashes or Below Threshold (Level A)',
+        '2.4.1': '2.4.1 Bypass Blocks (Level A)',
+        '2.4.2': '2.4.2 Page Titled (Level A)',
+        '2.4.3': '2.4.3 Focus Order (Level A)',
+        '2.4.4': '2.4.4 Link Purpose (In Context) (Level A)',
+        '2.4.5': '2.4.5 Multiple Ways (Level AA)',
+        '2.4.6': '2.4.6 Headings and Labels (Level AA)',
+        '2.4.7': '2.4.7 Focus Visible (Level AA)',
+        '2.4.11': '2.4.11 Focus Appearance (Level AA)',
+        '2.5.1': '2.5.1 Pointer Gestures (Level A)',
+        '2.5.2': '2.5.2 Pointer Cancellation (Level A)',
+        '2.5.3': '2.5.3 Label in Name (Level A)',
+        '2.5.4': '2.5.4 Motion Actuation (Level A)',
+        '2.5.7': '2.5.7 Dragging Movements (Level AA)',
+        '2.5.8': '2.5.8 Target Size (Minimum) (Level AA)',
+        '3.1.1': '3.1.1 Language of Page (Level A)',
+        '3.1.2': '3.1.2 Language of Parts (Level AA)',
+        '3.2.1': '3.2.1 On Focus (Level A)',
+        '3.2.2': '3.2.2 On Input (Level A)',
+        '3.2.3': '3.2.3 Consistent Navigation (Level AA)',
+        '3.2.4': '3.2.4 Consistent Identification (Level AA)',
+        '3.2.6': '3.2.6 Consistent Help (Level A)',
+        '3.3.1': '3.3.1 Error Identification (Level A)',
+        '3.3.2': '3.3.2 Labels or Instructions (Level A)',
+        '3.3.3': '3.3.3 Error Suggestion (Level AA)',
+        '3.3.4': '3.3.4 Error Prevention (Legal, Financial, Data) (Level AA)',
+        '3.3.5': '3.3.5 Help (Level AAA)',
+        '3.3.7': '3.3.7 Redundant Entry (Level A)',
+        '3.3.8': '3.3.8 Accessible Authentication (Minimum) (Level AA)',
+        '4.1.1': '4.1.1 Parsing (Level A)',
+        '4.1.2': '4.1.2 Name, Role, Value (Level A)',
+        '4.1.3': '4.1.3 Status Messages (Level AA)',
+        '5.2.4': '<a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">Conformance issue, 5.2.4 related to Accessibility Supported</a>',
     }
-    
+
     enriched = []
     for criterion in criteria_list:
-        if criterion in criterion_names:
-            enriched.append(criterion_names[criterion])
-        elif ' ' not in criterion and '.' in criterion:
-            # It's just a number, try to enrich it
-            enriched.append(criterion_names.get(criterion, criterion))
+        # Extract just the number part if it already has text
+        if ' ' in str(criterion):
+            # Extract number from strings like "1.1.1 Non-text Content" or "1.1.1"
+            number = criterion.split()[0]
         else:
-            # Already enriched or unknown
+            number = criterion
+
+        # Check if we have a full entry for this criterion
+        if number in criterion_names:
+            enriched.append(criterion_names[number])
+        else:
+            # Keep original if we don't have mapping
             enriched.append(criterion)
-    
+
     return enriched

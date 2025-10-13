@@ -458,9 +458,18 @@ class ResultProcessor:
                 
                 # Store all enhanced details in metadata
                 # The enhanced_desc already has placeholders replaced with actual values
+                #
+                # IMPORTANT: For threshold violations, the original description from the test
+                # contains actual measured values (e.g., "outline is 1.5px" vs "outline is too small").
+                # We prefer the original description as the title when it contains specific measurements.
+                original_desc = violation_data.get('description', '')
+                use_original_as_title = any(pattern in original_desc for pattern in [
+                    '(', 'px', ':1', 'alpha=', '°', '%'  # Patterns indicating measured values
+                ])
+
                 metadata = {
-                    'title': enhanced_desc.get('title', ''),
-                    'what': enhanced_desc.get('what', ''),  # Add 'what' field with replaced values
+                    'title': original_desc if use_original_as_title else enhanced_desc.get('title', ''),
+                    'what': original_desc if use_original_as_title else enhanced_desc.get('what', ''),
                     'why': enhanced_desc.get('why', ''),
                     'who': enhanced_desc.get('who', ''),
                     'impact_detail': enhanced_desc.get('impact', ''),

@@ -594,6 +594,9 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         parentIsInteractive = interactiveTags.includes(parentTag) || parentTabindex >= 0;
                     }
 
+                    // Check for aria-hidden
+                    const ariaHidden = element.getAttribute('aria-hidden');
+
                     elements.push({
                         tag: tagName,
                         id: element.id || '',
@@ -604,6 +607,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         hasInlineHandler: hasInlineHandler,
                         parentTag: parentTag,
                         parentIsInteractive: parentIsInteractive,
+                        ariaHidden: ariaHidden,
                         normalOutlineStyle: computed.outlineStyle,
                         normalOutlineWidth: computed.outlineWidth,
                         normalBorderWidth: computed.borderWidth,
@@ -720,6 +724,12 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     parent_tag = elem.get('parentTag', 'unknown')
                     desc = f"Child element with tabindex={elem.get('tabindex')} inside interactive <{parent_tag}> parent"
                     issues_found.append((f'{code_prefix}ChildOfInteractive', desc))
+
+                # Check 0b: aria-hidden on focusable element
+                aria_hidden = elem.get('ariaHidden', '')
+                if aria_hidden == 'true':
+                    desc = f"Element with {'tabindex' if elem_type == 'tabindex' else 'event handler'} has aria-hidden='true', which is invalid"
+                    issues_found.append((f'{code_prefix}AriaHiddenFocusable', desc))
 
                 # Check 1: No visible focus indicator
                 if not has_outline and not box_shadow_changed and not border_width_changed and not bg_color_changed:

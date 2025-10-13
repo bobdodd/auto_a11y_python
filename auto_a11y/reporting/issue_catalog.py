@@ -2372,16 +2372,29 @@ class IssueCatalog:
         },
         "ErrTabindexChildOfInteractive": {
             "id": "ErrTabindexChildOfInteractive",
-            "title": "Focusable child element inside interactive parent",
+            "title": "Child element has tabindex inside interactive parent",
             "type": "Error",
             "impact": "High",
             "wcag": ["2.4.7"],
             "wcag_full": "2.4.7 Focus Visible (Level AA)",
             "category": "event_handling",
-            "description": "Child element has tabindex making it focusable when it is already inside an interactive parent element (button, link, etc.)",
-            "why_it_matters": "When a child element (like an SVG or span) inside an interactive parent (like a button) has its own tabindex, it creates a redundant tab stop and relies on the parent's focus indicator. Screen magnifier users at high zoom levels may only see the child element without its parent context. If the child element lacks its own visible focus indicator, these users cannot determine when the element has focus. Even if the parent button changes color on focus, magnified users viewing only the SVG won't see this change. The child element needs either its own focus indicator or should not be independently focusable.",
-            "who_it_affects": "Screen magnifier users at 200%+ zoom who may only see the child element, users with tunnel vision or reduced peripheral vision, keyboard-only users who get confused by redundant tab stops, users with cognitive disabilities who may be confused by nested focusable elements, and users relying on focus indicators to track their position",
-            "how_to_fix": "Remove the tabindex attribute from the child element - the parent interactive element already provides keyboard access. If the child must be independently focusable (rare), add a distinct visible focus indicator directly to the child element using outline or box-shadow that is visible even when viewing only that element in isolation. In most cases, removing tabindex from children of buttons, links, and other interactive elements is the correct solution."
+            "description": "Child element has tabindex attribute inside an interactive parent element (button, link, etc.), making it independently focusable",
+            "why_it_matters": "Adding tabindex to a child element inside an interactive parent (like an SVG inside a button) is bad practice and should not be done, even with tabindex='-1' or aria-hidden. It creates redundant keyboard focus behavior and can cause unexpected interactions. The parent interactive element already provides all necessary keyboard access and focus management. Child elements do not need and should not have their own tabindex.",
+            "who_it_affects": "All keyboard users who may encounter unexpected focus behavior, users with cognitive disabilities who may be confused by nested focusable elements, screen reader users who may receive confusing announcements, and developers maintaining the code who must deal with unnecessary complexity",
+            "how_to_fix": "Remove the tabindex attribute from the child element entirely. The parent button, link, or other interactive element already provides keyboard access. Child elements (SVGs, spans, icons, etc.) inside interactive parents should never have tabindex, regardless of the value (-1, 0, or positive numbers)."
+        },
+        "ErrTabindexAriaHiddenFocusable": {
+            "id": "ErrTabindexAriaHiddenFocusable",
+            "title": "Element with tabindex has aria-hidden='true'",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["4.1.2"],
+            "wcag_full": "4.1.2 Name, Role, Value (Level A)",
+            "category": "event_handling",
+            "description": "Element has both tabindex (making it focusable) and aria-hidden='true', which is invalid HTML and creates conflicting accessibility semantics",
+            "why_it_matters": "It is illegal to use aria-hidden='true' on a focusable or interactive element. This creates a fundamental conflict: aria-hidden tells assistive technologies to ignore the element, but tabindex makes it keyboard-focusable. When keyboard users tab to this element, screen readers may not announce it because it's hidden, causing confusion about where focus is. Some browsers may respect the aria-hidden and hide the element from screen readers while still allowing keyboard focus, creating an invisible focus trap. Other browsers may ignore one or both attributes, leading to inconsistent behavior across platforms.",
+            "who_it_affects": "Screen reader users who may tab to elements that are hidden from their assistive technology, causing confusion about focus location and element purpose. Keyboard users who may encounter unexpected or inconsistent focus behavior. Users who rely on predictable, standards-compliant behavior across different browsers and assistive technologies.",
+            "how_to_fix": "Remove aria-hidden='true' from the element. If the element needs to be focusable (has tabindex), it cannot be hidden from assistive technologies. If the element should be decorative and hidden, remove the tabindex instead. Never combine aria-hidden='true' with any value of tabindex."
         },
         "ErrTabindexFocusContrastFail": {
             "id": "ErrTabindexFocusContrastFail",

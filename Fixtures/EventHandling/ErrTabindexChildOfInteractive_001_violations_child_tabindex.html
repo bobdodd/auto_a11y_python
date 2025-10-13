@@ -8,9 +8,9 @@
 {
     "id": "ErrTabindexChildOfInteractive_001_violations_child_tabindex",
     "issueId": "ErrTabindexChildOfInteractive",
-    "expectedViolationCount": 4,
+    "expectedViolationCount": 5,
     "expectedPassCount": 0,
-    "description": "Child elements with tabindex inside interactive parents (buttons, links)",
+    "description": "Child elements with tabindex inside interactive parents (buttons, links), including aria-hidden case that triggers both errors",
     "wcag": "2.4.7",
     "impact": "High"
 }
@@ -105,11 +105,26 @@
         </section>
 
         <section>
+            <h2>SVG with tabindex="-1" and aria-hidden="true" (Double Violation)</h2>
+            <p>This button has an SVG with both tabindex="-1" AND aria-hidden="true", which triggers both error codes:</p>
+
+            <button
+                data-expected-violation="true"
+                data-violation-id="ErrTabindexChildOfInteractive,ErrTabindexAriaHiddenFocusable"
+                data-violation-reason="SVG has tabindex inside button AND has aria-hidden on focusable element">
+                <svg tabindex="-1" aria-hidden="true">
+                    <path d="M10 0 L20 10 L10 20 L0 10 Z" fill="#333"/>
+                </svg>
+                Submit
+            </button>
+        </section>
+
+        <section>
             <h2>Why This Is a Problem</h2>
             <p>
                 When child elements inside buttons or links have their own tabindex,
-                it creates redundant tab stops and makes focus indicators inaccessible
-                to screen magnifier users who may only see the child element.
+                it is bad practice even with tabindex="-1" or aria-hidden. Additionally,
+                using aria-hidden="true" on focusable elements is illegal per ARIA specifications.
             </p>
         </section>
     </main>

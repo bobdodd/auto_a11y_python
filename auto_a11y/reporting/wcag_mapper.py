@@ -119,6 +119,7 @@ WCAG_MAPPINGS = {
 
     # Tabindex Interactive Element Focus Issues
     'ErrTabindexNoVisibleFocus': ['2.4.7 Focus Visible'],
+    'ErrTabindexChildOfInteractive': ['2.4.7 Focus Visible', '1.4.4 Resize text', '1.4.10 Reflow'],
     'ErrTabindexFocusContrastFail': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
     'ErrTabindexOutlineNoneNoBoxShadow': ['2.4.7 Focus Visible'],
     'ErrTabindexSingleSideBoxShadow': ['2.4.7 Focus Visible'],

@@ -237,6 +237,16 @@ TOUCHPOINT_TEST_MAPPING = {
     
     'event_handling': [
         'ErrMouseOnlyHandler',
+        'ErrTabindexNoVisibleFocus',
+        'ErrTabindexChildOfInteractive',
+        'ErrTabindexFocusContrastFail',
+        'ErrTabindexOutlineNoneNoBoxShadow',
+        'ErrTabindexSingleSideBoxShadow',
+        'ErrTabindexOutlineWidthInsufficient',
+        'ErrTabindexColorChangeOnly',
+        'ErrTabindexTransparentOutline',
+        'WarnTabindexDefaultFocus',
+        'WarnTabindexNoBorderOutline',
     ],
     
     'accessible_names': [

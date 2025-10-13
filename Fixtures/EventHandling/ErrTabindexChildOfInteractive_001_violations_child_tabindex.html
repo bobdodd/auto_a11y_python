@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabindexChildOfInteractive - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabindexChildOfInteractive_001_violations_child_tabindex",
+    "issueId": "ErrTabindexChildOfInteractive",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Child elements with tabindex inside interactive parents (buttons, links)",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: 2px solid #333;
+            background: white;
+            cursor: pointer;
+        }
+
+        button:hover, button:focus {
+            background: #f0f0f0;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            border: 2px solid #0066cc;
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover, a:focus {
+            background: #e6f2ff;
+        }
+
+        svg {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Child Elements with Tabindex in Interactive Parents</h1>
+
+    <main>
+        <section>
+            <h2>Buttons with Focusable SVG Children</h2>
+            <p>These buttons contain SVG icons that have their own tabindex:</p>
+
+            <button
+                data-expected-violation="true"
+                data-violation-id="ErrTabindexChildOfInteractive"
+                data-violation-reason="SVG child with tabindex inside button">
+                <svg tabindex="0" aria-hidden="true">
+                    <circle cx="10" cy="10" r="8" fill="#333"/>
+                </svg>
+                Search
+            </button>
+
+            <button
+                data-expected-violation="true"
+                data-violation-id="ErrTabindexChildOfInteractive"
+                data-violation-reason="SVG child with tabindex=0 inside button">
+                Settings
+                <svg tabindex="0" aria-hidden="true">
+                    <rect x="2" y="2" width="16" height="16" fill="#333"/>
+                </svg>
+            </button>
+        </section>
+
+        <section>
+            <h2>Links with Focusable Span Children</h2>
+            <p>These links contain span elements that have their own tabindex:</p>
+
+            <a href="#"
+               data-expected-violation="true"
+               data-violation-id="ErrTabindexChildOfInteractive"
+               data-violation-reason="Span child with tabindex inside link">
+                <span tabindex="0">Click Here</span>
+            </a>
+
+            <a href="#page"
+               data-expected-violation="true"
+               data-violation-id="ErrTabindexChildOfInteractive"
+               data-violation-reason="Icon span with tabindex inside link">
+                Learn More
+                <span tabindex="0" class="icon" aria-hidden="true">→</span>
+            </a>
+        </section>
+
+        <section>
+            <h2>Why This Is a Problem</h2>
+            <p>
+                When child elements inside buttons or links have their own tabindex,
+                it creates redundant tab stops and makes focus indicators inaccessible
+                to screen magnifier users who may only see the child element.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

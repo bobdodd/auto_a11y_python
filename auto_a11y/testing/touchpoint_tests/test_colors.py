@@ -393,28 +393,28 @@ async def test_colors(page) -> Dict[str, Any]:
                     });
                 }
                 
-                // Add informational checks for media queries
+                // Add warning for missing high contrast support
                 if (!hasContrastSupport) {
                     results.warnings.push({
-                        err: 'InfoNoContrastSupport',
-                        type: 'info',
+                        err: 'WarnNoContrastSupport',
+                        type: 'warn',
                         cat: 'colors',
                         element: 'page',
                         xpath: '/html',
                         html: '<page>',
-                        description: 'Page lacks prefers-contrast media query support for high contrast preferences'
+                        description: 'Page lacks prefers-contrast media query support for high contrast preferences, failing to support users who require high contrast mode'
                     });
                 }
 
                 if (!hasColorSchemeSupport) {
                     results.warnings.push({
-                        err: 'InfoNoColorSchemeSupport',
-                        type: 'info',
+                        err: 'WarnNoColorSchemeSupport',
+                        type: 'warn',
                         cat: 'colors',
                         element: 'page',
                         xpath: '/html',
                         html: '<page>',
-                        description: 'Page lacks prefers-color-scheme media query support for dark/light mode preferences'
+                        description: 'Page lacks prefers-color-scheme media query support for dark/light mode preferences, failing to support users who require dark mode or other color scheme preferences'
                     });
                 }
 

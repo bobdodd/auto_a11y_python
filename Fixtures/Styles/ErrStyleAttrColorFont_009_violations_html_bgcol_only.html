@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: #fff;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML with Background Color - Violation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_009_violations_html_bgcol_only",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "HTML element with ONLY background-color inline style - should be flagged",
+    "wcag": ["1.4.3", "1.4.8"],
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Simple Test</h1>
+    <p>The html element has inline background-color which should be flagged as ErrStyleAttrColorFont.</p>
+</body>
+</html>

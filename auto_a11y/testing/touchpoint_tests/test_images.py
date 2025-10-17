@@ -205,7 +205,7 @@ async def test_images(page) -> Dict[str, Any]:
                     const ariaLabel = svg.getAttribute('aria-label');
                     const ariaLabelledby = svg.getAttribute('aria-labelledby');
                     const title = svg.querySelector('title');
-                    
+
                     // Check if SVG is purely decorative
                     const ariaHidden = svg.getAttribute('aria-hidden');
                     if (ariaHidden === 'true') {
@@ -217,21 +217,71 @@ async def test_images(page) -> Dict[str, Any]:
                         results.elements_passed++;
                         return;
                     }
-                    
-                    // Check for missing role
-                    if (!role) {
+
+                    // Detect if SVG is interactive
+                    const isInteractive = (function() {
+                        // Check for event handlers on SVG or descendants
+                        const hasEventHandlers = svg.hasAttribute('onclick') ||
+                            svg.hasAttribute('onmousedown') ||
+                            svg.hasAttribute('onmouseup') ||
+                            svg.hasAttribute('onkeydown') ||
+                            svg.hasAttribute('onkeyup') ||
+                            svg.querySelector('[onclick], [onmousedown], [onmouseup], [onkeydown], [onkeyup]');
+
+                        // Check for tabindex on SVG or descendants
+                        const hasTabindex = svg.hasAttribute('tabindex') ||
+                            svg.querySelector('[tabindex]');
+
+                        // Check for focusable interactive elements
+                        const hasFocusableElements = svg.querySelector('a, button, input, select, textarea, [role="button"], [role="link"], [role="menuitem"]');
+
+                        // Check for ARIA roles that indicate interactivity
+                        const interactiveRoles = ['button', 'link', 'menuitem', 'menuitemcheckbox', 'menuitemradio', 'option', 'radio', 'switch', 'tab', 'treeitem', 'application'];
+                        const hasInteractiveRole = role && interactiveRoles.includes(role);
+                        const hasDescendantInteractiveRole = interactiveRoles.some(r => svg.querySelector('[role="' + r + '"]'));
+
+                        return hasEventHandlers || hasTabindex || hasFocusableElements || hasInteractiveRole || hasDescendantInteractiveRole;
+                    })();
+
+                    // Handle interactive SVGs - report as discovery for manual review
+                    if (isInteractive) {
                         results.warnings.push({
-                            err: 'WarnSVGNoRole',
-                            type: 'warn',
+                            err: 'DiscoInteractiveSvg',
+                            type: 'disco',
                             cat: 'images',
                             element: 'SVG',
                             xpath: getFullXPath(svg),
                             html: svg.outerHTML.substring(0, 200),
-                            description: 'SVG element is missing role attribute'
+                            description: 'Interactive SVG detected - requires manual accessibility review for keyboard access, focus management, and ARIA implementation',
+                            metadata: {
+                                hasRole: !!role,
+                                currentRole: role || 'none',
+                                hasAccessibleName: !!(ariaLabel || ariaLabelledby || title)
+                            }
                         });
+                        return;
                     }
-                    
-                    // Check for accessible name
+
+                    // Static SVG without role="img" is an error
+                    if (!role || role !== 'img') {
+                        results.errors.push({
+                            err: 'ErrSvgStaticWithoutRole',
+                            type: 'err',
+                            cat: 'images',
+                            element: 'SVG',
+                            xpath: getFullXPath(svg),
+                            html: svg.outerHTML.substring(0, 200),
+                            description: 'Static SVG element must have role="img" to be treated as an image by assistive technologies',
+                            metadata: {
+                                currentRole: role || 'none',
+                                hasAccessibleName: !!(ariaLabel || ariaLabelledby || title)
+                            }
+                        });
+                        results.elements_failed++;
+                        return;
+                    }
+
+                    // SVG has role="img", check for accessible name
                     if (!ariaLabel && !ariaLabelledby && !title) {
                         results.errors.push({
                             err: 'ErrSVGNoAccessibleName',

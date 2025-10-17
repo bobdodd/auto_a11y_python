@@ -3,6 +3,73 @@ WCAG Success Criteria Mapper
 Maps issue codes to specific WCAG success criteria
 """
 
+# WCAG 2.2 URL Slug Mapping - maps criterion numbers to Understanding page slugs
+WCAG_CRITERION_SLUGS = {
+    '1.1.1': 'non-text-content',
+    '1.2.1': 'audio-only-and-video-only-prerecorded',
+    '1.2.2': 'captions-prerecorded',
+    '1.2.3': 'audio-description-or-media-alternative-prerecorded',
+    '1.2.4': 'captions-live',
+    '1.2.5': 'audio-description-prerecorded',
+    '1.3.1': 'info-and-relationships',
+    '1.3.2': 'meaningful-sequence',
+    '1.3.3': 'sensory-characteristics',
+    '1.3.4': 'orientation',
+    '1.3.5': 'identify-input-purpose',
+    '1.4.1': 'use-of-color',
+    '1.4.2': 'audio-control',
+    '1.4.3': 'contrast-minimum',
+    '1.4.4': 'resize-text',
+    '1.4.5': 'images-of-text',
+    '1.4.6': 'contrast-enhanced',
+    '1.4.8': 'visual-presentation',
+    '1.4.10': 'reflow',
+    '1.4.11': 'non-text-contrast',
+    '1.4.12': 'text-spacing',
+    '1.4.13': 'content-on-hover-or-focus',
+    '2.1.1': 'keyboard',
+    '2.1.2': 'no-keyboard-trap',
+    '2.1.3': 'keyboard-no-exception',
+    '2.1.4': 'character-key-shortcuts',
+    '2.2.1': 'timing-adjustable',
+    '2.2.2': 'pause-stop-hide',
+    '2.2.6': 'timeouts',
+    '2.3.1': 'three-flashes-or-below-threshold',
+    '2.3.3': 'animation-from-interactions',
+    '2.4.1': 'bypass-blocks',
+    '2.4.2': 'page-titled',
+    '2.4.3': 'focus-order',
+    '2.4.4': 'link-purpose-in-context',
+    '2.4.5': 'multiple-ways',
+    '2.4.6': 'headings-and-labels',
+    '2.4.7': 'focus-visible',
+    '2.4.8': 'location',
+    '2.4.11': 'focus-not-obscured-minimum',
+    '2.4.13': 'focus-appearance',
+    '2.5.1': 'pointer-gestures',
+    '2.5.2': 'pointer-cancellation',
+    '2.5.3': 'label-in-name',
+    '2.5.4': 'motion-actuation',
+    '2.5.7': 'dragging-movements',
+    '2.5.8': 'target-size-minimum',
+    '3.1.1': 'language-of-page',
+    '3.1.2': 'language-of-parts',
+    '3.2.1': 'on-focus',
+    '3.2.2': 'on-input',
+    '3.2.3': 'consistent-navigation',
+    '3.2.4': 'consistent-identification',
+    '3.2.6': 'consistent-help',
+    '3.3.1': 'error-identification',
+    '3.3.2': 'labels-or-instructions',
+    '3.3.3': 'error-suggestion',
+    '3.3.4': 'error-prevention-legal-financial-data',
+    '3.3.7': 'redundant-entry',
+    '3.3.8': 'accessible-authentication-minimum',
+    '4.1.2': 'name-role-value',
+    '4.1.3': 'status-messages',
+    '5.2.4': 'accessibility-supported',
+}
+
 # Comprehensive WCAG mapping for all known issue types
 WCAG_MAPPINGS = {
     # Image Issues
@@ -70,7 +137,16 @@ WCAG_MAPPINGS = {
     'ErrMultipleMainLandmarksOnPage': ['1.3.1 Info and Relationships'],
     'ErrNoNavLandmark': ['1.3.1 Info and Relationships', '2.4.1 Bypass Blocks'],
     'WarnMultipleNavNeedsLabel': ['1.3.1 Info and Relationships'],
+    'ErrFormLandmarkMustHaveAccessibleName': ['5.2.4'],
+    'ErrContentOutsideLandmarks': ['5.2.4'],
+    'WarnContentOutsideLandmarks': ['1.3.1 Info and Relationships'],  # Deprecated - use ErrContentOutsideLandmarks
+    'WarnUnlabelledForm': ['1.3.1 Info and Relationships', '4.1.2 Name, Role, Value'],  # Deprecated
     'DiscoLandmarkStructure': [],  # Discovery
+
+    # Navigation/Current Page Issues
+    'ErrNoCurrentPageIndicatorScreenReader': ['5.2.4'],
+    'ErrNoCurrentPageIndicatorMagnification': ['2.4.6 Headings and Labels', '2.4.8 Location', '5.2.4 Accessibility Supported'],
+    'WarnNoCurrentPageIndicator': ['2.4.8 Location'],  # Deprecated
     
     # Color/Contrast Issues
     'ErrTextContrast': ['1.4.3 Contrast (Minimum)'],
@@ -80,6 +156,8 @@ WCAG_MAPPINGS = {
     'ErrColorStyleDefinedExplicitlyInStyleTag': ['1.4.1 Use of Color'],
     'WarnColorRelatedStyleDefinedExplicitlyInElement': ['1.4.1 Use of Color'],
     'WarnColorRelatedStyleDefinedExplicitlyInStyleTag': ['1.4.1 Use of Color'],
+    'WarnNoColorSchemeSupport': ['1.4.3 Contrast (Minimum)', '5.2.4 Accessibility Supported'],
+    'WarnNoContrastSupport': ['1.4.3 Contrast (Minimum)', '5.2.4 Accessibility Supported'],
     'DiscoStyleAttrOnElements': [],  # Discovery
     'DiscoStyleElementOnPage': [],  # Discovery
     
@@ -119,8 +197,8 @@ WCAG_MAPPINGS = {
 
     # Tabindex Interactive Element Focus Issues
     'ErrTabindexNoVisibleFocus': ['2.4.7 Focus Visible'],
-    'ErrTabindexChildOfInteractive': ['2.4.7 Focus Visible'],
-    'ErrTabindexAriaHiddenFocusable': ['4.1.2 Name, Role, Value', '2.4.7 Focus Visible'],
+    'ErrTabindexChildOfInteractive': ['1.3.1 Info and Relationships'],
+    'ErrTabindexAriaHiddenFocusable': ['4.1.2 Name, Role, Value'],
     'ErrTabindexFocusContrastFail': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
     'ErrTabindexOutlineNoneNoBoxShadow': ['2.4.7 Focus Visible'],
     'ErrTabindexSingleSideBoxShadow': ['2.4.7 Focus Visible'],
@@ -156,18 +234,20 @@ WCAG_MAPPINGS = {
     
     # SVG Issues
     'ErrSvgImageNoLabel': ['1.1.1 Non-text Content'],
+    'ErrSvgStaticWithoutRole': ['1.1.1 Non-text Content', '4.1.2 Name, Role, Value'],
+    'DiscoInteractiveSvg': [],  # Discovery - manual review required
     'DiscoFoundSvgImage': [],  # Discovery
-    'DiscoFoundInlineSvg': [],  # Discovery
+    'DiscoFoundInlineSvg': [],  # Discovery - deprecated, replaced by ErrSvgStaticWithoutRole and DiscoInteractiveSvg
     
     # Iframe Issues
-    'ErrIframeWithNoTitleAttr': ['2.4.1 Bypass Blocks', '4.1.2 Name, Role, Value'],
-    'ErrEmptyTitleAttr': ['2.4.1 Bypass Blocks', '4.1.2 Name, Role, Value'],
-    'WarnIframeTitleNotDescriptive': ['2.4.1 Bypass Blocks'],
+    'ErrIframeWithNoTitleAttr': ['4.1.2 Name, Role, Value'],
+    'ErrEmptyTitleAttr': ['4.1.2 Name, Role, Value'],
+    'WarnIframeTitleNotDescriptive': ['4.1.2 Name, Role, Value'],
     
     # Font/Text Issues
     'ErrFontSizeTooSmall': ['1.4.4 Resize Text'],
     'WarnFontSizeSmall': ['1.4.4 Resize Text'],
-    
+
     # PDF Issues
     'WarnPdfLinkFound': ['1.1.1 Non-text Content'],
 
@@ -237,32 +317,36 @@ def get_wcag_criteria(issue_code: str) -> list:
     # Default fallback - most issues relate to structure or parsing
     return ['1.3.1 Info and Relationships', '4.1.1 Parsing']
 
-def format_wcag_link(criterion: str) -> str:
+def format_wcag_link(criterion: str, link_type: str = 'understanding') -> str:
     """
-    Generate a W3C link for a WCAG criterion
-    
+    Generate a W3C link for a WCAG 2.2 criterion
+
     Args:
-        criterion: WCAG criterion string (e.g., "1.4.3 Contrast (Minimum)")
-        
+        criterion: WCAG criterion string (e.g., "1.4.3" or "1.4.3 Contrast (Minimum)")
+        link_type: Type of link - 'understanding' or 'quickref' (default: 'understanding')
+
     Returns:
-        URL to the WCAG understanding document
+        URL to the WCAG 2.2 understanding or quick reference document
     """
-    # Extract the number (e.g., "1.4.3")
-    parts = criterion.split(' ', 1)
-    if len(parts) > 0:
-        number = parts[0]
-        # Convert to URL format (e.g., "contrast-minimum")
-        if len(parts) > 1 and '(' in parts[1]:
-            # Extract text between parentheses
-            name_part = parts[1].split('(')[1].rstrip(')')
-            slug = name_part.lower().replace(' ', '-')
-        else:
-            # Fallback to using the number
-            slug = f"sc-{number.replace('.', '')}"
-        
-        return f"https://www.w3.org/WAI/WCAG21/Understanding/{slug}.html"
-    
-    return "https://www.w3.org/WAI/WCAG21/quickref/"
+    # Extract the number (e.g., "1.4.3" from "1.4.3 Contrast (Minimum)")
+    number = criterion.split()[0] if ' ' in criterion else criterion
+
+    # Special case for 5.2.4 Accessibility Supported (Conformance Requirement)
+    # Points to the definition in the main WCAG spec, not an Understanding page
+    if number == '5.2.4':
+        return "https://www.w3.org/TR/WCAG22/#dfn-accessibility-supported"
+
+    # Get the slug from module-level mapping
+    slug = WCAG_CRITERION_SLUGS.get(number)
+
+    if slug:
+        if link_type == 'quickref':
+            return f"https://www.w3.org/WAI/WCAG22/quickref/#{slug}"
+        else:  # understanding
+            return f"https://www.w3.org/WAI/WCAG22/Understanding/{slug}"
+
+    # Fallback to generic quickref page
+    return "https://www.w3.org/WAI/WCAG22/quickref/"
 
 def enrich_wcag_criteria(criteria_list: list) -> list:
     """
@@ -294,6 +378,7 @@ def enrich_wcag_criteria(criteria_list: list) -> list:
         '1.4.4': '1.4.4 Resize Text (Level AA)',
         '1.4.5': '1.4.5 Images of Text (Level AA)',
         '1.4.6': '1.4.6 Contrast (Enhanced) (Level AAA)',
+        '1.4.8': '1.4.8 Visual Presentation (Level AAA)',
         '1.4.10': '1.4.10 Reflow (Level AA)',
         '1.4.11': '1.4.11 Non-text Contrast (Level AA)',
         '1.4.12': '1.4.12 Text Spacing (Level AA)',
@@ -312,6 +397,7 @@ def enrich_wcag_criteria(criteria_list: list) -> list:
         '2.4.5': '2.4.5 Multiple Ways (Level AA)',
         '2.4.6': '2.4.6 Headings and Labels (Level AA)',
         '2.4.7': '2.4.7 Focus Visible (Level AA)',
+        '2.4.8': '2.4.8 Location (Level AAA)',
         '2.4.11': '2.4.11 Focus Appearance (Level AA)',
         '2.5.1': '2.5.1 Pointer Gestures (Level A)',
         '2.5.2': '2.5.2 Pointer Cancellation (Level A)',
@@ -336,7 +422,7 @@ def enrich_wcag_criteria(criteria_list: list) -> list:
         '4.1.1': '4.1.1 Parsing (Level A)',
         '4.1.2': '4.1.2 Name, Role, Value (Level A)',
         '4.1.3': '4.1.3 Status Messages (Level AA)',
-        '5.2.4': '<a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">Conformance issue, 5.2.4 related to Accessibility Supported</a>',
+        '5.2.4': '5.2.4 Accessibility Supported',
     }
 
     enriched = []

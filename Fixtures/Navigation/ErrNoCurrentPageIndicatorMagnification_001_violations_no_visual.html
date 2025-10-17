@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Navigation Missing Visual Indicator</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoCurrentPageIndicatorMagnification_001_violations_no_visual",
+    "issueId": "ErrNoCurrentPageIndicatorMagnification",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Navigation lacks visual current page indicator",
+    "wcag": ["1.4.13", "2.4.8"],
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <nav aria-label="Main navigation"
+         data-expected-violation="true"
+         data-violation-id="ErrNoCurrentPageIndicatorMagnification"
+         data-violation-reason="Navigation has aria-current but no visual styling to indicate current page">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about" aria-current="page">About Us</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>About Us</h1>
+        <p>Screen magnifier users at 400% zoom can only see the navigation OR the heading, not both.</p>
+        <p>Without visual styling on the current link, they must pan between menu and content to compare text.</p>
+        <p>aria-current helps screen readers but provides NO visual indication.</p>
+    </main>
+</body>
+</html>

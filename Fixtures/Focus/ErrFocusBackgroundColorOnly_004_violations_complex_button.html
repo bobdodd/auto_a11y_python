@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFocusBackgroundColorOnly - Complex Button with SVG Icon</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFocusBackgroundColorOnly_004_violations_complex_button",
+    "issueId": "ErrFocusBackgroundColorOnly",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with icon content where focus relies on background color manipulation with space between icon and button edge to show color",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .toolbar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .icon-button {
+            background-color: black;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            padding: 0.4rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* VIOLATION: Focus visible only through background color with spacing trick */
+        .icon-button:focus {
+            background-color: #333333;
+            /* SVG has margin/space so background color shows around it */
+            /* Missing: outline property that would wrap the button */
+        }
+
+        .icon-button svg {
+            height: 35px;
+            width: 35px;
+            display: block;
+            fill: white;
+            /* Space between SVG and button edges makes background visible */
+            margin: 2px;
+        }
+
+        .action-button {
+            background-color: #007bff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* VIOLATION: Only background color changes on focus */
+        .action-button:focus {
+            background-color: #0056b3;
+            /* Missing: outline property */
+        }
+    </style>
+</head>
+<body>
+    <h1>Application Toolbar Example</h1>
+
+    <div class="toolbar">
+        <button type="button"
+                class="icon-button"
+                aria-label="Search"
+                data-expected-violation="true"
+                data-violation-id="ErrFocusBackgroundColorOnly"
+                data-violation-reason="This is the exact scenario from the user's example: Button with black background contains SVG icon with space/margin around it. Focus is indicated only by background-color change from black to #333333 showing in the gap between SVG and button border. No outline property exists. Magnified users cannot see the edge gaps to detect color change. Users who look away miss the subtle background shift. The space-based color visibility technique fails WCAG 2.4.7 - must use outline to wrap button boundary for persistent focus indication.">
+            <svg tabindex="-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 99.8">
+                <title>Search</title>
+                <path d="M63.4 10.9C48.9-3.8 25.1-3.8 10.5 11-2.6 24.3-3.7 45.9 8.2 60.4 20.5 75.5 42 78.5 57.8 67.9l29.8 29.6c2.8 2.7 7.3 2.6 9.8-.3l.6-.7c2.3-2.7 2.2-6.7-.3-9.2L67.9 57.7c9.9-14.7 8-34.3-4.5-46.8zm-7.8 44.7c-10.3 10.3-26.9 10.3-37.2 0s-10.3-26.9 0-37.2 26.9-10.3 37.2 0c10.2 10.4 10.2 27 0 37.2z"></path>
+            </svg>
+        </button>
+
+        <button type="button"
+                class="icon-button"
+                aria-label="Settings"
+                data-expected-violation="true"
+                data-violation-id="ErrFocusBackgroundColorOnly"
+                data-violation-reason="Icon button using background-color focus indication through visible padding/margin around icon. No outline property. Pattern fails for magnified users who cannot see button edges, and for users needing persistent focus boundary markers. WCAG 2.4.7 requires outline-based focus indication.">
+            <svg tabindex="-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                <title>Settings</title>
+                <path d="M50 30c-11 0-20 9-20 20s9 20 20 20 20-9 20-20-9-20-20-20zm42 15l-10-5c0-1 1-3 1-5s0-4-1-5l10-5c1 0 1-1 1-2-1-5-3-10-6-14-1-1-2-1-3 0l-9 7c-2-1-4-2-6-3l-2-11c0-1-1-2-2-2-5-1-10-1-15 0-1 0-2 1-2 2l-2 11c-2 1-4 2-6 3l-9-7c-1-1-2-1-3 0-3 4-5 9-6 14 0 1 0 2 1 2l10 5c0 1-1 3-1 5s0 4 1 5l-10 5c-1 0-1 1-1 2 1 5 3 10 6 14 1 1 2 1 3 0l9-7c2 1 4 2 6 3l2 11c0 1 1 2 2 2 5 1 10 1 15 0 1 0 2-1 2-2l2-11c2-1 4-2 6-3l9 7c1 1 2 1 3 0 3-4 5-9 6-14 0-1 0-2-1-2z"></path>
+            </svg>
+        </button>
+
+        <button type="button"
+                class="action-button"
+                data-expected-violation="true"
+                data-violation-id="ErrFocusBackgroundColorOnly"
+                data-violation-reason="Text button with background-color only focus (blue to darker blue) without outline. Fails same test as icon buttons - color change insufficient for magnified users, users with attention challenges, and those requiring clear focus boundaries per WCAG 2.4.7.">
+            Save Changes
+        </button>
+    </div>
+
+    <main style="padding: 2rem;">
+        <h2>Dashboard Content</h2>
+        <p>
+            Tab through the toolbar buttons above. Notice the search and settings icon buttons
+            use a technique where the button background is black, and the SVG icon has a small
+            margin/padding creating a gap.
+        </p>
+        <p>
+            When focused, the button background changes from pure black to dark grey (#333333),
+            and this color change is visible in the thin gap around the icon. However, there is
+            no outline property.
+        </p>
+
+        <h3>Why This Fails WCAG 2.4.7:</h3>
+        <ul>
+            <li><strong>Magnification:</strong> At 200-400% zoom, users often see only the icon itself, not the thin border area where the background color shows</li>
+            <li><strong>Attention/Memory:</strong> If a user looks away from the screen and returns, the subtle background color change provides no obvious marker that the button has focus</li>
+            <li><strong>Color Perception:</strong> The difference between black (#000000) and dark grey (#333333) is subtle and may not be perceptible to all users</li>
+            <li><strong>Persistence:</strong> Background color requires examining the entire button surface; outline provides a clear boundary marker</li>
+            <li><strong>Conformance:</strong> WCAG 2.4.7 specifically requires focus to be "visible" - a thin ring of slightly lighter black in padding gaps is not sufficiently visible</li>
+        </ul>
+
+        <p>
+            <strong>Solution:</strong> Add <code>outline: 2px solid #fff;</code> or similar to the
+            :focus state to create a clear, obvious visual indicator that wraps the button boundary.
+        </p>
+    </main>
+</body>
+</html>

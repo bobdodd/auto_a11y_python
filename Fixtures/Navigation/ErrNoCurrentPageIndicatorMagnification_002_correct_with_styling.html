@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Navigation With Visual Indicator</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoCurrentPageIndicatorMagnification_002_correct_with_styling",
+    "issueId": "ErrNoCurrentPageIndicatorMagnification",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Navigation has both aria-current and visual styling",
+    "wcag": ["1.4.13", "2.4.8"],
+    "impact": "High"
+}
+    </script>
+    <style>
+        nav a {
+            display: block;
+            padding: 10px;
+            color: #000;
+            text-decoration: none;
+        }
+        [aria-current="page"] {
+            font-weight: bold;
+            background-color: #0066cc;
+            color: white;
+            border-left: 4px solid #003366;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about" aria-current="page">About Us</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>About Us</h1>
+        <p>Screen magnifier users can immediately identify the current page when viewing only the navigation.</p>
+        <p>Multiple visual cues: bold text, blue background, white text color, left border, underline.</p>
+        <p>Combined with aria-current="page" for screen reader users.</p>
+        <p>Test at 400% zoom - the current page is unmistakable!</p>
+    </main>
+</body>
+</html>

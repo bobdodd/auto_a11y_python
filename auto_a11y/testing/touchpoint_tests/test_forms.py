@@ -412,6 +412,25 @@ async def test_forms(page) -> Dict[str, Any]:
                 const inputs = [];
                 const fields = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="tel"], input[type="url"], input[type="number"], textarea, input:not([type])');
 
+                function getFullXPath(element) {
+                    if (!element) return '';
+                    function getElementIdx(el) {
+                        let count = 1;
+                        for (let sib = el.previousSibling; sib; sib = sib.previousSibling) {
+                            if (sib.nodeType === 1 && sib.tagName === el.tagName) count++;
+                        }
+                        return count;
+                    }
+                    let path = '';
+                    while (element && element.nodeType === 1) {
+                        const idx = getElementIdx(element);
+                        const tagName = element.tagName.toLowerCase();
+                        path = `/${tagName}[${idx}]${path}`;
+                        element = element.parentNode;
+                    }
+                    return path;
+                }
+
                 function getComputedStyleValue(element, property) {
                     try {
                         return window.getComputedStyle(element).getPropertyValue(property);
@@ -537,6 +556,8 @@ async def test_forms(page) -> Dict[str, Any]:
                         id: field.id || '',
                         className: field.className || '',
                         name: field.name || '',
+                        xpath: getFullXPath(field),
+                        html: field.outerHTML.substring(0, 200),
                         normalOutlineStyle: normalStyle.outlineStyle,
                         normalOutlineWidth: normalStyle.outlineWidth,
                         normalOutlineColor: normalStyle.outlineColor,
@@ -744,6 +765,9 @@ async def test_forms(page) -> Dict[str, Any]:
                         'type': result_type,
                         'cat': 'forms',
                         'element': field['tag'],
+                        'xpath': field.get('xpath', ''),
+                        'html': field.get('html', ''),
+                        'description': violation_reason,
                         'selector': element_id,
                         'metadata': {
                             'what': violation_reason,

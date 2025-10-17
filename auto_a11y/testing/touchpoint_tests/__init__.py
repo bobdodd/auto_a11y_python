@@ -53,6 +53,7 @@ TOUCHPOINT_TESTS = {
     'lists': test_lists,
     'maps': test_maps,
     'menus': test_menus,
+    'navigation': test_menus,  # Navigation touchpoint uses menus test
     'modals': test_modals,
     'read_more_links': test_read_more_links,
     'tabindex': test_tabindex,

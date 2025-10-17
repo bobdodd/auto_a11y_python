@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Navigation With aria-current</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoCurrentPageIndicatorScreenReader_002_correct_with_aria",
+    "issueId": "ErrNoCurrentPageIndicatorScreenReader",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Navigation properly uses aria-current=\"page\"",
+    "wcag": "5.2.4",
+    "impact": "High"
+}
+    </script>
+    <style>
+        [aria-current="page"] {
+            font-weight: bold;
+            background: #eee;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about" aria-current="page">About Us</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>About Us</h1>
+        <p>Screen reader users immediately hear "About Us, current page" when reaching the link.</p>
+        <p>Visual users see the styling (bold, background, underline).</p>
+        <p>Both programmatic (aria-current) and visual indicators are present!</p>
+    </main>
+</body>
+</html>

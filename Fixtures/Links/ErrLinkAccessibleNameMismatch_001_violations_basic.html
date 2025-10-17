@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrLinkAccessibleNameMismatch - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLinkAccessibleNameMismatch_001_violations_basic",
+    "issueId": "ErrLinkAccessibleNameMismatch",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links with accessible names that don't start with visible text, breaking voice control",
+    "wcag": "2.5.3, 2.4.6",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Link Accessible Name Mismatch</h1>
+
+    <main>
+        <!-- VIOLATION 1: aria-label doesn't start with visible text -->
+        <section>
+            <h2>Article About Peer Support</h2>
+            <p>Discover how support groups make a difference.
+            <a href="/article1.html"
+               aria-label="How Peer Support Groups Changed Hazel's Life"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkAccessibleNameMismatch"
+               data-violation-reason="Visible text is 'Read more' but aria-label starts with 'How', not 'Read more'. Voice users saying 'Click Read more' will fail.">Read more</a></p>
+        </section>
+
+        <!-- VIOLATION 2: aria-label is completely different -->
+        <section>
+            <h2>Community Programs</h2>
+            <p>We offer various programs for members.
+            <a href="/programs.html"
+               aria-label="Explore all community programs and events"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkAccessibleNameMismatch"
+               data-violation-reason="Visible text is 'Learn more' but aria-label starts with 'Explore'. Voice command 'Click Learn more' won't work.">Learn more</a></p>
+        </section>
+
+        <!-- VIOLATION 3: aria-labelledby references element with different starting text -->
+        <section>
+            <h2>Download Resources</h2>
+            <p id="download-desc">Complete guide to accessibility best practices (PDF, 2MB)</p>
+            <a href="/guide.pdf"
+               aria-labelledby="download-desc"
+               data-expected-violation="true"
+               data-violation-id="ErrLinkAccessibleNameMismatch"
+               data-violation-reason="Visible text is 'Download' but aria-labelledby text starts with 'Complete'. Voice users cannot say 'Click Download'.">Download</a>
+        </section>
+    </main>
+</body>
+</html>

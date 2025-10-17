@@ -515,12 +515,12 @@ How to fix: Remove alt attributes from non-supporting elements and use appropria
 ID: ErrAltTooLong
 Type: Error
 Impact: Medium
-WCAG: 1.1.1 Non-text Content (Level A)
+WCAG: 5.2.4 Accessible Documentation (Conformance Requirement)
 Touchpoint: images
-Description: Alt text exceeds 150 characters, making it difficult for screen reader users to process
-Why it matters: Excessively long alt text creates a poor listening experience and may indicate that complex information should be presented differently.
-Who it affects: Screen reader users who must listen to lengthy descriptions, users with cognitive disabilities who may struggle with verbose content.
-How to fix: Limit alt text to 150 characters or less, use longdesc or aria-describedby for complex images, provide detailed descriptions in adjacent text content.
+Description: Alt text exceeds 150 characters without proper structure, making it difficult for screen reader users to process
+Why it matters: This fails WCAG 5.2.4 Accessibility Supported because even though the page technically meets WCAG success criteria by providing alt text, it does not work properly with assistive technology (screen readers). Screen readers read alt text as a continuous unstructured string without the ability to navigate, skim, or use reading commands that work with properly structured HTML. Long alt text removes screen reader users' ability to use headings navigation, paragraph jumps, list navigation, and other assistive technology features that sighted users take for granted when reading long descriptions. The content may be technically present but is not accessibility-supported because it cannot be effectively used with the user's assistive technology.
+Who it affects: Screen reader users who must listen to lengthy unstructured descriptions without visual scanning or paragraph breaks, users with cognitive disabilities who struggle with processing long blocks of text without structure, users with attention difficulties who need clear information hierarchy, users with memory challenges who cannot retain long unbroken text passages
+How to fix: Limit alt text to 150 characters maximum for concise descriptions. For complex images requiring longer descriptions, use proper structured alternatives: use longdesc attribute or aria-describedby pointing to structured HTML content with headings, paragraphs, lists, and emphasis. Provide detailed descriptions in adjacent visible text content with proper semantic markup. Consider using figure/figcaption for images with captions. Never use alt text as a substitute for properly structured documentation - alt text should be brief, with complex details provided through accessible structured content.
 
 ---
 
@@ -1580,6 +1580,18 @@ How to fix: Write link text that describes the destination or action (e.g., "Dow
 
 ---
 
+ID: ErrLinkAccessibleNameMismatch
+Type: Error
+Impact: High
+WCAG: 2.5.3 Label in Name, 2.4.6 Headings and Labels
+Touchpoint: links
+Description: Link's accessible name does not start with its visible text, preventing voice control users from activating it
+Why it matters: Voice control users (like those using Dragon NaturallySpeaking or Voice Control on iOS/Mac) activate links by saying the visible text they see on screen (e.g., "Click Read more"). If the accessible name doesn't start with the visible text, the voice command will fail. For example, a link showing "Read more" with aria-label="How Peer Support Groups Changed Hazel's Life" cannot be activated by saying "Click Read more" because the accessible name doesn't begin with "Read more". WCAG 2.5.3 requires that the visible text be included in the accessible name (preferably at the start), and 2.4.6 requires that labels accurately describe their purpose in a way that matches user expectations.
+Who it affects: Voice control users who cannot activate links, speech input users relying on visible labels to navigate, users with motor disabilities who use voice commands instead of mouse/touch, and users with cognitive disabilities who need consistency between what they see and what they can say
+How to fix: Ensure the accessible name starts with the visible text. For example: if visible text is "Read more", the aria-label should be "Read more about Peer Support Groups" not "How Peer Support Groups Changed Hazel's Life". This allows voice users to say "Click Read more" while still providing additional context for screen reader users. Alternatively, use visually-hidden text that starts with the visible text, or place the descriptive text before the link in the DOM structure.
+
+---
+
 ID: ErrMainLandmarkHasAriaLabelAndAriaLabelledByAttrs
 Type: Error
 Impact: Medium
@@ -2221,10 +2233,10 @@ Type: Error
 Impact: High
 WCAG: 1.1.1 Non-text Content (Level A)
 Touchpoint: images
-Description: SVG image lacks accessible name through title, aria-label, or aria-labelledby
-Why it matters: Without accessible names, SVG content is invisible to screen reader users.
-Who it affects: Blind and low vision users using screen readers.
-How to fix: Add <title> element with aria-labelledby, or use role="img" with aria-label for simple SVGs.
+Description: Inline SVG lacks accessible name and proper context-specific handling
+Why it matters: Inline SVG elements require different treatment based on context. When an SVG appears alone as an image, it needs role="img" with aria-label or a <title> element with aria-labelledby to provide an accessible name. However, when an SVG appears inside a link or button that also contains text (like <a href="/play"><svg>...</svg><span>Play</span></a>), the SVG should be marked as decorative with aria-hidden="true" since the text provides the accessible name. Without proper handling, screen readers either announce nothing (missing name) or create redundancy by announcing both the image and text. The context determines the correct fix: standalone SVGs need accessible names, SVGs with adjacent text need aria-hidden="true".
+Who it affects: Screen reader users who need either proper image descriptions for standalone SVGs or clean link/button announcements without decorative image redundancy, users with cognitive disabilities who are confused by redundant announcements, voice control users who need consistent command targets
+How to fix: First, check the SVG's context. If the SVG is inside a link or button that contains text (e.g., <a><svg></svg><span>Text</span></a>), add aria-hidden="true" to the SVG since the text provides the accessible name. If the SVG stands alone as a meaningful image, add role="img" with aria-label for simple icons, or add a <title> element as the first child of the SVG with aria-labelledby pointing to the title's id for complex images. For decorative SVGs not in links/buttons, use aria-hidden="true" and ensure focusable="false". Never add accessible names to SVGs that have adjacent text in the same interactive element - this creates redundancy.
 
 ---
 
@@ -2405,6 +2417,18 @@ Description: Focus indicator uses transparent or nearly transparent color, makin
 Why it matters: A transparent focus indicator is functionally the same as no focus indicator - users cannot see where keyboard focus is located. This might occur from using rgba with 0 or very low alpha values, setting outline-color to transparent, or using colors that match the background. The focus indicator exists technically but provides no practical benefit to users trying to navigate.
 Who it affects: Keyboard users who need visible focus indicators to navigate, users with low vision who need clear visual cues, users with color blindness who may already struggle with certain color combinations, and users with cognitive disabilities who need obvious focus indicators
 How to fix: Use opaque colors with sufficient contrast for focus indicators. Replace transparent outlines with visible colors, ensure at least 3:1 contrast ratio between focus indicator and background, use solid colors or high alpha values (0.7 or higher) for rgba colors. Test focus indicators on different backgrounds across your site. Consider using box-shadow or background changes as additional focus indicators.
+
+---
+
+ID: ErrFocusBackgroundColorOnly
+Type: Error
+Impact: High
+WCAG: 2.4.7 Focus Visible (Level AA), 5.2.4 Accessible Documentation (Conformance Requirement)
+Touchpoint: focus
+Description: Interactive element's focus indicator relies solely on background-color changes without using CSS outline property, failing WCAG 2.4.7 and conformance requirement 5.2.4
+Why it matters: Focus indication through background-color alone is fundamentally inaccessible for multiple user groups and fails WCAG conformance requirements. Screen magnifier users at 200-400% zoom often see only a portion of an element (like just the text cursor in an input field, or just an icon within a button) and cannot see background color changes that require viewing the entire element surface. Users who briefly look away and return to the page cannot determine which element has focus without carefully examining all interactive elements. The CSS outline property is specifically designed to provide a persistent boundary marker that wraps element edges and remains visible at any magnification level. Background-color changes may be supplementary but cannot be the primary focus indicator. Common implementations include buttons with SVG icons where space between the icon and button border reveals background color changes, or form fields with subtle background tints - none of these meet WCAG requirements without an outline.
+Who it affects: Screen magnifier users who can only see portions of elements and miss background color changes, users with attention or memory disabilities who need persistent focus markers when returning attention to the page, users with low vision who cannot detect subtle background color shifts, keyboard-only users who need obvious focus indicators to navigate efficiently, users with color perception issues who may not detect color value changes, mobile users with small screens who need clear focus boundaries, users with cognitive disabilities who benefit from consistent, obvious focus patterns, and voice control users who need to verify focus location before issuing commands
+How to fix: Add CSS outline property to all :focus pseudo-class selectors for interactive elements (buttons, links, inputs, textareas, select elements). Use outline with at least 2px width and a color that contrasts with both the element and surrounding background (minimum 3:1 contrast ratio per WCAG 2.4.11). Consider using outline-offset to create space between the element edge and outline for better visibility. Example: button:focus { outline: 3px solid #ffffff; outline-offset: 2px; }. Background-color and border changes can supplement but never replace the outline property. Test with browser zoom at 200-400% to verify outline visibility at high magnification. The outline must wrap the element boundary to provide a persistent, obvious visual marker regardless of element size, zoom level, or user attention state.
 
 ---
 
@@ -3647,16 +3671,6 @@ Why it matters: Headings with IDs are often link targets for navigation, requiri
 Who it affects: All users who use in-page navigation links, screen reader users who navigate by headings, keyboard users who follow fragment links.
 How to fix: Ensure that the ID attribute is referenced and its use is valid.
 
-ID: ErrAltTooLong
-Type: Error
-Impact: Medium
-WCAG: 1.1.1 Non-text Content (Level A)
-Touchpoint: headings
-Description: Alt text exceeds 150 characters, making it difficult for screen reader users to process
-Why it matters: Excessively long alt text creates a poor listening experience and may indicate that complex information should be presented differently.
-Who it affects: Screen reader users who must listen to lengthy descriptions, users with cognitive disabilities who may struggle with verbose content.
-How to fix: Limit alt text to 150 characters or less, use longdesc or aria-describedby for complex images, provide detailed descriptions in adjacent text content.
-
 ID: ErrContentObscuring
 Type: Error
 Impact: High
@@ -3966,16 +3980,6 @@ Description: Alt text contains redundant words like "image of" or "picture of"
 Why it matters: Screen readers already announce images as images, so these phrases create redundant announcements.
 Who it affects: Screen reader users who hear repetitive "image image of" announcements.
 How to fix: Remove "image of", "picture of", "graphic of" from alt text; describe the content directly.
-
-ID: ErrSVGNoAccessibleName
-Type: Error
-Impact: High
-WCAG: 1.1.1 Non-text Content (Level A)
-Touchpoint: headings
-Description: SVG image lacks accessible name through title, aria-label, or aria-labelledby
-Why it matters: Without accessible names, SVG content is invisible to screen reader users.
-Who it affects: Blind and low vision users using screen readers.
-How to fix: Add <title> element with aria-labelledby, or use role="img" with aria-label for simple SVGs.
 
 ID: ErrSmallText
 Type: Error

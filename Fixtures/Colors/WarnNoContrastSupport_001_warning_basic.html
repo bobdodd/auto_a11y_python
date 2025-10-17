@@ -6,13 +6,13 @@
     <title>Dashboard - No High Contrast Support</title>
     <script type="application/json" id="test-metadata">
 {
-    "id": "InfoNoContrastSupport_001_info_basic",
-    "issueId": "InfoNoContrastSupport",
+    "id": "WarnNoContrastSupport_001_warning_basic",
+    "issueId": "WarnNoContrastSupport",
     "expectedViolationCount": 1,
     "expectedPassCount": 0,
-    "description": "Site doesn't support high contrast mode",
-    "wcag": "1.4.3",
-    "impact": "Low"
+    "description": "Site doesn't support OS high contrast mode preferences",
+    "wcag": "1.4.3, 5.2.4",
+    "impact": "Medium"
 }
     </script>
     <style>
@@ -36,8 +36,8 @@
         }
     </style>
 </head>
-<body data-info="true"
-      data-info-reason="Site doesn't test or adapt for OS high contrast mode, which may cause usability issues for low vision users">
+<body data-expected-violation="true"
+      data-violation-reason="Site doesn't support prefers-contrast media query, failing to support users who require high contrast mode for accessibility">
     <h1>User Dashboard</h1>
 
     <div class="card">

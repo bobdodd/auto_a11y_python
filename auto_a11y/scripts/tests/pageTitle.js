@@ -80,7 +80,8 @@ function pageTitleScrape() {
     }
     
     // Check for multiple title elements (WCAG 2.4.2 violation - should be error)
-    const allTitles = document.querySelectorAll('title');
+    // Only count HTML title elements in <head>, not SVG <title> elements
+    const allTitles = document.querySelectorAll('head > title');
     if (allTitles.length > 1) {
         errorList.push({
             url: window.location.href,

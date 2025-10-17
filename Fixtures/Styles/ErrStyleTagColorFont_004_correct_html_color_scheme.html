@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Tag with HTML color-scheme - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleTagColorFont_004_correct_html_color_scheme",
+    "issueId": "ErrStyleTagColorFont",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Style tag targeting html element with only color-scheme property - should NOT be flagged as this is an accessibility feature",
+    "wcag": ["1.4.3", "1.4.8"],
+    "impact": "High"
+}
+    </script>
+    <style>
+        html {
+            color-scheme: dark light;
+        }
+    </style>
+    <link rel="stylesheet" href="external.css">
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="The <style> tag targets html with ONLY the color-scheme property, which is an accessibility feature for dark mode support. This should NOT be flagged. Actual dark mode styling is done via external CSS.">
+    <h1>Color Scheme in Style Tag</h1>
+
+    <main>
+        <section>
+            <h2>About This Test</h2>
+            <p>This page has a <code>&lt;style&gt;</code> tag that sets <code>color-scheme</code> on the <code>html</code> element.</p>
+
+            <pre><code>&lt;style&gt;
+    html {
+        color-scheme: dark light;
+    }
+&lt;/style&gt;</code></pre>
+        </section>
+
+        <section>
+            <h2>Why This Should Pass</h2>
+            <ul>
+                <li>The color-scheme property is an accessibility feature</li>
+                <li>It enables native dark mode for form controls and system UI</li>
+                <li>It respects user preferences for color schemes</li>
+                <li>This is the recommended way to enable dark mode support</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Test Expectation</h2>
+            <p><strong>Expected Result:</strong> The style tag should NOT be flagged because it only sets color-scheme on html. Actual styling is done via external CSS which is allowed.</p>
+        </section>
+
+        <section>
+            <h2>Form Example</h2>
+            <form>
+                <p>
+                    <label for="name">Name:</label><br>
+                    <input type="text" id="name" placeholder="Your name">
+                </p>
+                <p>
+                    <button type="submit">Submit</button>
+                </p>
+            </form>
+            <p>Form controls will automatically use dark styling when system prefers dark mode.</p>
+        </section>
+    </main>
+</body>
+</html>

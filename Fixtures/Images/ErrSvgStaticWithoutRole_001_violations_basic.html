@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Static SVG Without role="img"</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrSvgStaticWithoutRole_001_violations_basic",
+    "issueId": "ErrSvgStaticWithoutRole",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Static SVG elements missing role=\"img\" attribute",
+    "wcag": ["1.1.1", "4.1.2"],
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Static SVG Icons Without Role</h1>
+
+    <!-- SVG with aria-label but no role -->
+    <svg width="50" height="50"
+         aria-label="Home icon"
+         data-expected-violation="true"
+         data-violation-id="ErrSvgStaticWithoutRole"
+         data-violation-reason="Static SVG has aria-label but missing role=img">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+    </svg>
+
+    <!-- SVG with title but no role -->
+    <svg width="100" height="100"
+         aria-labelledby="chart-title"
+         data-expected-violation="true"
+         data-violation-id="ErrSvgStaticWithoutRole"
+         data-violation-reason="Static SVG has title and aria-labelledby but missing role=img">
+        <title id="chart-title">Sales data visualization</title>
+        <rect width="100" height="80" fill="blue"/>
+    </svg>
+
+    <!-- SVG with no role and no accessible name -->
+    <svg width="24" height="24"
+         data-expected-violation="true"
+         data-violation-id="ErrSvgStaticWithoutRole"
+         data-violation-reason="Static SVG with neither role nor accessible name">
+        <circle cx="12" cy="12" r="10" fill="red"/>
+    </svg>
+
+    <!-- SVG with wrong role (not "img") -->
+    <svg width="50" height="50"
+         role="graphics-symbol"
+         aria-label="Warning icon"
+         data-expected-violation="true"
+         data-violation-id="ErrSvgStaticWithoutRole"
+         data-violation-reason="Static SVG has role but it's not role=img">
+        <path d="M12 2L1 21h22L12 2z"/>
+    </svg>
+
+    <p>These are static icon SVGs that need role="img"</p>
+</body>
+</html>

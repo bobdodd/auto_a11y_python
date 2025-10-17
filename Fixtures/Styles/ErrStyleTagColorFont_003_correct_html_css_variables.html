@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Tag with HTML CSS Variables - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleTagColorFont_003_correct_html_css_variables",
+    "issueId": "ErrStyleTagColorFont",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Style tag targeting html element with only CSS custom properties - should NOT be flagged",
+    "wcag": ["1.4.3", "1.4.8", "1.4.12"],
+    "impact": "High"
+}
+    </script>
+    <style>
+        html {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --font-size-base: 16px;
+            --spacing-unit: 8px;
+            --border-radius: 4px;
+        }
+    </style>
+    <link rel="stylesheet" href="external.css">
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="The <style> tag targets the html element with ONLY CSS custom properties (--primary-color, --font-size-base, etc.). This is a legitimate pattern for design systems and should NOT be flagged. Actual styling is done via external CSS.">
+    <h1>CSS Variables in Style Tag</h1>
+
+    <main>
+        <section>
+            <h2>About This Test</h2>
+            <p>This page has a <code>&lt;style&gt;</code> tag that targets the <code>html</code> element with CSS custom properties.</p>
+
+            <pre><code>&lt;style&gt;
+    html {
+        --primary-color: #007bff;
+        --secondary-color: #6c757d;
+        --font-size-base: 16px;
+        --spacing-unit: 8px;
+    }
+&lt;/style&gt;</code></pre>
+        </section>
+
+        <section>
+            <h2>Why This Should Pass</h2>
+            <ul>
+                <li>The style tag contains ONLY CSS custom properties targeting html</li>
+                <li>No hard-coded color or font properties are applied to html</li>
+                <li>CSS variables are a legitimate pattern for design systems</li>
+                <li>Users can still override these variables with their own stylesheets</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Test Expectation</h2>
+            <p><strong>Expected Result:</strong> The style tag should NOT be flagged as ErrStyleTagColorFont because it only sets CSS variables on the html element. Actual styling is done via external CSS which is allowed.</p>
+        </section>
+
+        <section>
+            <h2>Example Button</h2>
+            <button class="button">Click Me</button>
+            <p>This button uses the CSS variable defined in the html style tag.</p>
+        </section>
+    </main>
+</body>
+</html>

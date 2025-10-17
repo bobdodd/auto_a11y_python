@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrContentOutsideLandmarks - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrContentOutsideLandmarks_002_correct_in_landmarks",
+    "issueId": "ErrContentOutsideLandmarks",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "All content properly organized within landmark regions (no violations)",
+    "wcag": "5.2.4",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <!-- Skip link is acceptable outside landmarks -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- All content in banner - CORRECT -->
+    <header role="banner">
+        <h1>Content Properly In Landmarks - Correct Usage</h1>
+        <p>This introductory paragraph is properly contained within the banner landmark.</p>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main content properly contained - CORRECT -->
+    <main id="main-content">
+        <h2>Main Content</h2>
+        <p>This content is properly within the main landmark, making it easy for users to navigate directly to the primary content using landmark navigation.</p>
+
+        <article>
+            <h3>Article Title</h3>
+            <p>Article content nested within main landmark.</p>
+        </article>
+    </main>
+
+    <!-- Complementary content properly contained - CORRECT -->
+    <aside role="complementary" aria-label="Related information">
+        <h3>Sidebar Content</h3>
+        <p>This content is properly organized within an aside landmark.</p>
+    </aside>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company. All rights reserved.</p>
+        <p>All content on this page is properly organized within semantic landmarks, ensuring it can be discovered via NVDA 'D' key, JAWS ';' key, or VoiceOver rotor.</p>
+    </footer>
+</body>
+</html>

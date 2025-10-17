@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" style="color-scheme: dark light;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Scheme on HTML Element - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_006_correct_html_color_scheme",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "HTML element with color-scheme property for dark mode support - should NOT be flagged as this is an accessibility feature",
+    "wcag": ["1.4.3", "1.4.8"],
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .code-block {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+            .code-block {
+                background: rgba(255, 255, 255, 0.05);
+            }
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="The <html> element uses the color-scheme property which tells the browser to support both light and dark color schemes. This is an ACCESSIBILITY FEATURE that allows the page to respect user preferences for dark mode. It should NOT be flagged as a violation. The color-scheme property enables native dark mode for form controls, scrollbars, and system UI elements.">
+    <h1>Color Scheme Support</h1>
+
+    <main>
+        <p>This page demonstrates the correct use of the <code>color-scheme</code> property on the <code>&lt;html&gt;</code> element.</p>
+
+        <section>
+            <h2>What is color-scheme?</h2>
+            <div class="code-block">
+                <code>&lt;html style="color-scheme: dark light;"&gt;</code>
+            </div>
+            <p>The <code>color-scheme</code> property tells the browser which color schemes the page supports. This enables:</p>
+            <ul>
+                <li><strong>Native dark mode</strong> for form controls (inputs, selects, buttons)</li>
+                <li><strong>System UI theming</strong> for scrollbars and native widgets</li>
+                <li><strong>Automatic adjustments</strong> based on user preferences</li>
+                <li><strong>Better performance</strong> than JavaScript-based theme switching for system elements</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Why This Is An Accessibility Feature</h2>
+            <p>The <code>color-scheme</code> property provides important accessibility benefits:</p>
+            <ul>
+                <li><strong>Respects user preferences</strong> - honors system-wide dark mode settings</li>
+                <li><strong>Reduces eye strain</strong> - dark mode is easier on the eyes in low-light environments</li>
+                <li><strong>Benefits users with photophobia</strong> - reduces light sensitivity issues</li>
+                <li><strong>Improves readability</strong> - some users read better with dark backgrounds</li>
+                <li><strong>Saves battery</strong> on OLED screens (accessibility benefit for mobile users)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Form Controls Example</h2>
+            <p>These form controls will automatically use dark mode styling when the user's system prefers dark mode:</p>
+            <form>
+                <p>
+                    <label for="name">Name:</label><br>
+                    <input type="text" id="name" name="name" placeholder="Enter your name">
+                </p>
+                <p>
+                    <label for="theme">Preferred Theme:</label><br>
+                    <select id="theme" name="theme">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="auto">Auto (System)</option>
+                    </select>
+                </p>
+                <p>
+                    <label>
+                        <input type="checkbox" name="newsletter">
+                        Subscribe to newsletter
+                    </label>
+                </p>
+                <p>
+                    <button type="submit">Submit</button>
+                </p>
+            </form>
+        </section>
+
+        <section>
+            <h2>Combined with CSS Variables</h2>
+            <p>The <code>color-scheme</code> property works great with CSS variables for comprehensive theming:</p>
+            <div class="code-block">
+                <code>&lt;html style="color-scheme: dark light; --primary-color: #007bff;"&gt;</code>
+            </div>
+            <p>This combination allows both native system UI theming AND custom application theming.</p>
+        </section>
+
+        <section>
+            <h2>Testing Dark Mode</h2>
+            <p>To test this page in dark mode:</p>
+            <ul>
+                <li><strong>macOS:</strong> System Preferences → General → Appearance → Dark</li>
+                <li><strong>Windows:</strong> Settings → Personalization → Colors → Choose your color → Dark</li>
+                <li><strong>iOS/iPadOS:</strong> Settings → Display & Brightness → Dark</li>
+                <li><strong>Android:</strong> Settings → Display → Dark theme</li>
+            </ul>
+            <p>Notice how form controls automatically adapt to your system preference!</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Color Scheme Demo. Supporting user preferences for better accessibility.</p>
+    </footer>
+</body>
+</html>

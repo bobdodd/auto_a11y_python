@@ -82,6 +82,40 @@ def create_app(config):
         # If no match, return original
         return violation_id
 
+    @app.template_filter('wcag_understanding_url')
+    def wcag_understanding_url(criterion):
+        """Generate WCAG 2.2 Understanding URL for a criterion"""
+        from auto_a11y.reporting.wcag_mapper import format_wcag_link
+        return format_wcag_link(criterion, 'understanding')
+
+    @app.template_filter('wcag_quickref_url')
+    def wcag_quickref_url(criterion):
+        """Generate WCAG 2.2 Quick Reference URL for a criterion"""
+        from auto_a11y.reporting.wcag_mapper import format_wcag_link
+        return format_wcag_link(criterion, 'quickref')
+
+    @app.template_filter('wcag_name')
+    def wcag_name(criterion):
+        """Extract just the name from a WCAG criterion string (e.g., '2.4.8 Location (Level AAA)' -> 'Location')"""
+        # Handle both full format "2.4.8 Location (Level AAA)" and short format "2.4.8"
+        if not criterion:
+            return criterion
+
+        # Split and check if we have a name part
+        parts = str(criterion).split()
+        if len(parts) >= 2:
+            # Extract name (everything after the number, before the level)
+            # e.g., "2.4.8 Location (Level AAA)" -> parts[1] = "Location"
+            # e.g., "5.2.4 Accessibility Supported" -> parts[1:] = ["Accessibility", "Supported"]
+            name_parts = []
+            for i, part in enumerate(parts[1:], 1):
+                if part.startswith('('):  # Stop at "(Level"
+                    break
+                name_parts.append(part)
+            return ' '.join(name_parts) if name_parts else parts[0]
+
+        return criterion
+
     # Main routes
     @app.route('/')
     def index():

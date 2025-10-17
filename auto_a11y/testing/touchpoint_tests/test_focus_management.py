@@ -202,15 +202,27 @@ async def test_focus_management(page) -> Dict[str, Any]:
                 
                 // Check in-page link targets
                 const anchorLinks = Array.from(document.querySelectorAll('a[href^="#"]:not([href="#"])'));
+                const processedTargets = new Set();
+
                 anchorLinks.forEach(link => {
                     const targetId = link.getAttribute('href').substring(1);
                     const target = document.getElementById(targetId);
-                    
-                    if (target) {
+
+                    if (target && !processedTargets.has(targetId)) {
                         const tabindex = target.getAttribute('tabindex');
                         const isInteractive = ['a', 'button', 'input', 'select', 'textarea'].includes(target.tagName.toLowerCase());
 
                         if (!isInteractive && tabindex !== '-1') {
+                            // Find all anchor links pointing to this target
+                            const linksToTarget = anchorLinks.filter(l =>
+                                l.getAttribute('href').substring(1) === targetId
+                            ).map((l, idx) => ({
+                                index: idx + 1,
+                                html: l.outerHTML.substring(0, 200),
+                                xpath: getFullXPath(l),
+                                text: l.textContent.trim()
+                            }));
+
                             results.errors.push({
                                 err: 'ErrAnchorTargetTabindex',
                                 type: 'err',
@@ -219,9 +231,15 @@ async def test_focus_management(page) -> Dict[str, Any]:
                                 xpath: getFullXPath(target),
                                 html: target.outerHTML.substring(0, 200),
                                 description: 'In-page link target needs tabindex="-1" for keyboard accessibility - non-interactive element must be programmatically focusable',
-                                targetId: targetId,
-                                currentTabindex: tabindex || 'not set'
+                                metadata: {
+                                    targetId: targetId,
+                                    currentTabindex: tabindex || 'not set',
+                                    anchorLinks: linksToTarget,
+                                    anchorLinksCount: linksToTarget.length
+                                }
                             });
+
+                            processedTargets.add(targetId);
                         }
                     }
                 });

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page with SVG Titles - Online Store</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMultiplePageTitles_004_correct_with_svg_titles",
+    "issueId": "ErrMultiplePageTitles",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Page with one HTML title and multiple SVG titles (correct - SVG titles should not count)",
+    "wcag": "2.4.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="Page contains exactly one HTML <title> element in <head>. SVG <title> elements are for accessibility of SVG graphics and should not be counted as page titles. Browser tab shows consistent title. Screen readers announce the page title correctly. SVG titles provide accessible names for the graphics.">
+    <h1>Graphics Gallery</h1>
+
+    <main>
+        <p>This page contains SVG graphics with their own title elements for accessibility.</p>
+
+        <div class="icon-grid">
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon1-title">
+                    <title id="icon1-title">Home Icon</title>
+                    <rect x="10" y="40" width="80" height="50" fill="#4CAF50"/>
+                    <polygon points="50,10 10,40 90,40" fill="#2E7D32"/>
+                </svg>
+                <p>Home Icon</p>
+            </div>
+
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon2-title">
+                    <title id="icon2-title">Settings Icon</title>
+                    <circle cx="50" cy="50" r="30" fill="none" stroke="#2196F3" stroke-width="4"/>
+                    <circle cx="50" cy="50" r="10" fill="#2196F3"/>
+                </svg>
+                <p>Settings Icon</p>
+            </div>
+
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon3-title">
+                    <title id="icon3-title">Search Icon</title>
+                    <circle cx="40" cy="40" r="25" fill="none" stroke="#FF9800" stroke-width="4"/>
+                    <line x1="60" y1="60" x2="85" y2="85" stroke="#FF9800" stroke-width="4"/>
+                </svg>
+                <p>Search Icon</p>
+            </div>
+
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon4-title">
+                    <title id="icon4-title">User Profile Icon</title>
+                    <circle cx="50" cy="35" r="15" fill="#9C27B0"/>
+                    <path d="M 25 75 Q 25 55 50 55 Q 75 55 75 75 Z" fill="#9C27B0"/>
+                </svg>
+                <p>User Profile Icon</p>
+            </div>
+
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon5-title">
+                    <title id="icon5-title">Shopping Cart Icon</title>
+                    <rect x="20" y="30" width="60" height="40" fill="none" stroke="#F44336" stroke-width="3"/>
+                    <circle cx="35" cy="80" r="5" fill="#F44336"/>
+                    <circle cx="65" cy="80" r="5" fill="#F44336"/>
+                </svg>
+                <p>Shopping Cart Icon</p>
+            </div>
+
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon6-title">
+                    <title id="icon6-title">Email Icon</title>
+                    <rect x="15" y="30" width="70" height="45" fill="none" stroke="#00BCD4" stroke-width="3"/>
+                    <polygon points="15,30 50,55 85,30" fill="none" stroke="#00BCD4" stroke-width="3"/>
+                </svg>
+                <p>Email Icon</p>
+            </div>
+
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon7-title">
+                    <title id="icon7-title">Calendar Icon</title>
+                    <rect x="20" y="25" width="60" height="55" rx="3" fill="none" stroke="#8BC34A" stroke-width="3"/>
+                    <line x1="20" y1="35" x2="80" y2="35" stroke="#8BC34A" stroke-width="3"/>
+                    <line x1="35" y1="20" x2="35" y2="30" stroke="#8BC34A" stroke-width="3"/>
+                    <line x1="65" y1="20" x2="65" y2="30" stroke="#8BC34A" stroke-width="3"/>
+                </svg>
+                <p>Calendar Icon</p>
+            </div>
+
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon8-title">
+                    <title id="icon8-title">Document Icon</title>
+                    <path d="M 25 10 L 25 90 L 75 90 L 75 30 L 55 10 Z" fill="none" stroke="#FF5722" stroke-width="3"/>
+                    <polyline points="55,10 55,30 75,30" fill="none" stroke="#FF5722" stroke-width="3"/>
+                    <line x1="35" y1="45" x2="65" y2="45" stroke="#FF5722" stroke-width="2"/>
+                    <line x1="35" y1="55" x2="65" y2="55" stroke="#FF5722" stroke-width="2"/>
+                    <line x1="35" y1="65" x2="55" y2="65" stroke="#FF5722" stroke-width="2"/>
+                </svg>
+                <p>Document Icon</p>
+            </div>
+
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon9-title">
+                    <title id="icon9-title">Notification Bell Icon</title>
+                    <path d="M 30 45 Q 30 25 50 25 Q 70 25 70 45 L 70 60 L 75 70 L 25 70 L 30 60 Z" fill="none" stroke="#FFC107" stroke-width="3"/>
+                    <line x1="42" y1="75" x2="42" y2="78" stroke="#FFC107" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="50" y1="75" x2="50" y2="80" stroke="#FFC107" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="58" y1="75" x2="58" y2="78" stroke="#FFC107" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <p>Notification Bell Icon</p>
+            </div>
+
+            <div class="icon-item">
+                <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-labelledby="icon10-title">
+                    <title id="icon10-title">Heart Favorite Icon</title>
+                    <path d="M 50 75 Q 25 60 25 45 Q 25 25 40 25 Q 50 25 50 35 Q 50 25 60 25 Q 75 25 75 45 Q 75 60 50 75 Z" fill="#E91E63"/>
+                </svg>
+                <p>Heart Favorite Icon</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Graphics Gallery. All SVG icons include accessible titles.</p>
+    </footer>
+</body>
+</html>

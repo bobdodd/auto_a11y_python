@@ -697,6 +697,30 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users who use landmarks to find navigation menus quickly, keyboard users navigating complex sites with multiple menus, users with cognitive disabilities who need clear identification of navigation areas, and users with motor disabilities who need to minimize unnecessary navigation",
             "how_to_fix": "Wrap navigation areas in <nav> elements or add role=\"navigation\" to containers with navigation links. If you have multiple navigation areas, label each one with aria-label to distinguish them (e.g., aria-label=\"Main navigation\", aria-label=\"Footer links\", aria-label=\"Breadcrumb\"). Not every group of links needs to be a navigation landmark - use it for major navigation blocks that users would want to find quickly."
         },
+        "ErrNoCurrentPageIndicatorScreenReader": {
+            "id": "ErrNoCurrentPageIndicatorScreenReader",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["5.2.4"],
+            "wcag_full": "5.2.4 Accessibility Supported",
+            "category": "navigation",
+            "description": "Navigation lacks aria-current=\"page\" indicator, forcing screen reader users through entire menu to discover current location",
+            "why_it_matters": "This fails WCAG 5.2.4 Accessibility Supported because a common but problematic design pattern relies on a heading immediately after navigation having the same text as a menu item to indicate current page. While this creates a visual connection for sighted users, it provides a terrible experience for screen reader users who must listen to the entire navigation menu (which can be lengthy with many links and submenus) before discovering the matching heading that reveals their current location. Screen reader users cannot \"glance\" at the menu to see the highlighted item - they must sequentially process every menu item, announcement by announcement, until they hear the subsequent heading. This forces users to rely on inefficient linear navigation when the HTML could natively support immediate location awareness through aria-current=\"page\".",
+            "who_it_affects": "Screen reader users (NVDA, JAWS, VoiceOver, TalkBack) who navigate sequentially through content and cannot visually scan for highlighted menu items, users with cognitive disabilities who need immediate feedback about their current location without processing lengthy navigation lists, mobile screen reader users on touch devices who navigate more slowly through menus, users with reading difficulties who struggle to remember their location while processing long lists of links",
+            "how_to_fix": "Add aria-current=\"page\" to the navigation link that corresponds to the current page: <a href=\"/about\" aria-current=\"page\">About Us</a>. Screen readers will announce this as \"About Us, current page\" or similar, immediately informing users of their location without requiring them to listen to subsequent headings or the entire menu. Keep any matching heading for visual users, but don't rely on it as the only indicator. Apply visual styling to aria-current=\"page\" links to create a multi-modal indicator that works for all users."
+        },
+        "ErrNoCurrentPageIndicatorMagnification": {
+            "id": "ErrNoCurrentPageIndicatorMagnification",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["2.4.6", "2.4.8", "5.2.4"],
+            "wcag_full": "2.4.6 Headings and Labels, 2.4.8 Location, 5.2.4 Accessibility Supported",
+            "category": "navigation",
+            "description": "Navigation lacks visual current page indicator, preventing screen magnifier users from knowing their location without panning",
+            "why_it_matters": "Screen magnifier users at high magnification levels (200%-400%+) can only see a small portion of the screen at once - typically not enough to view both the navigation menu and the page heading simultaneously. Without a clear visual indicator in the navigation showing which item represents the current page, magnifier users must constantly pan back and forth between the menu area and the page content area to compare the heading text with menu items to figure out where they are in the site structure. This creates significant cognitive load and navigation friction.",
+            "who_it_affects": "Users with low vision using screen magnification software (ZoomText, MAGic, OS zoom features) who cannot see the entire page layout at once, users with tunnel vision or other visual field defects who see limited screen area, older users who use browser zoom and struggle to maintain spatial awareness, users with cognitive disabilities who need strong visual cues to maintain orientation, mobile users who zoom into content and lose contextual awareness",
+            "how_to_fix": "Apply distinctive visual styling to the current page link in navigation - use a combination of multiple visual indicators: (1) Background color change; (2) Border or underline; (3) Font weight: bold; (4) Icon or symbol. Combine with aria-current=\"page\" for screen reader users. Ensure visual indicators have sufficient contrast. The visual distinction should be immediately recognizable when viewing only the navigation area at high magnification. Test by zooming to 400% and viewing only the navigation - the current page should be unmistakably identified."
+        },
         "ErrMultipleMainLandmarksOnPage": {
             "id": "ErrMultipleMainLandmarksOnPage",
             "type": "Error",
@@ -732,6 +756,18 @@ class IssueCatalog:
             "why_it_matters": "Multiple footers confuse page structure",
             "who_it_affects": "Screen reader users",
             "how_to_fix": "Use only one contentinfo landmark"
+        },
+        "ErrContentOutsideLandmarks": {
+            "id": "ErrContentOutsideLandmarks",
+            "type": "Error",
+            "impact": "High",
+            "wcag": ["5.2.4"],
+            "wcag_full": "5.2.4 Accessibility Supported",
+            "category": "landmarks",
+            "description": "Content exists outside of landmark regions, making it invisible to screen reader landmark navigation",
+            "why_it_matters": "This fails WCAG 5.2.4 Accessibility Supported because screen reader users rely on landmark navigation as their primary method for understanding page structure and quickly jumping between major page regions. When content exists outside landmarks, it becomes invisible to landmark navigation - users cannot find it using NVDA's 'D' key, JAWS' semicolon key, or VoiceOver's rotor. These users must read the entire page linearly or tab through every element to discover this content, defeating the purpose of semantic HTML structure. All meaningful page content should be contained within appropriate landmarks so that screen reader users can efficiently navigate and access it using their primary navigation patterns.",
+            "who_it_affects": "Screen reader users who use landmark navigation (NVDA 'D' key, JAWS ';' key, VoiceOver rotor) to quickly jump between page regions, users with cognitive disabilities who benefit from clear page structure, keyboard users who navigate by landmarks to efficiently access different page sections, mobile screen reader users who use touch gestures to navigate by landmarks",
+            "how_to_fix": "Place all meaningful page content within appropriate HTML5 landmarks or ARIA landmark roles: (1) Main content in <main> or role=\"main\"; (2) Site navigation in <nav> or role=\"navigation\"; (3) Page header/masthead in <header> or role=\"banner\" (when direct child of body); (4) Page footer in <footer> or role=\"contentinfo\" (when direct child of body); (5) Complementary content in <aside> or role=\"complementary\"; (6) Search functionality in role=\"search\"; (7) Forms in <form> with accessible name to create form landmark. Acceptable exceptions: skip links at the very top of <body>, hidden content (aria-hidden=\"true\" or display:none), and scripts/noscript elements. Test by navigating the page using only landmark navigation to ensure all content is discoverable."
         },
         "ErrBannerLandmarkAccessibleNameIsBlank": {
             "id": "ErrBannerLandmarkAccessibleNameIsBlank",
@@ -1781,8 +1817,8 @@ class IssueCatalog:
             "id": "ErrIframeWithNoTitleAttr",
             "type": "Error",
             "impact": "High",
-            "wcag": ["2.4.1", "4.1.2"],
-            "wcag_full": "2.4.1 Bypass Blocks, 4.1.2 Name, Role, Value",
+            "wcag": ["4.1.2"],
+            "wcag_full": "4.1.2 Name, Role, Value",
             "category": "title",
             "description": "Iframe element is missing the required title attribute",
             "why_it_matters": "Iframes embed external content like videos, maps, or forms within your page. Without a title attribute, screen reader users hear only \"iframe\" with no indication of what content it contains. This is like having a door with no label - users don't know what's behind it. They must enter the iframe and explore its content to understand its purpose, which is time-consuming and may be confusing if the iframe content lacks context. For pages with multiple iframes, users cannot distinguish between them or decide which ones are worth exploring.",
@@ -2375,13 +2411,13 @@ class IssueCatalog:
             "title": "Child element has tabindex inside interactive parent",
             "type": "Error",
             "impact": "High",
-            "wcag": ["2.4.7"],
-            "wcag_full": "2.4.7 Focus Visible (Level AA)",
+            "wcag": ["1.3.1"],
+            "wcag_full": "1.3.1 Info and Relationships (Level A)",
             "category": "event_handling",
-            "description": "Child element has tabindex attribute inside an interactive parent element (button, link, etc.), making it independently focusable",
-            "why_it_matters": "Adding tabindex to a child element inside an interactive parent (like an SVG inside a button) is bad practice and should not be done, even with tabindex='-1' or aria-hidden. It creates redundant keyboard focus behavior and can cause unexpected interactions. The parent interactive element already provides all necessary keyboard access and focus management. Child elements do not need and should not have their own tabindex.",
-            "who_it_affects": "All keyboard users who may encounter unexpected focus behavior, users with cognitive disabilities who may be confused by nested focusable elements, screen reader users who may receive confusing announcements, and developers maintaining the code who must deal with unnecessary complexity",
-            "how_to_fix": "Remove the tabindex attribute from the child element entirely. The parent button, link, or other interactive element already provides keyboard access. Child elements (SVGs, spans, icons, etc.) inside interactive parents should never have tabindex, regardless of the value (-1, 0, or positive numbers)."
+            "description": "Child element has tabindex attribute inside an interactive parent element (button, link, etc.), creating improper structure where assistive technologies cannot properly understand the relationships",
+            "why_it_matters": "Adding tabindex to a child element inside an interactive parent (like an SVG inside a button) creates improper HTML structure and relationships that confuse assistive technologies. The page structure is not properly described - the parent button is the interactive element, but the child also claims to be independently focusable. This violates WCAG 1.3.1 Info and Relationships, which requires that information, structure, and relationships conveyed through presentation can be programmatically determined. Screen readers and other assistive technologies cannot properly interpret this nested focusable structure, leading to confusing announcements and unpredictable behavior.",
+            "who_it_affects": "Screen reader users who receive confusing announcements about nested interactive elements, users with cognitive disabilities who may be confused by redundant tab stops, keyboard users who encounter unexpected focus behavior, and all users relying on assistive technologies to properly understand page structure and relationships",
+            "how_to_fix": "Remove the tabindex attribute from the child element entirely. The parent button, link, or other interactive element already provides keyboard access and proper semantic structure. Child elements (SVGs, spans, icons, etc.) inside interactive parents should never have tabindex, regardless of the value (-1, 0, or positive numbers). This ensures proper HTML structure and relationships that assistive technologies can understand."
         },
         "ErrTabindexAriaHiddenFocusable": {
             "id": "ErrTabindexAriaHiddenFocusable",

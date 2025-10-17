@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFocusBackgroundColorOnly - Link with Background Color Focus Only</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFocusBackgroundColorOnly_002_violations_link",
+    "issueId": "ErrFocusBackgroundColorOnly",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Navigation links with focus indicators relying solely on background color change without outline",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            padding: 1rem;
+            background: #f5f5f5;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        /* VIOLATION: Focus relies only on background color change - no outline */
+        .nav-link:focus {
+            background-color: #0052a3;
+            /* Missing: outline property */
+        }
+
+        .nav-link:hover {
+            background-color: #004080;
+        }
+    </style>
+</head>
+<body>
+    <h1>Navigation Menu Example</h1>
+
+    <nav>
+        <ul class="nav-menu">
+            <li>
+                <a href="/home"
+                   class="nav-link"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFocusBackgroundColorOnly"
+                   data-violation-reason="Link focus indicator uses only background-color change from #0066cc to #0052a3 with no outline property. Screen magnifier users at high zoom levels cannot see entire link to detect color change. Users with attention difficulties who look away and return cannot determine focus state without examining full background. This fails WCAG 2.4.7 because outline provides persistent boundary marker independent of fill color, while background-color alone requires seeing entire element surface area to detect state.">
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="/products"
+                   class="nav-link"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFocusBackgroundColorOnly"
+                   data-violation-reason="Navigation link uses background-color change for focus without outline. Creates accessibility barrier for magnified users who see only portion of link, users returning focus after distraction, and users with cognitive challenges tracking focus position.">
+                    Products
+                </a>
+            </li>
+            <li>
+                <a href="/contact" class="nav-link">Contact</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Content Area</h2>
+        <p>
+            Tab through the navigation links above. Notice that the only indication of focus
+            is a subtle darkening of the background color. There is no outline or border change
+            to clearly mark the focused element.
+        </p>
+        <p>
+            For users with screen magnification, they may only see a portion of the link text
+            and not notice the background color change at all, making it impossible to know
+            which link currently has focus.
+        </p>
+    </main>
+</body>
+</html>

@@ -67,7 +67,7 @@ TOUCHPOINT_TEST_MAPPING = {
         'WarnModalMissingAriaLabelledby',
         'WarnNoFieldset',
         'WarnNoLegend',
-        'WarnUnlabelledForm',
+        'ErrFormLandmarkMustHaveAccessibleName',
         'WarnUnlabelledRegion',
         'forms_ErrNoButtonText',
     ],
@@ -115,13 +115,15 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrInappropriateMenuRole',
         'ErrNavMissingAccessibleName',
         'WarnNavMissingAccessibleName',
-        'WarnNoCurrentPageIndicator',
+        'ErrNoCurrentPageIndicatorScreenReader',
+        'ErrNoCurrentPageIndicatorMagnification',
+        'WarnNoCurrentPageIndicator',  # Deprecated
     ],
     
     'colors_contrast': [
         'ErrInsufficientContrast',
-        'InfoNoColorSchemeSupport',
-        'InfoNoContrastSupport',
+        'WarnNoColorSchemeSupport',
+        'WarnNoContrastSupport',
         'WarnColorOnlyLink',
     ],
     
@@ -207,7 +209,7 @@ TOUCHPOINT_TEST_MAPPING = {
         'WarnRightAlignedText',
         'WarnSmallLineHeight',
     ],
-    
+
     'semantic_structure': [
         'ErrHeaderMissingScope',
         'ErrMissingDocumentType',

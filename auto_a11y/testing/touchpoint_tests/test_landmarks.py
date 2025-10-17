@@ -279,15 +279,16 @@ async def test_landmarks(page) -> Dict[str, Any]:
                     // Check for forms without labels
                     elements.forEach(el => {
                         if (role === 'form' && !el.name) {
-                            results.warnings.push({
-                                err: 'WarnUnlabelledForm',
-                                type: 'warn',
+                            results.errors.push({
+                                err: 'ErrFormLandmarkMustHaveAccessibleName',
+                                type: 'err',
                                 cat: 'landmarks',
                                 element: el.tag,
                                 xpath: el.xpath,
                                 html: el.html,
-                                description: 'Form landmark should have an accessible name'
+                                description: 'Form element lacks accessible name required to become a form landmark'
                             });
+                            results.elements_failed++;
                         }
 
                         // Check for regions without labels
@@ -354,10 +355,11 @@ async def test_landmarks(page) -> Dict[str, Any]:
                     {
                         acceptNode: function(node) {
                             if (node.textContent.trim().length === 0) return NodeFilter.FILTER_REJECT;
-                            
+
                             // Check if node is within a landmark
                             let current = node.parentElement;
                             while (current && current !== document.body) {
+                                // Exclude if within a landmark
                                 if (current.matches(
                                     'main, [role="main"], header, [role="banner"], ' +
                                     'footer, [role="contentinfo"], nav, [role="navigation"], ' +
@@ -368,6 +370,31 @@ async def test_landmarks(page) -> Dict[str, Any]:
                                 )) {
                                     return NodeFilter.FILTER_REJECT;
                                 }
+
+                                // Exclude if within hidden content
+                                if (current.getAttribute('aria-hidden') === 'true') {
+                                    return NodeFilter.FILTER_REJECT;
+                                }
+                                const style = window.getComputedStyle(current);
+                                if (style.display === 'none' || style.visibility === 'hidden') {
+                                    return NodeFilter.FILTER_REJECT;
+                                }
+
+                                // Exclude if within script, noscript, or style elements
+                                if (current.matches('script, noscript, style')) {
+                                    return NodeFilter.FILTER_REJECT;
+                                }
+
+                                // Exclude if within skip link (typically first link in body with skip/jump class)
+                                if (current.matches('a[href^="#"][class*="skip"], a[href^="#"][class*="jump"]')) {
+                                    // Only exclude if it's one of the first few elements in body
+                                    const bodyChildren = Array.from(document.body.children);
+                                    const linkIndex = bodyChildren.findIndex(child => child.contains(current));
+                                    if (linkIndex >= 0 && linkIndex < 3) {
+                                        return NodeFilter.FILTER_REJECT;
+                                    }
+                                }
+
                                 current = current.parentElement;
                             }
                             return NodeFilter.FILTER_ACCEPT;
@@ -381,16 +408,17 @@ async def test_landmarks(page) -> Dict[str, Any]:
                 }
                 
                 if (contentOutsideLandmarks > 0) {
-                    results.warnings.push({
-                        err: 'WarnContentOutsideLandmarks',
-                        type: 'warn',
+                    results.errors.push({
+                        err: 'ErrContentOutsideLandmarks',
+                        type: 'err',
                         cat: 'landmarks',
                         element: 'body',
                         xpath: '/html/body',
                         html: bodyStart,
-                        description: `Found ${contentOutsideLandmarks} text nodes outside of landmarks - wrap content in semantic landmarks`,
+                        description: `Content exists outside of landmark regions - ${contentOutsideLandmarks} text nodes found outside landmarks`,
                         count: contentOutsideLandmarks
                     });
+                    results.elements_failed++;
                 }
                 
                 // Add check information for reporting

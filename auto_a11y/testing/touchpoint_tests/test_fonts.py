@@ -4,9 +4,8 @@ Evaluates webpage font usage and typography for accessibility concerns.
 """
 
 import json
-from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -207,13 +206,16 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
                 });
                 const smallestHeading = headingSizes.length > 0 ? Math.min(...headingSizes) : null;
                 
-                // Test each text element
+                // Test each text element - collect small text instances for grouping
                 let smallTextViolations = 0;
                 let lineHeightViolations = 0;
                 let italicTextCount = 0;
                 let alignmentViolations = 0;
                 let hierarchyViolations = 0;
-                
+
+                // Collect small text instances by element type for grouping
+                const smallTextInstances = [];
+
                 textElements.forEach(element => {
                     const style = window.getComputedStyle(element);
                     const fontSize = parseFloat(style.fontSize);
@@ -223,20 +225,16 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
                     const textAlign = style.textAlign;
                     const text = element.textContent.trim().substring(0, 50);
                     const tag = element.tagName.toLowerCase();
-                    
+
                     let hasViolation = false;
-                    
-                    // Check for small text
+
+                    // Check for small text - collect instances
                     if (fontSize < 16) {
                         smallTextViolations++;
-                        results.errors.push({
-                            err: 'ErrSmallText',
-                            type: 'err',
-                            cat: 'fonts',
+                        smallTextInstances.push({
                             element: tag,
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
-                            description: `Text size is ${fontSize}px (should be at least 16px)`,
                             fontSize: fontSize,
                             text: text
                         });
@@ -339,7 +337,28 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
                         results.elements_failed++;
                     }
                 });
-                
+
+                // Create single grouped error for all small text instances
+                if (smallTextInstances.length > 0) {
+                    results.errors.push({
+                        err: 'ErrSmallText',
+                        type: 'err',
+                        cat: 'fonts',
+                        element: 'text',
+                        xpath: smallTextInstances[0].xpath,
+                        html: smallTextInstances[0].html,
+                        description: 'Element has text smaller than 16px',
+                        allInstances: smallTextInstances.map((inst, idx) => ({
+                            index: idx + 1,
+                            element: inst.element,
+                            xpath: inst.xpath,
+                            html: inst.html,
+                            fontSize: inst.fontSize,
+                            text: inst.text
+                        }))
+                    });
+                }
+
                 // Add check information for reporting
                 results.checks.push({
                     description: 'Text size accessibility',
@@ -459,11 +478,6 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
                 return results;
             }
         ''', inaccessible_fonts_list, font_categories)
-
-        # Log small text errors for debugging
-        if 'errors' in results:
-            # Validation of font errors
-            small_text_errors = [e for e in results['errors'] if e.get('err') == 'ErrSmallText']
 
         return results
         

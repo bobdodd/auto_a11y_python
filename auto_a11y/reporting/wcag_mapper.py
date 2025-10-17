@@ -81,9 +81,9 @@ WCAG_MAPPINGS = {
     'WarnAltTextTooLong': ['1.1.1 Non-text Content'],
     'WarnAltTextRedundant': ['1.1.1 Non-text Content'],
     'DiscoImageOnPage': [],  # Discovery - no WCAG criteria
-    
+
     # Heading Issues
-    'ErrEmptyHeading': ['1.3.1 Info and Relationships', '2.4.6 Headings and Labels'],
+    'ErrEmptyHeading': ['2.4.6 Headings and Labels'],
     'ErrSkippedHeadingLevel': ['1.3.1 Info and Relationships'],
     'ErrMultipleH1': ['1.3.1 Info and Relationships'],
     'ErrMultipleH1HeadingsOnPage': ['1.3.1 Info and Relationships'],

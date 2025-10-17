@@ -3,8 +3,7 @@ Headings touchpoint test module
 Evaluates the document's heading structure to ensure proper hierarchy, positioning, and semantic markup.
 """
 
-from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
@@ -322,7 +321,7 @@ async def test_headings(page) -> Dict[str, Any]:
                             element: heading.tagName,
                             xpath: getFullXPath(heading),
                             html: heading.outerHTML.substring(0, 200),
-                            description: `${heading.tagName} element is empty`,
+                            description: 'Heading element contains only whitespace or special characters',
                             text: textDisplay,           // Visual representation
                             originalText: originalText    // Raw original text
                         });

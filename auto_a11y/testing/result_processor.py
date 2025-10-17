@@ -27,7 +27,7 @@ class ResultProcessor:
         'ErrRedundantAlt': ['1.1.1'],
         
         # Headings
-        'ErrEmptyHeading': ['1.3.1', '2.4.6'],
+        'ErrEmptyHeading': ['2.4.6'],
         'ErrSkippedHeadingLevel': ['1.3.1'],
         'ErrMultipleH1': ['1.3.1'],
         'WarnHeadingInsideDisplayNone': ['1.3.1'],

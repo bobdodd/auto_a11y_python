@@ -559,21 +559,9 @@
                                         </span>
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if group_list|length > 1 %}
-                                            {# For grouped issues, use generic description #}
+                                            {# For grouped issues, use generic description from test #}
                                             {% set display_text = first_violation.metadata.title if first_violation.metadata and first_violation.metadata.title else first_violation.description %}
-                                            {% if 'characters' in display_text or 'character' in display_text %}
-                                                Alt text exceeds recommended length
-                                            {% elif 'Found' in display_text and 'landmarks' in display_text %}
-                                                Duplicate landmark lacks unique accessible name
-                                            {% elif '(' in display_text %}
-                                                {{ display_text.split('(')[0]|trim }}
-                                            {% elif ' - ' in display_text %}
-                                                {{ display_text.split(' - ')[0]|trim }}
-                                            {% elif ':' in display_text %}
-                                                {{ display_text.split(':')[0]|trim }}
-                                            {% else %}
-                                                {{ display_text }}
-                                            {% endif %}
+                                            {{ display_text }}
                                         {% else %}
                                             {# For single issues, show full specific description #}
                                             {% if first_violation.metadata and first_violation.metadata.title %}
@@ -814,6 +802,21 @@
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Navigation {{ instance.index }}:</strong></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
+                                                        <h6 class="mt-3">{{ violation.metadata.allInstances|length }} element(s) with text smaller than 16px:</h6>
+                                                        {% for instance in violation.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
+                                                            <p class="mb-1 small">Text preview: "{{ instance.text }}"</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -1131,6 +1134,21 @@
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
                                 </div>
                                 {% endfor %}
+                                {% elif 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
+                                <h6 class="mt-3">{{ violation.metadata.allInstances|length }} element(s) with text smaller than 16px:</h6>
+                                {% for instance in violation.metadata.allInstances %}
+                                <div class="mb-3">
+                                    <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
+                                    <p class="mb-1 small">Text preview: "{{ instance.text }}"</p>
+                                    <p class="mb-1 small text-muted">
+                                    Location: <code>{{instance.xpath}}</code>
+                                    <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </p>
+                                    <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                </div>
+                                {% endfor %}
                                 {% elif 'ErrAnchorTargetTabindex' in violation.id and violation.metadata and violation.metadata.anchorLinksCount %}
                                 <h6 class="mt-3">Link target (needs tabindex="-1"):</h6>
                                 <p class="mb-2"><strong>Target element:</strong> &lt;{{ violation.element }}&gt; with id="{{ violation.metadata.targetId }}"</p>
@@ -1238,7 +1256,7 @@
                                         {% if group_list|length > 1 %}
                                             {# For grouped warnings, use generic description #}
                                             {% set display_text = first_warning.metadata.title if first_warning.metadata and first_warning.metadata.title else first_warning.description %}
-                                            {% if 'characters' in display_text or 'character' in display_text %}
+                                            {% if 'WarnAltTooLong' in first_warning.id or 'WarnTitleTooLong' in first_warning.id %}
                                                 Text length issue detected
                                             {% elif 'Found' in display_text and 'landmarks' in display_text %}
                                                 Duplicate landmark lacks unique accessible name
@@ -1768,21 +1786,9 @@
                                         </span>
                                         {% endif %}
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
-                                        {# For info items, use generic description #}
+                                        {# For info items, use generic description from test #}
                                         {% set display_text = first_info.metadata.title if first_info.metadata and first_info.metadata.title else first_info.description %}
-                                        {% if 'characters' in display_text or 'character' in display_text %}
-                                            Text length information
-                                        {% elif 'Found' in display_text and 'landmarks' in display_text %}
-                                            Duplicate landmark information
-                                        {% elif '(' in display_text %}
-                                            {{ display_text.split('(')[0]|trim }}
-                                        {% elif ' - ' in display_text %}
-                                            {{ display_text.split(' - ')[0]|trim }}
-                                        {% elif ':' in display_text %}
-                                            {{ display_text.split(':')[0]|trim }}
-                                        {% else %}
-                                            {{ display_text }}
-                                        {% endif %}
+                                        {{ display_text }}
                                     </button>
                                 </h2>
                                 <div id="info-group-{{ info_counter.value }}" 

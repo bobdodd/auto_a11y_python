@@ -52,8 +52,9 @@ TOUCHPOINT_TESTS = {
     'landmarks': test_landmarks,
     'lists': test_lists,
     'maps': test_maps,
-    'menus': test_menus,
-    'navigation': test_menus,  # Navigation touchpoint uses menus test
+    # NOTE: Only 'navigation' is used - 'menus' removed to prevent duplicate test runs
+    # The test_menus function handles all navigation/menu testing
+    'navigation': test_menus,
     'modals': test_modals,
     'read_more_links': test_read_more_links,
     'tabindex': test_tabindex,

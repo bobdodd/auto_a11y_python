@@ -861,7 +861,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'why': "This heading contains only \"{text}\" which provides no meaningful content. Empty headings disrupt document structure and navigation. Screen reader users rely on headings to understand page organization and navigate efficiently using heading shortcuts. An empty heading creates a navigation point with no information, confusing users about the page structure.",
             'who': "Screen reader users who navigate by headings and find a heading containing only \"{text}\", users with cognitive disabilities who rely on clear structure to understand content organization, and users of assistive technologies that generate page outlines",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.3.1', '2.4.6'],
+            'wcag': ['2.4.6'],
             'remediation': "Either replace \"{text}\" with meaningful text content that describes the section, or remove the empty heading element entirely if it serves no structural purpose. Never use headings for visual spacing - use CSS margin/padding instead."
         },
         'ErrNoH1OnPage': {

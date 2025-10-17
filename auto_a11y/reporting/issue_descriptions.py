@@ -56,7 +56,7 @@ ISSUE_DESCRIPTIONS = {
         why="Screen reader users rely on headings to navigate and understand page structure. Empty headings create confusion and break the logical document outline.",
         who="Screen reader users, users with cognitive disabilities who rely on clear structure",
         impact=ImpactScale.HIGH,
-        wcag=["1.3.1", "2.4.6"],
+        wcag=["2.4.6"],
         remediation="""
         Remove empty headings or add descriptive text:
         

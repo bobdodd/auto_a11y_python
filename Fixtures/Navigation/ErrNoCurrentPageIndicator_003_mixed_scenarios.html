@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed Current Page Indicator Scenarios</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoCurrentPageIndicator_003_mixed_scenarios",
+    "issueId": "Mixed",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Various combinations of aria-current and visual indicators",
+    "wcag": ["5.2.4", "1.4.13", "2.4.8"],
+    "impact": "High"
+}
+    </script>
+    <style>
+        .visual-only { font-weight: bold; background: #eee; }
+        [aria-current="page"].correct { font-weight: bold; background: #0066cc; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Mixed Current Page Indicator Scenarios</h1>
+
+    <!-- ERROR: Visual only, no aria-current (Screen Reader issue) -->
+    <h2>Navigation 1: Visual indicator only</h2>
+    <nav aria-label="Example 1 - Visual only"
+         data-expected-violation="true"
+         data-violation-id="ErrNoCurrentPageIndicatorScreenReader"
+         data-violation-reason="Has visual styling but missing aria-current">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products" class="visual-only">Products</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+    <p>Problem: Screen reader users don't know which page is current.</p>
+
+    <!-- ERROR: aria-current only, no visual styling (Magnification issue) -->
+    <h2>Navigation 2: aria-current only</h2>
+    <nav aria-label="Example 2 - aria-current only"
+         data-expected-violation="true"
+         data-violation-id="ErrNoCurrentPageIndicatorMagnification"
+         data-violation-reason="Has aria-current but no visual styling">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products" aria-current="page">Products</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+    <p>Problem: Screen magnifier users can't visually identify current page.</p>
+
+    <!-- ERROR: Neither aria-current nor visual (BOTH issues) -->
+    <h2>Navigation 3: No indicators at all</h2>
+    <nav aria-label="Example 3 - No indicators"
+         data-expected-violation="true"
+         data-violation-id="ErrNoCurrentPageIndicatorScreenReader"
+         data-violation-reason="Missing both aria-current and visual styling">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+    <p>Problem: Neither screen reader nor magnifier users can identify current page.</p>
+
+    <!-- CORRECT: Both aria-current AND visual styling -->
+    <h2>Navigation 4: Complete implementation</h2>
+    <nav aria-label="Example 4 - Complete">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products" aria-current="page" class="correct">Products</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+    <p>✓ Correct: Both programmatic (aria-current) and visual indicators present!</p>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Tag with HTML Mixed Properties - Violation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleTagColorFont_006_violations_html_mixed",
+    "issueId": "ErrStyleTagColorFont",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Style tag targeting html with CSS variables (allowed) AND hard-coded colors (not allowed) - SHOULD be flagged",
+    "wcag": ["1.4.3", "1.4.8", "1.4.12"],
+    "impact": "High"
+}
+    </script>
+    <style>
+        html {
+            --primary-color: #007bff;
+            background-color: #ffffff;
+            --spacing: 8px;
+        }
+    </style>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .warning-box {
+            border: 2px solid #dc3545;
+            padding: 15px;
+            background-color: #fff5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-xpath="/html[1]/head[1]/style[1]"
+      data-violation-id="ErrStyleTagColorFont"
+      data-violation-reason="The first <style> tag mixes CSS variables (--primary-color, --spacing) with a hard-coded background-color property. Even though some properties are legitimate, the presence of ANY hard-coded color property should trigger a violation. The rule is: ALL properties must be allowed (CSS variables or color-scheme) for the style tag to pass.">
+    <h1>Mixed Properties in Style Tag</h1>
+
+    <main>
+        <div class="warning-box">
+            <h2>⚠️ This is a Violation (Mixed Case)</h2>
+            <p><strong>The style tag mixes CSS variables with hard-coded colors on html.</strong></p>
+        </div>
+
+        <section>
+            <h2>What's in the Style Tag?</h2>
+            <pre><code>&lt;style&gt;
+    html {
+        --primary-color: #007bff;  ✅ CSS variable (allowed)
+        background-color: #ffffff;  ❌ Hard-coded color (not allowed)
+        --spacing: 8px;             ✅ CSS variable (allowed)
+    }
+&lt;/style&gt;</code></pre>
+        </section>
+
+        <section>
+            <h2>Why This Should Be Flagged</h2>
+            <ul>
+                <li>Contains a hard-coded <code>background-color</code> property</li>
+                <li>The CSS variables alone would be fine, but the mix is problematic</li>
+                <li>ALL properties must be allowed for the style tag to pass</li>
+                <li>The background-color prevents user customization</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Test Logic</h2>
+            <ol>
+                <li>Check if style tag contains a rule targeting <code>html</code></li>
+                <li>Extract all CSS declarations from the html rule</li>
+                <li>Check if ALL declarations are allowed (CSS variables or color-scheme)</li>
+                <li>If ANY declaration is NOT allowed → Flag as violation</li>
+                <li>If ALL declarations are allowed → Skip (no violation)</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Test Expectation</h2>
+            <p><strong>Expected Result:</strong> The first style tag SHOULD be flagged as ErrStyleTagColorFont because it contains a hard-coded color property mixed with CSS variables.</p>
+        </section>
+
+        <section>
+            <h2>How to Fix</h2>
+            <p>Convert the hard-coded color to a CSS variable:</p>
+            <pre><code>&lt;style&gt;
+    html {
+        --primary-color: #007bff;
+        --bg-color: #ffffff;
+        --spacing: 8px;
+    }
+    body {
+        background-color: var(--bg-color);
+    }
+&lt;/style&gt;</code></pre>
+        </section>
+    </main>
+</body>
+</html>

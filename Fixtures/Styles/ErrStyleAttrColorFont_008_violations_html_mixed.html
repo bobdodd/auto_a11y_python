@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" style="--primary-color: #007bff; background-color: #fff; --spacing: 8px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mixed Variables and Colors on HTML Element - Violation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_008_violations_html_mixed",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "HTML element with BOTH CSS variables (allowed) AND hard-coded color properties (not allowed) - SHOULD be flagged because it contains at least one problematic property",
+    "wcag": ["1.4.3", "1.4.8", "1.4.12"],
+    "impact": "High"
+}
+    </script>
+    <link rel="stylesheet" href="external.css">
+</head>
+<body data-expected-violation="true"
+      data-violation-xpath="/html[1]"
+      data-violation-id="ErrStyleAttrColorFont"
+      data-violation-reason="The <html> element has mixed inline styles: --primary-color (allowed CSS variable), background-color (NOT allowed - hard-coded color), --spacing (allowed CSS variable). Even though some properties are legitimate, the presence of ANY hard-coded color or font properties should trigger a violation. The test should flag the element because it contains background-color: #fff; which prevents user customization.">
+    <h1>Mixed Styles on HTML Element</h1>
+
+    <main>
+        <div class="warning-box">
+            <h2>⚠️ This is a Violation (Mixed Case)</h2>
+            <p><strong>The <code>&lt;html&gt;</code> element mixes CSS variables (good) with hard-coded colors (bad).</strong></p>
+        </div>
+
+        <section>
+            <h2>What's On The HTML Element?</h2>
+            <p>The HTML element has this inline style:</p>
+            <pre><code>&lt;html style="--primary-color: #007bff; background-color: #fff; --spacing: 8px;"&gt;</code></pre>
+
+            <p>Breaking this down:</p>
+            <ul>
+                <li>✅ <code>--primary-color: #007bff;</code> - CSS variable (ALLOWED)</li>
+                <li>❌ <code>background-color: #fff;</code> - Hard-coded color (NOT ALLOWED)</li>
+                <li>✅ <code>--spacing: 8px;</code> - CSS variable (ALLOWED)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Why This Should Be Flagged</h2>
+            <p>Even though the HTML element contains legitimate CSS variables, it also contains a hard-coded <code>background-color</code> property.</p>
+
+            <p><strong>Rule:</strong> If ANY property in the inline style is problematic (hard-coded color or font), the entire element should be flagged.</p>
+
+            <p>This is because:</p>
+            <ul>
+                <li>The <code>background-color: #fff;</code> prevents users from customizing the background</li>
+                <li>Users with accessibility needs cannot override this inline style</li>
+                <li>The presence of CSS variables doesn't excuse the hard-coded color</li>
+                <li>All hard-coded colors should be moved to stylesheets or converted to CSS variables</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Test Logic</h2>
+            <p>The test should work like this:</p>
+            <ol>
+                <li>Check if element is <code>&lt;html&gt;</code></li>
+                <li>Split inline style into declarations</li>
+                <li>Check if ALL declarations are allowed (CSS variables or color-scheme)</li>
+                <li>If ANY declaration is NOT allowed → Flag the element</li>
+                <li>If ALL declarations are allowed → Skip the element (no violation)</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>How to Fix</h2>
+            <p>Remove the hard-coded background-color and use only CSS variables:</p>
+            <pre><code>&lt;html style="--primary-color: #007bff; --spacing: 8px; --bg-color: #fff;"&gt;</code></pre>
+            <p>Then apply the background color in CSS:</p>
+            <pre><code>html {
+  background-color: var(--bg-color);
+}</code></pre>
+            <p>This way, users can still override the color with their own stylesheets.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Mixed Styles Example. Demonstrates that mixing good and bad properties still results in a violation.</p>
+    </footer>
+</body>
+</html>

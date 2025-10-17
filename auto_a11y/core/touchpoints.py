@@ -422,7 +422,8 @@ class TouchpointMapper:
         'WarnMissingRequiredIndication': TouchpointID.FORMS,
         'WarnNoFieldset': TouchpointID.FORMS,
         'WarnNoLegend': TouchpointID.FORMS,
-        'WarnUnlabelledForm': TouchpointID.FORMS,
+        'WarnUnlabelledForm': TouchpointID.FORMS,  # Deprecated, kept for backwards compatibility
+        'ErrFormLandmarkMustHaveAccessibleName': TouchpointID.LANDMARKS,  # Forms without names aren't landmarks
         'WarnUnlabelledRegion': TouchpointID.LANDMARKS,  # Regions are landmarks
         'WarnMissingAriaLabelledby': TouchpointID.FORMS,
         'DiscoFormOnPage': TouchpointID.FORMS,
@@ -441,8 +442,8 @@ class TouchpointMapper:
         'ErrLargeTextContrastAA': TouchpointID.COLORS,
         'ErrTextContrastAAA': TouchpointID.COLORS,
         'ErrLargeTextContrastAAA': TouchpointID.COLORS,
-        'InfoNoColorSchemeSupport': TouchpointID.COLORS,
-        'InfoNoContrastSupport': TouchpointID.COLORS,
+        'WarnNoColorSchemeSupport': TouchpointID.COLORS,
+        'WarnNoContrastSupport': TouchpointID.COLORS,
         'WarnColorOnlyLink': TouchpointID.COLORS,
 
         # Font/typography errors

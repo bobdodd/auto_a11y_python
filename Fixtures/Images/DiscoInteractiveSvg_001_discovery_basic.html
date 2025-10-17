@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Interactive SVG Elements</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoInteractiveSvg_001_discovery_basic",
+    "issueId": "DiscoInteractiveSvg",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Interactive SVG elements requiring manual accessibility review",
+    "wcag": ["1.1.1", "2.1.1", "2.4.3", "2.4.7", "4.1.2", "4.1.3"],
+    "impact": "Info"
+}
+    </script>
+</head>
+<body>
+    <h1>Interactive SVG Elements</h1>
+
+    <!-- SVG with click handler -->
+    <svg width="100" height="100"
+         onclick="alert('clicked')"
+         data-expected-violation="true"
+         data-violation-id="DiscoInteractiveSvg"
+         data-violation-reason="SVG has onclick event handler">
+        <circle cx="50" cy="50" r="40" fill="blue"/>
+        <text x="50" y="55" text-anchor="middle" fill="white">Click me</text>
+    </svg>
+
+    <!-- SVG with tabindex -->
+    <svg width="100" height="100"
+         tabindex="0"
+         aria-label="Focusable diagram"
+         data-expected-violation="true"
+         data-violation-id="DiscoInteractiveSvg"
+         data-violation-reason="SVG has tabindex making it focusable">
+        <rect width="100" height="100" fill="green"/>
+    </svg>
+
+    <!-- SVG containing button element -->
+    <svg width="200" height="100"
+         data-expected-violation="true"
+         data-violation-id="DiscoInteractiveSvg"
+         data-violation-reason="SVG contains focusable button element">
+        <foreignObject width="200" height="100">
+            <button>Interactive button in SVG</button>
+        </foreignObject>
+    </svg>
+
+    <!-- SVG with interactive role -->
+    <svg width="150" height="150"
+         role="button"
+         aria-label="Custom button"
+         data-expected-violation="true"
+         data-violation-id="DiscoInteractiveSvg"
+         data-violation-reason="SVG has interactive role=button">
+        <rect width="150" height="50" fill="orange" rx="5"/>
+        <text x="75" y="30" text-anchor="middle">Submit</text>
+    </svg>
+
+    <!-- SVG with descendant having event handler -->
+    <svg width="300" height="200"
+         data-expected-violation="true"
+         data-violation-id="DiscoInteractiveSvg"
+         data-violation-reason="SVG descendant has event handler">
+        <g onclick="toggleMenu()">
+            <rect width="30" height="5" fill="black"/>
+            <rect y="10" width="30" height="5" fill="black"/>
+            <rect y="20" width="30" height="5" fill="black"/>
+        </g>
+        <text x="40" y="15">Menu</text>
+    </svg>
+
+    <p>These interactive SVGs require manual accessibility review</p>
+</body>
+</html>

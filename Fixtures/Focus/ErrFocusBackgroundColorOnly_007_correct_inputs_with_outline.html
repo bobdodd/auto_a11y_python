@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFocusBackgroundColorOnly - Correct: Inputs with Outline</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFocusBackgroundColorOnly_007_correct_inputs_with_outline",
+    "issueId": "ErrFocusBackgroundColorOnly",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Form inputs with proper outline-based focus indicators",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .custom-input {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+            background-color: white;
+        }
+
+        /* CORRECT: Outline with optional background and border changes */
+        .custom-input:focus {
+            background-color: #f0f8ff;
+            border-color: #4CAF50;
+            outline: 3px solid #007bff;  /* Blue outline */
+            outline-offset: 2px;
+        }
+
+        .submit-button {
+            padding: 0.5rem 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* CORRECT: Clear outline for button focus */
+        .submit-button:focus {
+            outline: 3px solid #ff6600;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contact Form - Accessible Version</h1>
+
+    <form>
+        <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text"
+                   id="name"
+                   name="name"
+                   class="custom-input"
+                   data-expected-pass="true"
+                   data-pass-reason="Input field has proper outline focus indicator using 3px solid blue outline with 2px offset. Creates clear visual boundary around input field that's visible at any magnification level. Background color and border changes are supplementary. Magnified users seeing only text cursor can still identify focus via outline boundary. Fully complies with WCAG 2.4.7 by providing persistent, obvious focus marker.">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input type="email"
+                   id="email"
+                   name="email"
+                   class="custom-input"
+                   data-expected-pass="true"
+                   data-pass-reason="Email input uses outline property for focus indication. The 3px blue outline with offset creates strong visual marker independent of field size or zoom level. Users with attention challenges who return focus can immediately identify active field via outline boundary. Background and border color changes supplement but don't replace outline. Meets WCAG 2.4.7 requirements.">
+        </div>
+
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea id="message"
+                      name="message"
+                      class="custom-input"
+                      rows="4"
+                      style="width: 300px; resize: vertical;"
+                      data-expected-pass="true"
+                      data-pass-reason="Textarea has outline-based focus indicator that wraps entire field boundary. Provides clear visual marker for focus state visible at all zoom levels. Outline persists when users look away and return. Background and border changes provide additional cues. Fully accessible per WCAG 2.4.7."></textarea>
+        </div>
+
+        <button type="submit" class="submit-button">Send Message</button>
+    </form>
+
+    <section style="margin-top: 2rem;">
+        <h2>Accessibility Implementation</h2>
+        <p>
+            These form fields use proper focus indicators that comply with WCAG 2.4.7:
+        </p>
+
+        <h3>Input Fields</h3>
+        <ul>
+            <li><strong>3px solid blue outline:</strong> Prominent and easily visible</li>
+            <li><strong>2px outline offset:</strong> Creates clear space around field boundary</li>
+            <li><strong>Visible at high zoom:</strong> Outline remains visible even at 400% magnification</li>
+            <li><strong>Persistent marker:</strong> Clearly marks focused field when user returns attention</li>
+            <li><strong>Supplementary indicators:</strong> Background color and border changes provide additional cues</li>
+        </ul>
+
+        <h3>Submit Button</h3>
+        <ul>
+            <li><strong>3px solid orange outline:</strong> High contrast against green button</li>
+            <li><strong>3px outline offset:</strong> Creates prominent focus ring</li>
+            <li><strong>Clear boundary:</strong> Wraps entire button making focus immediately obvious</li>
+        </ul>
+
+        <h3>Why This Approach Works</h3>
+        <p>
+            The <code>outline</code> property creates a visual boundary marker that:
+        </p>
+        <ul>
+            <li>Works at any magnification level (users may see only part of field but still see outline edge)</li>
+            <li>Provides persistent indication (visible when user returns focus after distraction)</li>
+            <li>Is independent of fill colors (outline wraps boundary regardless of background)</li>
+            <li>Meets WCAG 2.4.7 requirements for all user groups</li>
+            <li>Can be supplemented with other visual changes for enhanced usability</li>
+        </ul>
+    </section>
+</body>
+</html>

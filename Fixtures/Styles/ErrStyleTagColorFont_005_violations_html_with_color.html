@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Tag with HTML Hard-Coded Colors - Violation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleTagColorFont_005_violations_html_with_color",
+    "issueId": "ErrStyleTagColorFont",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Style tag targeting html element with hard-coded color properties - SHOULD be flagged as a violation",
+    "wcag": ["1.4.3", "1.4.8", "1.4.12"],
+    "impact": "High"
+}
+    </script>
+    <style>
+        html {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+    </style>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .warning-box {
+            border: 2px solid #dc3545;
+            padding: 15px;
+            background-color: #fff5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-xpath="/html[1]/head[1]/style[1]"
+      data-violation-id="ErrStyleTagColorFont"
+      data-violation-reason="The first <style> tag sets background-color and color properties directly on the html element. These are hard-coded colors that prevent users from customizing their visual experience. Unlike CSS variables or color-scheme, these actual color properties should be flagged as violations.">
+    <h1>Hard-Coded HTML Colors in Style Tag</h1>
+
+    <main>
+        <div class="warning-box">
+            <h2>⚠️ This is a Violation</h2>
+            <p><strong>The <code>&lt;style&gt;</code> tag sets hard-coded colors on the html element.</strong></p>
+        </div>
+
+        <section>
+            <h2>What's Wrong?</h2>
+            <p>The first style tag contains:</p>
+            <pre><code>&lt;style&gt;
+    html {
+        background-color: #f5f5f5;
+        color: #333333;
+    }
+&lt;/style&gt;</code></pre>
+        </section>
+
+        <section>
+            <h2>Why This Should Be Flagged</h2>
+            <ul>
+                <li>Sets actual color properties (not CSS variables)</li>
+                <li>Prevents users with accessibility needs from customizing colors</li>
+                <li>Breaks high contrast modes</li>
+                <li>Ignores user preferences</li>
+                <li>Makes it difficult for users to override with their own stylesheets</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Test Expectation</h2>
+            <p><strong>Expected Result:</strong> The first style tag SHOULD be flagged as ErrStyleTagColorFont because it contains hard-coded color properties on the html element.</p>
+        </section>
+
+        <section>
+            <h2>How to Fix</h2>
+            <p>Use CSS variables instead:</p>
+            <pre><code>&lt;style&gt;
+    html {
+        --bg-color: #f5f5f5;
+        --text-color: #333333;
+    }
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+&lt;/style&gt;</code></pre>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFocusBackgroundColorOnly - Correct: Button with Outline</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFocusBackgroundColorOnly_005_correct_button_with_outline",
+    "issueId": "ErrFocusBackgroundColorOnly",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Buttons with proper outline-based focus indicators that pass WCAG 2.4.7",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .search-button {
+            background-color: black;
+            color: white;
+            border: 1px solid transparent;
+            padding: 0.4rem;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        /* CORRECT: Focus uses outline plus optional background color change */
+        .search-button:focus {
+            background-color: #333333;
+            outline: 3px solid #ffffff;  /* Clear white outline */
+            outline-offset: 2px;          /* Space from button edge */
+        }
+
+        .search-icon-submit {
+            height: 35px;
+            display: block;
+            fill: white;
+        }
+
+        .submit-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* CORRECT: Prominent outline for focus */
+        .submit-button:focus {
+            outline: 3px solid #ff6600;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Form - Accessible Version</h1>
+
+    <form>
+        <label for="search-input">Search:</label>
+        <input type="text" id="search-input" name="search">
+
+        <button type="submit"
+                class="search-button"
+                data-expected-pass="true"
+                data-pass-reason="Button has proper outline-based focus indicator. Uses 3px solid white outline with 2px offset, providing clear visual boundary around button. This outline is visible regardless of magnification level, persists when user attention shifts, and creates obvious focus marker independent of background color. Fully complies with WCAG 2.4.7 by ensuring focus is clearly visible to all users including those with magnification, attention challenges, or color perception issues.">
+            <svg tabindex="-1" aria-hidden="true" class="search-icon-submit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 99.8">
+                <title>Submit Search</title>
+                <path d="M63.4 10.9C48.9-3.8 25.1-3.8 10.5 11-2.6 24.3-3.7 45.9 8.2 60.4 20.5 75.5 42 78.5 57.8 67.9l29.8 29.6c2.8 2.7 7.3 2.6 9.8-.3l.6-.7c2.3-2.7 2.2-6.7-.3-9.2L67.9 57.7c9.9-14.7 8-34.3-4.5-46.8zm-7.8 44.7c-10.3 10.3-26.9 10.3-37.2 0s-10.3-26.9 0-37.2 26.9-10.3 37.2 0c10.2 10.4 10.2 27 0 37.2z"></path>
+            </svg>
+        </button>
+
+        <button type="button"
+                class="submit-button"
+                style="margin-left: 1rem;"
+                data-expected-pass="true"
+                data-pass-reason="Submit button has strong orange outline focus indicator (3px solid) with 3px offset. Provides excellent visibility and contrast. Keyboard users can clearly identify focused button regardless of zoom level or attention state. The outline wraps the button boundary creating persistent, obvious focus marker. Meets WCAG 2.4.7 by making focus state immediately apparent to all users.">
+            Submit
+        </button>
+    </form>
+
+    <section style="margin-top: 2rem;">
+        <h2>Why This Works</h2>
+        <p>
+            These buttons use the <code>outline</code> CSS property for focus indication, which provides:
+        </p>
+        <ul>
+            <li><strong>Visibility at any zoom level:</strong> Outline is visible even when highly magnified</li>
+            <li><strong>Clear boundary marker:</strong> Wraps the entire button edge, making focus obvious</li>
+            <li><strong>Persistence:</strong> Remains visible when user looks away and returns</li>
+            <li><strong>Independence from background:</strong> Works regardless of button color or size</li>
+            <li><strong>High contrast:</strong> White outline on dark button, orange outline on green button</li>
+            <li><strong>Offset spacing:</strong> Creates clear separation from button edge for maximum visibility</li>
+        </ul>
+        <p>
+            The background color may also change as a supplementary indicator, but the outline
+            ensures WCAG 2.4.7 compliance by providing a clear, persistent focus marker.
+        </p>
+    </section>
+</body>
+</html>

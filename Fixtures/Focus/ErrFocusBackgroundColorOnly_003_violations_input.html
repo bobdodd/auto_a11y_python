@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrFocusBackgroundColorOnly - Input with Background Color Focus Only</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFocusBackgroundColorOnly_003_violations_input",
+    "issueId": "ErrFocusBackgroundColorOnly",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Form inputs with focus indicators relying solely on background color change without outline",
+    "wcag": "2.4.7",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .custom-input {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+            background-color: white;
+        }
+
+        /* VIOLATION: Focus relies only on background color change - no outline */
+        .custom-input:focus {
+            background-color: #f0f8ff;
+            border-color: #4CAF50;
+            /* Missing: outline property */
+        }
+
+        .submit-button {
+            padding: 0.5rem 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contact Form Example</h1>
+
+    <form>
+        <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text"
+                   id="name"
+                   name="name"
+                   class="custom-input"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFocusBackgroundColorOnly"
+                   data-violation-reason="Input field focus indicator uses only background-color change from white to #f0f8ff (light blue) and border-color change, but no outline property. Magnified users seeing only cursor position within input cannot detect focus state change. Users who tab quickly through form and glance back cannot identify which field is active. Border color change is insufficient alone as it requires viewing entire field perimeter. WCAG 2.4.7 requires outline for persistent, obvious focus indication independent of field size or zoom level.">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input type="email"
+                   id="email"
+                   name="email"
+                   class="custom-input"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFocusBackgroundColorOnly"
+                   data-violation-reason="Email input uses subtle background tint change for focus without outline. Users with cognitive disabilities need strong focus indicators to maintain orientation. Magnification users cannot detect pale background color shift. Fails WCAG 2.4.7 by not providing clear, persistent visual boundary for focus state.">
+        </div>
+
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea id="message"
+                      name="message"
+                      class="custom-input"
+                      rows="4"
+                      style="width: 300px; resize: vertical;"></textarea>
+        </div>
+
+        <button type="submit" class="submit-button">Send Message</button>
+    </form>
+
+    <section style="margin-top: 2rem;">
+        <h2>Accessibility Issue</h2>
+        <p>
+            The form fields above use a subtle background color change when focused (white to light blue),
+            along with a border color change. However, there is no outline property.
+        </p>
+        <p>
+            <strong>Why this is problematic:</strong>
+        </p>
+        <ul>
+            <li>Users with screen magnification at 200% or higher may only see the text cursor inside the field, not the field boundaries or background</li>
+            <li>The background color change is very subtle (#ffffff to #f0f8ff) and may not be noticeable to users with color perception issues</li>
+            <li>Border color changes require viewing the entire field perimeter, which is difficult at high magnification</li>
+            <li>Users who look away and return to the form cannot quickly identify which field has focus</li>
+            <li>An outline property would provide a clear, persistent indicator at the field boundary that's visible even at high zoom</li>
+        </ul>
+    </section>
+</body>
+</html>

@@ -271,13 +271,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Provide pause/stop controls and respect prefers-reduced-motion preference"
         },
         'DiscoFontFound': {
-            'title': "Font '{fontName}' detected in use on the page for accessibility review",
-            'what': "Font '{fontName}' is used at {sizeCount} different size{sizeCount_plural}: {fontSizes_list}",
-            'why': "Tracking font usage helps identify typography choices that may affect readability. Font '{fontName}' has been detected on this page. While not inherently an accessibility issue, certain fonts can be harder to read for users with dyslexia, low vision, or reading disabilities. This discovery item documents which fonts are in use and at what sizes so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.",
+            'title': "Font detected in use on the page for accessibility review",
+            'what': "Font '{fontName}' is used at {sizeCount} {sizeCount_singular_size} on this page: {fontSizes_list}",
+            'why': "Tracking font usage helps identify typography choices that may affect readability. While not inherently an accessibility issue, certain fonts can be harder to read for users with dyslexia, low vision, or reading disabilities. This discovery item documents which fonts are in use and at what sizes so they can be evaluated for legibility, character distinction, and overall readability as part of a comprehensive accessibility review.",
             'who': "This information helps accessibility auditors and developers understand the typography landscape of the page, particularly relevant for users with dyslexia who benefit from clear sans-serif fonts, users with low vision who need good character distinction, and users with reading disabilities who benefit from consistent, readable typefaces",
             'impact': ImpactScale.INFO.value,
             'wcag': [],
-            'remediation': "No action required - this is informational only. The font '{fontName}' is currently in use at {sizeCount} size{sizeCount_plural}. For accessibility best practices, consider using fonts with clear character distinction (avoiding ambiguous characters like I/l/1), adequate spacing between letters, and good readability at various sizes. Popular accessible fonts include Arial, Verdana, Tahoma, and specialized dyslexia-friendly fonts like OpenDyslexic. Document your font choices and test readability with actual users when possible."
+            'remediation': "No action required - this is informational only. For accessibility best practices, consider using fonts with clear character distinction (avoiding ambiguous characters like I/l/1), adequate spacing between letters, and good readability at various sizes. Popular accessible fonts include Arial, Verdana, Tahoma, and specialized dyslexia-friendly fonts like OpenDyslexic. Document your font choices and test readability with actual users when possible."
         },
         'DiscoFormOnPage': {
             'title': "Form detected (signature: {formSignature}){searchContext_title} - requires comprehensive manual testing",
@@ -424,13 +424,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Remove alt attributes from non-supporting elements and use appropriate alternatives - for background images in CSS use role=\"img\" with aria-label, for clickable elements use aria-label or visually hidden text, for decorative elements ensure they\'re properly hidden with aria-hidden=\"true\", and verify that actual <img> elements are used for content images that need alternative text"
         },
         'ErrAltTooLong': {
-            'title': "Alt text exceeds 150 characters, making it difficult for screen reader users to process",
-            'what': "Alt text exceeds 150 characters, making it difficult for screen reader users to process",
-            'why': "Excessively long alt text creates a poor listening experience and may indicate that complex information should be presented differently.",
-            'who': "Screen reader users who must listen to lengthy descriptions, users with cognitive disabilities who may struggle with verbose content.",
+            'title': "Alt text exceeds 150 characters without proper structure, making it difficult for screen reader users to process",
+            'what': "Alt text exceeds 150 characters without proper structure, making it difficult for screen reader users to process",
+            'why': "This fails WCAG 5.2.4 Accessibility Supported because even though the page technically meets WCAG success criteria by providing alt text, it does not work properly with assistive technology (screen readers). Screen readers read alt text as a continuous unstructured string without the ability to navigate, skim, or use reading commands that work with properly structured HTML. Long alt text removes screen reader users' ability to use headings navigation, paragraph jumps, list navigation, and other assistive technology features that sighted users take for granted when reading long descriptions. The content may be technically present but is not accessibility-supported because it cannot be effectively used with the user's assistive technology.",
+            'who': "Screen reader users who must listen to lengthy unstructured descriptions without visual scanning or paragraph breaks, users with cognitive disabilities who struggle with processing long blocks of text without structure, users with attention difficulties who need clear information hierarchy, users with memory challenges who cannot retain long unbroken text passages",
             'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['1.1.1'],
-            'remediation': "Limit alt text to 150 characters or less, use longdesc or aria-describedby for complex images, provide detailed descriptions in adjacent text content."
+            'wcag': ['5.2.4'],
+            'remediation': "Limit alt text to 150 characters maximum for concise descriptions. For complex images requiring longer descriptions, use proper structured alternatives: use longdesc attribute or aria-describedby pointing to structured HTML content with headings, paragraphs, lists, and emphasis. Provide detailed descriptions in adjacent visible text content with proper semantic markup. Consider using figure/figcaption for images with captions. Never use alt text as a substitute for properly structured documentation - alt text should be brief, with complex details provided through accessible structured content."
         },
         'ErrAriaLabelMayNotBeFoundByVoiceControl': {
             'title': "aria-label doesn\'t match visible text",
@@ -1149,7 +1149,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'why': "Iframes embed external content like videos, maps, or forms within your page. Without a title attribute, screen reader users hear only \"iframe\" with no indication of what content it contains. This is like having a door with no label - users don\'t know what\'s behind it. They must enter the iframe and explore its content to understand its purpose, which is time-consuming and may be confusing if the iframe content lacks context. For pages with multiple iframes, users cannot distinguish between them or decide which ones are worth exploring.",
             'who': "Screen reader users who need to understand what each iframe contains before deciding whether to interact with it, keyboard users navigating through iframes who need context about embedded content, users with cognitive disabilities who need clear labeling of all page regions, and users on slow connections who may experience delays loading iframe content",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.1', '4.1.2'],
+            'wcag': ['4.1.2'],
             'remediation': "Add a title attribute to every iframe that concisely describes its content or purpose (e.g., title=\"YouTube video: Product demonstration\", title=\"Google Maps: Office location\", title=\"Payment form\"). The title should be unique if there are multiple iframes. Keep it brief but descriptive enough that users understand what the iframe contains without having to enter it. For decorative iframes (rare), you can use title=\"\" and add tabindex=\"-1\" to remove it from tab order."
         },
         'ErrImageAltContainsHTML': {
@@ -1331,6 +1331,15 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.4.4'],
             'remediation': "Write link text that describes the destination or action (e.g., \"Download 2024 annual report\" instead of \"Download\"). Avoid generic phrases. If design constraints require short link text, provide additional context through aria-label or aria-describedby, or ensure surrounding text provides context."
+        },
+        'ErrLinkAccessibleNameMismatch': {
+            'title': "Link\'s accessible name does not start with its visible text",
+            'what': "Link has visible text \"{metadata.visibleText}\" but accessible name \"{metadata.accessibleName}\" - the accessible name does not start with the visible text, preventing voice control users from activating it",
+            'why': "Voice control users activate links by saying the visible text they see (e.g., \"Click Read more\"). If the accessible name doesn\'t start with the visible text, the voice command fails. WCAG 2.5.3 requires visible text be included in the accessible name (at the start), and 2.4.6 requires labels match user expectations.",
+            'who': "Voice control users who cannot activate links, speech input users relying on visible labels, users with motor disabilities who use voice commands, users with cognitive disabilities who need consistency between what they see and what they can say",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.5.3', '2.4.6'],
+            'remediation': "Ensure accessible name starts with visible text. If visible text is \"Read more\", aria-label should be \"Read more about Peer Support Groups\" not \"How Peer Support Groups Changed Life\". Alternatively, use visually-hidden text starting with visible text, or place descriptive text before the link in DOM."
         },
         'ErrAnchorTargetTabindex': {
             'title': "In-page link target (element with id referenced by href=#...) needs proper tabindex for accessibility",
@@ -1838,12 +1847,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         },
         'WarnInputDefaultFocus': {
             'title': "Input field relies on default browser focus styles which vary across browsers and platforms",
-            'what': "Input field has no custom focus styles defined and relies entirely on browser default focus indicators, which vary significantly across browsers (Chrome, Firefox, Safari, Edge), operating systems (Windows, macOS, iOS, Android), and user settings",
-            'why': "Browser default focus styles are inconsistent and often fail to meet WCAG contrast requirements in certain contexts. Chrome uses a blue outline, Safari uses a blue glow, Firefox uses a dotted outline, and these change across operating systems and versions. Some default focus styles have insufficient contrast against certain background colors, some are too subtle to be perceived by users with low vision, and some disappear entirely in certain contexts (like custom-styled inputs or dark mode). Relying on defaults means you have no control over accessibility compliance - your form might pass testing in Chrome on Windows but fail in Safari on macOS. Default styles also often conflict with custom input styling (borders, shadows, backgrounds), becoming invisible or creating visual confusion.",
-            'who': "Users with low vision who need consistent, high-contrast focus indicators across all browsers and platforms, keyboard users who need reliable focus indication regardless of browser choice, users with color vision deficiencies who may not perceive default focus colors in all contexts, quality assurance teams trying to ensure consistent accessibility across browsers, users with custom browser settings or stylesheets that may interfere with default focus styles, and international users accessing your site from various platforms and devices",
+            'what': "Input field has no custom focus styles defined and relies entirely on browser default focus indicators, which do not adapt to background colors and may have insufficient contrast or be invisible in certain contexts",
+            'why': "The primary problem with default browser focus outlines on inputs is that they don't adapt to the background color behind them, creating contrast failures. A blue default outline may be invisible against a blue form background, or a dark outline invisible against dark input styling. This is the main reason default focus indicators fail accessibility requirements for inputs. Additionally, browser defaults are inconsistent - Chrome uses a blue outline, Safari uses a blue glow, Firefox uses a dotted outline, and these vary across operating systems and versions. Default styles often conflict with custom input styling (backgrounds, borders, shadows in normal and focus states), becoming invisible or creating visual confusion. Some default focus styles disappear entirely on custom-styled inputs. Relying on defaults means you have no control over accessibility compliance - your form might pass testing in Chrome on Windows but fail in Safari on macOS, or pass on a white background but fail on colored form sections.",
+            'who': "Keyboard users who lose track of which input field has focus when the outline blends into the background, users with low vision who cannot see low-contrast default outlines on various input backgrounds, users with color vision deficiencies who may not perceive certain default colors against certain form or input backgrounds, users filling out forms on different browsers and platforms expecting consistent focus indication, and quality assurance teams unable to ensure consistent, contrast-compliant focus indicators across all contexts",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.4.7', '1.4.11'],
-            'remediation': "Define explicit, custom focus styles that you control and can verify meet WCAG requirements across all contexts: input:focus { outline: 2px solid #0066cc; outline-offset: 2px; }. Choose colors with at least 3:1 contrast against your input backgrounds and surrounding page backgrounds. Test your custom focus styles across: Chrome, Firefox, Safari, Edge on both Windows and macOS, mobile browsers on iOS and Android, and with Windows High Contrast Mode enabled. Ensure focus indicators work with all your input states (empty, filled, error, disabled) and against all background colors where inputs appear. Document your focus indicator standards in your design system to ensure consistency. Consider using CSS custom properties to define focus styles once and apply consistently: :root { --focus-color: #0066cc; --focus-width: 2px; --focus-offset: 2px; } input:focus { outline: var(--focus-width) solid var(--focus-color); outline-offset: var(--focus-offset); }"
+            'remediation': "Define explicit custom focus styles with guaranteed contrast: input:focus, textarea:focus, select:focus { outline: 2px solid #0066cc; outline-offset: 2px; }. Choose colors with at least 3:1 contrast against both your input backgrounds AND surrounding form/page backgrounds. For maximum reliability on any background, use a combination of outline and box-shadow to create a \"halo\" effect: input:focus { outline: 2px solid white; box-shadow: 0 0 0 4px #0066cc; outline-offset: 0; }. This white inner ring + colored outer ring pattern ensures visibility on both light and dark backgrounds. Test your focus indicators against all input states: empty fields, filled fields, error states, disabled states, and on all background colors where inputs appear (white forms, colored sections, images). Test across Chrome, Firefox, Safari, Edge on Windows and macOS, and mobile browsers. Consider using CSS custom properties for consistency: :root { --input-focus-color: #0066cc; } input:focus { outline: 2px solid var(--input-focus-color); outline-offset: 2px; }"
         },
         'WarnInputFocusGradientBackground': {
             'title': "Input field has gradient background - focus indicator contrast cannot be automatically verified",
@@ -2107,13 +2116,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add aria-level attribute with value 1-6"
         },
         'ErrSVGNoAccessibleName': {
-            'title': "SVG image lacks accessible name through title, aria-label, or aria-labelledby",
-            'what': "SVG image lacks accessible name through title, aria-label, or aria-labelledby",
-            'why': "Without accessible names, SVG content is invisible to screen reader users.",
-            'who': "Blind and low vision users using screen readers.",
+            'title': "Inline SVG lacks accessible name and proper context-specific handling",
+            'what': "Inline SVG lacks accessible name and proper context-specific handling",
+            'why': "Inline SVG elements require different treatment based on context. When an SVG appears alone as an image, it needs role=\"img\" with aria-label or a <title> element with aria-labelledby to provide an accessible name. However, when an SVG appears inside a link or button that also contains text (like <a href=\"/play\"><svg>...</svg><span>Play</span></a>), the SVG should be marked as decorative with aria-hidden=\"true\" since the text provides the accessible name. Without proper handling, screen readers either announce nothing (missing name) or create redundancy by announcing both the image and text. The context determines the correct fix: standalone SVGs need accessible names, SVGs with adjacent text need aria-hidden=\"true\".",
+            'who': "Screen reader users who need either proper image descriptions for standalone SVGs or clean link/button announcements without decorative image redundancy, users with cognitive disabilities who are confused by redundant announcements, voice control users who need consistent command targets",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.1.1'],
-            'remediation': "Add <title> element with aria-labelledby, or use role=\"img\" with aria-label for simple SVGs."
+            'remediation': "First, check the SVG's context. If the SVG is inside a link or button that contains text (e.g., <a><svg></svg><span>Text</span></a>), add aria-hidden=\"true\" to the SVG since the text provides the accessible name. If the SVG stands alone as a meaningful image, add role=\"img\" with aria-label for simple icons, or add a <title> element as the first child of the SVG with aria-labelledby pointing to the title's id for complex images. For decorative SVGs not in links/buttons, use aria-hidden=\"true\" and ensure focusable=\"false\". Never add accessible names to SVGs that have adjacent text in the same interactive element - this creates redundancy."
         },
         'ErrHeadingOrder': {
             'title': "Headings appear in illogical order - high-level headings (H1, H2) appear after lower-level headings (H3, H4, H5, H6)",
@@ -2150,6 +2159,24 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.1.1'],
             'remediation': "For simple SVGs, add role=\"img\" and aria-label with descriptive text. For complex SVGs, use <title> as the first child element and reference it with aria-labelledby. For decorative SVGs, use aria-hidden=\"true\" to hide from assistive technologies. For inline SVGs containing text, ensure text is in actual text elements not paths. For interactive SVGs, provide appropriate ARIA labels for all interactive elements. Always test with screen readers to verify SVGs are properly announced."
+        },
+        'ErrSvgStaticWithoutRole': {
+            'title': "Static inline SVG lacks role=\"img\", preventing assistive technologies from treating it as an image",
+            'what': "Static inline SVG element does not have role=\"img\" attribute, causing screen readers to either skip it entirely or attempt to navigate through its internal SVG structure rather than treating it as a single image",
+            'why': "Inline SVG elements are not automatically treated as images by assistive technologies. Without role=\"img\", screen readers may traverse the SVG's internal DOM structure (paths, circles, polygons), announcing confusing technical details instead of the image's meaning. Some screen readers skip unlabeled SVGs entirely. The role=\"img\" attribute signals to assistive technologies that the SVG should be treated as a single image unit with an accessible name, just like an HTML img element. This is required for static SVG graphics (icons, logos, illustrations) but not for interactive SVG widgets or purely decorative SVGs (which should use aria-hidden=\"true\").",
+            'who': "Blind and low vision users using screen readers who need SVG images to be announced with their accessible names rather than technical SVG markup, users with cognitive disabilities who benefit from clear image identification, keyboard users navigating through page content who need to understand what visual content represents",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.1.1', '4.1.2'],
+            'remediation': "Add role=\"img\" to the SVG element to signal it should be treated as an image: <svg role=\"img\" aria-label=\"Description of image\">. Then provide an accessible name using one of these methods: (1) aria-label=\"Description\" for simple images; (2) aria-labelledby=\"title-id\" with <title id=\"title-id\">Description</title> as first child for more complex descriptions; (3) <title>Description</title> as first child (automatically used as accessible name). For decorative SVGs that convey no information, use aria-hidden=\"true\" instead of role=\"img\". For interactive SVG widgets (maps, diagrams, controls), do not use role=\"img\" - see DiscoInteractiveSvg for guidance on accessible interactive SVGs."
+        },
+        'DiscoInteractiveSvg': {
+            'title': "Interactive SVG detected requiring manual accessibility review for keyboard access, focus management, and ARIA implementation",
+            'what': "Inline SVG contains interactive elements (event handlers, tabindex, focusable elements, or interactive ARIA roles), indicating it functions as an interactive widget rather than a static image",
+            'why': "Interactive SVGs (maps, diagrams, data visualizations, custom controls) have complex accessibility requirements that differ from static images. They need keyboard navigation for all interactive elements, visible focus indicators, proper ARIA roles and states, logical tab order, and state change announcements. Unlike static SVGs that need role=\"img\", interactive SVGs typically use role=\"application\", role=\"group\", or no role depending on their complexity. Automated testing cannot determine if keyboard access is properly implemented, if focus management works correctly, or if the interaction model is clear to screen reader users. Manual review is required to verify the entire interactive experience is accessible.",
+            'who': "Keyboard users who need to operate all interactive SVG functionality without a mouse, screen reader users who need to understand the SVG's interactive elements and receive feedback on state changes, users with motor disabilities who need adequate target sizes and forgiving interaction patterns, users with cognitive disabilities who benefit from predictable interaction models and clear instructions",
+            'impact': ImpactScale.INFO.value,
+            'wcag': ['1.1.1', '2.1.1', '2.4.3', '2.4.7', '4.1.2', '4.1.3'],
+            'remediation': "Manually review this interactive SVG for: (1) Keyboard accessibility - all interactive elements must be keyboard operable with logical tab order, use tabindex=\"0\" for custom focusable elements, avoid positive tabindex values; (2) Focus indicators - ensure visible focus on all interactive elements; (3) ARIA implementation - use appropriate roles (button, link, etc.) for interactive elements, provide aria-label or aria-labelledby for all controls, announce state changes with aria-live regions; (4) Instructions - provide visible or aria-describedby instructions for complex interaction patterns; (5) Alternative access - consider providing equivalent functionality in standard HTML for complex interactions. Test thoroughly with keyboard-only navigation and screen readers (NVDA, JAWS, VoiceOver). For simple interactive SVGs, consider using standard HTML controls instead."
         },
         'ErrTTabindexOnNonInteractiveElement': {
             'title': "Tabindex attribute on non-interactive element",
@@ -2197,13 +2224,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add visible focus indicator to elements with tabindex: [tabindex]:focus { outline: 2px solid #0066cc; outline-offset: 2px; } or target specific elements: [tabindex=\"0\"]:focus, [tabindex=\"-1\"]:focus { outline: 2px solid #0066cc; outline-offset: 2px; }. For custom interactive widgets, ensure focus indicators match the styling of similar native controls. Ensure outline color has 3:1+ contrast against backgrounds. Consider the element type: for div/span made focusable, a clear outline works well; for custom buttons, match button focus styling; for custom form controls, match input focus styling. Test by tabbing through your interface - every focusable element should have immediately obvious focus indication. Never use tabindex without ensuring visible focus. For programmatically focused elements (tabindex=\"-1\" used for skip link targets), add temporary focus styling that times out or is removed after focus moves."
         },
         'ErrTabindexChildOfInteractive': {
-            'title': "Child element has tabindex inside interactive parent element",
-            'what': "Child element (such as SVG, span, icon, or other nested element) has a tabindex attribute when it is already contained within an interactive parent element like a button, link (anchor), or other focusable control",
-            'why': "Adding tabindex to a child element inside an interactive parent (like an SVG inside a button) is bad practice and should not be done, even with tabindex='-1' or aria-hidden. It creates redundant keyboard focus behavior and can cause unexpected interactions. The parent interactive element already provides all necessary keyboard access and focus management. Child elements do not need and should not have their own tabindex. This pattern creates unnecessary complexity, can confuse keyboard users, and serves no legitimate accessibility or functional purpose.",
-            'who': "All keyboard users who may encounter unexpected focus behavior, users with cognitive disabilities who may be confused by nested focusable elements, screen reader users who may receive confusing announcements, and developers maintaining the code who must deal with unnecessary complexity and potential bugs from this anti-pattern",
+            'title': "Child element has tabindex inside interactive parent, creating improper structure for assistive technologies",
+            'what': "Child element (such as SVG, span, icon, or other nested element) has a tabindex attribute when it is already contained within an interactive parent element like a button, link (anchor), or other focusable control, creating improper HTML structure and relationships",
+            'why': "Adding tabindex to a child element inside an interactive parent (like an SVG inside a button) violates WCAG 1.3.1 Info and Relationships, which requires that information, structure, and relationships can be programmatically determined. The page structure is not properly described to assistive technologies - the parent button is the interactive element, but the child also claims to be independently focusable. This creates improper structural relationships that confuse screen readers and other assistive technologies. They cannot properly interpret this nested focusable structure, leading to confusing announcements about what element has focus, what will happen when activated, and how the elements relate to each other. Even with tabindex=\"-1\" or aria-hidden, this creates structural problems because assistive technologies expect clean, logical relationships between parent and child elements.",
+            'who': "Screen reader users who receive confusing announcements about nested interactive elements and cannot understand the proper structure and relationships, users with cognitive disabilities who may be confused by redundant tab stops and unclear element relationships, keyboard users who encounter unexpected focus behavior that doesn't match the visual structure, and all users relying on assistive technologies to properly understand page structure and programmatic relationships between elements",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.7'],
-            'remediation': "Remove the tabindex attribute from the child element entirely. For example, change <button><svg tabindex=\"-1\" aria-hidden=\"true\">...</svg></button> to <button><svg aria-hidden=\"true\">...</svg></button>. The parent button already provides keyboard access - the SVG child does not need tabindex. This applies to all values: tabindex=\"-1\", tabindex=\"0\", or any positive number. Child elements inside interactive parents should never have tabindex."
+            'wcag': ['1.3.1'],
+            'remediation': "Remove the tabindex attribute from the child element entirely to restore proper HTML structure and relationships. For example, change <button><svg tabindex=\"-1\" aria-hidden=\"true\">...</svg></button> to <button><svg aria-hidden=\"true\">...</svg></button>. The parent button already provides keyboard access and proper semantic structure that assistive technologies can understand. Child elements (SVGs, spans, icons, etc.) inside interactive parents should never have tabindex, regardless of the value (-1, 0, or positive numbers). This ensures the page structure and relationships are properly described and can be programmatically determined by assistive technologies, meeting WCAG 1.3.1."
         },
         'ErrTabindexAriaHiddenFocusable': {
             'title': "Element with tabindex has aria-hidden='true', which is invalid",
@@ -2351,12 +2378,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         },
         'WarnTabindexDefaultFocus': {
             'title': "Element with tabindex relies on default browser focus styles which may not work for non-standard elements",
-            'what': "Element with tabindex has no custom focus styles and relies on browser default focus indicators, which vary across browsers and may not provide adequate indication for non-standard interactive elements",
-            'why': "Browser default focus styles are inconsistent and may not work at all for non-standard elements with tabindex. A div or span with tabindex=\"0\" may receive no visible focus indication in some browsers, or inconsistent indication across browsers. Even when defaults exist, they vary - Chrome, Firefox, and Safari show different outlines or no outline for non-standard elements. Relying on defaults for custom focusable elements means no guarantee of accessibility. Your custom interactive widgets (tab panels, accordions, custom controls with tabindex) might have focus indication in one browser but not another.",
-            'who': "Users with low vision needing consistent focus indicators across browsers, keyboard users needing reliable indication regardless of browser, users with color vision deficiencies who may not perceive certain default colors, quality assurance teams unable to ensure consistency, users on different browsers/platforms, users navigating custom widgets with tabindex, mobile keyboard users on tablets, and international users on various devices with different browser rendering",
+            'what': "Element with tabindex has no custom focus styles and relies on browser default focus indicators, which do not adapt to background colors and may have insufficient contrast or no indication at all for non-standard interactive elements",
+            'why': "The primary problem with default browser focus outlines is that they don't adapt to the background color behind them, creating contrast failures. A blue default outline may be invisible on a blue background, or a black outline invisible on dark backgrounds. This is the main reason default focus indicators fail accessibility requirements. Additionally, browser defaults are inconsistent - Chrome, Firefox, and Safari show different outlines (or no outline) for non-standard elements like divs or spans with tabindex. A custom focusable element might have visible focus in one browser but not another, and even when visible, may fail contrast requirements depending on the background.",
+            'who': "Keyboard users who lose track of focus position when the outline blends into the background, users with low vision who cannot see low-contrast default outlines, users with color vision deficiencies who may not perceive certain default colors against certain backgrounds, users navigating custom widgets with tabindex across different browsers, and quality assurance teams unable to ensure consistent, contrast-compliant focus indicators",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.4.7', '1.4.11'],
-            'remediation': "Define explicit custom focus styles: [tabindex]:focus { outline: 2px solid #0066cc; outline-offset: 2px; } or target specific patterns: [tabindex=\"0\"]:focus, [tabindex=\"-1\"]:focus { outline: 2px solid #0066cc; outline-offset: 2px; }. Choose colors with verified 3:1+ contrast. Test across Chrome, Firefox, Safari, Edge on Windows and macOS, and mobile browsers. Ensure focus works with all custom widget types using tabindex. For tab panels, verify both selected and focused tab states. For accordions, test expanded and collapsed state focus. Document focus standards for custom focusable elements. Consider using data attributes to identify custom interactive elements: [data-interactive]:focus { outline: 2px solid #0066cc; }. Test with keyboard-only navigation to verify focus is always visible."
+            'remediation': "Define explicit custom focus styles with guaranteed contrast: [tabindex]:focus { outline: 2px solid #0066cc; outline-offset: 2px; background-color: white; } or use high-contrast combinations that work on any background. For maximum reliability, use a combination of outline and box-shadow to create a \"halo\" effect: [tabindex]:focus { outline: 2px solid white; box-shadow: 0 0 0 4px #0066cc; outline-offset: 0; }. This white inner ring + colored outer ring pattern ensures visibility on both light and dark backgrounds. Test your focus indicators on all background colors used in your design. Verify 3:1+ contrast ratio between the focus indicator and adjacent colors. Test across Chrome, Firefox, Safari, Edge on Windows and macOS. For elements that move over varied backgrounds (like draggable items), use the dual-color halo technique."
         },
         'WarnTabindexNoBorderOutline': {
             'title': "Element with tabindex uses border/box-shadow changes but no separate outline for focus",
@@ -2484,23 +2511,23 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.6'],
             'remediation': "Consider shortening the heading from {length} to under {nearLimit} characters for optimal readability while maintaining clarity. Current text: \"{text}\""
         },
-        'InfoNoColorSchemeSupport': {
-            'title': "Site doesn\'t support OS color scheme preferences",
-            'what': "Site doesn\'t support OS color scheme preferences",
-            'why': "Supporting user color preferences improves readability and reduces eye strain.",
-            'who': "Users who prefer dark mode, users with light sensitivity.",
-            'impact': ImpactScale.LOW.value,
-            'wcag': ['1.4.3'],
-            'remediation': "Implement CSS prefers-color-scheme media query to support dark/light mode preferences."
+        'WarnNoColorSchemeSupport': {
+            'title': "Site doesn\'t support OS color scheme preferences (dark mode/light mode)",
+            'what': "Site doesn\'t support prefers-color-scheme media query to adapt to user\'s operating system color scheme preferences",
+            'why': "Many users with light sensitivity, photophobia, or visual impairments require dark mode to comfortably use digital interfaces. Users who have configured their operating system to use dark mode expect websites to honor that preference. Without dark mode support, these users experience eye strain, headaches, and difficulty reading content. Similarly, users in bright environments may prefer light mode for better readability. By not supporting color scheme preferences, the site fails to provide an accessibility-supported experience for users who require these accommodations.",
+            'who': "Users with light sensitivity or photophobia who require dark mode, users with migraines triggered by bright screens, users with visual impairments who find dark backgrounds easier to read, users working in low-light environments, users who have configured OS-level dark mode for accessibility reasons, users with astigmatism who experience less blur with dark backgrounds, elderly users who prefer high contrast dark themes",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.4.3', '5.2.4'],
+            'remediation': "Implement CSS prefers-color-scheme media query to detect and support user\'s OS color preference. Add @media (prefers-color-scheme: dark) { } rules with appropriate color adjustments for dark mode. Ensure sufficient contrast ratios are maintained in both light and dark themes (4.5:1 for normal text, 3:1 for large text). Test with actual OS dark mode enabled across different browsers and devices. Consider using CSS custom properties (variables) to make theme switching more maintainable. Example: @media (prefers-color-scheme: dark) { body { background: #1a1a1a; color: #e0e0e0; } }"
         },
-        'InfoNoContrastSupport': {
-            'title': "Site doesn\'t support high contrast mode",
-            'what': "Site doesn\'t support high contrast mode",
-            'why': "High contrast mode helps users with low vision read content more easily.",
-            'who': "Users with low vision, users in bright lighting conditions.",
-            'impact': ImpactScale.LOW.value,
-            'wcag': ['1.4.3'],
-            'remediation': "Test site in high contrast mode, ensure it remains usable, consider high contrast stylesheet option."
+        'WarnNoContrastSupport': {
+            'title': "Site doesn\'t support OS high contrast mode preferences",
+            'what': "Site doesn\'t support prefers-contrast media query to adapt to user\'s operating system high contrast mode preferences",
+            'why': "Many users with low vision, color vision deficiencies, or visual impairments require high contrast mode to read digital content. Users who have configured their operating system to use high contrast mode (or request increased contrast) expect websites to honor that preference. High contrast mode significantly increases the contrast ratio between text and backgrounds, making content more readable for users with reduced visual acuity. Without high contrast support, these users experience difficulty reading text, distinguishing interface elements, and navigating the site. By not supporting contrast preferences, the site fails to provide an accessibility-supported experience for users who require these accommodations.",
+            'who': "Users with low vision who require high contrast to read text, users with color vision deficiencies (color blindness) who need stronger contrast, users with cataracts or other vision conditions that reduce contrast sensitivity, elderly users with age-related vision decline, users with light sensitivity who need higher contrast in certain lighting conditions, users working in bright sunlight who need increased contrast, users with astigmatism who benefit from higher contrast ratios, users who have configured OS-level high contrast mode for accessibility reasons",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.4.3', '5.2.4'],
+            'remediation': "Implement CSS prefers-contrast media query to detect and support user\'s OS contrast preference. Add @media (prefers-contrast: more) { } rules with increased contrast ratios for high contrast mode. Ensure significantly higher contrast ratios in high contrast mode (ideally 7:1 or higher for normal text). Test with actual OS high contrast mode enabled across different browsers and operating systems (Windows High Contrast Mode, macOS Increase Contrast). Consider using CSS custom properties (variables) to make contrast adjustments more maintainable. Example: @media (prefers-contrast: more) { body { background: #000; color: #fff; } a { color: #0ff; text-decoration: underline; } }. Ensure all UI elements including borders, buttons, and form controls have sufficient contrast in high contrast mode."
         },
         'RegionLandmarkAccessibleNameIsBlank': {
             'title': "Region landmark has blank accessible name",
@@ -2602,13 +2629,22 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add descriptive label if multiple contentinfo exist"
         },
         'WarnContentOutsideLandmarks': {
-            'title': "Content exists outside of landmark regions",
+            'title': "Content exists outside of landmark regions - DEPRECATED, use ErrContentOutsideLandmarks",
             'what': "Content exists outside of landmark regions",
             'why': "Content outside landmarks is harder to find and navigate for screen reader users.",
             'who': "Screen reader users who navigate by landmarks.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.3.1'],
             'remediation': "Ensure all content is within appropriate landmarks (header, nav, main, footer, aside)."
+        },
+        'ErrContentOutsideLandmarks': {
+            'title': "Content exists outside of landmark regions, making it invisible to screen reader landmark navigation",
+            'what': "Page content exists outside of any landmark regions (main, navigation, complementary, contentinfo, banner), preventing screen reader users from finding it through landmark navigation",
+            'why': "This fails WCAG 5.2.4 Accessibility Supported because screen reader users rely on landmark navigation as their primary method for understanding page structure and quickly jumping between major page regions. When content exists outside landmarks, it becomes invisible to landmark navigation - users cannot find it using NVDA's 'D' key, JAWS' semicolon key, or VoiceOver's rotor. These users must read the entire page linearly or tab through every element to discover this content, defeating the purpose of semantic HTML structure. All meaningful page content should be contained within appropriate landmarks so that screen reader users can efficiently navigate and access it using their primary navigation patterns.",
+            'who': "Screen reader users who use landmark navigation (NVDA 'D' key, JAWS ';' key, VoiceOver rotor) to quickly jump between page regions, users with cognitive disabilities who benefit from clear page structure, keyboard users who navigate by landmarks to efficiently access different page sections, mobile screen reader users who use touch gestures to navigate by landmarks",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['5.2.4'],
+            'remediation': "Place all meaningful page content within appropriate HTML5 landmarks or ARIA landmark roles: (1) Main content in <main> or role=\"main\"; (2) Site navigation in <nav> or role=\"navigation\"; (3) Page header/masthead in <header> or role=\"banner\" (when direct child of body); (4) Page footer in <footer> or role=\"contentinfo\" (when direct child of body); (5) Complementary content in <aside> or role=\"complementary\"; (6) Search functionality in role=\"search\"; (7) Forms in <form> with accessible name to create form landmark. Acceptable exceptions: skip links at the very top of <body>, hidden content (aria-hidden=\"true\" or display:none), and scripts/noscript elements. Test by navigating the page using only landmark navigation to ensure all content is discoverable. NOTE: This is a WCAG Conformance Requirement 5.2.4 Accessibility Supported failure - the HTML structure is not being used in an accessibility-supported way."
         },
         'WarnContentinfoLandmarkAccessibleNameUsesContentinfo': {
             'title': "Contentinfo landmark uses generic term \"contentinfo\" in label",
@@ -3088,13 +3124,31 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Use the HTML5 <footer> element for your page footer (it has an implicit role of contentinfo when it\'s not nested inside article, aside, main, nav, or section elements). Alternatively, add role=\"contentinfo\" to the container holding your footer content. Ensure there\'s only one contentinfo landmark per page at the top level. The footer should contain information about the page or site, not primary content."
         },
         'WarnNoCurrentPageIndicator': {
-            'title': "Navigation doesn\'t indicate current page",
+            'title': "Navigation doesn\'t indicate current page - DEPRECATED, use ErrNoCurrentPageIndicatorScreenReader and ErrNoCurrentPageIndicatorMagnification",
             'what': "Navigation doesn\'t indicate current page",
             'why': "Users need to know their current location within the site navigation.",
             'who': "Users with cognitive disabilities, screen reader users.",
             'impact': ImpactScale.LOW.value,
             'wcag': ['2.4.8'],
             'remediation': "Use aria-current=\"page\" and visual styling to indicate current page in navigation."
+        },
+        'ErrNoCurrentPageIndicatorScreenReader': {
+            'title': "Navigation lacks aria-current=\"page\" indicator, forcing screen reader users through entire menu to discover current location",
+            'what': "Navigation menu lacks aria-current=\"page\" attribute on the current page link, preventing screen readers from announcing the user\'s current location in the site navigation",
+            'why': "This fails WCAG 5.2.4 Accessibility Supported because a common but problematic design pattern relies on a heading immediately after navigation having the same text as a menu item to indicate current page. While this creates a visual connection for sighted users, it provides a terrible experience for screen reader users who must listen to the entire navigation menu (which can be lengthy with many links and submenus) before discovering the matching heading that reveals their current location. Screen reader users cannot \"glance\" at the menu to see the highlighted item - they must sequentially process every menu item, announcement by announcement, until they hear the subsequent heading. This forces users to rely on inefficient linear navigation when the HTML could natively support immediate location awareness through aria-current=\"page\". The pattern fails Accessibility Supported because it doesn\'t work well with assistive technology - it creates an unnecessarily poor user experience that could be easily avoided with proper semantic markup.",
+            'who': "Screen reader users (NVDA, JAWS, VoiceOver, TalkBack) who navigate sequentially through content and cannot visually scan for highlighted menu items, users with cognitive disabilities who need immediate feedback about their current location without processing lengthy navigation lists, mobile screen reader users on touch devices who navigate more slowly through menus, users with reading difficulties who struggle to remember their location while processing long lists of links",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['5.2.4'],
+            'remediation': "Add aria-current=\"page\" to the navigation link that corresponds to the current page: <a href=\"/about\" aria-current=\"page\">About Us</a>. Screen readers will announce this as \"About Us, current page\" or similar, immediately informing users of their location without requiring them to listen to subsequent headings or the entire menu. This also enables \"List current page links\" screen reader features. Keep any matching heading for visual users, but don\'t rely on it as the only indicator. Apply visual styling to aria-current=\"page\" links (e.g., [aria-current=\"page\"] { font-weight: bold; text-decoration: underline; }) to create a multi-modal indicator that works for all users. Test by using a screen reader to navigate to the menu - you should hear the current page announced immediately when reaching that link, not after processing the entire menu. NOTE: This is a WCAG Conformance Requirement 5.2.4 Accessibility Supported failure - the heading pattern creates an accessibility-supported implementation gap."
+        },
+        'ErrNoCurrentPageIndicatorMagnification': {
+            'title': "Navigation lacks visual current page indicator, preventing screen magnifier users from knowing their location without panning",
+            'what': "Navigation menu lacks visual styling to indicate the current page (typically highlighting, bold text, underline, or background color), forcing screen magnifier users to pan between the menu and page content to determine their location",
+            'why': "Screen magnifier users at high magnification levels (200%-400%+) can only see a small portion of the screen at once - typically not enough to view both the navigation menu and the page heading simultaneously. Without a clear visual indicator in the navigation showing which item represents the current page, magnifier users must constantly pan back and forth between the menu area and the page content area to compare the heading text with menu items to figure out where they are in the site structure. This creates significant cognitive load and navigation friction. Sighted users without magnification can instantly glance at the menu to see the highlighted current page, but magnifier users lose this affordance when visual styling is absent. While aria-current=\"page\" helps screen reader users, it provides no visual indication - both programmatic AND visual indicators are needed to serve all users.",
+            'who': "Users with low vision using screen magnification software (ZoomText, MAGic, OS zoom features) who cannot see the entire page layout at once, users with tunnel vision or other visual field defects who see limited screen area, older users who use browser zoom and struggle to maintain spatial awareness, users with cognitive disabilities who need strong visual cues to maintain orientation, mobile users who zoom into content and lose contextual awareness",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.4.6', '2.4.8', '5.2.4'],
+            'remediation': "Apply distinctive visual styling to the current page link in navigation - use a combination of multiple visual indicators for robust identification: (1) Background color change: .current-page { background-color: #003366; color: white; }; (2) Border or underline: border-left: 4px solid blue or text-decoration: underline; (3) Font weight: font-weight: bold; (4) Icon or symbol: prepend/append a visual indicator. Combine with aria-current=\"page\" for screen reader users. Ensure visual indicators have sufficient contrast (4.5:1 for text, 3:1 for non-text). The visual distinction should be immediately recognizable when viewing only the navigation area at high magnification. Test by zooming to 400% and viewing only the navigation - the current page should be unmistakably identified without seeing page content. Common pattern: <a href=\"/about\" aria-current=\"page\" class=\"current-page\">About Us</a> with CSS targeting both [aria-current=\"page\"] and .current-page for backwards compatibility."
         },
         'WarnNoCursorPointer': {
             'title': "Clickable element doesn\'t show pointer cursor",
@@ -3188,12 +3242,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         },
         'WarnSmallLineHeight': {
             'title': "Line height less than 1.5x font size",
-            'what': "Line height is {lineHeight}px with a ratio of {ratio} for font size {fontSize}px. Line height should be at least 1.5 times the font size.",
-            'why': "Tight line spacing makes text difficult to read and track. Adequate line spacing helps users with dyslexia distinguish lines and improves reading comprehension for all users.",
-            'who': "Users with dyslexia who need clear line separation, users with low vision who track lines of text, older users, users with reading disabilities.",
+            'what': "Line height is {lineHeight}px with a ratio of {ratio} for font size {fontSize}px. Best practice recommends line height of at least 1.5 times the font size, especially for blocks of text with multiple adjacent lines.",
+            'why': "Tight line spacing makes text difficult to read and track, especially for blocks of text. Adequate line spacing (1.5x or higher) helps users with dyslexia distinguish lines, improves reading comprehension, and reduces eye strain. This fails WCAG 5.2.4 Accessibility Supported because insufficient line height forces users to rely on assistive technologies (custom stylesheets, browser extensions, or reader modes) when they otherwise wouldn't need them. The content should be accessibility-supported by default, not require users to apply technical workarounds to make it readable.",
+            'who': "Users with dyslexia who need clear line separation, users with low vision who track lines of text, older users, users with reading disabilities, users who experience eye strain.",
             'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['1.4.12'],
-            'remediation': "Set line-height to at least 1.5. For this element with font size {fontSize}px, the line height should be at least {minLineHeight}px (currently {lineHeight}px)."
+            'wcag': ['5.2.4'],
+            'remediation': "Set line-height to at least 1.5 for blocks of text with multiple lines. For this element with font size {fontSize}px, the line height should be at least {minLineHeight}px (currently {lineHeight}px). Note: While WCAG 1.4.12 requires that user-applied spacing adjustments don't break the layout, providing adequate default line height (5.2.4 Accessibility Supported) prevents users from needing assistive technologies in the first place. Single lines or headings may use tighter spacing."
         },
         'WarnSvgPositiveTabindex': {
             'title': "SVG element uses positive tabindex - verify this is intentional for interactive widget",
@@ -3223,13 +3277,22 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Remove the title attribute entirely since the visible text already provides the necessary information. Title attributes should only be used: (1) on <iframe> elements to provide accessible names, or (2) in the <head> element as the page title. For all other use cases, use visible, persistent text that all users can access. If you need supplementary information, use visible helper text, aria-describedby, or clickable info icons instead of title attributes."
         },
         'WarnUnlabelledForm': {
-            'title': "Form element lacks accessible name",
-            'what': "Form element lacks accessible name",
-            'why': "Forms need names to help users understand their purpose.",
-            'who': "Screen reader users.",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['4.1.2'],
-            'remediation': "Add aria-label or aria-labelledby to form elements."
+            'title': "Form element lacks accessible name (deprecated - use ErrFormLandmarkMustHaveAccessibleName)",
+            'what': "This error code is deprecated. The issue is now reported as ErrFormLandmarkMustHaveAccessibleName.",
+            'why': "Forms without accessible names fail to become form landmarks, preventing screen reader users from finding them through landmark navigation.",
+            'who': "Screen reader users who rely on landmark navigation.",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.3.1', '4.1.2'],
+            'remediation': "Add aria-label or aria-labelledby to the form element to provide an accessible name."
+        },
+        'ErrFormLandmarkMustHaveAccessibleName': {
+            'title': "Form element lacks accessible name required to become a form landmark",
+            'what': "Form element lacks an accessible name (via aria-label, aria-labelledby, or title attribute), preventing it from becoming a form landmark that screen reader users can navigate to",
+            'why': "Without an accessible name, a form element does not become a form landmark in the accessibility tree. This is a WCAG conformance failure through Section 5.2.4 Accessibility Supported - the HTML form element is not being used in an accessibility-supported way. Screen reader users rely on landmark navigation to quickly jump between major page regions, including forms. When a form lacks an accessible name, it becomes invisible to landmark navigation - users cannot find it using NVDA's 'D' key, JAWS' semicolon key, or VoiceOver's rotor. Users must tab through every field to discover the form exists, or stumble upon it while reading the entire page linearly. For pages with multiple forms (login, search, newsletter signup, contact), the inability to distinguish and navigate between forms creates significant barriers. The accessible name also helps users understand the form's purpose before entering it.",
+            'who': "Screen reader users who use landmark navigation (e.g., NVDA's 'D' key, JAWS' ';' key, VoiceOver's rotor) to quickly find and move between forms on the page, users with cognitive disabilities who benefit from clear form labels to understand each form's purpose, keyboard users who want to efficiently navigate to specific forms without tabbing through every field, mobile screen reader users who use touch gestures to navigate by landmarks",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['5.2.4'],
+            'remediation': "Add an accessible name to the form using one of these methods: (1) aria-label: <form aria-label=\"Contact form\"> - provides a clear, concise label; (2) aria-labelledby: <h2 id=\"contact-heading\">Contact Us</h2> <form aria-labelledby=\"contact-heading\"> - references a visible heading; (3) title attribute: <form title=\"Newsletter signup\"> - less preferred but acceptable. Choose descriptive names that distinguish multiple forms on the same page: 'Login form', 'Search site', 'Newsletter signup', 'Contact form'. The name should be concise (2-4 words) and describe the form's purpose. Avoid generic names like 'Form 1' or 'Main form' that don't convey meaning. For pages with a single form, the name can be general ('Contact form'), but multiple forms require specific, distinguishing names. NOTE: This is a WCAG Conformance Requirement 5.2.4 Accessibility Supported failure, not a specific success criterion failure."
         },
         'WarnUnlabelledRegion': {
             'title': "Region landmark lacks accessible name",
@@ -3363,7 +3426,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'why': "When colors and fonts are hard-coded in inline style attributes, CSS specificity rules make them extremely difficult for users to override with their own stylesheets. Users with low vision who need specific color schemes (high contrast, inverted colors, custom color combinations), users with dyslexia who need particular fonts, and users who need custom text spacing cannot apply their accessibility preferences. Inline styles essentially lock visual presentation, forcing all users to view content exactly as designed regardless of their needs.",
             'who': "Users with low vision who require custom color schemes or high contrast settings, users with dyslexia or reading disabilities who need specific fonts like OpenDyslexic or Comic Sans, users with light sensitivity who need dark mode or specific color combinations, users with cognitive disabilities who need customized text presentation, elderly users who need larger text with specific spacing, and users with color blindness who need adjusted color palettes",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.4.3', '1.4.8', '1.4.12'],
+            'wcag': ['1.4.8', '5.2.4'],
             'remediation': "Move all color and font declarations from inline style attributes to external CSS files or <style> blocks with lower specificity, use CSS classes instead of inline styles (replace style=\"color: red; font-size: 18px;\" with class=\"error-text\"), ensure user stylesheets can override your styles by avoiding !important declarations, test that users can apply custom stylesheets successfully, and reserve inline styles only for layout properties like positioning or dimensions when absolutely necessary"
         },
         'WarnStyleAttrOther': {
@@ -3381,7 +3444,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'why': "Embedded <style> tags create specificity and cascade issues that can prevent users from successfully applying their own stylesheets for accessibility needs. Colors and fonts defined in <style> tags appear later in the cascade than external stylesheets, often requiring users to add !important to every custom rule or fight complex specificity battles. This creates significant barriers for users who depend on custom styling - those with low vision needing high contrast, users with dyslexia needing specific fonts, or users with light sensitivity needing dark themes. External CSS files load first and are easier to override with user stylesheets.",
             'who': "Users with low vision who need custom color schemes that may be overridden by embedded styles, users with dyslexia or reading disabilities who cannot reliably apply their preferred fonts, users with photosensitivity who need consistent dark mode implementations, users with cognitive disabilities requiring specific visual customizations, and users relying on browser extensions or assistive technology that inject custom CSS which may be defeated by embedded styles",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.4.3', '1.4.8', '1.4.12'],
+            'wcag': ['1.4.8', '5.2.4'],
             'remediation': "Move all color and font definitions from <style> tags to external CSS files that load early in the document head, use external stylesheets with link elements instead of embedded styles (replace <style> with <link rel=\"stylesheet\" href=\"styles.css\">), ensure external stylesheets are loaded before any embedded styles if you must use both, avoid using overly specific selectors or !important that make user overrides difficult, test that user stylesheets successfully override your color and font choices, and reserve <style> tags for critical layout CSS only when external files would cause flash of unstyled content"
         },
         'WarnStyleTagOther': {
@@ -3449,6 +3512,10 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
                     count = metadata.get('sizeCount', 0)
                     desc[key] = desc[key].replace('{sizeCount_plural}', 's' if count != 1 else '')
 
+                if '{sizeCount_singular_size}' in desc[key] and 'sizeCount' in metadata:
+                    count = metadata.get('sizeCount', 0)
+                    desc[key] = desc[key].replace('{sizeCount_singular_size}', 'size' if count == 1 else 'different sizes')
+
                 if '{fieldCount_plural}' in desc[key] and 'fieldCount' in metadata:
                     count = metadata.get('fieldCount', 0)
                     desc[key] = desc[key].replace('{fieldCount_plural}', 's' if count != 1 else '')
@@ -3467,7 +3534,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
                     path = match.group(1)
 
                     # Skip special placeholders already handled
-                    if path in ['fontSizes_list', 'sizeCount_plural', 'fieldCount_plural', 'fieldTypes_summary',
+                    if path in ['fontSizes_list', 'sizeCount_plural', 'sizeCount_singular_size', 'fieldCount_plural', 'fieldTypes_summary',
                                 'searchContext_title', 'searchContext_description', 'searchContext_remediation', 'minLineHeight']:
                         return match.group(0)
 

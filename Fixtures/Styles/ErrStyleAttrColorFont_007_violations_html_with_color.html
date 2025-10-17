@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: #f0f0f0; color: #333;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hard-Coded Colors on HTML Element - Violation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_007_violations_html_with_color",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "HTML element with hard-coded color properties - SHOULD be flagged as a violation because these prevent user customization",
+    "wcag": ["1.4.3", "1.4.8", "1.4.12"],
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .warning-box {
+            border: 2px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            background-color: #fff5f5;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-xpath="/html[1]"
+      data-violation-id="ErrStyleAttrColorFont"
+      data-violation-reason="The <html> element has inline style='background-color: #f0f0f0; color: #333;' which hard-codes colors. Unlike CSS variables or color-scheme, these are actual color properties that override user preferences and prevent accessibility customization. Users who need high contrast, inverted colors, or custom color schemes cannot override these inline styles.">
+    <h1>Hard-Coded Colors on HTML Element</h1>
+
+    <main>
+        <div class="warning-box">
+            <h2>⚠️ This is a Violation</h2>
+            <p><strong>The <code>&lt;html&gt;</code> element has inline color styles that should be flagged.</strong></p>
+        </div>
+
+        <section>
+            <h2>What's Wrong With This Page?</h2>
+            <p>The HTML element has this inline style:</p>
+            <pre><code>&lt;html style="background-color: #f0f0f0; color: #333;"&gt;</code></pre>
+            <p>This is problematic because:</p>
+            <ul>
+                <li><strong>Prevents user customization</strong> - Users with accessibility needs cannot override these colors</li>
+                <li><strong>Breaks high contrast modes</strong> - Inline styles have high specificity and override user stylesheets</li>
+                <li><strong>Ignores user preferences</strong> - Users who configured custom colors in their browser are forced to use these</li>
+                <li><strong>Not responsive to system settings</strong> - Doesn't respect dark mode or other OS-level accessibility settings</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Difference from CSS Variables</h2>
+            <p>This is different from CSS variables or color-scheme:</p>
+            <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Example</th>
+                        <th>Should Flag?</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CSS Variables</td>
+                        <td><code>--primary: #007bff;</code></td>
+                        <td>❌ No</td>
+                        <td>Defines reusable values, easily overridden</td>
+                    </tr>
+                    <tr>
+                        <td>Color Scheme</td>
+                        <td><code>color-scheme: dark light;</code></td>
+                        <td>❌ No</td>
+                        <td>Accessibility feature for dark mode support</td>
+                    </tr>
+                    <tr style="background-color: #fff5f5;">
+                        <td><strong>Hard-Coded Colors</strong></td>
+                        <td><code>background-color: #f0f0f0;</code></td>
+                        <td><strong>✅ Yes</strong></td>
+                        <td><strong>Prevents user customization</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Who This Affects</h2>
+            <p>Hard-coded colors on the HTML element impact:</p>
+            <ul>
+                <li><strong>Users with low vision</strong> who need high contrast colors</li>
+                <li><strong>Users with photophobia</strong> who need dark mode</li>
+                <li><strong>Users with color blindness</strong> who configured custom color schemes</li>
+                <li><strong>Users with dyslexia</strong> who benefit from specific background colors</li>
+                <li><strong>Older users</strong> with age-related vision changes who need custom colors</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>How to Fix</h2>
+            <p>Instead of inline styles on <code>&lt;html&gt;</code>, use:</p>
+            <ol>
+                <li><strong>External CSS</strong> in a stylesheet (easier for users to override with !important)</li>
+                <li><strong>CSS variables</strong> if you need to set design tokens</li>
+                <li><strong>color-scheme property</strong> for dark mode support</li>
+                <li><strong>Media queries</strong> to respect user preferences like <code>prefers-color-scheme</code></li>
+            </ol>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Violation Example. This page demonstrates what NOT to do.</p>
+    </footer>
+</body>
+</html>

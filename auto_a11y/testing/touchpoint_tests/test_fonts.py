@@ -351,8 +351,8 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
                 
                 if (lineHeightViolations > 0) {
                     results.checks.push({
-                        description: 'Line height adequacy',
-                        wcag: ['1.4.8'],
+                        description: 'Line height adequacy (best practice)',
+                        wcag: [],
                         total: textElements.length,
                         passed: textElements.length - lineHeightViolations,
                         failed: lineHeightViolations
@@ -425,7 +425,9 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
                         element: 'document',
                         xpath: '/html[1]',
                         html: `<meta>Font: ${fontName}</meta>`,
-                        description: `Font '${fontName}' is used at ${sortedSizes.length} different size${sortedSizes.length > 1 ? 's' : ''}: ${sortedSizes.join(', ')}`,
+                        description: sortedSizes.length === 1
+                            ? `Font is used at 1 size on this page`
+                            : `Font is used at ${sortedSizes.length} different sizes on this page`,
                         fontName: fontName,
                         fontSizes: sortedSizes,
                         sizeCount: sortedSizes.length

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" style="--primary-color: #007bff; --secondary-color: #6c757d; --font-size-base: 16px; --spacing-unit: 8px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Variables on HTML Element - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrStyleAttrColorFont_005_correct_html_css_variables",
+    "issueId": "ErrStyleAttrColorFont",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "HTML element with CSS custom properties (CSS variables) - should NOT be flagged as these are legitimate",
+    "wcag": ["1.4.3", "1.4.8", "1.4.12"],
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: calc(var(--spacing-unit) * 2);
+            font-size: var(--font-size-base);
+        }
+        .button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .card {
+            border: 1px solid var(--secondary-color);
+            padding: var(--spacing-unit);
+            margin-bottom: var(--spacing-unit);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body data-expected-pass="true"
+      data-pass-reason="The <html> element uses CSS custom properties (CSS variables) like --primary-color and --font-size-base. These are legitimate and should NOT be flagged. CSS variables on the html element are a common pattern for theming and design systems. They do not prevent user customization - users can still override these with their own stylesheets or browser extensions.">
+    <h1>CSS Variables Example</h1>
+
+    <main>
+        <p>This page demonstrates the correct use of CSS custom properties (CSS variables) on the <code>&lt;html&gt;</code> element.</p>
+
+        <section class="card">
+            <h2>Design System Variables</h2>
+            <p>The HTML element defines these CSS variables:</p>
+            <ul>
+                <li><code>--primary-color: #007bff</code> - Used for primary actions</li>
+                <li><code>--secondary-color: #6c757d</code> - Used for secondary elements</li>
+                <li><code>--font-size-base: 16px</code> - Base font size for the entire document</li>
+                <li><code>--spacing-unit: 8px</code> - Base spacing unit for consistent spacing</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Why This Is Correct</h2>
+            <p>CSS custom properties (variables) on the <code>&lt;html&gt;</code> element are:</p>
+            <ul>
+                <li><strong>Standard practice</strong> for design systems and theming</li>
+                <li><strong>User-customizable</strong> - can be overridden with user stylesheets</li>
+                <li><strong>Maintainable</strong> - centralized values that cascade to all elements</li>
+                <li><strong>Dynamic</strong> - can be changed via JavaScript for theme switching</li>
+                <li><strong>Not hard-coded styles</strong> - they define reusable values, not direct styling</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Button Examples</h2>
+            <p>These buttons use the CSS variables defined above:</p>
+            <p>
+                <button class="button">Primary Button</button>
+                <button class="button-secondary">Secondary Button</button>
+            </p>
+        </section>
+
+        <section class="card">
+            <h2>Accessibility Benefits</h2>
+            <p>CSS variables provide accessibility benefits:</p>
+            <ul>
+                <li>Users can override variables with their own stylesheets</li>
+                <li>Browser extensions can modify variables for high contrast modes</li>
+                <li>JavaScript can adjust variables based on user preferences</li>
+                <li>They enable consistent spacing and sizing (important for WCAG 1.4.12)</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 CSS Variables Demo. Using proper design system patterns.</p>
+    </footer>
+</body>
+</html>

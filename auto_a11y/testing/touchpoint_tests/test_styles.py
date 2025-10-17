@@ -150,22 +150,67 @@ async def test_styles(page) -> Dict[str, Any]:
                         ? outerHTML.substring(0, 200) + '...'
                         : outerHTML;
 
-                    // Parse style attribute to check for color properties
-                    const styleLower = styleAttr.toLowerCase();
-                    const hasColor = colorProperties.some(prop => {
-                        // Match property name followed by colon
-                        // Use (^|;|\\s) to match start, semicolon, or whitespace before property
-                        const regex = new RegExp(`(^|;|\\s)${prop}\\s*:`, 'i');
-                        return regex.test(styleLower);
-                    });
+                    // Special handling for <html> element - allow CSS custom properties and color-scheme
+                    let hasColor = false;
+                    let hasFont = false;
 
-                    // Parse style attribute to check for font properties
-                    const hasFont = fontProperties.some(prop => {
-                        // Match property name followed by colon
-                        // Use (^|;|\\s) to match start, semicolon, or whitespace before property
-                        const regex = new RegExp(`(^|;|\\s)${prop}\\s*:`, 'i');
-                        return regex.test(styleLower);
-                    });
+                    if (tagName === 'html') {
+                        // Split style attribute into individual declarations
+                        const styleDeclarations = styleAttr.split(';').map(s => s.trim()).filter(Boolean);
+
+                        // Check each declaration
+                        let allAllowed = true;
+                        for (const declaration of styleDeclarations) {
+                            const declLower = declaration.toLowerCase();
+
+                            // Check if this is an allowed property
+                            if (/^--[\w-]+\s*:/.test(declaration)) {
+                                // CSS custom property - allowed
+                                continue;
+                            }
+                            if (/^color-scheme\s*:/i.test(declaration)) {
+                                // color-scheme property - allowed
+                                continue;
+                            }
+
+                            // Not an allowed property - check if it's color/font
+                            allAllowed = false;
+
+                            // Check if this declaration contains a color property
+                            if (!hasColor) {
+                                hasColor = colorProperties.some(prop => {
+                                    const regex = new RegExp(`^${prop}\\s*:`, 'i');
+                                    return regex.test(declLower);
+                                });
+                            }
+
+                            // Check if this declaration contains a font property
+                            if (!hasFont) {
+                                hasFont = fontProperties.some(prop => {
+                                    const regex = new RegExp(`^${prop}\\s*:`, 'i');
+                                    return regex.test(declLower);
+                                });
+                            }
+                        }
+
+                        if (allAllowed) {
+                            // All styles on <html> are legitimate - skip this element
+                            results.elements_passed++;
+                            return;
+                        }
+                    } else {
+                        // For non-html elements, use the original regex-based checking
+                        const styleLower = styleAttr.toLowerCase();
+                        hasColor = colorProperties.some(prop => {
+                            const regex = new RegExp(`(^|;|\\s)${prop}\\s*:`, 'i');
+                            return regex.test(styleLower);
+                        });
+
+                        hasFont = fontProperties.some(prop => {
+                            const regex = new RegExp(`(^|;|\\s)${prop}\\s*:`, 'i');
+                            return regex.test(styleLower);
+                        });
+                    }
 
                     if (hasColor || hasFont) {
                         // ERROR: Color or font-related inline styles
@@ -251,6 +296,32 @@ async def test_styles(page) -> Dict[str, Any]:
 
                     // Check if CSS contains color or font property definitions
                     const cssLower = cssContent.toLowerCase();
+
+                    // Check if this is only targeting html element with CSS variables or color-scheme
+                    // Pattern: html { --var: value; color-scheme: dark; }
+                    const htmlOnlyPattern = /^\s*html\s*\{([^}]+)\}\s*$/i;
+                    const htmlMatch = cssContent.match(htmlOnlyPattern);
+
+                    if (htmlMatch) {
+                        // Found a rule targeting only html element
+                        const declarations = htmlMatch[1].split(';').map(d => d.trim()).filter(Boolean);
+                        const allAllowed = declarations.every(declaration => {
+                            // Allow CSS custom properties
+                            if (/^\s*--[\w-]+\s*:/.test(declaration)) {
+                                return true;
+                            }
+                            // Allow color-scheme property
+                            if (/^\s*color-scheme\s*:/i.test(declaration)) {
+                                return true;
+                            }
+                            return false;
+                        });
+
+                        if (allAllowed) {
+                            // All properties are allowed - skip this style tag
+                            return;
+                        }
+                    }
 
                     // Match CSS property declarations (property: value;)
                     const hasColorProps = colorProperties.some(prop => {

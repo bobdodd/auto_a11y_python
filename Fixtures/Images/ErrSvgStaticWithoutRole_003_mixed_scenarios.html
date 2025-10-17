@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed SVG Scenarios</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrSvgStaticWithoutRole_003_mixed_scenarios",
+    "issueId": "Mixed",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 2,
+    "description": "Mixed scenarios showing static errors, interactive discovery, and correct implementations",
+    "wcag": ["1.1.1", "4.1.2"],
+    "impact": "Mixed"
+}
+    </script>
+</head>
+<body>
+    <h1>Mixed SVG Scenarios</h1>
+
+    <h2>Static SVG Errors (ErrSvgStaticWithoutRole)</h2>
+
+    <!-- Static SVG without role - ERROR -->
+    <p>Logo:
+        <svg width="80" height="30"
+             aria-label="Company logo"
+             data-expected-violation="true"
+             data-violation-id="ErrSvgStaticWithoutRole"
+             data-violation-reason="Static logo SVG missing role=img">
+            <text x="5" y="20" font-size="20" font-weight="bold">ACME</text>
+        </svg>
+    </p>
+
+    <!-- Static icon without role - ERROR -->
+    <p>Status:
+        <svg width="20" height="20"
+             aria-label="Success"
+             data-expected-violation="true"
+             data-violation-id="ErrSvgStaticWithoutRole"
+             data-violation-reason="Static icon SVG missing role=img">
+            <circle cx="10" cy="10" r="9" fill="green"/>
+            <path d="M5 10 L9 14 L15 6" stroke="white" stroke-width="2" fill="none"/>
+        </svg>
+    </p>
+
+    <!-- Static chart without role - ERROR -->
+    <svg width="150" height="100"
+         aria-labelledby="pie-title"
+         data-expected-violation="true"
+         data-violation-id="ErrSvgStaticWithoutRole"
+         data-violation-reason="Static chart SVG missing role=img">
+        <title id="pie-title">Budget allocation pie chart</title>
+        <circle cx="75" cy="50" r="40" fill="blue"/>
+        <path d="M75 50 L75 10 A40 40 0 0 1 115 50 Z" fill="red"/>
+    </svg>
+
+    <h2>Correctly Implemented Static SVGs (PASS)</h2>
+
+    <!-- Correct static SVG with role=img -->
+    <p>Icon with role:
+        <svg width="24" height="24"
+             role="img"
+             aria-label="Settings"
+             data-expected-pass="true"
+             data-pass-reason="Static SVG correctly has role=img">
+            <circle cx="12" cy="12" r="10" stroke="black" fill="none"/>
+            <circle cx="12" cy="12" r="3" fill="black"/>
+        </svg>
+    </p>
+
+    <!-- Correct decorative SVG -->
+    <p>Decorative border:
+        <svg width="200" height="5"
+             aria-hidden="true"
+             data-expected-pass="true"
+             data-pass-reason="Decorative SVG correctly hidden">
+            <line x1="0" y1="2" x2="200" y2="2" stroke="gray" stroke-width="2"/>
+        </svg>
+    </p>
+
+    <h2>Interactive SVGs (DiscoInteractiveSvg)</h2>
+
+    <!-- Interactive button - DISCOVERY -->
+    <p>Interactive control:
+        <svg width="100" height="40"
+             role="button"
+             tabindex="0"
+             aria-label="Toggle menu"
+             onclick="toggleMenu()"
+             data-expected-violation="true"
+             data-violation-id="DiscoInteractiveSvg"
+             data-violation-reason="Interactive SVG requires manual accessibility review">
+            <rect width="100" height="40" fill="#4CAF50" rx="5"/>
+            <text x="50" y="25" text-anchor="middle" fill="white">Menu</text>
+        </svg>
+    </p>
+
+    <p>This fixture demonstrates all three categories: static errors, correct implementations, and interactive discovery items</p>
+
+    <script>
+        function toggleMenu() {
+            console.log('Menu toggled');
+        }
+    </script>
+</body>
+</html>

@@ -150,12 +150,17 @@ async def test_read_more_links(page) -> Dict[str, Any]:
                     );
 
                     if (isGenericText) {
+                        // Check if accessible name is descriptive (longer than visible text)
+                        const hasDescriptiveAccessibleName = accessibleName.length > visibleText.length;
+                        // Check if accessible name starts with visible text (for voice control)
+                        const startsWithVisibleText = accessibleName.toLowerCase().startsWith(visibleText.toLowerCase());
+
                         genericElements.push({
                             element: element,
                             visibleText: visibleText,
                             accessibleName: accessibleName,
-                            isValid: accessibleName.length > visibleText.length && 
-                                    accessibleName.toLowerCase().startsWith(visibleText.toLowerCase())
+                            hasDescriptiveAccessibleName: hasDescriptiveAccessibleName,
+                            startsWithVisibleText: startsWithVisibleText
                         });
                     }
                 });
@@ -167,17 +172,37 @@ async def test_read_more_links(page) -> Dict[str, Any]:
                 }
                 
                 results.elements_tested = genericElements.length;
-                
-                let invalidAccessibleNames = 0;
-                
-                genericElements.forEach(item => {
-                    const { element, visibleText, accessibleName, isValid } = item;
 
-                    // Check for violations
-                    // isValid means the link has been improved with aria-label or screen-reader-only text
-                    // that extends beyond the visible text (e.g., "Read more" becomes "Read more about our 2024 report")
-                    if (!isValid) {
-                        invalidAccessibleNames++;
+                let notDescriptiveCount = 0;
+                let mismatchCount = 0;
+
+                genericElements.forEach(item => {
+                    const { element, visibleText, accessibleName, hasDescriptiveAccessibleName, startsWithVisibleText } = item;
+
+                    // Case 1: Link has descriptive accessible name BUT doesn't start with visible text
+                    // This is a voice control issue (WCAG 2.5.3, 2.4.6) - users need to say visible text to activate
+                    if (hasDescriptiveAccessibleName && !startsWithVisibleText) {
+                        mismatchCount++;
+                        results.errors.push({
+                            err: 'ErrLinkAccessibleNameMismatch',
+                            type: 'err',
+                            cat: 'links',
+                            element: element.tagName.toLowerCase(),
+                            xpath: getFullXPath(element),
+                            html: element.outerHTML.substring(0, 200),
+                            description: `Link visible text "${visibleText}" does not start accessible name "${accessibleName}" - voice control users cannot reference it`,
+                            metadata: {
+                                visibleText: visibleText,
+                                accessibleName: accessibleName,
+                                href: element.href || null
+                            }
+                        });
+                        results.elements_failed++;
+                    }
+                    // Case 2: Link has generic text with NO descriptive accessible name
+                    // This is a link purpose issue (WCAG 2.4.4)
+                    else if (!hasDescriptiveAccessibleName) {
+                        notDescriptiveCount++;
                         results.errors.push({
                             err: 'ErrLinkTextNotDescriptive',
                             type: 'err',
@@ -185,26 +210,42 @@ async def test_read_more_links(page) -> Dict[str, Any]:
                             element: element.tagName.toLowerCase(),
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
-                            description: "Link text does not adequately describe the link's destination or purpose - consider adding aria-label or visually hidden text with more context",
-                            visibleText: visibleText,
-                            accessibleName: accessibleName,
-                            href: element.href || null
+                            description: "Link text does not adequately describe the link's destination or purpose",
+                            metadata: {
+                                visibleText: visibleText,
+                                accessibleName: accessibleName,
+                                href: element.href || null
+                            }
                         });
                         results.elements_failed++;
-                    } else {
+                    }
+                    // Case 3: Link is valid - has descriptive accessible name that starts with visible text
+                    else {
                         results.elements_passed++;
                     }
                 });
                 
                 // Add check information for reporting
-                results.checks.push({
-                    description: 'Generic link accessible names',
-                    wcag: ['2.4.4', '2.4.9'],
-                    total: genericElements.length,
-                    passed: results.elements_passed,
-                    failed: invalidAccessibleNames
-                });
-                
+                if (notDescriptiveCount > 0) {
+                    results.checks.push({
+                        description: 'Generic link accessible names (Link Purpose)',
+                        wcag: ['2.4.4', '2.4.9'],
+                        total: genericElements.length,
+                        passed: genericElements.length - notDescriptiveCount,
+                        failed: notDescriptiveCount
+                    });
+                }
+
+                if (mismatchCount > 0) {
+                    results.checks.push({
+                        description: 'Link accessible name matches visible text (Voice Control)',
+                        wcag: ['2.5.3', '2.4.6'],
+                        total: genericElements.length,
+                        passed: genericElements.length - mismatchCount,
+                        failed: mismatchCount
+                    });
+                }
+
                 if (genericElements.length > 0) {
                     results.checks.push({
                         description: 'Generic link text detection (informational)',

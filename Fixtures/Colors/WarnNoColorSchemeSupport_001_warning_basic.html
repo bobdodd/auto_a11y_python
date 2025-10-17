@@ -6,13 +6,13 @@
     <title>Blog Post - No Color Scheme Support</title>
     <script type="application/json" id="test-metadata">
 {
-    "id": "InfoNoColorSchemeSupport_001_info_basic",
-    "issueId": "InfoNoColorSchemeSupport",
+    "id": "WarnNoColorSchemeSupport_001_warning_basic",
+    "issueId": "WarnNoColorSchemeSupport",
     "expectedViolationCount": 1,
     "expectedPassCount": 0,
-    "description": "Site doesn't support OS color scheme preferences",
-    "wcag": "1.4.3",
-    "impact": "Low"
+    "description": "Site doesn't support OS color scheme preferences (dark mode/light mode)",
+    "wcag": "1.4.3, 5.2.4",
+    "impact": "Medium"
 }
     </script>
     <style>
@@ -24,8 +24,8 @@
         }
     </style>
 </head>
-<body data-info="true"
-      data-info-reason="Site uses fixed light theme without prefers-color-scheme media query, users cannot leverage OS dark mode preferences">
+<body data-expected-violation="true"
+      data-violation-reason="Site uses fixed light theme without prefers-color-scheme media query, failing to support users who require dark mode for accessibility">
     <h1>Understanding Web Accessibility</h1>
 
     <article>

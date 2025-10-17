@@ -600,8 +600,6 @@
                                                         <strong>Instance {{ loop.index }}:</strong>
                                                         {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
                                                         <span class="ms-2">{{ violation.metadata.duplicateName }}</span>
-                                                        {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
-                                                        <span class="ms-2">Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}</span>
                                                         {% elif violation.xpath %}
                                                         <code class="ms-2">{{ violation.xpath }}</code>
                                                         {% endif %}
@@ -694,18 +692,29 @@
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ criterion|safe }}
                                                                         </p>
-                                                                        
+                                                                        {% if '5.2.4' in criterion %}
                                                                         <p style="margin: 0 0 5px 0;">
-                                                                            <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                                                More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
-                                                                            <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                                                Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
-                                                                        
+                                                                        {% else %}
+                                                                        <p style="margin: 0 0 5px 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion.split()[0].replace('.', '-') }}.html" target="_blank">
+                                                                                More about {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        <p style="margin: 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion.split()[0].replace('.', '-') }}" target="_blank">
+                                                                                Ways to meet {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        {% endif %}
                                                                     </div>
                                                                     {% endfor %}
                                                                 {% elif violation.wcag_criteria %}
@@ -714,18 +723,29 @@
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ wcag_criterion }}
                                                                         </p>
-                                                                        
+                                                                        {% if '5.2.4' in wcag_criterion %}
                                                                         <p style="margin: 0 0 5px 0;">
-                                                                            <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                                                More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
-                                                                            <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                                                Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
-                                                                        
+                                                                        {% else %}
+                                                                        <p style="margin: 0 0 5px 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                                                                More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        <p style="margin: 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                                                                Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        {% endif %}
                                                                     </div>
                                                                     {% endfor %}
                                                                 {% endif %}
@@ -901,9 +921,7 @@
                                         </span>
                                         {% endif %}
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
-                                        {% if 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
-                                            Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}
-                                        {% elif violation.metadata and violation.metadata.title %}
+                                        {% if violation.metadata and violation.metadata.title %}
                                             {{ violation.metadata.title }}
                                         {% elif violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
                                             {{ violation.metadata.what }}
@@ -1001,18 +1019,29 @@
                                             <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                 WCAG {{ criterion|safe }}
                                             </p>
-                                            
+                                            {% if '5.2.4' in criterion %}
                                             <p style="margin: 0 0 5px 0;">
-                                                <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                    More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                    More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </p>
                                             <p style="margin: 0;">
-                                                <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                    Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                    Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </p>
-                                            
+                                            {% else %}
+                                            <p style="margin: 0 0 5px 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion.split()[0].replace('.', '-') }}.html" target="_blank">
+                                                    More about {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            <p style="margin: 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion.split()[0].replace('.', '-') }}" target="_blank">
+                                                    Ways to meet {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            {% endif %}
                                         </div>
                                         {% endfor %}
                                     {% elif violation.wcag_criteria %}
@@ -1021,18 +1050,29 @@
                                             <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                 WCAG {{ wcag_criterion }}
                                             </p>
-                                            
+                                            {% if '5.2.4' in wcag_criterion %}
                                             <p style="margin: 0 0 5px 0;">
-                                                <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                    More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                    More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </p>
                                             <p style="margin: 0;">
-                                                <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                    Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                    Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </p>
-                                            
+                                            {% else %}
+                                            <p style="margin: 0 0 5px 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                                    More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            <p style="margin: 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                                    Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            {% endif %}
                                         </div>
                                         {% endfor %}
                                     {% endif %}
@@ -1363,18 +1403,29 @@
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ criterion|safe }}
                                                                         </p>
-                                                                        
+                                                                        {% if '5.2.4' in criterion %}
                                                                         <p style="margin: 0 0 5px 0;">
-                                                                            <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                                                More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
-                                                                            <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                                                Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
-                                                                        
+                                                                        {% else %}
+                                                                        <p style="margin: 0 0 5px 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion.split()[0].replace('.', '-') }}.html" target="_blank">
+                                                                                More about {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        <p style="margin: 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion.split()[0].replace('.', '-') }}" target="_blank">
+                                                                                Ways to meet {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        {% endif %}
                                                                     </div>
                                                                     {% endfor %}
                                                                 {% elif warning.wcag_criteria %}
@@ -1383,18 +1434,29 @@
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ wcag_criterion }}
                                                                         </p>
-                                                                        
+                                                                        {% if '5.2.4' in wcag_criterion %}
                                                                         <p style="margin: 0 0 5px 0;">
-                                                                            <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                                                More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
-                                                                            <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                                                Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
-                                                                        
+                                                                        {% else %}
+                                                                        <p style="margin: 0 0 5px 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                                                                More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        <p style="margin: 0;">
+                                                                            <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                                                                Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        {% endif %}
                                                                     </div>
                                                                     {% endfor %}
                                                                 {% endif %}
@@ -1571,18 +1633,29 @@
                                             <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                 WCAG {{ criterion|safe }}
                                             </p>
-                                            
+                                            {% if '5.2.4' in criterion %}
                                             <p style="margin: 0 0 5px 0;">
-                                                <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                    More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                    More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </p>
                                             <p style="margin: 0;">
-                                                <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                    Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                    Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </p>
-                                            
+                                            {% else %}
+                                            <p style="margin: 0 0 5px 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion.split()[0].replace('.', '-') }}.html" target="_blank">
+                                                    More about {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            <p style="margin: 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion.split()[0].replace('.', '-') }}" target="_blank">
+                                                    Ways to meet {{ criterion.split()[0] }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            {% endif %}
                                         </div>
                                         {% endfor %}
                                     {% elif warning.wcag_criteria %}
@@ -1591,18 +1664,29 @@
                                             <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                 WCAG {{ wcag_criterion }}
                                             </p>
-                                            
+                                            {% if '5.2.4' in wcag_criterion %}
                                             <p style="margin: 0 0 5px 0;">
-                                                <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                    More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                    More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </p>
                                             <p style="margin: 0;">
-                                                <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                    Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                                    Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </p>
-                                            
+                                            {% else %}
+                                            <p style="margin: 0 0 5px 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                                    More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            <p style="margin: 0;">
+                                                <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                                    Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </p>
+                                            {% endif %}
                                         </div>
                                         {% endfor %}
                                     {% endif %}
@@ -1689,18 +1773,29 @@
                                 <p style="margin: 0 0 8px 0; font-weight: bold;">
                                     WCAG {{ wcag_criterion }}
                                 </p>
-                                
+                                {% if '5.2.4' in wcag_criterion %}
                                 <p style="margin: 0 0 5px 0;">
-                                    <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                        More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                    <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                        More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                     </a>
                                 </p>
                                 <p style="margin: 0;">
-                                    <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                        Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                    <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                        Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                     </a>
                                 </p>
-                                
+                                {% else %}
+                                <p style="margin: 0 0 5px 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                        More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                                <p style="margin: 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                        Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                                {% endif %}
                             </div>
                             {% endfor %}
                                     {% endif %}
@@ -2084,18 +2179,29 @@
                                 <p style="margin: 0 0 8px 0; font-weight: bold;">
                                     WCAG {{ wcag_criterion }}
                                 </p>
-                                
+                                {% if '5.2.4' in wcag_criterion %}
                                 <p style="margin: 0 0 5px 0;">
-                                    <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                        More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                    <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                        More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                     </a>
                                 </p>
                                 <p style="margin: 0;">
-                                    <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                        Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                    <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                        Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                     </a>
                                 </p>
-                                
+                                {% else %}
+                                <p style="margin: 0 0 5px 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                        More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                                <p style="margin: 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                        Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                                {% endif %}
                             </div>
                             {% endfor %}
                             {% endif %}
@@ -2159,24 +2265,7 @@
                                             {{ first_discovery.impact.value|upper if first_discovery.impact.value else first_discovery.impact|upper }}
                                         </span>
                                         {% endif %}
-                                        <code class="me-2">{{ error_code|error_code_only }}</code>
-                                        {% if 'DiscoFontFound' in first_discovery.id %}
-                                            Font detected in use on the page for accessibility review
-                                        {% elif 'DiscoFormOnPage' in first_discovery.id %}
-                                            Form detected - requires comprehensive manual testing
-                                        {% elif 'DiscoNavFound' in first_discovery.id %}
-                                            Navigation region detected - requires manual accessibility review
-                                        {% elif 'DiscoAsideFound' in first_discovery.id %}
-                                            Complementary region detected - requires manual accessibility review
-                                        {% elif 'DiscoSectionFound' in first_discovery.id %}
-                                            Section region detected - requires manual accessibility review
-                                        {% elif 'DiscoHeaderFound' in first_discovery.id %}
-                                            Banner region detected - requires manual accessibility review
-                                        {% elif 'DiscoFooterFound' in first_discovery.id %}
-                                            Contentinfo region detected - requires manual accessibility review
-                                        {% elif 'DiscoSearchFound' in first_discovery.id %}
-                                            Search region detected - requires manual accessibility review
-                                        {% elif first_discovery.metadata and first_discovery.metadata.title %}
+                                        {% if first_discovery.metadata and first_discovery.metadata.title %}
                                             {{ first_discovery.metadata.title }}
                                         {% elif first_discovery.metadata and first_discovery.metadata.what %}
                                             {{ first_discovery.metadata.what }}
@@ -2199,11 +2288,6 @@
                                                         <strong>Instance {{ loop.index }}:</strong>
                                                         {% if discovery.xpath %}
                                                         <code class="ms-2">{{ discovery.xpath }}</code>
-                                                        {% endif %}
-                                                        {% if 'DiscoFontFound' in discovery.id and discovery.metadata.fontName %}
-                                                        <span class="ms-2">Font '{{ discovery.metadata.fontName }}' at {{ discovery.metadata.sizeCount }} size{{ 's' if discovery.metadata.sizeCount != 1 else '' }}: {{ discovery.metadata.fontSizes|join(', ') }}</span>
-                                                        {% elif 'DiscoFormOnPage' in discovery.id and discovery.metadata.formSignature %}
-                                                        <span class="ms-2">Form (signature: {{ discovery.metadata.formSignature }}){% if discovery.metadata.searchContext and 'search' in discovery.metadata.searchContext %} with {{ discovery.metadata.fieldCount }} {{ 'field' if discovery.metadata.fieldCount == 1 else 'fields' }} - {{ discovery.metadata.searchContext }}{% else %} with {{ discovery.metadata.fieldCount }} {{ 'field' if discovery.metadata.fieldCount == 1 else 'fields' }}{% endif %}</span>
                                                         {% endif %}
                                                     </button>
                                                 </h2>
@@ -2362,13 +2446,10 @@
                             {% for discovery in group_list %}
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button"
-                                            data-bs-toggle="collapse"
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" 
                                             data-bs-target="#disc-single-{{ disc_counter.value }}">
-                            <code class="me-2">{{ error_code|error_code_only }}</code>
-                            {% if 'DiscoFontFound' in discovery.id and discovery.metadata.fontName %}
-                                Font '{{ discovery.metadata.fontName }}' at {{ discovery.metadata.sizeCount }} size{{ 's' if discovery.metadata.sizeCount != 1 else '' }}: {{ discovery.metadata.fontSizes|join(', ') }}
-                            {% elif discovery.metadata and discovery.metadata.title %}
+                            {% if discovery.metadata and discovery.metadata.title %}
                                 {{ discovery.metadata.title }}
                             {% elif discovery.metadata and discovery.metadata.what and discovery.metadata.what != "Accessibility issue: " + discovery.id.split('_')[1] %}
                                 {{ discovery.metadata.what }}
@@ -2531,18 +2612,29 @@
                                 <p style="margin: 0 0 8px 0; font-weight: bold;">
                                     WCAG {{ wcag_criterion }}
                                 </p>
-                                
+                                {% if '5.2.4' in wcag_criterion %}
                                 <p style="margin: 0 0 5px 0;">
-                                    <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                        More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                    <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                        More about 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                     </a>
                                 </p>
                                 <p style="margin: 0;">
-                                    <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                        Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                    <a href="https://www.w3.org/TR/WCAG22/#accessibility-supported" target="_blank">
+                                        Ways to meet 5.2.4 <i class="bi bi-box-arrow-up-right"></i>
                                     </a>
                                 </p>
-                                
+                                {% else %}
+                                <p style="margin: 0 0 5px 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ wcag_criterion.replace('.', '-') }}.html" target="_blank">
+                                        More about {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                                <p style="margin: 0;">
+                                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ wcag_criterion.replace('.', '-') }}" target="_blank">
+                                        Ways to meet {{ wcag_criterion }} <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                </p>
+                                {% endif %}
                             </div>
                             {% endfor %}
                             {% endif %}

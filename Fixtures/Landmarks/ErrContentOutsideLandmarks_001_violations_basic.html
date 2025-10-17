@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrContentOutsideLandmarks - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrContentOutsideLandmarks_001_violations_basic",
+    "issueId": "ErrContentOutsideLandmarks",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Content that exists outside of landmark regions (error level - WCAG 5.2.4 failure)",
+    "wcag": "5.2.4",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1 data-expected-violation="true"
+        data-violation-id="ErrContentOutsideLandmarks"
+        data-violation-reason="Page heading exists outside of any landmark region, making it invisible to screen reader landmark navigation">
+        Content Outside Landmarks Error Test
+    </h1>
+
+    <p data-expected-violation="true"
+       data-violation-id="ErrContentOutsideLandmarks"
+       data-violation-reason="Paragraph content is outside landmark regions, inaccessible via landmark navigation">
+        This introductory paragraph is floating outside of landmarks.
+    </p>
+
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Main Content</h2>
+        <p>This content is properly within the main landmark.</p>
+    </main>
+
+    <aside role="complementary" aria-label="Sidebar">
+        <h3>Sidebar Content</h3>
+        <p>Complementary information here.</p>
+    </aside>
+
+    <div data-expected-violation="true"
+         data-violation-id="ErrContentOutsideLandmarks"
+         data-violation-reason="Content block outside landmark regions fails WCAG 5.2.4 Accessibility Supported">
+        <p>This content is between the aside and footer, not in any landmark.</p>
+    </div>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+</body>
+</html>

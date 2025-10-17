@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrContentOutsideLandmarks - Acceptable Exceptions</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrContentOutsideLandmarks_003_acceptable_exceptions",
+    "issueId": "ErrContentOutsideLandmarks",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Examples of acceptable content outside landmarks (skip links, hidden content, scripts)",
+    "wcag": "5.2.4",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #000;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip link - ACCEPTABLE EXCEPTION -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Hidden analytics content - ACCEPTABLE EXCEPTION -->
+    <div aria-hidden="true" style="display: none;">
+        Analytics tracking code placeholder
+    </div>
+
+    <!-- Noscript fallback - ACCEPTABLE EXCEPTION -->
+    <noscript>
+        <p>JavaScript is required for full functionality.</p>
+    </noscript>
+
+    <header role="banner">
+        <h1>Page with Acceptable Exceptions</h1>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+
+    <main id="main-content">
+        <h2>Main Content</h2>
+        <p>All meaningful content is within landmarks. The only content outside landmarks is:</p>
+        <ul>
+            <li>Skip link (at top of body)</li>
+            <li>Hidden content with aria-hidden="true" or display:none</li>
+            <li>Noscript fallback messages</li>
+            <li>Script elements (not rendered)</li>
+        </ul>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2024 Company</p>
+    </footer>
+
+    <!-- Script elements - ACCEPTABLE EXCEPTION -->
+    <script>
+        // JavaScript code is not rendered as visible content
+        console.log('Scripts outside landmarks are acceptable');
+    </script>
+</body>
+</html>

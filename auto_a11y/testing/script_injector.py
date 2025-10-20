@@ -325,7 +325,13 @@ class ScriptInjector:
                             results[touchpoint_id] = result
                             
                         except Exception as e:
-                            logger.error(f"Python touchpoint test {touchpoint_id} failed: {e}")
+                            # Don't log stack trace for known session closure errors
+                            error_msg = str(e)
+                            if 'Session closed' in error_msg or 'Protocol Error' in error_msg:
+                                logger.error(f"Error in {touchpoint_id}: {error_msg}")
+                            else:
+                                logger.error(f"Python touchpoint test {touchpoint_id} failed: {e}", exc_info=True)
+
                             results[touchpoint_id] = {
                                 'test_name': touchpoint_id,
                                 'error': str(e),

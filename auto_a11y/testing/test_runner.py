@@ -67,13 +67,30 @@ class TestRunner:
         
         try:
             async with self.browser_manager.get_page() as browser_page:
+                # Get wait strategy from project config (defaults to networkidle2 for complete content)
+                # Valid options:
+                #   - 'networkidle2': Wait for network to be mostly idle (default, best for slow/dynamic sites)
+                #   - 'networkidle0': Wait for network to be completely idle (very thorough but slowest)
+                #   - 'domcontentloaded': Wait only for DOM to be ready (fast, for sites with heavy background activity)
+                #   - 'load': Wait for load event (faster than networkidle, slower than domcontentloaded)
+                wait_strategy = 'networkidle2'  # Default: wait for network to be mostly idle
+
+                try:
+                    website = self.db.get_website(page.website_id)
+                    if website:
+                        project = self.db.get_project(website.project_id)
+                        if project and project.config:
+                            # Allow project to override wait strategy for sites with heavy background activity
+                            wait_strategy = project.config.get('page_load_strategy', 'networkidle2')
+                            logger.info(f"Using page load strategy: {wait_strategy}")
+                except Exception as e:
+                    logger.warning(f"Could not get project config for wait strategy: {e}")
+
                 # Navigate to page
-                # Use domcontentloaded instead of networkidle2 to avoid timing out on pages
-                # with lots of background network activity (ads, analytics, etc.)
                 response = await self.browser_manager.goto(
                     browser_page,
                     page.url,
-                    wait_until='domcontentloaded',
+                    wait_until=wait_strategy,
                     timeout=30000
                 )
 

@@ -185,9 +185,12 @@ class BrowserManager:
                     'height': self.config.get('viewport_height', 1080)
                 })
 
-                # Set user agent if specified (use a realistic one if not provided)
-                user_agent = self.config.get('user_agent',
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+                # Set user agent if specified (check both uppercase and lowercase keys for compatibility)
+                user_agent = (
+                    self.config.get('user_agent') or
+                    self.config.get('USER_AGENT') or
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                )
                 await page.setUserAgent(user_agent)
 
                 # Set default timeout

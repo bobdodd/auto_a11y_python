@@ -466,9 +466,12 @@ class ScrapingEngine:
                 'height': self.browser_manager.config.get('viewport_height', 1080)
             })
 
-            # Set realistic user agent
-            user_agent = self.browser_manager.config.get('user_agent',
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+            # Set user agent (check both uppercase and lowercase keys for compatibility)
+            user_agent = (
+                self.browser_manager.config.get('user_agent') or
+                self.browser_manager.config.get('USER_AGENT') or
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            )
             await page.setUserAgent(user_agent)
 
             # Configure timeouts and wait conditions based on stealth mode
@@ -490,12 +493,22 @@ class ScrapingEngine:
             # Navigate to URL with proper error handling
             response = None
             try:
+                logger.info(f"Navigating to {url} with User-Agent: {user_agent}")
                 response = await self.browser_manager.goto(
                     page=page,
                     url=url,
                     wait_until=wait_until,
                     timeout=nav_timeout
                 )
+
+                # Log response details for debugging
+                if response:
+                    logger.info(f"Response received for {url}:")
+                    logger.info(f"  Status: {response.status}")
+                    logger.info(f"  Headers: {dict(response.headers)}")
+                    logger.info(f"  URL: {response.url}")
+                else:
+                    logger.warning(f"No response object returned for {url}")
 
                 # Wait additional time for JavaScript challenges if in stealth mode
                 if post_nav_wait > 0:
@@ -505,6 +518,8 @@ class ScrapingEngine:
                 try:
                     page_title = await page.title()
                     page_content = await page.content()
+                    logger.debug(f"Page title: {page_title}")
+                    logger.debug(f"Page content length: {len(page_content)} bytes")
 
                     # Detect Cloudflare challenge indicators
                     if 'cloudflare' in page_title.lower() or 'checking your browser' in page_content.lower():

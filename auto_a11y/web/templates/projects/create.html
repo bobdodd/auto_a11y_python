@@ -114,6 +114,23 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="page_load_strategy" class="form-label">Page Load Strategy</label>
+                            <select class="form-select" id="page_load_strategy" name="page_load_strategy">
+                                <option value="networkidle2" selected>Network Idle 2 (Default - Best for most sites)</option>
+                                <option value="networkidle0">Network Idle 0 (Very thorough, slowest)</option>
+                                <option value="domcontentloaded">DOM Content Loaded (Fast, for sites with heavy background activity)</option>
+                                <option value="load">Load Event (Middle ground)</option>
+                            </select>
+                            <div class="form-text">
+                                Controls when testing begins after navigating to a page:<br>
+                                • <strong>Network Idle 2</strong>: Wait until network has ≤2 connections (best for dynamic sites)<br>
+                                • <strong>Network Idle 0</strong>: Wait until network is completely idle (very thorough but slow)<br>
+                                • <strong>DOM Content Loaded</strong>: Test as soon as DOM is ready (use for BBC News, sites with continuous ads/analytics)<br>
+                                • <strong>Load Event</strong>: Wait for load event (faster than network idle)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="stealth_mode" name="stealth_mode" value="true">
                                 <label class="form-check-label" for="stealth_mode">

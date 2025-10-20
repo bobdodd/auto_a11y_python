@@ -339,6 +339,7 @@ async def test_animations(page) -> Dict[str, Any]:
                                     animationCSS: cssLines,
                                     animationName: item.animation.name
                                 });
+                                results.elements_failed++;  // Spinners still count as failures (just warnings, not errors)
                             } else {
                                 // Error for other infinite animations
                                 results.errors.push({

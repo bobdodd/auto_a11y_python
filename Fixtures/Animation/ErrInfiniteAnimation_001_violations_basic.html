@@ -3,34 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading Animation - Infinite without Controls</title>
+    <title>Infinite Animation Error - Non-Spinner</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "ErrInfiniteAnimation_001_violations_basic",
     "issueId": "ErrInfiniteAnimation",
-    "expectedViolationCount": 1,
-    "expectedPassCount": 0,
-    "description": "Animation runs infinitely without pause controls",
+    "expectedViolationCount": 2,
+    "expectedWarningCount": 0,
+    "description": "Decorative animations run infinitely without pause controls",
     "wcag": "2.2.2",
     "impact": "High"
 }
     </script>
     <style>
-        .spinner {
-            width: 80px;
-            height: 80px;
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .pulsing-banner {
             background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
             background-size: 200% 100%;
@@ -61,16 +46,13 @@
 </head>
 <body data-expected-violation="true"
       data-violation-id="ErrInfiniteAnimation"
-      data-violation-reason="Multiple animations run infinitely without any pause, stop, or hide controls">
+      data-violation-reason="Decorative animations run infinitely without any pause, stop, or hide controls">
     <h1>Welcome to Our Site</h1>
 
     <div class="pulsing-banner">
         <p class="bouncing-text">⚡ Special Offer! ⚡</p>
         <p>50% Off All Items This Week!</p>
     </div>
-
-    <div class="spinner" role="status" aria-label="Loading"></div>
-    <p style="text-align: center;">Processing your request...</p>
 
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 </body>

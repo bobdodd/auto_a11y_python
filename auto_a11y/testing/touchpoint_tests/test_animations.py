@@ -265,6 +265,42 @@ async def test_animations(page) -> Dict[str, Any]:
                     results.elements_passed++;
                 }
 
+                // Function to detect if element appears to be a loading/busy spinner
+                function isLikelySpinner(element) {
+                    // Check class and id for spinner/loader/loading keywords
+                    const classStr = (element.className || '').toLowerCase();
+                    const idStr = (element.id || '').toLowerCase();
+                    const spinnerKeywords = ['spinner', 'loader', 'loading', 'busy', 'progress', 'spin'];
+
+                    const hasSpinnerClass = spinnerKeywords.some(keyword =>
+                        classStr.includes(keyword) || idStr.includes(keyword)
+                    );
+
+                    // Check aria attributes
+                    const role = element.getAttribute('role');
+                    const ariaLabel = (element.getAttribute('aria-label') || '').toLowerCase();
+                    const ariaLive = element.getAttribute('aria-live');
+
+                    const hasSpinnerAria = role === 'progressbar' ||
+                                          role === 'status' ||
+                                          ariaLabel.includes('loading') ||
+                                          ariaLabel.includes('spinner') ||
+                                          ariaLive === 'polite' ||
+                                          ariaLive === 'assertive';
+
+                    // Check if element is small (likely a spinner icon)
+                    const rect = element.getBoundingClientRect();
+                    const isSmall = rect.width <= 100 && rect.height <= 100;
+
+                    // Check if element is currently hidden (display: none or visibility: hidden)
+                    const style = window.getComputedStyle(element);
+                    const isHidden = style.display === 'none' ||
+                                    style.visibility === 'hidden' ||
+                                    style.opacity === '0';
+
+                    return (hasSpinnerClass || hasSpinnerAria || isSmall) && !isHidden;
+                }
+
                 // Check for infinite animations - report one error per element
                 const infiniteAnimations = animatedElements.filter(item => item.animation.iterationCount === 'infinite');
 
@@ -273,24 +309,42 @@ async def test_animations(page) -> Dict[str, Any]:
                     const hasControls = document.querySelector('button[id*="pause"], button[id*="stop"], button[id*="hide"], button[class*="pause"], button[class*="stop"], button[class*="hide"], button[aria-label*="pause"], button[aria-label*="stop"], button[aria-label*="hide"], .animation-controls, #animation-controls') !== null;
 
                     if (!hasControls) {
-                        // Report one error per infinite animation element
+                        // Report one error or warning per infinite animation element
                         infiniteAnimations.forEach(item => {
                             const cssLines = Object.entries(item.css)
                                 .map(([prop, value]) => `  ${prop}: ${value};`)
                                 .join('\\n');
 
-                            results.errors.push({
-                                err: 'ErrInfiniteAnimation',
-                                type: 'err',
-                                cat: 'animations',
-                                element: item.tag,
-                                xpath: item.xpath,
-                                html: item.element.outerHTML.substring(0, 200),
-                                description: `Animation runs infinitely without pause, stop, or hide controls`,
-                                animationCSS: cssLines,
-                                animationName: item.animation.name
-                            });
-                            results.elements_failed++;
+                            const isSpinner = isLikelySpinner(item.element);
+
+                            if (isSpinner) {
+                                // Warn for likely spinners - they're often acceptable but should still be reviewed
+                                results.warnings.push({
+                                    err: 'WarnInfiniteAnimationSpinner',
+                                    type: 'warn',
+                                    cat: 'animations',
+                                    element: item.tag,
+                                    xpath: item.xpath,
+                                    html: item.element.outerHTML.substring(0, 200),
+                                    description: `Animation appears to be a loading/busy spinner but runs infinitely without controls`,
+                                    animationCSS: cssLines,
+                                    animationName: item.animation.name
+                                });
+                            } else {
+                                // Error for other infinite animations
+                                results.errors.push({
+                                    err: 'ErrInfiniteAnimation',
+                                    type: 'err',
+                                    cat: 'animations',
+                                    element: item.tag,
+                                    xpath: item.xpath,
+                                    html: item.element.outerHTML.substring(0, 200),
+                                    description: `Animation runs infinitely without pause, stop, or hide controls`,
+                                    animationCSS: cssLines,
+                                    animationName: item.animation.name
+                                });
+                                results.elements_failed++;
+                            }
                         });
                     } else {
                         infiniteAnimations.forEach(() => results.elements_passed++);

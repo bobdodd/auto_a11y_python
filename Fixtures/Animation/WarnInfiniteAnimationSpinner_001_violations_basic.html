@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Spinner - Infinite Animation Warning</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInfiniteAnimationSpinner_001_violations_basic",
+    "issueId": "WarnInfiniteAnimationSpinner",
+    "expectedWarningCount": 1,
+    "expectedViolationCount": 0,
+    "description": "Loading spinner runs infinitely - should be hidden when loading completes",
+    "wcag": "2.2.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body data-expected-warning="true"
+      data-warning-id="WarnInfiniteAnimationSpinner"
+      data-warning-reason="Spinner with infinite animation is visible - should be hidden when loading completes">
+    <h1>Loading Content</h1>
+
+    <div class="spinner" role="status" aria-label="Loading content"></div>
+    <p style="text-align: center;">Please wait while we load your content...</p>
+
+    <p>This spinner should be hidden (display: none) once loading completes to avoid continuous animation issues.</p>
+</body>
+</html>

@@ -271,6 +271,9 @@ def create_project():
         # Get stealth mode configuration
         stealth_mode = request.form.get('stealth_mode') == 'true'
 
+        # Get page load strategy
+        page_load_strategy = request.form.get('page_load_strategy', 'networkidle2')
+
         # Create project with WCAG level, touchpoints, AI config, and stealth mode
         project = Project(
             name=name,
@@ -278,6 +281,7 @@ def create_project():
             status=ProjectStatus.ACTIVE,
             config={
                 'wcag_level': wcag_level,
+                'page_load_strategy': page_load_strategy,
                 'touchpoints': touchpoints_config,
                 'enable_ai_testing': enable_ai_testing,
                 'ai_tests': ai_tests,

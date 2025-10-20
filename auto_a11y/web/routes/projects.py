@@ -502,6 +502,10 @@ def edit_project(project_id):
             project.config = {}
         project.config['wcag_level'] = wcag_level
 
+        # Update page load strategy in config
+        page_load_strategy = request.form.get('page_load_strategy', 'networkidle2')
+        project.config['page_load_strategy'] = page_load_strategy
+
         # Update page title length limit
         try:
             title_length_limit = int(request.form.get('title_length_limit', 60))

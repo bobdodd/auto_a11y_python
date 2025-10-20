@@ -2880,6 +2880,15 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1'],
             'remediation': "If the element performs an action (submit form, open dialog), use a button element. If it navigates to a new URL, keep it as a link but consider whether button styling is appropriate. Ensure keyboard behavior matches the element type."
         },
+        'WarnInfiniteAnimationSpinner': {
+            'title': "Loading spinner animation '{animationName}' runs infinitely without controls",
+            'what': "Loading spinner animation '{animationName}' runs infinitely without controls",
+            'why': "While loading spinners are common and often acceptable, infinite animations without controls can still be problematic if they remain visible for extended periods. Loading spinners should ideally be hidden or stopped once loading completes. Even though this appears to be a spinner (based on class names, ARIA attributes, or size), it should be reviewed to ensure it doesn't run indefinitely in normal usage.",
+            'who': "Users with vestibular disorders, users with ADHD, users with photosensitive epilepsy, users with cognitive disabilities.",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.2.2'],
+            'remediation': "Ensure the spinner is hidden (display: none or visibility: hidden) when loading completes, or provide pause/stop controls. Consider respecting prefers-reduced-motion settings to disable animations entirely for users who prefer reduced motion. Current CSS:\n{animationCSS}"
+        },
         'WarnLongAnimation': {
             'title': "Animation duration ({duration}) exceeds 5 seconds",
             'what': "Animation duration ({duration}) exceeds 5 seconds",

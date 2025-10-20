@@ -239,10 +239,18 @@ def discover_pages(website_id):
         # Get project to access stealth_mode setting
         project = current_app.db.get_project(website.project_id)
 
-        # Create browser config with project-specific stealth_mode setting
+        # Create browser config with project-specific stealth_mode and headless settings
         browser_config = current_app.app_config.__dict__.copy()
         if project and project.config:
             browser_config['stealth_mode'] = project.config.get('stealth_mode', False)
+
+            # Apply project-specific headless browser setting
+            headless_setting = project.config.get('headless_browser', 'default')
+            if headless_setting == 'true':
+                browser_config['BROWSER_HEADLESS'] = True
+            elif headless_setting == 'false':
+                browser_config['BROWSER_HEADLESS'] = False
+            # if 'default', keep the system setting from app_config
         else:
             browser_config['stealth_mode'] = False
 
@@ -527,10 +535,18 @@ def test_all_pages(website_id):
         # Get project to access stealth_mode setting
         project = current_app.db.get_project(website.project_id)
 
-        # Create browser config with project-specific stealth_mode setting
+        # Create browser config with project-specific stealth_mode and headless settings
         browser_config = current_app.app_config.__dict__.copy()
         if project and project.config:
             browser_config['stealth_mode'] = project.config.get('stealth_mode', False)
+
+            # Apply project-specific headless browser setting
+            headless_setting = project.config.get('headless_browser', 'default')
+            if headless_setting == 'true':
+                browser_config['BROWSER_HEADLESS'] = True
+            elif headless_setting == 'false':
+                browser_config['BROWSER_HEADLESS'] = False
+            # if 'default', keep the system setting from app_config
         else:
             browser_config['stealth_mode'] = False
 

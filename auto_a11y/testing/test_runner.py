@@ -68,13 +68,15 @@ class TestRunner:
         try:
             async with self.browser_manager.get_page() as browser_page:
                 # Navigate to page
+                # Use domcontentloaded instead of networkidle2 to avoid timing out on pages
+                # with lots of background network activity (ads, analytics, etc.)
                 response = await self.browser_manager.goto(
                     browser_page,
                     page.url,
-                    wait_until='networkidle2',
+                    wait_until='domcontentloaded',
                     timeout=30000
                 )
-                
+
                 if not response:
                     raise RuntimeError(f"Failed to load page: {page.url}")
                 

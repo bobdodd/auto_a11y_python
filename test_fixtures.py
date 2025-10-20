@@ -35,12 +35,17 @@ from auto_a11y.testing.test_runner import TestRunner
 class FixtureTestRunner:
     """Runner for testing accessibility fixtures"""
 
-    def __init__(self, fixtures_dir: str = "Fixtures"):
+    def __init__(self, fixtures_dir: str = "Fixtures", headless: bool = True):
         self.fixtures_dir = Path(fixtures_dir)
         self.config = Config()
+
+        # Create browser config and apply headless setting
+        browser_config = self.config.__dict__.copy()
+        browser_config['BROWSER_HEADLESS'] = headless
+
         self.db = Database(self.config.MONGODB_URI, self.config.DATABASE_NAME)
-        self.website_manager = WebsiteManager(self.db, self.config.__dict__)
-        self.test_runner = TestRunner(self.db, self.config.__dict__)
+        self.website_manager = WebsiteManager(self.db, browser_config)
+        self.test_runner = TestRunner(self.db, browser_config)
         self.results = []
         self.test_run_id = str(uuid.uuid4())  # Unique ID for this test run
 
@@ -657,9 +662,11 @@ async def main():
     parser.add_argument('--fixture', help='Test only a specific fixture file')
     parser.add_argument('--history', action='store_true', help='Show test run history')
     parser.add_argument('--run-id', help='View details of a specific test run')
+    parser.add_argument('--visible', action='store_true', help='Run browser in visible mode (not headless)')
     args = parser.parse_args()
-    
-    runner = FixtureTestRunner()
+
+    # Create runner with headless mode (default True, unless --visible flag is set)
+    runner = FixtureTestRunner(headless=not args.visible)
     
     # Handle history display
     if args.history:

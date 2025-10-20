@@ -96,9 +96,15 @@ class TestRunner:
 
                 if not response:
                     raise RuntimeError(f"Failed to load page: {page.url}")
-                
+
                 # Wait for content to be ready
                 await browser_page.waitForSelector('body', {'timeout': 5000})
+
+                # If using domcontentloaded, give the page a moment to stabilize
+                # This prevents the browser from closing the session too early
+                if wait_strategy == 'domcontentloaded':
+                    import asyncio
+                    await asyncio.sleep(2)  # Wait 2 seconds for JS to initialize
                 
                 # Get project configuration including WCAG level and touchpoint settings
                 wcag_level = 'AA'  # Default to AA

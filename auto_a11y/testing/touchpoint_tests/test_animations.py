@@ -268,7 +268,16 @@ async def test_animations(page) -> Dict[str, Any]:
                 // Function to detect if element appears to be a loading/busy spinner
                 function isLikelySpinner(element) {
                     // Check class and id for spinner/loader/loading keywords
-                    const classStr = (element.className || '').toLowerCase();
+                    // Handle both regular className (string) and SVG className (SVGAnimatedString)
+                    let classStr = '';
+                    if (element.className) {
+                        if (typeof element.className === 'string') {
+                            classStr = element.className.toLowerCase();
+                        } else if (element.className.baseVal) {
+                            // SVG element - className is an SVGAnimatedString
+                            classStr = element.className.baseVal.toLowerCase();
+                        }
+                    }
                     const idStr = (element.id || '').toLowerCase();
                     const spinnerKeywords = ['spinner', 'loader', 'loading', 'busy', 'progress', 'spin'];
 

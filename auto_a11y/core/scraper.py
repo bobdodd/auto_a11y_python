@@ -1327,5 +1327,10 @@ class ScrapingEngine:
             logger.warning(f"Failed to take discovery screenshot for {url}: {e}")
             return None
 
+    async def cleanup(self):
+        """Clean up browser resources"""
+        if self.browser_manager:
+            await self.browser_manager.stop()
+
 
 # ScrapingJob class has been moved to scraping_job.py for database-backed implementation

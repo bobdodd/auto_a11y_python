@@ -228,11 +228,15 @@ class ScrapingJob:
                 # Mark as completed
                 pages_found = len(pages) if pages else 0
                 self.set_completed(pages_found, pages_found)
-                
+
         except Exception as e:
             logger.error(f"Discovery job {self.job_id} failed: {e}")
             self.set_failed(str(e))
             raise
+        finally:
+            # Clean up browser resources
+            if scraper:
+                await scraper.cleanup()
     
     async def _update_progress(self, progress: dict):
         """Update job progress in database"""

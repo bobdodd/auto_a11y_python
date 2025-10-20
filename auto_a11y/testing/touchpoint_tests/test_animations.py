@@ -294,11 +294,12 @@ async def test_animations(page) -> Dict[str, Any]:
                             cat: 'animations',
                             element: 'page',
                             xpath: '/html',
-                            html: 'page-wide',
+                            html: firstAnimation.element.outerHTML.substring(0, 200),
                             description: `Page has ${infiniteAnimations.length} infinite animation(s) without pause, stop, or hide controls`,
                             infiniteAnimationCount: infiniteAnimations.length,
                             animationDetails: animationDetails,
-                            firstAnimationCSS: cssLines
+                            animationCSS: cssLines,
+                            animationName: firstAnimation.animation.name
                         });
                         results.elements_failed++;
                     } else {

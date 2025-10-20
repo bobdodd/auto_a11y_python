@@ -254,7 +254,7 @@ async def test_animations(page) -> Dict[str, Any]:
                     results.errors.push({
                         err: 'ErrNoReducedMotionSupport',
                         type: 'err',
-                        cat: 'animations',
+                        cat: 'animation',
                         element: 'page',
                         xpath: '/html',
                         html: 'page-wide',
@@ -331,7 +331,7 @@ async def test_animations(page) -> Dict[str, Any]:
                                 results.warnings.push({
                                     err: 'WarnInfiniteAnimationSpinner',
                                     type: 'warn',
-                                    cat: 'animations',
+                                    cat: 'animation',
                                     element: item.tag,
                                     xpath: item.xpath,
                                     html: item.element.outerHTML.substring(0, 200),
@@ -344,7 +344,7 @@ async def test_animations(page) -> Dict[str, Any]:
                                 results.errors.push({
                                     err: 'ErrInfiniteAnimation',
                                     type: 'err',
-                                    cat: 'animations',
+                                    cat: 'animation',
                                     element: item.tag,
                                     xpath: item.xpath,
                                     html: item.element.outerHTML.substring(0, 200),
@@ -378,7 +378,7 @@ async def test_animations(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnLongAnimation',
                             type: 'warn',
-                            cat: 'animations',
+                            cat: 'animation',
                             element: item.tag,
                             xpath: item.xpath,
                             html: element.outerHTML.substring(0, 200),

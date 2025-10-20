@@ -493,7 +493,7 @@ class ScrapingEngine:
             # Navigate to URL with proper error handling
             response = None
             try:
-                logger.info(f"Navigating to {url} with User-Agent: {user_agent}")
+                logger.warning(f"Navigating to {url} with User-Agent: {user_agent}")
                 response = await self.browser_manager.goto(
                     page=page,
                     url=url,
@@ -503,10 +503,10 @@ class ScrapingEngine:
 
                 # Log response details for debugging
                 if response:
-                    logger.info(f"Response received for {url}:")
-                    logger.info(f"  Status: {response.status}")
-                    logger.info(f"  Headers: {dict(response.headers)}")
-                    logger.info(f"  URL: {response.url}")
+                    logger.warning(f"Response received for {url}:")
+                    logger.warning(f"  Status: {response.status}")
+                    logger.warning(f"  Headers: {dict(response.headers)}")
+                    logger.warning(f"  URL: {response.url}")
                 else:
                     logger.warning(f"No response object returned for {url}")
 
@@ -518,8 +518,8 @@ class ScrapingEngine:
                 try:
                     page_title = await page.title()
                     page_content = await page.content()
-                    logger.debug(f"Page title: {page_title}")
-                    logger.debug(f"Page content length: {len(page_content)} bytes")
+                    logger.warning(f"Page title: {page_title}")
+                    logger.warning(f"Page content length: {len(page_content)} bytes")
 
                     # Detect Cloudflare challenge indicators
                     if 'cloudflare' in page_title.lower() or 'checking your browser' in page_content.lower():

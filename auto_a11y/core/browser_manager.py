@@ -35,7 +35,8 @@ class BrowserManager:
             return
         
         # Check if headless mode is requested
-        is_headless = self.config.get('headless', True)
+        # Check both uppercase (from Config class) and lowercase (from dict) keys
+        is_headless = self.config.get('headless', self.config.get('BROWSER_HEADLESS', True))
 
         # Build args list
         browser_args = [

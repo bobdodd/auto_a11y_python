@@ -131,6 +131,21 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="headless_browser" class="form-label">Browser Display Mode</label>
+                            <select class="form-select" id="headless_browser" name="headless_browser">
+                                <option value="default" selected>Use System Default</option>
+                                <option value="true">Headless (No visible browser)</option>
+                                <option value="false">Visible Browser (Show Chrome window)</option>
+                            </select>
+                            <div class="form-text">
+                                Override the system-wide browser display setting for this project:<br>
+                                • <strong>Use System Default</strong>: Use the global BROWSER_HEADLESS setting from system config<br>
+                                • <strong>Headless</strong>: Always run browser invisibly for this project (faster, less resource intensive)<br>
+                                • <strong>Visible Browser</strong>: Always show the Chrome window for this project (useful for debugging)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="stealth_mode" name="stealth_mode" value="true">
                                 <label class="form-check-label" for="stealth_mode">

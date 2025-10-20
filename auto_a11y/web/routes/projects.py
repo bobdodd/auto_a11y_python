@@ -274,6 +274,9 @@ def create_project():
         # Get page load strategy
         page_load_strategy = request.form.get('page_load_strategy', 'networkidle2')
 
+        # Get headless browser setting
+        headless_browser = request.form.get('headless_browser', 'default')
+
         # Create project with WCAG level, touchpoints, AI config, and stealth mode
         project = Project(
             name=name,
@@ -282,6 +285,7 @@ def create_project():
             config={
                 'wcag_level': wcag_level,
                 'page_load_strategy': page_load_strategy,
+                'headless_browser': headless_browser,
                 'touchpoints': touchpoints_config,
                 'enable_ai_testing': enable_ai_testing,
                 'ai_tests': ai_tests,
@@ -509,6 +513,10 @@ def edit_project(project_id):
         # Update page load strategy in config
         page_load_strategy = request.form.get('page_load_strategy', 'networkidle2')
         project.config['page_load_strategy'] = page_load_strategy
+
+        # Update headless browser setting in config
+        headless_browser = request.form.get('headless_browser', 'default')
+        project.config['headless_browser'] = headless_browser
 
         # Update page title length limit
         try:

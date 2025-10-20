@@ -265,7 +265,7 @@ async def test_animations(page) -> Dict[str, Any]:
                     results.elements_passed++;
                 }
 
-                // Check for infinite animations (page-level check)
+                // Check for infinite animations - report one error per element
                 const infiniteAnimations = animatedElements.filter(item => item.animation.iterationCount === 'infinite');
 
                 if (infiniteAnimations.length > 0) {
@@ -273,37 +273,27 @@ async def test_animations(page) -> Dict[str, Any]:
                     const hasControls = document.querySelector('button[id*="pause"], button[id*="stop"], button[id*="hide"], button[class*="pause"], button[class*="stop"], button[class*="hide"], button[aria-label*="pause"], button[aria-label*="stop"], button[aria-label*="hide"], .animation-controls, #animation-controls') !== null;
 
                     if (!hasControls) {
-                        // Collect info about all infinite animations for the report
-                        const animationDetails = infiniteAnimations.map(item => ({
-                            element: item.tag,
-                            xpath: item.xpath,
-                            animationName: item.animation.name,
-                            css: item.css
-                        }));
+                        // Report one error per infinite animation element
+                        infiniteAnimations.forEach(item => {
+                            const cssLines = Object.entries(item.css)
+                                .map(([prop, value]) => `  ${prop}: ${value};`)
+                                .join('\\n');
 
-                        // Format the first animation's CSS for display
-                        const firstAnimation = infiniteAnimations[0];
-                        const cssLines = Object.entries(firstAnimation.css)
-                            .map(([prop, value]) => `  ${prop}: ${value};`)
-                            .join('\\n');
-
-                        // Report ONE page-level violation
-                        results.errors.push({
-                            err: 'ErrInfiniteAnimation',
-                            type: 'err',
-                            cat: 'animations',
-                            element: 'page',
-                            xpath: '/html',
-                            html: firstAnimation.element.outerHTML.substring(0, 200),
-                            description: `Page has ${infiniteAnimations.length} infinite animation(s) without pause, stop, or hide controls`,
-                            infiniteAnimationCount: infiniteAnimations.length,
-                            animationDetails: animationDetails,
-                            animationCSS: cssLines,
-                            animationName: firstAnimation.animation.name
+                            results.errors.push({
+                                err: 'ErrInfiniteAnimation',
+                                type: 'err',
+                                cat: 'animations',
+                                element: item.tag,
+                                xpath: item.xpath,
+                                html: item.element.outerHTML.substring(0, 200),
+                                description: `Animation runs infinitely without pause, stop, or hide controls`,
+                                animationCSS: cssLines,
+                                animationName: item.animation.name
+                            });
+                            results.elements_failed++;
                         });
-                        results.elements_failed++;
                     } else {
-                        results.elements_passed++;
+                        infiniteAnimations.forEach(() => results.elements_passed++);
                     }
                 } else {
                     // No infinite animations found

@@ -370,11 +370,15 @@ class TestingJob:
             else:
                 # Mark as completed
                 self.set_completed(pages_tested, pages_passed, pages_failed, pages_skipped)
-                
+
         except Exception as e:
             logger.error(f"Testing job {self.job_id} failed: {e}")
             self.set_failed(str(e))
             raise
+        finally:
+            # Clean up browser resources
+            if test_runner:
+                await test_runner.cleanup()
     
     def get_status(self) -> Dict[str, Any]:
         """

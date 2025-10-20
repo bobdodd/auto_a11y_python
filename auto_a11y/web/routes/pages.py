@@ -250,23 +250,55 @@ def test_page(page_id):
     # Update page status
     page.status = PageStatus.QUEUED
     current_app.db.update_page(page)
-    
-    # Create test runner
-    test_runner_instance = TestRunner(current_app.db, current_app.app_config.__dict__)
-    
+
+    # Get project config to apply project-specific browser settings
+    website = current_app.db.get_website(page.website_id)
+    project = current_app.db.get_project(website.project_id) if website else None
+
+    # Create browser config with project-specific settings
+    browser_config = current_app.app_config.__dict__.copy()
+    if project and project.config:
+        browser_config['stealth_mode'] = project.config.get('stealth_mode', False)
+
+        # Apply project-specific headless browser setting
+        headless_setting = project.config.get('headless_browser', 'true')
+        browser_config['BROWSER_HEADLESS'] = (headless_setting == 'true')
+
     # Get AI API key from config (if available)
-    # The test_runner will determine if AI should run based on project settings
     ai_key = getattr(current_app.app_config, 'CLAUDE_API_KEY', None)
-    
+
+    # Store references needed in async context
+    db = current_app.db
+
+    # Define sync wrapper that creates a clean event loop
+    def run_test_sync():
+        # Create a fresh event loop for this task
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            # Define async function inside the new loop context
+            async def run_test_with_cleanup():
+                # Create test runner inside the async context with new event loop
+                test_runner_instance = TestRunner(db, browser_config)
+                try:
+                    return await test_runner_instance.test_page(
+                        page,
+                        take_screenshot=True,
+                        run_ai_analysis=None,  # Let test_runner decide based on project config
+                        ai_api_key=ai_key
+                    )
+                finally:
+                    await test_runner_instance.cleanup()
+
+            # Run the async function in the new loop
+            return loop.run_until_complete(run_test_with_cleanup())
+        finally:
+            loop.close()
+
     # Submit test task
     job_id = task_runner.submit_task(
-        func=asyncio.run,
-        args=(test_runner_instance.test_page(
-            page,
-            take_screenshot=True,
-            run_ai_analysis=None,  # Let test_runner decide based on project config
-            ai_api_key=ai_key
-        ),),
+        func=run_test_sync,
+        args=(),
         task_id=f'test_page_{page_id}_{datetime.now().timestamp()}'
     )
     

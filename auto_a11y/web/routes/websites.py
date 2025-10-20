@@ -245,18 +245,13 @@ def discover_pages(website_id):
             browser_config['stealth_mode'] = project.config.get('stealth_mode', False)
 
             # Apply project-specific headless browser setting
-            headless_setting = project.config.get('headless_browser', 'default')
-            if headless_setting == 'true':
-                browser_config['BROWSER_HEADLESS'] = True
-            elif headless_setting == 'false':
-                browser_config['BROWSER_HEADLESS'] = False
-            # if 'default', keep the system setting from app_config
+            headless_setting = project.config.get('headless_browser', 'true')
+            browser_config['BROWSER_HEADLESS'] = (headless_setting == 'true')
         else:
             browser_config['stealth_mode'] = False
 
         # Create website manager
         website_manager = WebsiteManager(current_app.db, browser_config)
-        logger.info(f"Created website manager for website {website_id} (stealth_mode: {browser_config.get('stealth_mode', False)})")
         
         # Submit discovery task - use a more predictable job ID format
         import uuid
@@ -541,18 +536,13 @@ def test_all_pages(website_id):
             browser_config['stealth_mode'] = project.config.get('stealth_mode', False)
 
             # Apply project-specific headless browser setting
-            headless_setting = project.config.get('headless_browser', 'default')
-            if headless_setting == 'true':
-                browser_config['BROWSER_HEADLESS'] = True
-            elif headless_setting == 'false':
-                browser_config['BROWSER_HEADLESS'] = False
-            # if 'default', keep the system setting from app_config
+            headless_setting = project.config.get('headless_browser', 'true')
+            browser_config['BROWSER_HEADLESS'] = (headless_setting == 'true')
         else:
             browser_config['stealth_mode'] = False
 
         # Create website manager
         website_manager = WebsiteManager(current_app.db, browser_config)
-        logger.info(f"Created website manager for testing website {website_id} (stealth_mode: {browser_config.get('stealth_mode', False)})")
         
         # Generate job ID
         job_id = f'testing_{website_id}_{uuid.uuid4().hex[:8]}'

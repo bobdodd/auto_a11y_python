@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonFocusContrastFail - Outline Within Parent Bounds</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonFocusContrastFail_005_correct_outline_within_parent",
+    "issueId": "ErrButtonFocusContrastFail",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with focus outlines that stay within parent container boundaries - contrast can be verified",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #e0e0e0, #f5f5f5);
+            padding: 40px;
+        }
+
+        /* Container with sufficient padding to contain outline */
+        .proper-container {
+            display: inline-block;
+            padding: 20px; /* 20px padding - enough for outline extent */
+            background: white;
+            border: 1px solid #ccc;
+            margin: 20px;
+        }
+        .button-contained {
+            background: #0066cc;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            font-size: 16px;
+        }
+        .button-contained:focus {
+            outline: 3px solid #000000; /* Black outline - excellent contrast against white */
+            outline-offset: 5px; /* 5px + 3px = 8px total extent */
+            /* Well within 20px parent padding */
+        }
+
+        /* Generous padding for larger outline */
+        .spacious-container {
+            display: inline-block;
+            padding: 30px;
+            background: #2c3e50; /* Dark background */
+            border-radius: 8px;
+            margin: 20px;
+        }
+        .button-spacious {
+            background: #e74c3c;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .button-spacious:focus {
+            outline: 3px solid #ffffff; /* White outline - excellent contrast against dark container */
+            outline-offset: 8px; /* 8px + 3px = 11px total extent */
+            /* Well within 30px parent padding */
+        }
+
+        /* Moderate offset with adequate padding */
+        .balanced-container {
+            display: inline-block;
+            padding: 15px;
+            background: #f0f0f0; /* Light gray background */
+            border: 2px solid #999;
+            margin: 20px;
+        }
+        .button-balanced {
+            background: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 14px;
+        }
+        .button-balanced:focus {
+            outline: 2px solid #1a237e; /* Dark blue outline */
+            outline-offset: 6px; /* 6px + 2px = 8px total extent */
+            /* Well within 15px parent padding */
+        }
+
+        .explanation {
+            max-width: 800px;
+            background: #e8f5e9;
+            padding: 20px;
+            margin: 30px 0;
+            border-left: 4px solid #4caf50;
+        }
+
+        .calculation {
+            background: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 3px solid #2196f3;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Focus Outline Stays Within Parent Container (Correct)</h1>
+
+    <div class="explanation">
+        <strong>What makes these correct:</strong>
+        <p>All buttons below have <code>outline-offset > 0</code>, so the outline sits outside the button
+           against the parent's background. The key is that the parent has sufficient padding to contain
+           the entire outline extent.</p>
+        <p><strong>Rule:</strong> Parent padding must be ≥ (outline-offset + outline-width) on all sides
+           where the button could be positioned.</p>
+    </div>
+
+    <h2>Example 1: Standard Padding (20px)</h2>
+    <div class="calculation">
+        outline-offset: 5px + outline-width: 3px = 8px total extent<br>
+        Parent padding: 20px (all sides)<br>
+        ✓ 20px ≥ 8px: Outline stays within parent bounds<br>
+        ✓ Outline sits entirely against white background<br>
+        ✓ Black outline on white: 21:1 contrast ratio
+    </div>
+
+    <div class="proper-container">
+        <button class="button-contained"
+                data-expected-pass="true"
+                data-pass-reason="Outline extent (8px) is within parent padding (20px), excellent contrast against white">
+            Proper Padding
+        </button>
+    </div>
+
+    <h2>Example 2: Generous Padding (30px)</h2>
+    <div class="calculation">
+        outline-offset: 8px + outline-width: 3px = 11px total extent<br>
+        Parent padding: 30px (all sides)<br>
+        ✓ 30px ≥ 11px: Outline stays within parent bounds<br>
+        ✓ Outline sits entirely against dark background<br>
+        ✓ White outline on dark: 15.3:1 contrast ratio
+    </div>
+
+    <div class="spacious-container">
+        <button class="button-spacious"
+                data-expected-pass="true"
+                data-pass-reason="Outline extent (11px) is within parent padding (30px), excellent contrast against dark background">
+            Spacious Container
+        </button>
+    </div>
+
+    <h2>Example 3: Balanced Design (15px padding)</h2>
+    <div class="calculation">
+        outline-offset: 6px + outline-width: 2px = 8px total extent<br>
+        Parent padding: 15px (all sides)<br>
+        ✓ 15px ≥ 8px: Outline stays within parent bounds<br>
+        ✓ Outline sits entirely against light gray background<br>
+        ✓ Dark blue outline on light gray: 11.2:1 contrast ratio
+    </div>
+
+    <div class="balanced-container">
+        <button class="button-balanced"
+                data-expected-pass="true"
+                data-pass-reason="Outline extent (8px) is within parent padding (15px), excellent contrast against gray background">
+            Balanced Design
+        </button>
+    </div>
+
+    <div class="explanation">
+        <strong>Why these pass:</strong>
+        <p>In all three cases, the entire focus outline is contained within the parent container's bounds.
+           We can determine the solid background color the outline sits against (white, dark blue, or gray),
+           and we can verify that the outline has sufficient contrast against that background.</p>
+        <p><strong>Best practice:</strong> Calculate your maximum outline extent and ensure parent padding
+           is at least that large, preferably with extra margin for safety.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonFocusParentImageBackground - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonFocusParentImageBackground_001_warnings_parent_image",
+    "issueId": "WarnButtonFocusParentImageBackground",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Buttons with outline-offset > 0 sitting against parent image backgrounds - requires manual testing",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Button with outline that sits against parent image */
+        .test-button {
+            background: white;
+            padding: 15px 30px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        .test-button:focus {
+            outline: 3px solid yellow;
+            outline-offset: 2px; /* Sits OUTSIDE button, against parent */
+        }
+
+        /* Parent with SVG data URI image (polka dots) */
+        .image-parent-dots {
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23666'/%3E%3C/svg%3E");
+            background-color: #f0f0f0;
+            padding: 30px;
+        }
+
+        /* Parent with SVG data URI image (stripes) */
+        .image-parent-stripes {
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='10' height='5' fill='%23333'/%3E%3Crect y='5' width='10' height='5' fill='%23666'/%3E%3C/svg%3E");
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Outline Against Parent Image Background</h1>
+
+    <p>These buttons have outline-offset: 2px (positive), so the focus outline sits OUTSIDE the button
+       against the parent container's background image/pattern. Contrast cannot be automatically verified.</p>
+
+    <div class="image-parent-dots">
+        <h2>Polka Dot Pattern Parent (SVG)</h2>
+        <button class="test-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusParentImageBackground"
+                data-violation-reason="Outline sits against parent image - manual testing required">
+            Submit Form
+        </button>
+        <p>Parent has repeating polka dot pattern using SVG data URI.
+           Yellow outline may overlap with gray dots or light background areas.</p>
+    </div>
+
+    <div class="image-parent-stripes" style="margin-top: 20px;">
+        <h2 style="color: white;">Horizontal Stripe Pattern Parent (SVG)</h2>
+        <button class="test-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusParentImageBackground"
+                data-violation-reason="Outline sits against parent image - manual testing required">
+            Save Changes
+        </button>
+        <p style="color: white;">Parent has horizontal stripe pattern using SVG data URI.
+           Outline visibility varies against dark (#333) and medium (#666) gray stripes.</p>
+    </div>
+</body>
+</html>

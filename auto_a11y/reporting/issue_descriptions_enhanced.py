@@ -558,6 +558,51 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.7', '1.4.11'],
             'remediation': "Manually test focus visibility against all parts of the background image with real users. Best solution: avoid background images on focusable buttons. If you must use them, add a semi-transparent overlay (background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(image.jpg)), use large outline-offset (4px+), or add both outline and box-shadow for maximum visibility."
         },
+        'WarnButtonFocusParentGradientBackground': {
+            'title': "Button outline sits against parent gradient background - contrast cannot be verified",
+            'what': "Button has positive outline-offset causing the focus outline to sit outside the button against a parent/container with gradient background. Contrast cannot be automatically verified against varying gradient colors.",
+            'why': "Since outline-offset is positive (>0), the focus outline is rendered outside the button's boundary and sits against the parent container's background. When the parent has a CSS gradient, the outline contrast varies across different parts of the gradient, making it impossible to programmatically verify that the outline meets 3:1 contrast against all gradient colors. The outline may be visible against some gradient colors but invisible against others.",
+            'who': "Keyboard navigation users, users with low vision, users with color vision deficiencies",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.7', '1.4.11'],
+            'remediation': "Manually verify focus outline has at least 3:1 contrast against BOTH the lightest AND darkest colors in the parent's gradient using WebAIM Contrast Checker. Options: 1) Use solid parent background color, 2) Set outline-offset to 0 so outline sits on button border instead of parent, 3) Use a contrasting outline color that works against full gradient range (e.g., white outline on dark-to-medium gradient), 4) Add box-shadow in addition to outline for better visibility."
+        },
+        'WarnButtonFocusParentImageBackground': {
+            'title': "Button outline sits against parent image background - contrast cannot be verified",
+            'what': "Button has positive outline-offset causing the focus outline to sit outside the button against a parent/container with background image. Contrast cannot be automatically verified against the varying colors and patterns in the image.",
+            'why': "Since outline-offset is positive (>0), the focus outline is rendered outside the button's boundary and sits against the parent container's background. When the parent has a background image with varying colors and patterns, it's impossible to programmatically verify that the outline maintains sufficient contrast across all parts of the image. The outline may be completely invisible against certain image areas, creating an unusable focus indicator.",
+            'who': "Keyboard navigation users, users with low vision, users with color vision deficiencies",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.7', '1.4.11'],
+            'remediation': "Manually test focus visibility against all parts of the parent's background image. Best solutions: 1) Avoid background images on containers with focusable elements, 2) Set outline-offset to 0 so outline sits on button border, 3) Add solid-color overlay to parent (background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(image.jpg)), 4) Use high-contrast outline color (white or black) that works against most image colors, 5) Add both outline and box-shadow for redundancy."
+        },
+        'WarnButtonFocusZIndexFloating': {
+            'title': "Button has z-index and may float over varying backgrounds - contrast cannot be verified",
+            'what': "Button or its outline uses z-index positioning, causing it to float above the normal document flow. The element may overlap different backgrounds depending on viewport and scroll position, making automatic contrast verification impossible.",
+            'why': "Elements with z-index create a new stacking context and can float over any content on the page. The focus outline may sit against different backgrounds depending on where the button is positioned, what's scrolled beneath it, or what content dynamically appears below it. Since the background can vary, we cannot programmatically verify that the outline maintains 3:1 contrast in all scenarios. Modal dialogs, sticky headers, dropdown menus, and tooltips commonly use z-index.",
+            'who': "Keyboard navigation users, users with low vision, users with color vision deficiencies",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.7', '1.4.11'],
+            'remediation': "Manually test focus visibility in all contexts where the button can appear: 1) Test against different page backgrounds the button may float over, 2) Use high-contrast outline colors (white with black shadow, or vice versa) that work against both light and dark backgrounds, 3) Consider using both outline AND box-shadow for redundancy: button:focus { outline: 2px solid white; box-shadow: 0 0 0 4px black; }, 4) For modal dialogs, ensure semi-transparent backdrop provides consistent background, 5) Test at different scroll positions and viewport sizes."
+        },
+        'WarnButtonFocusParentZIndexFloating': {
+            'title': "Button outline sits outside button against parent with z-index - contrast cannot be verified",
+            'what': "Button has positive outline-offset causing the focus outline to sit outside the button against a parent container that uses z-index positioning. The parent may float over varying backgrounds, making automatic contrast verification impossible.",
+            'why': "Since outline-offset is positive (>0), the outline sits outside the button against the parent's background. When the parent has z-index, it creates a stacking context and may float over any page content. The parent's background may appear over different underlying content depending on scroll position, viewport size, or dynamic content changes. This makes it impossible to programmatically determine what the outline actually contrasts against in all scenarios.",
+            'who': "Keyboard navigation users, users with low vision, users with color vision deficiencies",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.7', '1.4.11'],
+            'remediation': "Manually test focus visibility in all contexts: 1) Test button focus at different scroll positions and viewport sizes, 2) If parent is a modal/dialog, ensure it has an opaque background or semi-transparent backdrop, 3) Set outline-offset to 0 so outline sits on button border instead of parent, 4) Use high-contrast outline that works against both the parent background AND any content the parent may float over, 5) Consider: button:focus { outline: 3px solid white; box-shadow: 0 0 0 5px black; outline-offset: 0; }"
+        },
+        'WarnButtonFocusOutlineExceedsParent': {
+            'title': "Button focus outline extends beyond parent container - cannot verify contrast outside parent bounds",
+            'what': "Button has a focus outline with outline-offset and outline-width values that, when combined, cause the outline to extend beyond the boundaries of its parent container. Since the outline sits against the parent's background, but extends past the parent's edges, we cannot determine what background the extended portion of the outline sits against.",
+            'why': "When outline-offset is positive, the outline sits outside the button against the parent container's background. The total extent of the outline is outline-offset + outline-width. If this total exceeds the distance from the button edge to the parent edge on any side, the outline extends past the parent boundary into whatever content lies beyond. The outline may sit against varying backgrounds outside the parent (page background, sibling elements, grandparent containers, etc.), making automatic contrast verification impossible. CSS outline-offset has no maximum limit, so extremely large values (e.g., outline-offset: 50px) can easily exceed typical parent padding and margins.",
+            'who': "Keyboard navigation users, users with low vision, users with color vision deficiencies who need sufficient contrast between focus indicators and backgrounds",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.7', '1.4.11'],
+            'remediation': "Manually test the focus outline visibility against all backgrounds it may appear against outside the parent container. Solutions: 1) Reduce outline-offset and/or outline-width so outline stays within parent bounds (ensure parent has sufficient padding), 2) Increase parent padding to contain the full outline extent, 3) Set outline-offset to 0 and use box-shadow for spacing: button:focus { outline: 3px solid blue; outline-offset: 0; box-shadow: 0 0 0 2px white; }, 4) Use a high-contrast outline color (e.g., white with black box-shadow or vice versa) that works against any background: button:focus { outline: 2px solid white; box-shadow: 0 0 0 4px black; }"
+        },
         'ErrButtonTextLowContrast': {
             'title': "Button text has insufficient color contrast with button background",
             'what': "Button text has insufficient color contrast with button background",
@@ -584,6 +629,24 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.4.7', '1.4.11'],
             'remediation': "Modify the box-shadow to have zero offset and surround the entire button: button:focus { box-shadow: 0 0 0 3px #0066cc; }. The box-shadow syntax (0 0 0 3px) means: 0 horizontal offset, 0 vertical offset, 0 blur radius, 3px spread radius - creating a solid border-like effect on all sides. Better yet, use outline with outline-offset instead: button:focus { outline: 2px solid #0066cc; outline-offset: 2px; }. If you need the shadow for aesthetic reasons, combine both: keep the directional shadow for style but add a zero-offset shadow or outline specifically for accessibility. Ensure the focus indicator has at least 3:1 contrast ratio against adjacent colors."
+        },
+        'ErrButtonNoVisibleFocusRelyingOnColorOnly': {
+            'title': "Button has no visible focus indicator (outline or box-shadow) and relies only on color change",
+            'what': "Button removes the focus outline (outline:none) and provides no box-shadow alternative, relying solely on color change for focus indication which violates WCAG 1.4.1 Use of Color",
+            'why': "Relying solely on color change for focus indication fails WCAG 1.4.1 Use of Color and 2.4.7 Focus Visible. Users with color blindness (affecting 8% of males), low vision, or monochrome displays cannot perceive focus state. A structural indicator like box-shadow or outline is required to provide a non-color visual cue that clearly identifies the focused element. Without a structural focus indicator, keyboard users cannot reliably determine which element has focus, making keyboard navigation unusable.",
+            'who': "Users with color blindness, users with low vision, users on monochrome displays, keyboard navigation users, users with reduced contrast perception",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.4.7', '1.4.1'],
+            'remediation': "Add a box-shadow focus indicator (e.g., box-shadow: 0 0 0 3px rgba(0,102,204,0.5)) or use an outline with outline-offset of at least 2px. Do not rely on color change alone. Best practice: button:focus { outline: 2px solid #0066cc; outline-offset: 2px; }. The focus indicator must be perceivable independent of color."
+        },
+        'ErrButtonNoVisibleFocus': {
+            'title': "Button has no visible focus indicator at all",
+            'what': "Button removes the focus outline (outline:none) and provides no alternative focus indicator (no box-shadow, no outline, no color change)",
+            'why': "Buttons must have a clearly visible focus indicator per WCAG 2.4.7 Focus Visible. Without any focus indicator, keyboard users cannot determine which button has focus, making keyboard navigation completely unusable. This is a critical accessibility failure that prevents users who rely on keyboards or assistive technologies from using the interface. The focus indicator is essential for users to understand where they are on the page and what element will be activated if they press Enter or Space.",
+            'who': "Keyboard navigation users, screen reader users, users with motor disabilities who cannot use a mouse, users with low vision, switch device users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.4.7'],
+            'remediation': "Add a clear focus indicator using outline and outline-offset (recommended) or box-shadow. Best practice: button:focus { outline: 2px solid #0066cc; outline-offset: 2px; }. Alternative using box-shadow: button:focus { box-shadow: 0 0 0 3px #0066cc; }. Ensure the indicator has at least 3:1 contrast against adjacent colors per WCAG 1.4.11."
         },
         'ErrButtonTransparentOutline': {
             'title': "Button focus outline uses semi-transparent color (alpha < 0.5) which cannot guarantee sufficient visibility",
@@ -2882,12 +2945,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         },
         'WarnInfiniteAnimationSpinner': {
             'title': "Loading spinner animation '{animationName}' runs infinitely without controls",
-            'what': "Loading spinner animation '{animationName}' runs infinitely without controls",
-            'why': "While loading spinners are common and often acceptable, infinite animations without controls can still be problematic if they remain visible for extended periods. Loading spinners should ideally be hidden or stopped once loading completes. Even though this appears to be a spinner (based on class names, ARIA attributes, or size), it should be reviewed to ensure it doesn't run indefinitely in normal usage.",
-            'who': "Users with vestibular disorders, users with ADHD, users with photosensitive epilepsy, users with cognitive disabilities.",
+            'what': "Loading spinner animation '{animationName}' runs infinitely without controls and requires manual inspection to ensure screen reader accessibility",
+            'why': "While loading spinners are common and often acceptable, infinite animations without controls can still be problematic if they remain visible for extended periods. Loading spinners should ideally be hidden or stopped once loading completes. Additionally, spinners must be perceivable by screen reader users through proper ARIA attributes. This requires manual inspection to verify that the spinner has: 1) role=\"status\" or role=\"alert\" on a container element, 2) visually hidden text (e.g., \"Loading...\") for screen reader users, and 3) dynamic updates when loading completes. Without these attributes, screen reader users won't know that content is loading, creating a confusing and inaccessible experience.",
+            'who': "Users with vestibular disorders, users with ADHD, users with photosensitive epilepsy, users with cognitive disabilities, screen reader users who need audible loading announcements.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.2.2'],
-            'remediation': "Ensure the spinner is hidden (display: none or visibility: hidden) when loading completes, or provide pause/stop controls. Consider respecting prefers-reduced-motion settings to disable animations entirely for users who prefer reduced motion. Current CSS:\n{animationCSS}"
+            'remediation': "**1. Visual Control:** Ensure the spinner is hidden (display: none or visibility: hidden) when loading completes, or provide pause/stop controls. Consider respecting prefers-reduced-motion settings to disable animations entirely for users who prefer reduced motion.\n\n**2. Screen Reader Accessibility (Manual Inspection Required):** Verify the spinner includes proper ARIA attributes:\n\n**HTML Structure:**\n```html\n<div class=\"spinner-container\" role=\"status\">\n  <div class=\"spinner\"></div>\n  <span class=\"visually-hidden\">Loading...</span>\n</div>\n```\n\n**Required ARIA Attributes:**\n- `role=\"status\"` on the container to indicate a live region providing status information\n- Visually hidden text inside the container (e.g., \"Loading...\") using a class like `.visually-hidden` or `.sr-only`\n\n**CSS for Visually Hidden Text:**\n```css\n.visually-hidden {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  padding: 0;\n  margin: -1px;\n  overflow: hidden;\n  clip: rect(0, 0, 0, 0);\n  white-space: nowrap;\n  border-width: 0;\n}\n```\n\n**Dynamic Updates (Optional):** When the spinner completes, update the visually hidden text to \"Content loaded.\" using JavaScript to inform screen reader users that loading has finished.\n\nCurrent animation CSS:\n{animationCSS}"
         },
         'WarnLongAnimation': {
             'title': "Animation duration ({duration}) exceeds 5 seconds",

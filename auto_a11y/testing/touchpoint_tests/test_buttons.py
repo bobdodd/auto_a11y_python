@@ -114,6 +114,42 @@ async def test_buttons(page) -> Dict[str, Any]:
                     return (lighter + 0.05) / (darker + 0.05);
                 }
 
+                // Reusable function to get effective background color by walking up the DOM tree
+                // Stops at z-index boundaries (stacking contexts) and returns result object
+                // Returns: { backgroundColor, stoppedAtZIndex, hasZIndex }
+                function getEffectiveBackgroundColor(element) {
+                    let currentElement = element;
+                    let backgroundColor = 'rgba(0, 0, 0, 0)';
+                    let stoppedAtZIndex = false;
+
+                    // Walk up the DOM tree until we find a non-transparent background
+                    while (currentElement && backgroundColor === 'rgba(0, 0, 0, 0)') {
+                        const style = window.getComputedStyle(currentElement);
+                        backgroundColor = style.backgroundColor;
+
+                        // Check if this element has z-index (creates stacking context)
+                        // z-index only matters if position is not static
+                        const zIndex = style.zIndex;
+                        const position = style.position;
+                        if (zIndex !== 'auto' && position !== 'static') {
+                            stoppedAtZIndex = true;
+                            break; // Stop here - element may float over other content
+                        }
+
+                        currentElement = currentElement.parentElement;
+                    }
+
+                    // Default to white if we couldn't find a background (reached root)
+                    if (backgroundColor === 'rgba(0, 0, 0, 0)') {
+                        backgroundColor = 'rgb(255, 255, 255)';
+                    }
+
+                    return {
+                        backgroundColor,
+                        stoppedAtZIndex
+                    };
+                }
+
                 // Get all buttons (button element and elements with role="button")
                 const allButtons = Array.from(document.querySelectorAll('button, [role="button"]')).filter(btn => {
                     const style = window.getComputedStyle(btn);
@@ -130,24 +166,56 @@ async def test_buttons(page) -> Dict[str, Any]:
                     // Get clip-path for non-rectangular button detection
                     const clipPath = normalStyle.clipPath;
 
-                    // Get background color of button's container for contrast calculation
-                    let bgElement = button.parentElement;
-                    let backgroundColor = normalStyle.backgroundColor;
-                    let backgroundImage = normalStyle.backgroundImage; // For gradient/image detection
+                    // Check if button itself has z-index
+                    const buttonZIndex = normalStyle.zIndex;
+                    const buttonPosition = normalStyle.position;
+                    const buttonHasZIndex = (buttonZIndex !== 'auto' && buttonPosition !== 'static');
 
-                    // Walk up the DOM to find a non-transparent background
-                    while (bgElement && backgroundColor === 'rgba(0, 0, 0, 0)') {
-                        backgroundColor = window.getComputedStyle(bgElement).backgroundColor;
-                        bgElement = bgElement.parentElement;
-                    }
+                    // Get button's own background color (for the button itself)
+                    const buttonBgResult = getEffectiveBackgroundColor(button);
+                    const backgroundColor = buttonBgResult.backgroundColor;
+                    const buttonBgStoppedAtZIndex = buttonBgResult.stoppedAtZIndex;
+                    const backgroundImage = normalStyle.backgroundImage; // For gradient/image detection
+                    const fullBackground = normalStyle.background; // For gradient/image detection
 
-                    // Default to white if we couldn't find a background
-                    if (backgroundColor === 'rgba(0, 0, 0, 0)') {
-                        backgroundColor = 'rgb(255, 255, 255)';
-                    }
+                    // Get parent's background information (for outline that sits outside the button)
+                    // This is what we should compare the outline against when outline-offset > 0
+                    const parentBgResult = button.parentElement
+                        ? getEffectiveBackgroundColor(button.parentElement)
+                        : buttonBgResult;
+                    const parentBackgroundColor = parentBgResult.backgroundColor;
+                    const parentBgStoppedAtZIndex = parentBgResult.stoppedAtZIndex;
 
-                    // Also get the full background property for gradient/image detection
-                    const fullBackground = normalStyle.background;
+                    // Also get parent's background image/gradient info
+                    const parentBackgroundImage = button.parentElement
+                        ? window.getComputedStyle(button.parentElement).backgroundImage
+                        : 'none';
+                    const parentFullBackground = button.parentElement
+                        ? window.getComputedStyle(button.parentElement).background
+                        : 'none';
+
+                    // Calculate button and parent boundaries to check if outline extends beyond parent
+                    const buttonRect = button.getBoundingClientRect();
+                    const parentRect = button.parentElement ? button.parentElement.getBoundingClientRect() : null;
+
+                    // Store boundary information for later outline extent checking
+                    const buttonBounds = {
+                        top: buttonRect.top,
+                        right: buttonRect.right,
+                        bottom: buttonRect.bottom,
+                        left: buttonRect.left,
+                        width: buttonRect.width,
+                        height: buttonRect.height
+                    };
+
+                    const parentBounds = parentRect ? {
+                        top: parentRect.top,
+                        right: parentRect.right,
+                        bottom: parentRect.bottom,
+                        left: parentRect.left,
+                        width: parentRect.width,
+                        height: parentRect.height
+                    } : null;
 
                     // Try to get focus styles by checking stylesheets
                     let focusOutlineStyle = null;
@@ -158,48 +226,94 @@ async def test_buttons(page) -> Dict[str, Any]:
                     let focusBorderColor = null;
                     let focusBoxShadow = null;
 
+                    // Function to resolve CSS variables like var(--some-var)
+                    function resolveCSSVariable(value, element) {
+                        if (!value || typeof value !== 'string') return value;
+
+                        // Check if value contains var()
+                        const varMatch = value.match(/var\\((--[^,)]+)(?:,\\s*([^)]+))?\\)/);
+                        if (!varMatch) return value;
+
+                        const varName = varMatch[1];
+                        const fallback = varMatch[2];
+
+                        // Get computed style to resolve the variable - this doesn't manipulate the page
+                        const computedStyle = window.getComputedStyle(element);
+                        const resolvedValue = computedStyle.getPropertyValue(varName).trim();
+
+                        if (resolvedValue) {
+                            // Replace the var() with the resolved value
+                            return value.replace(varMatch[0], resolvedValue);
+                        }
+
+                        // If no resolved value, use fallback or return original
+                        return fallback || value;
+                    }
+
                     // Check all stylesheets for :focus rules
                     const sheets = Array.from(document.styleSheets);
                     for (const sheet of sheets) {
                         try {
                             const rules = Array.from(sheet.cssRules || sheet.rules || []);
                             for (const rule of rules) {
-                                if (rule.selectorText && rule.selectorText.includes(':focus')) {
-                                    // Check if this rule applies to our button
-                                    const selector = rule.selectorText.replace(':focus', '');
-                                    try {
-                                        if (button.matches(selector)) {
+                                if (rule.selectorText && (rule.selectorText.includes(':focus-visible') || rule.selectorText.includes(':focus'))) {
+                                    // Handle multiple selectors separated by commas
+                                    const selectors = rule.selectorText.split(',').map(s => s.trim());
+
+                                    for (const fullSelector of selectors) {
+                                        if (!fullSelector.includes(':focus')) continue;
+
+                                        // Remove :focus, :focus-visible, :focus-within and any other pseudo-classes after them
+                                        const selector = fullSelector.replace(/:focus(-visible|-within)?([:\\s\\[>+~,.]|$)/g, '$2');
+
+                                        try {
+                                            if (button.matches(selector)) {
                                             if (rule.style.outlineStyle !== undefined && rule.style.outlineStyle !== '') {
-                                                focusOutlineStyle = rule.style.outlineStyle;
+                                                focusOutlineStyle = resolveCSSVariable(rule.style.outlineStyle, button);
                                             }
                                             if (rule.style.outlineWidth !== undefined && rule.style.outlineWidth !== '') {
-                                                focusOutlineWidth = rule.style.outlineWidth;
+                                                focusOutlineWidth = resolveCSSVariable(rule.style.outlineWidth, button);
                                             }
                                             if (rule.style.outlineColor !== undefined && rule.style.outlineColor !== '') {
-                                                focusOutlineColor = rule.style.outlineColor;
+                                                focusOutlineColor = resolveCSSVariable(rule.style.outlineColor, button);
                                             }
                                             if (rule.style.outlineOffset !== undefined && rule.style.outlineOffset !== '') {
-                                                focusOutlineOffset = rule.style.outlineOffset;
+                                                focusOutlineOffset = resolveCSSVariable(rule.style.outlineOffset, button);
                                             }
                                             if (rule.style.outline !== undefined && rule.style.outline !== '') {
-                                                const outlineValue = rule.style.outline;
+                                                const outlineValue = resolveCSSVariable(rule.style.outline, button);
                                                 if (outlineValue === 'none' || outlineValue === '0') {
                                                     focusOutlineStyle = 'none';
                                                     focusOutlineWidth = '0px';
+                                                } else {
+                                                    // Parse shorthand outline property: "width style color"
+                                                    // Handle colors that might contain spaces like rgb(255, 255, 255)
+                                                    // Match width (digits with unit)
+                                                    const widthMatch = outlineValue.match(/(\\d+(?:\\.\\d+)?(?:px|em|rem))/);
+                                                    if (widthMatch) focusOutlineWidth = widthMatch[0];
+
+                                                    // Match style (solid, dashed, etc)
+                                                    const styleMatch = outlineValue.match(/\\b(solid|dashed|dotted|double|groove|ridge|inset|outset)\\b/);
+                                                    if (styleMatch) focusOutlineStyle = styleMatch[0];
+
+                                                    // Match color (everything after style, or hex/rgb/rgba/hsl)
+                                                    const colorMatch = outlineValue.match(/(?:rgb|rgba|hsl|hsla)\\([^)]+\\)|#[0-9a-fA-F]{3,8}|\\b(?:white|black|red|blue|green|yellow|purple|orange|pink|brown|gray|grey)\\b/);
+                                                    if (colorMatch) focusOutlineColor = colorMatch[0];
                                                 }
                                             }
                                             if (rule.style.backgroundColor !== undefined && rule.style.backgroundColor !== '') {
-                                                focusBackgroundColor = rule.style.backgroundColor;
+                                                focusBackgroundColor = resolveCSSVariable(rule.style.backgroundColor, button);
                                             }
                                             if (rule.style.borderColor !== undefined && rule.style.borderColor !== '') {
-                                                focusBorderColor = rule.style.borderColor;
+                                                focusBorderColor = resolveCSSVariable(rule.style.borderColor, button);
                                             }
                                             if (rule.style.boxShadow !== undefined && rule.style.boxShadow !== '') {
-                                                focusBoxShadow = rule.style.boxShadow;
+                                                focusBoxShadow = resolveCSSVariable(rule.style.boxShadow, button);
                                             }
+                                            }
+                                        } catch (e) {
+                                            // Selector might not be valid or might not match
                                         }
-                                    } catch (e) {
-                                        // Selector might not be valid or might not match
                                     }
                                 }
                             }
@@ -229,8 +343,16 @@ async def test_buttons(page) -> Dict[str, Any]:
                         focusBoxShadow: focusBoxShadow,
                         backgroundColor: backgroundColor,
                         normalBackgroundColor: normalStyle.backgroundColor,
+                        buttonHasZIndex: buttonHasZIndex,
+                        buttonBgStoppedAtZIndex: buttonBgStoppedAtZIndex,
+                        parentBackgroundColor: parentBackgroundColor,
+                        parentBgStoppedAtZIndex: parentBgStoppedAtZIndex,
+                        parentBackgroundImage: parentBackgroundImage,
+                        parentFullBackground: parentFullBackground,
                         backgroundImage: backgroundImage,
-                        fullBackground: fullBackground
+                        fullBackground: fullBackground,
+                        buttonBounds: buttonBounds,
+                        parentBounds: parentBounds
                     };
                 });
             }
@@ -433,18 +555,6 @@ async def test_buttons(page) -> Dict[str, Any]:
             font_size = button.get('fontSize', 16)
             root_font_size = button.get('rootFontSize', 16)
 
-            # Debug: Log focus styles for this button
-            logger.warning(f"\n=== BUTTON DEBUG: {button.get('xpath', 'unknown')} ===")
-            logger.warning(f"Text: {button.get('text', '')[:50]}")
-            logger.warning(f"Class: {button.get('className', '')}")
-            logger.warning(f"Focus Outline Style: {button.get('focusOutlineStyle')}")
-            logger.warning(f"Focus Outline Width: {button.get('focusOutlineWidth')}")
-            logger.warning(f"Focus Outline Color: {button.get('focusOutlineColor')}")
-            logger.warning(f"Focus Outline Offset: {button.get('focusOutlineOffset')}")
-            logger.warning(f"Focus Box Shadow: {button.get('focusBoxShadow')}")
-            logger.warning(f"Focus Background Color: {button.get('focusBackgroundColor')}")
-            logger.warning(f"Normal Background Color: {button.get('normalBackgroundColor')}")
-
             # Check for gradient or image backgrounds first (for warnings)
             button_background = button.get('fullBackground', '') or button.get('normalBackgroundColor', '')
             button_bg_image = button.get('backgroundImage', '')
@@ -495,20 +605,20 @@ async def test_buttons(page) -> Dict[str, Any]:
                         error_code = 'WarnButtonOutlineNoneWithBoxShadow'
                         violation_reason = 'Button uses outline:none with box-shadow instead of outline (suboptimal but acceptable)'
                 else:
-                    # No box-shadow - check if only using color changes (WCAG 1.4.1 violation)
+                    # No box-shadow and no outline - check if relying on color only
                     has_color_change = (
                         button['focusBackgroundColor'] and
                         button['focusBackgroundColor'] != button['normalBackgroundColor']
                     ) or button['focusBorderColor']
 
                     if has_color_change:
-                        # Color change only - WCAG 1.4.1 Use of Color violation
-                        error_code = 'ErrButtonOutlineNoneNoBoxShadow'
-                        violation_reason = 'Button has outline:none with only color change (violates WCAG 1.4.1 Use of Color - users with color blindness cannot perceive focus)'
+                        # Color change only - violates both WCAG 1.4.1 (Use of Color) and 2.4.7 (Focus Visible)
+                        error_code = 'ErrButtonNoVisibleFocusRelyingOnColorOnly'
+                        violation_reason = 'Button has no visible focus indicator (outline or box-shadow) and relies only on color change (violates WCAG 1.4.1 Use of Color - users with color blindness cannot perceive focus)'
                     else:
                         # No visible focus indicator at all
                         error_code = 'ErrButtonNoVisibleFocus'
-                        violation_reason = 'Button has outline:none with no alternative focus indicator'
+                        violation_reason = 'Button has outline:none with no alternative focus indicator (box-shadow or outline required)'
 
             # If outline is present, check its properties
             elif button['focusOutlineColor'] and button['focusOutlineWidth']:
@@ -528,20 +638,97 @@ async def test_buttons(page) -> Dict[str, Any]:
 
                 # Check outline contrast (only if width and offset are sufficient)
                 else:
-                    # Warning: Gradient background (cannot auto-verify contrast)
-                    if has_gradient:
-                        error_code = 'WarnButtonFocusGradientBackground'
-                        violation_reason = 'Button has gradient background - focus outline contrast cannot be automatically verified (manual testing required against lightest and darkest gradient colors)'
+                    # Determine which background to check based on outline-offset
+                    # If offset > 0, outline sits outside button against parent background
+                    # If offset <= 0, outline sits on/inside button against button background
 
-                    # Warning: Image background (cannot auto-verify contrast)
-                    elif has_image:
-                        error_code = 'WarnButtonFocusImageBackground'
-                        violation_reason = 'Button has background image - focus outline contrast cannot be automatically verified (manual testing required against all parts of image)'
+                    if outline_offset > 0:
+                        # First check z-index - button may float over varying content
+                        button_has_z_index = button.get('buttonHasZIndex', False)
+                        parent_bg_stopped_at_z_index = button.get('parentBgStoppedAtZIndex', False)
 
-                    # Check contrast against solid background
+                        # Warning: Button itself has z-index - it floats over varying backgrounds
+                        if button_has_z_index:
+                            error_code = 'WarnButtonFocusZIndexFloating'
+                            violation_reason = 'Button has z-index positioning and may float over multiple elements with varying backgrounds - focus outline contrast cannot be automatically verified (manual testing required). Since the button is positioned with z-index, it exists in a stacking context separate from normal document flow.'
+
+                        # Warning: Parent has z-index and we reached it without finding solid background
+                        elif parent_bg_stopped_at_z_index:
+                            error_code = 'WarnButtonFocusParentZIndexFloating'
+                            violation_reason = 'Button parent/container has z-index positioning and no solid background color was found - focus outline contrast cannot be automatically verified (manual testing required). Since outline-offset is positive, the outline sits outside the button, but the parent creates a stacking context that may float over varying content.'
+
+                        else:
+                            # Check if outline extends beyond parent container
+                            # Calculate the outline extent (button edge + offset + width)
+                            button_bounds = button.get('buttonBounds')
+                            parent_bounds = button.get('parentBounds')
+
+                            outline_exceeds_parent = False
+                            if button_bounds and parent_bounds:
+                                # Calculate where the outline will extend to
+                                # Outline sits outside button by outline_offset, then extends by outline_width
+                                total_extent = outline_offset + outline_width
+
+                                # Check all four sides
+                                exceeds_top = (button_bounds['top'] - total_extent) < parent_bounds['top']
+                                exceeds_bottom = (button_bounds['bottom'] + total_extent) > parent_bounds['bottom']
+                                exceeds_left = (button_bounds['left'] - total_extent) < parent_bounds['left']
+                                exceeds_right = (button_bounds['right'] + total_extent) > parent_bounds['right']
+
+                                outline_exceeds_parent = exceeds_top or exceeds_bottom or exceeds_left or exceeds_right
+
+                            # Warning: Outline extends beyond parent container
+                            if outline_exceeds_parent:
+                                error_code = 'WarnButtonFocusOutlineExceedsParent'
+                                violation_reason = f'Button focus outline extends beyond its parent container (outline-offset: {outline_offset:.2f}px + outline-width: {outline_width:.2f}px = {outline_offset + outline_width:.2f}px total extent) - outline contrast cannot be automatically verified because we cannot determine what background the outline sits against outside the parent. Manual testing required.'
+
+                            else:
+                                # Check parent background for gradient/image
+                                parent_bg_image = button.get('parentBackgroundImage', 'none')
+                                parent_full_bg = button.get('parentFullBackground', 'none')
+                                parent_has_gradient = has_gradient_background(parent_full_bg) or has_gradient_background(parent_bg_image)
+                                parent_has_image = has_image_background(parent_full_bg) or has_image_background(parent_bg_image)
+
+                                # Warning: Parent has gradient (cannot auto-verify contrast)
+                                if parent_has_gradient:
+                                    error_code = 'WarnButtonFocusParentGradientBackground'
+                                    violation_reason = 'Button parent/container has gradient background - focus outline contrast cannot be automatically verified (manual testing required against lightest and darkest gradient colors). Since outline-offset is positive, the outline sits outside the button against the parent background.'
+
+                                # Warning: Parent has image (cannot auto-verify contrast)
+                                elif parent_has_image:
+                                    error_code = 'WarnButtonFocusParentImageBackground'
+                                    violation_reason = 'Button parent/container has background image - focus outline contrast cannot be automatically verified (manual testing required against all parts of image). Since outline-offset is positive, the outline sits outside the button against the parent background.'
+
+                                # Check contrast against solid parent background
+                                else:
+                                    check_solid_contrast = True
                     else:
+                        # Check button background for gradient/image
+                        # Warning: Gradient background (cannot auto-verify contrast)
+                        if has_gradient:
+                            error_code = 'WarnButtonFocusGradientBackground'
+                            violation_reason = 'Button has gradient background - focus outline contrast cannot be automatically verified (manual testing required against lightest and darkest gradient colors)'
+
+                        # Warning: Image background (cannot auto-verify contrast)
+                        elif has_image:
+                            error_code = 'WarnButtonFocusImageBackground'
+                            violation_reason = 'Button has background image - focus outline contrast cannot be automatically verified (manual testing required against all parts of image)'
+
+                        # Check contrast against solid button background
+                        else:
+                            check_solid_contrast = True
+
+                    # Check contrast against solid background (if no gradient/image)
+                    if 'check_solid_contrast' in locals() and check_solid_contrast:
                         outline_color = parse_color(button['focusOutlineColor'])
-                        bg_color = parse_color(button['backgroundColor'])
+
+                        # Determine which background to compare against:
+                        # - If outline-offset > 0: outline sits OUTSIDE button, compare against parent background
+                        # - If outline-offset <= 0: outline sits ON/INSIDE button, compare against button background
+                        if outline_offset > 0:
+                            bg_color = parse_color(button.get('parentBackgroundColor', button['backgroundColor']))
+                        else:
+                            bg_color = parse_color(button['backgroundColor'])
 
                         # Check if outline color is fully transparent
                         if outline_color['a'] == 0:
@@ -599,10 +786,6 @@ async def test_buttons(page) -> Dict[str, Any]:
                 result_type = 'warn' if error_code.startswith('Warn') else 'err'
                 result_list = results['warnings'] if result_type == 'warn' else results['errors']
 
-                # Debug: Log the result
-                logger.warning(f"RESULT: {result_type.upper()} - {error_code}")
-                logger.warning(f"REASON: {violation_reason}\n")
-
                 result_list.append({
                     'err': error_code,
                     'type': result_type,
@@ -615,9 +798,6 @@ async def test_buttons(page) -> Dict[str, Any]:
                 })
                 results['elements_failed'] += 1
             else:
-                # Debug: Log pass
-                logger.warning(f"RESULT: PASS - No issues found\n")
-
                 # Only increment passed if no issues found (including generic text)
                 if not is_generic:
                     results['elements_passed'] += 1

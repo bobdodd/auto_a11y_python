@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonFocusParentZIndexFloating - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonFocusParentZIndexFloating_001_warnings_parent_zindex",
+    "issueId": "WarnButtonFocusParentZIndexFloating",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Buttons with outline sitting against parent with z-index and no solid background - requires manual testing",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Floating toolbar with transparent background and z-index */
+        .floating-toolbar {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 500;
+            padding: 10px;
+            /* Intentionally NO background - transparent */
+        }
+        .toolbar-button {
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent */
+            color: #333;
+            padding: 10px 15px;
+            border: 1px solid rgba(0,0,0,0.2);
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .toolbar-button:focus {
+            outline: 3px solid #0066cc; /* Blue outline */
+            outline-offset: 3px; /* Sits OUTSIDE button, against transparent parent */
+        }
+
+        /* Glass-morphism card with z-index */
+        .glass-card {
+            position: absolute;
+            top: 250px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1); /* Very transparent */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 300;
+        }
+        .glass-button {
+            background: rgba(0, 102, 204, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .glass-button:focus {
+            outline: 2px solid white;
+            outline-offset: 2px; /* Against barely-visible glass background */
+        }
+
+        /* HUD overlay with transparent parent */
+        .hud-overlay {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            z-index: 400;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.05); /* Nearly transparent */
+        }
+        .hud-button {
+            background: #ff4081;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            font-size: 14px;
+        }
+        .hud-button:focus {
+            outline: 3px solid yellow;
+            outline-offset: 2px; /* Against nearly-transparent parent */
+        }
+
+        /* Varying background content beneath floating elements */
+        .content {
+            padding: 40px;
+            min-height: 150vh;
+        }
+        .light-area {
+            background: #f9f9f9;
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+        .dark-area {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+        .gradient-area {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Test: Parent Z-Index with Transparent Background</h1>
+
+        <p>These buttons have positive outline-offset, so the outline sits OUTSIDE the button.
+           The parent containers have z-index positioning but TRANSPARENT backgrounds.
+           Since the background walker reaches the z-indexed parent without finding a solid color,
+           we cannot determine what the outline sits against (parent floats over varying content).</p>
+
+        <div class="light-area">
+            <h2>Light Background Area</h2>
+            <p>The floating toolbar and other elements pass over this light area.
+               Their outline contrast may be sufficient here but not on dark areas.</p>
+        </div>
+
+        <div class="dark-area">
+            <h2>Dark Background Area</h2>
+            <p>The floating elements pass over this dark area.
+               Outline visibility changes dramatically against this background.</p>
+        </div>
+
+        <div class="gradient-area">
+            <h2>Gradient Background Area</h2>
+            <p>The floating elements pass over this gradient area.
+               Contrast varies across the gradient.</p>
+        </div>
+    </div>
+
+    <div class="floating-toolbar">
+        <button class="toolbar-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusParentZIndexFloating"
+                data-violation-reason="Parent has z-index with transparent background - outline sits against varying content">
+            Save
+        </button>
+        <button class="toolbar-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusParentZIndexFloating"
+                data-violation-reason="Parent has z-index with transparent background - outline sits against varying content">
+            Edit
+        </button>
+    </div>
+
+    <div class="glass-card">
+        <h3 style="color: white; margin-top: 0;">Glass Morphism Card</h3>
+        <p style="color: rgba(255,255,255,0.9); font-size: 14px;">
+            This card has a very transparent background (10% white) with backdrop blur.
+            The parent card has z-index and floats over varying backgrounds.
+        </p>
+        <button class="glass-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusParentZIndexFloating"
+                data-violation-reason="Parent glass card has z-index with transparent background - outline contrast varies">
+            Confirm
+        </button>
+    </div>
+
+    <div class="hud-overlay">
+        <p style="font-size: 12px; margin: 0 0 10px; color: #333;">HUD Controls (nearly transparent parent)</p>
+        <button class="hud-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusParentZIndexFloating"
+                data-violation-reason="Parent HUD overlay has z-index with nearly-transparent background">
+            Action
+        </button>
+    </div>
+</body>
+</html>

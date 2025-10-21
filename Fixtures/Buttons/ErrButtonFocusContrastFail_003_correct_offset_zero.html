@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonFocusContrastFail - Offset Zero Test</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonFocusContrastFail_003_correct_offset_zero",
+    "issueId": "ErrButtonFocusContrastFail",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Button with outline-offset: 0 should check against button background",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* When outline-offset is 0, outline sits ON the button edge
+           So contrast should be checked against button background, not parent */
+        .button-offset-zero {
+            background: #0066cc; /* Blue button */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            font-size: 16px;
+        }
+        .button-offset-zero:focus {
+            outline: 3px solid #ffff00; /* Yellow outline - excellent contrast against blue button */
+            outline-offset: 0px; /* Sits ON the button, not in parent */
+        }
+    </style>
+</head>
+<body style="background: #333; padding: 40px;">
+    <h1 style="color: white;">Test: Outline with Zero Offset</h1>
+
+    <p style="color: white;">When outline-offset is 0, the outline sits ON the button edge,
+       so contrast should be measured against the BUTTON's background, not the parent's background.</p>
+
+    <div style="background: #111; padding: 20px;">
+        <h2 style="color: white;">Yellow Outline on Blue Button (offset: 0)</h2>
+        <button class="button-offset-zero"
+                data-expected-pass="true"
+                data-pass-reason="Yellow outline has excellent contrast (10:1) against blue button background">
+            Click Me
+        </button>
+        <p style="color: white;">
+            With outline-offset: 0px, the yellow (#ffff00) outline sits ON the button edge.
+            <br>Contrast is measured against the button's blue background (#0066cc): ~10:1 (excellent!)
+            <br>Parent background (#111) is irrelevant in this case.
+        </p>
+    </div>
+</body>
+</html>

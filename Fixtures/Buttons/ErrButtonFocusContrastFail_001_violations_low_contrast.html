@@ -16,29 +16,38 @@
 }
     </script>
     <style>
-        .light-on-white {
+        /* Button on light gray section - outline should contrast with section bg (#f5f5f5) */
+        .light-on-light-gray {
             background: white;
+            padding: 10px 20px;
+            border: 1px solid #ccc;
         }
-        .light-on-white:focus {
-            outline: 2px solid #f0f0f0; /* 1.2:1 contrast - too low */
+        .light-on-light-gray:focus {
+            outline: 2px solid #e0e0e0; /* ~1.2:1 contrast against #f5f5f5 - too low */
             outline-offset: 2px;
         }
 
-        .dark-on-black {
-            background: black;
+        /* Button on dark section - outline should contrast with section bg (#111) */
+        .dark-on-dark {
+            background: #000;
             color: white;
+            padding: 10px 20px;
+            border: none;
         }
-        .dark-on-black:focus {
-            outline: 2px solid #333333; /* 1.5:1 contrast - too low */
+        .dark-on-dark:focus {
+            outline: 2px solid #222; /* ~1.4:1 contrast against #111 - too low */
             outline-offset: 2px;
         }
 
+        /* Button on medium gray - outline should contrast with section bg (#777) */
         .gray-on-gray {
-            background: #888888;
+            background: #555;
             color: white;
+            padding: 10px 20px;
+            border: none;
         }
         .gray-on-gray:focus {
-            outline: 2px solid #999999; /* 1.1:1 contrast - too low */
+            outline: 2px solid #888; /* ~1.2:1 contrast against #777 - too low */
             outline-offset: 2px;
         }
     </style>
@@ -50,36 +59,39 @@
        failing WCAG 1.4.11 Non-text Contrast.</p>
 
     <section style="background: #f5f5f5; padding: 20px;">
-        <h2>Light Gray Outline on White Background</h2>
-        <button class="light-on-white"
+        <h2>Light Gray Outline Against Light Gray Section Background</h2>
+        <button class="light-on-light-gray"
                 data-expected-violation="true"
                 data-violation-id="ErrButtonFocusContrastFail"
-                data-violation-reason="Outline color #f0f0f0 has only 1.2:1 contrast against white background">
+                data-violation-reason="Outline color #e0e0e0 has insufficient contrast against section background #f5f5f5">
             Submit Form
         </button>
-        <p>Outline color #f0f0f0 has approximately 1.2:1 contrast against white background.</p>
+        <p>With outline-offset: 2px, the outline sits OUTSIDE the button against the section background #f5f5f5.
+           Outline color #e0e0e0 has approximately 1.2:1 contrast against this section background - too low!</p>
     </section>
 
-    <section style="background: #111; padding: 20px;">
-        <h2>Dark Gray Outline on Black Background</h2>
-        <button class="dark-on-black"
+    <section style="background: #111; padding: 20px; color: white;">
+        <h2>Dark Gray Outline Against Dark Section Background</h2>
+        <button class="dark-on-dark"
                 data-expected-violation="true"
                 data-violation-id="ErrButtonFocusContrastFail"
-                data-violation-reason="Outline color #333333 has only 1.5:1 contrast against black background">
+                data-violation-reason="Outline color #222 has insufficient contrast against section background #111">
             Save Changes
         </button>
-        <p>Outline color #333333 has approximately 1.5:1 contrast against black background.</p>
+        <p>With outline-offset: 2px, the outline sits against the section background #111.
+           Outline color #222 has approximately 1.4:1 contrast - too low!</p>
     </section>
 
-    <section style="background: #666; padding: 20px;">
-        <h2>Similar Gray Outline on Gray Background</h2>
+    <section style="background: #777; padding: 20px; color: white;">
+        <h2>Similar Gray Outline Against Gray Section Background</h2>
         <button class="gray-on-gray"
                 data-expected-violation="true"
                 data-violation-id="ErrButtonFocusContrastFail"
-                data-violation-reason="Outline color #999999 has only 1.1:1 contrast against #888888 background">
+                data-violation-reason="Outline color #888 has insufficient contrast against section background #777">
             Delete Item
         </button>
-        <p>Outline color #999999 has approximately 1.1:1 contrast against #888888 background.</p>
+        <p>With outline-offset: 2px, the outline sits against the section background #777.
+           Outline color #888 has approximately 1.2:1 contrast - too low!</p>
     </section>
 </body>
 </html>

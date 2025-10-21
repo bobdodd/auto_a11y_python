@@ -420,15 +420,22 @@ async def test_lists(page) -> Dict[str, Any]:
                         const firstChild = item.firstElementChild;
                         let hasIconFontElement = false;
 
+                        // Only check if list-style-type is none (indicating custom styling)
                         if (firstChild && listStyleType === 'none') {
                             const childTag = firstChild.tagName.toUpperCase();
                             const childClasses = firstChild.className || '';
 
-                            // Check if first child is an icon element (i, span with icon classes)
-                            if ((childTag === 'I' || childTag === 'SPAN') &&
-                                (childClasses.includes('icon') ||
-                                 childClasses.includes('fa-') ||
-                                 childClasses.includes('material-'))) {
+                            // Check if first child is an icon element
+                            // Common patterns:
+                            // - Any <i> tag (almost always used for icons)
+                            // - <span> with icon-related classes
+                            if (childTag === 'I' ||
+                                (childTag === 'SPAN' && (
+                                    childClasses.toLowerCase().includes('icon') ||
+                                    childClasses.toLowerCase().includes('fa') ||
+                                    childClasses.toLowerCase().includes('material') ||
+                                    childClasses.toLowerCase().includes('glyph')
+                                ))) {
                                 hasIconFontElement = true;
                             }
                         }

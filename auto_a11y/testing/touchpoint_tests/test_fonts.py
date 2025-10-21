@@ -296,19 +296,29 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
                         hasViolation = true;
                     }
                     
+                    // Only flag actual right-aligned text, not center or left
+                    // Body text that is right-aligned is difficult to read (WCAG 1.4.8 AAA)
                     if (textAlign === 'right' && text.length > 20) {
-                        alignmentViolations++;
-                        results.warnings.push({
-                            err: 'WarnRightAlignedText',
-                            type: 'warn',
-                            cat: 'fonts',
-                            element: tag,
-                            xpath: getFullXPath(element),
-                            html: element.outerHTML.substring(0, 200),
-                            description: 'Long text uses right alignment which can be difficult to read',
-                            text: text
-                        });
-                        hasViolation = true;
+                        // Additional check: ensure this is body text, not headings or short labels
+                        // Exclude inline emphasis elements (strong, em, b, i) - they inherit alignment
+                        const isBodyText = ['p', 'div', 'span', 'li', 'td', 'th', 'blockquote', 'article', 'section'].includes(tag);
+                        const isInlineEmphasis = ['strong', 'em', 'b', 'i', 'mark', 'code', 'kbd', 'samp', 'var', 'cite', 'abbr'].includes(tag);
+
+                        if (isBodyText && !isInlineEmphasis) {
+                            alignmentViolations++;
+                            results.warnings.push({
+                                err: 'WarnRightAlignedText',
+                                type: 'warn',
+                                cat: 'fonts',
+                                element: tag,
+                                xpath: getFullXPath(element),
+                                html: element.outerHTML.substring(0, 200),
+                                description: 'Body text uses right alignment which can be difficult to read',
+                                text: text,
+                                textAlign: textAlign
+                            });
+                            hasViolation = true;
+                        }
                     }
                     
                     // Check visual hierarchy

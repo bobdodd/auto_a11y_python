@@ -433,6 +433,18 @@ async def test_buttons(page) -> Dict[str, Any]:
             font_size = button.get('fontSize', 16)
             root_font_size = button.get('rootFontSize', 16)
 
+            # Debug: Log focus styles for this button
+            logger.warning(f"\n=== BUTTON DEBUG: {button.get('xpath', 'unknown')} ===")
+            logger.warning(f"Text: {button.get('text', '')[:50]}")
+            logger.warning(f"Class: {button.get('className', '')}")
+            logger.warning(f"Focus Outline Style: {button.get('focusOutlineStyle')}")
+            logger.warning(f"Focus Outline Width: {button.get('focusOutlineWidth')}")
+            logger.warning(f"Focus Outline Color: {button.get('focusOutlineColor')}")
+            logger.warning(f"Focus Outline Offset: {button.get('focusOutlineOffset')}")
+            logger.warning(f"Focus Box Shadow: {button.get('focusBoxShadow')}")
+            logger.warning(f"Focus Background Color: {button.get('focusBackgroundColor')}")
+            logger.warning(f"Normal Background Color: {button.get('normalBackgroundColor')}")
+
             # Check for gradient or image backgrounds first (for warnings)
             button_background = button.get('fullBackground', '') or button.get('normalBackgroundColor', '')
             button_bg_image = button.get('backgroundImage', '')
@@ -587,6 +599,10 @@ async def test_buttons(page) -> Dict[str, Any]:
                 result_type = 'warn' if error_code.startswith('Warn') else 'err'
                 result_list = results['warnings'] if result_type == 'warn' else results['errors']
 
+                # Debug: Log the result
+                logger.warning(f"RESULT: {result_type.upper()} - {error_code}")
+                logger.warning(f"REASON: {violation_reason}\n")
+
                 result_list.append({
                     'err': error_code,
                     'type': result_type,
@@ -599,6 +615,9 @@ async def test_buttons(page) -> Dict[str, Any]:
                 })
                 results['elements_failed'] += 1
             else:
+                # Debug: Log pass
+                logger.warning(f"RESULT: PASS - No issues found\n")
+
                 # Only increment passed if no issues found (including generic text)
                 if not is_generic:
                     results['elements_passed'] += 1

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Switcher - Valid Language Name Titles</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnVagueTitleAttribute_003_language_names_valid",
+    "issueId": "WarnVagueTitleAttribute",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 10,
+    "description": "Language names in title attributes are legitimate and informative (not vague)",
+    "wcag": "3.3.2",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .language-switcher {
+            display: flex;
+            gap: 10px;
+            list-style: none;
+            padding: 0;
+        }
+        .flag {
+            width: 24px;
+            height: 16px;
+            display: inline-block;
+            background: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Global Site</h1>
+
+    <!-- Language switcher with flag icons - title attributes provide language names
+         which are legitimate and informative (especially when link text is in native script) -->
+    <nav aria-label="Language switcher">
+        <ul class="language-switcher">
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'Arabic' is a legitimate language name providing useful information">
+                <a href="#" title="Arabic" class="flag ar">العربية</a>
+            </li>
+
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'Chinese' is a legitimate language name">
+                <a href="#" title="Chinese" class="flag cn">中文</a>
+            </li>
+
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'Japanese' is a legitimate language name">
+                <a href="#" title="Japanese" class="flag jp">日本語</a>
+            </li>
+
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'Korean' is a legitimate language name">
+                <a href="#" title="Korean" class="flag kr">한국어</a>
+            </li>
+
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'Russian' is a legitimate language name">
+                <a href="#" title="Russian" class="flag ru">Русский</a>
+            </li>
+
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'Spanish' is a legitimate language name">
+                <a href="#" title="Spanish" class="flag es">Español</a>
+            </li>
+
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'French' is a legitimate language name">
+                <a href="#" title="French" class="flag fr">Français</a>
+            </li>
+
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'German' is a legitimate language name">
+                <a href="#" title="German" class="flag de">Deutsch</a>
+            </li>
+
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'Portuguese' is a legitimate language name">
+                <a href="#" title="Portuguese" class="flag pt">Português</a>
+            </li>
+
+            <li data-expected-pass="true"
+                data-pass-reason="Title 'Hindi' is a legitimate language name">
+                <a href="#" title="Hindi" class="flag in">हिन्दी</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Welcome</h2>
+        <p>This site is available in multiple languages.</p>
+    </main>
+</body>
+</html>

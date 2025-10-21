@@ -52,6 +52,7 @@ def enrich_test_result_with_catalog(test_result):
                 # Add enriched metadata
                 violation.metadata['title'] = catalog_info.get('type', '')
                 violation.metadata['what'] = catalog_info['description']
+                violation.metadata['what_generic'] = catalog_info['description']  # Always store generic for grouped headers
                 violation.metadata['why'] = catalog_info['why_it_matters']
                 violation.metadata['who'] = catalog_info['who_it_affects']
                 violation.metadata['how'] = catalog_info['how_to_fix']
@@ -88,6 +89,7 @@ def enrich_test_result_with_catalog(test_result):
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
                 warning.metadata['title'] = catalog_info.get('type', '')
                 warning.metadata['what'] = catalog_info['description']
+                warning.metadata['what_generic'] = catalog_info['description']  # Always store generic for grouped headers
                 warning.metadata['why'] = catalog_info['why_it_matters']
                 warning.metadata['who'] = catalog_info['who_it_affects']
                 warning.metadata['how'] = catalog_info['how_to_fix']
@@ -124,6 +126,7 @@ def enrich_test_result_with_catalog(test_result):
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
                 info.metadata['title'] = catalog_info.get('type', '')
                 info.metadata['what'] = catalog_info['description']
+                info.metadata['what_generic'] = catalog_info['description']  # Always store generic for grouped headers
                 info.metadata['why'] = catalog_info['why_it_matters']
                 info.metadata['who'] = catalog_info['who_it_affects']
                 info.metadata['how'] = catalog_info['how_to_fix']
@@ -161,6 +164,7 @@ def enrich_test_result_with_catalog(test_result):
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
                 discovery.metadata['title'] = catalog_info.get('type', '')
                 discovery.metadata['what'] = catalog_info['description']
+                discovery.metadata['what_generic'] = catalog_info['description']  # Always store generic for grouped headers
                 discovery.metadata['why'] = catalog_info['why_it_matters']
                 discovery.metadata['who'] = catalog_info['who_it_affects']
                 discovery.metadata['how'] = catalog_info['how_to_fix']

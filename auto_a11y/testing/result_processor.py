@@ -460,7 +460,10 @@ class ResultProcessor:
                 #
                 # IMPORTANT: For threshold violations, the original description from the test
                 # contains actual measured values (e.g., "outline is 1.5px" vs "outline is too small").
-                # We prefer the original description as the title when it contains specific measurements.
+                # We store BOTH:
+                #   - 'what': instance-specific description for "What the issue is" section in instance details
+                #   - 'what_generic': generic catalog description for grouped accordion headers
+                #   - 'title': instance-specific description for backwards compatibility
                 original_desc = violation_data.get('description', '')
                 use_original_as_title = any(pattern in original_desc for pattern in [
                     '(', 'px', ':1', 'alpha=', '°', '%'  # Patterns indicating measured values
@@ -469,6 +472,7 @@ class ResultProcessor:
                 metadata = {
                     'title': original_desc if use_original_as_title else enhanced_desc.get('title', ''),
                     'what': original_desc if use_original_as_title else enhanced_desc.get('what', ''),
+                    'what_generic': enhanced_desc.get('what', ''),  # Always store generic catalog description
                     'why': enhanced_desc.get('why', ''),
                     'who': enhanced_desc.get('who', ''),
                     'impact_detail': enhanced_desc.get('impact', ''),

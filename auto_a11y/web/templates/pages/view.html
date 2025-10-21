@@ -559,8 +559,8 @@
                                         </span>
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if group_list|length > 1 %}
-                                            {# For grouped issues, use generic title (never specific description) #}
-                                            {{ first_violation.metadata.title if first_violation.metadata and first_violation.metadata.title else error_code|error_code_only }}
+                                            {# For grouped issues, use generic description from catalog (never specific description from instance) #}
+                                            {{ first_violation.metadata.what_generic if first_violation.metadata and first_violation.metadata.what_generic else (first_violation.metadata.what if first_violation.metadata and first_violation.metadata.what else error_code|error_code_only) }}
                                         {% else %}
                                             {# For single issues, show full specific description #}
                                             {% if first_violation.metadata and first_violation.metadata.title %}
@@ -1253,21 +1253,8 @@
                                         </span>
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if group_list|length > 1 %}
-                                            {# For grouped warnings, use generic description #}
-                                            {% set display_text = first_warning.metadata.title if first_warning.metadata and first_warning.metadata.title else first_warning.description %}
-                                            {% if 'WarnAltTooLong' in first_warning.id or 'WarnTitleTooLong' in first_warning.id %}
-                                                Text length issue detected
-                                            {% elif 'Found' in display_text and 'landmarks' in display_text %}
-                                                Duplicate landmark lacks unique accessible name
-                                            {% elif '(' in display_text %}
-                                                {{ display_text.split('(')[0]|trim }}
-                                            {% elif ' - ' in display_text %}
-                                                {{ display_text.split(' - ')[0]|trim }}
-                                            {% elif ':' in display_text %}
-                                                {{ display_text.split(':')[0]|trim }}
-                                            {% else %}
-                                                {{ display_text }}
-                                            {% endif %}
+                                            {# For grouped warnings, use generic description from catalog (never specific description from instance) #}
+                                            {{ first_warning.metadata.what_generic if first_warning.metadata and first_warning.metadata.what_generic else (first_warning.metadata.what if first_warning.metadata and first_warning.metadata.what else error_code|error_code_only) }}
                                         {% else %}
                                             {# For single warnings, show full specific description #}
                                             {% if first_warning.metadata and first_warning.metadata.title %}
@@ -1785,9 +1772,8 @@
                                         </span>
                                         {% endif %}
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
-                                        {# For info items, use generic description from test #}
-                                        {% set display_text = first_info.metadata.title if first_info.metadata and first_info.metadata.title else first_info.description %}
-                                        {{ display_text }}
+                                        {# For grouped info items, use generic description from catalog (never specific description from instance) #}
+                                        {{ first_info.metadata.what_generic if first_info.metadata and first_info.metadata.what_generic else (first_info.metadata.what if first_info.metadata and first_info.metadata.what else error_code|error_code_only) }}
                                     </button>
                                 </h2>
                                 <div id="info-group-{{ info_counter.value }}" 
@@ -2165,29 +2151,8 @@
                                         </span>
                                         {% endif %}
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
-                                        {% if 'DiscoFontFound' in first_discovery.id %}
-                                            Font detected in use on the page for accessibility review
-                                        {% elif 'DiscoFormOnPage' in first_discovery.id %}
-                                            Form detected - requires comprehensive manual testing
-                                        {% elif 'DiscoNavFound' in first_discovery.id %}
-                                            Navigation region detected - requires manual accessibility review
-                                        {% elif 'DiscoAsideFound' in first_discovery.id %}
-                                            Complementary region detected - requires manual accessibility review
-                                        {% elif 'DiscoSectionFound' in first_discovery.id %}
-                                            Section region detected - requires manual accessibility review
-                                        {% elif 'DiscoHeaderFound' in first_discovery.id %}
-                                            Banner region detected - requires manual accessibility review
-                                        {% elif 'DiscoFooterFound' in first_discovery.id %}
-                                            Contentinfo region detected - requires manual accessibility review
-                                        {% elif 'DiscoSearchFound' in first_discovery.id %}
-                                            Search region detected - requires manual accessibility review
-                                        {% elif first_discovery.metadata and first_discovery.metadata.title %}
-                                            {{ first_discovery.metadata.title }}
-                                        {% elif first_discovery.metadata and first_discovery.metadata.what %}
-                                            {{ first_discovery.metadata.what }}
-                                        {% else %}
-                                            {{ first_discovery.description }}
-                                        {% endif %}
+                                        {# For grouped discoveries, use generic description from catalog (never specific description from instance) #}
+                                        {{ first_discovery.metadata.what_generic if first_discovery.metadata and first_discovery.metadata.what_generic else (first_discovery.metadata.what if first_discovery.metadata and first_discovery.metadata.what else error_code|error_code_only) }}
                                     </button>
                                 </h2>
                                 <div id="disc-group-{{ disc_counter.value }}" 

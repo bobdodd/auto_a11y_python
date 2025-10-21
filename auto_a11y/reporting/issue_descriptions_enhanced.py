@@ -1278,15 +1278,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['4.1.2'],
             'remediation': "Use nav element or role=\"navigation\" for site navigation, reserve role=\"menu\" for actual application menus with proper ARIA patterns."
         },
-        'ErrIncorrectHeadingLevel': {
-            'title': "Heading level {element} appears after H{skippedFrom}, skipping {levelsSkipped} level(s)",
-            'what': "Heading level {element} appears after H{skippedFrom}, skipping {levelsSkipped} level(s) - likely chosen for visual appearance rather than document structure",
-            'why': "Incorrect heading levels break the document outline and make it difficult to understand content hierarchy. Skipping multiple levels suggests the heading was chosen for its visual size rather than its semantic meaning.",
-            'who': "Screen reader users navigating by headings, users who rely on proper document structure.",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['1.3.1'],
-            'remediation': "Use heading levels to convey document structure (h1 > h2 > h3), not for visual styling; use CSS for appearance. Change this {element} to H{expectedLevel} to maintain proper hierarchy."
-        },
         'ErrIncorrectlyFormattedPrimaryLang': {
             'title': "Language code incorrectly formatted",
             'what': "Language code incorrectly formatted",
@@ -2197,11 +2188,11 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Restructure your content so that high-level headings (H1, H2) appear before lower-level headings. Start with H1 for the main page title, then H2 for major sections, then H3 for subsections within those. Headings should appear in a logical, top-down hierarchy that matches how users would naturally read and understand the content structure."
         },
         'ErrSkippedHeadingLevel': {
-            'title': "Heading levels are not in sequential order - jumped from h{skippedFrom} to h{skippedTo}, skipping intermediate level(s)",
-            'what': "Heading levels are not in sequential order - jumped from h{skippedFrom} to h{skippedTo}, skipping intermediate level(s)",
-            'why': "Heading levels create a hierarchical outline of your content, like nested bullet points. Jumping from h{skippedFrom} to h{skippedTo} breaks this logical structure. It\'s like having chapter {skippedFrom}, then jumping to section {skippedTo} without the intermediate section. Screen reader users navigating by headings will be confused about the relationship between sections - is the h{skippedTo} a subsection of something that\'s missing? This broken hierarchy makes it hard to understand how content is organized and can cause users to think content is missing or that they've accidentally skipped something.",
+            'title': "Heading levels are not in sequential order - jumped from h{skippedFrom} to h{skippedTo}, skipping {levelsSkipped} intermediate level(s)",
+            'what': "Heading levels are not in sequential order - jumped from h{skippedFrom} to h{skippedTo}, skipping {levelsSkipped} intermediate level(s)",
+            'why': "Heading levels create a hierarchical outline of your content, like nested bullet points. Jumping from h{skippedFrom} to h{skippedTo} breaks this logical structure. It\'s like having chapter {skippedFrom}, then jumping to section {skippedTo} without the intermediate section. Screen reader users navigating by headings will be confused about the relationship between sections - is the h{skippedTo} a subsection of something that\'s missing? This broken hierarchy makes it hard to understand how content is organized and can cause users to think content is missing or that they've accidentally skipped something. This is a WCAG 1.3.1 Level A failure.",
             'who': "Screen reader users navigating by heading structure who rely on levels to understand content relationships, users with cognitive disabilities who need logical, predictable content organization, users of assistive technology that generates document outlines, and developers or content authors maintaining the page who need to understand the intended structure",
-            'impact': ImpactScale.MEDIUM.value,
+            'impact': ImpactScale.HIGH.value,
             'wcag': ['1.3.1'],
             'remediation': "Insert an h{expectedLevel} heading between the h{skippedFrom} and h{skippedTo}, or change the h{skippedTo} to h{expectedLevel} to maintain sequential order. After h{skippedFrom}, use h{expectedLevel} for the next level. Don\'t skip levels when going down the hierarchy. If you need a heading to look smaller visually, use CSS to style it rather than choosing a lower heading level. The heading level should reflect the content\'s logical structure, not its visual appearance."
         },

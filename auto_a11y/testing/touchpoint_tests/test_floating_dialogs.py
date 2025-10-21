@@ -391,10 +391,10 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                     const hasClose = hasCloseButton(dialog);
                     const overlappingElements = checkContentOverlap(dialog);
                     
-                    // Check heading structure
+                    // Check heading structure - dialogs should have H2 headings
                     if (!headingLevel || headingLevel !== 2) {
                         results.errors.push({
-                            err: 'ErrIncorrectHeadingLevel',
+                            err: 'ErrModalMissingHeading',
                             type: 'err',
                             cat: 'floating_dialogs',
                             element: dialog.tagName,

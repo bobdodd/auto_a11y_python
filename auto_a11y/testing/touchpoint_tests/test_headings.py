@@ -328,49 +328,28 @@ async def test_headings(page) -> Dict[str, Any]:
                         results.elements_failed++;
                     } else {
 
-                        // Check for heading hierarchy gaps
+                        // Check for heading hierarchy gaps - ANY skip is a HIGH impact WCAG 1.3.1 failure
                         if (previousLevel > 0 && level > previousLevel + 1) {
                             const expectedLevel = previousLevel + 1;
                             const levelsSkipped = level - previousLevel - 1;
 
-                            // If skipping 2+ levels, it's likely choosing heading for visual appearance
-                            // Example: H1 -> H4 (skipping H2 and H3) suggests using H4 for its visual size
-                            if (levelsSkipped >= 2) {
-                                results.errors.push({
-                                    err: 'ErrIncorrectHeadingLevel',
-                                    type: 'err',
-                                    cat: 'headings',
-                                    element: heading.tagName,
-                                    xpath: getFullXPath(heading),
-                                    html: heading.outerHTML.substring(0, 200),
-                                    description: `Heading level ${heading.tagName} appears after H${previousLevel}, skipping ${levelsSkipped} levels - likely chosen for visual appearance rather than document structure`,
-                                    skippedFrom: previousLevel,
-                                    skippedTo: level,
-                                    levelsSkipped: levelsSkipped,
-                                    previousHeadingHtml: previousHeading ? previousHeading.outerHTML.substring(0, 200) : '',
-                                    previousHeadingXpath: previousHeading ? getFullXPath(previousHeading) : '',
-                                    previousHeadingText: previousHeading ? previousHeading.textContent.trim().substring(0, 100) : ''
-                                });
-                                results.elements_failed++;
-                            } else {
-                                // Only skipped 1 level - this is ErrSkippedHeadingLevel
-                                results.errors.push({
-                                    err: 'ErrSkippedHeadingLevel',
-                                    type: 'err',
-                                    cat: 'headings',
-                                    element: heading.tagName,
-                                    xpath: getFullXPath(heading),
-                                    html: heading.outerHTML.substring(0, 200),
-                                    description: `Heading level skipped from H${previousLevel} to H${level}`,
-                                    skippedFrom: previousLevel,
-                                    skippedTo: level,
-                                    expectedLevel: expectedLevel,
-                                    previousHeadingHtml: previousHeading ? previousHeading.outerHTML.substring(0, 200) : '',
-                                    previousHeadingXpath: previousHeading ? getFullXPath(previousHeading) : '',
-                                    previousHeadingText: previousHeading ? previousHeading.textContent.trim().substring(0, 100) : ''
-                                });
-                                results.elements_failed++;
-                            }
+                            results.errors.push({
+                                err: 'ErrSkippedHeadingLevel',
+                                type: 'err',
+                                cat: 'headings',
+                                element: heading.tagName,
+                                xpath: getFullXPath(heading),
+                                html: heading.outerHTML.substring(0, 200),
+                                description: `Heading level skipped from H${previousLevel} to H${level} (skipped ${levelsSkipped} level${levelsSkipped > 1 ? 's' : ''})`,
+                                skippedFrom: previousLevel,
+                                skippedTo: level,
+                                levelsSkipped: levelsSkipped,
+                                expectedLevel: expectedLevel,
+                                previousHeadingHtml: previousHeading ? previousHeading.outerHTML.substring(0, 200) : '',
+                                previousHeadingXpath: previousHeading ? getFullXPath(previousHeading) : '',
+                                previousHeadingText: previousHeading ? previousHeading.textContent.trim().substring(0, 100) : ''
+                            });
+                            results.elements_failed++;
                         } else {
                             results.elements_passed++;
                         }

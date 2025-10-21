@@ -3035,12 +3035,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         },
         'WarnModalMissingAriaLabelledby': {
             'title': "Modal lacks aria-labelledby pointing to its heading",
-            'what': "Modal lacks aria-labelledby pointing to its heading",
-            'why': "Screen readers need to announce the modal\'s title when it opens.",
-            'who': "Screen reader users who need modal context.",
+            'what': "Modal lacks aria-labelledby pointing to its heading. While aria-label may be present, best practice is to use aria-labelledby to reference a visible heading element within the modal.",
+            'why': "Using aria-labelledby to reference a visible heading ensures consistency between what screen reader users hear and what sighted users see. When aria-label is used instead, the modal title may differ from the visible heading, causing confusion. Additionally, aria-labelledby allows the heading text to be automatically updated without needing to sync multiple attributes, and it reinforces the semantic relationship between the modal container and its title.",
+            'who': "Screen reader users who need modal context, users with cognitive disabilities who benefit from consistent labeling, users who rely on visual and auditory information matching.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['4.1.2'],
-            'remediation': "Add aria-labelledby pointing to the modal\'s heading element."
+            'remediation': "If a visible heading exists in the modal, add aria-labelledby pointing to that heading\'s ID: <div role=\"dialog\" aria-labelledby=\"modal-title\"><h2 id=\"modal-title\">Modal Title</h2>...</div>. This is preferred over aria-label because it ensures the programmatic name matches the visible label. If using aria-label, ensure the text exactly matches the visible heading to avoid confusion."
         },
         'WarnModalMissingAriaModal': {
             'title': "Modal dialog missing aria-modal attribute",

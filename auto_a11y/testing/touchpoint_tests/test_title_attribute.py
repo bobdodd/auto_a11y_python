@@ -286,7 +286,34 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 'see more', 'view', 'open', 'go', 'navigate'
             ]
 
+            # Common language names that are legitimate informative titles
+            # (used in language switchers where link text might be in native script)
+            language_names = [
+                'arabic', 'chinese', 'english', 'french', 'german', 'spanish',
+                'italian', 'japanese', 'korean', 'portuguese', 'russian',
+                'hindi', 'bengali', 'urdu', 'turkish', 'polish', 'dutch',
+                'thai', 'vietnamese', 'indonesian', 'malay', 'hebrew',
+                'greek', 'czech', 'swedish', 'danish', 'norwegian', 'finnish',
+                'hungarian', 'romanian', 'ukrainian', 'bulgarian', 'serbian',
+                'croatian', 'slovak', 'slovenian', 'lithuanian', 'latvian',
+                'estonian', 'albanian', 'macedonian', 'georgian', 'armenian',
+                'azerbaijani', 'kazakh', 'uzbek', 'persian', 'farsi', 'pashto',
+                'tamil', 'telugu', 'marathi', 'gujarati', 'kannada', 'malayalam',
+                'punjabi', 'nepali', 'sinhala', 'burmese', 'khmer', 'lao',
+                'mongolian', 'tibetan', 'swahili', 'zulu', 'afrikaans', 'amharic',
+                'hausa', 'yoruba', 'igbo', 'somali', 'tagalog', 'cebuano',
+                'maori', 'samoan', 'tongan', 'fijian', 'hawaiian', 'icelandic',
+                'basque', 'catalan', 'galician', 'welsh', 'irish', 'scottish',
+                'maltese', 'luxembourgish', 'corsican', 'esperanto'
+            ]
+
             title_lower = title_value.lower().strip()
+
+            # Skip language names - these are legitimate informative titles
+            # (especially for language switchers with flag icons or native script)
+            if title_lower in language_names:
+                results['elements_passed'] += 1
+                continue
 
             # Check if title is just a generic phrase
             is_vague = title_lower in vague_patterns

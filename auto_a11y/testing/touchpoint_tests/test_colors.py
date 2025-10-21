@@ -199,18 +199,45 @@ async def test_colors(page) -> Dict[str, Any]:
 
                 function isInFlowingText(element) {
                     // Check if link is within flowing text (paragraphs, list items, etc.)
+                    // AND has actual text content before or after it (not a standalone link)
                     let current = element.parentElement;
                     while (current && current !== document.body) {
                         const tagName = current.tagName.toLowerCase();
 
                         // Flowing text containers
                         if (['p', 'li', 'td', 'th', 'dd', 'dt', 'blockquote', 'figcaption'].includes(tagName)) {
-                            return true;
+                            // Check if there's actual text content in this container besides the link
+                            const hasTextContent = Array.from(current.childNodes).some(node => {
+                                // Text node with content (not just whitespace)
+                                if (node.nodeType === 3 && node.textContent.trim().length > 0) {
+                                    return true;
+                                }
+                                // Other elements that might contain text (but not the link itself)
+                                if (node.nodeType === 1 && node !== element &&
+                                    !node.contains(element) && node.textContent.trim().length > 0) {
+                                    return true;
+                                }
+                                return false;
+                            });
+
+                            return hasTextContent;
                         }
 
                         // Article content
                         if (tagName === 'article' || current.getAttribute('role') === 'article') {
-                            return true;
+                            // Check if there's text content in the article besides the link
+                            const hasTextContent = Array.from(current.childNodes).some(node => {
+                                if (node.nodeType === 3 && node.textContent.trim().length > 0) {
+                                    return true;
+                                }
+                                if (node.nodeType === 1 && node !== element &&
+                                    !node.contains(element) && node.textContent.trim().length > 0) {
+                                    return true;
+                                }
+                                return false;
+                            });
+
+                            return hasTextContent;
                         }
 
                         current = current.parentElement;

@@ -50,7 +50,7 @@ def enrich_test_result_with_catalog(test_result):
             # Only update if we got meaningful enriched data
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
                 # Add enriched metadata
-                violation.metadata['title'] = catalog_info.get('type', '')
+                violation.metadata['title'] = catalog_info.get('title', '')
                 violation.metadata['what'] = catalog_info['description']
                 violation.metadata['why'] = catalog_info['why_it_matters']
                 violation.metadata['who'] = catalog_info['who_it_affects']
@@ -86,7 +86,7 @@ def enrich_test_result_with_catalog(test_result):
             catalog_info = IssueCatalog.get_issue(error_code)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                warning.metadata['title'] = catalog_info.get('type', '')
+                warning.metadata['title'] = catalog_info.get('title', '')
                 warning.metadata['what'] = catalog_info['description']
                 warning.metadata['why'] = catalog_info['why_it_matters']
                 warning.metadata['who'] = catalog_info['who_it_affects']
@@ -122,7 +122,7 @@ def enrich_test_result_with_catalog(test_result):
             catalog_info = IssueCatalog.get_issue(error_code)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                info.metadata['title'] = catalog_info.get('type', '')
+                info.metadata['title'] = catalog_info.get('title', '')
                 info.metadata['what'] = catalog_info['description']
                 info.metadata['why'] = catalog_info['why_it_matters']
                 info.metadata['who'] = catalog_info['who_it_affects']
@@ -159,7 +159,7 @@ def enrich_test_result_with_catalog(test_result):
             catalog_info = IssueCatalog.get_issue(error_code)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                discovery.metadata['title'] = catalog_info.get('type', '')
+                discovery.metadata['title'] = catalog_info.get('title', '')
                 discovery.metadata['what'] = catalog_info['description']
                 discovery.metadata['why'] = catalog_info['why_it_matters']
                 discovery.metadata['who'] = catalog_info['who_it_affects']

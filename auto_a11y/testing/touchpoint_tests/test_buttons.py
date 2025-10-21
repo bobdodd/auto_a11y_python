@@ -480,8 +480,8 @@ async def test_buttons(page) -> Dict[str, Any]:
                 error_code = 'WarnButtonDefaultFocus'
                 violation_reason = 'Button uses browser default focus styles which may not meet 3:1 contrast on all backgrounds (best practice: define explicit focus styles)'
 
-            # Check if outline is explicitly set to none on focus
-            elif button['focusOutlineStyle'] == 'none':
+            # Check if outline is missing or explicitly set to none on focus
+            elif button['focusOutlineStyle'] == 'none' or button['focusOutlineStyle'] is None:
                 # Check if there's a box-shadow (acceptable alternative)
                 has_box_shadow = button['focusBoxShadow'] and button['focusBoxShadow'] != 'none'
 

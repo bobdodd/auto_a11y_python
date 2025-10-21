@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Fixture: Fake List with Icon Fonts (Should be Error)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFakeListImplementation_003_icon_fonts",
+    "issueId": "ErrFakeListImplementation",
+    "expectedViolationCount": 1,
+    "description": "Tests icon font bullets in NON-semantic divs. Should generate ErrFakeListImplementation error.",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .fake-list div {
+            margin-bottom: 0.5em;
+        }
+        .icon {
+            margin-right: 0.5em;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Fake List Test</h1>
+
+        <!-- This is NOT a proper list - just divs with icon bullets -->
+        <!-- Should generate ErrFakeListImplementation ERROR -->
+        <div class="fake-list" data-expected-violation="true">
+            <div><i class="fa-chevron-right icon"></i>Not a list item 1</div>
+            <div><i class="fa-chevron-right icon"></i>Not a list item 2</div>
+            <div><i class="fa-chevron-right icon"></i>Not a list item 3</div>
+            <div><i class="fa-chevron-right icon"></i>Not a list item 4</div>
+        </div>
+    </main>
+</body>
+</html>

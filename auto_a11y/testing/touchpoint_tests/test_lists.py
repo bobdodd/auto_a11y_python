@@ -119,6 +119,11 @@ async def test_lists(page) -> Dict[str, Any]:
                         const text = el.textContent;
                         const html = el.innerHTML;
 
+                        // Skip if element contains a proper list structure
+                        if (el.querySelector('ul, ol')) {
+                            return false;
+                        }
+
                         // Check for explicit list styling or bullet characters
                         if (style.display === 'list-item' ||
                             html.includes('•') || html.includes('·') || html.includes('‣') ||
@@ -133,6 +138,10 @@ async def test_lists(page) -> Dict[str, Any]:
                             let bulletCount = 0;
                             iconElements.forEach(icon => {
                                 const parent = icon.parentElement;
+                                // Skip if the icon is inside a proper list item - that's OK (just bad CSS practice)
+                                if (parent && parent.closest('li')) {
+                                    return; // Icon is in a list item, don't count it
+                                }
                                 // Check if icon is at start of parent and parent has text after it
                                 if (parent && parent.firstElementChild === icon && parent.textContent.trim().length > icon.textContent.trim().length) {
                                     bulletCount++;
@@ -370,7 +379,7 @@ async def test_lists(page) -> Dict[str, Any]:
                         });
                     }
                     
-                    // Check styling of list items for custom bullets
+                    // Check styling of list items for custom bullets and icon fonts
                     items.forEach(item => {
                         const style = window.getComputedStyle(item);
                         const beforePseudo = window.getComputedStyle(item, '::before');
@@ -406,7 +415,42 @@ async def test_lists(page) -> Dict[str, Any]:
                             }
                         }
 
-                        if (hasCustomBullet || hasIconFont || hasImage) {
+                        // Check for icon font elements used as bullets (Font Awesome, Material Icons, etc.)
+                        const listStyleType = style.getPropertyValue('list-style-type');
+                        const firstChild = item.firstElementChild;
+                        let hasIconFontElement = false;
+
+                        if (firstChild && listStyleType === 'none') {
+                            const childTag = firstChild.tagName.toUpperCase();
+                            const childClasses = firstChild.className || '';
+
+                            // Check if first child is an icon element (i, span with icon classes)
+                            if ((childTag === 'I' || childTag === 'SPAN') &&
+                                (childClasses.includes('icon') ||
+                                 childClasses.includes('fa-') ||
+                                 childClasses.includes('material-'))) {
+                                hasIconFontElement = true;
+                            }
+                        }
+
+                        // If icon font element is found with list-style: none, create a warning
+                        if (hasIconFontElement) {
+                            const iconElement = firstChild;
+                            const iconClasses = iconElement.className || '';
+
+                            results.warnings.push({
+                                err: 'WarnIconFontBulletsInList',
+                                type: 'warn',
+                                cat: 'list',
+                                element: item.tagName.toLowerCase(),
+                                xpath: getFullXPath(item),
+                                html: item.outerHTML.substring(0, 200),
+                                description: `List item uses icon font elements (${iconClasses.substring(0, 50)}) with list-style: none instead of CSS list-style-type property`,
+                                iconClasses: iconClasses.substring(0, 100),
+                                listStyleType: listStyleType,
+                                parentList: list.tagName.toLowerCase()
+                            });
+                        } else if (hasCustomBullet || hasIconFont || hasImage) {
                             // Determine what type of custom styling was detected
                             let customType = '';
                             let customDetails = '';
@@ -431,8 +475,6 @@ async def test_lists(page) -> Dict[str, Any]:
                                 customType = '::before with custom content';
                                 customDetails = beforeContent ? `content: ${beforeContent.substring(0, 50)}` : '';
                             }
-
-                            const listStyleType = style.getPropertyValue('list-style-type');
 
                             results.warnings.push({
                                 err: 'WarnCustomBulletStyling',

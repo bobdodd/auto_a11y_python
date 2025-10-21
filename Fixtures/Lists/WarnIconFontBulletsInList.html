@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Fixture: Icon Font Bullets in Proper List (Should be Warning, not Error)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnIconFontBulletsInList",
+    "issueId": "WarnIconFontBulletsInList",
+    "expectedViolationCount": 5,
+    "description": "Tests icon font bullets inside proper semantic lists. Should generate WarnIconFontBulletsInList warnings, NOT ErrFakeListImplementation errors.",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        /* Simulate list with icon fonts as bullets */
+        ul.icon-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        ul.icon-list li {
+            padding-left: 1.5em;
+        }
+        .icon {
+            margin-right: 0.5em;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Icon Bullets in Proper List</h1>
+
+        <!-- This is a PROPER list (ul with li), but uses icon fonts as bullets -->
+        <!-- Should generate WarnIconFontBulletsInList WARNING, not ErrFakeListImplementation ERROR -->
+        <ul class="icon-list" data-expected-warning="true">
+            <li data-expected-warning="true"><i class="fa-chevron-right icon"></i>Home</li>
+            <li data-expected-warning="true"><i class="fa-chevron-right icon"></i>News & Blog</li>
+            <li data-expected-warning="true"><i class="fa-chevron-right icon"></i>Data</li>
+            <li data-expected-warning="true"><i class="fa-chevron-right icon"></i>Governance</li>
+            <li data-expected-warning="true"><i class="fa-chevron-right icon"></i>Events</li>
+        </ul>
+    </main>
+</body>
+</html>

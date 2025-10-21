@@ -604,6 +604,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         tabindex: tabindex,
                         role: role || '',
                         xpath: getFullXPath(element),
+                        html: element.outerHTML.substring(0, 300),  // Capture HTML snippet for display
                         hasInlineHandler: hasInlineHandler,
                         parentTag: parentTag,
                         parentIsInteractive: parentIsInteractive,
@@ -825,6 +826,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         'cat': 'event_handlers',
                         'element': elem['tag'],
                         'xpath': elem.get('xpath', ''),
+                        'html': elem.get('html', ''),  # Include HTML snippet for code display
                         'selector': element_id,
                         'metadata': {
                             'what': violation_reason,

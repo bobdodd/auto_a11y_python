@@ -145,7 +145,7 @@ WCAG_MAPPINGS = {
 
     # Navigation/Current Page Issues
     'ErrNoCurrentPageIndicatorScreenReader': ['5.2.4'],
-    'ErrNoCurrentPageIndicatorMagnification': ['2.4.6 Headings and Labels', '2.4.8 Location', '5.2.4 Accessibility Supported'],
+    'ErrNoCurrentPageIndicatorMagnification': ['2.4.8 Location', '5.2.4 Accessibility Supported'],
     'WarnNoCurrentPageIndicator': ['2.4.8 Location'],  # Deprecated
     
     # Color/Contrast Issues

@@ -10,7 +10,6 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrEmptyHeading', 
         'ErrHeadingEmpty',
         'ErrHeadingOrder',
-        'ErrIncorrectHeadingLevel',
         'ErrModalMissingHeading',
         'ErrMultipleH1',
         'ErrNoH1',

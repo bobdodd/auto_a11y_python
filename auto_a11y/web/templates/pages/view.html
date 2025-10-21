@@ -735,15 +735,6 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
-                                                        {% elif 'ErrIncorrectHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
-                                                        <div class="alert alert-warning mb-3">
-                                                            <strong>Issue:</strong> Jumped from H{{ violation.metadata.skippedFrom }} to H{{ violation.metadata.skippedTo }}, skipping {{ violation.metadata.levelsSkipped }} level{{ 's' if violation.metadata.levelsSkipped != 1 else '' }}.
-                                                            This suggests the heading level was chosen for visual appearance rather than document structure.
-                                                        </div>
-                                                        <p class="mb-2"><strong>Previous heading (H{{ violation.metadata.skippedFrom }}){% if violation.metadata.previousHeadingText %}: "{{ violation.metadata.previousHeadingText }}"{% endif %}</strong></p>
-                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Current heading (H{{ violation.metadata.skippedTo }}) - should likely be H{{ violation.metadata.skippedFrom + 1 }}:</strong></p>
-                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                                         {% elif 'ErrContentObscuring' in violation.id and violation.metadata and 'obscuredElements' in violation.metadata %}
                                                         <p class="mb-2"><strong>Obscuring element (dialog/overlay):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
@@ -1066,15 +1057,6 @@
                                 <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
-                                <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
-                                {% elif 'ErrIncorrectHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
-                                <div class="alert alert-warning mb-3">
-                                    <strong>Issue:</strong> Jumped from H{{ violation.metadata.skippedFrom }} to H{{ violation.metadata.skippedTo }}, skipping {{ violation.metadata.levelsSkipped }} level{{ 's' if violation.metadata.levelsSkipped != 1 else '' }}.
-                                    This suggests the heading level was chosen for visual appearance rather than document structure.
-                                </div>
-                                <p class="mb-2"><strong>Previous heading (H{{ violation.metadata.skippedFrom }}){% if violation.metadata.previousHeadingText %}: "{{ violation.metadata.previousHeadingText }}"{% endif %}</strong></p>
-                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
-                                <p class="mb-2"><strong>Current heading (H{{ violation.metadata.skippedTo }}) - should likely be H{{ violation.metadata.skippedFrom + 1 }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                 {% elif 'ErrContentObscuring' in violation.id and violation.metadata and 'obscuredElements' in violation.metadata %}
                                 <p class="mb-2"><strong>Obscuring element (dialog/overlay):</strong></p>
@@ -1438,15 +1420,6 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ warning.metadata.skippedTo }}) - skipped h{{ warning.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
-                                                        {% elif 'ErrIncorrectHeadingLevel' in warning.id and warning.metadata and 'previousHeadingHtml' in warning.metadata %}
-                                                        <div class="alert alert-warning mb-3">
-                                                            <strong>Issue:</strong> Jumped from H{{ warning.metadata.skippedFrom }} to H{{ warning.metadata.skippedTo }}, skipping {{ warning.metadata.levelsSkipped }} level{{ 's' if warning.metadata.levelsSkipped != 1 else '' }}.
-                                                            This suggests the heading level was chosen for visual appearance rather than document structure.
-                                                        </div>
-                                                        <p class="mb-2"><strong>Previous heading (H{{ warning.metadata.skippedFrom }}){% if warning.metadata.previousHeadingText %}: "{{ warning.metadata.previousHeadingText }}"{% endif %}</strong></p>
-                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Current heading (H{{ warning.metadata.skippedTo }}) - should likely be H{{ warning.metadata.skippedFrom + 1 }}:</strong></p>
-                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in warning.id and warning.metadata and 'allInstances' in warning.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.html|e }}</code></pre>
@@ -1655,15 +1628,6 @@
                                 <p class="mb-2"><strong>Previous heading (h{{ warning.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ warning.metadata.skippedTo }}) - skipped h{{ warning.metadata.expectedLevel }}:</strong></p>
-                                <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
-                                {% elif 'ErrIncorrectHeadingLevel' in warning.id and warning.metadata and 'previousHeadingHtml' in warning.metadata %}
-                                <div class="alert alert-warning mb-3">
-                                    <strong>Issue:</strong> Jumped from H{{ warning.metadata.skippedFrom }} to H{{ warning.metadata.skippedTo }}, skipping {{ warning.metadata.levelsSkipped }} level{{ 's' if warning.metadata.levelsSkipped != 1 else '' }}.
-                                    This suggests the heading level was chosen for visual appearance rather than document structure.
-                                </div>
-                                <p class="mb-2"><strong>Previous heading (H{{ warning.metadata.skippedFrom }}){% if warning.metadata.previousHeadingText %}: "{{ warning.metadata.previousHeadingText }}"{% endif %}</strong></p>
-                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
-                                <p class="mb-2"><strong>Current heading (H{{ warning.metadata.skippedTo }}) - should likely be H{{ warning.metadata.skippedFrom + 1 }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
                                 {% elif 'ErrDuplicateLandmarkWithoutName' in warning.id and warning.metadata and 'allInstances' in warning.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
@@ -1909,15 +1873,6 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ info.metadata.skippedTo }}) - skipped h{{ info.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
-                                                        {% elif 'ErrIncorrectHeadingLevel' in info.id and info.metadata and 'previousHeadingHtml' in info.metadata %}
-                                                        <div class="alert alert-warning mb-3">
-                                                            <strong>Issue:</strong> Jumped from H{{ info.metadata.skippedFrom }} to H{{ info.metadata.skippedTo }}, skipping {{ info.metadata.levelsSkipped }} level{{ 's' if info.metadata.levelsSkipped != 1 else '' }}.
-                                                            This suggests the heading level was chosen for visual appearance rather than document structure.
-                                                        </div>
-                                                        <p class="mb-2"><strong>Previous heading (H{{ info.metadata.skippedFrom }}){% if info.metadata.previousHeadingText %}: "{{ info.metadata.previousHeadingText }}"{% endif %}</strong></p>
-                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Current heading (H{{ info.metadata.skippedTo }}) - should likely be H{{ info.metadata.skippedFrom + 1 }}:</strong></p>
-                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in info.id and info.metadata and 'allInstances' in info.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.html|e }}</code></pre>
@@ -2065,15 +2020,6 @@
                                 <p class="mb-2"><strong>Previous heading (h{{ info.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ info.metadata.skippedTo }}) - skipped h{{ info.metadata.expectedLevel }}:</strong></p>
-                                <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
-                                {% elif 'ErrIncorrectHeadingLevel' in info.id and info.metadata and 'previousHeadingHtml' in info.metadata %}
-                                <div class="alert alert-warning mb-3">
-                                    <strong>Issue:</strong> Jumped from H{{ info.metadata.skippedFrom }} to H{{ info.metadata.skippedTo }}, skipping {{ info.metadata.levelsSkipped }} level{{ 's' if info.metadata.levelsSkipped != 1 else '' }}.
-                                    This suggests the heading level was chosen for visual appearance rather than document structure.
-                                </div>
-                                <p class="mb-2"><strong>Previous heading (H{{ info.metadata.skippedFrom }}){% if info.metadata.previousHeadingText %}: "{{ info.metadata.previousHeadingText }}"{% endif %}</strong></p>
-                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
-                                <p class="mb-2"><strong>Current heading (H{{ info.metadata.skippedTo }}) - should likely be H{{ info.metadata.skippedFrom + 1 }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ info.html|e }}</code></pre>
                                 {% elif 'ErrDuplicateLandmarkWithoutName' in info.id and info.metadata and 'allInstances' in info.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
@@ -2313,15 +2259,6 @@
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
                                                         <p class="mb-2"><strong>Current heading (h{{ discovery.metadata.skippedTo }}) - skipped h{{ discovery.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
-                                                        {% elif 'ErrIncorrectHeadingLevel' in discovery.id and discovery.metadata and 'previousHeadingHtml' in discovery.metadata %}
-                                                        <div class="alert alert-warning mb-3">
-                                                            <strong>Issue:</strong> Jumped from H{{ discovery.metadata.skippedFrom }} to H{{ discovery.metadata.skippedTo }}, skipping {{ discovery.metadata.levelsSkipped }} level{{ 's' if discovery.metadata.levelsSkipped != 1 else '' }}.
-                                                            This suggests the heading level was chosen for visual appearance rather than document structure.
-                                                        </div>
-                                                        <p class="mb-2"><strong>Previous heading (H{{ discovery.metadata.skippedFrom }}){% if discovery.metadata.previousHeadingText %}: "{{ discovery.metadata.previousHeadingText }}"{% endif %}</strong></p>
-                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Current heading (H{{ discovery.metadata.skippedTo }}) - should likely be H{{ discovery.metadata.skippedFrom + 1 }}:</strong></p>
-                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in discovery.id and discovery.metadata and 'allInstances' in discovery.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
@@ -2490,15 +2427,6 @@
                                 <p class="mb-2"><strong>Previous heading (h{{ discovery.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
                                 <p class="mb-2"><strong>Current heading (h{{ discovery.metadata.skippedTo }}) - skipped h{{ discovery.metadata.expectedLevel }}:</strong></p>
-                                <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
-                                {% elif 'ErrIncorrectHeadingLevel' in discovery.id and discovery.metadata and 'previousHeadingHtml' in discovery.metadata %}
-                                <div class="alert alert-warning mb-3">
-                                    <strong>Issue:</strong> Jumped from H{{ discovery.metadata.skippedFrom }} to H{{ discovery.metadata.skippedTo }}, skipping {{ discovery.metadata.levelsSkipped }} level{{ 's' if discovery.metadata.levelsSkipped != 1 else '' }}.
-                                    This suggests the heading level was chosen for visual appearance rather than document structure.
-                                </div>
-                                <p class="mb-2"><strong>Previous heading (H{{ discovery.metadata.skippedFrom }}){% if discovery.metadata.previousHeadingText %}: "{{ discovery.metadata.previousHeadingText }}"{% endif %}</strong></p>
-                                <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
-                                <p class="mb-2"><strong>Current heading (H{{ discovery.metadata.skippedTo }}) - should likely be H{{ discovery.metadata.skippedFrom + 1 }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
                                 {% elif 'ErrDuplicateLandmarkWithoutName' in discovery.id and discovery.metadata and 'allInstances' in discovery.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>

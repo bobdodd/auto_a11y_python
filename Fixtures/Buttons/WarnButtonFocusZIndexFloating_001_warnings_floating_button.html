@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonFocusZIndexFloating - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonFocusZIndexFloating_001_warnings_floating_button",
+    "issueId": "WarnButtonFocusZIndexFloating",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with z-index floating over varying backgrounds - contrast requires manual testing",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Sticky header button floating over page content */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .sticky-button {
+            background: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 14px;
+            position: relative;
+            z-index: 1001; /* Button has its own z-index */
+        }
+        .sticky-button:focus {
+            outline: 3px solid #ffff00; /* Yellow outline */
+            outline-offset: 2px; /* Sits outside button, floats over page content */
+        }
+
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff4081;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            z-index: 999; /* Floats over all content */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .fab:focus {
+            outline: 3px solid white;
+            outline-offset: 3px; /* Outline floats over varying backgrounds */
+        }
+
+        /* Tooltip button */
+        .tooltip-button {
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            z-index: 500; /* Positioned over content */
+        }
+        .tooltip-button:focus {
+            outline: 2px solid cyan;
+            outline-offset: 2px;
+        }
+
+        /* Varying background content */
+        .content-section {
+            padding: 100px 20px 20px;
+            min-height: 300px;
+        }
+        .light-section {
+            background: #f9f9f9;
+        }
+        .dark-section {
+            background: #222;
+            color: white;
+        }
+        .colorful-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header class="sticky-header">
+        <h1>Test: Z-Index Floating Buttons</h1>
+        <button class="sticky-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusZIndexFloating"
+                data-violation-reason="Button has z-index and floats over varying page content">
+            Menu
+        </button>
+    </header>
+
+    <div class="content-section light-section">
+        <h2>Light Background Section</h2>
+        <p>The sticky header button and FAB float over this light background.
+           The yellow outline may have different contrast here than on dark sections.</p>
+    </div>
+
+    <div class="content-section dark-section">
+        <h2>Dark Background Section</h2>
+        <p>The floating buttons pass over this dark background.
+           Outline visibility changes significantly against this dark background.</p>
+
+        <button class="tooltip-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusZIndexFloating"
+                data-violation-reason="Button has z-index and may float over varying backgrounds">
+            Tooltip
+        </button>
+    </div>
+
+    <div class="content-section colorful-section">
+        <h2>Gradient Background Section</h2>
+        <p>The floating buttons pass over this gradient background.
+           Contrast varies across different parts of the gradient.</p>
+    </div>
+
+    <button class="fab"
+            data-expected-violation="true"
+            data-violation-id="WarnButtonFocusZIndexFloating"
+            data-violation-reason="Floating action button has z-index and floats over all page content">
+        +
+    </button>
+
+    <div class="content-section light-section">
+        <h2>More Content</h2>
+        <p>All three floating buttons (sticky header button, tooltip, and FAB) have z-index positioning
+           and may float over varying backgrounds throughout the page. Their focus outline contrast
+           cannot be automatically verified and requires manual testing against all possible backgrounds.</p>
+    </div>
+</body>
+</html>

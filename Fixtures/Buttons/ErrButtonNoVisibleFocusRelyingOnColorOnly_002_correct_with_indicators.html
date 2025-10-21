@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonNoVisibleFocusRelyingOnColorOnly - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonNoVisibleFocusRelyingOnColorOnly_002_correct_with_indicators",
+    "issueId": "ErrButtonNoVisibleFocusRelyingOnColorOnly",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with proper structural focus indicators (outline or box-shadow) in addition to color changes",
+    "wcag": "2.4.7, 1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Button with outline and color change - CORRECT */
+        .good-outline {
+            background-color: rgb(65, 105, 225);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        .good-outline:focus {
+            outline: 3px solid #ffcc00;
+            outline-offset: 2px;
+            background-color: royalblue;
+        }
+
+        /* Button with box-shadow and color change - CORRECT */
+        .good-box-shadow {
+            background: white;
+            padding: 10px 20px;
+            border: 2px solid #ccc;
+            cursor: pointer;
+        }
+        .good-box-shadow:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5);
+            border-color: blue;
+        }
+
+        /* Button with both outline and box-shadow - CORRECT */
+        .good-both {
+            background: lightgray;
+            color: black;
+            padding: 10px 20px;
+            border: 1px solid gray;
+            cursor: pointer;
+        }
+        .good-both:focus {
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+            box-shadow: 0 0 5px rgba(0, 102, 204, 0.3);
+            background: darkgray;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Page: Buttons With Proper Focus Indicators</h1>
+
+    <main>
+        <section>
+            <h2>Button with Outline and Color Change (Correct)</h2>
+            <button class="good-outline"
+                    data-expected-violation="false">
+                Submit Form
+            </button>
+            <p>This button has a proper outline focus indicator in addition to color change.</p>
+        </section>
+
+        <section>
+            <h2>Button with Box-Shadow and Color Change (Correct)</h2>
+            <button class="good-box-shadow"
+                    data-expected-violation="false">
+                Save Changes
+            </button>
+            <p>This button uses box-shadow as a structural focus indicator in addition to color change.</p>
+        </section>
+
+        <section>
+            <h2>Button with Multiple Structural Indicators (Correct)</h2>
+            <button class="good-both"
+                    data-expected-violation="false">
+                Delete Item
+            </button>
+            <p>This button has both outline and box-shadow, plus color changes. Maximum accessibility!</p>
+        </section>
+    </main>
+</body>
+</html>

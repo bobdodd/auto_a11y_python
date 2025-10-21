@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrButtonFocusContrastFail - Modal Dialog with Z-Index</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrButtonFocusContrastFail_004_correct_modal_with_zindex",
+    "issueId": "ErrButtonFocusContrastFail",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Buttons on modal dialog - parent has z-index but solid background is found, so contrast can be verified",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        /* Modal overlay with z-index */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Modal dialog with solid background */
+        .modal-dialog {
+            background: white; /* Solid background */
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Button with black outline against white modal background */
+        .modal-button-primary {
+            background: #0066cc;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .modal-button-primary:focus {
+            outline: 3px solid #000000; /* Black outline - excellent contrast against white modal */
+            outline-offset: 2px; /* Sits outside button, against white modal background */
+        }
+
+        /* Button with blue outline against white modal background */
+        .modal-button-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        .modal-button-secondary:focus {
+            outline: 3px solid #0066cc; /* Blue outline - good contrast against white modal */
+            outline-offset: 2px;
+        }
+
+        /* Sidebar with z-index and solid background */
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 250px;
+            background: #2c3e50; /* Solid dark background */
+            z-index: 900;
+            padding: 20px;
+            color: white;
+        }
+
+        .sidebar-button {
+            background: #34495e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 14px;
+            width: 100%;
+        }
+        .sidebar-button:focus {
+            outline: 3px solid #3498db; /* Light blue outline */
+            outline-offset: 2px; /* Against solid dark sidebar background */
+        }
+    </style>
+</head>
+<body style="background: #f0f0f0; padding: 40px;">
+    <h1>Test: Modal Dialog with Z-Index (Should Pass)</h1>
+
+    <p>This tests the scenario where parent elements have z-index (modal overlay, sidebar),
+       but buttons sit on containers with solid backgrounds. Since we find a solid background
+       BEFORE reaching the z-indexed parent, we CAN verify contrast and should not issue warnings.</p>
+
+    <div class="modal-overlay">
+        <div class="modal-dialog">
+            <h2>Confirm Action</h2>
+            <p>This is a modal dialog with z-index: 1000. However, the modal itself has a solid
+               white background, so button focus outline contrast can be verified.</p>
+
+            <div style="margin-top: 20px;">
+                <button class="modal-button-primary"
+                        data-expected-pass="true"
+                        data-pass-reason="Black outline has excellent contrast (21:1) against white modal background. Even though modal overlay has z-index, the modal dialog provides solid background.">
+                    Confirm
+                </button>
+
+                <button class="modal-button-secondary"
+                        data-expected-pass="true"
+                        data-pass-reason="Blue outline has good contrast against white modal background. Parent has z-index but solid background is found.">
+                    Cancel
+                </button>
+            </div>
+
+            <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                Key point: Although the overlay has z-index: 1000, the buttons sit inside
+                the modal dialog which has background: white. The background walker finds
+                this solid white background BEFORE reaching the z-indexed overlay, so it
+                stops and uses white for contrast calculation. This is the expected behavior
+                for modal dialogs.
+            </p>
+        </div>
+    </div>
+
+    <!-- Content to demonstrate page behind modal -->
+    <div style="position: relative; z-index: 1;">
+        <p>Page content behind the modal (this would normally be dimmed/inactive)</p>
+    </div>
+</body>
+</html>

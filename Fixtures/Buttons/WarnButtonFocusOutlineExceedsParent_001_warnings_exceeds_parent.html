@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonFocusOutlineExceedsParent - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonFocusOutlineExceedsParent_001_warnings_exceeds_parent",
+    "issueId": "WarnButtonFocusOutlineExceedsParent",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with focus outlines that extend beyond parent container boundaries - contrast cannot be verified",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #e0e0e0, #f5f5f5);
+            padding: 40px;
+        }
+
+        /* Small container with minimal padding - outline extends beyond */
+        .tight-container {
+            display: inline-block;
+            padding: 5px; /* Only 5px padding - not enough for large outline */
+            background: white;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        .button-large-offset {
+            background: #0066cc;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            font-size: 16px;
+        }
+        .button-large-offset:focus {
+            outline: 3px solid #ff4081; /* 3px width */
+            outline-offset: 8px; /* 8px offset = 11px total extent */
+            /* Total extent exceeds 5px parent padding on all sides */
+        }
+
+        /* Very large outline-offset that clearly exceeds parent */
+        .medium-container {
+            display: inline-block;
+            padding: 15px;
+            background: #f0f0f0;
+            border: 2px solid #999;
+            margin-bottom: 20px;
+        }
+        .button-extreme-offset {
+            background: #34a853;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 14px;
+        }
+        .button-extreme-offset:focus {
+            outline: 2px solid yellow;
+            outline-offset: 25px; /* Extremely large offset = 27px total extent */
+            /* Easily exceeds 15px parent padding */
+        }
+
+        /* Asymmetric case - button near parent edge */
+        .asymmetric-container {
+            display: block;
+            width: 300px;
+            padding: 20px 20px 20px 5px; /* Only 5px padding on left */
+            background: #e8f4f8;
+            border: 1px solid #4fc3f7;
+            margin-bottom: 20px;
+        }
+        .button-near-edge {
+            background: #9c27b0;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 14px;
+            margin-left: 0; /* Button at left edge */
+        }
+        .button-near-edge:focus {
+            outline: 3px solid white;
+            outline-offset: 4px; /* 4px + 3px = 7px total extent */
+            /* Exceeds 5px padding on left side */
+        }
+
+        .explanation {
+            max-width: 800px;
+            background: #fffacd;
+            padding: 20px;
+            margin: 30px 0;
+            border-left: 4px solid #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Focus Outline Extends Beyond Parent Container</h1>
+
+    <div class="explanation">
+        <strong>What we're testing:</strong>
+        <p>When a button has <code>outline-offset > 0</code>, the focus outline sits outside the button
+           against the parent container's background. The total extent of the outline is
+           <code>outline-offset + outline-width</code>.</p>
+        <p>If this total exceeds the parent's padding on any side, the outline extends past the parent
+           boundary into whatever lies beyond (page background, sibling elements, etc.).</p>
+        <p>We can only verify contrast within the parent's bounds, so extending beyond requires manual testing.</p>
+    </div>
+
+    <h2>Example 1: Small Container (5px padding)</h2>
+    <p>Button has outline-offset: 8px + outline-width: 3px = 11px total extent.<br>
+       Parent has only 5px padding. Outline extends 6px beyond parent on all sides.</p>
+
+    <div class="tight-container">
+        <button class="button-large-offset"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusOutlineExceedsParent"
+                data-violation-reason="Outline extends 11px but parent padding is only 5px">
+            Click Me
+        </button>
+    </div>
+
+    <h2>Example 2: Extreme Outline Offset (25px)</h2>
+    <p>Button has outline-offset: 25px + outline-width: 2px = 27px total extent.<br>
+       Parent has 15px padding. Outline extends 12px beyond parent on all sides.<br>
+       <em>Note: CSS outline-offset has no maximum value!</em></p>
+
+    <div class="medium-container">
+        <button class="button-extreme-offset"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusOutlineExceedsParent"
+                data-violation-reason="Outline extends 27px but parent padding is only 15px">
+            Extreme Offset
+        </button>
+    </div>
+
+    <h2>Example 3: Asymmetric Container Padding</h2>
+    <p>Button has outline-offset: 4px + outline-width: 3px = 7px total extent.<br>
+       Parent has 20px padding on right/top/bottom but only 5px on left.<br>
+       Button is positioned at left edge. Outline exceeds parent on LEFT side only.</p>
+
+    <div class="asymmetric-container">
+        <button class="button-near-edge"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusOutlineExceedsParent"
+                data-violation-reason="Outline extends 7px but parent has only 5px left padding">
+            Near Left Edge
+        </button>
+    </div>
+
+    <div class="explanation">
+        <strong>Why this matters:</strong>
+        <p>In all three cases above, portions of the focus outline extend beyond the parent container
+           and sit against the body's gradient background. We cannot programmatically verify that the
+           outline color has sufficient contrast against all backgrounds it touches.</p>
+        <p><strong>Manual testing required:</strong> Tab to each button and verify the entire outline
+           is visible against all backgrounds (inside AND outside the parent container).</p>
+    </div>
+</body>
+</html>

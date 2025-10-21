@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnButtonFocusParentGradientBackground - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnButtonFocusParentGradientBackground_001_warnings_parent_gradient",
+    "issueId": "WarnButtonFocusParentGradientBackground",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Buttons with outline-offset > 0 sitting against parent gradient backgrounds - requires manual testing",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Button with outline that sits against parent gradient */
+        .test-button {
+            background: white;
+            padding: 15px 30px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        .test-button:focus {
+            outline: 3px solid blue;
+            outline-offset: 2px; /* Sits OUTSIDE button, against parent */
+        }
+
+        /* Parent with linear gradient - light to dark */
+        .gradient-parent-light-dark {
+            background: linear-gradient(to right, #f0f0f0, #333333);
+            padding: 30px;
+        }
+
+        /* Parent with radial gradient */
+        .gradient-parent-radial {
+            background: radial-gradient(circle, #ffffff, #666666);
+            padding: 30px;
+        }
+
+        /* Parent with complex multi-color gradient */
+        .gradient-parent-multicolor {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Outline Against Parent Gradient Background</h1>
+
+    <p>These buttons have outline-offset: 2px (positive), so the focus outline sits OUTSIDE the button
+       against the parent container's gradient background. Contrast cannot be automatically verified.</p>
+
+    <div class="gradient-parent-light-dark">
+        <h2>Linear Gradient Parent (Light to Dark)</h2>
+        <button class="test-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusParentGradientBackground"
+                data-violation-reason="Outline sits against parent gradient - manual testing required">
+            Submit Form
+        </button>
+        <p style="color: white;">Parent has linear gradient from light (#f0f0f0) to dark (#333).
+           Blue outline may be visible against light areas but invisible against dark areas.</p>
+    </div>
+
+    <div class="gradient-parent-radial" style="margin-top: 20px;">
+        <h2>Radial Gradient Parent</h2>
+        <button class="test-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusParentGradientBackground"
+                data-violation-reason="Outline sits against parent gradient - manual testing required">
+            Save Changes
+        </button>
+        <p>Parent has radial gradient from white center to gray (#666).
+           Outline contrast varies depending on position.</p>
+    </div>
+
+    <div class="gradient-parent-multicolor" style="margin-top: 20px;">
+        <h2>Multi-Color Gradient Parent</h2>
+        <button class="test-button"
+                data-expected-violation="true"
+                data-violation-id="WarnButtonFocusParentGradientBackground"
+                data-violation-reason="Outline sits against parent gradient - manual testing required">
+            Delete Item
+        </button>
+        <p style="color: white;">Parent has complex purple-to-pink gradient.
+           Blue outline visibility varies significantly across the gradient.</p>
+    </div>
+</body>
+</html>

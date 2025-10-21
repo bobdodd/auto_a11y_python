@@ -1279,13 +1279,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Use nav element or role=\"navigation\" for site navigation, reserve role=\"menu\" for actual application menus with proper ARIA patterns."
         },
         'ErrIncorrectHeadingLevel': {
-            'title': "Heading level used incorrectly based on visual appearance rather than document structure",
-            'what': "Heading level used incorrectly based on visual appearance rather than document structure",
-            'why': "Incorrect heading levels break the document outline and make it difficult to understand content hierarchy.",
+            'title': "Heading level {element} appears after H{skippedFrom}, skipping {levelsSkipped} level(s)",
+            'what': "Heading level {element} appears after H{skippedFrom}, skipping {levelsSkipped} level(s) - likely chosen for visual appearance rather than document structure",
+            'why': "Incorrect heading levels break the document outline and make it difficult to understand content hierarchy. Skipping multiple levels suggests the heading was chosen for its visual size rather than its semantic meaning.",
             'who': "Screen reader users navigating by headings, users who rely on proper document structure.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.3.1'],
-            'remediation': "Use heading levels to convey document structure (h1 > h2 > h3), not for visual styling; use CSS for appearance."
+            'remediation': "Use heading levels to convey document structure (h1 > h2 > h3), not for visual styling; use CSS for appearance. Change this {element} to H{expectedLevel} to maintain proper hierarchy."
         },
         'ErrIncorrectlyFormattedPrimaryLang': {
             'title': "Language code incorrectly formatted",

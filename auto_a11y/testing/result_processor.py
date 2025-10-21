@@ -468,8 +468,7 @@ class ResultProcessor:
                 # Check if description contains specific measured/detected values
                 # that should be preserved (not replaced with generic description)
                 use_original_as_title = any(pattern in original_desc for pattern in [
-                    '(', 'px', ':1', 'alpha=', '°', '%',  # Patterns indicating measured values
-                    'skipping', 'appears after', 'after H'  # Heading-specific patterns with actual levels
+                    '(', 'px', ':1', 'alpha=', '°', '%'  # Patterns indicating measured values
                 ])
 
                 metadata = {

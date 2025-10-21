@@ -559,9 +559,15 @@
                                         </span>
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if group_list|length > 1 %}
-                                            {# For grouped issues, use generic description from test #}
-                                            {% set display_text = first_violation.metadata.title if first_violation.metadata and first_violation.metadata.title else first_violation.description %}
-                                            {{ display_text }}
+                                            {# For grouped issues, use generic title without instance-specific details #}
+                                            {% if first_violation.metadata and first_violation.metadata.title %}
+                                                {{ first_violation.metadata.title }}
+                                            {% elif first_violation.metadata and first_violation.metadata.what %}
+                                                {{ first_violation.metadata.what }}
+                                            {% else %}
+                                                {# Fall back to error code display name if no metadata #}
+                                                {{ error_code|error_code_only|replace('Err', '')|replace('Warn', '')|replace('Info', '')|replace('AI_', '')|replace('_', ' ')|title }}
+                                            {% endif %}
                                         {% else %}
                                             {# For single issues, show full specific description #}
                                             {% if first_violation.metadata and first_violation.metadata.title %}

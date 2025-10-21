@@ -634,7 +634,7 @@ async def test_buttons(page) -> Dict[str, Any]:
                 # Check outline offset (should be >= 2px when outline is present)
                 elif outline_width >= 2.0 and outline_offset < 2.0:
                     error_code = 'ErrButtonOutlineOffsetInsufficient'
-                    violation_reason = f'Button focus outline offset is too small ({outline_offset:.2f}px, needs ≥2px for clear separation from button)'
+                    violation_reason = 'Button focus outline-offset is too small (less than 2px)'
 
                 # Check outline contrast (only if width and offset are sufficient)
                 else:

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: ARIA Heading Levels Sequential</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrSkippedHeadingLevel_004_aria_level_correct",
+    "issueId": "ErrSkippedHeadingLevel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Tests proper sequential ARIA heading levels with role=heading and aria-level - no skips",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <main>
+        <div role="heading" aria-level="1"
+             data-expected-pass="true"
+             data-pass-reason="Top level ARIA heading">Main Page Title (ARIA)</div>
+        <p>Testing proper ARIA heading hierarchy.</p>
+
+        <div role="heading" aria-level="2"
+             data-expected-pass="true"
+             data-pass-reason="Correctly follows aria-level 1">First Section (ARIA Level 2)</div>
+        <p>This ARIA heading correctly follows level 1 with level 2.</p>
+
+        <div role="heading" aria-level="3"
+             data-expected-pass="true"
+             data-pass-reason="Correctly follows aria-level 2">Subsection (ARIA Level 3)</div>
+        <p>This ARIA heading correctly goes from level 2 to level 3.</p>
+
+        <div role="heading" aria-level="2"
+             data-expected-pass="true"
+             data-pass-reason="Can jump back up to any previous level">Second Section (ARIA Level 2)</div>
+        <p>It's OK to jump back up to higher heading levels.</p>
+
+        <!-- Mix semantic and ARIA headings -->
+        <h3 data-expected-pass="true"
+            data-pass-reason="Semantic h3 correctly follows aria-level 2">Subsection with Semantic H3</h3>
+        <p>Mixing semantic headings with ARIA headings while maintaining hierarchy.</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

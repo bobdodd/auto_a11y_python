@@ -117,7 +117,15 @@ async def test_buttons(page) -> Dict[str, Any]:
                 // Get all buttons (button element and elements with role="button")
                 const allButtons = Array.from(document.querySelectorAll('button, [role="button"]')).filter(btn => {
                     const style = window.getComputedStyle(btn);
-                    return style.display !== 'none' && style.visibility !== 'hidden';
+                    // Filter out hidden buttons
+                    if (style.display === 'none' || style.visibility === 'hidden') {
+                        return false;
+                    }
+                    // Filter out disabled buttons - they cannot receive focus
+                    if (btn.disabled || btn.hasAttribute('disabled') || btn.getAttribute('aria-disabled') === 'true') {
+                        return false;
+                    }
+                    return true;
                 });
 
                 return allButtons.map(button => {

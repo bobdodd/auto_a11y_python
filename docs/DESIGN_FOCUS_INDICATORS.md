@@ -419,6 +419,180 @@ All focus indicator detection ensures compliance with:
 
 ---
 
+## Detecting Default Browser Focus Styles
+
+### Overview
+Browsers provide default focus indicators, but these vary significantly across browsers and can be affected by system preferences. Understanding and detecting these defaults is important for:
+1. Measuring contrast of default focus indicators
+2. Identifying when sites rely on inconsistent browser defaults
+3. Comparing custom focus styles against browser baselines
+4. Expanding our focus outline contrast testing
+
+### Current Implementation
+We already have a **very detailed and complex algorithm** for measuring button outline properties and contrast ratios in `test_buttons.py`. This includes:
+- Outline width, style, offset detection
+- Box-shadow parsing and measurement
+- Contrast ratio calculation against backgrounds
+- Multiple background color handling
+- Gradient background detection
+
+### Detection Techniques
+
+#### 1. Creating Test Elements
+The most reliable method is to create a hidden focusable element and read its computed styles:
+
+```javascript
+// Create a hidden test button
+const testElement = document.createElement('button');
+testElement.style.position = 'absolute';
+testElement.style.left = '-9999px';
+testElement.textContent = 'test';
+document.body.appendChild(testElement);
+
+// Focus it to trigger default focus styles
+testElement.focus();
+
+// Read computed styles
+const computedStyle = window.getComputedStyle(testElement);
+const outline = computedStyle.outline;
+const outlineColor = computedStyle.outlineColor;
+const outlineStyle = computedStyle.outlineStyle;
+const outlineWidth = computedStyle.outlineWidth;
+const outlineOffset = computedStyle.outlineOffset;
+const boxShadow = computedStyle.boxShadow;
+
+// Clean up
+testElement.remove();
+```
+
+#### 2. Browser-Specific Default Values
+
+Different browsers have distinct default focus indicators:
+
+**Chrome/Edge:**
+- Outline: `5px auto -webkit-focus-ring-color`
+- Color: `rgb(26, 13, 171)` or system accent color
+- Style: `auto` (special browser-rendered style)
+- Offset: `0px`
+
+**Firefox:**
+- Outline: `1px dotted`
+- Color: System-dependent (often black or `Highlight` system color)
+- Style: `dotted`
+- Width: `1px`
+- Offset: `0px` (or `1px` on some elements)
+
+**Safari:**
+- Outline: `5px auto -webkit-focus-ring-color`
+- Color: `rgb(0, 103, 244)` (blue)
+- Style: `auto`
+- Width: `5px`
+- Offset: `0px`
+
+#### 3. :focus-visible Detection
+
+Modern browsers support `:focus-visible` for keyboard-only focus indicators:
+
+```javascript
+// Check if :focus-visible is supported
+const supportsFocusVisible = CSS.supports('selector(:focus-visible)');
+
+if (supportsFocusVisible) {
+    // May have different styles than :focus
+    const focusVisibleStyle = window.getComputedStyle(testElement, ':focus-visible');
+    // Read outline/box-shadow from :focus-visible
+}
+```
+
+### Challenges and Considerations
+
+1. **System Preferences**:
+   - High contrast mode changes default colors
+   - Dark mode may invert colors
+   - User stylesheet overrides can affect defaults
+
+2. **CSS Specificity**:
+   - Even with no custom styles, user agent stylesheets apply
+   - Must distinguish between "no custom focus" vs "custom that matches default"
+
+3. **Detection Method**:
+   - `:focus` pseudo-class styles cannot be directly queried
+   - Must actually focus element to get computed values
+   - May need to parse stylesheets to detect if `:focus` rules exist
+
+4. **Browser Variations**:
+   - `outline: auto` renders differently per browser
+   - Some use `outline`, others prefer `box-shadow`
+   - Contrast calculation may be complex for `auto` style
+
+### Future Enhancement Plan
+
+**Phase 1: Expand Button Testing** ✅ (Complete)
+- Already implemented detailed outline/box-shadow analysis
+- Contrast ratio calculation working
+- Handles complex scenarios (gradients, multiple backgrounds)
+
+**Phase 2: Add Default Focus Detection** 📋 (Planned)
+- Detect when elements rely on browser defaults
+- Measure contrast of default focus indicators
+- Compare against 3:1 minimum (WCAG 1.4.11)
+- Issue warnings when defaults fail contrast requirements
+
+**Phase 3: Cross-Browser Baseline** 📋 (Future)
+- Build database of default focus styles per browser
+- Test against multiple browser defaults
+- Recommend when custom styles are needed
+- Provide browser-specific remediation advice
+
+**Phase 4: Framework Integration** 📋 (Future)
+- Detect framework-provided focus styles (Bootstrap, Material, etc.)
+- Analyze CSS framework focus indicator patterns
+- Compare framework defaults against WCAG requirements
+
+### Integration Points
+
+The default browser focus detection will integrate with:
+
+1. **test_buttons.py**: Add detection for when custom `:focus` styles are absent
+2. **test_forms.py**: Check if inputs rely on browser defaults (already has `WarnInputDefaultFocus`)
+3. **test_event_handling.py**: Detect tabindex/handler elements using browser defaults
+4. **Contrast calculation**: Apply existing contrast algorithm to detected defaults
+5. **Enhanced descriptions**: Explain why relying on defaults is problematic
+
+### Code Structure
+
+```python
+async def detect_browser_default_focus(page):
+    """
+    Detect if element is using browser default focus styles
+    and measure their contrast.
+    """
+    results = await page.evaluate('''() => {
+        // Create test element
+        const testBtn = document.createElement('button');
+        // ... positioning, focus, measure ...
+
+        // Determine if default or custom
+        const hasCustomFocus = /* check stylesheets for :focus rules */;
+
+        return {
+            isDefault: !hasCustomFocus,
+            outlineColor: /* parsed color */,
+            outlineWidth: /* parsed width */,
+            contrast: /* calculated ratio */
+        };
+    }''')
+
+    return results
+```
+
+### References for Implementation
+- [CSS Focus Indicators](https://www.w3.org/WAI/WCAG21/Techniques/css/C15)
+- [Browser Default Styles](https://browserdefaultstyles.com/)
+- [Focus Visible Polyfill](https://github.com/WICG/focus-visible)
+
+---
+
 ## References
 
 - [WCAG 2.4.7 Focus Visible](https://www.w3.org/WAI/WCAG21/Understanding/focus-visible.html)
@@ -430,6 +604,6 @@ All focus indicator detection ensures compliance with:
 
 ---
 
-**Document Version**: 1.0
-**Last Updated**: 2025-10-11
-**Status**: Input focus complete (100%), Interactive element focus in progress (issue codes defined)
+**Document Version**: 1.1
+**Last Updated**: 2025-10-21
+**Status**: Input focus complete (100%), Interactive element focus in progress (issue codes defined), Default browser focus detection planned

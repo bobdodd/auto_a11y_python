@@ -417,33 +417,39 @@ async def test_lists(page) -> Dict[str, Any]:
 
                         // Check for icon font elements used as bullets (Font Awesome, Material Icons, etc.)
                         const listStyleType = style.getPropertyValue('list-style-type');
-                        const firstChild = item.firstElementChild;
                         let hasIconFontElement = false;
 
                         // Only check if list-style-type is none (indicating custom styling)
-                        if (firstChild && listStyleType === 'none') {
-                            const childTag = firstChild.tagName.toUpperCase();
-                            const childClasses = firstChild.className || '';
+                        if (listStyleType === 'none') {
+                            // Look for icon elements within the list item (not just first child)
+                            // Common patterns: <i> tags or <span> with icon classes
+                            const iconCandidates = item.querySelectorAll('i, span[class*="icon"], span[class*="fa"], span[class*="material"], span[class*="glyph"]');
 
-                            // Check if first child is an icon element
-                            // Common patterns:
-                            // - Any <i> tag (almost always used for icons)
-                            // - <span> with icon-related classes
-                            if (childTag === 'I' ||
-                                (childTag === 'SPAN' && (
-                                    childClasses.toLowerCase().includes('icon') ||
-                                    childClasses.toLowerCase().includes('fa') ||
-                                    childClasses.toLowerCase().includes('material') ||
-                                    childClasses.toLowerCase().includes('glyph')
-                                ))) {
-                                hasIconFontElement = true;
+                            if (iconCandidates.length > 0) {
+                                // Check if any of these icon candidates appear early in the content
+                                // (likely being used as a bullet rather than inline icon)
+                                for (const icon of iconCandidates) {
+                                    const iconClasses = icon.className || '';
+                                    const iconTag = icon.tagName.toUpperCase();
+
+                                    // Confirm it looks like an icon (has icon-related classes or is <i> tag)
+                                    if (iconTag === 'I' ||
+                                        iconClasses.toLowerCase().includes('icon') ||
+                                        iconClasses.toLowerCase().includes('fa') ||
+                                        iconClasses.toLowerCase().includes('material') ||
+                                        iconClasses.toLowerCase().includes('glyph')) {
+                                        hasIconFontElement = true;
+                                        break;
+                                    }
+                                }
                             }
                         }
 
                         // If icon font element is found with list-style: none, create a warning
                         if (hasIconFontElement) {
-                            const iconElement = firstChild;
-                            const iconClasses = iconElement.className || '';
+                            // Find the first icon element to get its classes for the warning message
+                            const iconElement = item.querySelector('i, span[class*="icon"], span[class*="fa"], span[class*="material"], span[class*="glyph"]');
+                            const iconClasses = iconElement ? (iconElement.className || 'icon element') : 'icon element';
 
                             results.warnings.push({
                                 err: 'WarnIconFontBulletsInList',

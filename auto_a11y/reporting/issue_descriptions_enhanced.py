@@ -1026,6 +1026,15 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1'],
             'remediation': "Replace the visual list simulation with proper semantic HTML list markup. Use <ul> or <ol> elements with <li> children for each list item. Remove the {pattern} and let the browser handle list presentation through proper HTML semantics and CSS styling."
         },
+        'WarnIconFontBulletsInList': {
+            'title': "List uses icon font elements as bullets with list-style: none",
+            'what': "List item uses icon font elements ({iconClasses}) with list-style: none instead of CSS list-style-type property",
+            'why': "While the semantic list structure is correct (using proper <ul>/<ol> and <li> elements), using icon font elements as visual bullets and disabling native list styling with list-style: none is considered bad practice. This approach makes the code harder to maintain and creates unnecessary complexity. The CSS list-style-type property provides a cleaner, more maintainable way to customize list bullets.",
+            'who': "Developers maintaining the codebase, users on slower connections who may see unstyled content before icon fonts load.",
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['1.3.1'],
+            'remediation': "Remove the icon font elements (e.g., <i class=\"fa-...\"></i>) from list items and instead use the CSS list-style-type property or ::before pseudo-elements with CSS content to style the bullets. For example: li::before {{ content: '\\2022'; color: #your-color; }} or use list-style-type with custom images."
+        },
         'ErrFielLabelledBySomethingNotALabel': {
             'title': "Field is labeled by an element that is not a proper label",
             'what': "Field is labeled by an element that is not a proper label",

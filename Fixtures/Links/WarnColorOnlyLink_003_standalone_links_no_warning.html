@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Fixture: Standalone Links Should Not Trigger Warning</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorOnlyLink_003_standalone_links_no_warning",
+    "issueId": "WarnColorOnlyLink",
+    "expectedViolationCount": 0,
+    "description": "Standalone links (only content in container) should NOT trigger WarnColorOnlyLink even without underlines, because they're not embedded in flowing text",
+    "wcag": "1.4.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Remove underlines from links */
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Standalone Links - Should NOT Trigger Warning</h1>
+
+    <!-- Standalone link in div - NO WARNING expected -->
+    <div class="card">
+        <a href="/page1">Upper Credit Conservation Area</a>
+    </div>
+
+    <!-- Standalone link in list item - NO WARNING expected -->
+    <ul>
+        <li><a href="/page2">Parks & Trails</a></li>
+        <li><a href="/page3">Events Calendar</a></li>
+        <li><a href="/page4">Contact Us</a></li>
+    </ul>
+
+    <!-- Standalone link in article - NO WARNING expected -->
+    <article>
+        <a href="/page5">Read More About Conservation</a>
+    </article>
+
+    <!-- Standalone link in table cell - NO WARNING expected -->
+    <table>
+        <tr>
+            <td><a href="/page6">View Details</a></td>
+            <td><a href="/page7">Download PDF</a></td>
+        </tr>
+    </table>
+
+    <!-- Standalone link in blockquote - NO WARNING expected -->
+    <blockquote>
+        <a href="/page8">Source Article</a>
+    </blockquote>
+</body>
+</html>

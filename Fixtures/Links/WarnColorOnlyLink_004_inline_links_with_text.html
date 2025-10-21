@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Fixture: Inline Links With Surrounding Text Should Trigger Warning</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnColorOnlyLink_004_inline_links_with_text",
+    "issueId": "WarnColorOnlyLink",
+    "expectedViolationCount": 6,
+    "description": "Links embedded in flowing text without underlines should trigger WarnColorOnlyLink",
+    "wcag": "1.4.1",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        /* Remove underlines from links */
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inline Links With Text - Should Trigger Warnings</h1>
+
+    <!-- Link in paragraph with surrounding text - WARNING expected -->
+    <p data-expected-violation="true">
+        Visit our <a href="/parks">parks page</a> for more information about conservation areas.
+    </p>
+
+    <!-- Link in list item with surrounding text - WARNING expected -->
+    <ul>
+        <li data-expected-violation="true">Check out the <a href="/events">upcoming events</a> this month.</li>
+        <li data-expected-violation="true">Read about our <a href="/programs">educational programs</a> for students.</li>
+    </ul>
+
+    <!-- Link in table cell with surrounding text - WARNING expected -->
+    <table>
+        <tr>
+            <td data-expected-violation="true">For details, see the <a href="/report">annual report</a> section.</td>
+        </tr>
+    </table>
+
+    <!-- Link in blockquote with surrounding text - WARNING expected -->
+    <blockquote data-expected-violation="true">
+        Conservation is important. Learn more at our <a href="/education">education center</a> today.
+    </blockquote>
+
+    <!-- Link in article with surrounding text - WARNING expected -->
+    <article>
+        <p data-expected-violation="true">
+            The Credit Valley watershed is home to diverse wildlife. Explore our <a href="/wildlife">wildlife guide</a> to learn more.
+        </p>
+    </article>
+</body>
+</html>

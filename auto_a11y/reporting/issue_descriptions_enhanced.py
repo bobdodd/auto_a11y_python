@@ -2559,11 +2559,11 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         'WarnFieldLabelledUsingAriaLabel': {
             'title': "Field is labeled using aria-label, which is valid but may have usability considerations",
             'what': "Field is labeled using aria-label=\"{ariaLabel}\", which is valid but may have usability considerations",
-            'why': "While aria-label=\"{ariaLabel}\" is a valid way to label this form field, it has limitations: the label \"{ariaLabel}\" is not visible on screen which can confuse sighted users, voice control users cannot reference the field by the visible text \"{ariaLabel}\", the label won\'t be automatically translated by browser translation tools, and users with cognitive disabilities benefit from visible labels as memory aids.",
-            'who': "Sighted users who can\'t see \"{ariaLabel}\" as a label, voice control users who can\'t say \"click {ariaLabel}\", users relying on browser translation, users with cognitive disabilities who benefit from persistent visible labels",
+            'why': "While aria-label is a valid way to label form fields, it has limitations: the label is not visible on screen which can confuse sighted users, voice control users cannot reference the field by visible label text, the label won\'t be automatically translated by browser translation tools, and users with cognitive disabilities benefit from visible labels as memory aids.",
+            'who': "Sighted users who can\'t see the aria-label text, voice control users who need visible text to reference fields, users relying on browser translation, users with cognitive disabilities who benefit from persistent visible labels",
             'impact': ImpactScale.LOW.value,
             'wcag': ['3.3.2'],
-            'remediation': "Consider if a visible label showing \"{ariaLabel}\" would better serve all users. If space permits, use a visible <label> element with the text \"{ariaLabel}\". If aria-label must be used, ensure \"{ariaLabel}\" is clear and descriptive. Consider adding visible helper text or placeholder text to provide visual context."
+            'remediation': "Consider if a visible <label> element would better serve all users. If space permits, use a visible <label> element. If aria-label must be used, ensure it is clear and descriptive. Consider adding visible helper text or placeholder text to provide visual context."
         },
         'InfoHeadingNearLengthLimit': {
             'title': "Heading is {length} characters, approaching recommended limit of {limit}",

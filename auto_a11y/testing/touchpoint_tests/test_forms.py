@@ -211,11 +211,11 @@ async def test_forms(page) -> Dict[str, Any]:
                     } else {
                         results.elements_passed++;
 
-                        // INFO: Check if using aria-label without visible label
+                        // WARN: Check if using aria-label without visible label
                         if (ariaLabel && !hasVisibleLabel) {
                             results.warnings.push({
                                 err: 'InfoFieldLabelledUsingAriaLabel',
-                                type: 'info',
+                                type: 'warn',
                                 cat: 'forms',
                                 element: input.tagName,
                                 xpath: getFullXPath(input),

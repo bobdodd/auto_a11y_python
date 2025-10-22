@@ -441,8 +441,12 @@ class ResultProcessor:
             # Pass violation_id (with test prefix) and the full violation data
             logger.debug(f"Getting description for {violation_id} with metadata: {violation_data}")
             enhanced_desc = get_detailed_issue_description(violation_id, violation_data)
-            
+
             if enhanced_desc:
+                # Also get the generic (un-replaced) description for grouped accordion headers
+                # This is the catalog description WITHOUT placeholder replacement
+                generic_desc = get_detailed_issue_description(violation_id, {})
+
                 # Use enhanced description with context-specific details
                 impact_str = enhanced_desc.get('impact', 'Medium')
                 impact = ImpactLevel.HIGH if impact_str == 'High' else (
@@ -454,7 +458,7 @@ class ResultProcessor:
                 wcag_full = enrich_wcag_criteria(wcag_criteria) if wcag_criteria else []
                 help_url = get_wcag_link(wcag_criteria[0]) if wcag_criteria else self._get_help_url(error_code)
                 failure_summary = enhanced_desc.get('remediation', '')
-                
+
                 # Store all enhanced details in metadata
                 # The enhanced_desc already has placeholders replaced with actual values
                 #
@@ -462,7 +466,7 @@ class ResultProcessor:
                 # contains actual measured values (e.g., "outline is 1.5px" vs "outline is too small").
                 # We store BOTH:
                 #   - 'what': instance-specific description for "What the issue is" section in instance details
-                #   - 'what_generic': generic catalog description for grouped accordion headers
+                #   - 'what_generic': generic catalog description (WITHOUT placeholder replacement) for grouped accordion headers
                 #   - 'title': instance-specific description for backwards compatibility
                 original_desc = violation_data.get('description', '')
                 # Check if description contains specific measured/detected values
@@ -474,7 +478,7 @@ class ResultProcessor:
                 metadata = {
                     'title': original_desc if use_original_as_title else enhanced_desc.get('title', ''),
                     'what': original_desc if use_original_as_title else enhanced_desc.get('what', ''),
-                    'what_generic': enhanced_desc.get('what', ''),  # Always store generic catalog description
+                    'what_generic': generic_desc.get('what', ''),  # Generic catalog description WITHOUT placeholders replaced
                     'why': enhanced_desc.get('why', ''),
                     'who': enhanced_desc.get('who', ''),
                     'impact_detail': enhanced_desc.get('impact', ''),

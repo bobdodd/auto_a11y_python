@@ -849,6 +849,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         'ErrDuplicateLandmarkWithoutName': {
             'title': "Found {totalCount} {role} landmarks - this one lacks unique accessible name",
             'what': "Found {totalCount} <{element}> elements with role=\"{role}\" on this page, but this instance lacks a unique accessible name to distinguish it from the others",
+            'what_generic': "Multiple landmarks of the same type exist, but this instance lacks a unique accessible name to distinguish it from the others",
             'why': "When multiple {role} landmarks exist without unique names, screen reader users cannot distinguish between them. Screen readers announce landmarks by type and name - without unique names, users hear the same announcement for each {role} landmark, making it impossible to know which one leads where.",
             'who': "Screen reader users who navigate by landmarks (a common navigation strategy), keyboard users who use landmark navigation shortcuts.",
             'impact': ImpactScale.MEDIUM.value,

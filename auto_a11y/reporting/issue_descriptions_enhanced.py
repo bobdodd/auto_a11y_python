@@ -2556,7 +2556,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.3'],
             'remediation': "Let natural tab order work, avoid tabindex"
         },
-        'InfoFieldLabelledUsingAriaLabel': {
+        'WarnFieldLabelledUsingAriaLabel': {
             'title': "Field is labeled using aria-label, which is valid but may have usability considerations",
             'what': "Field is labeled using aria-label=\"{ariaLabel}\", which is valid but may have usability considerations",
             'why': "While aria-label=\"{ariaLabel}\" is a valid way to label this form field, it has limitations: the label \"{ariaLabel}\" is not visible on screen which can confuse sighted users, voice control users cannot reference the field by the visible text \"{ariaLabel}\", the label won\'t be automatically translated by browser translation tools, and users with cognitive disabilities benefit from visible labels as memory aids.",

@@ -643,14 +643,22 @@ The function calls `get_detailed_issue_description()` **twice**:
    - Used for `title` and `what` fields
    - Example: "Found 2 &lt;header&gt; elements with role="banner"..."
 
-2. **Without metadata** (empty dict `{}`) - Returns the original catalog description with placeholders intact
+2. **Without metadata** (empty dict `{}`) - Returns catalog description, preferring `what_generic` field if it exists
    - Used for `what_generic` field
-   - Example: "Found {totalCount} {role} landmarks, but this one lacks..."
+   - **Preferred:** Uses catalog's `what_generic` field (properly written generic text)
+     - Example: "Multiple landmarks of the same type exist, but this instance lacks a unique accessible name..."
+   - **Fallback:** Uses catalog's `what` field without placeholder replacement (if `what_generic` not defined)
+     - Example: "Found {totalCount} {role} landmarks, but this one lacks..."
+
+**Why the two-tier approach:**
+- Some catalog entries have a dedicated `what_generic` field with properly written generic text (no placeholders)
+- Older catalog entries only have `what` with placeholders, which get displayed literally when not replaced
+- The code prefers `what_generic` but falls back to `what` for backward compatibility
 
 This ensures:
-- **Grouped accordions** show generic descriptions (no specific values)
+- **Grouped accordions** show properly generic descriptions (no specific values, no unreplaced placeholders)
 - **Individual instances** show specific descriptions (with actual values)
-- **Maintains UI principle:** Grouped headers never contain instance-specific information
+- **Maintains UI principle:** Grouped headers never contain instance-specific information or unreplaced placeholders
 
 ### 3. Catalog Enrichment (Fallback)
 

@@ -443,9 +443,11 @@ class ResultProcessor:
             enhanced_desc = get_detailed_issue_description(violation_id, violation_data)
 
             if enhanced_desc:
-                # Also get the generic (un-replaced) description for grouped accordion headers
-                # This is the catalog description WITHOUT placeholder replacement
+                # Get generic description for grouped accordion headers
+                # First, check if catalog has a dedicated 'what_generic' field
+                # If not, fall back to getting 'what' without placeholder replacement
                 generic_desc = get_detailed_issue_description(violation_id, {})
+                generic_what = generic_desc.get('what_generic') or generic_desc.get('what', '')
 
                 # Use enhanced description with context-specific details
                 impact_str = enhanced_desc.get('impact', 'Medium')
@@ -464,9 +466,9 @@ class ResultProcessor:
                 #
                 # IMPORTANT: For threshold violations, the original description from the test
                 # contains actual measured values (e.g., "outline is 1.5px" vs "outline is too small").
-                # We store BOTH:
+                # We store THREE types of descriptions:
                 #   - 'what': instance-specific description for "What the issue is" section in instance details
-                #   - 'what_generic': generic catalog description (WITHOUT placeholder replacement) for grouped accordion headers
+                #   - 'what_generic': properly generic description (from catalog's what_generic field or what without placeholders) for grouped accordion headers
                 #   - 'title': instance-specific description for backwards compatibility
                 original_desc = violation_data.get('description', '')
                 # Check if description contains specific measured/detected values
@@ -478,7 +480,7 @@ class ResultProcessor:
                 metadata = {
                     'title': original_desc if use_original_as_title else enhanced_desc.get('title', ''),
                     'what': original_desc if use_original_as_title else enhanced_desc.get('what', ''),
-                    'what_generic': generic_desc.get('what', ''),  # Generic catalog description WITHOUT placeholders replaced
+                    'what_generic': generic_what,  # Properly generic description (catalog's what_generic or what without placeholders)
                     'why': enhanced_desc.get('why', ''),
                     'who': enhanced_desc.get('who', ''),
                     'impact_detail': enhanced_desc.get('impact', ''),

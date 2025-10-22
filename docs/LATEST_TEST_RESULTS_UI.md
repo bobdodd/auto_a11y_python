@@ -595,7 +595,64 @@ def view_page(page_id):
                          test_history=test_history)
 ```
 
-### 2. Catalog Enrichment
+### 2. Result Processing & Metadata Enrichment
+
+**Primary enrichment happens during test result processing.**
+
+**File:** `auto_a11y/testing/result_processor.py:440-488`
+
+```python
+def _process_violation(self, violation_data, source_test, violation_type):
+    """Process individual violation into Violation model"""
+
+    error_code = violation_data.get('err', 'UnknownError')
+    violation_id = f"{source_test}_{error_code}"
+
+    # Get enhanced description with actual metadata (placeholders replaced)
+    enhanced_desc = get_detailed_issue_description(violation_id, violation_data)
+
+    if enhanced_desc:
+        # CRITICAL: Get generic description WITHOUT placeholder replacement
+        # This is used for grouped accordion headers
+        generic_desc = get_detailed_issue_description(violation_id, {})
+
+        # Store THREE types of descriptions:
+        metadata = {
+            # Instance-specific (with placeholder values replaced)
+            'title': enhanced_desc.get('title', ''),
+            'what': enhanced_desc.get('what', ''),
+
+            # Generic catalog description (NO placeholder replacement)
+            # Used for grouped accordion headers
+            'what_generic': generic_desc.get('what', ''),
+
+            # Other metadata
+            'why': enhanced_desc.get('why', ''),
+            'who': enhanced_desc.get('who', ''),
+            'wcag_full': wcag_full,
+            'full_remediation': enhanced_desc.get('remediation', ''),
+            **violation_data  # Include all original metadata from JS tests
+        }
+```
+
+**Key Implementation Detail:**
+
+The function calls `get_detailed_issue_description()` **twice**:
+
+1. **With metadata** (`violation_data`) - Replaces placeholders like `{totalCount}`, `{role}`, `{element}` with actual values
+   - Used for `title` and `what` fields
+   - Example: "Found 2 &lt;header&gt; elements with role="banner"..."
+
+2. **Without metadata** (empty dict `{}`) - Returns the original catalog description with placeholders intact
+   - Used for `what_generic` field
+   - Example: "Found {totalCount} {role} landmarks, but this one lacks..."
+
+This ensures:
+- **Grouped accordions** show generic descriptions (no specific values)
+- **Individual instances** show specific descriptions (with actual values)
+- **Maintains UI principle:** Grouped headers never contain instance-specific information
+
+### 3. Catalog Enrichment (Fallback)
 
 **File:** `auto_a11y/web/routes/pages.py:15-67`
 
@@ -660,8 +717,9 @@ def enrich_test_result_with_catalog(test_result):
 - Only enriches if metadata not already set by result_processor
 - Stores both `what` (specific) and `what_generic` (generic) descriptions
 - Handles WCAG criteria as list or string
+- **Note:** This is fallback enrichment. Primary enrichment happens in result_processor.py
 
-### 3. Template Rendering
+### 4. Template Rendering
 
 **File:** `auto_a11y/web/templates/pages/view.html`
 

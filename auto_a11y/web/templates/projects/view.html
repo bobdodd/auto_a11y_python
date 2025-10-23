@@ -20,9 +20,6 @@
                 <button type="button" class="btn btn-success" onclick="testAllWebsites()">
                     <i class="bi bi-play-fill"></i> Test All Websites
                 </button>
-                <a href="{{ url_for('projects.generate_project_report', project_id=project.id) }}" class="btn btn-info">
-                    <i class="bi bi-file-earmark-text"></i> Project Report
-                </a>
                 <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" class="btn btn-outline-primary">
                     <i class="bi bi-pencil"></i> Edit
                 </a>

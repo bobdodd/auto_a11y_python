@@ -859,6 +859,22 @@
         </div>
     </div>
     {% endif %}
+
+    <!-- Page Screenshot Thumbnail -->
+    {% if page.screenshot_path %}
+    <div class="card mt-4">
+        <div class="card-body">
+            <h6 class="mb-3">Page Thumbnail (at time of test)</h6>
+            <a href="../assets/images/screenshots/{{ page.screenshot_path.split('/')[-1] }}" target="_blank">
+                <img src="../assets/images/screenshots/{{ page.screenshot_path.split('/')[-1] }}"
+                     alt="Screenshot of {{ page.url }}"
+                     class="img-thumbnail"
+                     style="max-width: 300px; height: auto; cursor: pointer;"
+                     onerror="this.parentElement.innerHTML='<span class=\'text-muted\'>Screenshot not available</span>'">
+            </a>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 </div>

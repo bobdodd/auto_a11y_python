@@ -1429,30 +1429,6 @@ class IssueCatalog:
             "who_it_affects": "Users with low vision who need higher contrast to distinguish text, users with color blindness who may have difficulty distinguishing certain color combinations, older users experiencing age-related vision changes, and any user viewing content in bright sunlight or on low-quality displays",
             "how_to_fix": "Ensure text has a contrast ratio of at least 4.5:1 with its background for normal text, or 3:1 for large text (18pt or 14pt bold). For enhanced accessibility (Level AAA), use 7:1 for normal text and 4.5:1 for large text. Use a contrast checking tool to verify ratios and test with actual users when possible. Consider providing a high contrast mode option."
         },
-        "ErrColorStyleDefinedExplicitlyInElement": {
-            "id": "ErrColorStyleDefinedExplicitlyInElement",
-            "type": "Error",
-            "impact": "Medium",
-            "wcag": ["1.4.3"],
-            "wcag_full": "1.4.3",
-            "category": "color",
-            "description": "Color defined inline on element",
-            "why_it_matters": "Inline styles are harder to maintain and override",
-            "who_it_affects": "Users who need custom color schemes",
-            "how_to_fix": "Move color definitions to CSS classes"
-        },
-        "ErrColorStyleDefinedExplicitlyInStyleTag": {
-            "id": "ErrColorStyleDefinedExplicitlyInStyleTag",
-            "type": "Error",
-            "impact": "Low",
-            "wcag": ["1.4.3"],
-            "wcag_full": "1.4.3",
-            "category": "color",
-            "description": "Color defined in style tag",
-            "why_it_matters": "Embedded styles harder to override",
-            "who_it_affects": "Users with custom stylesheets",
-            "how_to_fix": "Use external stylesheets"
-        },
         "ErrColorRelatedStyleDefinedExplicitlyInElement": {
             "id": "ErrColorRelatedStyleDefinedExplicitlyInElement",
             "type": "Warning",

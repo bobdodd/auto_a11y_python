@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMouseOnlyHandler - onmousedown/onmouseup Without Keyboard</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_004_violations_mousedown_mouseup",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements with onmousedown/onmouseup handlers but no keyboard handlers",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>onmousedown/onmouseup Violations</h1>
+
+    <main>
+        <section>
+            <h2>Drag Handles</h2>
+            <div class="draggable"
+                 onmousedown="startDrag(event)"
+                 onmouseup="endDrag(event)"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="Drag handle with mousedown/mouseup but no keyboard equivalent">
+                Drag Me
+            </div>
+        </section>
+
+        <section>
+            <h2>Press and Hold</h2>
+            <span onmousedown="startAction()"
+                  data-expected-violation="true"
+                  data-violation-id="ErrMouseOnlyHandler"
+                  data-violation-reason="Press and hold action with only mousedown, no keyboard handler">
+                Press and Hold
+            </span>
+        </section>
+
+        <section>
+            <h2>Custom Button</h2>
+            <div class="custom-btn"
+                 onmouseup="performAction()"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="Custom button using only mouseup without keyboard support">
+                Custom Action
+            </div>
+        </section>
+    </main>
+</body>
+</html>

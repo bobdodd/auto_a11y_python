@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMouseOnlyHandler - Various Element Types</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_009_violations_various_elements",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 7,
+    "expectedPassCount": 0,
+    "description": "Various non-interactive element types with mouse-only handlers",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Various Element Types with Mouse-Only Handlers</h1>
+
+    <main>
+        <section>
+            <h2>Div Elements</h2>
+            <div onclick="action()"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="Div with onclick, no keyboard handler">
+                Clickable Div
+            </div>
+        </section>
+
+        <section>
+            <h2>Span Elements</h2>
+            <span onclick="action()"
+                  data-expected-violation="true"
+                  data-violation-id="ErrMouseOnlyHandler"
+                  data-violation-reason="Span with onclick, no keyboard handler">
+                Clickable Span
+            </span>
+        </section>
+
+        <section>
+            <h2>Paragraph Elements</h2>
+            <p onclick="action()"
+               data-expected-violation="true"
+               data-violation-id="ErrMouseOnlyHandler"
+               data-violation-reason="Paragraph with onclick, no keyboard handler">
+                Clickable Paragraph
+            </p>
+        </section>
+
+        <section>
+            <h2>List Item Elements</h2>
+            <ul>
+                <li onclick="action()"
+                    data-expected-violation="true"
+                    data-violation-id="ErrMouseOnlyHandler"
+                    data-violation-reason="List item with onclick, no keyboard handler">
+                    Clickable List Item
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Heading Elements</h2>
+            <h3 onclick="action()"
+                data-expected-violation="true"
+                data-violation-id="ErrMouseOnlyHandler"
+                data-violation-reason="Heading with onclick, no keyboard handler">
+                Clickable Heading
+            </h3>
+        </section>
+
+        <section>
+            <h2>Table Cell Elements</h2>
+            <table>
+                <tr>
+                    <td onclick="action()"
+                        data-expected-violation="true"
+                        data-violation-id="ErrMouseOnlyHandler"
+                        data-violation-reason="Table cell with onclick, no keyboard handler">
+                        Clickable Cell
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Label Elements (not associated with form control)</h2>
+            <label onclick="action()"
+                   data-expected-violation="true"
+                   data-violation-id="ErrMouseOnlyHandler"
+                   data-violation-reason="Label with onclick used as button, no keyboard handler">
+                Clickable Label
+            </label>
+        </section>
+    </main>
+
+    <script>
+        function action() {
+            console.log('Clicked');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMouseOnlyHandler - Mixed Inline and Programmatic Handlers</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_006_violations_mixed_handlers",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements with mixed inline and programmatic mouse handlers but no keyboard handlers",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Mixed Handler Violations</h1>
+
+    <main>
+        <section>
+            <h2>Inline and Programmatic</h2>
+            <div onclick="handleClick()"
+                 id="mixed1"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="Has both inline onclick and programmatic mouseover, no keyboard handler">
+                Click or hover
+            </div>
+        </section>
+
+        <section>
+            <h2>Multiple Mouse Events</h2>
+            <span id="mixed2"
+                  onclick="action1()"
+                  data-expected-violation="true"
+                  data-violation-id="ErrMouseOnlyHandler"
+                  data-violation-reason="Has inline onclick and programmatic dblclick, no keyboard">
+                Single or double click
+            </span>
+        </section>
+
+        <section>
+            <h2>Complex Interactions</h2>
+            <div id="mixed3"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="Has programmatic click and mousedown, no keyboard handler">
+                Multi-event handler
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const mixed1 = document.getElementById('mixed1');
+        mixed1.addEventListener('mouseover', () => {
+            console.log('Hovering');
+        });
+
+        const mixed2 = document.getElementById('mixed2');
+        mixed2.addEventListener('dblclick', () => {
+            console.log('Double clicked');
+        });
+
+        const mixed3 = document.getElementById('mixed3');
+        mixed3.addEventListener('click', () => {
+            console.log('Clicked');
+        });
+        mixed3.addEventListener('mousedown', () => {
+            console.log('Mouse down');
+        });
+
+        function handleClick() {
+            console.log('Inline click');
+        }
+
+        function action1() {
+            console.log('Action 1');
+        }
+    </script>
+</body>
+</html>

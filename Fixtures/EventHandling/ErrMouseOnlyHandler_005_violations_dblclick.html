@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMouseOnlyHandler - ondblclick Without Keyboard</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_005_violations_dblclick",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements with ondblclick handlers but no keyboard handlers",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>ondblclick Violations</h1>
+
+    <main>
+        <section>
+            <h2>Editable Text</h2>
+            <p id="editable-text"
+               ondblclick="editText()"
+               data-expected-violation="true"
+               data-violation-id="ErrMouseOnlyHandler"
+               data-violation-reason="Paragraph with double-click to edit but no keyboard equivalent">
+                Double-click to edit this text
+            </p>
+        </section>
+
+        <section>
+            <h2>File Actions</h2>
+            <div class="file-item"
+                 ondblclick="openFile()"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="File item requires double-click to open, no keyboard access">
+                Document.pdf
+            </div>
+        </section>
+
+        <section>
+            <h2>Expandable Items</h2>
+            <span ondblclick="expandSection()"
+                  data-expected-violation="true"
+                  data-violation-id="ErrMouseOnlyHandler"
+                  data-violation-reason="Double-click to expand without keyboard handler">
+                Double-click to expand
+            </span>
+        </section>
+    </main>
+</body>
+</html>

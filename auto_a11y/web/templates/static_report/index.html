@@ -1,0 +1,505 @@
+{% extends "static_report/base.html" %}
+
+{% block title %}Index{% endblock %}
+
+{% block extra_css %}
+<style>
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .page-search-filter {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: white;
+        padding: 1rem 0;
+        margin-bottom: 1rem;
+    }
+
+    .page-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .page-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
+    }
+
+    .page-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 0.25rem 0;
+        flex: 1;
+    }
+
+    .page-url {
+        color: #6c757d;
+        font-size: 0.875rem;
+        word-break: break-all;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-meta {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .issue-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .issue-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .issue-badge i {
+        font-size: 1rem;
+    }
+
+    .issue-badge.errors {
+        background-color: #fee;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+    .issue-badge.warnings {
+        background-color: #fff3cd;
+        color: #996404;
+        border: 1px solid #ffc107;
+    }
+
+    .issue-badge.info {
+        background-color: #e7f5ff;
+        color: #0c5a8a;
+        border: 1px solid #0dcaf0;
+    }
+
+    .issue-badge.discovery {
+        background-color: #f0f0f0;
+        color: #495057;
+        border: 1px solid #6c757d;
+    }
+
+    .page-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .view-details-btn {
+        text-decoration: none;
+        color: white;
+        background-color: var(--primary-color);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .view-details-btn:hover {
+        background-color: #0b5ed7;
+        color: white;
+    }
+
+    .filter-controls {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .filter-controls input,
+    .filter-controls select {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .results-summary {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 1rem;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .no-results i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .test-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .test-info h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .test-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .test-info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .test-info-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .test-info-value {
+        color: #212529;
+        font-size: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-xl">
+    <!-- Test Information -->
+    <div class="test-info">
+        <h2><i class="bi bi-info-circle"></i> Test Information</h2>
+        <div class="test-info-grid">
+            <div class="test-info-item">
+                <span class="test-info-label">Project</span>
+                <span class="test-info-value">{{ project_name|default('Unknown Project') }}</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">Website URL</span>
+                <span class="test-info-value">{{ website_url|default('N/A') }}</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">Test Date</span>
+                <span class="test-info-value">{{ generation_date|default('N/A') }}</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">WCAG Level</span>
+                <span class="test-info-value">{{ wcag_level|default('AA') }}</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">Pages Tested</span>
+                <span class="test-info-value">{{ pages|length }}</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">Touchpoints Tested</span>
+                <span class="test-info-value">{{ touchpoints_tested|join(', ')|default('All') }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="summary-cards">
+        <div class="stat-card bg-light">
+            <div class="stat-value text-dark">{{ pages|length }}</div>
+            <div class="stat-label">Pages Tested</div>
+        </div>
+        <div class="stat-card" style="background-color: #fee;">
+            <div class="stat-value text-danger">{{ summary.total_errors|default(0) }}</div>
+            <div class="stat-label">Total Errors</div>
+        </div>
+        <div class="stat-card" style="background-color: #fff3cd;">
+            <div class="stat-value text-warning">{{ summary.total_warnings|default(0) }}</div>
+            <div class="stat-label">Total Warnings</div>
+        </div>
+        <div class="stat-card" style="background-color: #e7f5ff;">
+            <div class="stat-value text-info">{{ summary.total_info|default(0) }}</div>
+            <div class="stat-label">Informational</div>
+        </div>
+        <div class="stat-card" style="background-color: #f0f0f0;">
+            <div class="stat-value text-muted">{{ summary.total_discovery|default(0) }}</div>
+            <div class="stat-label">Discovery Items</div>
+        </div>
+        <div class="stat-card" style="background-color: #d1ecf1;">
+            <div class="stat-value text-primary">{{ "%.1f"|format(summary.average_score|default(0)) }}%</div>
+            <div class="stat-label">Average Score</div>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="page-search-filter">
+        <div class="filter-section">
+            <div class="filter-controls">
+                <div style="flex: 2; min-width: 300px;">
+                    <input
+                        type="search"
+                        id="page-search"
+                        class="form-control"
+                        placeholder="Search by page title or URL..."
+                        aria-label="Search pages">
+                </div>
+                <div>
+                    <select id="filter-by-issues" class="form-select" aria-label="Filter by issue type">
+                        <option value="all">All Pages</option>
+                        <option value="has-errors">Has Errors</option>
+                        <option value="has-warnings">Has Warnings</option>
+                        <option value="no-errors">No Errors</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="sort-by" class="form-select" aria-label="Sort pages">
+                        <option value="title">Sort by Title</option>
+                        <option value="errors-desc">Errors (High to Low)</option>
+                        <option value="errors-asc">Errors (Low to High)</option>
+                        <option value="score-asc">Score (Low to High)</option>
+                        <option value="score-desc">Score (High to Low)</option>
+                    </select>
+                </div>
+                <button id="reset-filters" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </button>
+            </div>
+            <div class="results-summary" id="results-summary">
+                Showing {{ pages|length }} of {{ pages|length }} pages
+            </div>
+        </div>
+    </div>
+
+    <!-- Pages List -->
+    <div id="pages-container">
+        {% for page in pages %}
+        <div class="page-card"
+             data-page-id="{{ page.id }}"
+             data-title="{{ page.title|lower }}"
+             data-url="{{ page.url|lower }}"
+             data-errors="{{ page.issues.errors }}"
+             data-warnings="{{ page.issues.warnings }}"
+             data-score="{{ page.score }}">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">{{ page.title|truncate(80) }}</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> {{ page.url }}
+                    </div>
+                </div>
+                <div>
+                    {% set score = page.score|default(0) %}
+                    {% if score >= 90 %}
+                        {% set score_class = 'score-excellent' %}
+                    {% elif score >= 80 %}
+                        {% set score_class = 'score-good' %}
+                    {% elif score >= 70 %}
+                        {% set score_class = 'score-fair' %}
+                    {% elif score >= 60 %}
+                        {% set score_class = 'score-poor' %}
+                    {% else %}
+                        {% set score_class = 'score-critical' %}
+                    {% endif %}
+                    <span class="badge {{ score_class }} score-badge">
+                        {{ "%.0f"|format(score) }}%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    {% if page.issues.errors > 0 %}
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>{{ page.issues.errors }} Error{{ 's' if page.issues.errors != 1 }}</span>
+                    </span>
+                    {% endif %}
+
+                    {% if page.issues.warnings > 0 %}
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>{{ page.issues.warnings }} Warning{{ 's' if page.issues.warnings != 1 }}</span>
+                    </span>
+                    {% endif %}
+
+                    {% if page.issues.info > 0 %}
+                    <span class="issue-badge info">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>{{ page.issues.info }} Info</span>
+                    </span>
+                    {% endif %}
+
+                    {% if page.issues.discovery > 0 %}
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>{{ page.issues.discovery }} Discovery</span>
+                    </span>
+                    {% endif %}
+
+                    {% if page.issues.errors == 0 and page.issues.warnings == 0 and page.issues.info == 0 and page.issues.discovery == 0 %}
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle-fill"></i> No Issues
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i> Tested {{ page.test_date|default('Recently') }}
+                </div>
+                <a href="pages/page_{{ '%03d'|format(loop.index) }}.html" class="view-details-btn">
+                    View Details <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- No Results Message -->
+    <div id="no-results" class="no-results" style="display: none;">
+        <i class="bi bi-search"></i>
+        <h3>No Pages Found</h3>
+        <p>Try adjusting your search or filter criteria.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Page filtering and search functionality
+    (function() {
+        const searchInput = document.getElementById('page-search');
+        const filterSelect = document.getElementById('filter-by-issues');
+        const sortSelect = document.getElementById('sort-by');
+        const resetButton = document.getElementById('reset-filters');
+        const pagesContainer = document.getElementById('pages-container');
+        const resultsSummary = document.getElementById('results-summary');
+        const noResults = document.getElementById('no-results');
+
+        let allPages = Array.from(document.querySelectorAll('.page-card'));
+        const totalPages = allPages.length;
+
+        function filterAndSortPages() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterValue = filterSelect.value;
+            const sortValue = sortSelect.value;
+
+            // Filter pages
+            let visiblePages = allPages.filter(page => {
+                // Search filter
+                const title = page.dataset.title;
+                const url = page.dataset.url;
+                const matchesSearch = !searchTerm ||
+                    title.includes(searchTerm) ||
+                    url.includes(searchTerm);
+
+                if (!matchesSearch) return false;
+
+                // Issue filter
+                const errors = parseInt(page.dataset.errors);
+                const warnings = parseInt(page.dataset.warnings);
+
+                switch(filterValue) {
+                    case 'has-errors':
+                        return errors > 0;
+                    case 'has-warnings':
+                        return warnings > 0;
+                    case 'no-errors':
+                        return errors === 0;
+                    default:
+                        return true;
+                }
+            });
+
+            // Sort pages
+            visiblePages.sort((a, b) => {
+                switch(sortValue) {
+                    case 'title':
+                        return a.dataset.title.localeCompare(b.dataset.title);
+                    case 'errors-desc':
+                        return parseInt(b.dataset.errors) - parseInt(a.dataset.errors);
+                    case 'errors-asc':
+                        return parseInt(a.dataset.errors) - parseInt(b.dataset.errors);
+                    case 'score-asc':
+                        return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+                    case 'score-desc':
+                        return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+                    default:
+                        return 0;
+                }
+            });
+
+            // Update display
+            allPages.forEach(page => page.style.display = 'none');
+            visiblePages.forEach(page => page.style.display = 'flex');
+
+            // Update summary
+            const visibleCount = visiblePages.length;
+            resultsSummary.textContent = `Showing ${visibleCount} of ${totalPages} pages`;
+
+            // Show/hide no results message
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+                pagesContainer.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                pagesContainer.style.display = 'block';
+            }
+        }
+
+        function resetFilters() {
+            searchInput.value = '';
+            filterSelect.value = 'all';
+            sortSelect.value = 'title';
+            filterAndSortPages();
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterAndSortPages);
+        filterSelect.addEventListener('change', filterAndSortPages);
+        sortSelect.addEventListener('change', filterAndSortPages);
+        resetButton.addEventListener('click', resetFilters);
+
+        // Initial filter
+        filterAndSortPages();
+    })();
+</script>
+{% endblock %}

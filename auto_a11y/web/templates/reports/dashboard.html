@@ -176,6 +176,28 @@
         </div>
     </div>
 
+    <!-- Second row for Offline Report -->
+    <div class="row mb-4 g-3">
+        <div class="col-md-4 offset-md-4">
+            <div class="card h-100 report-card">
+                <div class="card-body text-center">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-file-earmark-zip display-3 icon-html"></i>
+                    </div>
+                    <div class="content-wrapper">
+                        <h5 class="card-title mt-3">Offline Report (Static HTML)</h5>
+                        <p class="card-text text-muted">Multi-page offline report with filters, scores, and full issue details (ZIP download)</p>
+                    </div>
+                    <div class="btn-wrapper">
+                        <button class="btn btn-html" data-bs-toggle="modal" data-bs-target="#staticHtmlModal">
+                            <i class="bi bi-download me-2"></i>Generate Offline Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Recent Reports -->
     <div class="card">
         <div class="card-header">
@@ -199,17 +221,21 @@
                         {% for report in reports %}
                         <tr>
                             <td>
-                                <i class="bi bi-file-earmark-{{ {'pdf': 'pdf text-danger', 
-                                                                 'excel': 'excel text-success', 
+                                <i class="bi bi-file-earmark-{{ {'pdf': 'pdf text-danger',
+                                                                 'excel': 'excel text-success',
+                                                                 'xlsx': 'excel text-success',
                                                                  'json': 'code text-info',
-                                                                 'html': 'text text-primary'}[report.type] or 'text' }}"></i>
+                                                                 'html': 'text text-primary',
+                                                                 'zip': 'zip text-warning'}[report.type] or 'text' }}"></i>
                                 {{ report.name }}
                             </td>
                             <td>
-                                <span class="badge bg-{{ {'pdf': 'danger', 
-                                                          'excel': 'success', 
+                                <span class="badge bg-{{ {'pdf': 'danger',
+                                                          'excel': 'success',
+                                                          'xlsx': 'success',
                                                           'json': 'info',
-                                                          'html': 'primary'}[report.type] or 'secondary' }}">
+                                                          'html': 'primary',
+                                                          'zip': 'warning'}[report.type] or 'secondary' }}">
                                     {{ report.type|upper }}
                                 </span>
                             </td>
@@ -883,5 +909,232 @@ function generateDiscoveryReport() {
         </div>
     </div>
 </div>
+
+<!-- Static HTML Report Modal -->
+<div class="modal fade" id="staticHtmlModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Offline Report (Static HTML)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="staticHtmlForm">
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle"></i> This report generates a complete offline website with:
+                        <ul class="mt-2 mb-0">
+                            <li>Index page with all tested pages</li>
+                            <li>Summary page with statistics and charts</li>
+                            <li>Individual page detail reports with full issue accordions</li>
+                            <li>Client-side filters and search</li>
+                            <li>All CSS, JS, and images (ZIP download)</li>
+                        </ul>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Scope</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="staticHtmlScope" id="staticHtmlScopeAll" value="all" checked>
+                            <label class="form-check-label" for="staticHtmlScopeAll">
+                                All Projects
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="staticHtmlScope" id="staticHtmlScopeProject" value="project">
+                            <label class="form-check-label" for="staticHtmlScopeProject">
+                                Single Project
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="staticHtmlScope" id="staticHtmlScopeWebsite" value="website">
+                            <label class="form-check-label" for="staticHtmlScopeWebsite">
+                                Single Website
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="staticHtmlProjectGroup" style="display: none;">
+                        <label for="staticHtmlProject" class="form-label">Select Project</label>
+                        <select class="form-select" id="staticHtmlProject">
+                            <option value="">Choose a project...</option>
+                            {% for project in projects %}
+                            <option value="{{ project.id }}">{{ project.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3" id="staticHtmlWebsiteGroup" style="display: none;">
+                        <label for="staticHtmlWebsite" class="form-label">Select Website</label>
+                        <select class="form-select" id="staticHtmlWebsite" disabled>
+                            <option value="">First select a project...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="staticHtmlWcagLevel" class="form-label">WCAG Level</label>
+                        <select class="form-select" id="staticHtmlWcagLevel">
+                            <option value="A">Level A</option>
+                            <option value="AA" selected>Level AA (Recommended)</option>
+                            <option value="AAA">Level AAA</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Options</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="staticHtmlIncludeScreenshots" checked>
+                            <label class="form-check-label" for="staticHtmlIncludeScreenshots">
+                                Include Screenshots
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="staticHtmlIncludeDiscovery" checked>
+                            <label class="form-check-label" for="staticHtmlIncludeDiscovery">
+                                Include Discovery Items
+                            </label>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> <strong>Note:</strong> Large reports may take several minutes to generate. The ZIP file will be downloaded when complete.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-download"></i> Generate & Download ZIP
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Static HTML Modal Logic
+const staticHtmlModal = document.getElementById('staticHtmlModal');
+if (staticHtmlModal) {
+    // Handle scope radio changes
+    document.querySelectorAll('input[name="staticHtmlScope"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const projectGroup = document.getElementById('staticHtmlProjectGroup');
+            const websiteGroup = document.getElementById('staticHtmlWebsiteGroup');
+            const projectSelect = document.getElementById('staticHtmlProject');
+            const websiteSelect = document.getElementById('staticHtmlWebsite');
+
+            if (this.value === 'all') {
+                projectGroup.style.display = 'none';
+                websiteGroup.style.display = 'none';
+                projectSelect.required = false;
+                websiteSelect.required = false;
+            } else if (this.value === 'project') {
+                projectGroup.style.display = 'block';
+                websiteGroup.style.display = 'none';
+                projectSelect.required = true;
+                websiteSelect.required = false;
+            } else if (this.value === 'website') {
+                projectGroup.style.display = 'block';
+                websiteGroup.style.display = 'block';
+                projectSelect.required = true;
+                websiteSelect.required = true;
+            }
+        });
+    });
+
+    // Handle project selection - load websites
+    document.getElementById('staticHtmlProject').addEventListener('change', function() {
+        const websiteSelect = document.getElementById('staticHtmlWebsite');
+        const selectedProjectId = this.value;
+
+        websiteSelect.value = '';
+
+        if (selectedProjectId) {
+            websiteSelect.innerHTML = '<option value="">Loading websites...</option>';
+            websiteSelect.disabled = true;
+
+            fetch(`/projects/api/${selectedProjectId}/websites`)
+                .then(response => response.json())
+                .then(data => {
+                    websiteSelect.innerHTML = '<option value="">Choose a website...</option>';
+
+                    if (data.websites && data.websites.length > 0) {
+                        data.websites.forEach(website => {
+                            const option = document.createElement('option');
+                            option.value = website.id;
+                            option.textContent = website.name;
+                            websiteSelect.appendChild(option);
+                        });
+                        websiteSelect.disabled = false;
+                    } else {
+                        websiteSelect.innerHTML = '<option value="">No websites in this project</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading websites:', error);
+                    websiteSelect.innerHTML = '<option value="">Error loading websites</option>';
+                });
+        } else {
+            websiteSelect.innerHTML = '<option value="">First select a project...</option>';
+            websiteSelect.disabled = true;
+        }
+    });
+
+    // Handle form submission
+    document.getElementById('staticHtmlForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const scope = document.querySelector('input[name="staticHtmlScope"]:checked').value;
+        const formData = {
+            wcag_level: document.getElementById('staticHtmlWcagLevel').value,
+            include_screenshots: document.getElementById('staticHtmlIncludeScreenshots').checked,
+            include_discovery: document.getElementById('staticHtmlIncludeDiscovery').checked
+        };
+
+        if (scope === 'project') {
+            formData.project_id = document.getElementById('staticHtmlProject').value;
+            if (!formData.project_id) {
+                alert('Please select a project');
+                return;
+            }
+        } else if (scope === 'website') {
+            formData.project_id = document.getElementById('staticHtmlProject').value;
+            formData.website_id = document.getElementById('staticHtmlWebsite').value;
+            if (!formData.project_id || !formData.website_id) {
+                alert('Please select a project and website');
+                return;
+            }
+        }
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+
+        // Use FormData to submit as regular form (not JSON)
+        const formElement = e.target;
+        const formDataObj = new FormData();
+
+        if (scope === 'project') {
+            formDataObj.append('project_id', formData.project_id);
+        } else if (scope === 'website') {
+            formDataObj.append('project_id', formData.project_id);
+            formDataObj.append('website_id', formData.website_id);
+        }
+
+        formDataObj.append('wcag_level', formData.wcag_level);
+        formDataObj.append('include_screenshots', formData.include_screenshots);
+        formDataObj.append('include_discovery', formData.include_discovery);
+
+        fetch('/reports/generate/static-html', {
+            method: 'POST',
+            body: formDataObj
+        })
+        .then(response => {
+            // Flask will redirect, so reload the page to see the new report in the list
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error generating report: ' + error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
+    });
+}
+</script>
 
 {% endblock %}

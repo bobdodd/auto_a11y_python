@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, request, jsonify, send_file, curre
 from auto_a11y.models import PageStatus
 from auto_a11y.reporting import ReportGenerator, PageStructureReport
 from auto_a11y.reporting.discovery_report import DiscoveryReportGenerator
+from auto_a11y.reporting.static_html_generator import StaticHTMLReportGenerator
 from datetime import datetime
 import logging
 import json
@@ -20,7 +21,7 @@ def reports_dashboard():
     """Reports dashboard"""
     # Get available reports
     reports_dir = current_app.app_config.REPORTS_DIR
-    report_files = list(reports_dir.glob('*.xlsx')) + list(reports_dir.glob('*.html')) + list(reports_dir.glob('*.json')) + list(reports_dir.glob('*.pdf'))
+    report_files = list(reports_dir.glob('*.xlsx')) + list(reports_dir.glob('*.html')) + list(reports_dir.glob('*.json')) + list(reports_dir.glob('*.pdf')) + list(reports_dir.glob('*.zip'))
     
     reports = []
     for file in sorted(report_files, key=lambda x: x.stat().st_mtime, reverse=True)[:20]:
@@ -442,5 +443,111 @@ def generate_discovery_project_report(project_id):
 
     except Exception as e:
         logger.error(f"Failed to generate discovery report: {e}", exc_info=True)
+        flash(f'Failed to generate report: {str(e)}', 'error')
+        return redirect(url_for('reports.reports_dashboard'))
+
+@reports_bp.route('/generate/static-html', methods=['POST'])
+def generate_static_html_report():
+    """Generate static HTML report (multi-page offline report)"""
+    # Get data from form submission
+    project_id = request.form.get('project_id')
+    website_id = request.form.get('website_id')
+    include_screenshots = request.form.get('include_screenshots', 'true') in ['true', 'True', '1', 'on']
+    include_discovery = request.form.get('include_discovery', 'true') in ['true', 'True', '1', 'on']
+    wcag_level = request.form.get('wcag_level', 'AA')
+
+    try:
+        # Collect all page IDs based on scope
+        page_ids = []
+        project_name = "Accessibility Report"
+        website_url = None
+        touchpoints_tested = None
+
+        if project_id:
+            # Get all pages from all websites in project
+            project = current_app.db.get_project(project_id)
+            if not project:
+                return jsonify({'error': 'Project not found'}), 404
+
+            project_name = project.name
+            websites = current_app.db.get_websites(project_id)
+
+            for website in websites:
+                pages = current_app.db.get_pages(website.id)
+                # Only include tested pages
+                page_ids.extend([str(p.id) for p in pages if p.status == PageStatus.TESTED])
+
+                # Get website URL from first website
+                if not website_url and website.url:
+                    website_url = website.url
+
+        elif website_id:
+            # Get all pages from website
+            website = current_app.db.get_website(website_id)
+            if not website:
+                return jsonify({'error': 'Website not found'}), 404
+
+            # Get project name if available
+            if website.project_id:
+                project = current_app.db.get_project(website.project_id)
+                if project:
+                    project_name = f"{project.name} - {website.name}"
+                else:
+                    project_name = website.name
+            else:
+                project_name = website.name
+
+            website_url = website.url
+            pages = current_app.db.get_pages(website_id)
+            # Only include tested pages
+            page_ids = [str(p.id) for p in pages if p.status == PageStatus.TESTED]
+        else:
+            # Get all pages from all projects
+            projects = current_app.db.get_projects()
+            project_name = "All Projects Accessibility Report"
+
+            for project in projects:
+                websites = current_app.db.get_websites(project.id)
+                for website in websites:
+                    pages = current_app.db.get_pages(website.id)
+                    page_ids.extend([str(p.id) for p in pages if p.status == PageStatus.TESTED])
+
+        if not page_ids:
+            return jsonify({'error': 'No tested pages found to generate report'}), 400
+
+        # Get touchpoints from first page's test result
+        if page_ids:
+            first_result = current_app.db.get_latest_test_result(page_ids[0])
+            if first_result and first_result.violations:
+                touchpoints_set = set()
+                for violation in first_result.violations:
+                    if violation.touchpoint:
+                        touchpoints_set.add(violation.touchpoint)
+                touchpoints_tested = sorted(list(touchpoints_set))
+
+        # Initialize static HTML generator
+        generator = StaticHTMLReportGenerator(
+            current_app.db,
+            output_dir=current_app.app_config.REPORTS_DIR
+        )
+
+        # Generate report
+        zip_path = generator.generate_report(
+            page_ids=page_ids,
+            project_name=project_name,
+            website_url=website_url,
+            wcag_level=wcag_level,
+            touchpoints_tested=touchpoints_tested,
+            include_screenshots=include_screenshots,
+            include_discovery=include_discovery,
+            ai_tests_enabled=True
+        )
+
+        # Flash success message and redirect to dashboard
+        flash(f'Static HTML report generated successfully! Download it from the list below.', 'success')
+        return redirect(url_for('reports.reports_dashboard'))
+
+    except Exception as e:
+        logger.error(f"Failed to generate static HTML report: {e}", exc_info=True)
         flash(f'Failed to generate report: {str(e)}', 'error')
         return redirect(url_for('reports.reports_dashboard'))

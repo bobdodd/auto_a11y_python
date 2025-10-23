@@ -1,0 +1,599 @@
+{% extends "static_report/base.html" %}
+
+{% block title %}Summary{% endblock %}
+
+{% block extra_css %}
+<style>
+    .summary-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px;
+    }
+
+    .summary-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .summary-header .subtitle {
+        font-size: 1.25rem;
+        opacity: 0.9;
+    }
+
+    .overview-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .overview-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.2s;
+    }
+
+    .overview-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    }
+
+    .overview-card .card-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .overview-card .card-value {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .overview-card .card-label {
+        font-size: 1rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .section {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .section h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .issue-breakdown {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .issue-type-card {
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 2px solid;
+    }
+
+    .issue-type-card.errors {
+        background-color: #fee;
+        border-color: #dc3545;
+    }
+
+    .issue-type-card.warnings {
+        background-color: #fff3cd;
+        border-color: #ffc107;
+    }
+
+    .issue-type-card.info {
+        background-color: #e7f5ff;
+        border-color: #0dcaf0;
+    }
+
+    .issue-type-card.discovery {
+        background-color: #f0f0f0;
+        border-color: #6c757d;
+    }
+
+    .issue-type-card .type-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .issue-type-card .type-count {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+    }
+
+    .issue-type-card .type-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .issue-type-card .type-pages {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.5rem;
+    }
+
+    .top-issues-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .top-issue-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        background: #f8f9fa;
+        border-left: 4px solid;
+        border-radius: 4px;
+    }
+
+    .top-issue-item.error {
+        border-color: #dc3545;
+    }
+
+    .top-issue-item.warning {
+        border-color: #ffc107;
+    }
+
+    .top-issue-item .issue-rank {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #6c757d;
+        margin-right: 1rem;
+        min-width: 2rem;
+    }
+
+    .top-issue-item .issue-details {
+        flex: 1;
+    }
+
+    .top-issue-item .issue-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .top-issue-item .issue-count {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .top-issue-item .issue-impact {
+        margin-left: auto;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .impact-high {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .impact-medium {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    .impact-low {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+    .wcag-compliance {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .wcag-principle {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+
+    .wcag-principle h3 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        color: #0d6efd;
+    }
+
+    .wcag-criteria {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .wcag-criteria li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .wcag-criteria li:last-child {
+        border-bottom: none;
+    }
+
+    .wcag-criteria .criterion-code {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .wcag-criteria .criterion-count {
+        background: #0d6efd;
+        color: white;
+        padding: 0.125rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .touchpoint-breakdown {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .touchpoint-card {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid #0d6efd;
+    }
+
+    .touchpoint-card h3 {
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+
+    .touchpoint-stats {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.875rem;
+    }
+
+    .touchpoint-stat {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .recommendations {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .recommendations h3 {
+        color: #996404;
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+    }
+
+    .recommendations ol {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+
+    .recommendations li {
+        margin-bottom: 0.75rem;
+        color: #664d03;
+    }
+
+    .compliance-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+    }
+
+    .compliance-pass {
+        background-color: #d1e7dd;
+        color: #0a3622;
+        border: 2px solid #198754;
+    }
+
+    .compliance-partial {
+        background-color: #fff3cd;
+        color: #664d03;
+        border: 2px solid #ffc107;
+    }
+
+    .compliance-fail {
+        background-color: #f8d7da;
+        color: #58151c;
+        border: 2px solid #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-xl">
+    <!-- Summary Header -->
+    <div class="summary-header">
+        <h1><i class="bi bi-bar-chart-fill"></i> Accessibility Report Summary</h1>
+        <p class="subtitle">{{ project_name|default('Accessibility Report') }}</p>
+        <p class="mb-0">Generated on {{ generation_date|default('N/A') }}</p>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="overview-cards">
+        <div class="overview-card">
+            <div class="card-icon"><i class="bi bi-file-earmark-text text-primary"></i></div>
+            <div class="card-value text-primary">{{ pages|length }}</div>
+            <div class="card-label">Pages Tested</div>
+        </div>
+
+        <div class="overview-card">
+            <div class="card-icon"><i class="bi bi-exclamation-octagon text-danger"></i></div>
+            <div class="card-value text-danger">{{ summary.total_errors|default(0) }}</div>
+            <div class="card-label">Total Errors</div>
+        </div>
+
+        <div class="overview-card">
+            <div class="card-icon"><i class="bi bi-exclamation-triangle text-warning"></i></div>
+            <div class="card-value text-warning">{{ summary.total_warnings|default(0) }}</div>
+            <div class="card-label">Total Warnings</div>
+        </div>
+
+        <div class="overview-card">
+            <div class="card-icon"><i class="bi bi-check-circle text-success"></i></div>
+            <div class="card-value text-success">{{ "%.1f"|format(summary.average_score|default(0)) }}%</div>
+            <div class="card-label">Average Score</div>
+        </div>
+    </div>
+
+    <!-- WCAG Compliance Status -->
+    <div class="section">
+        <h2><i class="bi bi-clipboard-check"></i> WCAG Compliance Status</h2>
+        {% set compliance_level = summary.compliance_level|default('partial') %}
+        {% if compliance_level == 'pass' %}
+            <span class="compliance-badge compliance-pass">
+                <i class="bi bi-check-circle-fill"></i> WCAG {{ wcag_level|default('AA') }} Compliant
+            </span>
+            <p>This website meets WCAG {{ wcag_level|default('AA') }} standards with no critical errors detected.</p>
+        {% elif compliance_level == 'fail' %}
+            <span class="compliance-badge compliance-fail">
+                <i class="bi bi-x-circle-fill"></i> WCAG {{ wcag_level|default('AA') }} Non-Compliant
+            </span>
+            <p>This website has critical accessibility errors that must be addressed to meet WCAG {{ wcag_level|default('AA') }} standards.</p>
+        {% else %}
+            <span class="compliance-badge compliance-partial">
+                <i class="bi bi-exclamation-circle-fill"></i> Partial WCAG {{ wcag_level|default('AA') }} Compliance
+            </span>
+            <p>This website has accessibility issues that should be addressed to fully meet WCAG {{ wcag_level|default('AA') }} standards.</p>
+        {% endif %}
+    </div>
+
+    <!-- Issue Breakdown by Type -->
+    <div class="section">
+        <h2><i class="bi bi-pie-chart"></i> Issue Breakdown by Type</h2>
+        <div class="issue-breakdown">
+            <div class="issue-type-card errors">
+                <div class="type-icon text-danger">
+                    <i class="bi bi-x-circle-fill"></i>
+                </div>
+                <div class="type-count text-danger">{{ summary.total_errors|default(0) }}</div>
+                <div class="type-label text-danger">Errors</div>
+                <div class="type-pages">
+                    On {{ summary.pages_with_errors|default(0) }} page{{ 's' if summary.pages_with_errors != 1 }}
+                </div>
+            </div>
+
+            <div class="issue-type-card warnings">
+                <div class="type-icon text-warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div class="type-count text-warning">{{ summary.total_warnings|default(0) }}</div>
+                <div class="type-label" style="color: #996404;">Warnings</div>
+                <div class="type-pages">
+                    On {{ summary.pages_with_warnings|default(0) }} page{{ 's' if summary.pages_with_warnings != 1 }}
+                </div>
+            </div>
+
+            <div class="issue-type-card info">
+                <div class="type-icon text-info">
+                    <i class="bi bi-info-circle-fill"></i>
+                </div>
+                <div class="type-count text-info">{{ summary.total_info|default(0) }}</div>
+                <div class="type-label text-info">Informational</div>
+                <div class="type-pages">
+                    On {{ summary.pages_with_info|default(0) }} page{{ 's' if summary.pages_with_info != 1 }}
+                </div>
+            </div>
+
+            <div class="issue-type-card discovery">
+                <div class="type-icon text-muted">
+                    <i class="bi bi-lightbulb-fill"></i>
+                </div>
+                <div class="type-count text-muted">{{ summary.total_discovery|default(0) }}</div>
+                <div class="type-label text-muted">Discovery</div>
+                <div class="type-pages">
+                    On {{ summary.pages_with_discovery|default(0) }} page{{ 's' if summary.pages_with_discovery != 1 }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Issues -->
+    <div class="section">
+        <h2><i class="bi bi-list-ol"></i> Top Issues</h2>
+        <p class="text-muted mb-3">Most frequently occurring accessibility issues across all pages</p>
+        <ul class="top-issues-list">
+            {% for issue in summary.top_issues|default([]) %}
+            <li class="top-issue-item {{ issue.severity|lower }}">
+                <span class="issue-rank">#{{ loop.index }}</span>
+                <div class="issue-details">
+                    <div class="issue-name">{{ issue.title }}</div>
+                    <div class="issue-count">
+                        <i class="bi bi-exclamation-circle"></i> {{ issue.count }} occurrence{{ 's' if issue.count != 1 }}
+                        on {{ issue.pages }} page{{ 's' if issue.pages != 1 }}
+                    </div>
+                </div>
+                <span class="issue-impact impact-{{ issue.impact|lower }}">
+                    {{ issue.impact }}
+                </span>
+            </li>
+            {% else %}
+            <li class="text-muted">No issues found</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Touchpoint Breakdown -->
+    {% if summary.by_touchpoint %}
+    <div class="section">
+        <h2><i class="bi bi-diagram-3"></i> Issue Breakdown by Touchpoint</h2>
+        <div class="touchpoint-breakdown">
+            {% for touchpoint, stats in summary.by_touchpoint.items() %}
+            <div class="touchpoint-card">
+                <h3>{{ touchpoint }}</h3>
+                <div class="touchpoint-stats">
+                    {% if stats.errors > 0 %}
+                    <div class="touchpoint-stat">
+                        <i class="bi bi-x-circle-fill text-danger"></i>
+                        <span class="text-danger fw-bold">{{ stats.errors }}</span>
+                    </div>
+                    {% endif %}
+                    {% if stats.warnings > 0 %}
+                    <div class="touchpoint-stat">
+                        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                        <span class="text-warning fw-bold">{{ stats.warnings }}</span>
+                    </div>
+                    {% endif %}
+                    {% if stats.info > 0 %}
+                    <div class="touchpoint-stat">
+                        <i class="bi bi-info-circle-fill text-info"></i>
+                        <span class="text-info fw-bold">{{ stats.info }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- WCAG Criteria -->
+    {% if summary.by_wcag %}
+    <div class="section">
+        <h2><i class="bi bi-shield-check"></i> WCAG 2.2 Criteria Violations</h2>
+        <div class="wcag-compliance">
+            {% for principle, criteria_list in summary.by_wcag.items() %}
+            <div class="wcag-principle">
+                <h3>{{ principle }}</h3>
+                <ul class="wcag-criteria">
+                    {% for criterion in criteria_list %}
+                    <li>
+                        <span class="criterion-code">{{ criterion.code }}</span>
+                        <span class="criterion-count">{{ criterion.count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recommendations -->
+    <div class="section">
+        <div class="recommendations">
+            <h3><i class="bi bi-lightbulb"></i> Priority Recommendations</h3>
+            <ol>
+                {% for rec in summary.recommendations|default([]) %}
+                <li><strong>{{ rec.title }}:</strong> {{ rec.description }}</li>
+                {% else %}
+                <li>Address all errors first (highest priority)</li>
+                <li>Review and fix warnings</li>
+                <li>Consider informational items for enhanced accessibility</li>
+                <li>Review discovery items for potential improvements</li>
+                <li>Test with actual assistive technologies</li>
+                <li>Conduct user testing with people with disabilities</li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+
+    <!-- Testing Information -->
+    <div class="section">
+        <h2><i class="bi bi-info-circle"></i> Testing Information</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-sm">
+                    <tbody>
+                        <tr>
+                            <th>Project:</th>
+                            <td>{{ project_name|default('Unknown') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Website:</th>
+                            <td>{{ website_url|default('N/A') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Test Date:</th>
+                            <td>{{ generation_date|default('N/A') }}</td>
+                        </tr>
+                        <tr>
+                            <th>WCAG Level:</th>
+                            <td>{{ wcag_level|default('AA') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table table-sm">
+                    <tbody>
+                        <tr>
+                            <th>Pages Tested:</th>
+                            <td>{{ pages|length }}</td>
+                        </tr>
+                        <tr>
+                            <th>Touchpoints:</th>
+                            <td>{{ touchpoints_tested|join(', ')|default('All') }}</td>
+                        </tr>
+                        <tr>
+                            <th>AI Tests:</th>
+                            <td>{{ 'Enabled' if ai_tests_enabled else 'Disabled' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Report Version:</th>
+                            <td>{{ report_version|default('1.0.0') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

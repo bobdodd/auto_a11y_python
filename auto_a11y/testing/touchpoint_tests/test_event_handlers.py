@@ -247,36 +247,62 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     previousRect = rect;
                 });
                 
+                // Parse JavaScript to find programmatic event listeners
+                const elementEventMap = new Map(); // element id/selector -> {mouseEvents: Set, keyEvents: Set}
+
+                const scripts = Array.from(document.querySelectorAll('script'));
+                scripts.forEach(script => {
+                    if (!script.src && script.textContent) {
+                        const code = script.textContent;
+                        // Match patterns like: element.addEventListener('eventType', ...)
+                        const addEventListenerPattern = /(\w+)\.addEventListener\(['"](\w+)['"]/g;
+                        let match;
+                        while ((match = addEventListenerPattern.exec(code)) !== null) {
+                            const varName = match[1];
+                            const eventType = match[2].toLowerCase();
+
+                            if (!elementEventMap.has(varName)) {
+                                elementEventMap.set(varName, {mouseEvents: new Set(), keyEvents: new Set()});
+                            }
+
+                            const events = elementEventMap.get(varName);
+                            if (['click', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'dblclick', 'contextmenu'].includes(eventType)) {
+                                events.mouseEvents.add(eventType);
+                            } else if (['keydown', 'keyup', 'keypress'].includes(eventType)) {
+                                events.keyEvents.add(eventType);
+                            }
+                        }
+                    }
+                });
+
                 // Check for elements with event handlers but no tabindex
                 const allElements = Array.from(document.querySelectorAll('*'));
                 allElements.forEach(element => {
-                    let hasEventHandler = false;
+                    let hasMouseHandler = false;
                     let hasKeyboardHandler = false;
-                    
+
                     // Check for inline event handlers
                     Array.from(element.attributes).forEach(attr => {
                         if (attr.name.startsWith('on')) {
-                            hasEventHandler = true;
-                            const eventType = attr.name.slice(2);
+                            const eventType = attr.name.slice(2).toLowerCase();
                             if (['keydown', 'keyup', 'keypress'].includes(eventType)) {
                                 hasKeyboardHandler = true;
                             }
+                            if (['click', 'mousedown', 'mouseup', 'mouseover', 'mouseout', 'dblclick', 'contextmenu'].includes(eventType)) {
+                                hasMouseHandler = true;
+                            }
                         }
                     });
-                    
-                    // Check for class-based event handlers (common pattern)
-                    const classAndData = element.className + ' ' + 
-                        Array.from(element.attributes)
-                            .map(attr => attr.name + ' ' + attr.value)
-                            .join(' ');
-                            
-                    if (classAndData.toLowerCase().includes('click') ||
-                        classAndData.toLowerCase().includes('button') ||
-                        classAndData.toLowerCase().includes('trigger')) {
-                        hasEventHandler = true;
+
+                    // Check if element has programmatic handlers based on parsed JavaScript
+                    if (element.id && elementEventMap.has(element.id)) {
+                        const events = elementEventMap.get(element.id);
+                        if (events.mouseEvents.size > 0) hasMouseHandler = true;
+                        if (events.keyEvents.size > 0) hasKeyboardHandler = true;
                     }
-                    
-                    if (hasEventHandler && !isIntrinsicInteractive(element) && !element.hasAttribute('tabindex')) {
+
+                    // Check for ErrMissingTabindex
+                    if ((hasMouseHandler || hasKeyboardHandler) && !isIntrinsicInteractive(element) && !element.hasAttribute('tabindex')) {
                         const tagName = element.tagName.toLowerCase();
                         const hasOnclick = element.hasAttribute('onclick');
                         const hasOtherHandlers = element.hasAttribute('onmousedown') ||
@@ -297,9 +323,9 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         });
                         results.elements_failed++;
                     }
-                    
+
                     // Check for mouse-only handlers
-                    if (hasEventHandler && !hasKeyboardHandler && !isIntrinsicInteractive(element)) {
+                    if (hasMouseHandler && !hasKeyboardHandler && !isIntrinsicInteractive(element) && !element.hasAttribute('tabindex')) {
                         results.errors.push({
                             err: 'ErrMouseOnlyHandler',
                             type: 'err',

@@ -930,41 +930,26 @@ function generateDiscoveryReport() {
                             <li>All CSS, JS, and images (ZIP download)</li>
                         </ul>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Scope</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="staticHtmlScope" id="staticHtmlScopeAll" value="all" checked>
-                            <label class="form-check-label" for="staticHtmlScopeAll">
-                                All Projects
-                            </label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="staticHtmlProject" class="form-label">Project</label>
+                                <select class="form-select" id="staticHtmlProject">
+                                    <option value="">All Projects</option>
+                                    {% for project in projects %}
+                                    <option value="{{ project.id }}">{{ project.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="staticHtmlScope" id="staticHtmlScopeProject" value="project">
-                            <label class="form-check-label" for="staticHtmlScopeProject">
-                                Single Project
-                            </label>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="staticHtmlWebsite" class="form-label">Website</label>
+                                <select class="form-select" id="staticHtmlWebsite" disabled>
+                                    <option value="">Select a project first...</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="staticHtmlScope" id="staticHtmlScopeWebsite" value="website">
-                            <label class="form-check-label" for="staticHtmlScopeWebsite">
-                                Single Website
-                            </label>
-                        </div>
-                    </div>
-                    <div class="mb-3" id="staticHtmlProjectGroup" style="display: none;">
-                        <label for="staticHtmlProject" class="form-label">Select Project</label>
-                        <select class="form-select" id="staticHtmlProject">
-                            <option value="">Choose a project...</option>
-                            {% for project in projects %}
-                            <option value="{{ project.id }}">{{ project.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3" id="staticHtmlWebsiteGroup" style="display: none;">
-                        <label for="staticHtmlWebsite" class="form-label">Select Website</label>
-                        <select class="form-select" id="staticHtmlWebsite" disabled>
-                            <option value="">First select a project...</option>
-                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="staticHtmlWcagLevel" class="form-label">WCAG Level</label>
@@ -1008,33 +993,6 @@ function generateDiscoveryReport() {
 // Static HTML Modal Logic
 const staticHtmlModal = document.getElementById('staticHtmlModal');
 if (staticHtmlModal) {
-    // Handle scope radio changes
-    document.querySelectorAll('input[name="staticHtmlScope"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const projectGroup = document.getElementById('staticHtmlProjectGroup');
-            const websiteGroup = document.getElementById('staticHtmlWebsiteGroup');
-            const projectSelect = document.getElementById('staticHtmlProject');
-            const websiteSelect = document.getElementById('staticHtmlWebsite');
-
-            if (this.value === 'all') {
-                projectGroup.style.display = 'none';
-                websiteGroup.style.display = 'none';
-                projectSelect.required = false;
-                websiteSelect.required = false;
-            } else if (this.value === 'project') {
-                projectGroup.style.display = 'block';
-                websiteGroup.style.display = 'none';
-                projectSelect.required = true;
-                websiteSelect.required = false;
-            } else if (this.value === 'website') {
-                projectGroup.style.display = 'block';
-                websiteGroup.style.display = 'block';
-                projectSelect.required = true;
-                websiteSelect.required = true;
-            }
-        });
-    });
-
     // Handle project selection - load websites
     document.getElementById('staticHtmlProject').addEventListener('change', function() {
         const websiteSelect = document.getElementById('staticHtmlWebsite');
@@ -1049,7 +1007,7 @@ if (staticHtmlModal) {
             fetch(`/projects/api/${selectedProjectId}/websites`)
                 .then(response => response.json())
                 .then(data => {
-                    websiteSelect.innerHTML = '<option value="">Choose a website...</option>';
+                    websiteSelect.innerHTML = '<option value="">All Websites</option>';
 
                     if (data.websites && data.websites.length > 0) {
                         data.websites.forEach(website => {
@@ -1068,7 +1026,7 @@ if (staticHtmlModal) {
                     websiteSelect.innerHTML = '<option value="">Error loading websites</option>';
                 });
         } else {
-            websiteSelect.innerHTML = '<option value="">First select a project...</option>';
+            websiteSelect.innerHTML = '<option value="">Select a project first...</option>';
             websiteSelect.disabled = true;
         }
     });
@@ -1077,27 +1035,11 @@ if (staticHtmlModal) {
     document.getElementById('staticHtmlForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const scope = document.querySelector('input[name="staticHtmlScope"]:checked').value;
-        const formData = {
-            wcag_level: document.getElementById('staticHtmlWcagLevel').value,
-            include_screenshots: document.getElementById('staticHtmlIncludeScreenshots').checked,
-            include_discovery: document.getElementById('staticHtmlIncludeDiscovery').checked
-        };
-
-        if (scope === 'project') {
-            formData.project_id = document.getElementById('staticHtmlProject').value;
-            if (!formData.project_id) {
-                alert('Please select a project');
-                return;
-            }
-        } else if (scope === 'website') {
-            formData.project_id = document.getElementById('staticHtmlProject').value;
-            formData.website_id = document.getElementById('staticHtmlWebsite').value;
-            if (!formData.project_id || !formData.website_id) {
-                alert('Please select a project and website');
-                return;
-            }
-        }
+        const projectId = document.getElementById('staticHtmlProject').value;
+        const websiteId = document.getElementById('staticHtmlWebsite').value;
+        const wcagLevel = document.getElementById('staticHtmlWcagLevel').value;
+        const includeScreenshots = document.getElementById('staticHtmlIncludeScreenshots').checked;
+        const includeDiscovery = document.getElementById('staticHtmlIncludeDiscovery').checked;
 
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
@@ -1105,19 +1047,19 @@ if (staticHtmlModal) {
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
 
         // Use FormData to submit as regular form (not JSON)
-        const formElement = e.target;
         const formDataObj = new FormData();
 
-        if (scope === 'project') {
-            formDataObj.append('project_id', formData.project_id);
-        } else if (scope === 'website') {
-            formDataObj.append('project_id', formData.project_id);
-            formDataObj.append('website_id', formData.website_id);
+        // Add project_id and website_id if selected (empty string means "All")
+        if (projectId) {
+            formDataObj.append('project_id', projectId);
+        }
+        if (websiteId) {
+            formDataObj.append('website_id', websiteId);
         }
 
-        formDataObj.append('wcag_level', formData.wcag_level);
-        formDataObj.append('include_screenshots', formData.include_screenshots);
-        formDataObj.append('include_discovery', formData.include_discovery);
+        formDataObj.append('wcag_level', wcagLevel);
+        formDataObj.append('include_screenshots', includeScreenshots);
+        formDataObj.append('include_discovery', includeDiscovery);
 
         fetch('/reports/generate/static-html', {
             method: 'POST',

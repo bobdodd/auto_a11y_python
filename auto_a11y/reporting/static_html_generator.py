@@ -122,10 +122,6 @@ class StaticHTMLReportGenerator:
             self._generate_index_html(report_dir, pages_data, summary, project_name,
                                      website_url, wcag_level, touchpoints_tested)
 
-            self._generate_summary_html(report_dir, pages_data, summary, project_name,
-                                       website_url, wcag_level, touchpoints_tested,
-                                       ai_tests_enabled)
-
             self._generate_page_detail_htmls(report_dir, pages_data, project_name,
                                             wcag_level, touchpoints_tested)
 

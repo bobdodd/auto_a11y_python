@@ -152,8 +152,6 @@ WCAG_MAPPINGS = {
     'ErrTextContrast': ['1.4.3 Contrast (Minimum)'],
     'ErrInsufficientContrast': ['1.4.3 Contrast (Minimum)'],
     'ErrLinkContrast': ['1.4.3 Contrast (Minimum)', '1.4.1 Use of Color'],
-    'ErrColorStyleDefinedExplicitlyInElement': ['1.4.1 Use of Color'],
-    'ErrColorStyleDefinedExplicitlyInStyleTag': ['1.4.1 Use of Color'],
     'WarnColorRelatedStyleDefinedExplicitlyInElement': ['1.4.1 Use of Color'],
     'WarnColorRelatedStyleDefinedExplicitlyInStyleTag': ['1.4.1 Use of Color'],
     'WarnNoColorSchemeSupport': ['1.4.3 Contrast (Minimum)', '5.2.4 Accessibility Supported'],

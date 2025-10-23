@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMouseOnlyHandler - Correct Programmatic Handlers</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_008_correct_programmatic_handlers",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Elements with programmatic mouse and keyboard event listeners",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Correct Programmatic Handler Implementation</h1>
+
+    <main>
+        <section>
+            <h2>Interactive Card</h2>
+            <div class="card"
+                 id="card1"
+                 tabindex="0"
+                 data-expected-pass="true"
+                 data-pass-reason="Has both click and keydown event listeners added programmatically">
+                Accessible Interactive Card
+            </div>
+        </section>
+
+        <section>
+            <h2>Custom Toggle</h2>
+            <span id="toggle1"
+                  tabindex="0"
+                  data-expected-pass="true"
+                  data-pass-reason="Has both click and keypress listeners">
+                Toggle Feature
+            </span>
+        </section>
+
+        <section>
+            <h2>Action Button Replacement</h2>
+            <div id="action1"
+                 tabindex="0"
+                 data-expected-pass="true"
+                 data-pass-reason="Div acting as button with proper keyboard support">
+                Perform Action
+            </div>
+        </section>
+
+        <section>
+            <h2>Selectable Item</h2>
+            <li id="item1"
+                tabindex="0"
+                data-expected-pass="true"
+                data-pass-reason="List item with click and Enter/Space keyboard handling">
+                Select This Item
+            </li>
+        </section>
+    </main>
+
+    <script>
+        // Card with both click and keyboard
+        const card1 = document.getElementById('card1');
+        card1.addEventListener('click', () => {
+            alert('Card clicked');
+        });
+        card1.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                alert('Card activated via keyboard');
+            }
+        });
+
+        // Toggle with click and keypress
+        const toggle1 = document.getElementById('toggle1');
+        toggle1.addEventListener('click', () => {
+            console.log('Toggled via click');
+        });
+        toggle1.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                console.log('Toggled via Enter');
+            }
+        });
+
+        // Action with click and keydown
+        const action1 = document.getElementById('action1');
+        action1.addEventListener('click', () => {
+            console.log('Action performed');
+        });
+        action1.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                console.log('Action via keyboard');
+            }
+        });
+
+        // Item with click and keyup
+        const item1 = document.getElementById('item1');
+        item1.addEventListener('click', () => {
+            console.log('Item selected');
+        });
+        item1.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                console.log('Item selected via keyboard');
+            }
+        });
+    </script>
+</body>
+</html>

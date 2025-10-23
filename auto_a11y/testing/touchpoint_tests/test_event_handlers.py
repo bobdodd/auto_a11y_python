@@ -131,14 +131,8 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 });
                 
                 results.elements_tested = focusableElements.length;
-                
-                if (focusableElements.length === 0) {
-                    results.applicable = false;
-                    results.not_applicable_reason = 'No focusable elements found on the page';
-                    return results;
-                }
-                
-                // Check tab order
+
+                // Check tab order (only if there are focusable elements)
                 let tabOrderViolations = 0;
                 let previousRect = null;
                 

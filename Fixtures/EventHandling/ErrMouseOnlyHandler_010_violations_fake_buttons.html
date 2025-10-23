@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMouseOnlyHandler - Elements That Should Be Buttons</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_010_violations_fake_buttons",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Elements styled as buttons but implemented incorrectly with mouse-only handlers",
+    "wcag": "2.1.1",
+    "impact": "Critical"
+}
+    </script>
+    <style>
+        .fake-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+        }
+        .fake-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fake Buttons - Elements That Should Be Real Buttons</h1>
+
+    <main>
+        <section>
+            <h2>Div as Button</h2>
+            <div class="fake-button"
+                 onclick="submitForm()"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="Div styled as button with only mouse handler - should use actual button element">
+                Submit
+            </div>
+        </section>
+
+        <section>
+            <h2>Span as Button</h2>
+            <span class="fake-button"
+                  onclick="cancelAction()"
+                  data-expected-violation="true"
+                  data-violation-id="ErrMouseOnlyHandler"
+                  data-violation-reason="Span styled as button with mouse-only handler">
+                Cancel
+            </span>
+        </section>
+
+        <section>
+            <h2>Anchor as Button (no href)</h2>
+            <a class="fake-button"
+               onclick="performAction(); return false;"
+               data-expected-violation="true"
+               data-violation-id="ErrMouseOnlyHandler"
+               data-violation-reason="Anchor without href used as button, onclick only">
+                Do Action
+            </a>
+        </section>
+
+        <section>
+            <h2>Image as Button</h2>
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='40'%3E%3Crect width='100' height='40' fill='%234CAF50'/%3E%3Ctext x='50' y='25' text-anchor='middle' fill='white'%3EClick Me%3C/text%3E%3C/svg%3E"
+                 alt="Click button"
+                 onclick="clickAction()"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="Image with onclick used as button without keyboard handler">
+        </section>
+
+        <section>
+            <h2>SVG as Button</h2>
+            <svg width="100" height="40"
+                 onclick="svgAction()"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="SVG with onclick as button without keyboard support">
+                <rect width="100" height="40" fill="#4CAF50"/>
+                <text x="50" y="25" text-anchor="middle" fill="white">SVG Button</text>
+            </svg>
+        </section>
+    </main>
+
+    <script>
+        function submitForm() {
+            alert('Form submitted');
+        }
+
+        function cancelAction() {
+            alert('Action cancelled');
+        }
+
+        function performAction() {
+            alert('Action performed');
+        }
+
+        function clickAction() {
+            alert('Image clicked');
+        }
+
+        function svgAction() {
+            alert('SVG clicked');
+        }
+    </script>
+</body>
+</html>

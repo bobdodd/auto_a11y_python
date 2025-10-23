@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMouseOnlyHandler - Correct Inline Handlers</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_007_correct_inline_handlers",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Elements with both inline onclick and onkeydown handlers",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Correct Inline Handler Implementation</h1>
+
+    <main>
+        <section>
+            <h2>Card with Keyboard Support</h2>
+            <div class="card"
+                 onclick="handleCard()"
+                 onkeydown="if(event.key==='Enter' || event.key===' ') handleCard()"
+                 tabindex="0"
+                 data-expected-pass="true"
+                 data-pass-reason="Has both onclick and onkeydown, keyboard accessible">
+                Click or press Enter/Space
+            </div>
+        </section>
+
+        <section>
+            <h2>Custom Action with Keyboard</h2>
+            <span onclick="performAction()"
+                  onkeypress="if(event.key==='Enter') performAction()"
+                  tabindex="0"
+                  data-expected-pass="true"
+                  data-pass-reason="Has onclick and onkeypress handlers">
+                Accessible Action
+            </span>
+        </section>
+
+        <section>
+            <h2>Interactive List Item</h2>
+            <ul>
+                <li onclick="selectOption()"
+                    onkeydown="if(event.key==='Enter') selectOption()"
+                    tabindex="0"
+                    data-expected-pass="true"
+                    data-pass-reason="List item with both mouse and keyboard handlers">
+                    Option 1
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        function handleCard() {
+            alert('Card activated');
+        }
+
+        function performAction() {
+            alert('Action performed');
+        }
+
+        function selectOption() {
+            alert('Option selected');
+        }
+    </script>
+</body>
+</html>

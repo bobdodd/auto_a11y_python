@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMouseOnlyHandler - Inline onclick Without Keyboard</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMouseOnlyHandler_003_violations_inline_onclick",
+    "issueId": "ErrMouseOnlyHandler",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Elements with inline onclick handlers but no keyboard handlers",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Inline onclick Violations</h1>
+
+    <main>
+        <section>
+            <h2>Card Actions</h2>
+            <div class="card"
+                 onclick="alert('Card clicked')"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMouseOnlyHandler"
+                 data-violation-reason="Div with onclick but no keyboard handler - keyboard users cannot activate">
+                Click this card
+            </div>
+        </section>
+
+        <section>
+            <h2>List Items</h2>
+            <ul>
+                <li onclick="selectItem(1)"
+                    data-expected-violation="true"
+                    data-violation-id="ErrMouseOnlyHandler"
+                    data-violation-reason="List item with onclick but no keyboard handler">
+                    Option 1
+                </li>
+                <li onclick="selectItem(2)"
+                    data-expected-violation="true"
+                    data-violation-id="ErrMouseOnlyHandler"
+                    data-violation-reason="List item with onclick but no keyboard handler">
+                    Option 2
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Custom Actions</h2>
+            <span onclick="toggleFeature()"
+                  data-expected-violation="true"
+                  data-violation-id="ErrMouseOnlyHandler"
+                  data-violation-reason="Span with onclick but no keyboard handler">
+                Toggle Feature
+            </span>
+        </section>
+    </main>
+</body>
+</html>

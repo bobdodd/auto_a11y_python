@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Checkboxes and Radios with Non-Label Elements</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFieldLabelledByElementThatIsNotALabel_004_violations_checkboxes_radios",
+    "issueId": "WarnFieldLabelledByElementThatIsNotALabel",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Checkboxes and radio buttons labeled by non-label elements",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Preferences</h1>
+    <form>
+        <fieldset>
+            <legend>Newsletter Options</legend>
+            <div id="daily-text">Daily Newsletter</div>
+            <input type="checkbox"
+                   aria-labelledby="daily-text"
+                   data-expected-warning="true"
+                   data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
+                   data-warning-reason="Checkbox labeled by DIV">
+
+            <span id="weekly-text">Weekly Newsletter</span>
+            <input type="checkbox"
+                   aria-labelledby="weekly-text"
+                   data-expected-warning="true"
+                   data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
+                   data-warning-reason="Checkbox labeled by SPAN">
+        </fieldset>
+
+        <fieldset>
+            <legend>Contact Method</legend>
+            <div id="email-text">Email</div>
+            <input type="radio"
+                   name="contact"
+                   aria-labelledby="email-text"
+                   data-expected-warning="true"
+                   data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
+                   data-warning-reason="Radio labeled by DIV">
+
+            <p id="phone-text">Phone</p>
+            <input type="radio"
+                   name="contact"
+                   aria-labelledby="phone-text"
+                   data-expected-warning="true"
+                   data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
+                   data-warning-reason="Radio labeled by P">
+        </fieldset>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

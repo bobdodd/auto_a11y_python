@@ -190,10 +190,37 @@ async def test_forms(page) -> Dict[str, Any]:
                             results.elements_failed++;
                             return; // Skip further processing for this field
                         }
-                        const labelElement = document.getElementById(ariaLabelledbyTrimmed);
-                        if (labelElement) {
-                            hasLabel = true;
-                            labelText = labelElement.textContent.trim();
+
+                        // aria-labelledby can reference multiple IDs (space-separated)
+                        const refIds = ariaLabelledbyTrimmed.split(/\s+/);
+                        let labelTexts = [];
+
+                        refIds.forEach(refId => {
+                            const labelElement = document.getElementById(refId);
+                            if (labelElement) {
+                                hasLabel = true;
+                                labelTexts.push(labelElement.textContent.trim());
+
+                                // Warn if the referenced element is not a <label> element
+                                if (labelElement.tagName !== 'LABEL') {
+                                    results.warnings.push({
+                                        err: 'WarnFieldLabelledByElementThatIsNotALabel',
+                                        type: 'warn',
+                                        cat: 'forms',
+                                        element: input.tagName,
+                                        xpath: getFullXPath(input),
+                                        html: input.outerHTML.substring(0, 200),
+                                        description: `Form field uses aria-labelledby to reference ${labelElement.tagName} (id="${refId}") instead of LABEL element`,
+                                        inputType: inputType,
+                                        referencedTag: labelElement.tagName,
+                                        referencedId: refId
+                                    });
+                                }
+                            }
+                        });
+
+                        if (labelTexts.length > 0) {
+                            labelText = labelTexts.join(' ');
                         }
                     }
                     

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Multiple LABEL References (Correct)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFieldLabelledByElementThatIsNotALabel_008_correct_multiple_labels",
+    "issueId": "WarnFieldLabelledByElementThatIsNotALabel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Fields with multiple aria-labelledby references all using LABEL elements",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Form with Multiple LABEL References</h1>
+    <form>
+        <label id="cc-main-label">Credit Card Number</label>
+        <label id="cc-help-label">(16 digits without spaces)</label>
+        <input type="text"
+               aria-labelledby="cc-main-label cc-help-label"
+               data-expected-pass="true"
+               data-pass-reason="Both references are LABEL elements">
+
+        <label id="password-main-label">Password</label>
+        <label id="password-requirement-label">(Minimum 8 characters)</label>
+        <input type="password"
+               aria-labelledby="password-main-label password-requirement-label"
+               data-expected-pass="true"
+               data-pass-reason="Both references are LABEL elements">
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

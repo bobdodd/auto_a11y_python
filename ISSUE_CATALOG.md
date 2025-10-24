@@ -1112,7 +1112,7 @@ How to fix: Either create an element with id="{found}" to serve as the label, fi
 
 ---
 
-ID: ErrFieldLabelledUsinAriaLabel
+ID: ErrFieldLabelledUsingAriaLabel
 Type: Error
 Impact: Medium
 WCAG: 3.3.2
@@ -4971,7 +4971,7 @@ Why it matters: The aria-labelledby attribute references '{found}' but no elemen
 Who it affects: Screen reader users who receive no label for this field
 How to fix: Either create an element with id="{found}" to serve as the label, fix the ID reference to point to an existing element, or use a different labeling method like a <label> element
 
-ID: ErrFieldLabelledUsinAriaLabel
+ID: ErrFieldLabelledUsingAriaLabel
 Type: Error
 Impact: Medium
 WCAG: 3.3.2

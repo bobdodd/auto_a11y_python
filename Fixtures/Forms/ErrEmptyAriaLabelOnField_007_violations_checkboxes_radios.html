@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Empty aria-label on Checkboxes and Radio Buttons</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyAriaLabelOnField_007_violations_checkboxes_radios",
+    "issueId": "ErrEmptyAriaLabelOnField",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Checkboxes and radio buttons with empty aria-label",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Preferences Form</h1>
+    <form>
+        <fieldset>
+            <legend>Newsletter Subscriptions</legend>
+            <input type="checkbox"
+                   aria-label=""
+                   data-expected-violation="true"
+                   data-violation-id="ErrEmptyAriaLabelOnField"
+                   data-violation-reason="Checkbox with empty aria-label">
+
+            <input type="checkbox"
+                   aria-label="   "
+                   data-expected-violation="true"
+                   data-violation-id="ErrEmptyAriaLabelOnField"
+                   data-violation-reason="Checkbox with whitespace aria-label">
+        </fieldset>
+
+        <fieldset>
+            <legend>Preferred Contact Method</legend>
+            <input type="radio"
+                   name="contact"
+                   aria-label=""
+                   data-expected-violation="true"
+                   data-violation-id="ErrEmptyAriaLabelOnField"
+                   data-violation-reason="Radio button with empty aria-label">
+
+            <input type="radio"
+                   name="contact"
+                   aria-label=""
+                   data-expected-violation="true"
+                   data-violation-id="ErrEmptyAriaLabelOnField"
+                   data-violation-reason="Radio button with empty aria-label">
+        </fieldset>
+
+        <button type="submit">Save Preferences</button>
+    </form>
+</body>
+</html>

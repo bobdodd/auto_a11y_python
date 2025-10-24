@@ -397,6 +397,29 @@ async def test_forms(page) -> Dict[str, Any]:
                     });
                 }
 
+                // ERROR: Check for labels with for attribute referencing non-existent fields
+                const allLabels = Array.from(document.querySelectorAll('label[for]'));
+                allLabels.forEach(label => {
+                    const forId = label.getAttribute('for');
+                    if (forId) {
+                        const referencedField = document.getElementById(forId);
+                        if (!referencedField) {
+                            results.errors.push({
+                                err: 'ErrFieldReferenceDoesNotExist',
+                                type: 'err',
+                                cat: 'forms',
+                                element: 'LABEL',
+                                xpath: getFullXPath(label),
+                                html: label.outerHTML.substring(0, 200),
+                                description: `Label for attribute references non-existent field ID: "${forId}"`,
+                                forId: forId,
+                                labelText: label.textContent.trim()
+                            });
+                            results.elements_failed++;
+                        }
+                    }
+                });
+
                 // DISCOVERY: Report all forms on the page for manual review
                 const allForms = Array.from(document.querySelectorAll('form'));
                 allForms.forEach(form => {

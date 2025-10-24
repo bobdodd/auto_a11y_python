@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed Valid and Invalid Forms</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormEmptyHasNoInteractiveElements_007_violations_mixed",
+    "issueId": "ErrFormEmptyHasNoInteractiveElements",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 3,
+    "description": "Mix of forms with and without interactive elements",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Mixed Valid and Invalid Forms</h1>
+
+    <!-- Valid form with inputs -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has interactive input">
+        <label for="name">Name:</label>
+        <input type="text" id="name">
+    </form>
+
+    <!-- Invalid: Text only -->
+    <form data-expected-violation="true"
+          data-violation-id="ErrFormEmptyHasNoInteractiveElements"
+          data-violation-reason="Only text content">
+        <p>This form needs input fields</p>
+    </form>
+
+    <!-- Valid form with button -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has button element">
+        <button type="button">Click Me</button>
+    </form>
+
+    <!-- Invalid: Disabled elements only -->
+    <form data-expected-violation="true"
+          data-violation-id="ErrFormEmptyHasNoInteractiveElements"
+          data-violation-reason="All elements disabled">
+        <input type="text" disabled>
+        <button disabled>Submit</button>
+    </form>
+
+    <!-- Valid form with select -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has select element">
+        <select>
+            <option>Option 1</option>
+            <option>Option 2</option>
+        </select>
+    </form>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

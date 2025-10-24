@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Common Typo Scenarios</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormAriaLabelledByReferenceDoesNotExist_003_violations_typos",
+    "issueId": "ErrFormAriaLabelledByReferenceDoesNotExist",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Forms with aria-labelledby containing common typos in ID references",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Registration Forms</h1>
+    <main>
+        <!-- Extra hyphen typo -->
+        <div id="register-form">Registration</div>
+        <form aria-labelledby="register-form-"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+              data-violation-reason="References 'register-form-' but ID is 'register-form'">
+            <label for="user1">Username:</label>
+            <input type="text" id="user1">
+            <button type="submit">Register</button>
+        </form>
+
+        <!-- Missing hyphen typo -->
+        <h2 id="contact-form">Contact Form</h2>
+        <form aria-labelledby="contactform"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+              data-violation-reason="References 'contactform' but ID is 'contact-form'">
+            <label for="name2">Name:</label>
+            <input type="text" id="name2">
+            <button type="submit">Send</button>
+        </form>
+
+        <!-- Case mismatch typo -->
+        <span id="searchForm">Search</span>
+        <form role="search" aria-labelledby="searchform"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+              data-violation-reason="References 'searchform' but ID is 'searchForm' (case sensitive)">
+            <label for="query3">Query:</label>
+            <input type="search" id="query3">
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Spelling mistake -->
+        <div id="login-form">Login</div>
+        <form aria-labelledby="logon-form"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+              data-violation-reason="References 'logon-form' but ID is 'login-form'">
+            <label for="pass4">Password:</label>
+            <input type="password" id="pass4">
+            <button type="submit">Login</button>
+        </form>
+    </main>
+</body>
+</html>

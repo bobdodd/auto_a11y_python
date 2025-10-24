@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Elements with role="form"</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormAriaLabelledByReferenceDoesNotExist_004_violations_role_form",
+    "issueId": "ErrFormAriaLabelledByReferenceDoesNotExist",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Elements with role='form' referencing non-existent IDs",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Form Landmarks</h1>
+    <main>
+        <!-- Div with role="form" -->
+        <div role="form" aria-labelledby="feedback-label"
+             data-expected-violation="true"
+             data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+             data-violation-reason="role=form references non-existent 'feedback-label'">
+            <label for="msg1">Message:</label>
+            <textarea id="msg1"></textarea>
+            <button type="submit">Send Feedback</button>
+        </div>
+
+        <!-- Section with role="form" -->
+        <section role="form" aria-labelledby="survey-heading"
+                 data-expected-violation="true"
+                 data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+                 data-violation-reason="role=form references non-existent 'survey-heading'">
+            <label for="rating">Rating:</label>
+            <select id="rating">
+                <option>1</option>
+                <option>5</option>
+            </select>
+            <button type="submit">Submit</button>
+        </section>
+    </main>
+</body>
+</html>

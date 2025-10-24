@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed Valid and Invalid Forms</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesAriaLabelInsteadOfVisibleElement_007_violations_mixed",
+    "issueId": "ErrFormUsesAriaLabelInsteadOfVisibleElement",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 3,
+    "description": "Mix of forms using aria-label (violations) and aria-labelledby (correct)",
+    "wcag": "2.5.3, 3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Mixed Forms</h1>
+
+    <main>
+        <!-- Correct: visible heading with aria-labelledby -->
+        <h2 id="login-h2">Login</h2>
+        <form aria-labelledby="login-h2"
+              data-expected-pass="true"
+              data-pass-reason="Uses visible heading">
+            <label for="user1">Username:</label>
+            <input type="text" id="user1">
+            <button>Login</button>
+        </form>
+
+        <!-- Violation: aria-label only -->
+        <form aria-label="Search form"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesAriaLabelInsteadOfVisibleElement"
+              data-violation-reason="Uses aria-label instead of visible heading">
+            <label for="search1">Search:</label>
+            <input type="search" id="search1">
+            <button>Go</button>
+        </form>
+
+        <!-- Correct: visible heading with aria-labelledby -->
+        <h3 id="register-h3">Registration Form</h3>
+        <form aria-labelledby="register-h3"
+              data-expected-pass="true"
+              data-pass-reason="Uses visible heading">
+            <label for="email1">Email:</label>
+            <input type="email" id="email1">
+            <button>Register</button>
+        </form>
+
+        <!-- Violation: role="form" with aria-label -->
+        <div role="form"
+             aria-label="Newsletter signup"
+             data-expected-violation="true"
+             data-violation-id="ErrFormUsesAriaLabelInsteadOfVisibleElement"
+             data-violation-reason="role=form uses aria-label">
+            <label for="newsletter">Email:</label>
+            <input type="email" id="newsletter">
+            <button>Subscribe</button>
+        </div>
+
+        <!-- Correct: no aria attributes -->
+        <form data-expected-pass="true"
+              data-pass-reason="No aria-label (different error may apply)">
+            <label for="name1">Name:</label>
+            <input type="text" id="name1">
+        </form>
+
+        <!-- Violation: aria-label -->
+        <form aria-label="Contact form"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesAriaLabelInsteadOfVisibleElement"
+              data-violation-reason="Uses aria-label">
+            <label for="message1">Message:</label>
+            <textarea id="message1"></textarea>
+            <button>Send</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

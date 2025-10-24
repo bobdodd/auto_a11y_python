@@ -456,6 +456,21 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         if (ariaLabel.trim()) {
                             hasAccessibleName = true;
                             labelText = ariaLabel.trim();
+
+                            // ERROR: Form uses aria-label instead of visible element
+                            // aria-label is only available to screen readers, not all users
+                            // Should use visible heading with aria-labelledby instead
+                            results.errors.push({
+                                err: 'ErrFormUsesAriaLabelInsteadOfVisibleElement',
+                                type: 'err',
+                                cat: 'landmarks',
+                                element: element.tagName.toLowerCase(),
+                                xpath: getFullXPath(element),
+                                html: element.outerHTML.substring(0, 200),
+                                description: 'Form uses aria-label which is only available to screen readers. Use a visible heading with aria-labelledby instead to make the label available to all users',
+                                ariaLabelValue: ariaLabel.trim()
+                            });
+                            results.elements_failed++;
                         } else {
                             // ERROR: aria-label exists but is blank or whitespace only
                             results.errors.push({

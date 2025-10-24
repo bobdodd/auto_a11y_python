@@ -451,9 +451,25 @@ async def test_landmarks(page) -> Dict[str, Any]:
                     let labelText = '';
 
                     // Check aria-label first
-                    if (ariaLabel && ariaLabel.trim()) {
-                        hasAccessibleName = true;
-                        labelText = ariaLabel.trim();
+                    if (ariaLabel !== null && ariaLabel !== undefined) {
+                        // aria-label attribute exists, check if it's blank
+                        if (ariaLabel.trim()) {
+                            hasAccessibleName = true;
+                            labelText = ariaLabel.trim();
+                        } else {
+                            // ERROR: aria-label exists but is blank or whitespace only
+                            results.errors.push({
+                                err: 'ErrFormLandmarkAccessibleNameIsBlank',
+                                type: 'err',
+                                cat: 'landmarks',
+                                element: element.tagName.toLowerCase(),
+                                xpath: getFullXPath(element),
+                                html: element.outerHTML.substring(0, 200),
+                                description: 'Form has aria-label attribute but it is empty or contains only whitespace',
+                                ariaLabelValue: ariaLabel
+                            });
+                            results.elements_failed++;
+                        }
                     }
                     // Check aria-labelledby
                     else if (ariaLabelledby) {

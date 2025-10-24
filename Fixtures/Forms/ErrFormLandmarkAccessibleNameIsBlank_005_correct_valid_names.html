@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Valid aria-label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkAccessibleNameIsBlank_005_correct_valid_names",
+    "issueId": "ErrFormLandmarkAccessibleNameIsBlank",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Forms with valid non-blank aria-label values",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Valid aria-label Values</h1>
+
+    <main>
+        <!-- Simple text -->
+        <form aria-label="Login form"
+              data-expected-pass="true"
+              data-pass-reason="aria-label has valid text">
+            <label for="username">Username:</label>
+            <input type="text" id="username">
+        </form>
+
+        <!-- Text with leading/trailing spaces (trimmed) -->
+        <form aria-label="  Search form  "
+              data-expected-pass="true"
+              data-pass-reason="aria-label has text after trimming">
+            <label for="search">Search:</label>
+            <input type="search" id="search">
+        </form>
+
+        <!-- Numbers and symbols (still valid text) -->
+        <form aria-label="Form #1"
+              data-expected-pass="true"
+              data-pass-reason="Numbers and symbols are valid">
+            <label for="code">Code:</label>
+            <input type="text" id="code">
+        </form>
+
+        <!-- Descriptive text -->
+        <form aria-label="Contact us - Send us a message"
+              data-expected-pass="true"
+              data-pass-reason="Descriptive aria-label">
+            <label for="message">Message:</label>
+            <textarea id="message"></textarea>
+        </form>
+
+        <!-- role="form" with valid aria-label -->
+        <div role="form"
+             aria-label="Newsletter signup"
+             data-expected-pass="true"
+             data-pass-reason="role=form with valid aria-label">
+            <label for="email">Email:</label>
+            <input type="email" id="email">
+            <button>Subscribe</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

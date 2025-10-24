@@ -374,7 +374,7 @@ How to fix: Add appropriate input fields, buttons, or other form controls
 ```
 
 ```
-ID: ErrFieldLabelledUsinAriaLabel
+ID: ErrFieldLabelledUsingAriaLabel
 Type: Error
 Impact: Medium
 WCAG: 3.3.2

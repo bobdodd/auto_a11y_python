@@ -809,7 +809,7 @@ Due to system crash, 323 fixture codes were not tested. To complete testing:
   Success rate: 33.3%
   ```
 
-- [ ] **ErrFieldLabelledUsinAriaLabel**
+- [ ] **ErrFieldLabelledUsingAriaLabel**
   ```
   ❌ Failed: 2
   Success rate: 33.3%

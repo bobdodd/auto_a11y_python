@@ -822,7 +822,7 @@ How to fix: Either create an element with id="{found}" to serve as the label, fi
 
 ---
 
-ID:  ErrFieldLabelledUsinAriaLabel
+ID:  ErrFieldLabelledUsingAriaLabel
 Type: Error
 Impact: Medium
 WCAG: 3.3.2

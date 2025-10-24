@@ -149,7 +149,7 @@ This document tracks the progress of generating comprehensive test fixtures for 
 12. **WarnNoFieldset** - Radio/checkbox groups without fieldset (2 fixtures)
 13. **WarnFormHasNoLabel** - Form without label (2 fixtures)
 14. **ErrFielLabelledBySomethingNotALabel** - Field labeled by non-label elements (2 fixtures)
-15. **ErrFieldLabelledUsinAriaLabel** - Field using aria-label instead of visible label (2 fixtures)
+15. **ErrFieldLabelledUsingAriaLabel** - Field using aria-label instead of visible label (2 fixtures)
 16. **ErrFormAriaLabelledByReferenceDoesNotExist** - Form aria-labelledby broken reference (2 fixtures)
 17. **AI_ErrToggleWithoutState** - Toggle buttons without state indication (2 fixtures)
 18. **AI_ErrMissingInteractiveRole** - Interactive elements without ARIA roles (2 fixtures)

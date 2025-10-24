@@ -116,6 +116,47 @@ async def test_forms(page) -> Dict[str, Any]:
                     }
                 });
 
+                // ERROR: Check for forms with content but no interactive elements
+                allForms.forEach(form => {
+                    // Skip if form is completely empty (already flagged above)
+                    if (form.childNodes.length === 0) {
+                        return;
+                    }
+
+                    // Find all interactive elements within the form that are not disabled or hidden
+                    const interactiveElements = Array.from(form.querySelectorAll(
+                        'input:not([type="hidden"]), button, select, textarea'
+                    )).filter(el => {
+                        // Exclude disabled elements
+                        if (el.disabled) return false;
+
+                        // Exclude hidden elements
+                        if (el.hidden || el.hasAttribute('hidden')) return false;
+
+                        // Check computed style for visibility
+                        const style = window.getComputedStyle(el);
+                        if (style.display === 'none' || style.visibility === 'hidden') return false;
+
+                        return true;
+                    });
+
+                    // If form has content but no interactive elements, flag it
+                    if (interactiveElements.length === 0) {
+                        results.errors.push({
+                            err: 'ErrFormEmptyHasNoInteractiveElements',
+                            type: 'err',
+                            cat: 'forms',
+                            element: 'FORM',
+                            xpath: getFullXPath(form),
+                            html: form.outerHTML.substring(0, 200),
+                            description: 'Form has content but no interactive elements (inputs, buttons, selects, textareas)',
+                            formId: form.id || '',
+                            formName: form.name || ''
+                        });
+                        results.elements_failed++;
+                    }
+                });
+
                 // Get all form inputs
                 const inputs = Array.from(document.querySelectorAll('input:not([type="hidden"]), select, textarea'));
                 const radioButtons = Array.from(document.querySelectorAll('input[type="radio"]'));

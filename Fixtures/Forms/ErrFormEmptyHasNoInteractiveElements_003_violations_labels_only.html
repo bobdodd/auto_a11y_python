@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Forms with Labels but No Inputs</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormEmptyHasNoInteractiveElements_003_violations_labels_only",
+    "issueId": "ErrFormEmptyHasNoInteractiveElements",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Forms containing only label elements without associated inputs",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms with Labels but No Inputs</h1>
+
+    <!-- Form with fieldset and labels but no inputs -->
+    <form data-expected-violation="true"
+          data-violation-id="ErrFormEmptyHasNoInteractiveElements"
+          data-violation-reason="Form has labels but no interactive elements">
+        <fieldset>
+            <legend>User Information</legend>
+            <label>First Name:</label>
+            <label>Last Name:</label>
+            <label>Email:</label>
+        </fieldset>
+    </form>
+
+    <!-- Form with standalone labels -->
+    <form data-expected-violation="true"
+          data-violation-id="ErrFormEmptyHasNoInteractiveElements"
+          data-violation-reason="Form has only label elements">
+        <label for="username">Username</label>
+        <label for="password">Password</label>
+        <label for="confirm">Confirm Password</label>
+    </form>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

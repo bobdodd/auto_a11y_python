@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Various Interactive Controls</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormEmptyHasNoInteractiveElements_008_correct_various_controls",
+    "issueId": "ErrFormEmptyHasNoInteractiveElements",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Forms with various types of interactive controls",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms with Various Interactive Controls</h1>
+
+    <!-- Form with text input -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has text input">
+        <input type="text" placeholder="Text input">
+    </form>
+
+    <!-- Form with email input -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has email input">
+        <input type="email" placeholder="Email input">
+    </form>
+
+    <!-- Form with select -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has select element">
+        <select>
+            <option>Choose</option>
+        </select>
+    </form>
+
+    <!-- Form with textarea -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has textarea">
+        <textarea></textarea>
+    </form>
+
+    <!-- Form with checkbox -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has checkbox">
+        <input type="checkbox">
+    </form>
+
+    <!-- Form with radio button -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has radio button">
+        <input type="radio">
+    </form>
+
+    <!-- Form with submit button -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has submit button">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Form with regular button -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has button">
+        <button type="button">Click</button>
+    </form>
+
+    <!-- Form with input type submit -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has input submit button">
+        <input type="submit" value="Send">
+    </form>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

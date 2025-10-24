@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Forms with Fake Interactive Elements</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormEmptyHasNoInteractiveElements_009_violations_pseudo_interactive",
+    "issueId": "ErrFormEmptyHasNoInteractiveElements",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Forms with divs/spans styled to look interactive but are not",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .fake-input {
+            border: 1px solid #ccc;
+            padding: 8px;
+            background: white;
+            display: block;
+            margin: 4px 0;
+        }
+        .fake-button {
+            background: #0066cc;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .fake-checkbox {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #333;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Forms with Fake Interactive Elements</h1>
+
+    <!-- Form with fake input (div styled to look like input) -->
+    <form data-expected-violation="true"
+          data-violation-id="ErrFormEmptyHasNoInteractiveElements"
+          data-violation-reason="Has div styled as input but no real input">
+        <label>Name:</label>
+        <div class="fake-input">Enter your name</div>
+    </form>
+
+    <!-- Form with fake button -->
+    <form data-expected-violation="true"
+          data-violation-id="ErrFormEmptyHasNoInteractiveElements"
+          data-violation-reason="Has div styled as button but no real button">
+        <div class="fake-button">Submit Form</div>
+    </form>
+
+    <!-- Form with fake checkbox -->
+    <form data-expected-violation="true"
+          data-violation-id="ErrFormEmptyHasNoInteractiveElements"
+          data-violation-reason="Has span styled as checkbox but no real checkbox">
+        <span class="fake-checkbox"></span>
+        <label>I agree to terms</label>
+    </form>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

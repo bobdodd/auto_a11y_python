@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Forms with Readonly Elements</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormEmptyHasNoInteractiveElements_006_correct_readonly",
+    "issueId": "ErrFormEmptyHasNoInteractiveElements",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Forms with readonly elements are still interactive (can be focused/selected)",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms with Readonly Elements (Valid)</h1>
+
+    <!-- Readonly inputs are still interactive (can be focused and selected) -->
+    <form data-expected-pass="true"
+          data-pass-reason="Readonly input is still interactive">
+        <label for="username">Username:</label>
+        <input type="text" id="username" value="john_doe" readonly>
+    </form>
+
+    <!-- Readonly textarea -->
+    <form data-expected-pass="true"
+          data-pass-reason="Readonly textarea is still interactive">
+        <label for="bio">Bio:</label>
+        <textarea id="bio" readonly>This is my biography text.</textarea>
+    </form>
+
+    <!-- Mix of readonly and editable -->
+    <form data-expected-pass="true"
+          data-pass-reason="Has both readonly and editable inputs">
+        <label for="id">ID:</label>
+        <input type="text" id="id" value="12345" readonly>
+
+        <label for="comment">Comment:</label>
+        <input type="text" id="comment" placeholder="Add comment">
+
+        <button type="submit">Update</button>
+    </form>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

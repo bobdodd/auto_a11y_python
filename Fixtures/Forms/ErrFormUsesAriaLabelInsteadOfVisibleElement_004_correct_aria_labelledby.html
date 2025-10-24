@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Forms with aria-labelledby</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesAriaLabelInsteadOfVisibleElement_004_correct_aria_labelledby",
+    "issueId": "ErrFormUsesAriaLabelInsteadOfVisibleElement",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Forms using aria-labelledby with visible headings (correct approach)",
+    "wcag": "2.5.3, 3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms with Visible Headings</h1>
+
+    <main>
+        <!-- Form with visible h2 and aria-labelledby -->
+        <h2 id="login-heading">Login Form</h2>
+        <form aria-labelledby="login-heading"
+              data-expected-pass="true"
+              data-pass-reason="Uses visible heading with aria-labelledby">
+            <label for="username">Username:</label>
+            <input type="text" id="username">
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Form with visible h3 and aria-labelledby -->
+        <section>
+            <h3 id="search-heading">Search</h3>
+            <form aria-labelledby="search-heading"
+                  data-expected-pass="true"
+                  data-pass-reason="Uses visible h3 with aria-labelledby">
+                <label for="query">Search terms:</label>
+                <input type="search" id="query">
+                <button type="submit">Go</button>
+            </form>
+        </section>
+
+        <!-- role="form" with visible heading -->
+        <h2 id="feedback-heading">Feedback Form</h2>
+        <div role="form"
+             aria-labelledby="feedback-heading"
+             data-expected-pass="true"
+             data-pass-reason="role=form with visible heading">
+            <label for="feedback">Your feedback:</label>
+            <textarea id="feedback"></textarea>
+            <button>Send</button>
+        </div>
+
+        <!-- Form with multiple ID references -->
+        <h3 id="register-title">Registration</h3>
+        <p id="register-desc">Create your account</p>
+        <form aria-labelledby="register-title register-desc"
+              data-expected-pass="true"
+              data-pass-reason="Uses multiple visible elements">
+            <label for="email">Email:</label>
+            <input type="email" id="email">
+            <button type="submit">Register</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

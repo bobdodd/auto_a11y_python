@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Forms without aria-label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesAriaLabelInsteadOfVisibleElement_005_correct_no_label",
+    "issueId": "ErrFormUsesAriaLabelInsteadOfVisibleElement",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Forms without aria-label (different error may apply, but not this one)",
+    "wcag": "2.5.3, 3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms Without aria-label</h1>
+
+    <main>
+        <!-- Form with no labeling (triggers different error) -->
+        <form data-expected-pass="true"
+              data-pass-reason="No aria-label, so this error doesn't apply">
+            <label for="name">Name:</label>
+            <input type="text" id="name">
+        </form>
+
+        <!-- Form with title attribute -->
+        <form title="Newsletter signup"
+              data-expected-pass="true"
+              data-pass-reason="Uses title, not aria-label">
+            <label for="email">Email:</label>
+            <input type="email" id="email">
+            <button>Subscribe</button>
+        </form>
+
+        <!-- Form with visible heading but no aria-labelledby -->
+        <h2>Contact Form</h2>
+        <form data-expected-pass="true"
+              data-pass-reason="Has visible heading but no aria attributes">
+            <label for="message">Message:</label>
+            <textarea id="message"></textarea>
+            <button>Send</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

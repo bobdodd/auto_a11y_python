@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Multiple Forms with aria-label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesAriaLabelInsteadOfVisibleElement_006_violations_multiple_forms",
+    "issueId": "ErrFormUsesAriaLabelInsteadOfVisibleElement",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Multiple forms on page all using aria-label",
+    "wcag": "2.5.3, 3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Forms Using aria-label</h1>
+
+    <main>
+        <!-- Search form -->
+        <form aria-label="Site search"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesAriaLabelInsteadOfVisibleElement"
+              data-violation-reason="Search form uses aria-label">
+            <label for="search">Search:</label>
+            <input type="search" id="search">
+            <button>Go</button>
+        </form>
+
+        <!-- Login form -->
+        <form aria-label="User login"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesAriaLabelInsteadOfVisibleElement"
+              data-violation-reason="Login form uses aria-label">
+            <label for="user">Username:</label>
+            <input type="text" id="user">
+            <label for="pass">Password:</label>
+            <input type="password" id="pass">
+            <button>Login</button>
+        </form>
+
+        <!-- Newsletter form -->
+        <form aria-label="Newsletter subscription"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesAriaLabelInsteadOfVisibleElement"
+              data-violation-reason="Newsletter form uses aria-label">
+            <label for="newsletter-email">Email:</label>
+            <input type="email" id="newsletter-email">
+            <button>Subscribe</button>
+        </form>
+
+        <!-- Feedback form -->
+        <form aria-label="Submit feedback"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesAriaLabelInsteadOfVisibleElement"
+              data-violation-reason="Feedback form uses aria-label">
+            <label for="feedback-text">Feedback:</label>
+            <textarea id="feedback-text"></textarea>
+            <button>Send</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

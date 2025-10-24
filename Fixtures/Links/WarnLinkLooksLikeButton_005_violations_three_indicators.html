@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Links with 3+ Button Indicators</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkLooksLikeButton_005_violations_three_indicators",
+    "issueId": "WarnLinkLooksLikeButton",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Links with 3 or more button indicators (without solid bg + padding combo)",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .three-indicators-1 {
+            display: inline-block;
+            border-radius: 8px;
+            cursor: pointer;
+            /* 3 indicators: inline-block, border-radius, cursor */
+        }
+
+        .three-indicators-2 {
+            display: flex;
+            padding: 12px;
+            cursor: pointer;
+            /* 3 indicators: flex, padding (>=8px), cursor */
+            /* Note: no solid background, but still has 3 indicators */
+        }
+
+        .three-indicators-3 {
+            display: block;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            /* 4 indicators: block, border-radius, padding, cursor */
+        }
+    </style>
+</head>
+<body>
+    <h1>Links with Multiple Button Indicators</h1>
+
+    <a href="#"
+       class="three-indicators-1"
+       data-expected-warning="true"
+       data-warning-id="WarnLinkLooksLikeButton"
+       data-warning-reason="Has 3 button indicators">
+        Action Link 1
+    </a>
+
+    <a href="#"
+       class="three-indicators-2"
+       data-expected-warning="true"
+       data-warning-id="WarnLinkLooksLikeButton"
+       data-warning-reason="Has 3 button indicators">
+        Action Link 2
+    </a>
+
+    <a href="#"
+       class="three-indicators-3"
+       data-expected-warning="true"
+       data-warning-id="WarnLinkLooksLikeButton"
+       data-warning-reason="Has 4 button indicators">
+        Action Link 3
+    </a>
+</body>
+</html>

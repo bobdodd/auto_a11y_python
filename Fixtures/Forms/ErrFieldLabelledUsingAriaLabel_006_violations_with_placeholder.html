@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: aria-label with Placeholder (Still Violation)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFieldLabelledUsingAriaLabel_006_violations_with_placeholder",
+    "issueId": "ErrFieldLabelledUsingAriaLabel",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Fields using aria-label even when placeholder is present (placeholder is not a visible label)",
+    "wcag": "2.5.3",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Search Form</h1>
+    <form>
+        <!-- aria-label with placeholder -->
+        <input type="text"
+               aria-label="Search"
+               placeholder="Enter search terms"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldLabelledUsingAriaLabel"
+               data-violation-reason="Placeholder is not a visible label, still needs visible label">
+
+        <!-- aria-label with title -->
+        <input type="email"
+               aria-label="Email"
+               title="Your email address"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldLabelledUsingAriaLabel"
+               data-violation-reason="Title is not a visible label, still needs visible label">
+
+        <!-- aria-label with name attribute -->
+        <input type="text"
+               aria-label="Username"
+               name="username"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldLabelledUsingAriaLabel"
+               data-violation-reason="Name attribute is not a visible label, still needs visible label">
+
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

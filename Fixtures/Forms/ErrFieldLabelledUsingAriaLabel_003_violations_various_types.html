@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Various Field Types with aria-label Only</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFieldLabelledUsingAriaLabel_003_violations_various_types",
+    "issueId": "ErrFieldLabelledUsingAriaLabel",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 0,
+    "description": "Various field types using aria-label without visible labels",
+    "wcag": "2.5.3",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Account Settings</h1>
+    <form>
+        <!-- Text input with aria-label only -->
+        <input type="text"
+               aria-label="Username"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldLabelledUsingAriaLabel"
+               data-violation-reason="Uses aria-label without visible label">
+
+        <!-- Email input with aria-label only -->
+        <input type="email"
+               aria-label="Email address"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldLabelledUsingAriaLabel"
+               data-violation-reason="Uses aria-label without visible label">
+
+        <!-- Textarea with aria-label only -->
+        <textarea aria-label="Bio"
+                  data-expected-violation="true"
+                  data-violation-id="ErrFieldLabelledUsingAriaLabel"
+                  data-violation-reason="Uses aria-label without visible label"></textarea>
+
+        <!-- Select with aria-label only -->
+        <select aria-label="Country"
+                data-expected-violation="true"
+                data-violation-id="ErrFieldLabelledUsingAriaLabel"
+                data-violation-reason="Uses aria-label without visible label">
+            <option>USA</option>
+            <option>Canada</option>
+        </select>
+
+        <!-- Password with aria-label only -->
+        <input type="password"
+               aria-label="Password"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldLabelledUsingAriaLabel"
+               data-violation-reason="Uses aria-label without visible label">
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

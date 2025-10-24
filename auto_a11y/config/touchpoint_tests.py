@@ -42,7 +42,7 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrEmptyLabel',
         'ErrFielLabelledBySomethingNotALabel',
         'ErrFieldAriaRefDoesNotExist',
-        'ErrFieldLabelledUsinAriaLabel',
+        'ErrFieldLabelledUsingAriaLabel',
         'ErrFieldReferenceDoesNotExist',
         'ErrFormAriaLabelledByIsBlank',
         'ErrFormAriaLabelledByReferenceDIsHidden',

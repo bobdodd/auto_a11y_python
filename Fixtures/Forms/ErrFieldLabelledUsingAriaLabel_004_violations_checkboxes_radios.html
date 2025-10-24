@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Checkboxes and Radios with aria-label Only</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFieldLabelledUsingAriaLabel_004_violations_checkboxes_radios",
+    "issueId": "ErrFieldLabelledUsingAriaLabel",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Checkboxes and radios using aria-label without visible labels",
+    "wcag": "2.5.3",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Preferences</h1>
+    <form>
+        <fieldset>
+            <legend>Notifications</legend>
+            <input type="checkbox"
+                   aria-label="Email notifications"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFieldLabelledUsingAriaLabel"
+                   data-violation-reason="Checkbox uses aria-label without visible label">
+
+            <input type="checkbox"
+                   aria-label="SMS notifications"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFieldLabelledUsingAriaLabel"
+                   data-violation-reason="Checkbox uses aria-label without visible label">
+        </fieldset>
+
+        <fieldset>
+            <legend>Contact Method</legend>
+            <input type="radio"
+                   name="contact"
+                   aria-label="Email me"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFieldLabelledUsingAriaLabel"
+                   data-violation-reason="Radio uses aria-label without visible label">
+
+            <input type="radio"
+                   name="contact"
+                   aria-label="Call me"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFieldLabelledUsingAriaLabel"
+                   data-violation-reason="Radio uses aria-label without visible label">
+        </fieldset>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

@@ -421,8 +421,8 @@ class IssueCatalog:
             "who_it_affects": "All users",
             "how_to_fix": "Add appropriate input fields, buttons, or other form controls"
         },
-        "ErrFieldLabelledUsinAriaLabel": {
-            "id": "ErrFieldLabelledUsinAriaLabel",
+        "ErrFieldLabelledUsingAriaLabel": {
+            "id": "ErrFieldLabelledUsingAriaLabel",
             "type": "Error",
             "impact": "Medium",
             "wcag": ["3.3.2"],

@@ -6,8 +6,8 @@
     <title>Test Fixture: Checkboxes and Radios with Non-Label Elements</title>
     <script type="application/json" id="test-metadata">
 {
-    "id": "WarnFieldLabelledByElementThatIsNotALabel_004_violations_checkboxes_radios",
-    "issueId": "WarnFieldLabelledByElementThatIsNotALabel",
+    "id": "ErrFielLabelledBySomethingNotALabel_004_violations_checkboxes_radios",
+    "issueId": "ErrFielLabelledBySomethingNotALabel",
     "expectedViolationCount": 4,
     "expectedPassCount": 0,
     "description": "Checkboxes and radio buttons labeled by non-label elements",
@@ -24,16 +24,16 @@
             <div id="daily-text">Daily Newsletter</div>
             <input type="checkbox"
                    aria-labelledby="daily-text"
-                   data-expected-warning="true"
-                   data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-                   data-warning-reason="Checkbox labeled by DIV">
+                   data-expected-violation="true"
+                   data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                   data-violation-reason="Checkbox labeled by DIV">
 
             <span id="weekly-text">Weekly Newsletter</span>
             <input type="checkbox"
                    aria-labelledby="weekly-text"
-                   data-expected-warning="true"
-                   data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-                   data-warning-reason="Checkbox labeled by SPAN">
+                   data-expected-violation="true"
+                   data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                   data-violation-reason="Checkbox labeled by SPAN">
         </fieldset>
 
         <fieldset>
@@ -42,17 +42,17 @@
             <input type="radio"
                    name="contact"
                    aria-labelledby="email-text"
-                   data-expected-warning="true"
-                   data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-                   data-warning-reason="Radio labeled by DIV">
+                   data-expected-violation="true"
+                   data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                   data-violation-reason="Radio labeled by DIV">
 
             <p id="phone-text">Phone</p>
             <input type="radio"
                    name="contact"
                    aria-labelledby="phone-text"
-                   data-expected-warning="true"
-                   data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-                   data-warning-reason="Radio labeled by P">
+                   data-expected-violation="true"
+                   data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                   data-violation-reason="Radio labeled by P">
         </fieldset>
 
         <button type="submit">Save</button>

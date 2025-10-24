@@ -6,8 +6,8 @@
     <title>Test Fixture: Various Non-Label Elements</title>
     <script type="application/json" id="test-metadata">
 {
-    "id": "WarnFieldLabelledByElementThatIsNotALabel_003_violations_various_elements",
-    "issueId": "WarnFieldLabelledByElementThatIsNotALabel",
+    "id": "ErrFielLabelledBySomethingNotALabel_003_violations_various_elements",
+    "issueId": "ErrFielLabelledBySomethingNotALabel",
     "expectedViolationCount": 6,
     "expectedPassCount": 0,
     "description": "Fields labeled by various non-label elements (div, span, p, h3, li, td)",
@@ -22,37 +22,37 @@
         <div id="field1-label">Field 1 (labeled by div)</div>
         <input type="text"
                aria-labelledby="field1-label"
-               data-expected-warning="true"
-               data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-               data-warning-reason="Referenced element is DIV not LABEL">
+               data-expected-violation="true"
+               data-violation-id="ErrFielLabelledBySomethingNotALabel"
+               data-violation-reason="Referenced element is DIV not LABEL">
 
         <span id="field2-label">Field 2 (labeled by span)</span>
         <input type="email"
                aria-labelledby="field2-label"
-               data-expected-warning="true"
-               data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-               data-warning-reason="Referenced element is SPAN not LABEL">
+               data-expected-violation="true"
+               data-violation-id="ErrFielLabelledBySomethingNotALabel"
+               data-violation-reason="Referenced element is SPAN not LABEL">
 
         <p id="field3-label">Field 3 (labeled by paragraph)</p>
         <input type="tel"
                aria-labelledby="field3-label"
-               data-expected-warning="true"
-               data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-               data-warning-reason="Referenced element is P not LABEL">
+               data-expected-violation="true"
+               data-violation-id="ErrFielLabelledBySomethingNotALabel"
+               data-violation-reason="Referenced element is P not LABEL">
 
         <h3 id="field4-label">Field 4 (labeled by heading)</h3>
         <textarea aria-labelledby="field4-label"
-                  data-expected-warning="true"
-                  data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-                  data-warning-reason="Referenced element is H3 not LABEL"></textarea>
+                  data-expected-violation="true"
+                  data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                  data-violation-reason="Referenced element is H3 not LABEL"></textarea>
 
         <ul>
             <li id="field5-label">Field 5 (labeled by list item)</li>
         </ul>
         <select aria-labelledby="field5-label"
-                data-expected-warning="true"
-                data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-                data-warning-reason="Referenced element is LI not LABEL">
+                data-expected-violation="true"
+                data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                data-violation-reason="Referenced element is LI not LABEL">
             <option>Option 1</option>
         </select>
 
@@ -63,9 +63,9 @@
         </table>
         <input type="number"
                aria-labelledby="field6-label"
-               data-expected-warning="true"
-               data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-               data-warning-reason="Referenced element is TD not LABEL">
+               data-expected-violation="true"
+               data-violation-id="ErrFielLabelledBySomethingNotALabel"
+               data-violation-reason="Referenced element is TD not LABEL">
 
         <button type="submit">Submit</button>
     </form>

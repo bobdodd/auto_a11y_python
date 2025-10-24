@@ -6,9 +6,9 @@
     <title>Test Fixture: Multiple References with Non-Labels</title>
     <script type="application/json" id="test-metadata">
 {
-    "id": "WarnFieldLabelledByElementThatIsNotALabel_007_violations_mixed_references",
-    "issueId": "WarnFieldLabelledByElementThatIsNotALabel",
-    "expectedViolationCount": 3,
+    "id": "ErrFielLabelledBySomethingNotALabel_006_violations_mixed_references",
+    "issueId": "ErrFielLabelledBySomethingNotALabel",
+    "expectedViolationCount": 5,
     "expectedPassCount": 0,
     "description": "Fields with multiple aria-labelledby references including non-labels",
     "wcag": "1.3.1",
@@ -19,31 +19,31 @@
 <body>
     <h1>Complex Form</h1>
     <form>
-        <!-- Single non-label reference among multiple -->
+        <!-- One non-label reference among multiple -->
         <label id="cc-label">Credit Card</label>
         <span id="cc-help">(16 digits)</span>
         <input type="text"
                aria-labelledby="cc-label cc-help"
-               data-expected-warning="true"
-               data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-               data-warning-reason="One reference (cc-help) is SPAN not LABEL">
+               data-expected-violation="true"
+               data-violation-id="ErrFielLabelledBySomethingNotALabel"
+               data-violation-reason="One reference (cc-help) is SPAN not LABEL">
 
         <!-- All non-label references -->
         <div id="password-text">Password</div>
         <span id="password-req">(8+ chars)</span>
         <input type="password"
                aria-labelledby="password-text password-req"
-               data-expected-warning="true"
-               data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-               data-warning-reason="Both references are non-labels (DIV and SPAN)">
+               data-expected-violation="true"
+               data-violation-id="ErrFielLabelledBySomethingNotALabel"
+               data-violation-reason="Both references are non-labels (DIV and SPAN)">
 
         <!-- Mixed with heading -->
         <h3 id="address-heading">Shipping Address</h3>
         <p id="address-note">(No P.O. boxes)</p>
         <textarea aria-labelledby="address-heading address-note"
-                  data-expected-warning="true"
-                  data-warning-id="WarnFieldLabelledByElementThatIsNotALabel"
-                  data-warning-reason="Both references are non-labels (H3 and P)"></textarea>
+                  data-expected-violation="true"
+                  data-violation-id="ErrFielLabelledBySomethingNotALabel"
+                  data-violation-reason="Both references are non-labels (H3 and P)"></textarea>
 
         <button type="submit">Submit</button>
     </form>

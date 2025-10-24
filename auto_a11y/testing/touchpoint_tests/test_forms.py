@@ -98,11 +98,29 @@ async def test_forms(page) -> Dict[str, Any]:
                     return path;
                 }
                 
+                // ERROR: Check for empty forms with no child nodes (must run before inputs check)
+                const allForms = Array.from(document.querySelectorAll('form'));
+                allForms.forEach(form => {
+                    // Check if form has no child nodes at all
+                    if (form.childNodes.length === 0) {
+                        results.errors.push({
+                            err: 'ErrFormEmptyHasNoChildNodes',
+                            type: 'err',
+                            cat: 'forms',
+                            element: 'FORM',
+                            xpath: getFullXPath(form),
+                            html: form.outerHTML.substring(0, 200),
+                            description: 'Form element is completely empty with no child nodes'
+                        });
+                        results.elements_failed++;
+                    }
+                });
+
                 // Get all form inputs
                 const inputs = Array.from(document.querySelectorAll('input:not([type="hidden"]), select, textarea'));
                 const radioButtons = Array.from(document.querySelectorAll('input[type="radio"]'));
                 const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
-                
+
                 if (inputs.length === 0) {
                     results.applicable = false;
                     results.not_applicable_reason = 'No form inputs found on the page';
@@ -421,8 +439,9 @@ async def test_forms(page) -> Dict[str, Any]:
                 });
 
                 // DISCOVERY: Report all forms on the page for manual review
-                const allForms = Array.from(document.querySelectorAll('form'));
-                allForms.forEach(form => {
+                // (Empty forms check moved to before early return at top of script)
+                const allFormsDiscovery = Array.from(document.querySelectorAll('form'));
+                allFormsDiscovery.forEach(form => {
                     // Generate a content-based signature for the form
                     // This allows identifying the same form across different pages/xpaths
                     const formSignatureData = [];

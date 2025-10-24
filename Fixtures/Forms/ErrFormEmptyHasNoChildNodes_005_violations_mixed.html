@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed Empty and Valid Forms</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormEmptyHasNoChildNodes_005_violations_mixed",
+    "issueId": "ErrFormEmptyHasNoChildNodes",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 3,
+    "description": "Mix of empty forms and valid forms with content",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Mixed Empty and Valid Forms</h1>
+
+    <!-- Empty form - violation -->
+    <form data-expected-violation="true"
+          data-violation-id="ErrFormEmptyHasNoChildNodes"
+          data-violation-reason="Form is completely empty"></form>
+
+    <!-- Valid form with input -->
+    <form data-expected-pass="true"
+          data-pass-reason="Form has input field">
+        <label for="name">Name:</label>
+        <input type="text" id="name">
+    </form>
+
+    <!-- Empty form - violation -->
+    <form data-expected-violation="true"
+          data-violation-id="ErrFormEmptyHasNoChildNodes"
+          data-violation-reason="Form is completely empty"></form>
+
+    <!-- Valid form with text content -->
+    <form data-expected-pass="true"
+          data-pass-reason="Form has text content">
+        This form has text
+    </form>
+
+    <!-- Valid form with button only -->
+    <form data-expected-pass="true"
+          data-pass-reason="Form has button element">
+        <button type="submit">Submit</button>
+    </form>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

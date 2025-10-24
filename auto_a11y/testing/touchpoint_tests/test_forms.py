@@ -172,8 +172,25 @@ async def test_forms(page) -> Dict[str, Any]:
                         }
                         hasLabel = true;
                         labelText = ariaLabelTrimmed;
-                    } else if (ariaLabelledby) {
-                        const labelElement = document.getElementById(ariaLabelledby);
+                    } else if (ariaLabelledby !== null) {
+                        // Check if aria-labelledby is empty
+                        const ariaLabelledbyTrimmed = ariaLabelledby.trim();
+                        if (ariaLabelledbyTrimmed === '') {
+                            // Empty aria-labelledby - raise specific error
+                            results.errors.push({
+                                err: 'ErrEmptyAriaLabelledByOnField',
+                                type: 'err',
+                                cat: 'forms',
+                                element: input.tagName,
+                                xpath: getFullXPath(input),
+                                html: input.outerHTML.substring(0, 200),
+                                description: 'Form field has empty aria-labelledby attribute',
+                                inputType: inputType
+                            });
+                            results.elements_failed++;
+                            return; // Skip further processing for this field
+                        }
+                        const labelElement = document.getElementById(ariaLabelledbyTrimmed);
                         if (labelElement) {
                             hasLabel = true;
                             labelText = labelElement.textContent.trim();

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: aria-labelledby with Only Whitespace</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyAriaLabelledByOnField_004_violations_whitespace",
+    "issueId": "ErrEmptyAriaLabelledByOnField",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Fields with aria-labelledby containing only whitespace",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Form with Whitespace aria-labelledby</h1>
+    <form>
+        <span id="field1-label">Field 1</span>
+        <input type="text"
+               aria-labelledby=" "
+               data-expected-violation="true"
+               data-violation-id="ErrEmptyAriaLabelledByOnField"
+               data-violation-reason="Single space">
+
+        <span id="field2-label">Field 2</span>
+        <input type="email"
+               aria-labelledby="     "
+               data-expected-violation="true"
+               data-violation-id="ErrEmptyAriaLabelledByOnField"
+               data-violation-reason="Multiple spaces">
+
+        <span id="field3-label">Field 3</span>
+        <textarea aria-labelledby="	"
+                  data-expected-violation="true"
+                  data-violation-id="ErrEmptyAriaLabelledByOnField"
+                  data-violation-reason="Tab character"></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

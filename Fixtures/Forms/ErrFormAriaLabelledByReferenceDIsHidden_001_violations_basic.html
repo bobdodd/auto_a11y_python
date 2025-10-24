@@ -3,81 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ErrFormAriaLabelledByReferenceDIsHidden - Violations</title>
+    <title>Test Fixture: Form References Hidden Elements</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "ErrFormAriaLabelledByReferenceDIsHidden_001_violations_basic",
     "issueId": "ErrFormAriaLabelledByReferenceDIsHidden",
-    "expectedViolationCount": 3,
+    "expectedViolationCount": 4,
     "expectedPassCount": 0,
-    "description": "Forms with aria-labelledby pointing to hidden elements",
+    "description": "Forms with aria-labelledby referencing hidden elements",
     "wcag": "1.3.1, 4.1.2",
     "impact": "High"
 }
     </script>
-    <style>
-        .hidden { display: none; }
-        .visually-hidden { position: absolute; left: -9999px; }
-    </style>
 </head>
 <body>
-    <h1>Registration Forms</h1>
-
+    <h1>Forms with Hidden Labels</h1>
     <main>
-        <section>
-            <h2 id="hiddenFormLabel" class="hidden">Contact Information</h2>
+        <!-- display: none -->
+        <div id="form1-label" style="display: none;">Contact Form</div>
+        <form aria-labelledby="form1-label"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDIsHidden"
+              data-violation-reason="References element with display:none">
+            <label for="name1">Name:</label>
+            <input type="text" id="name1">
+            <button type="submit">Submit</button>
+        </form>
 
-            <form aria-labelledby="hiddenFormLabel"
-                  data-expected-violation="true"
-                  data-violation-reason="Form has aria-labelledby pointing to element with display: none. Screen readers can't access hidden text so form has no accessible name. Browser ignores hidden elements in accessible name calculation. Users can't identify form's purpose. Form is effectively unlabeled for assistive technology. Violates WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value by referencing inaccessible content">
-                <label for="name1">Name:</label>
-                <input type="text" id="name1" name="name">
+        <!-- visibility: hidden -->
+        <div id="form2-label" style="visibility: hidden;">Login Form</div>
+        <form aria-labelledby="form2-label"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDIsHidden"
+              data-violation-reason="References element with visibility:hidden">
+            <label for="user2">Username:</label>
+            <input type="text" id="user2">
+            <button type="submit">Login</button>
+        </form>
 
-                <label for="email1">Email:</label>
-                <input type="email" id="email1" name="email">
+        <!-- hidden attribute -->
+        <span id="form3-label" hidden>Registration</span>
+        <form aria-labelledby="form3-label"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDIsHidden"
+              data-violation-reason="References element with hidden attribute">
+            <label for="email3">Email:</label>
+            <input type="email" id="email3">
+            <button type="submit">Register</button>
+        </form>
 
-                <button type="submit">Submit</button>
-            </form>
-        </section>
-
-        <section>
-            <div id="offscreenFormLabel" class="visually-hidden">Newsletter Subscription</div>
-
-            <form aria-labelledby="offscreenFormLabel"
-                  data-expected-violation="true"
-                  data-violation-reason="Form has aria-labelledby pointing to element positioned off-screen. While visually-hidden technique usually works for form fields, for form landmarks the referenced element must be visible or in accessibility tree. Screen readers may not compute accessible name from off-screen content for landmark. Form lacks clear identification. Violates WCAG 1.3.1 and 4.1.2 by not providing accessible form label">
-                <label for="email2">Email Address:</label>
-                <input type="email" id="email2" name="email">
-
-                <label for="frequency">Frequency:</label>
-                <select id="frequency" name="frequency">
-                    <option>Weekly</option>
-                    <option>Monthly</option>
-                </select>
-
-                <button type="submit">Subscribe</button>
-            </form>
-        </section>
-
-        <section>
-            <h2 id="ariaHiddenLabel" aria-hidden="true">Account Settings</h2>
-
-            <form aria-labelledby="ariaHiddenLabel"
-                  data-expected-violation="true"
-                  data-violation-reason="Form has aria-labelledby pointing to element with aria-hidden='true'. Elements with aria-hidden are explicitly removed from accessibility tree. Screen readers can't access content for form's accessible name. Form becomes unlabeled for assistive technology users. Browser ignores aria-hidden elements when computing accessible names. Violates WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value by referencing hidden content">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username">
-
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password">
-
-                <button type="submit">Save Settings</button>
-            </form>
-        </section>
+        <!-- aria-hidden="true" -->
+        <h2 id="form4-label" aria-hidden="true">Search</h2>
+        <form role="search" aria-labelledby="form4-label"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDIsHidden"
+              data-violation-reason="References element with aria-hidden=true">
+            <label for="query4">Search:</label>
+            <input type="search" id="query4">
+            <button type="submit">Search</button>
+        </form>
     </main>
-
-    <footer>
-        <p>&copy; 2024 Company Name. All rights reserved.</p>
-    </footer>
 </body>
 </html>

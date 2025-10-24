@@ -287,11 +287,11 @@ async def test_forms(page) -> Dict[str, Any]:
                     } else {
                         results.elements_passed++;
 
-                        // WARN: Check if using aria-label without visible label
+                        // ERROR: Check if using aria-label without visible label
                         if (ariaLabel && !hasVisibleLabel) {
-                            results.warnings.push({
-                                err: 'WarnFieldLabelledUsingAriaLabel',
-                                type: 'warn',
+                            results.errors.push({
+                                err: 'ErrFieldLabelledUsingAriaLabel',
+                                type: 'err',
                                 cat: 'forms',
                                 element: input.tagName,
                                 xpath: getFullXPath(input),
@@ -300,6 +300,7 @@ async def test_forms(page) -> Dict[str, Any]:
                                 ariaLabel: ariaLabel,
                                 inputType: inputType
                             });
+                            results.elements_failed++;
                         }
 
                         // Check for required field indication

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed Scenarios</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFieldLabelledUsingAriaLabel_008_violations_mixed_scenarios",
+    "issueId": "ErrFieldLabelledUsingAriaLabel",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 2,
+    "description": "Form with some fields using aria-label and others with visible labels",
+    "wcag": "2.5.3",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Mixed Form</h1>
+    <form>
+        <!-- Violation: aria-label only -->
+        <input type="text"
+               aria-label="First name"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldLabelledUsingAriaLabel"
+               data-violation-reason="Uses aria-label without visible label">
+
+        <!-- Pass: visible label -->
+        <label for="last-name">Last name:</label>
+        <input type="text"
+               id="last-name"
+               data-expected-pass="true"
+               data-pass-reason="Has visible label with for attribute">
+
+        <!-- Violation: aria-label only -->
+        <input type="email"
+               aria-label="Email"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldLabelledUsingAriaLabel"
+               data-violation-reason="Uses aria-label without visible label">
+
+        <!-- Pass: wrapped in label -->
+        <label>
+            Phone:
+            <input type="tel"
+                   data-expected-pass="true"
+                   data-pass-reason="Wrapped in visible label">
+        </label>
+
+        <!-- Violation: aria-label only on select -->
+        <select aria-label="Department"
+                data-expected-violation="true"
+                data-violation-id="ErrFieldLabelledUsingAriaLabel"
+                data-violation-reason="Uses aria-label without visible label">
+            <option>Sales</option>
+            <option>Support</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

@@ -1065,7 +1065,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1', '4.1.2'],
             'remediation': "Either create an element with id=\"{found}\" to serve as the label, fix the ID reference to point to an existing element, or use a different labeling method like a <label> element"
         },
-        'ErrFieldLabelledUsinAriaLabel': {
+        'ErrFieldLabelledUsingAriaLabel': {
             'title': "Field labeled using aria-label instead of visible label",
             'what': "Field labeled using aria-label instead of visible label",
             'why': "Visible labels benefit all users, not just screen reader users",

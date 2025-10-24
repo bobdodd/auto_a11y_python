@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Fields Without aria-label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFieldLabelledUsingAriaLabel_007_correct_no_aria_label",
+    "issueId": "ErrFieldLabelledUsingAriaLabel",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Fields not using aria-label at all (using other labeling methods)",
+    "wcag": "2.5.3",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Registration Form</h1>
+    <form>
+        <!-- Traditional label with for -->
+        <label for="username">Username:</label>
+        <input type="text"
+               id="username"
+               data-expected-pass="true"
+               data-pass-reason="Uses label with for, no aria-label">
+
+        <!-- Wrapped in label -->
+        <label>
+            Password:
+            <input type="password"
+                   data-expected-pass="true"
+                   data-pass-reason="Wrapped in label, no aria-label">
+        </label>
+
+        <!-- aria-labelledby -->
+        <span id="email-label">Email:</span>
+        <input type="email"
+               aria-labelledby="email-label"
+               data-expected-pass="true"
+               data-pass-reason="Uses aria-labelledby, no aria-label">
+
+        <!-- Checkbox with label -->
+        <input type="checkbox" id="newsletter">
+        <label for="newsletter"
+               data-expected-pass="true"
+               data-pass-reason="Has label with for, no aria-label">Subscribe to newsletter</label>
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

@@ -201,11 +201,11 @@ async def test_forms(page) -> Dict[str, Any]:
                                 hasLabel = true;
                                 labelTexts.push(labelElement.textContent.trim());
 
-                                // Warn if the referenced element is not a <label> element
+                                // Error if the referenced element is not a <label> element
                                 if (labelElement.tagName !== 'LABEL') {
-                                    results.warnings.push({
-                                        err: 'WarnFieldLabelledByElementThatIsNotALabel',
-                                        type: 'warn',
+                                    results.errors.push({
+                                        err: 'ErrFielLabelledBySomethingNotALabel',
+                                        type: 'err',
                                         cat: 'forms',
                                         element: input.tagName,
                                         xpath: getFullXPath(input),
@@ -215,6 +215,7 @@ async def test_forms(page) -> Dict[str, Any]:
                                         referencedTag: labelElement.tagName,
                                         referencedId: refId
                                     });
+                                    results.elements_failed++;
                                 }
                             }
                         });

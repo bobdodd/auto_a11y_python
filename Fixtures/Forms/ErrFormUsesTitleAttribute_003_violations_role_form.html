@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: role="form" with title</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesTitleAttribute_003_violations_role_form",
+    "issueId": "ErrFormUsesTitleAttribute",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements with role=form using title attribute",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>role="form" with title Attribute</h1>
+
+    <main>
+        <!-- div with role="form" and title -->
+        <div role="form"
+             title="Newsletter signup"
+             data-expected-violation="true"
+             data-violation-id="ErrFormUsesTitleAttribute"
+             data-violation-reason="role=form uses unreliable title attribute">
+            <label for="email1">Email:</label>
+            <input type="email" id="email1">
+            <button type="submit">Subscribe</button>
+        </div>
+
+        <!-- section with role="form" and title -->
+        <section role="form"
+                 title="Contact information"
+                 data-expected-violation="true"
+                 data-violation-id="ErrFormUsesTitleAttribute"
+                 data-violation-reason="section with role=form uses title">
+            <label for="name">Name:</label>
+            <input type="text" id="name">
+            <button type="submit">Send</button>
+        </section>
+
+        <!-- article with role="form" and title -->
+        <article role="form"
+                 title="Feedback form"
+                 data-expected-violation="true"
+                 data-violation-id="ErrFormUsesTitleAttribute"
+                 data-violation-reason="article with role=form uses title">
+            <label for="feedback">Feedback:</label>
+            <textarea id="feedback"></textarea>
+            <button>Submit</button>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

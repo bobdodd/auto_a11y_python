@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Multiple Forms with title</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesTitleAttribute_006_violations_multiple_forms",
+    "issueId": "ErrFormUsesTitleAttribute",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Multiple forms all using title attribute",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Forms Using title</h1>
+
+    <main>
+        <!-- Search form -->
+        <form title="Site search"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Search form uses title">
+            <label for="search">Search:</label>
+            <input type="search" id="search">
+            <button>Go</button>
+        </form>
+
+        <!-- Login form -->
+        <form title="User authentication"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Login form uses title">
+            <label for="username">Username:</label>
+            <input type="text" id="username">
+            <label for="password">Password:</label>
+            <input type="password" id="password">
+            <button>Login</button>
+        </form>
+
+        <!-- Newsletter form -->
+        <form title="Email newsletter subscription"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Newsletter form uses title">
+            <label for="subscriber-email">Email:</label>
+            <input type="email" id="subscriber-email">
+            <button>Subscribe</button>
+        </form>
+
+        <!-- Contact form -->
+        <form title="Contact us"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Contact form uses title">
+            <label for="message">Message:</label>
+            <textarea id="message"></textarea>
+            <button>Send</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

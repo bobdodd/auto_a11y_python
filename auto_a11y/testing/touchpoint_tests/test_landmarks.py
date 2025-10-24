@@ -567,6 +567,26 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         }
                     }
 
+                    // ERROR: Check if form uses title attribute
+                    // title attribute is unreliable for accessibility:
+                    // - Not consistently announced by screen readers
+                    // - Not available on touch devices (no hover)
+                    // - Should use aria-label or aria-labelledby instead
+                    const titleAttr = element.getAttribute('title');
+                    if (titleAttr && titleAttr.trim()) {
+                        results.errors.push({
+                            err: 'ErrFormUsesTitleAttribute',
+                            type: 'err',
+                            cat: 'landmarks',
+                            element: element.tagName.toLowerCase(),
+                            xpath: getFullXPath(element),
+                            html: element.outerHTML.substring(0, 200),
+                            description: 'Form uses title attribute which is unreliable for accessibility. Use aria-label or aria-labelledby with a visible heading instead',
+                            titleValue: titleAttr.trim()
+                        });
+                        results.elements_failed++;
+                    }
+
                     // Only report error if element has role="form" OR is a <form> element
                     // <form> elements only become landmarks when they have accessible names,
                     // but if they SHOULD be landmarks, they need names

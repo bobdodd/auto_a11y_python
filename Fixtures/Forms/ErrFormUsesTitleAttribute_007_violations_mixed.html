@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed Valid and Invalid</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesTitleAttribute_007_violations_mixed",
+    "issueId": "ErrFormUsesTitleAttribute",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 3,
+    "description": "Mix of forms with and without title attribute",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Mixed Forms</h1>
+
+    <main>
+        <!-- Correct: aria-label -->
+        <form aria-label="Login form"
+              data-expected-pass="true"
+              data-pass-reason="Uses aria-label, not title">
+            <label for="user1">Username:</label>
+            <input type="text" id="user1">
+            <button>Login</button>
+        </form>
+
+        <!-- Violation: title -->
+        <form title="Search the website"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Uses title attribute">
+            <label for="search1">Search:</label>
+            <input type="search" id="search1">
+            <button>Go</button>
+        </form>
+
+        <!-- Correct: aria-labelledby -->
+        <h2 id="register-h2">Registration</h2>
+        <form aria-labelledby="register-h2"
+              data-expected-pass="true"
+              data-pass-reason="Uses aria-labelledby">
+            <label for="email1">Email:</label>
+            <input type="email" id="email1">
+            <button>Register</button>
+        </form>
+
+        <!-- Violation: role="form" with title -->
+        <div role="form"
+             title="Newsletter signup"
+             data-expected-violation="true"
+             data-violation-id="ErrFormUsesTitleAttribute"
+             data-violation-reason="role=form uses title">
+            <label for="newsletter">Email:</label>
+            <input type="email" id="newsletter">
+            <button>Subscribe</button>
+        </div>
+
+        <!-- Correct: no attributes -->
+        <form data-expected-pass="true"
+              data-pass-reason="No title attribute">
+            <label for="name1">Name:</label>
+            <input type="text" id="name1">
+        </form>
+
+        <!-- Violation: title -->
+        <form title="Feedback form"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Uses title">
+            <label for="feedback1">Feedback:</label>
+            <textarea id="feedback1"></textarea>
+            <button>Send</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

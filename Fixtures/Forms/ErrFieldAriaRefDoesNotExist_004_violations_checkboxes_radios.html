@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Non-Existent IDs on Checkboxes and Radios</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFieldAriaRefDoesNotExist_004_violations_checkboxes_radios",
+    "issueId": "ErrFieldAriaRefDoesNotExist",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Checkboxes and radios with aria-labelledby referencing non-existent IDs",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Preferences</h1>
+    <form>
+        <fieldset>
+            <legend>Newsletter Options</legend>
+            <input type="checkbox"
+                   aria-labelledby="daily-newsletter-label"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFieldAriaRefDoesNotExist"
+                   data-violation-reason="References 'daily-newsletter-label' which doesn't exist">
+
+            <input type="checkbox"
+                   aria-labelledby="weekly-newsletter-label"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFieldAriaRefDoesNotExist"
+                   data-violation-reason="References 'weekly-newsletter-label' which doesn't exist">
+        </fieldset>
+
+        <fieldset>
+            <legend>Contact Preference</legend>
+            <input type="radio"
+                   name="contact"
+                   aria-labelledby="email-option-label"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFieldAriaRefDoesNotExist"
+                   data-violation-reason="References 'email-option-label' which doesn't exist">
+
+            <input type="radio"
+                   name="contact"
+                   aria-labelledby="phone-option-label"
+                   data-expected-violation="true"
+                   data-violation-id="ErrFieldAriaRefDoesNotExist"
+                   data-violation-reason="References 'phone-option-label' which doesn't exist">
+        </fieldset>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

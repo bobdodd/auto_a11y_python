@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Multiple References with Missing IDs</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFieldAriaRefDoesNotExist_005_violations_multiple_refs",
+    "issueId": "ErrFieldAriaRefDoesNotExist",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Fields with multiple aria-labelledby references where some IDs don't exist",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Payment Form</h1>
+    <form>
+        <!-- One valid, one missing -->
+        <label id="cc-label">Credit Card</label>
+        <input type="text"
+               aria-labelledby="cc-label cc-instructions"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldAriaRefDoesNotExist"
+               data-violation-reason="'cc-instructions' doesn't exist">
+
+        <!-- Both missing -->
+        <input type="password"
+               aria-labelledby="password-label password-requirements"
+               data-expected-violation="true"
+               data-violation-id="ErrFieldAriaRefDoesNotExist"
+               data-violation-reason="Both IDs don't exist (2 violations)">
+
+        <!-- First missing, second exists -->
+        <span id="address-note">(No P.O. boxes)</span>
+        <textarea aria-labelledby="address-label address-note"
+                  data-expected-violation="true"
+                  data-violation-id="ErrFieldAriaRefDoesNotExist"
+                  data-violation-reason="'address-label' doesn't exist"></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

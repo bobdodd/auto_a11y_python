@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: All Referenced IDs Exist</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFieldAriaRefDoesNotExist_006_correct_all_exist",
+    "issueId": "ErrFieldAriaRefDoesNotExist",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Fields with aria-labelledby where all referenced IDs exist",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Registration Form</h1>
+    <form>
+        <label id="name-label">Full Name</label>
+        <input type="text"
+               aria-labelledby="name-label"
+               data-expected-pass="true"
+               data-pass-reason="'name-label' exists">
+
+        <span id="email-label">Email Address</span>
+        <input type="email"
+               aria-labelledby="email-label"
+               data-expected-pass="true"
+               data-pass-reason="'email-label' exists">
+
+        <label id="phone-label">Phone</label>
+        <input type="tel"
+               aria-labelledby="phone-label"
+               data-expected-pass="true"
+               data-pass-reason="'phone-label' exists">
+
+        <label id="bio-label">Bio</label>
+        <textarea aria-labelledby="bio-label"
+                  data-expected-pass="true"
+                  data-pass-reason="'bio-label' exists"></textarea>
+
+        <div id="country-label">Country</div>
+        <select aria-labelledby="country-label"
+                data-expected-pass="true"
+                data-pass-reason="'country-label' exists">
+            <option>USA</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

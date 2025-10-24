@@ -217,6 +217,20 @@ async def test_forms(page) -> Dict[str, Any]:
                                     });
                                     results.elements_failed++;
                                 }
+                            } else {
+                                // Error: referenced element does not exist
+                                results.errors.push({
+                                    err: 'ErrFieldAriaRefDoesNotExist',
+                                    type: 'err',
+                                    cat: 'forms',
+                                    element: input.tagName,
+                                    xpath: getFullXPath(input),
+                                    html: input.outerHTML.substring(0, 200),
+                                    description: `Form field has aria-labelledby referencing non-existent ID: "${refId}"`,
+                                    inputType: inputType,
+                                    missingId: refId
+                                });
+                                results.elements_failed++;
                             }
                         });
 

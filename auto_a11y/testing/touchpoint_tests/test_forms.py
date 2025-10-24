@@ -152,9 +152,26 @@ async def test_forms(page) -> Dict[str, Any]:
                     const ariaLabel = input.getAttribute('aria-label');
                     const ariaLabelledby = input.getAttribute('aria-labelledby');
 
-                    if (ariaLabel) {
+                    if (ariaLabel !== null) {
+                        // Check if aria-label is empty
+                        const ariaLabelTrimmed = ariaLabel.trim();
+                        if (ariaLabelTrimmed === '') {
+                            // Empty aria-label - raise specific error
+                            results.errors.push({
+                                err: 'ErrEmptyAriaLabelOnField',
+                                type: 'err',
+                                cat: 'forms',
+                                element: input.tagName,
+                                xpath: getFullXPath(input),
+                                html: input.outerHTML.substring(0, 200),
+                                description: 'Form field has empty aria-label attribute',
+                                inputType: inputType
+                            });
+                            results.elements_failed++;
+                            return; // Skip further processing for this field
+                        }
                         hasLabel = true;
-                        labelText = ariaLabel;
+                        labelText = ariaLabelTrimmed;
                     } else if (ariaLabelledby) {
                         const labelElement = document.getElementById(ariaLabelledby);
                         if (labelElement) {

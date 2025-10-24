@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Proper aria-label on Various Field Types</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyAriaLabelOnField_005_correct_various_types",
+    "issueId": "ErrEmptyAriaLabelOnField",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 8,
+    "description": "Various field types with proper non-empty aria-label",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Complete Form</h1>
+    <form>
+        <input type="text"
+               aria-label="First name"
+               data-expected-pass="true"
+               data-pass-reason="Text input with proper aria-label">
+
+        <input type="email"
+               aria-label="Email address"
+               data-expected-pass="true"
+               data-pass-reason="Email input with proper aria-label">
+
+        <input type="tel"
+               aria-label="Phone number"
+               data-expected-pass="true"
+               data-pass-reason="Tel input with proper aria-label">
+
+        <input type="number"
+               aria-label="Age"
+               data-expected-pass="true"
+               data-pass-reason="Number input with proper aria-label">
+
+        <input type="date"
+               aria-label="Birth date"
+               data-expected-pass="true"
+               data-pass-reason="Date input with proper aria-label">
+
+        <input type="password"
+               aria-label="Password"
+               data-expected-pass="true"
+               data-pass-reason="Password input with proper aria-label">
+
+        <textarea aria-label="Comments or feedback"
+                  data-expected-pass="true"
+                  data-pass-reason="Textarea with proper aria-label"></textarea>
+
+        <select aria-label="Select your country"
+                data-expected-pass="true"
+                data-pass-reason="Select with proper aria-label">
+            <option>United States</option>
+            <option>Canada</option>
+            <option>Mexico</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Fields Without aria-label (using visible labels)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyAriaLabelOnField_006_correct_no_aria_label",
+    "issueId": "ErrEmptyAriaLabelOnField",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Fields without aria-label attribute, using visible label elements instead",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Form with Visible Labels</h1>
+    <form>
+        <label for="name">Name:</label>
+        <input type="text"
+               id="name"
+               data-expected-pass="true"
+               data-pass-reason="Uses visible label with for attribute">
+
+        <label for="email">Email:</label>
+        <input type="email"
+               id="email"
+               data-expected-pass="true"
+               data-pass-reason="Uses visible label with for attribute">
+
+        <label>
+            Phone:
+            <input type="tel"
+                   data-expected-pass="true"
+                   data-pass-reason="Wrapped in label element">
+        </label>
+
+        <label for="message">Message:</label>
+        <textarea id="message"
+                  data-expected-pass="true"
+                  data-pass-reason="Uses visible label with for attribute"></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

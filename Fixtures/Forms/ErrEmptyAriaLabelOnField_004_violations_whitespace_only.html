@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: aria-label with Only Whitespace</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrEmptyAriaLabelOnField_004_violations_whitespace_only",
+    "issueId": "ErrEmptyAriaLabelOnField",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Fields with aria-label containing only whitespace characters",
+    "wcag": "1.3.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Form with Whitespace Labels</h1>
+    <form>
+        <!-- Single space -->
+        <input type="text"
+               aria-label=" "
+               data-expected-violation="true"
+               data-violation-id="ErrEmptyAriaLabelOnField"
+               data-violation-reason="Single space">
+
+        <!-- Multiple spaces -->
+        <input type="email"
+               aria-label="     "
+               data-expected-violation="true"
+               data-violation-id="ErrEmptyAriaLabelOnField"
+               data-violation-reason="Multiple spaces">
+
+        <!-- Tab character -->
+        <input type="tel"
+               aria-label="	"
+               data-expected-violation="true"
+               data-violation-id="ErrEmptyAriaLabelOnField"
+               data-violation-reason="Tab character">
+
+        <!-- Newline and spaces -->
+        <textarea aria-label="
+
+        "
+                  data-expected-violation="true"
+                  data-violation-id="ErrEmptyAriaLabelOnField"
+                  data-violation-reason="Newlines and spaces"></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Various title Patterns</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesTitleAttribute_005_violations_title_variations",
+    "issueId": "ErrFormUsesTitleAttribute",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Forms with various title attribute patterns",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms with Various title Values</h1>
+
+    <main>
+        <!-- Short title -->
+        <form title="Login"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Short title value">
+            <label for="user1">Username:</label>
+            <input type="text" id="user1">
+        </form>
+
+        <!-- Long descriptive title -->
+        <form title="This is a comprehensive feedback form where you can share your thoughts and suggestions about our service"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Long descriptive title">
+            <label for="feedback">Feedback:</label>
+            <textarea id="feedback"></textarea>
+        </form>
+
+        <!-- Title with special characters -->
+        <form title="Registration - Create Your Account!"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Title with punctuation">
+            <label for="email">Email:</label>
+            <input type="email" id="email">
+        </form>
+
+        <!-- Title with numbers -->
+        <form title="Form #1 - Primary Contact"
+              data-expected-violation="true"
+              data-violation-id="ErrFormUsesTitleAttribute"
+              data-violation-reason="Title with numbers">
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone">
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

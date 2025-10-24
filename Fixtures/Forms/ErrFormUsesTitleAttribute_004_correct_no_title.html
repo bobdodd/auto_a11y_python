@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Forms without title</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormUsesTitleAttribute_004_correct_no_title",
+    "issueId": "ErrFormUsesTitleAttribute",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Forms without title attribute (correct - not flagged)",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms Without title Attribute</h1>
+
+    <main>
+        <!-- Form with no labeling -->
+        <form data-expected-pass="true"
+              data-pass-reason="No title attribute">
+            <label for="name">Name:</label>
+            <input type="text" id="name">
+        </form>
+
+        <!-- Form with aria-label -->
+        <form aria-label="Search form"
+              data-expected-pass="true"
+              data-pass-reason="Uses aria-label, not title">
+            <label for="search">Search:</label>
+            <input type="search" id="search">
+            <button>Go</button>
+        </form>
+
+        <!-- Form with aria-labelledby -->
+        <h2 id="login-heading">Login</h2>
+        <form aria-labelledby="login-heading"
+              data-expected-pass="true"
+              data-pass-reason="Uses aria-labelledby, not title">
+            <label for="user">Username:</label>
+            <input type="text" id="user">
+            <button>Login</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name.</p>
+    </footer>
+</body>
+</html>

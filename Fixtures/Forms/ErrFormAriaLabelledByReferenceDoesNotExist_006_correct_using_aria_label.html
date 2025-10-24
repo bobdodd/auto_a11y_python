@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Using aria-label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormAriaLabelledByReferenceDoesNotExist_006_correct_using_aria_label",
+    "issueId": "ErrFormAriaLabelledByReferenceDoesNotExist",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Forms using aria-label instead of aria-labelledby (no reference needed)",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms with Direct Labels</h1>
+    <main>
+        <!-- Form using aria-label -->
+        <form aria-label="Newsletter Signup"
+              data-expected-pass="true"
+              data-pass-reason="Uses aria-label, no ID reference needed">
+            <label for="email1">Email:</label>
+            <input type="email" id="email1">
+            <button type="submit">Subscribe</button>
+        </form>
+
+        <!-- Form using aria-label -->
+        <form aria-label="User Registration"
+              data-expected-pass="true"
+              data-pass-reason="Uses aria-label, no ID reference needed">
+            <label for="user2">Username:</label>
+            <input type="text" id="user2">
+            <button type="submit">Register</button>
+        </form>
+
+        <!-- role=form using aria-label -->
+        <div role="form" aria-label="Quick Search"
+             data-expected-pass="true"
+             data-pass-reason="role=form with aria-label, no ID reference needed">
+            <label for="search3">Search:</label>
+            <input type="search" id="search3">
+            <button type="submit">Search</button>
+        </div>
+    </main>
+</body>
+</html>

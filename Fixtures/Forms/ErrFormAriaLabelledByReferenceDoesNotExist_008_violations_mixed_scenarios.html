@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed Correct and Incorrect</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormAriaLabelledByReferenceDoesNotExist_008_violations_mixed_scenarios",
+    "issueId": "ErrFormAriaLabelledByReferenceDoesNotExist",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 2,
+    "description": "Mix of forms with correct and incorrect aria-labelledby references",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Mixed Form Scenarios</h1>
+    <main>
+        <!-- CORRECT: Valid reference -->
+        <h2 id="profile-heading">Edit Profile</h2>
+        <form aria-labelledby="profile-heading"
+              data-expected-pass="true"
+              data-pass-reason="References existing 'profile-heading' ID">
+            <label for="bio1">Bio:</label>
+            <textarea id="bio1"></textarea>
+            <button type="submit">Save</button>
+        </form>
+
+        <!-- VIOLATION: Non-existent reference -->
+        <form aria-labelledby="settings-form-label"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+              data-violation-reason="References non-existent 'settings-form-label'">
+            <label for="theme2">Theme:</label>
+            <select id="theme2">
+                <option>Light</option>
+                <option>Dark</option>
+            </select>
+            <button type="submit">Update</button>
+        </form>
+
+        <!-- CORRECT: Using aria-label -->
+        <form aria-label="Search Form"
+              data-expected-pass="true"
+              data-pass-reason="Uses aria-label, no reference needed">
+            <label for="query3">Search:</label>
+            <input type="search" id="query3">
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- VIOLATION: Wrong ID reference -->
+        <div id="payment-form">Payment</div>
+        <form aria-labelledby="checkout-form"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+              data-violation-reason="References 'checkout-form' but ID is 'payment-form'">
+            <label for="card4">Card Number:</label>
+            <input type="text" id="card4">
+            <button type="submit">Pay</button>
+        </form>
+    </main>
+</body>
+</html>

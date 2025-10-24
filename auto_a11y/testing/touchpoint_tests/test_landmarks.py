@@ -460,63 +460,78 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         const labelledByTrimmed = ariaLabelledby.trim();
 
                         if (labelledByTrimmed) {
-                            const labelElement = document.getElementById(labelledByTrimmed);
+                            // aria-labelledby can reference multiple IDs (space-separated)
+                            const refIds = labelledByTrimmed.split(/\s+/);
+                            let labelTexts = [];
+                            let hasError = false;
 
-                            if (labelElement) {
-                                const elementText = labelElement.textContent.trim();
+                            refIds.forEach(refId => {
+                                const labelElement = document.getElementById(refId);
 
-                                // Check if element is hidden
-                                const computedStyle = window.getComputedStyle(labelElement);
-                                const isHidden = computedStyle.display === 'none' ||
-                                               computedStyle.visibility === 'hidden' ||
-                                               labelElement.hasAttribute('hidden') ||
-                                               labelElement.getAttribute('aria-hidden') === 'true';
+                                if (labelElement) {
+                                    const elementText = labelElement.textContent.trim();
 
-                                if (isHidden) {
-                                    // ERROR: aria-labelledby references hidden element
-                                    results.errors.push({
-                                        err: 'ErrFormAriaLabelledByReferenceDIsHidden',
-                                        type: 'err',
-                                        cat: 'landmarks',
-                                        element: element.tagName.toLowerCase(),
-                                        xpath: getFullXPath(element),
-                                        html: element.outerHTML.substring(0, 200),
-                                        description: `Form aria-labelledby references hidden element (id="${labelledByTrimmed}")`,
-                                        referencedId: labelledByTrimmed,
-                                        referencedElement: labelElement.tagName
-                                    });
-                                    results.elements_failed++;
-                                } else if (!elementText) {
-                                    // ERROR: aria-labelledby references blank/empty element
-                                    results.errors.push({
-                                        err: 'ErrFormAriaLabelledByIsBlank',
-                                        type: 'err',
-                                        cat: 'landmarks',
-                                        element: element.tagName.toLowerCase(),
-                                        xpath: getFullXPath(element),
-                                        html: element.outerHTML.substring(0, 200),
-                                        description: `Form aria-labelledby references blank or empty element (id="${labelledByTrimmed}")`,
-                                        referencedId: labelledByTrimmed,
-                                        referencedElement: labelElement.tagName
-                                    });
-                                    results.elements_failed++;
+                                    // Check if element is hidden
+                                    const computedStyle = window.getComputedStyle(labelElement);
+                                    const isHidden = computedStyle.display === 'none' ||
+                                                   computedStyle.visibility === 'hidden' ||
+                                                   labelElement.hasAttribute('hidden') ||
+                                                   labelElement.getAttribute('aria-hidden') === 'true';
+
+                                    if (isHidden) {
+                                        // ERROR: aria-labelledby references hidden element
+                                        results.errors.push({
+                                            err: 'ErrFormAriaLabelledByReferenceDIsHidden',
+                                            type: 'err',
+                                            cat: 'landmarks',
+                                            element: element.tagName.toLowerCase(),
+                                            xpath: getFullXPath(element),
+                                            html: element.outerHTML.substring(0, 200),
+                                            description: `Form aria-labelledby references hidden element (id="${refId}")`,
+                                            referencedId: refId,
+                                            referencedElement: labelElement.tagName
+                                        });
+                                        results.elements_failed++;
+                                        hasError = true;
+                                    } else if (!elementText) {
+                                        // ERROR: aria-labelledby references blank/empty element
+                                        results.errors.push({
+                                            err: 'ErrFormAriaLabelledByIsBlank',
+                                            type: 'err',
+                                            cat: 'landmarks',
+                                            element: element.tagName.toLowerCase(),
+                                            xpath: getFullXPath(element),
+                                            html: element.outerHTML.substring(0, 200),
+                                            description: `Form aria-labelledby references blank or empty element (id="${refId}")`,
+                                            referencedId: refId,
+                                            referencedElement: labelElement.tagName
+                                        });
+                                        results.elements_failed++;
+                                        hasError = true;
+                                    } else {
+                                        labelTexts.push(elementText);
+                                    }
                                 } else {
-                                    hasAccessibleName = true;
-                                    labelText = elementText;
+                                    // ERROR: aria-labelledby references non-existent element
+                                    results.errors.push({
+                                        err: 'ErrFormAriaLabelledByReferenceDoesNotExist',
+                                        type: 'err',
+                                        cat: 'landmarks',
+                                        element: element.tagName.toLowerCase(),
+                                        xpath: getFullXPath(element),
+                                        html: element.outerHTML.substring(0, 200),
+                                        description: `Form aria-labelledby references non-existent element ID: "${refId}"`,
+                                        missingId: refId
+                                    });
+                                    results.elements_failed++;
+                                    hasError = true;
                                 }
-                            } else {
-                                // ERROR: aria-labelledby references non-existent element
-                                results.errors.push({
-                                    err: 'ErrFormAriaLabelledByReferenceDoesNotExist',
-                                    type: 'err',
-                                    cat: 'landmarks',
-                                    element: element.tagName.toLowerCase(),
-                                    xpath: getFullXPath(element),
-                                    html: element.outerHTML.substring(0, 200),
-                                    description: `Form aria-labelledby references non-existent element ID: "${labelledByTrimmed}"`,
-                                    missingId: labelledByTrimmed
-                                });
-                                results.elements_failed++;
+                            });
+
+                            // Only consider it as having an accessible name if we found at least one valid label
+                            if (labelTexts.length > 0 && !hasError) {
+                                hasAccessibleName = true;
+                                labelText = labelTexts.join(' ');
                             }
                         }
                     }

@@ -3,199 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form aria-labelledby Reference Test Fixture</title>
-    <style>
-        .test-section {
-            margin: 20px 0;
-            padding: 20px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-        }
-        .error { border-left: 4px solid #d32f2f; }
-        .pass { border-left: 4px solid #388e3c; }
-        .form-group {
-            margin: 10px 0;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select, textarea {
-            width: 200px;
-            padding: 5px;
-            margin: 5px 0;
-        }
-    </style>
+    <title>Test Fixture: Form Landmarks with Non-Existent References</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormAriaLabelledByReferenceDoesNotExist",
+    "issueId": "ErrFormAriaLabelledByReferenceDoesNotExist",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Form landmarks with aria-labelledby referencing non-existent element IDs",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
 </head>
 <body>
-    <h1>Form aria-labelledby Reference Test Fixture</h1>
-    
-    <!-- ERROR CASES - These should trigger the accessibility error -->
-    <div class="test-section error">
-        <h2>❌ Error Cases - Non-existent aria-labelledby References</h2>
-        
-        <div class="form-group">
-            <h3>Single non-existent reference</h3>
-            <!-- aria-labelledby references "username-label" but no element has this ID -->
-            <input type="text" aria-labelledby="username-label" placeholder="Enter username">
-        </div>
+    <h1>Form Landmark Tests</h1>
+    <main>
+        <!-- Form referencing completely non-existent ID -->
+        <form aria-labelledby="missing-form-label"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+              data-violation-reason="References 'missing-form-label' which doesn't exist">
+            <label for="field1">Field 1:</label>
+            <input type="text" id="field1">
+            <button type="submit">Submit</button>
+        </form>
 
-        <div class="form-group">
-            <h3>Multiple references with one non-existent</h3>
-            <span id="password-help">Must be at least 8 characters</span>
-            <!-- aria-labelledby references both existing and non-existent IDs -->
-            <input type="password" aria-labelledby="password-label password-help" placeholder="Enter password">
-        </div>
+        <!-- Form referencing wrong ID -->
+        <div id="actual-label">Contact Form</div>
+        <form aria-labelledby="wrong-label-id"
+              data-expected-violation="true"
+              data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+              data-violation-reason="References 'wrong-label-id' but actual ID is 'actual-label'">
+            <label for="field2">Field 2:</label>
+            <input type="text" id="field2">
+            <button type="submit">Submit</button>
+        </form>
 
-        <div class="form-group">
-            <h3>Multiple non-existent references</h3>
-            <!-- Both referenced IDs don't exist -->
-            <select aria-labelledby="country-label country-desc">
-                <option value="">Select country</option>
-                <option value="us">United States</option>
-                <option value="ca">Canada</option>
-            </select>
+        <!-- Element with role="form" referencing non-existent ID -->
+        <div role="form" aria-labelledby="nonexistent-heading"
+             data-expected-violation="true"
+             data-violation-id="ErrFormAriaLabelledByReferenceDoesNotExist"
+             data-violation-reason="role=form references non-existent 'nonexistent-heading'">
+            <label for="field3">Field 3:</label>
+            <input type="text" id="field3">
+            <button type="submit">Submit</button>
         </div>
-
-        <div class="form-group">
-            <h3>Textarea with non-existent reference</h3>
-            <!-- References non-existent ID -->
-            <textarea aria-labelledby="comment-instructions" placeholder="Enter your comments"></textarea>
-        </div>
-
-        <div class="form-group">
-            <h3>Checkbox with broken reference</h3>
-            <!-- References non-existent ID -->
-            <input type="checkbox" id="terms" aria-labelledby="terms-text">
-        </div>
-
-        <div class="form-group">
-            <h3>Radio button with non-existent reference</h3>
-            <!-- References non-existent ID -->
-            <input type="radio" name="gender" value="male" aria-labelledby="male-label">
-            <input type="radio" name="gender" value="female" aria-labelledby="female-label">
-        </div>
-
-        <div class="form-group">
-            <h3>File input with broken reference</h3>
-            <!-- References non-existent ID -->
-            <input type="file" aria-labelledby="file-instructions">
-        </div>
-
-        <div class="form-group">
-            <h3>Range input with non-existent reference</h3>
-            <!-- References non-existent ID -->
-            <input type="range" min="0" max="100" aria-labelledby="volume-label">
-        </div>
-    </div>
-
-    <!-- CORRECT IMPLEMENTATIONS - These should pass accessibility checks -->
-    <div class="test-section pass">
-        <h2>✅ Correct Cases - Valid aria-labelledby References</h2>
-        
-        <div class="form-group">
-            <h3>Single valid reference</h3>
-            <label id="email-label">Email Address</label>
-            <input type="email" aria-labelledby="email-label">
-        </div>
-
-        <div class="form-group">
-            <h3>Multiple valid references</h3>
-            <label id="phone-label">Phone Number</label>
-            <span id="phone-format">(Format: XXX-XXX-XXXX)</span>
-            <input type="tel" aria-labelledby="phone-label phone-format">
-        </div>
-
-        <div class="form-group">
-            <h3>Alternative labeling methods</h3>
-            <!-- Using aria-label instead of aria-labelledby -->
-            <input type="text" aria-label="Search query">
-            
-            <!-- Using traditional label association -->
-            <label for="age">Age</label>
-            <input type="number" id="age" min="0" max="120">
-            
-            <!-- Label wrapping input -->
-            <label>
-                Date of Birth
-                <input type="date">
-            </label>
-        </div>
-
-        <div class="form-group">
-            <h3>Complex valid reference</h3>
-            <fieldset>
-                <legend id="address-legend">Mailing Address</legend>
-                <label id="street-label">Street Address</label>
-                <span id="street-help">Include apartment number if applicable</span>
-                <input type="text" aria-labelledby="address-legend street-label street-help">
-            </fieldset>
-        </div>
-    </div>
-
-    <!-- EDGE CASES -->
-    <div class="test-section error">
-        <h2>⚠️ Edge Cases</h2>
-        
-        <div class="form-group">
-            <h3>Empty aria-labelledby attribute</h3>
-            <!-- Empty attribute should be treated as error -->
-            <input type="text" aria-labelledby="">
-        </div>
-
-        <div class="form-group">
-            <h3>Whitespace-only aria-labelledby</h3>
-            <!-- Only whitespace should be treated as error -->
-            <input type="text" aria-labelledby="   ">
-        </div>
-
-        <div class="form-group">
-            <h3>Self-referencing aria-labelledby</h3>
-            <!-- Input references its own ID -->
-            <input type="text" id="self-ref" aria-labelledby="self-ref">
-        </div>
-
-        <div class="form-group">
-            <h3>Mixed valid and invalid references with whitespace</h3>
-            <span id="valid-ref">Valid Reference</span>
-            <!-- Has valid reference, invalid reference, and extra whitespace -->
-            <input type="text" aria-labelledby="  valid-ref   invalid-ref  ">
-        </div>
-    </div>
-
-    <!-- ELEMENTS THAT EXIST BUT ARE HIDDEN -->
-    <div class="test-section error">
-        <h2>🔍 Hidden Element References</h2>
-        
-        <div class="form-group">
-            <h3>Reference to hidden element</h3>
-            <!-- This element exists but is hidden -->
-            <span id="hidden-label" style="display: none;">Hidden Label</span>
-            <input type="text" aria-labelledby="hidden-label">
-        </div>
-
-        <div class="form-group">
-            <h3>Reference to visibility hidden element</h3>
-            <span id="invisible-label" style="visibility: hidden;">Invisible Label</span>
-            <input type="text" aria-labelledby="invisible-label">
-        </div>
-    </div>
-
-    <script>
-        // Log all form elements with aria-labelledby for debugging
-        console.log('Form elements with aria-labelledby:');
-        document.querySelectorAll('[aria-labelledby]').forEach((element, index) => {
-            const labelledBy = element.getAttribute('aria-labelledby');
-            const ids = labelledBy.trim().split(/\s+/).filter(id => id);
-            const existingIds = ids.filter(id => document.getElementById(id));
-            const missingIds = ids.filter(id => !document.getElementById(id));
-            
-            console.log(`${index + 1}. ${element.tagName} with aria-labelledby="${labelledBy}"`);
-            console.log(`   Existing IDs: [${existingIds.join(', ')}]`);
-            console.log(`   Missing IDs: [${missingIds.join(', ')}]`);
-            console.log('---');
-        });
-    </script>
+    </main>
 </body>
 </html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Matching IDs</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormAriaLabelledByReferenceDoesNotExist_005_correct_matching_ids",
+    "issueId": "ErrFormAriaLabelledByReferenceDoesNotExist",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Forms with aria-labelledby correctly referencing existing element IDs",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Correct Forms</h1>
+    <main>
+        <!-- Form referencing existing heading -->
+        <h2 id="contact-heading">Contact Us</h2>
+        <form aria-labelledby="contact-heading"
+              data-expected-pass="true"
+              data-pass-reason="References existing 'contact-heading' ID">
+            <label for="name1">Name:</label>
+            <input type="text" id="name1">
+            <button type="submit">Send</button>
+        </form>
+
+        <!-- Form referencing existing div -->
+        <div id="login-title">Login Form</div>
+        <form aria-labelledby="login-title"
+              data-expected-pass="true"
+              data-pass-reason="References existing 'login-title' ID">
+            <label for="user2">Username:</label>
+            <input type="text" id="user2">
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Form referencing existing span -->
+        <span id="search-label">Search Products</span>
+        <form role="search" aria-labelledby="search-label"
+              data-expected-pass="true"
+              data-pass-reason="References existing 'search-label' ID">
+            <label for="query3">Search:</label>
+            <input type="search" id="query3">
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Div with role=form referencing existing label -->
+        <p id="feedback-title">Feedback Form</p>
+        <div role="form" aria-labelledby="feedback-title"
+             data-expected-pass="true"
+             data-pass-reason="role=form references existing 'feedback-title' ID">
+            <label for="comment4">Comment:</label>
+            <textarea id="comment4"></textarea>
+            <button type="submit">Submit</button>
+        </div>
+    </main>
+</body>
+</html>

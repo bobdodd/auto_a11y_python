@@ -668,11 +668,23 @@ async def test_links(page):
             looks_like_button = True
 
         if looks_like_button:
-            # First, check for Space key handler (ERROR if missing)
+            # Check for Space key handler
             has_space_handler = has_space_key_handler(link)
 
+            # Always warn about semantic mismatch (link styled as button)
+            results['warnings'].append({
+                'err': 'WarnLinkLooksLikeButton',
+                'type': 'warn',
+                'cat': 'links',
+                'element': tag,
+                'xpath': link['xpath'],
+                'html': link['html'],
+                'description': f'Link is styled to look like a button ({", ".join(button_indicators)}) but uses anchor element - consider using <button> for actions or keeping link styling for navigation',
+                'text': link['text']
+            })
+
+            # Also raise error if missing Space key handler
             if not has_space_handler:
-                # ERROR: Button-styled link without Space key handler
                 results['errors'].append({
                     'err': 'ErrLinkButtonMissingSpaceHandler',
                     'type': 'err',
@@ -681,18 +693,6 @@ async def test_links(page):
                     'xpath': link['xpath'],
                     'html': link['html'],
                     'description': f'Link is styled as a button ({", ".join(button_indicators)}) but lacks Space key handler - keyboard users expect Space to activate button-like elements',
-                    'text': link['text']
-                })
-            else:
-                # Has Space handler, but still warn about semantic mismatch
-                results['warnings'].append({
-                    'err': 'WarnLinkLooksLikeButton',
-                    'type': 'warn',
-                    'cat': 'links',
-                    'element': tag,
-                    'xpath': link['xpath'],
-                    'html': link['html'],
-                    'description': f'Link is styled to look like a button ({", ".join(button_indicators)}) but uses anchor element - consider using <button> for actions or keeping link styling for navigation',
                     'text': link['text']
                 })
 

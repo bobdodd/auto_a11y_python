@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Button-Styled Links WITH Space Handler</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkLooksLikeButton_003_violations_with_space_handler",
+    "issueId": "WarnLinkLooksLikeButton",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Links styled as buttons but WITH Space key handler - should still warn about semantic mismatch",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const saveBtn = document.getElementById('save-link');
+            saveBtn.addEventListener('keydown', function(e) {
+                if (e.key === ' ' || e.keyCode === 32) {
+                    e.preventDefault();
+                    alert('Save action triggered');
+                }
+            });
+
+            const cancelBtn = document.getElementById('cancel-link');
+            cancelBtn.addEventListener('keypress', function(e) {
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    alert('Cancel action triggered');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Form Actions</h1>
+
+    <!-- Has Space handler via addEventListener -->
+    <a href="#"
+       id="save-link"
+       class="btn"
+       data-expected-warning="true"
+       data-warning-id="WarnLinkLooksLikeButton"
+       data-warning-reason="Link styled as button (has Space handler but semantic mismatch remains)">
+        Save Changes
+    </a>
+
+    <!-- Has Space handler via different event -->
+    <a href="#"
+       id="cancel-link"
+       class="btn"
+       data-expected-warning="true"
+       data-warning-id="WarnLinkLooksLikeButton"
+       data-warning-reason="Link styled as button even with Space handler">
+        Cancel
+    </a>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Links Below Button Detection Threshold</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnLinkLooksLikeButton_006_correct_below_threshold",
+    "issueId": "WarnLinkLooksLikeButton",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Links that don't meet button detection criteria (below thresholds)",
+    "wcag": "1.3.1",
+    "impact": "Low"
+}
+    </script>
+    <style>
+        .small-padding {
+            padding: 5px;  /* Less than 8px threshold */
+            background: #ccc;
+        }
+
+        .small-radius {
+            border-radius: 2px;  /* Less than 3px threshold */
+            padding: 10px;
+        }
+
+        .transparent-bg {
+            padding: 10px;
+            background: transparent;  /* Not solid background */
+            border-radius: 2px;  /* Below 3px threshold */
+        }
+
+        .only-two-indicators {
+            display: inline-block;
+            cursor: pointer;
+            /* Only 2 indicators - not enough */
+        }
+
+        .low-opacity {
+            padding: 10px;
+            background: rgba(0, 100, 200, 0.3);  /* Less than 50% opacity */
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Normal Links (Not Button-Like)</h1>
+
+    <a href="#"
+       class="small-padding"
+       data-expected-pass="true"
+       data-pass-reason="Padding below 8px threshold">
+        Link with small padding
+    </a>
+
+    <a href="#"
+       class="small-radius"
+       data-expected-pass="true"
+       data-pass-reason="Border-radius below 3px threshold">
+        Link with tiny radius
+    </a>
+
+    <a href="#"
+       class="transparent-bg"
+       data-expected-pass="true"
+       data-pass-reason="Transparent background">
+        Transparent link
+    </a>
+
+    <a href="#"
+       class="only-two-indicators"
+       data-expected-pass="true"
+       data-pass-reason="Only 2 indicators (need 3+)">
+        Link with 2 indicators
+    </a>
+</body>
+</html>

@@ -611,6 +611,55 @@ async def test_forms(page) -> Dict[str, Any]:
                     }
                 });
 
+                // WARNING: Check for form landmarks with "form" in their accessible name
+                // Screen readers already announce "form" as the role, so including "form"
+                // in the label creates redundant announcements like "Login form form"
+                // Best practice: use "Login" not "Login form"
+                const allFormsForLabelCheck = Array.from(document.querySelectorAll('form'));
+                allFormsForLabelCheck.forEach(form => {
+                    const ariaLabel = form.getAttribute('aria-label');
+                    const ariaLabelledby = form.getAttribute('aria-labelledby');
+
+                    let accessibleName = '';
+                    let accessibleNameOriginal = '';
+
+                    // Get accessible name from aria-label
+                    if (ariaLabel) {
+                        accessibleNameOriginal = ariaLabel.trim();
+                        accessibleName = accessibleNameOriginal.toLowerCase();
+                    }
+                    // Get accessible name from aria-labelledby
+                    else if (ariaLabelledby) {
+                        const refIds = ariaLabelledby.trim().split(/\\s+/);
+                        let labelTexts = [];
+                        refIds.forEach(refId => {
+                            const labelElement = document.getElementById(refId);
+                            if (labelElement) {
+                                labelTexts.push(labelElement.textContent.trim());
+                            }
+                        });
+                        accessibleNameOriginal = labelTexts.join(' ');
+                        accessibleName = accessibleNameOriginal.toLowerCase();
+                    }
+
+                    // Check if accessible name contains the word "form"
+                    // Use word boundary regex to match "form" as a whole word
+                    if (accessibleName && /\\bform\\b/.test(accessibleName)) {
+                        results.warnings.push({
+                            err: 'WarnFormLandmarkAccessibleNameUsesForm',
+                            type: 'warn',
+                            cat: 'forms',
+                            element: 'FORM',
+                            xpath: getFullXPath(form),
+                            html: form.outerHTML.substring(0, 200),
+                            description: `Form landmark has "${accessibleNameOriginal}" as accessible name which includes redundant word "form". Screen readers already announce "form" role. Use descriptive label without "form" (e.g., "Login" instead of "Login form").`,
+                            accessibleName: accessibleNameOriginal,
+                            ariaLabel: ariaLabel || null,
+                            ariaLabelledby: ariaLabelledby || null
+                        });
+                        results.elements_warned++;
+                    }
+                });
 
                 // DISCOVERY: Report all forms on the page for manual review
                 // (Empty forms check moved to before early return at top of script)

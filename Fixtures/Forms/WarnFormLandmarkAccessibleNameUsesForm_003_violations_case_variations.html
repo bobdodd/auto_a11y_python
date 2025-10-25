@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnFormLandmarkAccessibleNameUsesForm - Case Variations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFormLandmarkAccessibleNameUsesForm_003_violations_case_variations",
+    "issueId": "WarnFormLandmarkAccessibleNameUsesForm",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Forms with 'form' in different cases (uppercase, titlecase, etc)",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Case Variations of 'form'</h1>
+
+    <!-- Violation 1: Uppercase "FORM" -->
+    <form aria-label="CONTACT FORM"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Contains 'FORM' in uppercase">
+        <label for="name1">Name</label>
+        <input type="text" id="name1">
+        <button type="submit">Send</button>
+    </form>
+
+    <!-- Violation 2: Title case "Form" -->
+    <form aria-label="Login Form"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Contains 'Form' in title case">
+        <label for="user2">Username</label>
+        <input type="text" id="user2">
+        <button type="submit">Sign In</button>
+    </form>
+
+    <!-- Violation 3: Mixed case "FoRm" -->
+    <form aria-label="Search FoRm"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Contains 'FoRm' in mixed case">
+        <label for="query3">Search</label>
+        <input type="search" id="query3">
+        <button type="submit">Go</button>
+    </form>
+
+    <!-- Violation 4: "form" at beginning -->
+    <form aria-label="form for contact"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Contains 'form' at start of label">
+        <label for="email4">Email</label>
+        <input type="email" id="email4">
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

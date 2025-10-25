@@ -3,52 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website - Generic Form Labels</title>
+    <title>WarnFormLandmarkAccessibleNameUsesForm - Violations</title>
     <script type="application/json" id="test-metadata">
 {
     "id": "WarnFormLandmarkAccessibleNameUsesForm_001_violations_basic",
     "issueId": "WarnFormLandmarkAccessibleNameUsesForm",
-    "expectedViolationCount": 2,
+    "expectedViolationCount": 5,
     "expectedPassCount": 0,
-    "description": "Form landmarks with generic 'form' in their accessible names",
+    "description": "Various forms with 'form' in their accessible names",
     "wcag": "2.4.6",
     "impact": "Low"
 }
     </script>
 </head>
 <body>
-    <h1>User Account</h1>
+    <h1>Forms with Redundant 'form' in Labels</h1>
 
+    <!-- Violation 1: "login form" -->
     <form aria-label="Login form"
           data-expected-violation="true"
           data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
-          data-violation-reason="Form label uses generic term 'form', should be just 'Login' or 'Sign in'">
-        <h2>Sign In</h2>
-        <div>
-            <label for="username1">Username</label>
-            <input type="text" id="username1" name="username">
-        </div>
-        <div>
-            <label for="password1">Password</label>
-            <input type="password" id="password1" name="password">
-        </div>
+          data-violation-reason="Should be 'Login' not 'Login form'">
+        <label for="user1">Username</label>
+        <input type="text" id="user1">
         <button type="submit">Sign In</button>
     </form>
 
+    <!-- Violation 2: "contact form" -->
     <form aria-label="Contact form"
           data-expected-violation="true"
           data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
-          data-violation-reason="Label 'Contact form' uses redundant word 'form', should be 'Contact' or 'Contact us'">
-        <h2>Get in Touch</h2>
-        <div>
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name">
-        </div>
-        <div>
-            <label for="message">Message</label>
-            <textarea id="message" name="message"></textarea>
-        </div>
+          data-violation-reason="Should be 'Contact' or 'Contact us' not 'Contact form'">
+        <label for="name2">Name</label>
+        <input type="text" id="name2">
         <button type="submit">Send</button>
+    </form>
+
+    <!-- Violation 3: "search form" -->
+    <form aria-label="Search form"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Should be 'Search' not 'Search form'">
+        <label for="query3">Search</label>
+        <input type="search" id="query3">
+        <button type="submit">Go</button>
+    </form>
+
+    <!-- Violation 4: "registration form" -->
+    <form aria-label="Registration form"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Should be 'Registration' or 'Sign up' not 'Registration form'">
+        <label for="email4">Email</label>
+        <input type="email" id="email4">
+        <button type="submit">Register</button>
+    </form>
+
+    <!-- Violation 5: "feedback form" via aria-labelledby -->
+    <h2 id="form-heading5">Feedback form</h2>
+    <form aria-labelledby="form-heading5"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Heading contains 'form' - should be 'Feedback' only">
+        <label for="comments5">Comments</label>
+        <textarea id="comments5"></textarea>
+        <button type="submit">Submit</button>
     </form>
 </body>
 </html>

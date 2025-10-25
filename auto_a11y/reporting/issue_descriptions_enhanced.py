@@ -2809,13 +2809,14 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Consider replacing '{fontName}' with a font from the recommended accessibility list: Arial, Verdana, Tahoma, Calibri, Helvetica, Open Sans, Roboto, Lato, Noto Sans, or Source Sans Pro for body text. For users with dyslexia specifically, OpenDyslexic, Comic Sans, or Century Gothic are often preferred. The recommended fonts share key characteristics: clear distinction between similar characters, generous spacing, medium to wide width, simple sans-serif design, and consistent stroke weight. If you must use '{fontName}' for branding or design reasons, ensure it meets these criteria: line height of at least 1.5, letter spacing (tracking) of at least 0.12em, clear distinction between I, l, 1 and between O, 0, sufficient x-height for readability at small sizes, and no decorative or script features for body text. Reserve decorative fonts for headings only, never for paragraphs or form labels. Test your font choice with actual users who have dyslexia or low vision when possible. Provide a font switcher allowing users to choose from accessible alternatives if feasible."
         },
         'WarnFormLandmarkAccessibleNameUsesForm': {
-            'title': "Form landmark uses generic term \"form\" in label",
-            'what': "Form landmark uses generic term \"form\" in label",
-            'why': "Generic labels don\'t describe purpose",
-            'who': "Screen reader users",
+            'title': "Form landmark accessible name includes redundant word \"form\"",
+            'what': "Form landmark accessible name includes redundant word \"form\"",
+            'why': "Screen readers already announce \"form\" as the element role, so including \"form\" in the accessible name creates redundant announcements like \"Login form form\". This adds unnecessary verbosity for screen reader users and doesn't follow best practices for ARIA labeling. The accessible name should be concise and describe the form's purpose without repeating the element type.",
+            'what_generic': "Form landmark accessible name includes redundant word \"form\"",
+            'who': "Screen reader users who hear redundant announcements when navigating forms, voice control users who need efficient commands",
             'impact': ImpactScale.LOW.value,
             'wcag': ['2.4.6'],
-            'remediation': "Use descriptive labels like \"Contact form\" or \"Search form\""
+            'remediation': "Remove the word \"form\" from the accessible name. Use concise, descriptive labels that state the purpose without the element type. Examples: Use \"Login\" instead of \"Login form\", \"Contact\" instead of \"Contact form\", \"Search\" instead of \"Search form\", \"Newsletter signup\" instead of \"Newsletter signup form\". The screen reader will automatically announce the role, resulting in natural speech like \"Login form\" or \"Search form\"."
         },
         'WarnGenericAccessibleName': {
             'title': "Element has generic accessible name that doesn\'t describe its purpose",

@@ -423,7 +423,7 @@ class TouchpointMapper:
         'WarnUnlabelledForm': TouchpointID.FORMS,  # Deprecated, kept for backwards compatibility
         'ErrFormLandmarkMustHaveAccessibleName': TouchpointID.LANDMARKS,  # Forms without names aren't landmarks
         'WarnUnlabelledRegion': TouchpointID.LANDMARKS,  # Regions are landmarks
-        'WarnMissingAriaLabelledby': TouchpointID.FORMS,
+        'WarnMissingAriaLabelledby': TouchpointID.DIALOGS,  # Dialogs should have aria-labelledby
         'DiscoFormOnPage': TouchpointID.FORMS,
         'DiscoNavFound': TouchpointID.LANDMARKS,  # Navigation is a landmark
         'DiscoAsideFound': TouchpointID.LANDMARKS,  # Complementary is a landmark

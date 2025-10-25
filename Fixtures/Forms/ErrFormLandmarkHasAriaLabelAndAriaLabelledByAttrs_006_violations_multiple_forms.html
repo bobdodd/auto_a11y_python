@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Multiple forms with both attributes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs_006_violations_multiple_forms",
+    "issueId": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Multiple form landmarks each with both aria-label and aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Multiple Forms Each with Both Attributes</h1>
+
+    <main>
+        <section>
+            <h2 id="loginHeading">Login</h2>
+
+            <form aria-label="User Login Form"
+                  aria-labelledby="loginHeading"
+                  data-expected-violation="true"
+                  data-violation-reason="Login form has both aria-label and aria-labelledby. Aria-labelledby takes precedence, aria-label is ignored. Use single method.">
+                <label for="user">Username:</label>
+                <input type="text" id="user" name="username">
+
+                <label for="pass">Password:</label>
+                <input type="password" id="pass" name="password">
+
+                <button type="submit">Login</button>
+            </form>
+        </section>
+
+        <section>
+            <h2 id="registerHeading">Create Account</h2>
+
+            <form aria-label="Registration Form"
+                  aria-labelledby="registerHeading"
+                  data-expected-violation="true"
+                  data-violation-reason="Registration form with dual labeling. Screen readers use aria-labelledby 'Create Account' and ignore aria-label 'Registration Form'. Redundant.">
+                <label for="newUser">Username:</label>
+                <input type="text" id="newUser" name="username">
+
+                <label for="newEmail">Email:</label>
+                <input type="email" id="newEmail" name="email">
+
+                <button type="submit">Register</button>
+            </form>
+        </section>
+
+        <section>
+            <h2 id="searchHeading">Product Search</h2>
+
+            <form aria-label="Search Products"
+                  aria-labelledby="searchHeading"
+                  data-expected-violation="true"
+                  data-violation-reason="Search form has both labeling attributes. Aria-labelledby wins but aria-label remains in code causing confusion.">
+                <label for="searchQuery">Search:</label>
+                <input type="search" id="searchQuery" name="q">
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
+        <section>
+            <h2 id="filterHeading">Filters</h2>
+
+            <form aria-label="Product Filters"
+                  aria-labelledby="filterHeading"
+                  data-expected-violation="true"
+                  data-violation-reason="Filter form with conflicting accessible name attributes. Only one labeling method should be used per form.">
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option>All</option>
+                    <option>Electronics</option>
+                </select>
+
+                <button type="button">Apply</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Site</p>
+    </footer>
+</body>
+</html>

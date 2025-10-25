@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Forms without labeling attributes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs_004_correct_no_attributes",
+    "issueId": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Forms without aria-label or aria-labelledby (no conflict possible)",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms Without Labeling Attributes</h1>
+
+    <main>
+        <!-- Form with no aria-label or aria-labelledby -->
+        <form data-expected-pass="true"
+              data-pass-reason="Form has neither aria-label nor aria-labelledby, so no conflict possible. Will not become a landmark without accessible name.">
+            <label for="email1">Email:</label>
+            <input type="email" id="email1" name="email">
+            <button type="submit">Subscribe</button>
+        </form>
+
+        <!-- Another form without attributes -->
+        <form action="/submit" method="post"
+              data-expected-pass="true"
+              data-pass-reason="Form element without aria-label or aria-labelledby. No conflicting attributes present.">
+            <label for="name1">Name:</label>
+            <input type="text" id="name1" name="name">
+
+            <label for="comment1">Comment:</label>
+            <textarea id="comment1" name="comment"></textarea>
+
+            <button type="submit">Post</button>
+        </form>
+
+        <!-- role="form" without attributes -->
+        <div role="form"
+             data-expected-pass="true"
+             data-pass-reason="Element with role='form' but no aria-label or aria-labelledby. No attribute conflict.">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value="1">
+            <button type="button">Add to Cart</button>
+        </div>
+    </main>
+</body>
+</html>

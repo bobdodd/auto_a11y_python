@@ -611,6 +611,53 @@ async def test_forms(page) -> Dict[str, Any]:
                     }
                 });
 
+                // WARNING: Check for multiple labels pointing to the same field
+                // Multiple labels with for attributes all pointing to the same field ID
+                // can cause confusion and inconsistent screen reader announcements
+                const fieldToLabelsMap = {};
+
+                // Build map of field IDs to their labels
+                allLabels.forEach(label => {
+                    const forId = label.getAttribute('for');
+                    if (forId && forId.trim()) {
+                        const referencedField = document.getElementById(forId);
+                        if (referencedField) {
+                            // Only track for actual form fields
+                            const tagName = referencedField.tagName.toLowerCase();
+                            if (['input', 'select', 'textarea', 'button'].includes(tagName)) {
+                                if (!fieldToLabelsMap[forId]) {
+                                    fieldToLabelsMap[forId] = [];
+                                }
+                                fieldToLabelsMap[forId].push(label);
+                            }
+                        }
+                    }
+                });
+
+                // Check for fields with multiple labels
+                Object.keys(fieldToLabelsMap).forEach(fieldId => {
+                    const labels = fieldToLabelsMap[fieldId];
+                    if (labels.length > 1) {
+                        const field = document.getElementById(fieldId);
+                        const labelTexts = labels.map(l => l.textContent.trim()).filter(t => t);
+
+                        results.warnings.push({
+                            err: 'WarnFieldLabelledByMultipleElements',
+                            type: 'warn',
+                            cat: 'forms',
+                            element: field.tagName,
+                            xpath: getFullXPath(field),
+                            html: field.outerHTML.substring(0, 200),
+                            description: `Form field is labeled by ${labels.length} different label elements (for="${fieldId}"). Screen readers may only announce one of them, causing confusion. Only one label should point to each field.`,
+                            fieldId: fieldId,
+                            labelCount: labels.length,
+                            labelTexts: labelTexts,
+                            inputType: field.type || field.tagName.toLowerCase()
+                        });
+                        results.elements_warned++;
+                    }
+                });
+
                 // DISCOVERY: Report all forms on the page for manual review
                 // (Empty forms check moved to before early return at top of script)
                 const allFormsDiscovery = Array.from(document.querySelectorAll('form'));

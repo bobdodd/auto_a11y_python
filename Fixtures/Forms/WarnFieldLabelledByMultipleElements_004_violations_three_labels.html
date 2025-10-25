@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Three labels pointing to same field</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFieldLabelledByMultipleElements_004_violations_three_labels",
+    "issueId": "WarnFieldLabelledByMultipleElements",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Form fields with 3+ label elements all pointing to same field ID",
+    "wcag": "3.3.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form - Multiple Labels Per Field</h1>
+
+    <main>
+        <form>
+            <!-- Three labels pointing to same textarea -->
+            <section>
+                <label for="message"
+                       data-expected-violation="true"
+                       data-violation-reason="Three label elements all have for='message'. Extremely confusing - screen reader will only use one.">
+                    Message
+                </label>
+                <label for="message">Your Message</label>
+                <label for="message">Comments</label>
+                <textarea id="message" name="message" rows="4"></textarea>
+            </section>
+
+            <!-- Four labels pointing to same input -->
+            <section>
+                <label for="phone"
+                       data-expected-violation="true"
+                       data-violation-reason="Four labels pointing to same phone field via for='phone'. Likely copy-paste error or misunderstanding of label association.">
+                    Phone
+                </label>
+                <label for="phone">Telephone</label>
+                <label for="phone">Mobile Number</label>
+                <label for="phone">Contact Number</label>
+                <input type="tel" id="phone" name="phone">
+            </section>
+
+            <button type="submit">Send</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

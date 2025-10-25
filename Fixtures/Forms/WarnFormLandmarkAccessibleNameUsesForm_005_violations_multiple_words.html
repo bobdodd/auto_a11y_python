@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnFormLandmarkAccessibleNameUsesForm - Multiple Word Labels with 'form'</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFormLandmarkAccessibleNameUsesForm_005_violations_multiple_words",
+    "issueId": "WarnFormLandmarkAccessibleNameUsesForm",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Forms with multi-word labels containing 'form'",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Multi-word Labels with 'form'</h1>
+
+    <!-- Violation 1: "application form" -->
+    <form aria-label="Job application form"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Should be 'Job application' not 'Job application form'">
+        <label for="position1">Position</label>
+        <input type="text" id="position1">
+        <button type="submit">Apply</button>
+    </form>
+
+    <!-- Violation 2: "order form" -->
+    <form aria-label="Product order form"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Should be 'Product order' not 'Product order form'">
+        <label for="item2">Item</label>
+        <input type="text" id="item2">
+        <button type="submit">Order</button>
+    </form>
+
+    <!-- Violation 3: "submission form" -->
+    <form aria-label="Assignment submission form"
+          data-expected-violation="true"
+          data-violation-id="WarnFormLandmarkAccessibleNameUsesForm"
+          data-violation-reason="Should be 'Assignment submission' not 'Assignment submission form'">
+        <label for="file3">File</label>
+        <input type="file" id="file3">
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

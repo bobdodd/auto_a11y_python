@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnFormLandmarkAccessibleNameUsesForm - Words Containing 'form'</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFormLandmarkAccessibleNameUsesForm_004_correct_forms_substring",
+    "issueId": "WarnFormLandmarkAccessibleNameUsesForm",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Forms with words containing 'form' as substring - should NOT trigger (e.g., 'information', 'transform', 'platform')",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Words Containing 'form' as Substring</h1>
+
+    <!-- Correct 1: "information" contains "form" but is not the word "form" -->
+    <form aria-label="Request information"
+          data-expected-pass="true"
+          data-pass-reason="'information' contains 'form' but is a different word - should not trigger">
+        <label for="topic1">Topic</label>
+        <input type="text" id="topic1">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Correct 2: "transformation" -->
+    <form aria-label="Digital transformation survey"
+          data-expected-pass="true"
+          data-pass-reason="'transformation' is not the word 'form'">
+        <label for="answer2">Response</label>
+        <textarea id="answer2"></textarea>
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Correct 3: "platform" -->
+    <form aria-label="Platform registration"
+          data-expected-pass="true"
+          data-pass-reason="'platform' contains 'form' but is different word">
+        <label for="email3">Email</label>
+        <input type="email" id="email3">
+        <button type="submit">Register</button>
+    </form>
+
+    <!-- Correct 4: "performance" -->
+    <form aria-label="Performance feedback"
+          data-expected-pass="true"
+          data-pass-reason="'performance' is not 'form'">
+        <label for="rating4">Rating</label>
+        <select id="rating4">
+            <option>Excellent</option>
+            <option>Good</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Correct 5: "uniform" -->
+    <form aria-label="Uniform order"
+          data-expected-pass="true"
+          data-pass-reason="'uniform' contains 'form' as substring but is different word">
+        <label for="size5">Size</label>
+        <input type="text" id="size5">
+        <button type="submit">Order</button>
+    </form>
+</body>
+</html>

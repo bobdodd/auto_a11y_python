@@ -386,6 +386,69 @@ async def test_forms(page) -> Dict[str, Any]:
                             results.elements_failed++;
                         }
 
+                        // ERROR: Check for mismatch between visible label and accessible name
+                        // WCAG 2.5.3 - Label in Name requires that the visible label text be included
+                        // in the accessible name for speech input users
+                        if (hasVisibleLabel) {
+                            // Get visible label text
+                            let visibleLabelText = '';
+                            if (inputId) {
+                                const label = document.querySelector(`label[for="${inputId}"]`);
+                                if (label) {
+                                    visibleLabelText = label.textContent.trim();
+                                }
+                            }
+                            if (!visibleLabelText) {
+                                const parentLabel = input.closest('label');
+                                if (parentLabel) {
+                                    visibleLabelText = parentLabel.textContent.trim();
+                                }
+                            }
+
+                            // Only check for mismatch if we have aria-label or aria-labelledby
+                            // (which would override or supplement the visible label)
+                            if (visibleLabelText && (ariaLabel || ariaLabelledby)) {
+                                // Get the accessible name
+                                let accessibleName = '';
+
+                                if (ariaLabel) {
+                                    accessibleName = ariaLabel.trim();
+                                } else if (ariaLabelledby) {
+                                    const refIds = ariaLabelledby.trim().split(/\s+/);
+                                    let labelTexts = [];
+                                    refIds.forEach(refId => {
+                                        const labelElement = document.getElementById(refId);
+                                        if (labelElement) {
+                                            labelTexts.push(labelElement.textContent.trim());
+                                        }
+                                    });
+                                    accessibleName = labelTexts.join(' ');
+                                }
+
+                                // Check if visible label text is included in accessible name
+                                // Case-insensitive comparison for better matching
+                                const visibleLabelLower = visibleLabelText.toLowerCase();
+                                const accessibleNameLower = accessibleName.toLowerCase();
+
+                                // The visible label text should be present in the accessible name
+                                if (!accessibleNameLower.includes(visibleLabelLower)) {
+                                    results.errors.push({
+                                        err: 'ErrLabelMismatchOfAccessibleNameAndLabelText',
+                                        type: 'err',
+                                        cat: 'forms',
+                                        element: input.tagName,
+                                        xpath: getFullXPath(input),
+                                        html: input.outerHTML.substring(0, 200),
+                                        description: `Visible label "${visibleLabelText}" is not included in accessible name "${accessibleName}". Voice control users saying "click ${visibleLabelText}" will fail. WCAG 2.5.3 requires visible label text to be included in accessible name.`,
+                                        visibleLabel: visibleLabelText,
+                                        accessibleName: accessibleName,
+                                        inputType: inputType
+                                    });
+                                    results.elements_failed++;
+                                }
+                            }
+                        }
+
                         // Check for required field indication
                         if (input.hasAttribute('required') || input.getAttribute('aria-required') === 'true') {
                             // Check if the label indicates it's required

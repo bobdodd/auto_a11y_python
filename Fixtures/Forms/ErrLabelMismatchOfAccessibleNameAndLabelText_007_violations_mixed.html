@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed violations and correct usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelMismatchOfAccessibleNameAndLabelText_007_violations_mixed",
+    "issueId": "ErrLabelMismatchOfAccessibleNameAndLabelText",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 3,
+    "description": "Mix of mismatched and correctly matched accessible names",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Mixed Correct and Incorrect Label Matching</h1>
+
+    <main>
+        <form>
+            <!-- Correct: No aria-label override -->
+            <section>
+                <label for="firstName"
+                       data-expected-pass="true"
+                       data-pass-reason="No aria-label, uses visible label directly">
+                    First Name
+                </label>
+                <input type="text" id="firstName">
+            </section>
+
+            <!-- Violation: Mismatch -->
+            <section>
+                <label for="lastName">Last Name</label>
+                <input type="text"
+                       id="lastName"
+                       aria-label="Family surname"
+                       data-expected-violation="true"
+                       data-violation-reason="'Last Name' not in 'Family surname'">
+            </section>
+
+            <!-- Correct: aria-label includes visible label -->
+            <section>
+                <label for="age"
+                       data-expected-pass="true"
+                       data-pass-reason="'Age' is included in 'Age in years'">
+                    Age
+                </label>
+                <input type="number" id="age" aria-label="Age in years">
+            </section>
+
+            <!-- Violation: Different terminology -->
+            <section>
+                <label for="zip">ZIP Code</label>
+                <input type="text"
+                       id="zip"
+                       aria-label="Postal code"
+                       data-expected-violation="true"
+                       data-violation-reason="'ZIP Code' not in 'Postal code', different terms">
+            </section>
+
+            <!-- Correct: Case insensitive match works -->
+            <section>
+                <label for="city"
+                       data-expected-pass="true"
+                       data-pass-reason="'city' (lowercase) matches 'City' (capitalized) - case insensitive">
+                    City
+                </label>
+                <input type="text" id="city" aria-label="city of residence">
+            </section>
+
+            <!-- Violation: Completely different -->
+            <section>
+                <label for="notes">Additional Notes</label>
+                <textarea id="notes"
+                          aria-label="Comments and observations"
+                          rows="3"
+                          data-expected-violation="true"
+                          data-violation-reason="'Additional Notes' not in 'Comments and observations'"></textarea>
+            </section>
+
+            <button type="submit">Submit Form</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

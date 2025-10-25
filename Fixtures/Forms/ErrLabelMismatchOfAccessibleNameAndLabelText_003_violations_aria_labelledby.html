@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: aria-labelledby mismatches</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelMismatchOfAccessibleNameAndLabelText_003_violations_aria_labelledby",
+    "issueId": "ErrLabelMismatchOfAccessibleNameAndLabelText",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Form fields using aria-labelledby that doesn't include visible label text",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: aria-labelledby Mismatches</h1>
+
+    <main>
+        <form>
+            <section>
+                <label for="username">Username</label>
+                <span id="user-hint" style="display:none;">Login identifier</span>
+                <input type="text"
+                       id="username"
+                       aria-labelledby="user-hint"
+                       data-expected-violation="true"
+                       data-violation-reason="Visible label 'Username' but aria-labelledby references 'Login identifier'. Voice command 'click Username' won't work.">
+            </section>
+
+            <section>
+                <label for="birthdate">Date of Birth</label>
+                <div id="date-desc">Your birthday</div>
+                <input type="date"
+                       id="birthdate"
+                       aria-labelledby="date-desc"
+                       data-expected-violation="true"
+                       data-violation-reason="Visible label is 'Date of Birth' but accessible name from aria-labelledby is 'Your birthday'. Mismatch for voice users.">
+            </section>
+
+            <section>
+                <label for="country">Country</label>
+                <span id="country-label">Nation of residence</span>
+                <select id="country"
+                        aria-labelledby="country-label"
+                        data-expected-violation="true"
+                        data-violation-reason="Visible label 'Country' doesn't appear in aria-labelledby text 'Nation of residence'">
+                    <option value="">Select</option>
+                    <option value="us">United States</option>
+                    <option value="uk">United Kingdom</option>
+                </select>
+            </section>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

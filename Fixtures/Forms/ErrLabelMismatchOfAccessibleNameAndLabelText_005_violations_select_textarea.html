@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Select and textarea mismatches</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelMismatchOfAccessibleNameAndLabelText_005_violations_select_textarea",
+    "issueId": "ErrLabelMismatchOfAccessibleNameAndLabelText",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Select dropdowns and textareas with mismatched visible labels and accessible names",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Select and Textarea Label Mismatches</h1>
+
+    <main>
+        <form>
+            <section>
+                <label for="category">Category</label>
+                <select id="category"
+                        aria-label="Product classification"
+                        data-expected-violation="true"
+                        data-violation-reason="Visible label 'Category' not included in aria-label 'Product classification'">
+                    <option value="">Choose one</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="books">Books</option>
+                </select>
+            </section>
+
+            <section>
+                <label for="feedback">Feedback</label>
+                <textarea id="feedback"
+                          aria-label="Share your thoughts"
+                          rows="4"
+                          data-expected-violation="true"
+                          data-violation-reason="Visible label is 'Feedback' but aria-label says 'Share your thoughts'. Voice users can't use visible label."></textarea>
+            </section>
+
+            <section>
+                <label for="priority">Priority Level</label>
+                <select id="priority"
+                        aria-label="Importance rating"
+                        data-expected-violation="true"
+                        data-violation-reason="'Priority Level' not in accessible name 'Importance rating'. Voice control breaks.">
+                    <option value="">Select priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </section>
+
+            <button type="submit">Submit Feedback</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

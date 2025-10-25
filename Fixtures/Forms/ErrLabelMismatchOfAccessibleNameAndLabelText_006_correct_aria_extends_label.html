@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - aria extends visible label</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelMismatchOfAccessibleNameAndLabelText_006_correct_aria_extends_label",
+    "issueId": "ErrLabelMismatchOfAccessibleNameAndLabelText",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Correct usage where aria-label or aria-labelledby includes the visible label text",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Correct - Accessible Name Includes Visible Label</h1>
+
+    <main>
+        <form>
+            <section>
+                <label for="email"
+                       data-expected-pass="true"
+                       data-pass-reason="aria-label 'Email address' includes visible label 'Email'">
+                    Email
+                </label>
+                <input type="email" id="email" aria-label="Email address">
+            </section>
+
+            <section>
+                <label for="phone"
+                       data-expected-pass="true"
+                       data-pass-reason="aria-label 'Phone number' includes visible label text 'Phone'">
+                    Phone
+                </label>
+                <input type="tel" id="phone" aria-label="Phone number">
+            </section>
+
+            <section>
+                <label for="search"
+                       data-expected-pass="true"
+                       data-pass-reason="aria-label 'Search products' includes visible text 'Search'">
+                    Search
+                </label>
+                <input type="search" id="search" aria-label="Search products">
+            </section>
+
+            <section>
+                <label for="message"
+                       data-expected-pass="true"
+                       data-pass-reason="aria-label 'Message text' includes visible label 'Message'">
+                    Message
+                </label>
+                <textarea id="message" aria-label="Message text" rows="3"></textarea>
+            </section>
+
+            <section>
+                <label for="state"
+                       data-expected-pass="true"
+                       data-pass-reason="aria-label 'State selection' includes visible label 'State'">
+                    State
+                </label>
+                <select id="state" aria-label="State selection">
+                    <option value="">Choose</option>
+                    <option value="ca">California</option>
+                    <option value="ny">New York</option>
+                    <option value="tx">Texas</option>
+                </select>
+            </section>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

@@ -2788,16 +2788,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.2.2'],
             'remediation': "Slow down update intervals, provide pause controls for rapid updates."
         },
-        'WarnFieldLabelledByElementThatIsNotALabel': {
-            'title': "Field labeled by element \'{found}\' that is not semantically a label",
-            'what': "Field labeled by element \'{found}\' that is not semantically a label",
-            'why': "The element with ID \'{found}\' is being used as a label but is not a <label> element. While this can work, non-label elements may not convey proper semantic meaning or behave as users expect.",
-                    'what_generic': "Field labeled by element that is not semantically a label",
-            'who': "Screen reader users who may not receive proper label semantics",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['1.3.1', '3.3.2'],
-            'remediation': "Consider using a proper <label> element, or ensure the element \'{found}\' contains appropriate descriptive text for the field"
-        },
         'WarnFieldLabelledByMultipleElements': {
             'title': "Field is labeled by {count} elements via aria-labelledby",
             'what': "Field is labeled by {count} elements via aria-labelledby",

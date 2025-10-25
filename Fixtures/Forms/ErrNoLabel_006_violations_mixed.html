@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed unlabeled and labeled fields</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoLabel_006_violations_mixed",
+    "issueId": "ErrNoLabel",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 3,
+    "description": "Mix of unlabeled fields (ErrNoLabel) and properly labeled fields",
+    "wcag": "1.3.1, 3.3.2, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Registration Form - Mixed Label Quality</h1>
+
+    <main>
+        <form>
+            <!-- Correct: Explicit label -->
+            <section>
+                <label for="firstName"
+                       data-expected-pass="true"
+                       data-pass-reason="Proper label with for attribute">
+                    First Name
+                </label>
+                <input type="text" id="firstName" name="firstName">
+            </section>
+
+            <!-- Violation: No label -->
+            <section>
+                <input type="text"
+                       name="lastName"
+                       data-expected-violation="true"
+                       data-violation-reason="No label, aria-label, aria-labelledby, or placeholder">
+            </section>
+
+            <!-- Correct: Implicit wrapping -->
+            <section>
+                <label data-expected-pass="true"
+                       data-pass-reason="Label wraps input">
+                    Email
+                    <input type="email" id="email" name="email">
+                </label>
+            </section>
+
+            <!-- Violation: Adjacent text not associated -->
+            <section>
+                <span>Password</span>
+                <input type="password"
+                       name="password"
+                       data-expected-violation="true"
+                       data-violation-reason="Span is not a label, no programmatic association">
+            </section>
+
+            <!-- Correct: aria-label -->
+            <section>
+                <input type="tel"
+                       id="phone"
+                       name="phone"
+                       aria-label="Phone Number"
+                       data-expected-pass="true"
+                       data-pass-reason="Field has aria-label">
+            </section>
+
+            <!-- Violation: Completely unlabeled select -->
+            <section>
+                <select name="country"
+                        data-expected-violation="true"
+                        data-violation-reason="Select has no accessible name">
+                    <option value="">Select Country</option>
+                    <option value="us">USA</option>
+                    <option value="ca">Canada</option>
+                </select>
+            </section>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

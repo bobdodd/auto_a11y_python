@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Mixed orphan and correct labels</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrOrphanLabelWithNoId_006_violations_mixed",
+    "issueId": "ErrOrphanLabelWithNoId",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 3,
+    "description": "Mix of orphan labels and correctly associated labels",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Mixed Orphan and Correct Labels</h1>
+
+    <main>
+        <form>
+            <!-- Correct: for attribute -->
+            <section>
+                <label for="username"
+                       data-expected-pass="true"
+                       data-pass-reason="Label has for attribute matching field id">
+                    Username
+                </label>
+                <input type="text" id="username" name="username">
+            </section>
+
+            <!-- Violation: No for attribute -->
+            <section>
+                <label data-expected-violation="true"
+                       data-violation-id="ErrOrphanLabelWithNoId"
+                       data-violation-reason="Label missing for attribute, not associated">
+                    Password
+                </label>
+                <input type="password" id="password" name="password">
+            </section>
+
+            <!-- Correct: Wrapping (implicit) -->
+            <section>
+                <label data-expected-pass="true"
+                       data-pass-reason="Label wraps checkbox, implicit association">
+                    <input type="checkbox" id="remember" name="remember">
+                    Remember me
+                </label>
+            </section>
+
+            <!-- Violation: Empty for attribute -->
+            <section>
+                <label for=""
+                       data-expected-violation="true"
+                       data-violation-id="ErrOrphanLabelWithNoId"
+                       data-violation-reason="Empty for attribute, label orphaned">
+                    Email
+                </label>
+                <input type="email" id="email" name="email">
+            </section>
+
+            <!-- Correct: for attribute with textarea -->
+            <section>
+                <label for="comments"
+                       data-expected-pass="true"
+                       data-pass-reason="Label properly associated with textarea via for attribute">
+                    Comments
+                </label>
+                <textarea id="comments" name="comments" rows="3"></textarea>
+            </section>
+
+            <!-- Violation: Whitespace for attribute -->
+            <section>
+                <label for="   "
+                       data-expected-violation="true"
+                       data-violation-id="ErrOrphanLabelWithNoId"
+                       data-violation-reason="for attribute contains only whitespace, orphaned">
+                    Country
+                </label>
+                <select id="country" name="country">
+                    <option value="">Select</option>
+                    <option value="us">USA</option>
+                </select>
+            </section>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

@@ -543,6 +543,43 @@ async def test_forms(page) -> Dict[str, Any]:
                     });
                 }
 
+                // ERROR: Check for orphan labels without proper associations
+                // A label is orphaned if:
+                // 1. It has no 'for' attribute at all
+                // 2. It has an empty 'for' attribute (for="" or for="   ")
+                // 3. It doesn't wrap a form control (implicit association)
+                const allLabelsToCheck = Array.from(document.querySelectorAll('label'));
+                allLabelsToCheck.forEach(label => {
+                    const forAttr = label.getAttribute('for');
+
+                    // Check if label has no for attribute or empty/whitespace for attribute
+                    const hasNoFor = forAttr === null;
+                    const hasEmptyFor = forAttr !== null && forAttr.trim() === '';
+
+                    if (hasNoFor || hasEmptyFor) {
+                        // Check if label wraps a form control (implicit association)
+                        const wrappedControl = label.querySelector('input, select, textarea, button');
+
+                        // If no wrapped control, it's an orphan label
+                        if (!wrappedControl) {
+                            results.errors.push({
+                                err: 'ErrOrphanLabelWithNoId',
+                                type: 'err',
+                                cat: 'forms',
+                                element: 'LABEL',
+                                xpath: getFullXPath(label),
+                                html: label.outerHTML.substring(0, 200),
+                                description: hasEmptyFor
+                                    ? 'Label has empty for attribute and does not wrap a form control. Label cannot be programmatically associated with any field.'
+                                    : 'Label has no for attribute and does not wrap a form control. Label is orphaned and cannot be programmatically associated with any field.',
+                                labelText: label.textContent.trim(),
+                                hasEmptyFor: hasEmptyFor
+                            });
+                            results.elements_failed++;
+                        }
+                    }
+                });
+
                 // ERROR: Check for labels with for attribute referencing non-existent fields
                 const allLabels = Array.from(document.querySelectorAll('label[for]'));
                 allLabels.forEach(label => {

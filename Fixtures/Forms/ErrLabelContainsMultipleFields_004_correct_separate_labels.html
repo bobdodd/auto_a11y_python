@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Separate Labels</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelContainsMultipleFields_004_correct_separate_labels",
+    "issueId": "ErrLabelContainsMultipleFields",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Each field has its own label (correct approach)",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Correct: Each Field Has Own Label</h1>
+
+    <form>
+        <!-- Date range with separate labels -->
+        <label for="start-date"
+               data-expected-pass="true"
+               data-pass-reason="Label has only one field">
+            Start Date:
+        </label>
+        <input type="date" id="start-date">
+
+        <label for="end-date"
+               data-expected-pass="true"
+               data-pass-reason="Label has only one field">
+            End Date:
+        </label>
+        <input type="date" id="end-date">
+
+        <!-- Phone parts with separate labels -->
+        <label for="area-code"
+               data-expected-pass="true"
+               data-pass-reason="Label has only one field">
+            Area Code:
+        </label>
+        <input type="text" id="area-code" size="3" maxlength="3">
+
+        <label for="exchange"
+               data-expected-pass="true"
+               data-pass-reason="Label has only one field">
+            Exchange:
+        </label>
+        <input type="text" id="exchange" size="3" maxlength="3">
+
+        <label for="number"
+               data-expected-pass="true"
+               data-pass-reason="Label has only one field">
+            Number:
+        </label>
+        <input type="text" id="number" size="4" maxlength="4">
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

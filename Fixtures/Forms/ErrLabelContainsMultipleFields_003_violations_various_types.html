@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Multiple Fields of Various Types</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelContainsMultipleFields_003_violations_various_types",
+    "issueId": "ErrLabelContainsMultipleFields",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Labels containing multiple fields of various input types",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Various Field Type Combinations</h1>
+
+    <form>
+        <!-- Text and email -->
+        <label data-expected-violation="true"
+               data-violation-id="ErrLabelContainsMultipleFields"
+               data-violation-reason="Label contains text and email inputs">
+            Contact:
+            <input type="text" placeholder="Name">
+            <input type="email" placeholder="Email">
+        </label>
+
+        <!-- Select and text -->
+        <label data-expected-violation="true"
+               data-violation-id="ErrLabelContainsMultipleFields"
+               data-violation-reason="Label contains select and text input">
+            Location:
+            <select>
+                <option>USA</option>
+                <option>Canada</option>
+            </select>
+            <input type="text" placeholder="City">
+        </label>
+
+        <!-- Textarea and text -->
+        <label data-expected-violation="true"
+               data-violation-id="ErrLabelContainsMultipleFields"
+               data-violation-reason="Label contains textarea and text input">
+            Feedback:
+            <textarea placeholder="Comments"></textarea>
+            <input type="text" placeholder="Rating">
+        </label>
+
+        <!-- Three inputs -->
+        <label data-expected-violation="true"
+               data-violation-id="ErrLabelContainsMultipleFields"
+               data-violation-reason="Label contains three text inputs">
+            Full Name:
+            <input type="text" placeholder="First">
+            <input type="text" placeholder="Middle">
+            <input type="text" placeholder="Last">
+        </label>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: role="form" with both attributes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs_003_violations_role_form",
+    "issueId": "ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements with role='form' having both aria-label and aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Role Form Elements with Both Attributes</h1>
+
+    <main>
+        <section>
+            <h2 id="loginTitle">Login Form</h2>
+
+            <div role="form"
+                 aria-label="User Login"
+                 aria-labelledby="loginTitle"
+                 data-expected-violation="true"
+                 data-violation-reason="Element with role='form' has both aria-label 'User Login' and aria-labelledby pointing to 'Login Form'. Aria-labelledby takes precedence so aria-label is ignored. Only use one method.">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+
+                <button type="submit">Login</button>
+            </div>
+        </section>
+
+        <section>
+            <div id="filterHeading">Filter Options</div>
+
+            <div role="form"
+                 aria-label="Product Filters"
+                 aria-labelledby="filterHeading"
+                 data-expected-violation="true"
+                 data-violation-reason="Role form has both aria-label and aria-labelledby. Screen readers use aria-labelledby 'Filter Options' and ignore aria-label 'Product Filters'. Redundant attributes cause confusion.">
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option>Electronics</option>
+                    <option>Clothing</option>
+                </select>
+
+                <button type="button">Apply Filters</button>
+            </div>
+        </section>
+
+        <section>
+            <span id="settingsLabel">Settings Panel</span>
+
+            <div role="form"
+                 aria-label="Application Settings Form"
+                 aria-labelledby="settingsLabel"
+                 data-expected-violation="true"
+                 data-violation-reason="Role form landmark with dual naming. Aria-labelledby takes precedence making aria-label ignored by assistive technology. Use only one labeling method for clarity.">
+                <label for="theme">Theme:</label>
+                <select id="theme" name="theme">
+                    <option>Light</option>
+                    <option>Dark</option>
+                </select>
+
+                <button type="button">Save</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

@@ -447,6 +447,27 @@ async def test_landmarks(page) -> Dict[str, Any]:
                     const ariaLabel = element.getAttribute('aria-label');
                     const ariaLabelledby = element.getAttribute('aria-labelledby');
 
+                    // ERROR: Check if form has BOTH aria-label and aria-labelledby
+                    // Having both attributes is problematic because:
+                    // - aria-labelledby takes precedence and aria-label is ignored by screen readers
+                    // - Creates confusion for developers who may think aria-label is being used
+                    // - Violates WCAG 4.1.2 by having redundant/conflicting attributes
+                    if (ariaLabel !== null && ariaLabel !== undefined &&
+                        ariaLabelledby !== null && ariaLabelledby !== undefined) {
+                        results.errors.push({
+                            err: 'ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs',
+                            type: 'err',
+                            cat: 'landmarks',
+                            element: element.tagName.toLowerCase(),
+                            xpath: getFullXPath(element),
+                            html: element.outerHTML.substring(0, 200),
+                            description: 'Form landmark has both aria-label and aria-labelledby attributes. Aria-labelledby takes precedence making aria-label ignored. Only one labeling method should be used.',
+                            ariaLabelValue: ariaLabel,
+                            ariaLabelledbyValue: ariaLabelledby
+                        });
+                        results.elements_failed++;
+                    }
+
                     let hasAccessibleName = false;
                     let labelText = '';
 

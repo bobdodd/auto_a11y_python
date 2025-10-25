@@ -110,7 +110,6 @@ WCAG_MAPPINGS = {
     'ErrAriaLabelMayNotBeFoundByVoiceControl': ['2.5.3 Label in Name'],
     'ErrTitleAsOnlyLabel': ['3.3.2 Labels or Instructions', '4.1.2 Name, Role, Value'],
     'WarnFormHasNoLabel': ['1.3.1 Info and Relationships'],
-    'WarnFieldLabelledByMultipleElements': ['1.3.1 Info and Relationships'],
     'WarnFieldLabelledUsingAriaLabel': ['3.3.2 Labels or Instructions'],  # Warning about usability concerns
     'DiscoFormOnPage': [],  # Discovery
 

@@ -2560,15 +2560,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.7'],
             'remediation': "Use opaque colors with sufficient contrast for focus indicators. Replace transparent outlines with visible colors, ensure at least 3:1 contrast ratio between focus indicator and background, use solid colors or high alpha values (0.7 or higher) for rgba colors. Test focus indicators on different backgrounds across your site. Consider using box-shadow or background changes as additional focus indicators."
         },
-        'ErrUnlabelledField': {
-            'title': "Form input element lacks an accessible name through <label>, aria-label, aria-labelledby, or other labeling methods, leaving the field\'s purpose undefined for assistive technologies",
-            'what': "Form input element lacks an accessible name through <label>, aria-label, aria-labelledby, or other labeling methods, leaving the field\'s purpose undefined for assistive technologies",
-            'why': "Without labels, users cannot determine what information to enter, leading to form errors, abandoned transactions, and inability to complete critical tasks. Screen readers announce only the field type like \"edit\" or \"combo box\" without context, forcing users to guess based on surrounding content that may not be programmatically associated. This creates barriers for independent form completion and may result in users submitting incorrect information or being unable to proceed.",
-            'who': "Blind and low vision users using screen readers who hear no field description when navigating forms, users with cognitive disabilities who need clear labels to understand what information is required, users with motor disabilities using voice control who cannot reference unlabeled fields by name, mobile users where placeholder text may disappear on focus, and users who rely on browser autofill features that depend on proper field labeling",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['3.3.2', '4.1.2'],
-            'remediation': "Add explicit <label> elements with for attribute matching the input\'s id (preferred method), use aria-label for simple labels when visual text isn\'t needed, implement aria-labelledby to reference existing visible text, ensure placeholder text is not the only labeling method as it disappears on input, wrap inputs and label text together for implicit association, and verify all form controls including select elements, textareas, and custom widgets have accessible names"
-        },
         'ErrVideoIframeMissingTitle': {
             'title': "Video iframe lacks title attribute",
             'what': "Video iframe lacks title attribute",

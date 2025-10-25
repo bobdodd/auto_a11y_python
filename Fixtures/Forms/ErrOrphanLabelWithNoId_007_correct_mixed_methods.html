@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Various correct label association methods</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrOrphanLabelWithNoId_007_correct_mixed_methods",
+    "issueId": "ErrOrphanLabelWithNoId",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 6,
+    "description": "Various valid methods of associating labels with form controls",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Correct Label Association Methods</h1>
+
+    <main>
+        <form>
+            <!-- Method 1: Explicit for/id association -->
+            <section>
+                <label for="firstName"
+                       data-expected-pass="true"
+                       data-pass-reason="Explicit association using for/id attributes">
+                    First Name
+                </label>
+                <input type="text" id="firstName" name="firstName">
+            </section>
+
+            <!-- Method 2: Implicit wrapping (text input) -->
+            <section>
+                <label data-expected-pass="true"
+                       data-pass-reason="Implicit association by wrapping input">
+                    Last Name
+                    <input type="text" id="lastName" name="lastName">
+                </label>
+            </section>
+
+            <!-- Method 3: Implicit wrapping (checkbox) -->
+            <section>
+                <label data-expected-pass="true"
+                       data-pass-reason="Checkbox wrapped in label, common accessible pattern">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    Subscribe to newsletter
+                </label>
+            </section>
+
+            <!-- Method 4: Explicit for/id with select -->
+            <section>
+                <label for="state"
+                       data-expected-pass="true"
+                       data-pass-reason="Select properly associated with explicit for attribute">
+                    State
+                </label>
+                <select id="state" name="state">
+                    <option value="">Choose</option>
+                    <option value="ca">California</option>
+                    <option value="ny">New York</option>
+                </select>
+            </section>
+
+            <!-- Method 5: Implicit wrapping (textarea) -->
+            <section>
+                <label data-expected-pass="true"
+                       data-pass-reason="Textarea wrapped in label, valid implicit association">
+                    Message
+                    <textarea id="message" name="message" rows="4"></textarea>
+                </label>
+            </section>
+
+            <!-- Method 6: Fieldset with individual labels -->
+            <fieldset>
+                <legend>Preferred Contact Method</legend>
+                <label for="contactEmail"
+                       data-expected-pass="true"
+                       data-pass-reason="Radio button label with explicit for attribute">
+                    <input type="radio" id="contactEmail" name="contact" value="email">
+                    Email
+                </label>
+                <label for="contactPhone">
+                    <input type="radio" id="contactPhone" name="contact" value="phone">
+                    Phone
+                </label>
+            </fieldset>
+
+            <button type="submit">Submit Form</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

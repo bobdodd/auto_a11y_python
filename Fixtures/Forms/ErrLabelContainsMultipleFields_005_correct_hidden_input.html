@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - Hidden Inputs Don't Count</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelContainsMultipleFields_005_correct_hidden_input",
+    "issueId": "ErrLabelContainsMultipleFields",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Labels with one visible field and hidden inputs (not a violation)",
+    "wcag": "1.3.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Correct: Hidden Inputs Don't Count</h1>
+
+    <form>
+        <!-- Label with visible input and hidden input - should NOT trigger error -->
+        <label data-expected-pass="true"
+               data-pass-reason="Hidden inputs are excluded from count">
+            Email:
+            <input type="hidden" name="user_id" value="123">
+            <input type="email" name="email">
+        </label>
+
+        <!-- Label with visible input and multiple hidden inputs -->
+        <label data-expected-pass="true"
+               data-pass-reason="Multiple hidden inputs don't count">
+            Username:
+            <input type="hidden" name="form_id" value="register">
+            <input type="text" name="username">
+            <input type="hidden" name="timestamp" value="2024">
+        </label>
+
+        <!-- Label with just hidden input (no visible fields) -->
+        <label data-expected-pass="true"
+               data-pass-reason="No visible fields to count">
+            <input type="hidden" name="token" value="abc123">
+        </label>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

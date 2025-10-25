@@ -169,7 +169,31 @@ async def test_forms(page) -> Dict[str, Any]:
                 }
                 
                 results.elements_tested = inputs.length;
-                
+
+                // ERROR: Check for labels containing multiple form fields
+                // A label should only contain one form control to avoid ambiguity
+                const labelsToCheck = Array.from(document.querySelectorAll('label'));
+                labelsToCheck.forEach(label => {
+                    // Find all form controls within this label
+                    const fieldsInLabel = Array.from(label.querySelectorAll('input:not([type="hidden"]), select, textarea'));
+
+                    // If label contains more than one field, it's an error
+                    if (fieldsInLabel.length > 1) {
+                        results.errors.push({
+                            err: 'ErrLabelContainsMultipleFields',
+                            type: 'err',
+                            cat: 'forms',
+                            element: 'LABEL',
+                            xpath: getFullXPath(label),
+                            html: label.outerHTML.substring(0, 200),
+                            description: `Label contains ${fieldsInLabel.length} form fields. Each field should have its own label for clarity.`,
+                            fieldCount: fieldsInLabel.length,
+                            labelText: label.textContent.trim().substring(0, 100)
+                        });
+                        results.elements_failed++;
+                    }
+                });
+
                 // Check each input for labels
                 inputs.forEach(input => {
                     const inputType = input.type || 'text';

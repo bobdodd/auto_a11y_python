@@ -365,18 +365,9 @@ function forms2Scrape() {
                             if (refElement.tagName === 'LABEL') {
                                 hasLabelElement = true;
                                 utilizedLabels.push(refElement);
-                            } else {
-                                errorList.push({
-                                    url: window.location.href,
-                                    type: 'warn',
-                                    cat: 'form',
-                                    err: 'WarnFieldLabelledByElementThatIsNotALabel',
-                                    xpath: fieldXpath,
-                                    found: refId,
-                                    tag: refElement.tagName,
-                                    fpTempId: field.getAttribute('a11y-fpId')
-                                });
                             }
+                            // Note: Non-label elements in aria-labelledby are now caught by
+                            // ErrFielLabelledBySomethingNotALabel in test_forms.py
                         }
                     });
                     

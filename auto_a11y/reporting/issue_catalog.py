@@ -457,18 +457,6 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users",
             "how_to_fix": "Ensure multiple labels make sense when read together"
         },
-        "WarnFieldLabelledByElementThatIsNotALabel": {
-            "id": "WarnFieldLabelledByElementThatIsNotALabel",
-            "type": "Warning",
-            "impact": "Medium",
-            "wcag": ["1.3.1", "3.3.2"],
-            "wcag_full": "1.3.1, 3.3.2",
-            "category": "forms",
-            "description": "Field labeled by element that is not semantically a label",
-            "why_it_matters": "Non-label elements may not convey proper semantic meaning",
-            "who_it_affects": "Screen reader users",
-            "how_to_fix": "Use proper label elements or ensure aria-labelledby references appropriate content"
-        },
         "forms_ErrNoButtonText": {
             "id": "forms_ErrNoButtonText",
             "type": "Error",

@@ -342,6 +342,13 @@ async def test_forms(page) -> Dict[str, Any]:
                             });
                             results.elements_failed++;
                         } else {
+                            // ERROR: Form field has no accessible label
+                            // Field lacks all labeling methods:
+                            // - No <label> with matching for attribute
+                            // - Not wrapped in a <label> (implicit association)
+                            // - No aria-label attribute
+                            // - No aria-labelledby attribute
+                            // - No placeholder text (would trigger ErrPlaceholderAsLabel instead)
                             results.errors.push({
                                 err: 'ErrNoLabel',
                                 type: 'err',
@@ -349,9 +356,10 @@ async def test_forms(page) -> Dict[str, Any]:
                                 element: input.tagName,
                                 xpath: getFullXPath(input),
                                 html: input.outerHTML.substring(0, 200),
-                                description: 'Form input is missing a label',
+                                description: 'Form field has no accessible label. Field lacks proper label, aria-label, aria-labelledby, or placeholder. Screen readers will not provide context about what information to enter. Violates WCAG 1.3.1, 3.3.2, and 4.1.2.',
                                 inputType: inputType,
-                                inputName: inputName
+                                inputName: inputName,
+                                inputId: inputId
                             });
                             results.elements_failed++;
                         }

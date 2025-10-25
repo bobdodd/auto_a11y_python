@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Unlabeled fields in complex layouts</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrNoLabel_007_violations_in_complex_layout",
+    "issueId": "ErrNoLabel",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Unlabeled fields within tables, grids, and complex layouts",
+    "wcag": "1.3.1, 3.3.2, 4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Form with Complex Layout - Unlabeled Fields</h1>
+
+    <main>
+        <form>
+            <!-- Table layout with unlabeled fields -->
+            <section>
+                <h2>Address Information</h2>
+                <table>
+                    <tr>
+                        <td>Street Address</td>
+                        <td>
+                            <input type="text"
+                                   name="street"
+                                   data-expected-violation="true"
+                                   data-violation-reason="Table cell text is not a label. No programmatic association.">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>City</td>
+                        <td>
+                            <input type="text"
+                                   name="city"
+                                   data-expected-violation="true"
+                                   data-violation-reason="TD content is not associated with input. Needs proper label.">
+                        </td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- Grid layout -->
+            <section>
+                <h2>Payment Details</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>Card Number</div>
+                    <div>
+                        <input type="text"
+                               name="cardNumber"
+                               data-expected-violation="true"
+                               data-violation-reason="Div text in grid layout is not programmatically associated">
+                    </div>
+                    <div>CVV</div>
+                    <div>
+                        <input type="text"
+                               name="cvv"
+                               data-expected-violation="true"
+                               data-violation-reason="Layout suggests association but no programmatic link exists">
+                    </div>
+                </div>
+            </section>
+
+            <button type="submit">Submit Payment</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

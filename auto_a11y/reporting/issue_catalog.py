@@ -1189,18 +1189,6 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users",
             "how_to_fix": "Ensure all contentinfo landmarks have labels or reduce to single contentinfo"
         },
-        "WarnFormHasNoLabelSoIsNotLandmark": {
-            "id": "WarnFormHasNoLabelSoIsNotLandmark",
-            "type": "Warning",
-            "impact": "Medium",
-            "wcag": ["1.3.1"],
-            "wcag_full": "1.3.1",
-            "category": "landmarks",
-            "description": "Form element lacks label so is not exposed as landmark",
-            "why_it_matters": "Forms without accessible names are not landmarks",
-            "who_it_affects": "Screen reader users navigating by landmarks",
-            "how_to_fix": "Add aria-label or aria-labelledby to make it a landmark"
-        },
         "ErrDuplicateLabelForFormLandmark": {
             "id": "ErrDuplicateLabelForFormLandmark",
             "type": "Error",

@@ -193,18 +193,6 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users",
             "how_to_fix": "Add for attribute pointing to field ID"
         },
-        "WarnFormHasNoLabel": {
-            "id": "WarnFormHasNoLabel",
-            "type": "Warning",
-            "impact": "Medium",
-            "wcag": ["1.3.1", "2.4.6"],
-            "wcag_full": "1.3.1 Info and Relationships, 2.4.6 Headings and Labels",
-            "category": "forms",
-            "description": "Form element has no accessible name to describe its purpose",
-            "why_it_matters": "When a form lacks an accessible name, screen reader users hear only \"form\" without knowing what the form does - is it a search form, login form, contact form, or something else? Users navigating by landmarks or forms need to understand each form's purpose to decide whether to interact with it. This is especially important on pages with multiple forms. Without proper labeling, users might fill out the wrong form, skip important forms, or waste time exploring forms to understand their purpose.",
-            "who_it_affects": "Screen reader users navigating by forms or landmarks who need to identify form purposes, users with cognitive disabilities who need clear labels to understand what each form does, and keyboard users who tab through forms and need context about what they're interacting with",
-            "how_to_fix": "Add an accessible name to the form element using aria-label (e.g., aria-label=\"Contact form\") or aria-labelledby to reference a visible heading. If the form has a visible heading immediately before it, use aria-labelledby to point to that heading's ID. For search forms, \"Search\" is usually sufficient. The label should clearly indicate the form's purpose and be unique if there are multiple forms on the page."
-        },
         "forms_WarnRequiredNotIndicated": {
             "id": "forms_WarnRequiredNotIndicated",
             "type": "Warning",

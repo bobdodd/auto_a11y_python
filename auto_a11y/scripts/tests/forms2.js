@@ -332,20 +332,9 @@ function forms2Scrape() {
                     let allRefsValid = true;
                     let hasLabelElement = false;
                     
-                    // Check for multiple labelledby elements (can confuse voice control)
-                    if (refIds.length > 1) {
-                        errorList.push({
-                            url: window.location.href,
-                            type: 'warn',
-                            cat: 'form',
-                            err: 'WarnFieldLabelledByMultipleElements',
-                            count: refIds.length,
-                            ids: refIds.join(', '),
-                            xpath: fieldXpath,
-                            fpTempId: field.getAttribute('a11y-fpId')
-                        });
-                    }
-                    
+                    // Note: Multiple labels pointing to same field is now handled by
+                    // the error code implementation in test_forms.py
+
                     // Check each reference
                     refIds.forEach(refId => {
                         const refElement = document.getElementById(refId);

@@ -2788,16 +2788,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.2.2'],
             'remediation': "Slow down update intervals, provide pause controls for rapid updates."
         },
-        'WarnFieldLabelledByMultipleElements': {
-            'title': "Field is labeled by {count} elements via aria-labelledby",
-            'what': "Field is labeled by {count} elements via aria-labelledby",
-            'why': "When {count} elements label a field, they will be concatenated together. The order and combination may not make sense or could be confusing when read as a single label.",
-                    'what_generic': "Field is labeled by multiple elements via aria-labelledby",
-            'who': "Screen reader users who hear all {count} labels concatenated together",
-            'impact': ImpactScale.LOW.value,
-            'wcag': ['3.3.2'],
-            'remediation': "Review the {count} labeling elements to ensure they make sense when read together in order. Consider if a single, clear label would be better."
-        },
         'ErrInaccessibleFont': {
             'title': "Font '{fontName}' is difficult to read",
             'what': "Using {fontName} font which is known to be difficult to read",

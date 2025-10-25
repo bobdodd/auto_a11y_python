@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Correct - No duplicate for attributes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnFieldLabelledByMultipleElements_007_correct_no_duplicates",
+    "issueId": "WarnFieldLabelledByMultipleElements",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Multiple labels exist but each points to a different field - no duplicates",
+    "wcag": "3.3.2",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Survey Form - Multiple Labels, No Duplicates</h1>
+
+    <main>
+        <form>
+            <!-- Multiple labels in form, but each for a different field - CORRECT -->
+            <section>
+                <label for="question1"
+                       data-expected-pass="true"
+                       data-pass-reason="This label only points to question1.">
+                    Question 1
+                </label>
+                <input type="text" id="question1" name="question1">
+            </section>
+
+            <section>
+                <label for="question2"
+                       data-expected-pass="true"
+                       data-pass-reason="This label only points to question2.">
+                    Question 2
+                </label>
+                <input type="text" id="question2" name="question2">
+            </section>
+
+            <section>
+                <label for="question3"
+                       data-expected-pass="true"
+                       data-pass-reason="This label only points to question3.">
+                    Question 3
+                </label>
+                <textarea id="question3" name="question3" rows="3"></textarea>
+            </section>
+
+            <section>
+                <label for="rating"
+                       data-expected-pass="true"
+                       data-pass-reason="This label only points to rating field.">
+                    Overall Rating
+                </label>
+                <select id="rating" name="rating">
+                    <option value="">Select</option>
+                    <option value="1">1 - Poor</option>
+                    <option value="5">5 - Excellent</option>
+                </select>
+            </section>
+
+            <!-- Additional visual labels without for attribute (not tracked by this test) -->
+            <div>
+                <span>Additional Info (optional):</span>
+                <input type="text" name="extra">
+            </div>
+
+            <button type="submit">Submit Survey</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

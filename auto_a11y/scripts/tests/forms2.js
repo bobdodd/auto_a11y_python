@@ -115,8 +115,7 @@ function forms2Scrape() {
             fpTempId: '0'
         });
 
-        // Note: Form accessible name checking is now handled by
-        // WarnFormHasNoLabelSoIsNotLandmark (duplicate removed)
+        // Note: Form accessible name checking removed as duplicate warnings
 
         ///////////////////////////////////////
         // Check for empty forms

@@ -404,7 +404,6 @@ class TouchpointMapper:
         'ErrNoLabel': TouchpointID.FORMS,
         'ErrEmptyLabel': TouchpointID.FORMS,
         'ErrPlaceholderAsLabel': TouchpointID.FORMS,
-        'ErrUnlabelledField': TouchpointID.FORMS,
         'ErrButtonEmpty': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need accessible names
         'ErrButtonNoText': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need text for accessibility
         'ErrButtonOutlineNoneNoBoxShadow': TouchpointID.BUTTONS,  # Button focus indicators

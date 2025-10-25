@@ -432,7 +432,7 @@ function forms2Scrape() {
                             url: window.location.href,
                             type: 'err',
                             cat: 'form',
-                            err: 'ErrUnlabelledField',
+                            err: 'ErrNoLabel',
                             element: field.tagName,
                             type: field.type || 'N/A',
                             xpath: fieldXpath,

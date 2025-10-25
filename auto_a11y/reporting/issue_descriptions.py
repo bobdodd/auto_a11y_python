@@ -233,38 +233,8 @@ ISSUE_DESCRIPTIONS = {
         Move detailed information to paragraph text below the heading.
         """
     ),
-    
+
     # ============= FORMS ERRORS =============
-    'forms_ErrUnlabelledField': IssueDescription(
-        title="Unlabeled Form Field",
-        what="A form input field has no associated label.",
-        why="Labels tell users what information to enter. Without labels, screen reader users hear only the field type (e.g., 'edit text') with no context about what to input.",
-        who="Screen reader users, voice control users, users with cognitive disabilities",
-        impact=ImpactScale.HIGH,
-        wcag=["1.3.1", "3.3.2", "4.1.2"],
-        remediation="""
-        Associate every form field with a label:
-        
-        Method 1 - Label element:
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email">
-        
-        Method 2 - Wrapped label:
-        <label>
-            Email Address
-            <input type="email" name="email">
-        </label>
-        
-        Method 3 - aria-label (use sparingly):
-        <input type="search" aria-label="Search products">
-        
-        Method 4 - aria-labelledby:
-        <h2 id="billing">Billing Address</h2>
-        <input type="text" aria-labelledby="billing street">
-        <span id="street">Street Address</span>
-        """
-    ),
-    
     'forms_ErrFormEmptyHasNoChildNodes': IssueDescription(
         title="Empty Form",
         what="A form element exists but contains no content or form fields.",

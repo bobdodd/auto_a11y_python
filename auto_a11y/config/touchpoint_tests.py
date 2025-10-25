@@ -59,7 +59,6 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrOrphanLabelWithNoId',
         'ErrPlaceholderAsLabel',
         'ErrTitleAsOnlyLabel',
-        'ErrUnlabelledField',
         'InfoFieldLabelledUsingAriaLabel',
         'WarnMissingAriaLabelledby',
         'WarnMissingRequiredIndication',

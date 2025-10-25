@@ -98,7 +98,6 @@ WCAG_MAPPINGS = {
     'ErrNoFieldset': ['1.3.1 Info and Relationships'],
     'ErrMissingRequired': ['3.3.2 Labels or Instructions', '3.3.5 Help'],
     'ErrPlaceholderAsLabel': ['3.3.2 Labels or Instructions'],
-    'ErrUnlabelledField': ['1.3.1 Info and Relationships', '3.3.2 Labels or Instructions'],
     'ErrOrphanLabelWithNoId': ['1.3.1 Info and Relationships'],
     'ErrLabelContainsMultipleFields': ['1.3.1 Info and Relationships', '3.3.2 Labels or Instructions'],
     'ErrLabelMismatchOfAccessibleNameAndLabelText': ['2.5.3 Label in Name'],

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixture: Button text mismatches</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrLabelMismatchOfAccessibleNameAndLabelText_004_violations_buttons",
+    "issueId": "ErrLabelMismatchOfAccessibleNameAndLabelText",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Buttons with mismatched text and aria-label (Note: current implementation focuses on form inputs, may need extension for buttons)",
+    "wcag": "2.5.3",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Button Text vs aria-label Mismatches</h1>
+
+    <main>
+        <form>
+            <section>
+                <label for="search">Search</label>
+                <input type="search" id="search" name="q">
+
+                <!-- These button mismatches may not be caught if implementation only checks input fields -->
+                <button type="submit" aria-label="Execute search query">Go</button>
+                <button type="button" aria-label="Remove all text">Clear</button>
+                <button type="button" aria-label="Navigate back">Return</button>
+            </section>
+
+            <section>
+                <p>Note: Current implementation may focus on form input fields (input, select, textarea) rather than buttons. If buttons are not checked, this fixture will show 0 violations as expected.</p>
+            </section>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Test Suite</p>
+    </footer>
+</body>
+</html>

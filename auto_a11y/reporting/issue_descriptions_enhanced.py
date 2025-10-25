@@ -2808,15 +2808,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.4.8', '1.4.12'],
             'remediation': "Consider replacing '{fontName}' with a font from the recommended accessibility list: Arial, Verdana, Tahoma, Calibri, Helvetica, Open Sans, Roboto, Lato, Noto Sans, or Source Sans Pro for body text. For users with dyslexia specifically, OpenDyslexic, Comic Sans, or Century Gothic are often preferred. The recommended fonts share key characteristics: clear distinction between similar characters, generous spacing, medium to wide width, simple sans-serif design, and consistent stroke weight. If you must use '{fontName}' for branding or design reasons, ensure it meets these criteria: line height of at least 1.5, letter spacing (tracking) of at least 0.12em, clear distinction between I, l, 1 and between O, 0, sufficient x-height for readability at small sizes, and no decorative or script features for body text. Reserve decorative fonts for headings only, never for paragraphs or form labels. Test your font choice with actual users who have dyslexia or low vision when possible. Provide a font switcher allowing users to choose from accessible alternatives if feasible."
         },
-        'WarnFormHasNoLabel': {
-            'title': "Form element has no accessible name to describe its purpose",
-            'what': "Form element has no accessible name to describe its purpose",
-            'why': "When a form lacks an accessible name, screen reader users hear only \"form\" without knowing what the form does - is it a search form, login form, contact form, or something else? Users navigating by landmarks or forms need to understand each form\'s purpose to decide whether to interact with it. This is especially important on pages with multiple forms. Without proper labeling, users might fill out the wrong form, skip important forms, or waste time exploring forms to understand their purpose.",
-            'who': "Screen reader users navigating by forms or landmarks who need to identify form purposes, users with cognitive disabilities who need clear labels to understand what each form does, and keyboard users who tab through forms and need context about what they\'re interacting with",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['1.3.1', '2.4.6'],
-            'remediation': "Add an accessible name to the form element using aria-label (e.g., aria-label=\"Contact form\") or aria-labelledby to reference a visible heading. If the form has a visible heading immediately before it, use aria-labelledby to point to that heading\'s ID. For search forms, \"Search\" is usually sufficient. The label should clearly indicate the form\'s purpose and be unique if there are multiple forms on the page."
-        },
         'WarnFormHasNoLabelSoIsNotLandmark': {
             'title': "Form element lacks label so is not exposed as landmark",
             'what': "Form element lacks label so is not exposed as landmark",

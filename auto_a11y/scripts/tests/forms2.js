@@ -115,30 +115,8 @@ function forms2Scrape() {
             fpTempId: '0'
         });
 
-        ///////////////////////////////////////
-        // Form has no label
-        ///////////////////////////////////////
-        formLabelCheck.total++;
-        if (!(element.hasAttribute('aria-label') || element.hasAttribute('aria-labelledby'))) {
-            formLabelCheck.failed++;
-            errorList.push({
-                url: window.location.href,
-                type: 'warn',
-                cat: 'form',
-                err: 'WarnFormHasNoLabel',
-                xpath: formXpath,
-                fpTempId: element.getAttribute('a11y-fpId')
-            });
-        } else {
-            formLabelCheck.passed++;
-            passList.push({
-                check: 'form_has_label',
-                element: 'FORM',
-                xpath: formXpath,
-                wcag: ['1.3.1'],
-                reason: 'Form has aria-label or aria-labelledby'
-            });
-        }
+        // Note: Form accessible name checking is now handled by
+        // WarnFormHasNoLabelSoIsNotLandmark (duplicate removed)
 
         ///////////////////////////////////////
         // Check for empty forms

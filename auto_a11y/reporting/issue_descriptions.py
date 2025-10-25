@@ -260,30 +260,7 @@ ISSUE_DESCRIPTIONS = {
     ),
     
     # ============= FORMS WARNINGS =============
-    'forms_WarnFormHasNoLabel': IssueDescription(
-        title="Form Without Accessible Name",
-        what="A form element lacks an accessible name (no aria-label or aria-labelledby).",
-        why="Forms with accessible names help users understand the form's purpose, especially when multiple forms exist on a page. Screen readers can announce the form's purpose.",
-        who="Screen reader users navigating between forms",
-        impact=ImpactScale.LOW,
-        wcag=["1.3.1"],
-        remediation="""
-        Provide an accessible name for forms when beneficial:
-        
-        <form aria-label="Contact Form">
-            <!-- form fields -->
-        </form>
-        
-        Or using aria-labelledby:
-        <h2 id="contact-heading">Contact Us</h2>
-        <form aria-labelledby="contact-heading">
-            <!-- form fields -->
-        </form>
-        
-        This is especially important when multiple forms exist on the same page.
-        """
-    ),
-    
+
     # ============= FORMS DISCOVERY =============
     'forms_DiscoFormOnPage': IssueDescription(
         title="Form Detected",

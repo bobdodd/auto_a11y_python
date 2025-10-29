@@ -39,11 +39,32 @@ def enrich_test_result_with_catalog(test_result):
                         error_code = '_'.join(parts[i:])
                         break
             
-            # Skip if already has enhanced metadata with 'what' field
-            # This preserves the metadata replacement done in result_processor.py
+            # Check if metadata has unfilled placeholders that need fixing
+            # This handles old test results stored before placeholder mapping was fixed
             if violation.metadata.get('what'):
-                continue
-                
+                what_text = violation.metadata.get('what', '')
+                # Check if it has unfilled contrast placeholders
+                if any(placeholder in what_text for placeholder in ['{ratio}', '{fg}', '{bg}']):
+                    # Has unfilled placeholders - fix them
+                    contrast_ratio = violation.metadata.get('contrastRatio', '')
+                    if isinstance(contrast_ratio, str) and contrast_ratio.endswith(':1'):
+                        contrast_ratio = contrast_ratio[:-2]
+
+                    # Replace placeholders in all description fields
+                    for field in ['what', 'why', 'title', 'full_remediation']:
+                        if field in violation.metadata and isinstance(violation.metadata[field], str):
+                            text = violation.metadata[field]
+                            text = text.replace('{ratio}', str(contrast_ratio))
+                            text = text.replace('{fg}', str(violation.metadata.get('textColor', '')))
+                            text = text.replace('{bg}', str(violation.metadata.get('backgroundColor', '')))
+                            text = text.replace('{fontSize}', str(violation.metadata.get('fontSize', '')))
+                            violation.metadata[field] = text
+                    # Skip further enrichment since we just fixed the placeholders
+                    continue
+                else:
+                    # Already enriched and placeholders are filled, skip
+                    continue
+
             # Get catalog info for this issue as fallback
             catalog_info = IssueCatalog.get_issue(error_code)
             

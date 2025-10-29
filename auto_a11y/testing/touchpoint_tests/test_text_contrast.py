@@ -631,15 +631,20 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                 is_large = text_elem['isLargeText']
                 wcag_level = text_elem.get('wcagLevel', 'AA')
 
-                # Determine required ratios
+                # Determine required ratio based on project's WCAG level
                 # AA: 4.5:1 normal, 3:1 large
                 # AAA: 7:1 normal, 4.5:1 large
-                aa_required = 3.0 if is_large else 4.5
-                aaa_required = 4.5 if is_large else 7.0
-
-                # Check AA levels (always check for both AA and AAA projects)
-                if contrast < aa_required:
+                if wcag_level == 'AAA':
+                    required_ratio = 4.5 if is_large else 7.0
+                    wcag_criterion = '1.4.6'
+                    error_code = 'ErrLargeTextContrastAAA' if is_large else 'ErrTextContrastAAA'
+                else:  # AA (default)
+                    required_ratio = 3.0 if is_large else 4.5
+                    wcag_criterion = '1.4.3'
                     error_code = 'ErrLargeTextContrastAA' if is_large else 'ErrTextContrastAA'
+
+                # Check contrast against the project's required level ONLY
+                if contrast < required_ratio:
                     results['errors'].append({
                         'err': error_code,
                         'type': 'err',
@@ -647,46 +652,20 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         'element': text_elem['tag'],
                         'xpath': text_elem['xpath'],
                         'html': text_elem['html'],
-                        'description': f'{"Large" if is_large else "Normal"} text contrast {contrast:.2f}:1 fails WCAG AA requirement ({aa_required}:1). Text color {text_elem["textColor"]} on background {text_elem["backgroundColor"]}.',
+                        'description': f'{"Large" if is_large else "Normal"} text contrast {contrast:.2f}:1 fails WCAG {wcag_level} requirement ({required_ratio}:1). Text color {text_elem["textColor"]} on background {text_elem["backgroundColor"]}.',
                         'text': text_elem['text'],
                         'textColor': text_elem['textColor'],
                         'backgroundColor': text_elem['backgroundColor'],
                         'contrastRatio': f'{contrast:.2f}:1',
-                        'required': f'{aa_required}:1',
+                        'required': f'{required_ratio}:1',
                         'fontSize': text_elem['fontSize'],
                         'isLargeText': is_large,
                         'breakpoint': breakpoint,
-                        'wcag': '1.4.3'
+                        'wcag': wcag_criterion
                     })
                     results['elements_failed'] += 1
-
-                # Check AAA levels only if:
-                # 1. AA passes (contrast >= aa_required)
-                # 2. Project is set to AAA level (wcag_level == 'AAA')
-                elif wcag_level == 'AAA' and contrast < aaa_required:
-                    error_code = 'ErrLargeTextContrastAAA' if is_large else 'ErrTextContrastAAA'
-                    results['errors'].append({
-                        'err': error_code,
-                        'type': 'err',
-                        'cat': 'colors_contrast',
-                        'element': text_elem['tag'],
-                        'xpath': text_elem['xpath'],
-                        'html': text_elem['html'],
-                        'description': f'{"Large" if is_large else "Normal"} text contrast {contrast:.2f}:1 fails WCAG AAA requirement ({aaa_required}:1) but passes AA. Text color {text_elem["textColor"]} on background {text_elem["backgroundColor"]}.',
-                        'text': text_elem['text'],
-                        'textColor': text_elem['textColor'],
-                        'backgroundColor': text_elem['backgroundColor'],
-                        'contrastRatio': f'{contrast:.2f}:1',
-                        'required': f'{aaa_required}:1',
-                        'fontSize': text_elem['fontSize'],
-                        'isLargeText': is_large,
-                        'breakpoint': breakpoint,
-                        'wcag': '1.4.6'
-                    })
-                    # AAA failures count as warnings/info, not hard failures
-                    results['elements_passed'] += 1
                 else:
-                    # Passes required level (AA or AAA)
+                    # Passes the project's required level
                     results['elements_passed'] += 1
 
                 # Check pseudoclass states (hover, focus, visited, active)
@@ -696,9 +675,8 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     if pseudo_contrast is None:
                         continue
 
-                    # Check if pseudoclass state fails AA contrast (always check)
-                    if pseudo_contrast < aa_required:
-                        error_code = 'ErrLargeTextContrastAA' if is_large else 'ErrTextContrastAA'
+                    # Check if pseudoclass state fails the project's required level
+                    if pseudo_contrast < required_ratio:
                         results['errors'].append({
                             'err': error_code,
                             'type': 'err',
@@ -706,42 +684,19 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                             'element': text_elem['tag'],
                             'xpath': text_elem['xpath'],
                             'html': text_elem['html'],
-                            'description': f'{"Large" if is_large else "Normal"} text contrast {pseudo_contrast:.2f}:1 fails WCAG AA requirement ({aa_required}:1) in {pseudo} state. Text color {state_data["color"]} on background {state_data["backgroundColor"]}.',
+                            'description': f'{"Large" if is_large else "Normal"} text contrast {pseudo_contrast:.2f}:1 fails WCAG {wcag_level} requirement ({required_ratio}:1) in {pseudo} state. Text color {state_data["color"]} on background {state_data["backgroundColor"]}.',
                             'text': text_elem['text'],
                             'textColor': state_data['color'],
                             'backgroundColor': state_data['backgroundColor'],
                             'contrastRatio': f'{pseudo_contrast:.2f}:1',
-                            'required': f'{aa_required}:1',
+                            'required': f'{required_ratio}:1',
                             'fontSize': text_elem['fontSize'],
                             'isLargeText': is_large,
                             'pseudoclass': pseudo,
                             'breakpoint': breakpoint,
-                            'wcag': '1.4.3'
+                            'wcag': wcag_criterion
                         })
                         # Note: We don't increment elements_failed again, as this is the same element
-
-                    # Check AAA for pseudoclass states (only if project is AAA)
-                    elif wcag_level == 'AAA' and pseudo_contrast < aaa_required:
-                        error_code = 'ErrLargeTextContrastAAA' if is_large else 'ErrTextContrastAAA'
-                        results['errors'].append({
-                            'err': error_code,
-                            'type': 'err',
-                            'cat': 'colors_contrast',
-                            'element': text_elem['tag'],
-                            'xpath': text_elem['xpath'],
-                            'html': text_elem['html'],
-                            'description': f'{"Large" if is_large else "Normal"} text contrast {pseudo_contrast:.2f}:1 fails WCAG AAA requirement ({aaa_required}:1) but passes AA in {pseudo} state. Text color {state_data["color"]} on background {state_data["backgroundColor"]}.',
-                            'text': text_elem['text'],
-                            'textColor': state_data['color'],
-                            'backgroundColor': state_data['backgroundColor'],
-                            'contrastRatio': f'{pseudo_contrast:.2f}:1',
-                            'required': f'{aaa_required}:1',
-                            'fontSize': text_elem['fontSize'],
-                            'isLargeText': is_large,
-                            'pseudoclass': pseudo,
-                            'breakpoint': breakpoint,
-                            'wcag': '1.4.6'
-                        })
 
         # Add check information
         results['checks'].append({

@@ -134,6 +134,9 @@ async def test_text_contrast(page) -> Dict[str, Any]:
             # Extract text elements and their contrast data at this breakpoint
             text_data = await page.evaluate('''
                 (breakpointWidth) => {
+                // Get WCAG level from project config (set by test runner)
+                const wcagLevel = window.WCAG_LEVEL || 'AA';
+
                 // XPath generator
                 function getXPath(element) {
                     if (element.id) {
@@ -580,7 +583,8 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         hasImage: bgInfo.hasImage,
                         hasOverflow: hasOverflow,
                         tag: element.tagName.toLowerCase(),
-                        pseudoclassStates: pseudoclassStates
+                        pseudoclassStates: pseudoclassStates,
+                        wcagLevel: wcagLevel  // Add WCAG level to each element
                     });
                 }
 
@@ -625,6 +629,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
 
                 contrast = text_elem['contrastRatio']
                 is_large = text_elem['isLargeText']
+                wcag_level = text_elem.get('wcagLevel', 'AA')
 
                 # Determine required ratios
                 # AA: 4.5:1 normal, 3:1 large
@@ -632,7 +637,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                 aa_required = 3.0 if is_large else 4.5
                 aaa_required = 4.5 if is_large else 7.0
 
-                # Check AA levels
+                # Check AA levels (always check for both AA and AAA projects)
                 if contrast < aa_required:
                     error_code = 'ErrLargeTextContrastAA' if is_large else 'ErrTextContrastAA'
                     results['errors'].append({
@@ -655,8 +660,10 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     })
                     results['elements_failed'] += 1
 
-                # Check AAA levels only if AA passes (AAA is enhanced/informational)
-                elif contrast < aaa_required:
+                # Check AAA levels only if:
+                # 1. AA passes (contrast >= aa_required)
+                # 2. Project is set to AAA level (wcag_level == 'AAA')
+                elif wcag_level == 'AAA' and contrast < aaa_required:
                     error_code = 'ErrLargeTextContrastAAA' if is_large else 'ErrTextContrastAAA'
                     results['errors'].append({
                         'err': error_code,
@@ -676,10 +683,10 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         'breakpoint': breakpoint,
                         'wcag': '1.4.6'
                     })
-                    # AAA failures don't count as "failed" since AA is the baseline requirement
+                    # AAA failures count as warnings/info, not hard failures
                     results['elements_passed'] += 1
                 else:
-                    # Passes both AA and AAA
+                    # Passes required level (AA or AAA)
                     results['elements_passed'] += 1
 
                 # Check pseudoclass states (hover, focus, visited, active)
@@ -689,7 +696,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     if pseudo_contrast is None:
                         continue
 
-                    # Check if pseudoclass state fails contrast
+                    # Check if pseudoclass state fails AA contrast (always check)
                     if pseudo_contrast < aa_required:
                         error_code = 'ErrLargeTextContrastAA' if is_large else 'ErrTextContrastAA'
                         results['errors'].append({
@@ -713,8 +720,8 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         })
                         # Note: We don't increment elements_failed again, as this is the same element
 
-                    # Check AAA for pseudoclass states
-                    elif pseudo_contrast < aaa_required:
+                    # Check AAA for pseudoclass states (only if project is AAA)
+                    elif wcag_level == 'AAA' and pseudo_contrast < aaa_required:
                         error_code = 'ErrLargeTextContrastAAA' if is_large else 'ErrTextContrastAAA'
                         results['errors'].append({
                             'err': error_code,

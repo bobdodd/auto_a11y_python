@@ -734,7 +734,101 @@ class Database:
         """Delete test result"""
         result = self.test_results.delete_one({"_id": ObjectId(result_id)})
         return result.deleted_count > 0
-    
+
+    # Query methods for reporting
+
+    def get_violations_by_issue(self, test_result_id: str, item_type: str = 'violation') -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Get violations grouped by issue_id for deduplication in reports
+
+        Args:
+            test_result_id: Test result ID
+            item_type: Type of items to get (violation, warning, info, discovery, pass)
+
+        Returns:
+            Dictionary of {issue_id: [list of items]}
+        """
+        items = self._get_test_result_items(ObjectId(test_result_id), item_type=item_type)
+
+        grouped = {}
+        for item in items:
+            issue_id = item.get('issue_id')
+            if issue_id not in grouped:
+                grouped[issue_id] = []
+            grouped[issue_id].append(item)
+
+        return grouped
+
+    def count_violations_by_type(self, test_result_id: str) -> Dict[str, int]:
+        """
+        Get counts of violations grouped by issue_id using aggregation
+
+        Args:
+            test_result_id: Test result ID
+
+        Returns:
+            Dictionary of {issue_id: count}
+        """
+        pipeline = [
+            {'$match': {
+                'test_result_id': ObjectId(test_result_id),
+                'item_type': 'violation'
+            }},
+            {'$group': {
+                '_id': '$issue_id',
+                'count': {'$sum': 1}
+            }},
+            {'$sort': {'count': -1}}
+        ]
+
+        results = self.test_result_items.aggregate(pipeline)
+        return {item['_id']: item['count'] for item in results}
+
+    def get_violations_by_touchpoint(self, test_result_id: str) -> Dict[str, int]:
+        """
+        Get violation counts grouped by touchpoint
+
+        Args:
+            test_result_id: Test result ID
+
+        Returns:
+            Dictionary of {touchpoint: count}
+        """
+        pipeline = [
+            {'$match': {
+                'test_result_id': ObjectId(test_result_id),
+                'item_type': 'violation'
+            }},
+            {'$group': {
+                '_id': '$touchpoint',
+                'count': {'$sum': 1}
+            }},
+            {'$sort': {'count': -1}}
+        ]
+
+        results = self.test_result_items.aggregate(pipeline)
+        return {item['_id']: item['count'] for item in results}
+
+    def get_sample_violations(self, test_result_id: str, issue_id: str, limit: int = 10) -> List[Dict[str, Any]]:
+        """
+        Get sample violations for a specific issue (for displaying in reports)
+
+        Args:
+            test_result_id: Test result ID
+            issue_id: Issue ID to get samples for
+            limit: Maximum number of samples to return
+
+        Returns:
+            List of sample violation items
+        """
+        items = list(self.test_result_items.find({
+            'test_result_id': ObjectId(test_result_id),
+            'item_type': 'violation',
+            'issue_id': issue_id
+        }).limit(limit))
+
+        return items
+
     # Statistics
     
     def get_project_stats(self, project_id: str) -> Dict[str, Any]:

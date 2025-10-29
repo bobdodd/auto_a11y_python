@@ -45,6 +45,7 @@ class Database:
         self.websites: Collection = self.db.websites
         self.pages: Collection = self.db.pages
         self.test_results: Collection = self.db.test_results
+        self.test_result_items: Collection = self.db.test_result_items  # NEW: Detailed violations/warnings
         self.document_references: Collection = self.db.document_references
         self.discovery_runs: Collection = self.db.discovery_runs
         self.issue_documentation_status: Collection = self.db.issue_documentation_status
@@ -73,7 +74,20 @@ class Database:
         # Test results
         self.test_results.create_index("page_id")
         self.test_results.create_index("test_date")
-        
+
+        # Test result items (NEW: detailed violations/warnings)
+        self.test_result_items.create_index("test_result_id")
+        self.test_result_items.create_index([("page_id", 1), ("test_date", -1)])
+        self.test_result_items.create_index([("item_type", 1), ("test_result_id", 1)])
+        self.test_result_items.create_index([("issue_id", 1), ("test_result_id", 1)])
+        self.test_result_items.create_index([("touchpoint", 1), ("test_result_id", 1)])
+        # Compound index for common queries
+        self.test_result_items.create_index([
+            ("test_result_id", 1),
+            ("item_type", 1),
+            ("issue_id", 1)
+        ])
+
         # Document references
         self.document_references.create_index("website_id")
         self.document_references.create_index("document_url")
@@ -337,84 +351,196 @@ class Database:
         return len(insert_result.inserted_ids)
     
     # Test result operations
-    
+
+    def _create_test_result_items(self, test_result_id: ObjectId, test_result: TestResult) -> int:
+        """
+        Create individual test result item documents (violations, warnings, etc.)
+
+        Args:
+            test_result_id: ObjectId of the test result summary document
+            test_result: TestResult object containing all items
+
+        Returns:
+            Number of items inserted
+        """
+        items = []
+
+        # Convert violations to items
+        for violation in test_result.violations:
+            items.append({
+                'test_result_id': test_result_id,
+                'page_id': test_result.page_id,
+                'test_date': test_result.test_date,
+                'item_type': 'violation',
+                'issue_id': violation.get('id'),
+                'impact': violation.get('impact'),
+                'touchpoint': violation.get('touchpoint'),
+                'xpath': violation.get('xpath'),
+                'element': violation.get('element'),
+                'html': violation.get('html'),
+                'description': violation.get('description'),
+                'failure_summary': violation.get('failure_summary'),
+                'wcag_criteria': violation.get('wcag_criteria', []),
+                'help_url': violation.get('help_url'),
+                'metadata': violation.get('metadata', {})
+            })
+
+        # Convert warnings to items
+        for warning in test_result.warnings:
+            items.append({
+                'test_result_id': test_result_id,
+                'page_id': test_result.page_id,
+                'test_date': test_result.test_date,
+                'item_type': 'warning',
+                'issue_id': warning.get('id'),
+                'impact': warning.get('impact'),
+                'touchpoint': warning.get('touchpoint'),
+                'xpath': warning.get('xpath'),
+                'element': warning.get('element'),
+                'html': warning.get('html'),
+                'description': warning.get('description'),
+                'failure_summary': warning.get('failure_summary'),
+                'wcag_criteria': warning.get('wcag_criteria', []),
+                'help_url': warning.get('help_url'),
+                'metadata': warning.get('metadata', {})
+            })
+
+        # Convert info items
+        for info in test_result.info:
+            items.append({
+                'test_result_id': test_result_id,
+                'page_id': test_result.page_id,
+                'test_date': test_result.test_date,
+                'item_type': 'info',
+                'issue_id': info.get('id'),
+                'impact': info.get('impact'),
+                'touchpoint': info.get('touchpoint'),
+                'xpath': info.get('xpath'),
+                'element': info.get('element'),
+                'html': info.get('html'),
+                'description': info.get('description'),
+                'metadata': info.get('metadata', {})
+            })
+
+        # Convert discovery items
+        for discovery in test_result.discovery:
+            items.append({
+                'test_result_id': test_result_id,
+                'page_id': test_result.page_id,
+                'test_date': test_result.test_date,
+                'item_type': 'discovery',
+                'issue_id': discovery.get('id'),
+                'impact': discovery.get('impact'),
+                'touchpoint': discovery.get('touchpoint'),
+                'xpath': discovery.get('xpath'),
+                'element': discovery.get('element'),
+                'html': discovery.get('html'),
+                'description': discovery.get('description'),
+                'metadata': discovery.get('metadata', {})
+            })
+
+        # Convert passes
+        for passed in test_result.passes:
+            items.append({
+                'test_result_id': test_result_id,
+                'page_id': test_result.page_id,
+                'test_date': test_result.test_date,
+                'item_type': 'pass',
+                'issue_id': passed.get('id'),
+                'touchpoint': passed.get('touchpoint'),
+                'xpath': passed.get('xpath'),
+                'element': passed.get('element'),
+                'html': passed.get('html'),
+                'description': passed.get('description'),
+                'metadata': passed.get('metadata', {})
+            })
+
+        # Batch insert all items
+        if items:
+            result = self.test_result_items.insert_many(items, ordered=False)
+            logger.info(f"Created {len(result.inserted_ids)} test result items for test_result {test_result_id}")
+            return len(result.inserted_ids)
+
+        return 0
+
     def create_test_result(self, test_result: TestResult) -> str:
         """
-        Create new test result with size limit handling
+        Create new test result using split schema (summary + items)
+
+        NEW APPROACH:
+        - Stores summary (counts, metadata) in test_results collection
+        - Stores individual items in test_result_items collection
+        - No size limit issues since each item is a separate document
+        - All raw data preserved
 
         POLICY: Never truncates violations/warnings/passes data.
-        Only removes screenshots if necessary to fit within MongoDB 16MB limit.
-        Creates an error report violation if result is still too large.
         """
-        test_result_dict = test_result.to_dict()
+        # Create summary document (counts only, no arrays)
+        summary = {
+            'page_id': test_result.page_id,
+            'test_date': test_result.test_date,
+            'duration_ms': test_result.duration_ms,
 
-        # Check and handle document size
+            # Counts only (not arrays)
+            'violation_count': test_result.violation_count,
+            'warning_count': test_result.warning_count,
+            'info_count': test_result.info_count,
+            'discovery_count': test_result.discovery_count,
+            'pass_count': test_result.pass_count,
+
+            # AI findings (usually small, keep in summary)
+            'ai_findings': test_result.ai_findings,
+
+            # Screenshot info
+            'screenshot_path': test_result.screenshot_path,
+
+            # Metadata
+            '_has_detailed_items': True,
+            '_items_collection': 'test_result_items'
+        }
+
         try:
-            validated_dict, size_report = validate_document_size_or_handle(
-                test_result_dict,
-                document_type="test_result"
-            )
-
-            if size_report and size_report.get('screenshot_removed'):
-                logger.warning(
-                    f"Screenshot removed from test result for page {test_result.page_id}: "
-                    f"{format_size(size_report['original_size'])} -> "
-                    f"{format_size(size_report['final_size'])}"
-                )
-
-            # Insert the validated document
-            result = self.test_results.insert_one(validated_dict)
+            # Insert summary document
+            result = self.test_results.insert_one(summary)
             test_result._id = result.inserted_id
+            test_result_id = result.inserted_id
 
-        except DocumentSizeError as e:
-            logger.error(
-                f"Test result too large even after removing screenshot for page {test_result.page_id}: "
-                f"{format_size(e.size)} - Creating error report"
-            )
+            logger.info(f"Created test result summary for page: {test_result.page_id}")
 
-            # Create an error result with the size limit violation
-            error_result = create_size_error_result(
-                page_id=test_result.page_id,
-                test_date=test_result.test_date,
-                duration_ms=test_result.duration_ms,
-                error_details={
-                    'size': e.size,
-                    'size_formatted': format_size(e.size),
-                    'counts': {
-                        'violations': test_result.violation_count,
-                        'warnings': test_result.warning_count,
-                        'info': test_result.info_count,
-                        'discovery': test_result.discovery_count,
-                        'passes': test_result.pass_count
-                    }
-                }
-            )
+            # Create detailed item documents
+            items_count = self._create_test_result_items(test_result_id, test_result)
+            logger.info(f"Created {items_count} detailed items for test result {test_result_id}")
 
-            result = self.test_results.insert_one(error_result)
-            test_result._id = result.inserted_id
+        except Exception as e:
+            # If anything fails, log error and create error result
+            logger.error(f"Error creating test result for page {test_result.page_id}: {e}")
 
-        except DocumentTooLarge as e:
-            # MongoDB rejected the document - this shouldn't happen after our validation
-            logger.error(f"MongoDB rejected document (should not happen after validation): {e}")
-
-            # Create size error result
-            error_result = create_size_error_result(
-                page_id=test_result.page_id,
-                test_date=test_result.test_date,
-                duration_ms=test_result.duration_ms,
-                error_details={
-                    'size': get_document_size(test_result_dict),
-                    'size_formatted': format_size(get_document_size(test_result_dict)),
-                    'mongodb_error': str(e),
-                    'counts': {
-                        'violations': test_result.violation_count,
-                        'warnings': test_result.warning_count,
-                        'info': test_result.info_count,
-                        'discovery': test_result.discovery_count,
-                        'passes': test_result.pass_count
-                    }
-                }
-            )
+            # Create minimal error result
+            error_result = {
+                'page_id': test_result.page_id,
+                'test_date': test_result.test_date,
+                'duration_ms': test_result.duration_ms,
+                'violation_count': 1,
+                'warning_count': 0,
+                'info_count': 0,
+                'discovery_count': 0,
+                'pass_count': 0,
+                'violations': [{
+                    'id': 'ErrTestResultCreationFailed',
+                    'impact': 'high',
+                    'touchpoint': 'system',
+                    'description': f'Failed to create test result: {str(e)}',
+                    'xpath': '/',
+                    'element': 'DOCUMENT'
+                }],
+                'warnings': [],
+                'info': [],
+                'discovery': [],
+                'passes': [],
+                'ai_findings': [],
+                'screenshot_path': test_result.screenshot_path,
+                'error': str(e)
+            }
 
             result = self.test_results.insert_one(error_result)
             test_result._id = result.inserted_id
@@ -434,19 +560,153 @@ class Database:
 
         logger.info(f"Created test result for page: {test_result.page_id}")
         return test_result.id
-    
+
+    def _get_test_result_items(self, test_result_id: ObjectId, item_type: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get test result items from the test_result_items collection
+
+        Args:
+            test_result_id: ObjectId of the test result
+            item_type: Optional filter by item type (violation, warning, info, discovery, pass)
+
+        Returns:
+            List of item dictionaries
+        """
+        query = {'test_result_id': test_result_id}
+        if item_type:
+            query['item_type'] = item_type
+
+        items = list(self.test_result_items.find(query))
+        return items
+
     def get_test_result(self, result_id: str) -> Optional[TestResult]:
-        """Get test result by ID"""
+        """
+        Get test result by ID
+
+        Supports both old schema (with arrays) and new schema (with separate items)
+        """
         doc = self.test_results.find_one({"_id": ObjectId(result_id)})
-        return TestResult.from_dict(doc) if doc else None
+        if not doc:
+            return None
+
+        # Check if this uses the new schema (split items)
+        if doc.get('_has_detailed_items'):
+            # Load items from test_result_items collection
+            test_result_id = doc['_id']
+            items = self._get_test_result_items(test_result_id)
+
+            # Group items by type
+            violations = []
+            warnings = []
+            info = []
+            discovery = []
+            passes = []
+
+            for item in items:
+                item_data = {
+                    'id': item.get('issue_id'),
+                    'impact': item.get('impact'),
+                    'touchpoint': item.get('touchpoint'),
+                    'xpath': item.get('xpath'),
+                    'element': item.get('element'),
+                    'html': item.get('html'),
+                    'description': item.get('description'),
+                    'metadata': item.get('metadata', {})
+                }
+
+                item_type = item.get('item_type')
+                if item_type == 'violation':
+                    item_data['failure_summary'] = item.get('failure_summary')
+                    item_data['wcag_criteria'] = item.get('wcag_criteria', [])
+                    item_data['help_url'] = item.get('help_url')
+                    violations.append(item_data)
+                elif item_type == 'warning':
+                    item_data['failure_summary'] = item.get('failure_summary')
+                    item_data['wcag_criteria'] = item.get('wcag_criteria', [])
+                    item_data['help_url'] = item.get('help_url')
+                    warnings.append(item_data)
+                elif item_type == 'info':
+                    info.append(item_data)
+                elif item_type == 'discovery':
+                    discovery.append(item_data)
+                elif item_type == 'pass':
+                    passes.append(item_data)
+
+            # Add arrays back to doc for TestResult.from_dict()
+            doc['violations'] = violations
+            doc['warnings'] = warnings
+            doc['info'] = info
+            doc['discovery'] = discovery
+            doc['passes'] = passes
+
+        # Old schema already has arrays, just use as-is
+        return TestResult.from_dict(doc)
     
     def get_latest_test_result(self, page_id: str) -> Optional[TestResult]:
-        """Get most recent test result for a page"""
+        """
+        Get most recent test result for a page
+
+        Supports both old schema (with arrays) and new schema (with separate items)
+        """
         doc = self.test_results.find_one(
             {"page_id": page_id},
             sort=[("test_date", -1)]
         )
-        return TestResult.from_dict(doc) if doc else None
+        if not doc:
+            return None
+
+        # Check if this uses the new schema (split items)
+        if doc.get('_has_detailed_items'):
+            # Load items from test_result_items collection
+            test_result_id = doc['_id']
+            items = self._get_test_result_items(test_result_id)
+
+            # Group items by type
+            violations = []
+            warnings = []
+            info = []
+            discovery = []
+            passes = []
+
+            for item in items:
+                item_data = {
+                    'id': item.get('issue_id'),
+                    'impact': item.get('impact'),
+                    'touchpoint': item.get('touchpoint'),
+                    'xpath': item.get('xpath'),
+                    'element': item.get('element'),
+                    'html': item.get('html'),
+                    'description': item.get('description'),
+                    'metadata': item.get('metadata', {})
+                }
+
+                item_type = item.get('item_type')
+                if item_type == 'violation':
+                    item_data['failure_summary'] = item.get('failure_summary')
+                    item_data['wcag_criteria'] = item.get('wcag_criteria', [])
+                    item_data['help_url'] = item.get('help_url')
+                    violations.append(item_data)
+                elif item_type == 'warning':
+                    item_data['failure_summary'] = item.get('failure_summary')
+                    item_data['wcag_criteria'] = item.get('wcag_criteria', [])
+                    item_data['help_url'] = item.get('help_url')
+                    warnings.append(item_data)
+                elif item_type == 'info':
+                    info.append(item_data)
+                elif item_type == 'discovery':
+                    discovery.append(item_data)
+                elif item_type == 'pass':
+                    passes.append(item_data)
+
+            # Add arrays back to doc for TestResult.from_dict()
+            doc['violations'] = violations
+            doc['warnings'] = warnings
+            doc['info'] = info
+            doc['discovery'] = discovery
+            doc['passes'] = passes
+
+        # Old schema already has arrays, just use as-is
+        return TestResult.from_dict(doc)
     
     def get_test_results(
         self,

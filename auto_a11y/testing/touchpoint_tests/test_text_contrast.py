@@ -664,6 +664,10 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                 is_large = text_elem['isLargeText']
                 wcag_level = text_elem.get('wcagLevel', 'AA')
 
+                # Skip if foreground and background are identical (data error)
+                if text_elem.get('textColor') == text_elem.get('backgroundColor'):
+                    continue
+
                 # Determine required ratio based on project's WCAG level
                 # AA: 4.5:1 normal, 3:1 large
                 # AAA: 7:1 normal, 4.5:1 large
@@ -706,6 +710,10 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                 for pseudo, state_data in pseudoclass_states.items():
                     pseudo_contrast = state_data.get('contrastRatio')
                     if pseudo_contrast is None:
+                        continue
+
+                    # Skip if foreground and background are identical (data error)
+                    if state_data.get('color') == state_data.get('backgroundColor'):
                         continue
 
                     # Check if pseudoclass state fails the project's required level

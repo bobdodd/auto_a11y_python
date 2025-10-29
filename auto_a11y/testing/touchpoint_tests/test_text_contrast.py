@@ -164,6 +164,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         return { r: 0, g: 0, b: 0, a: 0 };
                     }
 
+                    // Try to parse rgba/rgb format first (most common)
                     const rgbaMatch = colorStr.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)(?:,\\s*([\\d.]+))?\\)/);
                     if (rgbaMatch) {
                         return {
@@ -174,9 +175,10 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         };
                     }
 
-                    const hexMatch = colorStr.match(/^#([0-9a-f]{6})$/i);
-                    if (hexMatch) {
-                        const hex = hexMatch[1];
+                    // Try 6-digit hex
+                    const hexMatch6 = colorStr.match(/^#([0-9a-f]{6})$/i);
+                    if (hexMatch6) {
+                        const hex = hexMatch6[1];
                         return {
                             r: parseInt(hex.substr(0, 2), 16),
                             g: parseInt(hex.substr(2, 2), 16),
@@ -185,7 +187,38 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         };
                     }
 
-                    return { r: 0, g: 0, b: 0, a: 1 };
+                    // Try 3-digit hex
+                    const hexMatch3 = colorStr.match(/^#([0-9a-f]{3})$/i);
+                    if (hexMatch3) {
+                        const hex = hexMatch3[1];
+                        return {
+                            r: parseInt(hex[0] + hex[0], 16),
+                            g: parseInt(hex[1] + hex[1], 16),
+                            b: parseInt(hex[2] + hex[2], 16),
+                            a: 1
+                        };
+                    }
+
+                    // For any other format (named colors, hsl, etc.), use a temporary canvas
+                    // to let the browser convert it to rgba
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = canvas.height = 1;
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = colorStr;
+                        ctx.fillRect(0, 0, 1, 1);
+                        const imageData = ctx.getImageData(0, 0, 1, 1).data;
+                        return {
+                            r: imageData[0],
+                            g: imageData[1],
+                            b: imageData[2],
+                            a: imageData[3] / 255
+                        };
+                    } catch (e) {
+                        // If all else fails, return transparent black
+                        console.warn('Could not parse color:', colorStr, e);
+                        return { r: 0, g: 0, b: 0, a: 0 };
+                    }
                 }
 
                 // Calculate relative luminance

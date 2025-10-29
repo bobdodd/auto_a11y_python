@@ -6,7 +6,6 @@ from typing import List, Optional, Dict, Any
 from pymongo import MongoClient
 from pymongo.database import Database as MongoDatabase
 from pymongo.collection import Collection
-from pymongo.errors import DocumentTooLarge
 from bson import ObjectId
 from datetime import datetime
 import logging
@@ -14,13 +13,6 @@ import logging
 from auto_a11y.models import (
     Project, Website, Page, TestResult,
     ProjectStatus, PageStatus
-)
-from auto_a11y.utils.document_size_handler import (
-    validate_document_size_or_handle,
-    create_size_error_result,
-    get_document_size,
-    format_size,
-    DocumentSizeError
 )
 
 logger = logging.getLogger(__name__)
@@ -372,17 +364,17 @@ class Database:
                 'page_id': test_result.page_id,
                 'test_date': test_result.test_date,
                 'item_type': 'violation',
-                'issue_id': violation.get('id'),
-                'impact': violation.get('impact'),
-                'touchpoint': violation.get('touchpoint'),
-                'xpath': violation.get('xpath'),
-                'element': violation.get('element'),
-                'html': violation.get('html'),
-                'description': violation.get('description'),
-                'failure_summary': violation.get('failure_summary'),
-                'wcag_criteria': violation.get('wcag_criteria', []),
-                'help_url': violation.get('help_url'),
-                'metadata': violation.get('metadata', {})
+                'issue_id': violation.id,
+                'impact': violation.impact.value if hasattr(violation.impact, 'value') else str(violation.impact),
+                'touchpoint': violation.touchpoint,
+                'xpath': violation.xpath,
+                'element': violation.element,
+                'html': violation.html,
+                'description': violation.description,
+                'failure_summary': violation.failure_summary,
+                'wcag_criteria': violation.wcag_criteria if violation.wcag_criteria else [],
+                'help_url': violation.help_url,
+                'metadata': violation.metadata if violation.metadata else {}
             })
 
         # Convert warnings to items
@@ -392,17 +384,17 @@ class Database:
                 'page_id': test_result.page_id,
                 'test_date': test_result.test_date,
                 'item_type': 'warning',
-                'issue_id': warning.get('id'),
-                'impact': warning.get('impact'),
-                'touchpoint': warning.get('touchpoint'),
-                'xpath': warning.get('xpath'),
-                'element': warning.get('element'),
-                'html': warning.get('html'),
-                'description': warning.get('description'),
-                'failure_summary': warning.get('failure_summary'),
-                'wcag_criteria': warning.get('wcag_criteria', []),
-                'help_url': warning.get('help_url'),
-                'metadata': warning.get('metadata', {})
+                'issue_id': warning.id,
+                'impact': warning.impact.value if hasattr(warning.impact, 'value') else str(warning.impact),
+                'touchpoint': warning.touchpoint,
+                'xpath': warning.xpath,
+                'element': warning.element,
+                'html': warning.html,
+                'description': warning.description,
+                'failure_summary': warning.failure_summary,
+                'wcag_criteria': warning.wcag_criteria if warning.wcag_criteria else [],
+                'help_url': warning.help_url,
+                'metadata': warning.metadata if warning.metadata else {}
             })
 
         # Convert info items
@@ -412,14 +404,14 @@ class Database:
                 'page_id': test_result.page_id,
                 'test_date': test_result.test_date,
                 'item_type': 'info',
-                'issue_id': info.get('id'),
-                'impact': info.get('impact'),
-                'touchpoint': info.get('touchpoint'),
-                'xpath': info.get('xpath'),
-                'element': info.get('element'),
-                'html': info.get('html'),
-                'description': info.get('description'),
-                'metadata': info.get('metadata', {})
+                'issue_id': info.id,
+                'impact': info.impact.value if hasattr(info.impact, 'value') else str(info.impact),
+                'touchpoint': info.touchpoint,
+                'xpath': info.xpath,
+                'element': info.element,
+                'html': info.html,
+                'description': info.description,
+                'metadata': info.metadata if info.metadata else {}
             })
 
         # Convert discovery items
@@ -429,14 +421,14 @@ class Database:
                 'page_id': test_result.page_id,
                 'test_date': test_result.test_date,
                 'item_type': 'discovery',
-                'issue_id': discovery.get('id'),
-                'impact': discovery.get('impact'),
-                'touchpoint': discovery.get('touchpoint'),
-                'xpath': discovery.get('xpath'),
-                'element': discovery.get('element'),
-                'html': discovery.get('html'),
-                'description': discovery.get('description'),
-                'metadata': discovery.get('metadata', {})
+                'issue_id': discovery.id,
+                'impact': discovery.impact.value if hasattr(discovery.impact, 'value') else str(discovery.impact),
+                'touchpoint': discovery.touchpoint,
+                'xpath': discovery.xpath,
+                'element': discovery.element,
+                'html': discovery.html,
+                'description': discovery.description,
+                'metadata': discovery.metadata if discovery.metadata else {}
             })
 
         # Convert passes

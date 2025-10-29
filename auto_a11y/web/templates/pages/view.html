@@ -733,7 +733,20 @@
                                                             <strong>Responsive Breakpoint:</strong> <span class="badge bg-info">{{ violation.metadata.breakpoint }}px width</span>
                                                         </p>
                                                         {% endif %}
-                                                        
+
+                                                        {% if violation.metadata and violation.metadata.pseudoclass %}
+                                                        <p>
+                                                            <strong>CSS State:</strong>
+                                                            {% if '@' in violation.metadata.pseudoclass %}
+                                                                {% set parts = violation.metadata.pseudoclass.split('@') %}
+                                                                <span class="badge bg-warning">{{ parts[0] }}</span>
+                                                                <span class="badge bg-secondary">{{ parts[1] }}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-warning">{{ violation.metadata.pseudoclass }}</span>
+                                                            {% endif %}
+                                                        </p>
+                                                        {% endif %}
+
                                                         {% if violation.html %}
                                                         <h6 class="mt-3">Code Snippet</h6>
                                                         {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
@@ -1059,6 +1072,19 @@
                             {% if violation.metadata and violation.metadata.breakpoint %}
                             <p>
                                 <strong>Responsive Breakpoint:</strong> <span class="badge bg-info">{{ violation.metadata.breakpoint }}px width</span>
+                            </p>
+                            {% endif %}
+
+                            {% if violation.metadata and violation.metadata.pseudoclass %}
+                            <p>
+                                <strong>CSS State:</strong>
+                                {% if '@' in violation.metadata.pseudoclass %}
+                                    {% set parts = violation.metadata.pseudoclass.split('@') %}
+                                    <span class="badge bg-warning">{{ parts[0] }}</span>
+                                    <span class="badge bg-secondary">{{ parts[1] }}</span>
+                                {% else %}
+                                    <span class="badge bg-warning">{{ violation.metadata.pseudoclass }}</span>
+                                {% endif %}
                             </p>
                             {% endif %}
 

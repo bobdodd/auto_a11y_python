@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithURLAsAlt - Various URL Schemes</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithURLAsAlt_003_url_schemes",
+    "issueId": "ErrImageWithURLAsAlt",
+    "expectedViolationCount": 10,
+    "expectedPassCount": 3,
+    "description": "Testing various URL schemes and protocols in alt text",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>URL Schemes in Alt Text</h1>
+
+    <!-- VIOLATION 1: http:// -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff0000' width='100' height='100'/%3E%3C/svg%3E"
+         alt="http://example.com/image.jpg"
+         data-expected-violation="true"
+         data-violation-reason="Alt text contains http:// URL">
+
+    <!-- VIOLATION 2: https:// -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300ff00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="https://secure.example.com/photos/team.png"
+         data-expected-violation="true"
+         data-violation-reason="Alt text contains https:// URL">
+
+    <!-- VIOLATION 3: www. -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%230000ff' width='100' height='100'/%3E%3C/svg%3E"
+         alt="www.example.com/images/logo.svg"
+         data-expected-violation="true"
+         data-violation-reason="Alt text starts with www.">
+
+    <!-- VIOLATION 4: file:// -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ffff00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="file:///Users/username/Documents/photo.jpg"
+         data-expected-violation="true"
+         data-violation-reason="Alt text contains file:// protocol">
+
+    <!-- VIOLATION 5: ftp:// -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff00ff' width='100' height='100'/%3E%3C/svg%3E"
+         alt="ftp://ftp.example.com/images/banner.gif"
+         data-expected-violation="true"
+         data-violation-reason="Alt text contains ftp:// protocol">
+
+    <!-- VIOLATION 6: tel: -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300ffff' width='100' height='100'/%3E%3C/svg%3E"
+         alt="tel:+1-555-123-4567"
+         data-expected-violation="true"
+         data-violation-reason="Alt text contains tel: protocol">
+
+    <!-- VIOLATION 7: mailto: -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ffa500' width='100' height='100'/%3E%3C/svg%3E"
+         alt="mailto:contact@example.com"
+         data-expected-violation="true"
+         data-violation-reason="Alt text contains mailto: protocol">
+
+    <!-- VIOLATION 8: Absolute file path starting with / -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23800080' width='100' height='100'/%3E%3C/svg%3E"
+         alt="/var/www/html/images/header.jpg"
+         data-expected-violation="true"
+         data-violation-reason="Alt text is absolute file path">
+
+    <!-- VIOLATION 9: Root-relative path -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23008000' width='100' height='100'/%3E%3C/svg%3E"
+         alt="/images/products/item-123.png"
+         data-expected-violation="true"
+         data-violation-reason="Alt text is root-relative path">
+
+    <!-- VIOLATION 10: Complex URL with query params -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23000080' width='100' height='100'/%3E%3C/svg%3E"
+         alt="https://cdn.example.com/img?id=12345&size=large"
+         data-expected-violation="true"
+         data-violation-reason="Alt text is complex URL with parameters">
+
+    <!-- PASS 1: Normal descriptive text -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff6600' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Team photo from annual conference"
+         data-expected-pass="true"
+         data-pass-reason="Alt text is descriptive, not a URL">
+
+    <!-- PASS 2: Text that mentions a website naturally -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2366ff00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Screenshot showing example.com homepage"
+         data-expected-pass="true"
+         data-pass-reason="Contains domain name but not as URL, describes what image shows">
+
+    <!-- PASS 3: Forward slash in middle of text (not a path) -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%236600ff' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Before/after comparison of renovation"
+         data-expected-pass="true"
+         data-pass-reason="Contains slash but not at start, descriptive text">
+</body>
+</html>

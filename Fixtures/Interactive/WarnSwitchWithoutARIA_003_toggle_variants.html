@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnSwitchWithoutARIA - Toggle Variants</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnSwitchWithoutARIA_003_toggle_variants",
+    "issueId": "WarnSwitchWithoutARIA",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Various toggle switch patterns without proper ARIA",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .switch { width: 40px; height: 20px; background: #ccc; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; }
+        .switch-thumb { width: 16px; height: 16px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.3s; }
+        .switch.on { background: #2196F3; }
+        .switch.on .switch-thumb { transform: translateX(20px); }
+    </style>
+</head>
+<body>
+    <h1>User Preferences</h1>
+
+    <main>
+        <!-- iOS-style toggle without ARIA -->
+        <div style="margin: 20px 0;"
+             data-expected-violation="true"
+             data-violation-reason="iOS-style toggle switch without role='switch' or aria-checked. Screen readers treat as generic div">
+            <label>Dark Mode:</label>
+            <div class="switch" onclick="this.classList.toggle('on')">
+                <div class="switch-thumb"></div>
+            </div>
+        </div>
+
+        <!-- Checkbox-styled toggle without ARIA -->
+        <div style="margin: 20px 0;"
+             data-expected-violation="true"
+             data-violation-reason="Toggle styled as checkbox but lacking role='switch' and aria-checked. Confuses users about control type">
+            <label>Auto-save:</label>
+            <div class="switch on" onclick="this.classList.toggle('on')" tabindex="0">
+                <div class="switch-thumb"></div>
+            </div>
+        </div>
+
+        <!-- Text-based toggle without ARIA -->
+        <div style="margin: 20px 0;"
+             data-expected-violation="true"
+             data-violation-reason="Text-based toggle (ON/OFF) without role='switch' or aria-checked. Screen readers don't announce as toggle control">
+            <label>Notifications:</label>
+            <div class="switch" onclick="toggleText(this)" tabindex="0" style="width: 60px; text-align: center; line-height: 20px; font-size: 11px; font-weight: bold; color: white;">
+                OFF
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleText(el) {
+            el.classList.toggle('on');
+            el.textContent = el.classList.contains('on') ? 'ON' : 'OFF';
+        }
+    </script>
+</body>
+</html>

@@ -743,6 +743,36 @@ async def test_forms(page) -> Dict[str, Any]:
                     });
                 });
 
+                // DISCOVERY: Check for forms without visible submit buttons
+                const allFormsSubmitCheck = Array.from(document.querySelectorAll('form'));
+                allFormsSubmitCheck.forEach(form => {
+                    // Check for submit buttons: <button> (defaults to type=submit), <button type="submit">, <input type="submit">, <input type="image">
+                    const submitButtons = form.querySelectorAll('button:not([type]), button[type="submit"], input[type="submit"], input[type="image"]');
+
+                    // Filter for visible submit buttons
+                    const visibleSubmitButtons = Array.from(submitButtons).filter(button => {
+                        const style = window.getComputedStyle(button);
+                        return style.display !== 'none' &&
+                               style.visibility !== 'hidden' &&
+                               style.opacity !== '0' &&
+                               button.offsetWidth > 0 &&
+                               button.offsetHeight > 0;
+                    });
+
+                    // If no visible submit button, report as discovery issue
+                    if (visibleSubmitButtons.length === 0) {
+                        results.warnings.push({
+                            err: 'DiscoNoSubmitButton',
+                            type: 'disco',
+                            cat: 'forms',
+                            element: 'FORM',
+                            xpath: getFullXPath(form),
+                            html: form.outerHTML.substring(0, 200),
+                            description: 'Form has no visible submit button. Users may not understand how to submit the form. Verify that form submission mechanism is clear (e.g., Enter key works, or auto-submit is clearly communicated).'
+                        });
+                    }
+                });
+
                 return results;
             }
         ''')
@@ -779,6 +809,57 @@ async def test_forms(page) -> Dict[str, Any]:
                     } catch (e) {
                         return '';
                     }
+                }
+
+                function getEffectiveBackgroundColor(element) {
+                    let currentElement = element;
+                    let backgroundColor = 'rgba(0, 0, 0, 0)';
+                    let stoppedAtZIndex = false;
+
+                    while (currentElement) {
+                        const style = window.getComputedStyle(currentElement);
+                        const currentBg = style.backgroundColor;
+
+                        // Check if this element has z-index
+                        const zIndex = style.zIndex;
+                        const position = style.position;
+                        const hasZIndex = (zIndex !== 'auto' && position !== 'static');
+
+                        // If we found a solid background, use it
+                        if (currentBg !== 'rgba(0, 0, 0, 0)') {
+                            backgroundColor = currentBg;
+                            // Only mark as stopped at z-index if this element with solid bg also has z-index
+                            if (hasZIndex) {
+                                // Check if background is transparent or semi-transparent
+                                const rgba = currentBg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                                if (rgba) {
+                                    const alpha = rgba[4] !== undefined ? parseFloat(rgba[4]) : 1.0;
+                                    if (alpha < 1.0) {
+                                        stoppedAtZIndex = true;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+
+                        // If we hit z-index without finding background, that's a problem
+                        if (hasZIndex) {
+                            stoppedAtZIndex = true;
+                            break;
+                        }
+
+                        currentElement = currentElement.parentElement;
+                    }
+
+                    // Default to white if no background found
+                    if (backgroundColor === 'rgba(0, 0, 0, 0)') {
+                        backgroundColor = 'rgb(255, 255, 255)';
+                    }
+
+                    return {
+                        backgroundColor: backgroundColor,
+                        stoppedAtZIndex: stoppedAtZIndex
+                    };
                 }
 
                 fields.forEach((field, index) => {
@@ -891,6 +972,18 @@ async def test_forms(page) -> Dict[str, Any]:
                         }
                     }
 
+                    // Get parent information for outline contrast checking
+                    const parentElement = field.parentElement;
+                    const parentBgInfo = parentElement ? getEffectiveBackgroundColor(parentElement) : {backgroundColor: 'rgb(255, 255, 255)', stoppedAtZIndex: false};
+                    const parentStyle = parentElement ? window.getComputedStyle(parentElement) : null;
+
+                    // Get bounds for outline extent checking
+                    const fieldBounds = field.getBoundingClientRect();
+                    const parentBounds = parentElement ? parentElement.getBoundingClientRect() : null;
+
+                    // Check if input has z-index
+                    const inputHasZIndex = (normalStyle.zIndex !== 'auto' && normalStyle.position !== 'static');
+
                     inputs.push({
                         index,
                         tag: field.tagName.toLowerCase(),
@@ -913,6 +1006,8 @@ async def test_forms(page) -> Dict[str, Any]:
                         normalBoxShadow: normalStyle.boxShadow,
                         backgroundColor: normalStyle.backgroundColor,
                         backgroundImage: normalStyle.backgroundImage,
+                        fullBackground: normalStyle.background,
+                        fontSize: normalStyle.fontSize,
                         focusOutlineStyle,
                         focusOutlineWidth,
                         focusOutlineColor,
@@ -924,7 +1019,31 @@ async def test_forms(page) -> Dict[str, Any]:
                         focusBorderLeftWidth,
                         focusBorderColor,
                         focusBorderTopColor,
-                        focusBoxShadow
+                        focusBoxShadow,
+                        // Parent information for outline contrast checking
+                        parentBackgroundColor: parentBgInfo.backgroundColor,
+                        parentBgStoppedAtZIndex: parentBgInfo.stoppedAtZIndex,
+                        parentBackgroundImage: parentStyle ? parentStyle.backgroundImage : 'none',
+                        parentFullBackground: parentStyle ? parentStyle.background : 'none',
+                        // Bounds for outline extent checking
+                        inputBounds: {
+                            top: fieldBounds.top,
+                            right: fieldBounds.right,
+                            bottom: fieldBounds.bottom,
+                            left: fieldBounds.left,
+                            width: fieldBounds.width,
+                            height: fieldBounds.height
+                        },
+                        parentBounds: parentBounds ? {
+                            top: parentBounds.top,
+                            right: parentBounds.right,
+                            bottom: parentBounds.bottom,
+                            left: parentBounds.left,
+                            width: parentBounds.width,
+                            height: parentBounds.height
+                        } : null,
+                        // Z-index detection
+                        inputHasZIndex: inputHasZIndex
                     });
                 });
 
@@ -962,6 +1081,169 @@ async def test_forms(page) -> Dict[str, Any]:
                 l1 = luminance(color1)
                 l2 = luminance(color2)
                 return (max(l1, l2) + 0.05) / (min(l1, l2) + 0.05)
+
+            def has_gradient_background(bg_string):
+                if not bg_string or bg_string == 'none':
+                    return False
+                gradient_patterns = ['linear-gradient', 'radial-gradient', 'repeating-linear-gradient', 'repeating-radial-gradient', 'conic-gradient']
+                return any(pattern in bg_string for pattern in gradient_patterns)
+
+            def has_image_background(bg_string):
+                if not bg_string or bg_string == 'none':
+                    return False
+                # Check for url() but exclude gradient data URIs
+                if 'url(' in bg_string:
+                    if 'gradient' in bg_string.lower():
+                        return False
+                    return True
+                return False
+
+            def check_input_border_contrast(field):
+                """Check contrast of focus border when border thickens"""
+                issues = []
+
+                # Parse border dimensions
+                normal_border_width = parse_px(field.get('normalBorderWidth', '0px'))
+                focus_border_width = parse_px(field.get('focusBorderWidth', '0px'))
+                border_thickness_change = focus_border_width - normal_border_width
+
+                # Only check if border actually thickens
+                if border_thickness_change < 1.0:
+                    return issues
+
+                # Parse colors
+                focus_border_color = parse_color(field.get('focusBorderColor'))
+                normal_border_color = parse_color(field.get('normalBorderColor'))
+                input_bg_color = parse_color(field.get('backgroundColor'))
+
+                # Check for gradient/image background
+                if has_gradient_background(field.get('fullBackground', 'none')) or has_gradient_background(field.get('backgroundImage', 'none')):
+                    issues.append(('WarnInputFocusGradientBackground', 'Input has gradient background - border contrast cannot be automatically verified'))
+                    return issues
+
+                if has_image_background(field.get('fullBackground', 'none')) or has_image_background(field.get('backgroundImage', 'none')):
+                    issues.append(('WarnInputFocusImageBackground', 'Input has background image - border contrast cannot be automatically verified'))
+                    return issues
+
+                # Check transparency
+                if focus_border_color['a'] < 0.5:
+                    issues.append(('WarnInputTransparentFocus', f'Input focus border is semi-transparent (alpha={focus_border_color["a"]:.2f})'))
+                    return issues
+
+                # Calculate contrast against input background
+                contrast_vs_bg = get_contrast_ratio(focus_border_color, input_bg_color)
+
+                # Calculate contrast against old border
+                contrast_vs_old_border = get_contrast_ratio(focus_border_color, normal_border_color)
+
+                # Report worst case
+                min_contrast = min(contrast_vs_bg, contrast_vs_old_border)
+
+                if min_contrast < 3.0:
+                    if contrast_vs_bg < 3.0:
+                        issues.append(('ErrInputFocusContrastFail', f'Input focus border has insufficient contrast ({contrast_vs_bg:.2f}:1) against input background, needs ≥3:1'))
+                    else:
+                        issues.append(('ErrInputFocusContrastFail', f'Input focus border has insufficient contrast ({contrast_vs_old_border:.2f}:1) against normal border, needs ≥3:1'))
+
+                return issues
+
+            def check_input_outline_contrast(field):
+                """Check contrast of focus outline using button algorithm logic"""
+                issues = []
+
+                # Parse outline dimensions
+                outline_width = parse_px(field.get('focusOutlineWidth', '0px'))
+                outline_offset = parse_px(field.get('focusOutlineOffset', '0px'))
+
+                # Outline should exist (caller checks this)
+                if outline_width == 0:
+                    return issues
+
+                # Determine which background to check based on outline-offset
+                check_solid_contrast = False
+
+                if outline_offset > 0:
+                    # Outline sits OUTSIDE input, compare against parent background
+
+                    # Check 1: Input has z-index
+                    input_has_z_index = field.get('inputHasZIndex', False)
+                    if input_has_z_index:
+                        issues.append(('WarnInputFocusZIndexFloating', 'Input has z-index positioning and may float over varying backgrounds - outline contrast cannot be automatically verified (manual testing required)'))
+                        return issues
+
+                    # Check 2: Parent has z-index without solid background
+                    parent_bg_stopped_at_z_index = field.get('parentBgStoppedAtZIndex', False)
+                    if parent_bg_stopped_at_z_index:
+                        issues.append(('WarnInputFocusParentZIndexFloating', 'Input parent has z-index without solid background - outline contrast cannot be automatically verified (manual testing required)'))
+                        return issues
+
+                    # Check 3: Outline extends beyond parent bounds
+                    input_bounds = field.get('inputBounds')
+                    parent_bounds = field.get('parentBounds')
+
+                    if input_bounds and parent_bounds:
+                        total_extent = outline_offset + outline_width
+
+                        exceeds_top = (input_bounds['top'] - total_extent) < parent_bounds['top']
+                        exceeds_bottom = (input_bounds['bottom'] + total_extent) > parent_bounds['bottom']
+                        exceeds_left = (input_bounds['left'] - total_extent) < parent_bounds['left']
+                        exceeds_right = (input_bounds['right'] + total_extent) > parent_bounds['right']
+
+                        if exceeds_top or exceeds_bottom or exceeds_left or exceeds_right:
+                            issues.append(('WarnInputFocusOutlineExceedsParent', f'Input focus outline extends beyond parent container (offset: {outline_offset:.2f}px + width: {outline_width:.2f}px = {total_extent:.2f}px) - cannot verify contrast (manual testing required)'))
+                            return issues
+
+                    # Check 4: Parent has gradient
+                    parent_full_bg = field.get('parentFullBackground', 'none')
+                    parent_bg_image = field.get('parentBackgroundImage', 'none')
+
+                    if has_gradient_background(parent_full_bg) or has_gradient_background(parent_bg_image):
+                        issues.append(('WarnInputFocusParentGradientBackground', 'Input parent has gradient background - outline contrast cannot be automatically verified (manual testing required)'))
+                        return issues
+
+                    # Check 5: Parent has image
+                    if has_image_background(parent_full_bg) or has_image_background(parent_bg_image):
+                        issues.append(('WarnInputFocusParentImageBackground', 'Input parent has background image - outline contrast cannot be automatically verified (manual testing required)'))
+                        return issues
+
+                    # All checks passed, compare against parent background
+                    compare_bg = field.get('parentBackgroundColor', field.get('backgroundColor'))
+                    check_solid_contrast = True
+
+                else:
+                    # Outline sits ON/INSIDE input, compare against input background
+
+                    # Check for gradient
+                    if has_gradient_background(field.get('fullBackground', 'none')) or has_gradient_background(field.get('backgroundImage', 'none')):
+                        issues.append(('WarnInputFocusGradientBackground', 'Input has gradient background - outline contrast cannot be automatically verified'))
+                        return issues
+
+                    # Check for image
+                    if has_image_background(field.get('fullBackground', 'none')) or has_image_background(field.get('backgroundImage', 'none')):
+                        issues.append(('WarnInputFocusImageBackground', 'Input has background image - outline contrast cannot be automatically verified'))
+                        return issues
+
+                    compare_bg = field.get('backgroundColor')
+                    check_solid_contrast = True
+
+                # Calculate contrast against solid background
+                if check_solid_contrast:
+                    outline_color = parse_color(field.get('focusOutlineColor'))
+                    bg_color = parse_color(compare_bg)
+
+                    # Check transparency
+                    if outline_color['a'] < 0.5:
+                        issues.append(('WarnInputTransparentFocus', f'Input focus outline is semi-transparent (alpha={outline_color["a"]:.2f})'))
+                        return issues
+
+                    # Calculate contrast
+                    contrast = get_contrast_ratio(outline_color, bg_color)
+
+                    if contrast < 3.0:
+                        bg_type = "parent background" if outline_offset > 0 else "input background"
+                        issues.append(('ErrInputFocusContrastFail', f'Input focus outline has insufficient contrast ({contrast:.2f}:1) against {bg_type}, needs ≥3:1'))
+
+                return issues
 
             for field in input_styles:
                 error_code = None
@@ -1047,7 +1329,7 @@ async def test_forms(page) -> Dict[str, Any]:
 
                 # Check 3: Color-only change (no structural change)
                 if outline_is_none and border_color_changed and max_border_change <= 0 and not box_shadow_changed:
-                    issues_found.append(('ErrInputColorChangeOnly', 'Input field focus relies solely on border color change (violates WCAG 1.4.1)'))
+                    issues_found.append(('ErrInputFocusColorChangeOnly', 'Input field focus relies solely on border color change (violates WCAG 1.4.1)'))
 
                 # Check 4: Border change too small
                 if max_border_change > 0 and max_border_change < 1.0 and not has_outline and not box_shadow_changed:
@@ -1057,40 +1339,38 @@ async def test_forms(page) -> Dict[str, Any]:
                 if has_outline and outline_width < 2.0:
                     issues_found.append(('ErrInputOutlineWidthInsufficient', f'Input focus outline is {outline_width:.2f}px (WCAG 2.4.11 recommends ≥2px)'))
 
-                # Check 6: Contrast and transparency checks
-                if not has_gradient:
+                # Check 6: Contrast checking - COMPREHENSIVE
+                # Check border contrast (if border thickens)
+                if max_border_change >= 1.0:
+                    border_contrast_issues = check_input_border_contrast(field)
+                    issues_found.extend(border_contrast_issues)
+
+                # Check outline contrast (if outline exists)
+                if has_outline:
+                    outline_contrast_issues = check_input_outline_contrast(field)
+                    issues_found.extend(outline_contrast_issues)
+                    # Check outline-only warning
+                    if not border_color_changed and max_border_change <= 0 and not box_shadow_changed:
+                        issues_found.append(('WarnInputNoBorderOutline', 'Input uses outline but screen magnifier users may not see comparison'))
+
+                # Check box-shadow contrast (existing logic - keep as-is for box-shadow-only cases)
+                elif box_shadow_changed and focus_box_shadow and not has_gradient:
                     bg_color = parse_color(field['backgroundColor'])
-                    if has_outline:
-                        outline_color = parse_color(field['focusOutlineColor'])
+                    # Check box-shadow contrast AND transparency
+                    # Try to match rgba first, then rgb
+                    shadow_color_match = re.search(r'rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)', focus_box_shadow)
+                    if shadow_color_match:
+                        shadow_color = {'r': int(shadow_color_match.group(1)),
+                                      'g': int(shadow_color_match.group(2)),
+                                      'b': int(shadow_color_match.group(3)),
+                                      'a': float(shadow_color_match.group(4)) if shadow_color_match.group(4) else 1.0}
                         # Check transparency
-                        if outline_color['a'] < 0.5:
-                            issues_found.append(('WarnInputTransparentFocus', f'Input focus outline is semi-transparent (alpha={outline_color["a"]:.2f})'))
+                        if shadow_color['a'] < 0.5:
+                            issues_found.append(('WarnInputTransparentFocus', f'Input focus box-shadow is semi-transparent (alpha={shadow_color["a"]:.2f})'))
                         # Check contrast
-                        contrast = get_contrast_ratio(outline_color, bg_color)
+                        contrast = get_contrast_ratio(shadow_color, bg_color)
                         if contrast < 3.0:
-                            issues_found.append(('ErrInputFocusContrastFail', f'Input focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1)'))
-                        # Check outline-only warning
-                        if not border_color_changed and max_border_change <= 0 and not box_shadow_changed:
-                            issues_found.append(('WarnInputNoBorderOutline', 'Input uses outline but screen magnifier users may not see comparison'))
-                    elif box_shadow_changed and focus_box_shadow:
-                        # Check box-shadow contrast AND transparency
-                        # Try to match rgba first, then rgb
-                        shadow_color_match = re.search(r'rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)', focus_box_shadow)
-                        if shadow_color_match:
-                            shadow_color = {'r': int(shadow_color_match.group(1)),
-                                          'g': int(shadow_color_match.group(2)),
-                                          'b': int(shadow_color_match.group(3)),
-                                          'a': float(shadow_color_match.group(4)) if shadow_color_match.group(4) else 1.0}
-                            # Check transparency
-                            if shadow_color['a'] < 0.5:
-                                issues_found.append(('WarnInputTransparentFocus', f'Input focus box-shadow is semi-transparent (alpha={shadow_color["a"]:.2f})'))
-                            # Check contrast
-                            contrast = get_contrast_ratio(shadow_color, bg_color)
-                            if contrast < 3.0:
-                                issues_found.append(('ErrInputFocusContrastFail', f'Input focus box-shadow has insufficient contrast ({contrast:.2f}:1)'))
-                else:
-                    # Check 7: Gradient background warning
-                    issues_found.append(('WarnInputFocusGradientBackground', 'Input has gradient background - contrast cannot be automatically verified'))
+                            issues_found.append(('ErrInputFocusContrastFail', f'Input focus box-shadow has insufficient contrast ({contrast:.2f}:1)'))
 
                 # Check 8: Default browser focus
                 # Warn if NO custom focus styles are defined (relying on browser defaults)

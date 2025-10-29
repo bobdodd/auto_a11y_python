@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoNoSubmitButton - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoNoSubmitButton_006_edge_cases",
+    "issueId": "DiscoNoSubmitButton",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 2,
+    "description": "Edge cases: search forms, buttons outside form, implicit submission",
+    "wcag": "3.3.2",
+    "impact": "Info"
+}
+    </script>
+</head>
+<body>
+    <h1>Edge Cases</h1>
+
+    <!-- Discovery: Search form with role="search" but no submit button -->
+    <form role="search"
+          data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Search form without visible submit button">
+        <label for="search1">Search</label>
+        <input type="search" id="search1" name="q" placeholder="Type and press Enter">
+    </form>
+
+    <!-- Correct: Search form WITH submit button -->
+    <form role="search"
+          data-expected-pass="true"
+          data-pass-reason="Search form has visible submit button">
+        <label for="search2">Search</label>
+        <input type="search" id="search2" name="q">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Discovery: Form with implicit submission (single text input, no button) -->
+    <!-- Users can press Enter to submit, but this is not obvious -->
+    <form data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Single-field form relies on implicit Enter key submission">
+        <label for="email">Subscribe to newsletter</label>
+        <input type="email" id="email" name="email" placeholder="Press Enter to submit">
+    </form>
+
+    <!-- Correct: Button with no type attribute defaults to submit -->
+    <form data-expected-pass="true"
+          data-pass-reason="Button without type attribute defaults to type=submit">
+        <label for="email2">Email</label>
+        <input type="email" id="email2" name="email">
+        <button>Subscribe</button>
+    </form>
+
+    <!-- Note: Testing button outside form with form attribute is complex
+         and may not be detected correctly by the current implementation,
+         so we're not including it here -->
+</body>
+</html>

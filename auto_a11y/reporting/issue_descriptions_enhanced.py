@@ -54,7 +54,8 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         error_type = issue_code
     
     # Generated descriptions from template
-    descriptions = {        'AI_ErrAccordionWithoutARIA': {
+    descriptions = {
+        'ErrAccordionWithoutARIA': {
             'title': "Accordion element \"{element_text}\" lacks proper ARIA markup",
             'what': "Accordion element \"{element_text}\" lacks proper ARIA markup",
             'why': "Without aria-expanded and proper roles, users cannot determine if sections are expanded or collapsed",
@@ -63,17 +64,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.1.1', '4.1.2', '1.3.1'],
             'remediation': "Add button role to headers, aria-expanded to indicate state, and aria-controls to link headers to panels"
         },
-        'AI_ErrAmbiguousLinkText': {
-            'title': "Link text \"{element_text}\" is ambiguous without surrounding context",
-            'what': "Link text \"{element_text}\" is ambiguous without surrounding context",
-            'why': "Screen reader users navigating by links won\'t understand the link\'s purpose",
-                    'what_generic': "Link text is ambiguous without surrounding context",
-            'who': "Screen reader users navigating out of context",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['2.4.4'],
-            'remediation': "Use descriptive link text that makes sense without context, or add aria-label"
-        },
-        'AI_ErrCarouselWithoutARIA': {
+        'ErrCarouselWithoutARIA': {
             'title': "Carousel/slider \"{element_text}\" lacks proper ARIA markup and controls",
             'what': "Carousel/slider \"{element_text}\" lacks proper ARIA markup and controls",
             'why': "Without proper ARIA and controls, users cannot understand or control the carousel\'s behavior",
@@ -83,7 +74,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.1.1', '4.1.2', '2.2.2'],
             'remediation': "Add role=\"region\", aria-label, aria-live for updates, and accessible previous/next controls"
         },
-        'AI_ErrClickableWithoutKeyboard': {
+        'ErrClickableWithoutKeyboard': {
             'title': "Element with onclick handler is not keyboard accessible",
             'what': "Element with onclick handler is not keyboard accessible",
             'why': "Keyboard users cannot activate this control",
@@ -102,7 +93,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.1.1', '4.1.2', '2.4.3'],
             'remediation': "Add role=\"dialog\", aria-modal=\"true\", aria-label or aria-labelledby, and implement focus trap"
         },
-        'AI_ErrDropdownWithoutARIA': {
+        'ErrDropdownWithoutARIA': {
             'title': "Dropdown menu \"{element_text}\" lacks proper ARIA markup",
             'what': "Dropdown menu \"{element_text}\" lacks proper ARIA markup",
             'why': "Without aria-expanded, aria-haspopup, and proper roles, users cannot understand the dropdown\'s state or navigate it properly",
@@ -122,7 +113,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1', '2.4.1'],
             'remediation': "Adjust heading level to match the visual hierarchy of the page"
         },
-        'AI_ErrInteractiveElementIssue': {
+        'ErrInteractiveElementIssue': {
             'title': "Interactive {element_tag} element \"{element_text}\" has accessibility issues",
             'what': "Interactive {element_tag} element \"{element_text}\" has accessibility issues",
             'why': "Interactive elements without proper semantic markup or keyboard support create barriers for assistive technology users",
@@ -132,16 +123,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.1.1', '4.1.2'],
             'remediation': "Use semantic HTML elements or add appropriate ARIA roles and keyboard support"
         },
-        'AI_ErrLinkWithoutText': {
-            'title': "Link element has no accessible text",
-            'what': "Link element has no accessible text",
-            'why': "Screen readers announce this as \"link\" without any context",
-            'who': "Screen reader users",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.4', '4.1.2'],
-            'remediation': "Add link text, aria-label, or aria-labelledby attribute"
-        },
-        'AI_ErrMenuWithoutARIA': {
+        'ErrMenuWithoutARIA': {
             'title': "Navigation menu lacks proper ARIA markup",
             'what': "Navigation menu lacks proper ARIA markup",
             'why': "Screen readers won\'t recognize this as a navigation menu",
@@ -159,7 +141,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.7'],
             'remediation': "Add CSS :focus styles with visible outline, border, or background change"
         },
-        'AI_ErrMissingInteractiveRole': {
+        'ErrMissingInteractiveRole': {
             'title': "Interactive {element_tag} element lacks appropriate ARIA role",
             'what': "Interactive {element_tag} element lacks appropriate ARIA role",
             'why': "Screen readers won\'t announce this as an interactive control",
@@ -168,6 +150,60 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.HIGH.value,
             'wcag': ['4.1.2'],
             'remediation': "Add appropriate ARIA role (button, link, checkbox, etc.) to the element"
+        },
+        'ErrDialogMissingRole': {
+            'title': "Dialog/modal element lacks proper role attribute",
+            'what': "Dialog or modal element is missing role=\"dialog\" or role=\"alertdialog\" attribute",
+            'why': "Screen readers need the dialog role to announce modals properly and provide appropriate navigation shortcuts",
+            'who': "Screen reader users who need to understand when a dialog has opened and how to navigate within it",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add role=\"dialog\" to modal containers, include aria-labelledby pointing to the dialog title, and aria-describedby for the description"
+        },
+        'ErrTabpanelWithoutARIA': {
+            'title': "Tab panel lacks proper ARIA markup",
+            'what': "Tab panel component is missing required ARIA attributes for tabs, tablist, and tabpanel roles",
+            'why': "Without proper ARIA tab markup, screen reader users cannot understand the tab interface structure or navigate between tabs effectively",
+            'who': "Screen reader users who need to understand which tab is selected and navigate between tab panels",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2', '1.3.1'],
+            'remediation': "Add role=\"tablist\" to the tab container, role=\"tab\" to each tab button, role=\"tabpanel\" to each panel, aria-selected on tabs, and aria-controls linking tabs to panels"
+        },
+        'ErrTooltipWithoutARIA': {
+            'title': "Tooltip lacks proper ARIA markup",
+            'what': "Tooltip element is missing role=\"tooltip\" and proper ARIA associations",
+            'why': "Screen readers need role=\"tooltip\" to announce tooltips appropriately and understand the relationship between triggers and tooltip content",
+            'who': "Screen reader users who need to access supplementary information provided by tooltips",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add role=\"tooltip\" to the tooltip element and aria-describedby on the trigger element pointing to the tooltip's ID"
+        },
+        'WarnSliderWithoutARIA': {
+            'title': "Slider control may lack proper ARIA markup",
+            'what': "Slider control may be missing role=\"slider\" and required ARIA attributes",
+            'why': "Sliders need ARIA markup for screen readers to announce the current value, min, max, and allow keyboard control",
+            'who': "Screen reader users and keyboard users who need to adjust slider values",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['4.1.2', '2.1.1'],
+            'remediation': "Add role=\"slider\", aria-valuemin, aria-valuemax, aria-valuenow, and aria-label to the slider element, and ensure keyboard support with arrow keys"
+        },
+        'WarnSwitchWithoutARIA': {
+            'title': "Toggle switch may lack proper ARIA markup",
+            'what': "Toggle switch control may be missing role=\"switch\" and aria-checked attribute",
+            'why': "Switch controls need role=\"switch\" and aria-checked for screen readers to announce the on/off state properly",
+            'who': "Screen reader users who need to understand and control switch states",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add role=\"switch\" and aria-checked=\"true\" or aria-checked=\"false\" to indicate the current state, or use a checkbox with clear on/off labeling"
+        },
+        'WarnTreeviewWithoutARIA': {
+            'title': "Tree view control may lack proper ARIA markup",
+            'what': "Tree view navigation may be missing role=\"tree\", role=\"treeitem\", and aria-expanded attributes",
+            'why': "Tree views need comprehensive ARIA markup for screen readers to navigate the hierarchical structure and understand expand/collapse states",
+            'who': "Screen reader users and keyboard users navigating hierarchical tree structures",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['4.1.2', '2.1.1'],
+            'remediation': "Add role=\"tree\" to container, role=\"treeitem\" to each item, aria-expanded to expandable items, and proper keyboard navigation (arrow keys, Enter, Space)"
         },
         'AI_ErrModalFocusTrap': {
             'title': "Modal/dialog \"{element_text}\" does not properly trap focus",
@@ -178,16 +214,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.1.2', '2.4.3'],
             'remediation': "Implement focus trap to keep focus within modal while open, and return focus to trigger element on close"
-        },
-        'AI_ErrNonSemanticButton': {
-            'title': "Clickable {element_tag} element \"{element_text}\" is not a semantic button",
-            'what': "Clickable {element_tag} element \"{element_text}\" is not a semantic button",
-            'why': "Non-semantic buttons are not keyboard accessible and invisible to screen readers",
-                    'what_generic': "Clickable element is not a semantic button",
-            'who': "Keyboard users, screen reader users",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.1.1', '4.1.2'],
-            'remediation': "Replace {element_tag} with <button> element or add role=\"button\" and tabindex=\"0\""
         },
         'AI_ErrReadingOrderMismatch': {
             'title': "Visual reading order doesn\'t match DOM order - content may be read out of sequence",
@@ -462,14 +488,14 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.5.3'],
             'remediation': "Ensure aria-label includes visible text"
         },
-        'ErrAutoStartTimers': {
-            'title': "Timer starts automatically without user control to pause or stop",
-            'what': "Timer starts automatically without user control to pause or stop",
-            'why': "Auto-starting timers can create stress and barriers for users who need more time to complete tasks or read content.",
-            'who': "Users with cognitive disabilities, users with reading disabilities, users with motor impairments who need more time, screen reader users.",
-            'impact': ImpactScale.HIGH.value,
+        'WarnAutoStartTimers': {
+            'title': "Timer detected starting automatically on page load - manual inspection required",
+            'what': "Page contains setTimeout or setInterval calls that execute immediately on page load without user interaction",
+            'why': "Auto-starting timers may create time pressure or barriers for users who need more time to complete tasks or read content. While not all auto-starting timers are problematic (some are for legitimate technical purposes), they should be reviewed to ensure they don't create accessibility barriers under WCAG 2.2.2.",
+            'who': "Users with cognitive disabilities who need more time to process information, users with reading disabilities who need more time to read content, users with motor impairments who need more time to interact with controls, screen reader users who need time to understand content structure",
+            'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.2.2'],
-            'remediation': "Provide controls to pause, stop, or extend time limits, avoid auto-starting timers unless essential, allow users to control timing of content updates."
+            'remediation': "Review each auto-starting timer to determine if it creates a time limit for users. If the timer controls content updates, animations, or session timeouts, ensure users can pause, stop, or extend the time limit. Consider whether the timer is essential for functionality or could be replaced with user-initiated actions. Timers used purely for technical purposes (like polyfills or performance monitoring) that don't affect user interaction are acceptable."
         },
         'ErrBannerLandmarkAccessibleNameIsBlank': {
             'title': "Banner landmark has blank accessible name",
@@ -497,15 +523,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.3.1'],
             'remediation': "Move banner to top level"
-        },
-        'ErrButtonOutlineNoneNoBoxShadow': {
-            'title': "Button has outline:none without box-shadow, relying only on color",
-            'what': "Button removes focus outline without providing a box-shadow alternative, relying solely on color change which fails WCAG 1.4.1 Use of Color",
-            'why': "Relying solely on color change for focus indication fails WCAG 1.4.1 Use of Color. Users with color blindness (affecting 8% of males), low vision, or monochrome displays cannot perceive focus state. A structural indicator like box-shadow or outline is required to provide a non-color visual cue that wraps the element.",
-            'who': "Users with color blindness, users with low vision, users on monochrome displays, keyboard navigation users",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.7', '1.4.1'],
-            'remediation': "Add a box-shadow focus indicator (e.g., box-shadow: 0 0 0 3px rgba(0,102,204,0.5)) or use an outline with outline-offset of at least 2px. Do not rely on color change alone. Best practice: button:focus { outline: 2px solid #0066cc; outline-offset: 2px; }"
         },
         'ErrButtonFocusContrastFail': {
             'title': "Button focus outline has insufficient contrast",
@@ -623,15 +640,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.4.7', '1.4.11'],
             'remediation': "Manually test the focus outline visibility against all backgrounds it may appear against outside the parent container. Solutions: 1) Reduce outline-offset and/or outline-width so outline stays within parent bounds (ensure parent has sufficient padding), 2) Increase parent padding to contain the full outline extent, 3) Set outline-offset to 0 and use box-shadow for spacing: button:focus { outline: 3px solid blue; outline-offset: 0; box-shadow: 0 0 0 2px white; }, 4) Use a high-contrast outline color (e.g., white with black box-shadow or vice versa) that works against any background: button:focus { outline: 2px solid white; box-shadow: 0 0 0 4px black; }"
-        },
-        'ErrButtonTextLowContrast': {
-            'title': "Button text has insufficient color contrast with button background",
-            'what': "Button text has insufficient color contrast with button background",
-            'why': "Users with low vision, color blindness, or viewing the page in bright sunlight may not be able to read button labels if contrast is insufficient. This prevents users from understanding button purpose and can make critical functions inaccessible. Buttons are action triggers, so being unable to read them can prevent task completion.",
-            'who': "Users with low vision, color blindness, age-related vision changes, and anyone viewing content in poor lighting conditions or on low-quality displays",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.4.3'],
-            'remediation': "Ensure button text has at least 4.5:1 contrast ratio with the button background for normal text, or 3:1 for large text (18pt or 14pt bold). For Level AAA compliance, use 7:1 for normal text. Test in different states (hover, focus, active) as contrast requirements apply to all states. Avoid using color alone to indicate button state."
         },
         'ErrButtonClipPathWithOutline': {
             'title': "Button with non-rectangular clip-path uses outline for focus indicator - outline draws rectangular box not following clipped shape",
@@ -1263,15 +1271,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.1.1'],
             'remediation': "Replace the filename with descriptive text that conveys the image\'s information or purpose (change alt=\"hero-banner-2.jpg\" to alt=\"Students collaborating in the campus library\"), focus on what the image communicates rather than technical details, ensure the description makes sense when read in context with surrounding content, and avoid including file extensions or technical metadata in alt attributes"
         },
-        'ErrImageWithNoAlt': {
-            'title': "Images are missing alternative text attributes, preventing assistive technologies from conveying their content or purpose to users",
-            'what': "Images are missing alternative text attributes, preventing assistive technologies from conveying their content or purpose to users",
-            'why': "Screen readers cannot describe image content to users who are blind or have low vision, creating information barriers that may prevent understanding of essential content, navigation, or task completion. This also affects users with cognitive disabilities who benefit from text alternatives and users on slow connections where images fail to load.",
-            'who': "Blind users using screen readers, users with low vision using screen readers with magnification, users with cognitive disabilities who rely on text alternatives, voice control users who need text labels to reference elements, and users on slow internet connections",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.1.1'],
-            'remediation': "Add descriptive alt attributes for informative images (alt=\"Sales chart showing 40% increase\"), use empty alt attributes for decorative images (alt=\"\"), describe the function for interactive images (alt=\"Search\" not alt=\"magnifying glass icon\"), and provide detailed descriptions via aria-describedby for complex images like charts or diagrams."
-        },
         'ErrImageWithURLAsAlt': {
             'title': "Alt attribute contains a URL (starting with http://, https://, www",
             'what': "Alt attribute contains a URL (starting with http://, https://, www., or file://) instead of descriptive text about the image content",
@@ -1317,16 +1316,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.2.2'],
             'remediation': "Provide pause/stop controls for all animations, respect prefers-reduced-motion settings, or limit animation-iteration-count to a finite number. Current CSS:\n{animationCSS}"
-        },
-        'ErrInsufficientContrast': {
-            'title': "Text contrast ratio {ratio}:1 does not meet WCAG requirements (required: {required}:1)",
-            'what': "Text contrast ratio {ratio}:1 does not meet WCAG requirements (required: {required}:1)",
-            'why': "Insufficient contrast ({ratio}:1) makes text unreadable for users with low vision or in challenging lighting conditions. Text color {fg} on background {bg} does not provide enough distinction.",
-                    'what_generic': "Text contrast ratio does not meet WCAG requirements",
-            'who': "Users with low vision, users with color blindness, aging users, all users in bright sunlight or glare.",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.4.3'],
-            'remediation': "Current contrast is {ratio}:1, but at least {required}:1 is required. Adjust foreground color {fg} or background color {bg} to meet requirements. For {fontSize}px text, ensure 4.5:1 for normal text or 3:1 for large text (18pt+)."
         },
         'ErrInvalidAriaLevel': {
             'title': "Invalid aria-level value (not 1-6)",
@@ -1581,8 +1570,71 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'why': "Without titles, screen reader users don\'t know what the embedded map contains or represents.",
             'who': "Screen reader users who need to understand embedded content purpose.",
             'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['1.1.1'],
+            'wcag': ['4.1.2'],
             'remediation': "Add descriptive title attribute to map iframes (e.g., title=\"Map showing office location\")."
+        },
+        'ErrMapRolePresentation': {
+            'title': "Interactive map has role=\"presentation\" which removes semantics",
+            'what': "Interactive map has role=\"presentation\" which removes semantic meaning from focusable elements",
+            'why': "When interactive maps use role=\"presentation\", screen readers cannot convey the purpose of focusable controls within the map. This violates WCAG 4.1.2 Name, Role, Value.",
+            'who': "Screen reader users who rely on semantic information to understand interactive elements, keyboard users who can focus on controls but receive no context.",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Remove role=\"presentation\" from interactive maps. Use proper semantic roles or ARIA labels to identify the map and its controls instead."
+        },
+        'ErrSvgMapMissingName': {
+            'title': "SVG map lacks accessible name",
+            'what': "SVG map lacks accessible name via title element, aria-label, or aria-labelledby",
+            'why': "SVG maps without accessible names are not identified to screen readers, leaving users unable to understand the purpose or content of the map.",
+            'who': "Screen reader users who need to understand what SVG maps represent.",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add a <title> element as the first child of the SVG, or use aria-label or aria-labelledby. Also ensure the SVG has role=\"img\" or role=\"graphics-document\"."
+        },
+        'ErrMapGenericName': {
+            'title': "Map has generic, non-descriptive name",
+            'what': "Map has generic name like \"map\", \"image\", or \"location\" that doesn\'t describe its purpose",
+            'why': "Generic names don\'t convey what the map shows or represents, leaving screen reader users without useful context.",
+            'who': "Screen reader users who need descriptive names to understand content purpose.",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.1.1'],
+            'remediation': "Use descriptive names that explain what the map shows (e.g., \"Map showing downtown office location\" instead of just \"map\")."
+        },
+        'ErrDivMapMissingStructure': {
+            'title': "Div-based map lacks landmark region or associated heading",
+            'what': "Div-based map is not contained within a landmark region and has no associated heading",
+            'why': "Without proper structure, screen reader users cannot find or understand the context of div-based maps. Maps need either landmark containers or associated headings for navigation.",
+            'who': "Screen reader users who navigate by landmarks and headings to find content.",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.3.1'],
+            'remediation': "Wrap the map in a landmark region with descriptive label (e.g., <section aria-label=\"Store locations map\">) or ensure it has an associated heading that describes the map."
+        },
+        'WarnDivMapNoLandmark': {
+            'title': "Div-based map has heading but no landmark container (best practice)",
+            'what': "Div-based map is preceded by a descriptive heading but not wrapped in a landmark region",
+            'why': "While a heading provides some structure, landmark wrapping provides better navigation context and is best practice for accessibility.",
+            'who': "Screen reader users who navigate by landmarks for better context.",
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['Best Practice'],
+            'remediation': "Wrap the map and its heading in a landmark region like <section> with descriptive aria-label for improved navigation."
+        },
+        'WarnMapPotentialContentHiding': {
+            'title': "Interactive map may hide content from assistive technologies",
+            'what': "Interactive map has aria-hidden or role=\"presentation\" which may hide content",
+            'why': "Cannot automatically verify if map information is provided elsewhere. If no alternative is provided, this violates WCAG 1.1.1.",
+            'who': "Screen reader users who may be unable to access map information.",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.1.1'],
+            'remediation': "Ensure equivalent information is provided in accessible format elsewhere on the page, or remove aria-hidden/role=\"presentation\" and make the map itself accessible."
+        },
+        'DiscoMapFound': {
+            'title': "Digital map discovered on page",
+            'what': "Digital map detected with metadata about provider, type, and accessibility features",
+            'why': "Discovery report providing information about maps found on the page for accessibility review.",
+            'who': "Developers and accessibility testers.",
+            'impact': ImpactScale.INFO.value,
+            'wcag': ['Informational'],
+            'remediation': "Review the map\'s accessibility features and ensure proper implementation."
         },
         'ErrMissingAccessibleName': {
             'title': "Interactive element has no accessible name",
@@ -1876,7 +1928,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.7', '1.4.11', '2.4.3'],
             'remediation': "Never use outline:none or outline:0 without providing a clear alternative focus indicator. Best practice: use outline with outline-offset for clear, accessible focus: input:focus { outline: 2px solid #0066cc; outline-offset: 2px; }. Alternative approaches: increase border thickness on focus (from 1px to 3px), add a colored box-shadow (box-shadow: 0 0 0 3px rgba(0,102,204,0.5)), change background color with sufficient contrast, or combine multiple indicators for maximum visibility. Ensure focus indicators have at least 3:1 contrast ratio against adjacent colors per WCAG 2.4.11. Test by tabbing through your form with keyboard only - every input should have an obvious, immediately visible focus indicator. Never rely solely on subtle changes that may not be perceivable."
         },
-        'ErrInputColorChangeOnly': {
+        'ErrInputFocusColorChangeOnly': {
             'title': "Input field focus indicator relies solely on border color change without structural change",
             'what': "Input field indicates focus by changing only the color of its border (or background) without any accompanying structural change such as increased border width, box-shadow, outline, or other geometric modification",
             'why': "WCAG Success Criterion 1.4.1 (Use of Color) requires that color not be used as the only visual means of conveying information. Focus indication is critical information, so relying solely on color change fails this criterion. Users with color blindness (affecting approximately 8% of men), users with low contrast sensitivity, users on monochrome displays, and users in bright environments may not perceive color-only changes. A border that changes from gray to blue looks identical to some colorblind users. Users who cannot perceive the color change cannot determine which field has focus, making keyboard navigation unreliable. This affects form completion, error correction, and any multi-step process.",
@@ -2241,15 +2293,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.4.4'],
             'remediation': "Increase font size to minimum 16px for body text (14px absolute minimum). Ensure text can be zoomed to 200% without loss of functionality. Current size: {fontSize}px."
         },
-        'ErrSvgImageNoLabel': {
-            'title': "SVG image element lacks accessible text alternatives, making it invisible to screen reader users",
-            'what': "SVG image element lacks accessible text alternatives, making it invisible to screen reader users",
-            'why': "SVG images without proper labeling are completely inaccessible to screen reader users - they are either skipped entirely or announced as \"graphic\" with no indication of what they represent. Unlike HTML img elements that can use alt attributes, SVGs require different techniques for accessibility. Without proper labeling, users miss important visual information, icons, charts, logos, or interactive graphics that may be essential for understanding or using the page.",
-            'who': "Blind and low vision users using screen readers who cannot perceive any information about unlabeled SVG content, users with cognitive disabilities who benefit from text descriptions of complex graphics, keyboard users who may encounter interactive SVGs without understanding their purpose, and users of assistive technologies that need text alternatives for all visual content",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.1.1'],
-            'remediation': "For simple SVGs, add role=\"img\" and aria-label with descriptive text. For complex SVGs, use <title> as the first child element and reference it with aria-labelledby. For decorative SVGs, use aria-hidden=\"true\" to hide from assistive technologies. For inline SVGs containing text, ensure text is in actual text elements not paths. For interactive SVGs, provide appropriate ARIA labels for all interactive elements. Always test with screen readers to verify SVGs are properly announced."
-        },
         'ErrSvgStaticWithoutRole': {
             'title': "Static inline SVG lacks role=\"img\", preventing assistive technologies from treating it as an image",
             'what': "Static inline SVG element does not have role=\"img\" attribute, causing screen readers to either skip it entirely or attempt to navigate through its internal SVG structure rather than treating it as a single image",
@@ -2523,6 +2566,16 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.4.6'],
             'remediation': "Current contrast is {ratio}:1, but WCAG Level AAA requires at least 7:1 for normal text ({fontSize}px). To fix, use high contrast combinations like #333333 or darker on white background, or white text on backgrounds darker than #565656."
+        },
+        'WarnTextContrastCannotCalculate': {
+            'title': "Text contrast cannot be automatically calculated - manual inspection required",
+            'what': "Text contrast cannot be automatically verified due to complex background (gradient, image, z-index floating, or text overflow)",
+            'why': "Cannot determine text contrast when background is a gradient or image, element has z-index positioning that may float over varying content, or text overflows its container boundaries. These scenarios require manual visual inspection to ensure adequate contrast.",
+            'what_generic': "Text contrast requires manual verification",
+            'who': "All users, especially those with low vision or color blindness",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.4.3'],
+            'remediation': "Manually verify that text has sufficient contrast (4.5:1 for normal text, 3:1 for large text) against all possible background colors/patterns. For gradients, test against both lightest and darkest colors. For images, ensure text has sufficient contrast across all parts of the image. Consider adding a solid background overlay or text shadow for better readability."
         },
         'ErrTimersWithoutControls': {
             'title': "Time-based content lacks user controls",
@@ -3003,26 +3056,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.2'],
             'remediation': "Include file type and size in link text or adjacent text."
         },
-        'ErrInPageTargetWrongTabindex': {
-            'title': "In-page link target <{element}> has tabindex=\"{currentTabindex}\" but should be tabindex=\"-1\"",
-            'what': "This <{element}> element is the target of in-page links (like skip links) and has tabindex=\"{currentTabindex}\", but it should have tabindex=\"-1\" instead. The element is programmatically focusable when users activate the link, but with tabindex=\"{currentTabindex}\" it also appears in the natural tab order, creating an unnecessary and confusing tab stop.",
-            'why': "In-page link targets (especially skip link targets) need tabindex=\"-1\" to be focusable programmatically when users activate the link, WITHOUT being in the regular tab order. Using tabindex=\"0\" or positive values adds the element to the tab sequence, creating confusing extra tab stops. Users would tab to a heading or container that isn't normally interactive, wondering why they're focused there.",
-                    'what_generic': "Element is the target of in-page links but has incorrect tabindex value",
-            'who': "Keyboard users who encounter unexpected tab stops on non-interactive elements, screen reader users who may get confused by focus landing on content elements, users with cognitive disabilities who need predictable navigation.",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.3 Focus Order', '2.1.1 Keyboard'],
-            'remediation': "Change tabindex=\"{currentTabindex}\" to tabindex=\"-1\" on this element. This allows skip links to focus it programmatically when activated, but keeps it OUT of the natural keyboard tab order. The element will still receive focus when the skip link is clicked, but won't be a tab stop during normal navigation."
-        },
-        'WarnMissingNegativeTabindex': {
-            'title': "In-page link target <{element}> should have tabindex=\"-1\"",
-            'what': "This <{element}> element is the target of in-page links but lacks tabindex=\"-1\". Without it, when users activate the link, focus may not move properly to the target content.",
-            'why': "In-page link targets (especially skip link targets) should have tabindex=\"-1\" to ensure they can receive programmatic focus when the link is activated. Without this, some browsers may not properly move focus to the target, defeating the purpose of the skip link.",
-                    'what_generic': "Element is the target of in-page links but lacks tabindex attribute",
-            'who': "Keyboard users relying on skip links to bypass repetitive content, screen reader users who need focus to move to the target section.",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['2.4.1 Bypass Blocks'],
-            'remediation': "Add tabindex=\"-1\" to this element so it can receive programmatic focus when the in-page link is activated. This ensures skip links work properly across all browsers."
-        },
         'WarnMissingRequiredIndication': {
             'title': "Required form fields not clearly indicated",
             'what': "Required form fields not clearly indicated",
@@ -3305,15 +3338,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.4.8'],
             'remediation': "Use left alignment for body text in left-to-right languages."
         },
-        'WarnSVGNoRole': {
-            'title': "SVG missing appropriate role attribute",
-            'what': "SVG missing appropriate role attribute",
-            'why': "SVGs need proper roles to be correctly interpreted by assistive technologies.",
-            'who': "Screen reader users.",
-            'impact': ImpactScale.LOW.value,
-            'wcag': ['1.1.1'],
-            'remediation': "Add role=\"img\" for informative SVGs, use aria-hidden=\"true\" for decorative ones."
-        },
         'WarnSmallLineHeight': {
             'title': "Line height less than 1.5x font size",
             'what': "Line height is {lineHeight}px with a ratio of {ratio} for font size {fontSize}px. Best practice recommends line height of at least 1.5 times the font size, especially for blocks of text with multiple adjacent lines.",
@@ -3433,7 +3457,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': [],
             'remediation': "[remediation steps]"
         },
-        'forms_DiscoNoSubmitButton': {
+        'DiscoNoSubmitButton': {
             'title': "Form may lack clear submit button",
             'what': "Form may lack clear submit button",
             'why': "Users may not know how to submit the form",
@@ -3442,34 +3466,16 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['3.3.2'],
             'remediation': "Ensure form has clear submit mechanism"
         },
-        'forms_DiscoPlaceholderAsLabel': {
-            'title': "Placeholder may be used instead of label",
-            'what': "Placeholder may be used instead of label",
-            'why': "Placeholder text disappears when typing",
-            'who': "Users with memory/cognitive issues, screen reader users",
-            'impact': ImpactScale.INFO.value,
-            'wcag': ['3.3.2'],
-            'remediation': "Use proper labels, placeholder for examples only"
+        'ErrListitemEmpty': {
+            'title': "Empty list item provides no content",
+            'what': "List item (<li> or role=\"listitem\") is empty or contains only whitespace",
+            'why': "Empty list items create confusion for screen reader users who hear \"bullet\" or \"list item\" announced but receive no content. Users don't know if content failed to load or if the empty item is intentional.",
+            'who': "Screen reader users who hear meaningless list item announcements, keyboard users who may encounter empty items, users with cognitive disabilities confused by structural elements with no purpose",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.3.1', '4.1.2'],
+            'remediation': "Remove empty <li> elements. If the item must exist, add accessible text with aria-label or visually hidden text. Never use empty list items for spacing - use CSS instead."
         },
-        'forms_ErrInputMissingLabel': {
-            'title': "Form input element is missing an associated label",
-            'what': "Form input element is missing an associated label",
-            'why': "Users cannot determine the purpose of the input field",
-            'who': "Screen reader users, voice control users, users with cognitive disabilities",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.3.1', '3.3.2', '4.1.2'],
-            'remediation': "Add a <label> element with matching for/id attributes"
-        },
-        'forms_ErrNoButtonText': {
-            'title': "Button has no accessible text",
-            'what': "Button has no accessible text",
-            'why': "Users cannot determine button purpose",
-            'who': "Screen reader users, voice control users",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.6', '4.1.2'],
-            'remediation': "Add text content, aria-label, or aria-labelledby to button"
-        },
-        'forms_WarnGenericButtonText': {
+        'WarnGenericButtonText': {
             'title': "Button has generic text \"{text}\"",
             'what': "Button has generic text \"{text}\"",
             'why': "The button text \"{text}\" doesn\'t describe what the button does. When screen reader users navigate by buttons or hear buttons out of context, \"{text}\" provides no information about the button\'s purpose or action.",
@@ -3478,7 +3484,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.4.6'],
             'remediation': "Change \"{text}\" to describe the specific action, like \"Submit registration\", \"Save changes\", or \"Search products\" instead of just \"{text}\""
         },
-        'forms_WarnNoFieldset': {
+        'WarnNoFieldset': {
             'title': "Radio/checkbox group lacks fieldset and legend",
             'what': "Radio/checkbox group lacks fieldset and legend",
             'why': "Group relationship is not clear",
@@ -3487,7 +3493,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1', '3.3.2'],
             'remediation': "Wrap related inputs in fieldset with legend"
         },
-        'forms_WarnRequiredNotIndicated': {
+        'WarnRequiredNotIndicated': {
             'title': "Required field not clearly indicated",
             'what': "Required field not clearly indicated",
             'why': "Users don\'t know which fields are mandatory",

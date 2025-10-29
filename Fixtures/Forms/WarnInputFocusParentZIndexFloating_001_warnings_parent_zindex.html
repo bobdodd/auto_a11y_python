@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusParentZIndexFloating - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusParentZIndexFloating_001_warnings_parent_zindex",
+    "issueId": "WarnInputFocusParentZIndexFloating",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Input fields in parents with z-index but no solid background",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* WARNING 1: Parent with z-index and transparent background */
+        .floating-container-1 {
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            background: transparent;
+        }
+
+        .floating-container-1 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .floating-container-1 input:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 3px;
+        }
+
+        /* WARNING 2: Parent with z-index and semi-transparent background */
+        .floating-container-2 {
+            position: absolute;
+            top: 200px;
+            left: 40px;
+            z-index: 100;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .floating-container-2 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .floating-container-2 input:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusParentZIndexFloating - Warning Examples</h1>
+    <p>Input parents with z-index but no solid background may float over varying content.</p>
+
+    <div class="floating-container-1">
+        <label for="input1">Warning 1: Parent with z-index, transparent background</label>
+        <input type="text" id="input1" placeholder="Parent has transparent background">
+    </div>
+
+    <div class="floating-container-2">
+        <label for="input2">Warning 2: Parent with z-index, semi-transparent background</label>
+        <input type="text" id="input2" placeholder="Parent has rgba background">
+    </div>
+</body>
+</html>

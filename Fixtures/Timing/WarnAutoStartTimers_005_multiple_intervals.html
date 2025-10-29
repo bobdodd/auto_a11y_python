@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Intervals - Warning</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnAutoStartTimers_005_multiple_intervals",
+    "issueId": "WarnAutoStartTimers",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page has multiple setInterval calls with different frequencies",
+    "wcag": "2.2.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        .widget {
+            border: 1px solid #ccc;
+            padding: 15px;
+            text-align: center;
+        }
+        .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2196f3;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnAutoStartTimers"
+      data-violation-reason="Multiple setInterval calls with different update frequencies">
+    <h1>Live Dashboard</h1>
+    <div class="dashboard">
+        <div class="widget">
+            <div>Fast Updates (500ms)</div>
+            <div class="value" id="fast">0</div>
+        </div>
+        <div class="widget">
+            <div>Medium Updates (1s)</div>
+            <div class="value" id="medium">0</div>
+        </div>
+        <div class="widget">
+            <div>Slow Updates (2s)</div>
+            <div class="value" id="slow">0</div>
+        </div>
+    </div>
+
+    <script>
+        // Multiple intervals with different frequencies - all auto-start
+        let fastCount = 0;
+        let mediumCount = 0;
+        let slowCount = 0;
+
+        // Fast interval - 500ms
+        setInterval(() => {
+            fastCount++;
+            document.getElementById('fast').textContent = fastCount;
+        }, 500);
+
+        // Medium interval - 1 second
+        setInterval(() => {
+            mediumCount++;
+            document.getElementById('medium').textContent = mediumCount;
+        }, 1000);
+
+        // Slow interval - 2 seconds
+        setInterval(() => {
+            slowCount++;
+            document.getElementById('slow').textContent = slowCount;
+        }, 2000);
+    </script>
+</body>
+</html>

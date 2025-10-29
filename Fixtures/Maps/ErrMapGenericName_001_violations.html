@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMapGenericName - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMapGenericName_001_violations",
+    "issueId": "ErrMapGenericName",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Maps with generic, non-descriptive names that don't convey purpose",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Office Locations</h1>
+
+    <main>
+        <section>
+            <h2>Headquarters</h2>
+            <p>Our main office:</p>
+
+            <!-- Violation 1: Named "map" -->
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.123"
+                    width="600"
+                    height="450"
+                    style="border:0;"
+                    title="map"
+                    data-expected-violation="true"
+                    data-violation-id="ErrMapGenericName"
+                    data-violation-reason="Map has generic name 'map'. This tells users nothing about what the map shows. Names must be descriptive like 'Map showing headquarters location'. Violates WCAG 1.1.1 by not providing meaningful non-text content alternative."></iframe>
+        </section>
+
+        <section>
+            <h2>East Coast Office</h2>
+            <p>Regional office location:</p>
+
+            <!-- Violation 2: Named "image" -->
+            <iframe src="https://www.openstreetmap.org/export/embed.html"
+                    width="600"
+                    height="450"
+                    title="image"
+                    data-expected-violation="true"
+                    data-violation-id="ErrMapGenericName"
+                    data-violation-reason="Map has generic name 'image'. The word 'image' doesn't describe what the map shows or its purpose. Screen reader users need descriptive names. Fails WCAG 1.1.1."></iframe>
+        </section>
+
+        <section>
+            <h2>West Coast Office</h2>
+            <p>Pacific region headquarters:</p>
+
+            <!-- Violation 3: Named "location" -->
+            <iframe src="https://maps.apple.com/place"
+                    width="600"
+                    height="450"
+                    title="location"
+                    data-expected-violation="true"
+                    data-violation-id="ErrMapGenericName"
+                    data-violation-reason="Map titled 'location' is too generic. While it hints at purpose, it doesn't specify WHICH location or what the map shows. Should be like 'Map of West Coast office location'. Violates WCAG 1.1.1."></iframe>
+        </section>
+
+        <section>
+            <h2>International Office</h2>
+            <p>Our London branch:</p>
+
+            <!-- Violation 4: Named "img" (very short and generic) -->
+            <iframe src="https://www.bing.com/maps/embed"
+                    width="600"
+                    height="450"
+                    title="img"
+                    data-expected-violation="true"
+                    data-violation-id="ErrMapGenericName"
+                    data-violation-reason="Map has extremely generic name 'img' (abbreviation of image). Only 3 characters long and completely non-descriptive. Provides no information about map content. Fails WCAG 1.1.1 by not providing text alternative."></iframe>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Global Offices. All rights reserved.</p>
+    </footer>
+</body>
+</html>

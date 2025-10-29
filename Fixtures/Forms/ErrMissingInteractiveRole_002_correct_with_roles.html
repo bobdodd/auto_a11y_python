@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMissingInteractiveRole - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingInteractiveRole_002_correct_with_roles",
+    "issueId": "ErrMissingInteractiveRole",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Interactive elements with appropriate ARIA roles",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Test Page: Interactive Elements With Proper Roles</h1>
+
+    <main>
+        <section>
+            <h2>Custom Checkbox</h2>
+            <div class="custom-checkbox"
+                 role="checkbox"
+                 aria-checked="false"
+                 tabindex="0"
+                 data-expected-pass="true"
+                 data-pass-reason="Interactive element has role='checkbox' and aria-checked state">
+                <span class="box"></span>
+                <span class="label">Accept terms</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>Custom Radio Buttons</h2>
+            <div class="custom-radio"
+                 role="radio"
+                 aria-checked="false"
+                 tabindex="0"
+                 data-expected-pass="true"
+                 data-pass-reason="Interactive element has role='radio' and aria-checked state">
+                <span class="circle"></span>
+                <span class="label">Option 1</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>Custom Switch</h2>
+            <div class="custom-switch"
+                 role="switch"
+                 aria-checked="false"
+                 tabindex="0"
+                 data-expected-pass="true"
+                 data-pass-reason="Interactive element has role='switch' and aria-checked state">
+                <span class="toggle"></span>
+                <span class="label">Enable notifications</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>Custom Slider</h2>
+            <div class="custom-slider"
+                 role="slider"
+                 aria-valuemin="0"
+                 aria-valuemax="100"
+                 aria-valuenow="50"
+                 tabindex="0"
+                 data-expected-pass="true"
+                 data-pass-reason="Interactive element has role='slider' with proper ARIA attributes">
+                <div class="track">
+                    <div class="handle"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

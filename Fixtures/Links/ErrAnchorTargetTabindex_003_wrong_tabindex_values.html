@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAnchorTargetTabindex - Wrong Tabindex Values</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAnchorTargetTabindex_003_wrong_tabindex_values",
+    "issueId": "ErrAnchorTargetTabindex",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 1,
+    "description": "In-page link targets with incorrect tabindex values (should be -1)",
+    "wcag": ["2.4.1", "2.4.3"],
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Skip Links with Wrong Tabindex</h1>
+
+    <nav>
+        <a href="#main">Skip to main content</a>
+        <a href="#content">Skip to content section</a>
+        <a href="#section1">Jump to Section 1</a>
+        <a href="#section2">Jump to Section 2</a>
+    </nav>
+
+    <!-- VIOLATION 1: Skip link target with tabindex="0" -->
+    <main id="main"
+          tabindex="0"
+          data-expected-violation="true"
+          data-violation-id="ErrAnchorTargetTabindex"
+          data-violation-reason="Skip link target has tabindex=0 instead of -1, adds to tab order">
+        <h2>Main Content Area</h2>
+
+        <!-- VIOLATION 2: Skip link target with tabindex="1" (positive) -->
+        <section id="content"
+                 tabindex="1"
+                 data-expected-violation="true"
+                 data-violation-id="ErrAnchorTargetTabindex"
+                 data-violation-reason="Skip link target has positive tabindex=1, disrupts tab order">
+            <h3>Content Section</h3>
+            <p>This section has tabindex="1" which is even worse - it creates tab order problems.</p>
+        </section>
+
+        <!-- VIOLATION 3: In-page link target with tabindex="2" -->
+        <article id="section1"
+                 tabindex="2"
+                 data-expected-violation="true"
+                 data-violation-id="ErrAnchorTargetTabindex"
+                 data-violation-reason="In-page link target has positive tabindex=2">
+            <h3>Section 1: Introduction</h3>
+            <p>Positive tabindex values create confusing tab order and should never be used.</p>
+        </article>
+
+        <!-- VIOLATION 4: In-page link target with tabindex="0" -->
+        <div id="section2"
+             tabindex="0"
+             data-expected-violation="true"
+             data-violation-id="ErrAnchorTargetTabindex"
+             data-violation-reason="In-page link target has tabindex=0 instead of -1">
+            <h3>Section 2: Details</h3>
+            <p>This div has tabindex="0" making it a tab stop when it shouldn't be.</p>
+        </div>
+
+        <!-- PASS: Correct tabindex="-1" -->
+        <aside id="sidebar"
+               tabindex="-1"
+               data-expected-pass="true"
+               data-pass-reason="Element with tabindex=-1 is focusable programmatically but not in tab order">
+            <h3>Sidebar (Not a skip target)</h3>
+            <p>This has the correct tabindex="-1" value.</p>
+        </aside>
+    </main>
+
+    <footer>
+        <p>Footer content</p>
+    </footer>
+</body>
+</html>

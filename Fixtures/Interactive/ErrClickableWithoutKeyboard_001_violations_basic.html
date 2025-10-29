@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrClickableWithoutKeyboard - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrClickableWithoutKeyboard_001_violations_basic",
+    "issueId": "ErrClickableWithoutKeyboard",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements with click handlers lacking keyboard accessibility",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Gallery</h1>
+
+    <main>
+        <!-- Div with onclick but no keyboard support -->
+        <div class="card"
+             onclick="showDetails('product1')"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrClickableWithoutKeyboard"
+             data-violation-reason="Div has onclick handler but lacks tabindex and keyboard event handlers. Keyboard users cannot activate this control">
+            <img src="product1.jpg" alt="Product 1">
+            <p>Click to view details</p>
+        </div>
+
+        <!-- Span with onclick, no keyboard access -->
+        <span class="close-icon"
+              onclick="closePanel()"
+              data-expected-violation="true"
+              data-violation-id="AI_ErrClickableWithoutKeyboard"
+              data-violation-reason="Span with onclick lacks tabindex='0' and keyboard handlers for Enter/Space keys. Not accessible to keyboard-only users">
+            ×
+        </span>
+
+        <!-- Image with onclick but no keyboard support -->
+        <img src="thumbnail.jpg"
+             alt="Preview"
+             onclick="openLightbox()"
+             data-expected-violation="true"
+             data-violation-id="AI_ErrClickableWithoutKeyboard"
+             data-violation-reason="Image has onclick but no tabindex or keyboard event listeners. Cannot be activated via keyboard">
+    </main>
+
+    <script>
+        function showDetails(id) {
+            alert('Showing details for ' + id);
+        }
+
+        function closePanel() {
+            alert('Panel closed');
+        }
+
+        function openLightbox() {
+            alert('Lightbox opened');
+        }
+    </script>
+</body>
+</html>

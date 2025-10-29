@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageAltContainsHTML - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageAltContainsHTML_003_edge_cases",
+    "issueId": "ErrImageAltContainsHTML",
+    "expectedViolationCount": 10,
+    "expectedPassCount": 5,
+    "description": "Edge cases for HTML tag detection in alt text",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>ErrImageAltContainsHTML - Edge Cases</h1>
+
+    <!-- ERROR 1: Self-closing tag -->
+    <h2>Error 1: Self-closing BR tag</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff0000' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Line one<br/>Line two"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains self-closing <br/> tag">
+
+    <!-- ERROR 2: Link tag -->
+    <h2>Error 2: Link tag in alt</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300ff00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Visit <a href='example.com'>our site</a>"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains <a> link tag">
+
+    <!-- ERROR 3: Multiple tags -->
+    <h2>Error 3: Multiple HTML tags</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%230000ff' width='100' height='100'/%3E%3C/svg%3E"
+         alt="<div><p>Nested tags</p></div>"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains multiple nested HTML tags">
+
+    <!-- ERROR 4: Span with class -->
+    <h2>Error 4: Span with class attribute</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ffaa00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="<span class='highlight'>Important</span> text"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains <span> tag with class attribute">
+
+    <!-- ERROR 5: Image tag in alt -->
+    <h2>Error 5: Image tag in alt text</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23cccccc' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Photo <img src='icon.png'>"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains <img> tag">
+
+    <!-- ERROR 6: List tag -->
+    <h2>Error 6: List tag in alt</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23eeeeee' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Features: <ul><li>Item 1</li></ul>"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains list tags">
+
+    <!-- ERROR 7: Script tag (dangerous) -->
+    <h2>Error 7: Script tag in alt</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23dddddd' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Image <script>alert('xss')</script>"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains <script> tag">
+
+    <!-- ERROR 8: Style tag -->
+    <h2>Error 8: Style tag in alt</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23bbbbbb' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Text <style>body{color:red}</style>"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains <style> tag">
+
+    <!-- ERROR 9: Incomplete/malformed tag -->
+    <h2>Error 9: Incomplete tag</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23aaaaaa' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Text with <b>bold"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains opening <b> tag even if not closed">
+
+    <!-- ERROR 10: HTML comment -->
+    <h2>Error 10: HTML comment in alt</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23999999' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Image <!-- comment --> description"
+         data-expected-violation="true"
+         data-violation-id="ErrImageAltContainsHTML"
+         data-violation-reason="Alt contains HTML comment">
+
+    <!-- PASS 1: Less than and greater than in math -->
+    <h2>Pass 1: Mathematical less than / greater than (with spaces)</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle fill='%2300aa00' cx='50' cy='50' r='40'/%3E%3C/svg%3E"
+         alt="Temperature: 5 < x < 10 degrees"
+         data-expected-pass="true"
+         data-pass-reason="Less than and greater than with spaces are not HTML tags">
+
+    <!-- PASS 2: HTML entity (not a tag) -->
+    <h2>Pass 2: HTML entity reference</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle fill='%230000aa' cx='50' cy='50' r='40'/%3E%3C/svg%3E"
+         alt="Copyright &copy; 2024"
+         data-expected-pass="true"
+         data-pass-reason="HTML entities are not tags, they're character references">
+
+    <!-- PASS 3: Escaped HTML -->
+    <h2>Pass 3: Text mentioning HTML (not actual tags)</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle fill='%23aa0000' cx='50' cy='50' r='40'/%3E%3C/svg%3E"
+         alt="Tutorial about the paragraph tag"
+         data-expected-pass="true"
+         data-pass-reason="Plain text mentioning HTML, no actual tags">
+
+    <!-- PASS 4: Plain text description -->
+    <h2>Pass 4: Normal descriptive text</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle fill='%23aaaa00' cx='50' cy='50' r='40'/%3E%3C/svg%3E"
+         alt="Woman smiling at camera in professional attire"
+         data-expected-pass="true"
+         data-pass-reason="Plain text with no HTML">
+
+    <!-- PASS 5: Empty alt for decorative -->
+    <h2>Pass 5: Empty alt (decorative)</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23f0f0f0' width='100' height='100'/%3E%3C/svg%3E"
+         alt=""
+         data-expected-pass="true"
+         data-pass-reason="Empty alt is valid for decorative images">
+</body>
+</html>

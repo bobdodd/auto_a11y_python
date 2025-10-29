@@ -190,6 +190,28 @@ async def test_timers(page) -> Dict[str, Any]:
 
                 results.elements_tested = 1; // Page-level test
 
+                // Warn about auto-starting timers (both setTimeout and setInterval)
+                // This is for manual review - not all auto-starting timers are problematic
+                if (hasTimers) {
+                    const timerTypes = [];
+                    if (timerAnalysis.hasSetTimeout) timerTypes.push('setTimeout');
+                    if (timerAnalysis.hasSetInterval) timerTypes.push('setInterval');
+
+                    results.warnings.push({
+                        err: 'WarnAutoStartTimers',
+                        type: 'warn',
+                        cat: 'timers',
+                        element: 'page',
+                        xpath: '/html',
+                        html: 'page-wide',
+                        description: `Page has auto-starting timers: ${timerTypes.join(', ')}. Manual review required to ensure these don't create time pressure for users.`,
+                        setTimeoutCount: timerAnalysis.setTimeouts ? timerAnalysis.setTimeouts.length : 0,
+                        setIntervalCount: timerAnalysis.setIntervals.length,
+                        timerTypes: timerTypes,
+                        scriptSources: scriptSources
+                    });
+                }
+
                 // WCAG 2.2.1 & 2.2.2: Time-based content (setInterval specifically) requires user controls
                 // setInterval creates continuous, auto-updating content
                 if (timerAnalysis.hasSetInterval && !hasControls) {

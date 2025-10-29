@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInvalidTabindex - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInvalidTabindex_003_edge_cases",
+    "issueId": "ErrInvalidTabindex",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Edge cases of invalid tabindex values including empty strings, special characters, and other malformed values",
+    "wcag": "2.4.3, 4.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Settings Dashboard</h1>
+
+    <main>
+        <section>
+            <h2>Profile Settings</h2>
+
+            <!-- Empty tabindex -->
+            <button tabindex=""
+                    data-expected-violation="true"
+                    data-violation-id="ErrInvalidTabindex"
+                    data-violation-reason="Button has empty tabindex='' attribute. Empty string is not a valid integer value. Browser may interpret this as tabindex='0' or ignore it, creating inconsistent behavior across browsers. Must be valid integer like '0', '-1', or '1'. Violates WCAG 4.1.1 by using invalid attribute syntax">
+                Save Profile
+            </button>
+
+            <!-- Special characters -->
+            <input type="text"
+                   id="username"
+                   tabindex="@#$"
+                   data-expected-violation="true"
+                   data-violation-id="ErrInvalidTabindex"
+                   data-violation-reason="Input has tabindex='@#$' with special characters. Only integer values are valid for tabindex attribute. Special characters cannot be parsed as numbers. Browsers will ignore or misinterpret this value. Creates undefined tab order behavior. Fails WCAG 4.1.1 parsing requirement">
+
+            <!-- Whitespace only -->
+            <select id="theme"
+                    tabindex="   "
+                    data-expected-violation="true"
+                    data-violation-id="ErrInvalidTabindex"
+                    data-violation-reason="Select has tabindex='   ' with only whitespace. Whitespace is not a valid integer value. Browser will not parse this as valid number. Creates undefined focus behavior. Violates WCAG 4.1.1 by using invalid attribute value">
+                <option>Light</option>
+                <option>Dark</option>
+            </select>
+
+            <!-- Word 'null' -->
+            <input type="checkbox"
+                   id="notifications"
+                   tabindex="null"
+                   data-expected-violation="true"
+                   data-violation-id="ErrInvalidTabindex"
+                   data-violation-reason="Checkbox has tabindex='null' which is a keyword, not a valid integer. While null is a programming concept, it is not valid HTML attribute value for tabindex. Browsers will not parse this correctly. Violates WCAG 4.1.1 by using non-numeric value">
+
+            <!-- Word 'undefined' -->
+            <textarea id="bio"
+                      tabindex="undefined"
+                      data-expected-violation="true"
+                      data-violation-id="ErrInvalidTabindex"
+                      data-violation-reason="Textarea has tabindex='undefined' which is a JavaScript keyword, not valid integer. HTML tabindex must be numeric integer value. Browsers cannot parse this as number. Creates unpredictable focus behavior. Fails WCAG 4.1.1 parsing requirement">
+            </textarea>
+
+            <!-- Infinity -->
+            <button tabindex="Infinity"
+                    data-expected-violation="true"
+                    data-violation-id="ErrInvalidTabindex"
+                    data-violation-reason="Button has tabindex='Infinity'. While Infinity is a valid JavaScript numeric concept, it is not a valid HTML tabindex value. Tabindex must be finite integer within valid range. Browsers will not parse this correctly. Violates WCAG 4.1.1 by using non-standard value">
+                Delete Account
+            </button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Settings Dashboard. All rights reserved.</p>
+    </footer>
+</body>
+</html>

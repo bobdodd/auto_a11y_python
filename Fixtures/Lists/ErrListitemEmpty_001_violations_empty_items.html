@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrListitemEmpty - Empty List Items</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrListitemEmpty_001_violations_empty_items",
+    "issueId": "ErrListitemEmpty",
+    "expectedViolationCount": 6,
+    "expectedPassCount": 0,
+    "description": "List items that are empty or contain only whitespace",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>ErrListitemEmpty - Violations (Empty Items)</h1>
+
+    <!-- ERROR 1: Unordered list with completely empty list item -->
+    <h2>Error 1: Empty list item in unordered list</h2>
+    <ul>
+        <li>First item with content</li>
+        <li data-expected-violation="true"
+            data-violation-id="ErrListitemEmpty"
+            data-violation-reason="List item is completely empty"></li>
+        <li>Third item with content</li>
+    </ul>
+
+    <!-- ERROR 2: Ordered list with whitespace-only list item -->
+    <h2>Error 2: Whitespace-only list item in ordered list</h2>
+    <ol>
+        <li>Step one</li>
+        <li data-expected-violation="true"
+            data-violation-id="ErrListitemEmpty"
+            data-violation-reason="List item contains only whitespace">
+        </li>
+        <li>Step three</li>
+    </ol>
+
+    <!-- ERROR 3: List item with only line breaks and spaces -->
+    <h2>Error 3: List item with only line breaks</h2>
+    <ul>
+        <li>Valid item</li>
+        <li data-expected-violation="true"
+            data-violation-id="ErrListitemEmpty"
+            data-violation-reason="Contains only whitespace and line breaks">
+
+
+        </li>
+        <li>Another valid item</li>
+    </ul>
+
+    <!-- ERROR 4: List item with only tabs -->
+    <h2>Error 4: List item with only tabs</h2>
+    <ul>
+        <li>Content here</li>
+        <li data-expected-violation="true"
+            data-violation-id="ErrListitemEmpty"
+            data-violation-reason="Contains only tab characters">				</li>
+        <li>More content</li>
+    </ul>
+
+    <!-- ERROR 5: role="listitem" with no content -->
+    <h2>Error 5: role="listitem" with empty content</h2>
+    <div role="list">
+        <div role="listitem">First custom list item</div>
+        <div role="listitem"
+             data-expected-violation="true"
+             data-violation-id="ErrListitemEmpty"
+             data-violation-reason="role=listitem element is empty"></div>
+        <div role="listitem">Third custom list item</div>
+    </div>
+
+    <!-- ERROR 6: Multiple empty items in one list -->
+    <h2>Error 6: Multiple empty items</h2>
+    <ul>
+        <li>Item with content</li>
+        <li data-expected-violation="true"
+            data-violation-id="ErrListitemEmpty"
+            data-violation-reason="First empty item"></li>
+        <li>More content</li>
+        <li data-expected-violation="true"
+            data-violation-id="ErrListitemEmpty"
+            data-violation-reason="Second empty item">   </li>
+    </ul>
+</body>
+</html>

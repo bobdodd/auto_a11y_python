@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Settings - Dropdown Without ARIA</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrDropdownWithoutARIA_001_violations_basic",
+    "issueId": "ErrDropdownWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Custom dropdown menus lacking proper ARIA markup for state and structure",
+    "wcag": "2.1.1, 4.1.2, 1.3.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-button { padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .dropdown-menu { display: none; position: absolute; background: white; border: 1px solid #ccc; min-width: 160px; }
+        .dropdown-menu.show { display: block; }
+        .dropdown-item { padding: 10px; cursor: pointer; }
+        .dropdown-item:hover { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>User Settings</h1>
+
+    <p>Select your preferences from the dropdowns below (without proper ARIA):</p>
+
+    <div class="dropdown"
+         data-expected-violation="true"
+         data-violation-id="AI_ErrDropdownWithoutARIA"
+         data-violation-reason="Dropdown button lacks aria-haspopup, aria-expanded, and menu items lack proper roles">
+        <button class="dropdown-button" onclick="toggleMenu('theme')">
+            Theme: Light
+        </button>
+        <div class="dropdown-menu" id="theme-menu">
+            <div class="dropdown-item">Light</div>
+            <div class="dropdown-item">Dark</div>
+            <div class="dropdown-item">Auto</div>
+        </div>
+    </div>
+
+    <div class="dropdown"
+         data-expected-violation="true"
+         data-violation-id="AI_ErrDropdownWithoutARIA"
+         data-violation-reason="Language dropdown lacks aria-expanded state and menu structure roles">
+        <button class="dropdown-button" onclick="toggleMenu('language')">
+            Language: English
+        </button>
+        <div class="dropdown-menu" id="language-menu">
+            <div class="dropdown-item">English</div>
+            <div class="dropdown-item">Español</div>
+            <div class="dropdown-item">Français</div>
+            <div class="dropdown-item">Deutsch</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu(id) {
+            const menu = document.getElementById(id + '-menu');
+            menu.classList.toggle('show');
+        }
+    </script>
+</body>
+</html>

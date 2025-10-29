@@ -305,14 +305,18 @@ async def test_lists(page) -> Dict[str, Any]:
                 
                 // Find all proper lists
                 const allLists = Array.from(document.querySelectorAll('ul, ol, dl'));
-                
-                if (allLists.length === 0 && filteredFakeLists.length === 0) {
+
+                // Find all elements with role="listitem" that are not in native lists
+                const roleListitems = Array.from(document.querySelectorAll('[role="listitem"]'))
+                    .filter(item => !item.closest('ul, ol, dl'));
+
+                if (allLists.length === 0 && filteredFakeLists.length === 0 && roleListitems.length === 0) {
                     results.applicable = false;
                     results.not_applicable_reason = 'No lists found on the page';
                     return results;
                 }
 
-                results.elements_tested = allLists.length + filteredFakeLists.length;
+                results.elements_tested = allLists.length + filteredFakeLists.length + roleListitems.length;
                 
                 allLists.forEach(list => {
                     const listTag = list.tagName.toLowerCase();
@@ -364,6 +368,30 @@ async def test_lists(page) -> Dict[str, Any]:
                     } else {
                         results.elements_passed++;
                     }
+
+                    // Check for empty list items
+                    items.forEach(item => {
+                        const textContent = item.textContent.trim();
+                        const ariaLabel = item.getAttribute('aria-label');
+                        const ariaLabelledby = item.getAttribute('aria-labelledby');
+                        const hasVisuallyHiddenText = item.querySelector('.visually-hidden, .sr-only, .screen-reader-only, [class*="sr-only"], [class*="visually-hidden"]');
+
+                        // Check if item is empty or only whitespace
+                        if (textContent === '' && !ariaLabel && !ariaLabelledby && !hasVisuallyHiddenText) {
+                            results.errors.push({
+                                err: 'ErrListitemEmpty',
+                                type: 'err',
+                                cat: 'list',
+                                element: item.tagName.toLowerCase(),
+                                xpath: getFullXPath(item),
+                                html: item.outerHTML.substring(0, 200),
+                                description: 'List item is empty or contains only whitespace',
+                                listType: listTag,
+                                parentXpath: getFullXPath(list)
+                            });
+                            results.elements_failed++;
+                        }
+                    });
 
                     // Check for excessive nesting (more than 3 levels)
                     if (depth > 3) {
@@ -504,7 +532,32 @@ async def test_lists(page) -> Dict[str, Any]:
                         }
                     });
                 });
-                
+
+                // Check role="listitem" elements outside native lists
+                roleListitems.forEach(item => {
+                    const textContent = item.textContent.trim();
+                    const ariaLabel = item.getAttribute('aria-label');
+                    const ariaLabelledby = item.getAttribute('aria-labelledby');
+                    const hasVisuallyHiddenText = item.querySelector('.visually-hidden, .sr-only, .screen-reader-only, [class*="sr-only"], [class*="visually-hidden"]');
+
+                    // Check if item is empty or only whitespace
+                    if (textContent === '' && !ariaLabel && !ariaLabelledby && !hasVisuallyHiddenText) {
+                        results.errors.push({
+                            err: 'ErrListitemEmpty',
+                            type: 'err',
+                            cat: 'list',
+                            element: item.tagName.toLowerCase() + '[role="listitem"]',
+                            xpath: getFullXPath(item),
+                            html: item.outerHTML.substring(0, 200),
+                            description: 'Element with role="listitem" is empty or contains only whitespace',
+                            hasRole: true
+                        });
+                        results.elements_failed++;
+                    } else {
+                        results.elements_passed++;
+                    }
+                });
+
                 // Add check information for reporting
                 results.checks.push({
                     description: 'List structure integrity',

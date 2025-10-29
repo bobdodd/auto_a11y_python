@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAltOnElementThatDoesntTakeIt - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAltOnElementThatDoesntTakeIt_003_edge_cases",
+    "issueId": "ErrAltOnElementThatDoesntTakeIt",
+    "expectedViolationCount": 8,
+    "expectedPassCount": 4,
+    "description": "Edge cases including various HTML5 elements with alt and forms",
+    "wcag": "4.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Edge Cases for Alt Attribute</h1>
+
+    <!-- VIOLATION 1: section with alt -->
+    <section alt="Main content section"
+             data-expected-violation="true"
+             data-violation-reason="Section element has alt attribute, invalid HTML">
+        <h2>Content Section</h2>
+    </section>
+
+    <!-- VIOLATION 2: article with alt -->
+    <article alt="News article"
+             data-expected-violation="true"
+             data-violation-reason="Article element has alt attribute, not allowed">
+        <p>Article content</p>
+    </article>
+
+    <!-- VIOLATION 3: nav with alt -->
+    <nav alt="Navigation menu"
+         data-expected-violation="true"
+         data-violation-reason="Nav element has alt attribute, invalid">
+        <a href="/home">Home</a>
+    </nav>
+
+    <!-- VIOLATION 4: label with alt -->
+    <label alt="Email label"
+           data-expected-violation="true"
+           data-violation-reason="Label element has alt attribute, not valid">
+        Email:
+        <input type="text">
+    </label>
+
+    <!-- VIOLATION 5: li with alt -->
+    <ul>
+        <li alt="List item"
+            data-expected-violation="true"
+            data-violation-reason="Li element has alt attribute, invalid HTML">
+            Item
+        </li>
+    </ul>
+
+    <!-- VIOLATION 6: table with alt -->
+    <table alt="Data table"
+           data-expected-violation="true"
+           data-violation-reason="Table element has alt attribute, not allowed">
+        <tr><td>Data</td></tr>
+    </table>
+
+    <!-- VIOLATION 7: input type="text" with alt -->
+    <input type="text"
+           alt="Text input"
+           data-expected-violation="true"
+           data-violation-reason="Input type=text with alt is invalid, only input type=image accepts alt">
+
+    <!-- VIOLATION 8: input type="submit" with alt -->
+    <input type="submit"
+           alt="Submit button"
+           data-expected-violation="true"
+           data-violation-reason="Input type=submit with alt is invalid, only input type=image accepts alt">
+
+    <!-- PASS 1: img with alt -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff6600' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Orange square"
+         data-expected-pass="true"
+         data-pass-reason="Img element correctly uses alt attribute">
+
+    <!-- PASS 2: area with alt -->
+    <map name="testmap">
+        <area shape="rect"
+              coords="0,0,50,50"
+              href="/page1"
+              alt="Page 1 link"
+              data-expected-pass="true"
+              data-pass-reason="Area element correctly uses alt attribute">
+    </map>
+
+    <!-- PASS 3: input type="image" with alt -->
+    <input type="image"
+           src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Ccircle cx='25' cy='25' r='20' fill='%2300aa00'/%3E%3C/svg%3E"
+           alt="Submit"
+           data-expected-pass="true"
+           data-pass-reason="Input type=image correctly uses alt attribute">
+
+    <!-- PASS 4: div without alt uses aria-label instead -->
+    <div aria-label="Logo"
+         data-expected-pass="true"
+         data-pass-reason="Div correctly uses aria-label instead of alt">
+        Company Logo
+    </div>
+</body>
+</html>

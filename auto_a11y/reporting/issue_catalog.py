@@ -13,18 +13,6 @@ class IssueCatalog:
     
     # Issue data dictionary
     ISSUES: Dict[str, Dict[str, Any]] = {
-        "ErrImageWithNoAlt": {
-            "id": "ErrImageWithNoAlt",
-            "type": "Error",
-            "impact": "High",
-            "wcag": ["1.1.1"],
-            "wcag_full": "1.1.1 Non-text Content (Level A)",
-            "category": "Images",
-            "description": "Images are missing alternative text attributes, preventing assistive technologies from conveying their content or purpose to users",
-            "why_it_matters": "Screen readers cannot describe image content to users who are blind or have low vision, creating information barriers that may prevent understanding of essential content, navigation, or task completion. This also affects users with cognitive disabilities who benefit from text alternatives and users on slow connections where images fail to load.",
-            "who_it_affects": "Blind users using screen readers, users with low vision using screen readers with magnification, users with cognitive disabilities who rely on text alternatives, voice control users who need text labels to reference elements, and users on slow internet connections",
-            "how_to_fix": "Add descriptive alt attributes for informative images (alt=\"Sales chart showing 40% increase\"), use empty alt attributes for decorative images (alt=\"\"), describe the function for interactive images (alt=\"Search\" not alt=\"magnifying glass icon\"), and provide detailed descriptions via aria-describedby for complex images like charts or diagrams."
-        },
         "ErrImageWithEmptyAlt": {
             "id": "ErrImageWithEmptyAlt",
             "type": "Error",
@@ -108,18 +96,6 @@ class IssueCatalog:
             "why_it_matters": "HTML in alt text is not parsed, so screen readers will read the HTML markup as literal characters. Users will hear angle brackets announced as \"less than\" or \"greater than\" and tag names spelled out, creating a confusing experience. For example, alt=\"<b>Team Photo</b>\" would be read as \"less than b greater than Team Photo less than slash b greater than\".",
             "who_it_affects": "Blind and low vision users using screen readers who will hear nonsense characters and words interspersed with the actual alt text, making it difficult or impossible to understand the image content",
             "how_to_fix": "Remove all HTML markup from alt attributes and use only plain text. If formatting or structure is important to convey, describe it in words rather than using markup (e.g., instead of \"<em>Important</em>\" use \"Important, emphasized\")."
-        },
-        "forms_ErrInputMissingLabel": {
-            "id": "forms_ErrInputMissingLabel",
-            "type": "Error",
-            "impact": "High",
-            "wcag": ["1.3.1", "3.3.2", "4.1.2"],
-            "wcag_full": "1.3.1, 3.3.2, 4.1.2",
-            "category": "forms",
-            "description": "Form input element is missing an associated label",
-            "why_it_matters": "Users cannot determine the purpose of the input field",
-            "who_it_affects": "Screen reader users, voice control users, users with cognitive disabilities",
-            "how_to_fix": "Add a <label> element with matching for/id attributes"
         },
         "ErrEmptyAriaLabelOnField": {
             "id": "ErrEmptyAriaLabelOnField",
@@ -217,8 +193,8 @@ class IssueCatalog:
             "who_it_affects": "Keyboard-only users who cannot see which field has focus, screen magnifier users who need clear indicators to track focus, users with attention or memory issues who lose track of their position in forms, users with low vision who cannot perceive subtle focus changes, and motor impairment users who navigate slowly and need clear feedback about current focus position",
             "how_to_fix": "Remove outline:none or outline:0 from focus styles. If custom styling is needed, provide a visible alternative: (1) Add a clear outline using outline: 2px solid color with sufficient contrast, (2) Increase border width by ≥1px on focus, (3) Add box-shadow with ≥3:1 contrast, or (4) Combine border color change with border thickening or outline. Best practice: use a separate outline (outline: 2px solid) as it doesn't affect layout and is clearest for screen magnifier users who may only see one field at a time."
         },
-        "ErrInputColorChangeOnly": {
-            "id": "ErrInputColorChangeOnly",
+        "ErrInputFocusColorChangeOnly": {
+            "id": "ErrInputFocusColorChangeOnly",
             "type": "Error",
             "impact": "High",
             "wcag": ["2.4.7", "1.4.1"],
@@ -325,6 +301,66 @@ class IssueCatalog:
             "who_it_affects": "Users with low vision who cannot perceive subtle transparent indicators, users viewing in bright lighting where transparent colors wash out further, users with color vision deficiencies for whom transparent colors may be especially hard to perceive, screen magnifier users who need clear indicators, users on displays with poor contrast ratios, and users with cognitive disabilities who need obvious, unambiguous focus indicators",
             "how_to_fix": "Use fully opaque colors for focus indicators: rgba(0,102,204,1.0) or simply rgb(0,102,204) or #0066cc. If you want a lighter or more subtle color, choose a different HUE rather than making it transparent - use #66b3ff (light opaque blue) instead of rgba(0,102,204,0.3) (transparent blue). Calculate and verify ≥3:1 contrast against all possible backgrounds. If you must use transparency for specific design reasons, ensure alpha ≥ 0.5 and manually test against all backgrounds in all states. Test in grayscale to verify the indicator is visible without relying on color. Remember: opacity reduces both color vibrancy AND contrast."
         },
+        "WarnInputFocusZIndexFloating": {
+            "id": "WarnInputFocusZIndexFloating",
+            "type": "Warning",
+            "impact": "Medium",
+            "wcag": ["2.4.7", "1.4.11"],
+            "wcag_full": "2.4.7 Focus Visible, 1.4.11 Non-text Contrast (Level AA)",
+            "category": "forms",
+            "description": "Input field has z-index positioning and may float over varying backgrounds - focus outline contrast cannot be automatically verified",
+            "why_it_matters": "When an input field has z-index positioning (z-index other than 'auto' combined with position: relative, absolute, or fixed), it creates a stacking context that may float over any page content. If the input has a positive outline-offset, the focus outline extends beyond the input boundary and sits against the parent/page background - but that background can be anything when the element floats. The outline might appear against white headers, dark footers, colorful images, or varying content as users scroll. Automated tools cannot determine contrast because the background is unpredictable. A focus outline that works against one background may be invisible against another. This is especially problematic for sticky/fixed input fields (search bars in fixed headers) or inputs in positioned modal overlays that may appear over varying page content.",
+            "who_it_affects": "Users with low vision who cannot see focus indicators with poor contrast, keyboard-only users who lose track of focus position, screen magnifier users who need high-contrast indicators, users on displays with limited contrast capability, and QA teams who must manually test focus visibility across all possible background combinations",
+            "how_to_fix": "For z-indexed inputs with focus outlines: (1) BEST: Use high-contrast double outline that works on any background: outline: 2px solid white; box-shadow: 0 0 0 4px black (white outer, black inner) - visible against light AND dark backgrounds, (2) Use outline-offset: 0 or negative to keep outline on/inside input (not against variable parent background), (3) Ensure parent container has solid background color and outline stays within parent bounds, (4) Remove z-index if not essential for layout, (5) Manually test focus visibility by positioning element over light backgrounds, dark backgrounds, images, and gradients. Test with keyboard navigation while scrolling to verify outline stays visible in all contexts."
+        },
+        "WarnInputFocusParentZIndexFloating": {
+            "id": "WarnInputFocusParentZIndexFloating",
+            "type": "Warning",
+            "impact": "Medium",
+            "wcag": ["2.4.7", "1.4.11"],
+            "wcag_full": "2.4.7 Focus Visible, 1.4.11 Non-text Contrast (Level AA)",
+            "category": "forms",
+            "description": "Input parent container has z-index without solid background - focus outline contrast cannot be automatically verified",
+            "why_it_matters": "When an input's parent container has z-index positioning but no solid background color (transparent or semi-transparent), and the input uses positive outline-offset, the focus outline sits against a transparent parent that may float over any content. This is common in glass morphism designs (backdrop-filter: blur() with rgba backgrounds) and floating forms. The outline might have adequate contrast against the blurred/transparent parent in one context but become invisible when that transparent parent floats over content that matches the outline color. For example, a blue outline on a semi-transparent white card may be visible over dark content but invisible when the card floats over blue content. The effective background color changes as page content scrolls beneath the transparent parent, making consistent contrast impossible. WCAG requires consistent focus visibility - an indicator that appears/disappears based on background content fails this requirement.",
+            "who_it_affects": "Users with low vision or color vision deficiencies who cannot perceive outlines with insufficient contrast, keyboard-only users who lose track of focus when outline disappears against certain backgrounds, users on displays with poor contrast reproduction, users in bright environments where subtle indicators wash out, and users with cognitive disabilities who need obvious, consistent focus indicators",
+            "how_to_fix": "For inputs in z-indexed transparent parents: (1) BEST: Make parent background opaque (rgba(255,255,255,1.0) instead of rgba(255,255,255,0.8)), (2) Use double-outline technique: outline: 2px solid white; box-shadow: 0 0 0 4px black - ensures visibility against light and dark backgrounds, (3) Use outline-offset: 0 or negative to keep outline on/inside input (not against transparent parent), (4) Add solid inner border/padding background to input so outline sits against known color, (5) Increase outline width to 3-4px and use high-contrast color that works across most backgrounds, (6) Manually test by positioning form over varying content (white backgrounds, dark backgrounds, images, matching colors) and verify outline visibility in all contexts."
+        },
+        "WarnInputFocusOutlineExceedsParent": {
+            "id": "WarnInputFocusOutlineExceedsParent",
+            "type": "Warning",
+            "impact": "Medium",
+            "wcag": ["2.4.7", "1.4.11"],
+            "wcag_full": "2.4.7 Focus Visible, 1.4.11 Non-text Contrast (Level AA)",
+            "category": "forms",
+            "description": "Input focus outline extends beyond parent container bounds - outline contrast cannot be automatically verified",
+            "why_it_matters": "When an input uses positive outline-offset (e.g., outline-offset: 5px), the focus outline sits outside the input by that distance and extends further by the outline-width. If this total extent (offset + width) exceeds the parent container's padding, part of the outline extends beyond the parent into unknown territory. We cannot determine what background the outline sits against outside the parent - it could be the page background, another element, an image, or varying content. CSS allows any outline-offset value - outline-offset: 50px is valid CSS. While outlines > 10-15px are uncommon, even modest offsets can exceed tight parent padding. The outline might have perfect 21:1 contrast against the parent's gray background but completely disappear beyond the parent boundary if the page background is the same color as the outline. This warning indicates the outline MAY be problematic depending on what's outside the parent.",
+            "who_it_affects": "Users with low vision who may not see outline portions with poor contrast, keyboard-only users whose focus indicator is partially or fully invisible, screen magnifier users who need clear indicators that may be cut off, users viewing at different zoom levels where outline may exceed parent differently, and QA teams who must manually verify outline visibility across all layouts and responsive breakpoints",
+            "how_to_fix": "Fix mismatched outline extent and parent padding: (1) BEST: Increase parent padding to accommodate full outline extent - if outline-offset: 5px and outline-width: 2px, parent needs ≥7px padding on all sides, (2) Reduce outline-offset to fit within parent padding - if parent has 3px padding, use outline-offset: 1px with outline-width: 2px (total 3px), (3) Use outline-offset: 0 or negative to keep outline on/inside input (simplest solution), (4) Ensure parent has adequate padding for focus indicators when designing form containers, (5) Test by focusing input and verifying entire outline is visible against consistent background, (6) Check at multiple screen sizes/zoom levels as padding may differ at breakpoints. Consider that mobile layouts often have tighter spacing - test on actual devices."
+        },
+        "WarnInputFocusParentGradientBackground": {
+            "id": "WarnInputFocusParentGradientBackground",
+            "type": "Warning",
+            "impact": "Medium",
+            "wcag": ["2.4.7", "1.4.11"],
+            "wcag_full": "2.4.7 Focus Visible, 1.4.11 Non-text Contrast (Level AA)",
+            "category": "forms",
+            "description": "Input parent container has gradient background - focus outline contrast cannot be automatically verified",
+            "why_it_matters": "When an input uses positive outline-offset, the focus outline sits outside the input boundary against the parent container's background. If that parent has a gradient background (linear-gradient, radial-gradient, conic-gradient), automated tools cannot determine contrast because the background color varies across the container. A focus outline might have excellent 8:1 contrast against the light top of the gradient (#f0f0f0) but only 1.8:1 against the dark bottom (#333333). Gradients on form containers are common in modern designs but create verification challenges. The outline may be perfectly visible on one side/corner of the input but invisible on another. This is especially problematic with radial gradients where color varies in all directions, and conic gradients where color changes circularly. The automation cannot test 'worst case' contrast without analyzing every pixel of the gradient against the outline color.",
+            "who_it_affects": "Users with low vision who cannot see outline portions with insufficient contrast, users with color vision deficiencies for whom gradients may render differently, keyboard-only users whose focus indicator is partially invisible, users on displays with poor gradient rendering (banding/posterization), users in bright lighting where low-contrast gradient sections wash out, and QA teams who must manually verify contrast across entire gradient range",
+            "how_to_fix": "For inputs in gradient-background parents: (1) BEST: Use solid background color for form containers - gradients make accessibility verification difficult and add no functional value, (2) If gradient required: use very subtle gradients (#f8f8f8 to #ffffff) and manually verify focus outline has ≥3:1 against DARKEST gradient color, (3) Use outline-offset: 0 or negative to keep outline on/inside input (not against gradient), (4) Add solid-color inner padding/border to parent so outline sits against consistent background, (5) Use thick high-contrast outline (3-4px, dark color) that remains visible across gradient range, (6) Manually test by focusing input and verifying outline visibility at top, bottom, left, right, and all corners of parent container. Test in grayscale to ensure contrast doesn't rely on hue differences. Consider using box-shadow in addition to outline for redundant visibility."
+        },
+        "WarnInputFocusParentImageBackground": {
+            "id": "WarnInputFocusParentImageBackground",
+            "type": "Warning",
+            "impact": "Medium",
+            "wcag": ["2.4.7", "1.4.11"],
+            "wcag_full": "2.4.7 Focus Visible, 1.4.11 Non-text Contrast (Level AA)",
+            "category": "forms",
+            "description": "Input parent container has background image - focus outline contrast cannot be automatically verified",
+            "why_it_matters": "When an input uses positive outline-offset, the focus outline sits outside the input boundary against the parent container's background. If that parent has a background image (photo, pattern, texture), automated contrast verification is impossible because images contain unpredictable colors and patterns. A focus outline might be highly visible against blank areas of the image but completely lost against busy patterns or colors matching the outline. Background images on form containers create severe accessibility challenges - a blue outline may work perfectly against the sky portion of a background photo but become invisible against blue water. Patterns (stripes, dots, textures) interfere with outline perception even when contrast is technically adequate. Parallax scrolling backgrounds are especially problematic as the image content behind the form changes as users scroll, causing the outline to appear/disappear. Unlike gradients where colors are predictable, images are arbitrary - contrast can vary wildly across the image.",
+            "who_it_affects": "Users with low vision who cannot distinguish outlines against busy or matching-color image areas, users with color vision deficiencies for whom certain image colors may render identically to outline color, users with pattern recognition difficulties (some cognitive disabilities) who cannot separate outline from background patterns, keyboard-only users who lose focus tracking when outline blends with image, users on displays with poor image quality where contrast is reduced, and users with attention deficits who find busy background images distracting from focus indicators",
+            "how_to_fix": "For inputs in image-background parents: (1) BEST: Never use background images on form containers - use solid colors for accessibility and usability, (2) If image required: add solid-color overlay (background: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)), url(image.jpg)) to create consistent background behind outlines, (3) Use outline-offset: 0 or negative to keep outline on/inside input (not against image), (4) Add solid white/colored padding area around input so outline sits against known background, (5) Use double-outline technique: outline: 2px solid white; box-shadow: 0 0 0 4px black - visible against light and dark image areas, (6) Increase outline width to 3-4px for better visibility against patterns, (7) Manually test by focusing all inputs and verifying outline visibility across all image areas, zoom levels, and screen sizes. Consider that image may display differently on mobile devices or at different viewport widths (responsive images, background-size: cover)."
+        },
         "forms_WarnGenericButtonText": {
             "id": "forms_WarnGenericButtonText",
             "type": "Warning",
@@ -372,18 +408,6 @@ class IssueCatalog:
             "why_it_matters": "Users may not know how to submit the form",
             "who_it_affects": "Users with cognitive disabilities, keyboard users",
             "how_to_fix": "Ensure form has clear submit mechanism"
-        },
-        "forms_DiscoPlaceholderAsLabel": {
-            "id": "forms_DiscoPlaceholderAsLabel",
-            "type": "Discovery",
-            "impact": "N/A",
-            "wcag": ["3.3.2"],
-            "wcag_full": "3.3.2",
-            "category": "forms",
-            "description": "Placeholder may be used instead of label",
-            "why_it_matters": "Placeholder text disappears when typing",
-            "who_it_affects": "Users with memory/cognitive issues, screen reader users",
-            "how_to_fix": "Use proper labels, placeholder for examples only"
         },
         "ErrFormEmptyHasNoChildNodes": {
             "id": "ErrFormEmptyHasNoChildNodes",
@@ -445,17 +469,17 @@ class IssueCatalog:
             "who_it_affects": "Screen reader users",
             "how_to_fix": "Ensure multiple labels make sense when read together"
         },
-        "forms_ErrNoButtonText": {
-            "id": "forms_ErrNoButtonText",
+        "ErrListitemEmpty": {
+            "id": "ErrListitemEmpty",
             "type": "Error",
-            "impact": "High",
-            "wcag": ["2.4.6", "4.1.2"],
-            "wcag_full": "2.4.6, 4.1.2",
-            "category": "forms",
-            "description": "Button has no accessible text",
-            "why_it_matters": "Users cannot determine button purpose",
-            "who_it_affects": "Screen reader users, voice control users",
-            "how_to_fix": "Add text content, aria-label, or aria-labelledby to button"
+            "impact": "Medium",
+            "wcag": ["1.3.1", "4.1.2"],
+            "wcag_full": "1.3.1 Info and Relationships, 4.1.2 Name, Role, Value",
+            "category": "lists",
+            "description": "List item (<li> or role=\"listitem\") is empty or contains only whitespace, providing no content for users",
+            "why_it_matters": "Empty list items create confusion for screen reader users who hear \"bullet\" or \"list item\" announced but receive no content. This creates ambiguity - users don't know if content failed to load, if they missed something, or if the empty item is intentional. Empty list items also break the semantic structure of lists, making it unclear how many items actually exist. For keyboard users, focus may move to empty items causing disorientation. Empty list items are often coding errors where content was removed but the list structure remained, or placeholders that were never filled.",
+            "who_it_affects": "Screen reader users who hear meaningless list item announcements without content, keyboard navigation users who may encounter focusable but empty list items, users with cognitive disabilities who get confused by structural elements with no purpose, and voice control users who cannot reference items with no accessible names",
+            "how_to_fix": "Remove empty <li> elements that serve no purpose. If a list item intentionally has no visible text but has semantic meaning (like an icon list), add accessible text with aria-label or include visually hidden text with the .visually-hidden class. If the list item is a placeholder for dynamic content, either populate it immediately or remove it until content is available. Never use empty list items for spacing or layout - use CSS instead. For role=\"listitem\" on non-semantic elements, ensure they contain meaningful content or remove the role."
         },
         "ErrNoHeadingsOnPage": {
             "id": "ErrNoHeadingsOnPage",
@@ -1836,30 +1860,6 @@ class IssueCatalog:
             "why_it_matters": "Functionality should work without JavaScript",
             "who_it_affects": "Users with JavaScript disabled",
             "how_to_fix": "Ensure progressive enhancement"
-        },
-        "ErrButtonTextLowContrast": {
-            "id": "ErrButtonTextLowContrast",
-            "type": "Error",
-            "impact": "High",
-            "wcag": ["1.4.3"],
-            "wcag_full": "1.4.3 Contrast (Minimum)",
-            "category": "buttons",
-            "description": "Button text has insufficient color contrast with button background",
-            "why_it_matters": "Users with low vision, color blindness, or viewing the page in bright sunlight may not be able to read button labels if contrast is insufficient. This prevents users from understanding button purpose and can make critical functions inaccessible. Buttons are action triggers, so being unable to read them can prevent task completion.",
-            "who_it_affects": "Users with low vision, color blindness, age-related vision changes, and anyone viewing content in poor lighting conditions or on low-quality displays",
-            "how_to_fix": "Ensure button text has at least 4.5:1 contrast ratio with the button background for normal text, or 3:1 for large text (18pt or 14pt bold). For Level AAA compliance, use 7:1 for normal text. Test in different states (hover, focus, active) as contrast requirements apply to all states. Avoid using color alone to indicate button state."
-        },
-        "ErrButtonOutlineNoneNoBoxShadow": {
-            "id": "ErrButtonOutlineNoneNoBoxShadow",
-            "type": "Error",
-            "impact": "High",
-            "wcag": ["2.4.7", "1.4.1"],
-            "wcag_full": "2.4.7 Focus Visible, 1.4.1 Use of Color",
-            "category": "buttons",
-            "description": "Button has outline:none on focus with no box-shadow, relying only on color change which fails WCAG 1.4.1",
-            "why_it_matters": "Relying solely on color change for focus indication fails WCAG 1.4.1 Use of Color. Users with color blindness, low vision, or monochrome displays cannot perceive focus state. Box-shadow or outline is required to provide a non-color visual indicator that wraps the element.",
-            "who_it_affects": "Users with color blindness (8% of males, 0.5% of females), users with low vision, users on monochrome displays, keyboard navigation users",
-            "how_to_fix": "Add a box-shadow focus indicator (e.g., box-shadow: 0 0 0 3px rgba(0,102,204,0.5)) or use an outline with outline-offset of at least 2px. Do not rely on color change alone."
         },
         "ErrButtonFocusContrastFail": {
             "id": "ErrButtonFocusContrastFail",

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Elements - Proper Semantic Markup</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInteractiveElementIssue_002_correct_semantic",
+    "issueId": "ErrInteractiveElementIssue",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Interactive elements with proper semantic markup and keyboard support",
+    "wcag": "2.1.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .styled-button {
+            background: #2196f3;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+        }
+        .styled-button:focus {
+            outline: 2px solid #1976d2;
+            outline-offset: 2px;
+        }
+        .expandable {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .expandable button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            text-align: left;
+            width: 100%;
+        }
+        .expandable button:focus {
+            outline: 2px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Listing</h1>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Proper button element with keyboard support and clear accessible name">
+        <button class="styled-button" type="button">
+            Add to Cart
+        </button>
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Semantic button element for navigation action with proper keyboard support">
+        <button class="styled-button" type="button" onclick="window.location='/checkout'">
+            Proceed to Checkout
+        </button>
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Expandable section using proper button with ARIA attributes for state">
+        <div class="expandable">
+            <button type="button"
+                    aria-expanded="false"
+                    id="details-toggle">
+                View Product Details
+            </button>
+            <div id="details-content" hidden>
+                <p>Product specifications and details appear here.</p>
+            </div>
+        </div>
+    </div>
+
+    <div data-expected-pass="true"
+         data-pass-reason="Button element wrapping icon with proper accessible label and keyboard support">
+        <button type="button"
+                aria-label="Delete item"
+                style="background: none; border: none; cursor: pointer; padding: 5px;">
+            <img src="delete.png"
+                 alt=""
+                 aria-hidden="true"
+                 style="width: 24px; height: 24px;">
+        </button>
+    </div>
+
+    <script>
+        const detailsToggle = document.getElementById('details-toggle');
+        const detailsContent = document.getElementById('details-content');
+
+        detailsToggle.addEventListener('click', () => {
+            const isExpanded = detailsToggle.getAttribute('aria-expanded') === 'true';
+            detailsToggle.setAttribute('aria-expanded', !isExpanded);
+            detailsContent.hidden = isExpanded;
+        });
+    </script>
+</body>
+</html>

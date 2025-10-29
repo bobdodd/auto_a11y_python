@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrMenuWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMenuWithoutARIA_002_correct_with_aria",
+    "issueId": "ErrMenuWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Application menu pattern with proper ARIA attributes",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .menubar { display: flex; background: #333; }
+        .menu-trigger { padding: 10px 15px; color: white; background: #333; border: none; cursor: pointer; }
+        .menu-trigger:hover { background: #555; }
+        .menu-container { position: relative; }
+        .menu { display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; min-width: 150px; z-index: 1000; }
+        .menu.active { display: block; }
+        .menu-item { padding: 10px; cursor: pointer; color: black; }
+        .menu-item:hover { background: #f0f0f0; }
+    </style>
+    <script>
+        function toggleMenu(button) {
+            const menu = document.getElementById(button.getAttribute('aria-controls'));
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            button.setAttribute('aria-expanded', !isExpanded);
+            menu.classList.toggle('active');
+        }
+    </script>
+</head>
+<body>
+    <h1>Application Menubar</h1>
+
+    <main>
+        <div class="menubar"
+             role="menubar"
+             data-expected-pass="true"
+             data-pass-reason="Application menubar implemented with proper ARIA attributes. Container has role='menubar'. Menu triggers have aria-haspopup='true' and aria-expanded state. Menus have role='menu'. Items have role='menuitem'. Screen readers identify application menu pattern correctly. Users understand arrow key navigation is expected. Keyboard interaction clear with ARIA. Complies with WCAG 4.1.2 Name, Role, Value by implementing complete menubar ARIA pattern">
+            <div class="menu-container">
+                <button class="menu-trigger"
+                        id="file-button"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-controls="file-menu"
+                        onclick="toggleMenu(this)">
+                    File
+                </button>
+                <div class="menu"
+                     id="file-menu"
+                     role="menu"
+                     aria-labelledby="file-button">
+                    <div class="menu-item" role="menuitem" tabindex="0" onclick="alert('New')">New</div>
+                    <div class="menu-item" role="menuitem" tabindex="-1" onclick="alert('Open')">Open</div>
+                    <div class="menu-item" role="menuitem" tabindex="-1" onclick="alert('Save')">Save</div>
+                    <div class="menu-item" role="menuitem" tabindex="-1" onclick="alert('Exit')">Exit</div>
+                </div>
+            </div>
+
+            <div class="menu-container">
+                <button class="menu-trigger"
+                        id="edit-button"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-controls="edit-menu"
+                        onclick="toggleMenu(this)">
+                    Edit
+                </button>
+                <div class="menu"
+                     id="edit-menu"
+                     role="menu"
+                     aria-labelledby="edit-button">
+                    <div class="menu-item" role="menuitem" tabindex="0" onclick="alert('Cut')">Cut</div>
+                    <div class="menu-item" role="menuitem" tabindex="-1" onclick="alert('Copy')">Copy</div>
+                    <div class="menu-item" role="menuitem" tabindex="-1" onclick="alert('Paste')">Paste</div>
+                </div>
+            </div>
+        </div>
+
+        <section data-expected-pass="true"
+                 data-pass-reason="Context menu pattern with complete ARIA implementation. Menu has role='menu' and aria-orientation='vertical'. Items have role='menuitem' with proper tabindex for keyboard handling. Screen readers identify this as application menu. Users get menu semantics and expected arrow key navigation. Programmatic menu structure clearly indicated. Meets WCAG 4.1.2 Name, Role, Value by fully implementing menu ARIA semantics">
+            <h2>Context Menu Example</h2>
+            <p>Right-click here for context menu (simulated)</p>
+
+            <div class="menu"
+                 role="menu"
+                 aria-orientation="vertical"
+                 aria-label="Context menu"
+                 style="position: static; display: block; margin-top: 10px;">
+                <div class="menu-item" role="menuitem" tabindex="0" onclick="alert('Refresh')">Refresh</div>
+                <div class="menu-item" role="menuitem" tabindex="-1" onclick="alert('Properties')">Properties</div>
+                <div class="menu-item" role="menuitem" tabindex="-1" onclick="alert('Delete')">Delete</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

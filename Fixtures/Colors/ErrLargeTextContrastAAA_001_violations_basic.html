@@ -16,21 +16,22 @@
 }
     </script>
     <style>
-        /* Large text is 18pt+ (24px+) or 14pt+ bold (18.66px+) */
+        /* Large text is 18pt+ (24px+) or 14pt+ bold (19px+) */
+        /* Large text AAA requires 4.5:1, AA requires 3.0:1 */
         .large-heading {
             font-size: 28px;
-            color: #767676; /* 4.5:1 contrast with white - needs 4.5:1 for AAA */
+            color: #8a8a8a; /* 3.63:1 contrast - passes AA (3:1) but fails AAA (4.5:1) */
             background: white;
         }
         .large-bold {
             font-size: 20px;
             font-weight: bold;
-            color: #949494; /* ~2.8:1 contrast - fails AAA */
+            color: #949494; /* 3.14:1 contrast - passes AA but fails AAA */
             background: white;
         }
         .large-price {
             font-size: 32px;
-            color: #959595; /* ~2.8:1 contrast - fails AAA */
+            color: #8e8e8e; /* 3.41:1 contrast - passes AA but fails AAA */
             background: white;
         }
     </style>

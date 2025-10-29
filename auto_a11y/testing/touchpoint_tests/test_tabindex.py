@@ -151,12 +151,30 @@ async def test_tabindex(page) -> Dict[str, Any]:
                 
                 // Process each element with tabindex
                 elementsWithTabindex.forEach(element => {
-                    const tabindex = parseInt(element.getAttribute('tabindex'));
+                    const tabindexValue = element.getAttribute('tabindex');
+                    const tabindex = parseInt(tabindexValue);
                     const isInteractive = isInteractiveElement(element);
                     const inSVG = isWithinSVG(element);
-                    
+
                     let hasViolation = false;
-                    
+
+                    // Check for invalid tabindex (non-numeric values)
+                    if (isNaN(tabindex)) {
+                        results.errors.push({
+                            err: 'ErrInvalidTabindex',
+                            type: 'err',
+                            cat: 'tabindex',
+                            element: element.tagName.toLowerCase(),
+                            xpath: getFullXPath(element),
+                            html: element.outerHTML.substring(0, 200),
+                            description: `Element has invalid tabindex value "${tabindexValue}" which is not a valid integer`,
+                            tabindex: tabindexValue
+                        });
+                        hasViolation = true;
+                        results.elements_failed++;
+                        return; // Skip other checks for this element
+                    }
+
                     // Check for positive tabindex
                     if (tabindex > 0 && !inSVG) {
                         positiveTabindexCount++;
@@ -234,40 +252,29 @@ async def test_tabindex(page) -> Dict[str, Any]:
                         if (tabindexValue !== '-1') {
                             missingRequiredTabindex++;
 
-                            if (tabindexValue !== null) {
-                                // Has tabindex but it's wrong (0, 1, 2, etc.) - this is an ERROR
-                                results.errors.push({
-                                    err: 'ErrInPageTargetWrongTabindex',
-                                    type: 'err',
-                                    cat: 'tabindex',
-                                    element: element.tagName.toLowerCase(),
-                                    xpath: getFullXPath(element),
-                                    html: element.outerHTML.substring(0, 200),
-                                    description: `In-page link target has tabindex="${tabindexValue}" but should be tabindex="-1" for programmatic focus only`,
-                                    id: element.id,
-                                    currentTabindex: tabindexValue,
-                                    isSkipTarget: isSkipTarget,
-                                    linkingElements: skipLinks.map(a => ({
-                                        text: a.textContent.trim(),
-                                        href: a.getAttribute('href')
-                                    }))
-                                });
-                                results.elements_failed++;
-                            } else {
-                                // No tabindex at all - this is a WARNING
-                                results.warnings.push({
-                                    err: 'WarnMissingNegativeTabindex',
-                                    type: 'warn',
-                                    cat: 'tabindex',
-                                    element: element.tagName.toLowerCase(),
-                                    xpath: getFullXPath(element),
-                                    html: element.outerHTML.substring(0, 200),
-                                    description: 'In-page link target should have tabindex="-1" for proper focus management',
-                                    id: element.id,
-                                    currentTabindex: 'not set',
-                                    isSkipTarget: isSkipTarget
-                                });
-                            }
+                            // Use ErrAnchorTargetTabindex for both missing and wrong tabindex values
+                            const currentTabindexDesc = tabindexValue !== null ? `tabindex="${tabindexValue}"` : 'no tabindex';
+                            const description = tabindexValue !== null
+                                ? `In-page link target has tabindex="${tabindexValue}" but should be tabindex="-1" for programmatic focus only`
+                                : 'In-page link target missing tabindex="-1" for proper focus management';
+
+                            results.errors.push({
+                                err: 'ErrAnchorTargetTabindex',
+                                type: 'err',
+                                cat: 'tabindex',
+                                element: element.tagName.toLowerCase(),
+                                xpath: getFullXPath(element),
+                                html: element.outerHTML.substring(0, 200),
+                                description: description,
+                                id: element.id,
+                                currentTabindex: tabindexValue !== null ? tabindexValue : 'not set',
+                                isSkipTarget: isSkipTarget,
+                                linkingElements: skipLinks.map(a => ({
+                                    text: a.textContent.trim(),
+                                    href: a.getAttribute('href')
+                                }))
+                            });
+                            results.elements_failed++;
                         }
                     }
                 });

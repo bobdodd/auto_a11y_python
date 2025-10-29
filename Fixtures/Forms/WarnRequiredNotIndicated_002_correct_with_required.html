@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>forms_WarnRequiredNotIndicated - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnRequiredNotIndicated_002_correct_with_required",
+    "issueId": "WarnRequiredNotIndicated",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Required form fields with proper indication",
+    "wcag": "3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Registration Form</h1>
+
+    <main>
+        <form>
+            <section>
+                <h2>Account Information</h2>
+
+                <label for="username">Username <abbr title="required" aria-label="required">*</abbr></label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       required
+                       aria-required="true"
+                       data-expected-pass="true"
+                       data-pass-reason="Required field has visual asterisk and required/aria-required attributes. Screen readers announce field is required. Users see asterisk indicating mandatory field. Both visual and programmatic required indication. Users know to fill field before submission. Complies with WCAG 3.3.2 Labels or Instructions - required fields indicated with visual marker and programmatic attributes">
+            </section>
+
+            <section>
+                <h2>Contact Details</h2>
+
+                <label for="email">Email Address <abbr title="required" aria-label="required">*</abbr></label>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       required
+                       aria-required="true"
+                       data-expected-pass="true"
+                       data-pass-reason="Required email field has asterisk and required attributes. Screen readers announce mandatory status. Users see visual required indicator. Visual and programmatic required markers present. Users understand field must be completed. Meets WCAG 3.3.2 Labels or Instructions - required fields marked visually and programmatically">
+            </section>
+
+            <section>
+                <h2>Password</h2>
+
+                <label for="password">Password <abbr title="required" aria-label="required">*</abbr></label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       required
+                       aria-required="true"
+                       data-expected-pass="true"
+                       data-pass-reason="Required password field marked with asterisk and required/aria-required. Screen readers indicate field is mandatory. Users see visual required marker. Both visual and programmatic required indication. Users know field is mandatory upfront. Complies with WCAG 3.3.2 Labels or Instructions - required status indicated with visual and programmatic markers">
+
+                <button type="submit">Register</button>
+            </section>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

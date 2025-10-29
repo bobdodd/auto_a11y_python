@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrListitemEmpty - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrListitemEmpty_003_edge_cases",
+    "issueId": "ErrListitemEmpty",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 4,
+    "description": "Edge cases for empty list item detection",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>ErrListitemEmpty - Edge Cases</h1>
+
+    <!-- EDGE 1: List item with only HTML comments (ERROR) -->
+    <h2>Edge 1: List item with only HTML comments</h2>
+    <ul>
+        <li>Valid item</li>
+        <li data-expected-violation="true"
+            data-violation-id="ErrListitemEmpty"
+            data-violation-reason="Contains only HTML comments, no accessible text"><!-- This is a comment --></li>
+        <li>Another valid item</li>
+    </ul>
+
+    <!-- EDGE 2: List item with only empty nested elements (ERROR) -->
+    <h2>Edge 2: List item with empty nested elements</h2>
+    <ul>
+        <li>Content here</li>
+        <li data-expected-violation="true"
+            data-violation-id="ErrListitemEmpty"
+            data-violation-reason="Contains only empty nested elements">
+            <span></span>
+            <div></div>
+        </li>
+        <li>More content</li>
+    </ul>
+
+    <!-- EDGE 3: List item with nested list but no direct text (PASS) -->
+    <h2>Edge 3: List item with nested list (should pass)</h2>
+    <ul>
+        <li data-expected-pass="true"
+            data-pass-reason="Contains nested list with content">
+            <ul>
+                <li>Nested item 1</li>
+                <li>Nested item 2</li>
+            </ul>
+        </li>
+    </ul>
+
+    <!-- EDGE 4: List item with only image but alt text (PASS) -->
+    <h2>Edge 4: List item with image having alt text</h2>
+    <ul>
+        <li data-expected-pass="true"
+            data-pass-reason="Image has alt text providing accessible name">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E" alt="Icon representing success">
+        </li>
+    </ul>
+
+    <!-- EDGE 5: List item with zero-width space (ERROR) -->
+    <h2>Edge 5: List item with zero-width space</h2>
+    <ul>
+        <li>Normal item</li>
+        <li data-expected-violation="true"
+            data-violation-id="ErrListitemEmpty"
+            data-violation-reason="Contains only zero-width space character">​</li>
+        <li>Another normal item</li>
+    </ul>
+
+    <!-- EDGE 6: List item with aria-labelledby referencing text (PASS) -->
+    <h2>Edge 6: List item with aria-labelledby</h2>
+    <span id="item-label" style="display:none;">Hidden label text</span>
+    <ul>
+        <li aria-labelledby="item-label"
+            data-expected-pass="true"
+            data-pass-reason="Has aria-labelledby providing accessible name">
+        </li>
+    </ul>
+
+    <!-- EDGE 7: List item with sr-only class (PASS) -->
+    <h2>Edge 7: List item with screen reader only text</h2>
+    <ul>
+        <li data-expected-pass="true"
+            data-pass-reason="Contains sr-only text for screen readers">
+            <span class="sr-only">Download PDF</span>
+            <span aria-hidden="true">📄</span>
+        </li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>setInterval Only - Warning</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnAutoStartTimers_004_setInterval_only",
+    "issueId": "WarnAutoStartTimers",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page has setInterval calls starting on page load",
+    "wcag": "2.2.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .clock {
+            font-size: 3em;
+            text-align: center;
+            margin: 50px 0;
+            font-family: monospace;
+        }
+        .update-count {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnAutoStartTimers"
+      data-violation-reason="setInterval calls execute on page load creating continuous updates">
+    <div class="content">
+        <h1>Live Clock</h1>
+        <div class="clock" id="clock">00:00:00</div>
+        <div class="update-count">Updates: <span id="updates">0</span></div>
+    </div>
+
+    <script>
+        // Auto-starting setInterval - continuous updates
+        let updateCount = 0;
+
+        setInterval(() => {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+
+            updateCount++;
+            document.getElementById('updates').textContent = updateCount;
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -384,9 +384,8 @@ class TouchpointMapper:
         'InfoHeadingNearLengthLimit': TouchpointID.HEADINGS,
         'DiscoHeadingWithID': TouchpointID.HEADINGS,
         
-        # Image errors  
+        # Image errors
         'ErrNoAlt': TouchpointID.IMAGES,
-        'ErrImageWithNoAlt': TouchpointID.IMAGES,
         'ErrImageWithEmptyAlt': TouchpointID.IMAGES,
         'ErrAltTooLong': TouchpointID.IMAGES,
         'ErrRedundantAlt': TouchpointID.IMAGES,
@@ -395,7 +394,6 @@ class TouchpointMapper:
         'ErrImageWithURLAsAlt': TouchpointID.IMAGES,
         'ErrAltOnElementThatDoesntTakeIt': TouchpointID.IMAGES,
         'ErrSVGNoAccessibleName': TouchpointID.IMAGES,
-        'WarnSVGNoRole': TouchpointID.IMAGES,
         'WarnSvgPositiveTabindex': TouchpointID.IMAGES,
         'DiscoFoundInlineSvg': TouchpointID.IMAGES,
         'DiscoFoundSvgImage': TouchpointID.IMAGES,
@@ -406,7 +404,6 @@ class TouchpointMapper:
         'ErrPlaceholderAsLabel': TouchpointID.FORMS,
         'ErrButtonEmpty': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need accessible names
         'ErrButtonNoText': TouchpointID.ACCESSIBLE_NAMES,  # Buttons need text for accessibility
-        'ErrButtonOutlineNoneNoBoxShadow': TouchpointID.BUTTONS,  # Button focus indicators
         'ErrButtonFocusContrastFail': TouchpointID.BUTTONS,  # Button focus indicators
         'ErrButtonOutlineWidthInsufficient': TouchpointID.BUTTONS,  # Button focus indicators
         'ErrButtonOutlineOffsetInsufficient': TouchpointID.BUTTONS,  # Button focus indicators
@@ -431,15 +428,16 @@ class TouchpointMapper:
         'DiscoHeaderFound': TouchpointID.LANDMARKS,  # Banner is a landmark
         'DiscoFooterFound': TouchpointID.LANDMARKS,  # Contentinfo is a landmark
         'DiscoSearchFound': TouchpointID.LANDMARKS,  # Search is a landmark
-        'forms_DiscoNoSubmitButton': TouchpointID.FORMS,
-        'forms_DiscoPlaceholderAsLabel': TouchpointID.FORMS,
-        
+        'DiscoNoSubmitButton': TouchpointID.FORMS,
+        'WarnGenericButtonText': TouchpointID.FORMS,
+        'WarnRequiredNotIndicated': TouchpointID.FORMS,
+
         # Color/contrast errors
-        'ErrInsufficientContrast': TouchpointID.COLORS,
         'ErrTextContrastAA': TouchpointID.COLORS,
         'ErrLargeTextContrastAA': TouchpointID.COLORS,
         'ErrTextContrastAAA': TouchpointID.COLORS,
         'ErrLargeTextContrastAAA': TouchpointID.COLORS,
+        'WarnTextContrastCannotCalculate': TouchpointID.COLORS,
         'WarnNoColorSchemeSupport': TouchpointID.COLORS,
         'WarnNoContrastSupport': TouchpointID.COLORS,
         'WarnColorOnlyLink': TouchpointID.COLORS,
@@ -466,8 +464,7 @@ class TouchpointMapper:
         'ErrNonInteractiveZeroTabindex': TouchpointID.TABINDEX,
         'WarnHighTabindex': TouchpointID.TABINDEX,
         'WarnNegativeTabindex': TouchpointID.TABINDEX,
-        'WarnMissingNegativeTabindex': TouchpointID.TABINDEX,
-        
+
         # Accessible name errors
         'ErrMissingAccessibleName': TouchpointID.ACCESSIBLE_NAMES,
         'WarnGenericAccessibleName': TouchpointID.ACCESSIBLE_NAMES,
@@ -524,16 +521,14 @@ class TouchpointMapper:
         'WarnLinkTransparentOutline': TouchpointID.LINKS,
 
         # Navigation errors
-        'AI_ErrAccordionWithoutARIA': TouchpointID.NAVIGATION,
-        'AI_ErrCarouselWithoutARIA': TouchpointID.NAVIGATION,
-        'AI_ErrDropdownWithoutARIA': TouchpointID.NAVIGATION,
         'ErrNavMissingAccessibleName': TouchpointID.NAVIGATION,
         'WarnNavMissingAccessibleName': TouchpointID.NAVIGATION,
         'ErrInappropriateMenuRole': TouchpointID.NAVIGATION,
 
         # Semantic structure errors (for HTML DOCTYPE) - use PAGE for document-level structure
+        'ErrInvalidTabindex': TouchpointID.PAGE,
         'ErrMissingDocumentType': TouchpointID.PAGE,
-        
+
         # Modal/Dialog errors
         'ErrModalMissingClose': TouchpointID.DIALOGS,
         'ErrModalWithoutEscape': TouchpointID.DIALOGS,
@@ -543,7 +538,7 @@ class TouchpointMapper:
         'WarnModalNoFocusableElements': TouchpointID.DIALOGS,
         
         # Animation/Timer errors
-        'ErrAutoStartTimers': TouchpointID.TIMERS,
+        'WarnAutoStartTimers': TouchpointID.TIMERS,
         'ErrTimersWithoutControls': TouchpointID.TIMERS,
         'WarnFastInterval': TouchpointID.TIMERS,
         'ErrInfiniteAnimation': TouchpointID.ANIMATION,
@@ -568,13 +563,22 @@ class TouchpointMapper:
         
         # List errors
         'ErrEmptyList': TouchpointID.LISTS,
+        'ErrListitemEmpty': TouchpointID.LISTS,
         'ErrFakeListImplementation': TouchpointID.LISTS,
         'WarnCustomBulletStyling': TouchpointID.LISTS,
         'WarnDeepListNesting': TouchpointID.LISTS,
         
         # Map errors
-        'ErrMapMissingTitle': TouchpointID.MAPS,
+        'DiscoMapFound': TouchpointID.MAPS,
         'ErrDivMapMissingAttributes': TouchpointID.MAPS,
+        'ErrDivMapMissingStructure': TouchpointID.MAPS,
+        'ErrMapAriaHidden': TouchpointID.MAPS,
+        'ErrMapGenericName': TouchpointID.MAPS,
+        'ErrMapMissingTitle': TouchpointID.MAPS,
+        'ErrMapRolePresentation': TouchpointID.MAPS,
+        'ErrSvgMapMissingName': TouchpointID.MAPS,
+        'WarnDivMapNoLandmark': TouchpointID.MAPS,
+        'WarnMapPotentialContentHiding': TouchpointID.MAPS,
         
         # Video/Media errors
         'ErrVideoIframeMissingTitle': TouchpointID.VIDEOS,
@@ -591,10 +595,21 @@ class TouchpointMapper:
         'WarnAmbiguousLinkText': TouchpointID.READ_MORE_LINKS,  # Ambiguous link text issue
 
         # ARIA errors (map to appropriate touchpoints based on context)
-        'AI_ErrMissingInteractiveRole': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrAccordionWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrCarouselWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrClickableWithoutKeyboard': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrDialogMissingRole': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrDropdownWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrInteractiveElementIssue': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrMenuWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrMissingInteractiveRole': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrTabpanelWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        'ErrTooltipWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        'WarnSliderWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        'WarnSwitchWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
+        'WarnTreeviewWithoutARIA': TouchpointID.ACCESSIBLE_NAMES,
         'ErrAriaLabelMayNotBeFoundByVoiceControl': TouchpointID.ACCESSIBLE_NAMES,  # WCAG 2.5.3 Label in Name
-        'ErrMapAriaHidden': TouchpointID.MAPS,  # This is specifically about maps
-        
+
         # AI-detected content order/reading issues
         'AI_InfoContentOrder': TouchpointID.HEADINGS,
         'AI_WarnPossibleReadingOrderIssue': TouchpointID.HEADINGS,

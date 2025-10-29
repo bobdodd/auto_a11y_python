@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clickable Elements - No Keyboard Support</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrClickableWithoutKeyboard_001_violations_basic",
+    "issueId": "ErrClickableWithoutKeyboard",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Elements with onclick handlers that are not keyboard accessible",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .icon {
+            font-size: 2em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <div data-expected-violation="true"
+         data-violation-id="AI_ErrClickableWithoutKeyboard"
+         data-violation-reason="Div with onclick has no tabindex or keyboard event handlers, keyboard users cannot activate">
+        <div class="card" onclick="alert('Card clicked')">
+            <h2>Project A</h2>
+            <p>Click this card to view project details</p>
+        </div>
+    </div>
+
+    <div data-expected-violation="true"
+         data-violation-id="AI_ErrClickableWithoutKeyboard"
+         data-violation-reason="Span with onclick not keyboard accessible, missing tabindex and key handlers">
+        <p>
+            <span class="icon" onclick="toggleFavorite()">⭐</span>
+            Mark as favorite
+        </p>
+    </div>
+
+    <div data-expected-violation="true"
+         data-violation-id="AI_ErrClickableWithoutKeyboard"
+         data-violation-reason="Paragraph element clickable but not keyboard accessible">
+        <p class="card" onclick="openSettings()">
+            Click here to open settings
+        </p>
+    </div>
+
+    <div data-expected-violation="true"
+         data-violation-id="AI_ErrClickableWithoutKeyboard"
+         data-violation-reason="Image with onclick lacks keyboard support despite cursor indicating interactivity">
+        <img src="close.png"
+             alt="Close"
+             onclick="closeModal()"
+             style="cursor: pointer; width: 24px; height: 24px;">
+    </div>
+
+    <script>
+        function toggleFavorite() {
+            alert('Favorite toggled');
+        }
+
+        function openSettings() {
+            alert('Settings opened');
+        }
+
+        function closeModal() {
+            alert('Modal closed');
+        }
+    </script>
+</body>
+</html>

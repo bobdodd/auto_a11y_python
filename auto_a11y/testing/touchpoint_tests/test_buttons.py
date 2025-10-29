@@ -632,7 +632,8 @@ async def test_buttons(page) -> Dict[str, Any]:
                     violation_reason = f'Button focus outline is too thin ({outline_width:.2f}px, needs ≥2px per WCAG 2.4.11)'
 
                 # Check outline offset (should be >= 2px when outline is present)
-                elif outline_width >= 2.0 and outline_offset < 2.0:
+                # Exception: buttons with gradient/image backgrounds can use negative offset
+                elif outline_width >= 2.0 and outline_offset < 2.0 and not (has_gradient or has_image):
                     error_code = 'ErrButtonOutlineOffsetInsufficient'
                     violation_reason = f'Button focus outline offset is too small ({outline_offset:.2f}px, needs ≥2px for clear separation from button)'
 

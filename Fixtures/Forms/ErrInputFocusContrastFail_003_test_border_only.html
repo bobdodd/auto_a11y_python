@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputFocusContrastFail - Border Test</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInputFocusContrastFail_003_test_border_only",
+    "issueId": "ErrInputFocusContrastFail",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 1,
+    "description": "Simple test: one input with border thickening and high contrast",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        /* High contrast border thickening: dark green on white */
+        input:focus {
+            outline: none;
+            border: 3px solid #006400;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Border Contrast Test</h1>
+    <p>One input with border thickening from 1px #ccc to 3px #006400 on white background.</p>
+    <p>Contrast #006400 vs #ffffff: 7.44:1 (PASS)</p>
+    <p>Contrast #006400 vs #cccccc: 4.63:1 (PASS)</p>
+
+    <label for="test-input">Test Input:</label>
+    <input type="text" id="test-input" placeholder="Tab to me and check focus">
+</body>
+</html>

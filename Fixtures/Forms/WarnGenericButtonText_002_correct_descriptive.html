@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website - Descriptive Button Text</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnGenericButtonText_002_correct_descriptive",
+    "issueId": "WarnGenericButtonText",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Buttons with specific descriptive text indicating their action",
+    "wcag": "2.4.6",
+    "impact": "Low"
+}
+    </script>
+</head>
+<body>
+    <h1>Account Settings</h1>
+
+    <section>
+        <h2>Profile Information</h2>
+        <p>Update your name, email, and photo.</p>
+        <button data-expected-pass="true"
+                data-pass-reason="Button text clearly describes the specific action 'Edit profile'">
+            Edit profile
+        </button>
+    </section>
+
+    <section>
+        <h2>Email Preferences</h2>
+        <p>Choose which emails you'd like to receive.</p>
+        <button data-expected-pass="true"
+                data-pass-reason="Descriptive text 'Save email preferences' tells users exactly what will be submitted">
+            Save email preferences
+        </button>
+    </section>
+
+    <section>
+        <h2>Delete Account</h2>
+        <p>Permanently remove your account and all data.</p>
+        <button data-expected-pass="true"
+                data-pass-reason="Specific text 'Delete my account' clearly indicates the serious action">
+            Delete my account
+        </button>
+    </section>
+
+    <p>Best practice: Button text should describe the specific action being performed.</p>
+</body>
+</html>

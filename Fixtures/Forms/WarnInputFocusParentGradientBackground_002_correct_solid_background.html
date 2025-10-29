@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusParentGradientBackground - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusParentGradientBackground_002_correct_solid_background",
+    "issueId": "WarnInputFocusParentGradientBackground",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "expectedWarningCount": 0,
+    "description": "Input parents with solid backgrounds allowing contrast verification",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* CORRECT 1: Solid color parent */
+        .solid-container-1 {
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .solid-container-1 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .solid-container-1 input:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 3px;
+        }
+
+        /* CORRECT 2: Outline-offset: 0 (outline on input, not parent) */
+        .any-bg-container {
+            padding: 20px;
+            background: linear-gradient(to right, #f0f0f0, #333333);
+            border-radius: 5px;
+        }
+
+        .any-bg-container input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .any-bg-container input:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: 0px;
+            /* Outline on input, not parent, so parent bg doesn't matter */
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusParentGradientBackground - Correct Examples</h1>
+    <p>These should NOT trigger warnings.</p>
+
+    <div class="solid-container-1">
+        <label for="input1">Correct 1: Solid color parent</label><br>
+        <input type="text" id="input1" placeholder="Solid background = verifiable">
+    </div>
+
+    <br><br>
+
+    <div class="any-bg-container">
+        <label for="input2">Correct 2: Outline-offset: 0 (parent bg irrelevant)</label><br>
+        <input type="text" id="input2" placeholder="Outline on input, not parent">
+    </div>
+</body>
+</html>

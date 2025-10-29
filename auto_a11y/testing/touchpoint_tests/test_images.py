@@ -92,17 +92,13 @@ async def test_images(page) -> Dict[str, Any]:
                     return path;
                 }
                 
-                // Function to check if alt text is invalid
+                // Function to check if alt text is invalid (generic/redundant)
+                // Note: File extension check is handled separately as ErrImageWithImgFileExtensionAlt
                 function isInvalidAlt(altText) {
                     if (!altText) return false;
-                    
+
                     const lower = altText.toLowerCase();
-                    
-                    // Check for filename patterns
-                    if (/\\.(jpg|jpeg|png|gif|svg|bmp|webp)$/i.test(altText)) {
-                        return true;
-                    }
-                    
+
                     // Check for generic/redundant text
                     const invalidPatterns = [
                         /^image$/i,
@@ -118,15 +114,41 @@ async def test_images(page) -> Dict[str, Any]:
                         /^img_[0-9]/i,
                         /^image[0-9]/i
                     ];
-                    
+
                     return invalidPatterns.some(pattern => pattern.test(lower));
                 }
-                
+
+                // ERROR: Alt attribute on elements that don't support it
+                // This check must run BEFORE the early return for "no images found"
+                // Alt is only valid on: img, area, input[type="image"]
+                const allElementsWithAlt = Array.from(document.querySelectorAll('[alt]'));
+                allElementsWithAlt.forEach(element => {
+                    const tagName = element.tagName.toLowerCase();
+                    const isValidElement =
+                        tagName === 'img' ||
+                        tagName === 'area' ||
+                        (tagName === 'input' && element.getAttribute('type') === 'image');
+
+                    if (!isValidElement) {
+                        results.errors.push({
+                            err: 'ErrAltOnElementThatDoesntTakeIt',
+                            type: 'err',
+                            cat: 'images',
+                            element: tagName.toUpperCase(),
+                            xpath: getFullXPath(element),
+                            html: element.outerHTML.substring(0, 200),
+                            description: `Alt attribute placed on <${tagName}> element which doesn't support it. Alt is only valid on img, area, and input[type="image"]`,
+                            altValue: element.getAttribute('alt')
+                        });
+                        results.elements_failed++;
+                    }
+                });
+
                 // Get all images and SVGs
                 const images = Array.from(document.querySelectorAll('img'));
                 const svgs = Array.from(document.querySelectorAll('svg'));
                 const allElements = [...images, ...svgs];
-                
+
                 if (allElements.length === 0) {
                     results.applicable = false;
                     results.not_applicable_reason = 'No images or SVG elements found on the page';
@@ -139,7 +161,7 @@ async def test_images(page) -> Dict[str, Any]:
                 images.forEach(img => {
                     const altAttr = img.getAttribute('alt');
                     const src = img.getAttribute('src') || '';
-                    
+
                     // Check for missing alt attribute
                     if (altAttr === null) {
                         results.errors.push({
@@ -153,7 +175,55 @@ async def test_images(page) -> Dict[str, Any]:
                             src: src
                         });
                         results.elements_failed++;
-                    } 
+                    }
+                    // Check for whitespace-only alt (not truly empty)
+                    else if (altAttr !== '' && altAttr.trim() === '') {
+                        results.errors.push({
+                            err: 'ErrImageWithEmptyAlt',
+                            type: 'err',
+                            cat: 'images',
+                            element: 'IMG',
+                            xpath: getFullXPath(img),
+                            html: img.outerHTML.substring(0, 200),
+                            description: `Image alt attribute contains only whitespace (${altAttr.length} characters)`,
+                            alt: altAttr,
+                            altLength: altAttr.length,
+                            src: src
+                        });
+                        results.elements_failed++;
+                    }
+                    // Check for HTML tags in alt text
+                    // Match actual HTML tags (starting with letter) not mathematical operators like < or >
+                    else if (/<[a-zA-Z][^>]*>/.test(altAttr)) {
+                        results.errors.push({
+                            err: 'ErrImageAltContainsHTML',
+                            type: 'err',
+                            cat: 'images',
+                            element: 'IMG',
+                            xpath: getFullXPath(img),
+                            html: img.outerHTML.substring(0, 200),
+                            description: `Image alt text contains HTML tags: "${altAttr}"`,
+                            alt: altAttr,
+                            src: src
+                        });
+                        results.elements_failed++;
+                    }
+                    // Check for URLs or file paths in alt text
+                    // Match various URL schemes: http://, https://, file://, ftp://, tel:, mailto:, www., or file paths starting with /
+                    else if (/^(https?:\/\/|ftp:\/\/|file:\/\/|tel:|mailto:|www\.)|^\/[a-zA-Z0-9]/i.test(altAttr)) {
+                        results.errors.push({
+                            err: 'ErrImageWithURLAsAlt',
+                            type: 'err',
+                            cat: 'images',
+                            element: 'IMG',
+                            xpath: getFullXPath(img),
+                            html: img.outerHTML.substring(0, 200),
+                            description: `Image alt text contains URL or file path: "${altAttr}"`,
+                            alt: altAttr,
+                            src: src
+                        });
+                        results.elements_failed++;
+                    }
                     // Check for empty alt (decorative image)
                     else if (altAttr === '') {
                         // This is valid for decorative images
@@ -163,6 +233,21 @@ async def test_images(page) -> Dict[str, Any]:
                             xpath: getFullXPath(img)
                         });
                         results.elements_passed++;
+                    }
+                    // Check specifically for filename with file extension
+                    else if (/\.(jpg|jpeg|png|gif|svg|bmp|webp|ico|tiff|tif)$/i.test(altAttr)) {
+                        results.errors.push({
+                            err: 'ErrImageWithImgFileExtensionAlt',
+                            type: 'err',
+                            cat: 'images',
+                            element: 'IMG',
+                            xpath: getFullXPath(img),
+                            html: img.outerHTML.substring(0, 200),
+                            description: `Image alt text contains filename with extension: "${altAttr}"`,
+                            alt: altAttr,
+                            src: src
+                        });
+                        results.elements_failed++;
                     }
                     // Check for invalid alt text
                     else if (isInvalidAlt(altAttr)) {

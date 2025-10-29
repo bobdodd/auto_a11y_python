@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaLabelledby - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby_007_edge_cases",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 3,
+    "description": "Edge cases: hidden dialogs, empty aria-labelledby, aria-label alternative",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Edge Cases</h1>
+
+    <!-- PASS: Hidden dialog (display:none) should NOT trigger warning -->
+    <div role="dialog" aria-modal="true" style="display: none; position: fixed; z-index: 1000; width: 300px; height: 200px;"
+         data-expected-pass="true"
+         data-pass-reason="Hidden dialog should not be checked">
+        <h2 id="hidden-title-1">Hidden Dialog</h2>
+        <p>This should not trigger warning.</p>
+        <button>OK</button>
+    </div>
+
+    <!-- PASS: Hidden dialog (visibility:hidden) should NOT trigger warning -->
+    <div role="dialog" aria-modal="true" style="visibility: hidden; position: fixed; z-index: 1001; width: 300px; height: 200px;"
+         data-expected-pass="true"
+         data-pass-reason="Visibility hidden dialog should not be checked">
+        <h2 id="hidden-title-2">Invisible Dialog</h2>
+        <p>This should not trigger warning.</p>
+        <button>OK</button>
+    </div>
+
+    <!-- Violation 1: Empty aria-labelledby value -->
+    <div role="dialog" aria-modal="true" aria-labelledby=""
+         style="display: block; position: fixed; z-index: 1100; width: 300px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="aria-labelledby present but empty">
+        <h2 id="empty-title-1">Empty Reference</h2>
+        <p>aria-labelledby is empty.</p>
+        <button>Close</button>
+    </div>
+
+    <!-- Violation 2: Whitespace-only aria-labelledby value -->
+    <div role="dialog" aria-modal="true" aria-labelledby="   "
+         style="display: block; position: fixed; z-index: 1200; top: 220px; width: 300px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="aria-labelledby contains only whitespace">
+        <h2 id="whitespace-title">Whitespace Reference</h2>
+        <p>aria-labelledby has only spaces.</p>
+        <button>Close</button>
+    </div>
+
+    <!-- PASS: Dialog with aria-label instead of aria-labelledby (different attribute, but acceptable alternative) -->
+    <!-- Note: The test checks specifically for aria-labelledby, so aria-label won't satisfy it -->
+    <!-- This should still trigger a violation since the test specifically requires aria-labelledby -->
+    <div role="dialog" aria-modal="true" aria-label="Notification Dialog"
+         style="display: block; position: fixed; z-index: 1300; top: 440px; width: 300px; height: 200px;"
+         data-expected-pass="true"
+         data-pass-reason="Dialog uses aria-label as alternative accessible name">
+        <h2>Using aria-label</h2>
+        <p>This uses aria-label instead of aria-labelledby.</p>
+        <button>Close</button>
+    </div>
+</body>
+</html>

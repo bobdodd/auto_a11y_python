@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaLabelledby - Native Dialog Element Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby_003_violations_native_dialog",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Native HTML5 <dialog> elements missing aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Native Dialog Elements</h1>
+
+    <!-- Violation 1: Native dialog element without aria-labelledby -->
+    <dialog open style="width: 300px; height: 200px; position: fixed;"
+            data-expected-violation="true"
+            data-violation-id="WarnMissingAriaLabelledby"
+            data-violation-reason="Native dialog element without aria-labelledby">
+        <h2 id="native-title-1">Settings</h2>
+        <p>Configure your preferences.</p>
+        <button>Save</button>
+        <button>Cancel</button>
+    </dialog>
+
+    <!-- Violation 2: Native dialog with open attribute, no aria-labelledby -->
+    <dialog open style="width: 350px; height: 250px; position: fixed; top: 220px;"
+            data-expected-violation="true"
+            data-violation-id="WarnMissingAriaLabelledby"
+            data-violation-reason="Native dialog with open attribute but no aria-labelledby">
+        <h2 id="native-title-2">Delete Confirmation</h2>
+        <p>This action cannot be undone.</p>
+        <button>Delete</button>
+        <button>Cancel</button>
+    </dialog>
+
+    <!-- Violation 3: Native dialog element displayed with show(), no aria-labelledby -->
+    <dialog id="dialog3" style="width: 300px; height: 180px; position: fixed; top: 480px; display: block;"
+            data-expected-violation="true"
+            data-violation-id="WarnMissingAriaLabelledby"
+            data-violation-reason="Native dialog shown programmatically without aria-labelledby">
+        <h2 id="native-title-3">Help</h2>
+        <p>Need assistance?</p>
+        <button>Contact Support</button>
+        <button>Close</button>
+    </dialog>
+</body>
+</html>

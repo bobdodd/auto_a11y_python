@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingRequiredIndication - Basic Example</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingRequiredIndication",
+    "issueId": "WarnMissingRequiredIndication",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 1,
+    "description": "Basic example: required field without visual indicator vs with indicator",
+    "wcag": "3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Contact Form</h1>
+
+    <form>
+        <!-- Violation: Has required attribute but no visual indicator in label -->
+        <div data-expected-violation="true"
+             data-violation-id="WarnMissingRequiredIndication"
+             data-violation-reason="Field has required attribute but label has no asterisk or 'required' text">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <!-- Correct: Has required attribute AND asterisk in label -->
+        <div data-expected-pass="true"
+             data-pass-reason="Field has required attribute and label contains asterisk">
+            <label for="name">Name *</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

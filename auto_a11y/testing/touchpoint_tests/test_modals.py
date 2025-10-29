@@ -339,7 +339,7 @@ async def test_modals(page) -> Dict[str, Any]:
                     
                     if (ariaModal !== 'true') {
                         results.warnings.push({
-                            err: 'WarnModalMissingAriaModal',
+                            err: 'WarnMissingAriaModal',
                             type: 'warn',
                             cat: 'modals',
                             element: modal.tagName.toLowerCase(),

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrCarouselWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrCarouselWithoutARIA_001_violations_basic",
+    "issueId": "ErrCarouselWithoutARIA",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Carousel/slider without proper ARIA attributes",
+    "wcag": "1.3.1, 2.1.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .carousel { position: relative; width: 600px; height: 400px; overflow: hidden; border: 2px solid #333; }
+        .carousel-slides { display: flex; transition: transform 0.5s; }
+        .carousel-slide { min-width: 100%; height: 400px; display: flex; align-items: center; justify-content: center; font-size: 2em; }
+        .carousel-slide:nth-child(1) { background: #ffcccc; }
+        .carousel-slide:nth-child(2) { background: #ccffcc; }
+        .carousel-slide:nth-child(3) { background: #ccccff; }
+        .carousel-controls { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); }
+        .carousel-button { padding: 10px 20px; margin: 0 5px; cursor: pointer; }
+    </style>
+    <script>
+        let currentSlide = 0;
+        function moveCarousel(direction) {
+            const slides = document.querySelector('.carousel-slides');
+            currentSlide = (currentSlide + direction + 3) % 3;
+            slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Featured Products</h1>
+
+    <main>
+        <div class="carousel"
+             data-expected-violation="true"
+             data-violation-reason="Carousel implemented without ARIA attributes. No role='region' or aria-label on carousel container. Slides lack aria-live for automatic rotation announcements. No aria-roledescription='slide' on items. Carousel buttons lack aria-controls. Screen readers can't announce current slide position. Users don't know total number of slides or which is active. Keyboard users lack proper focus management. Violates WCAG 1.3.1 Info and Relationships, 2.1.1 Keyboard, and 4.1.2 Name, Role, Value by missing carousel ARIA pattern">
+            <div class="carousel-slides">
+                <div class="carousel-slide">Slide 1: Premium Widget</div>
+                <div class="carousel-slide">Slide 2: Deluxe Gadget</div>
+                <div class="carousel-slide">Slide 3: Ultimate Tool</div>
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-button" onclick="moveCarousel(-1)">Previous</button>
+                <button class="carousel-button" onclick="moveCarousel(1)">Next</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

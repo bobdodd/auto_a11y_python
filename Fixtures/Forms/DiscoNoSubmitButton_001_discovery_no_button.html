@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoNoSubmitButton - Forms Without Submit Buttons</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoNoSubmitButton_001_discovery_no_button",
+    "issueId": "DiscoNoSubmitButton",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Forms lacking visible submit buttons",
+    "wcag": "3.3.2",
+    "impact": "Info"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms Without Submit Buttons</h1>
+
+    <!-- Discovery 1: Form with only input field (newsletter signup) -->
+    <form data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Newsletter form without submit button">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com">
+    </form>
+
+    <!-- Discovery 2: Search form without submit button (might submit on Enter) -->
+    <form role="search"
+          data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Search form without visible submit button">
+        <label for="search">Search</label>
+        <input type="search" id="search" name="q">
+    </form>
+
+    <!-- Discovery 3: Form with only text inputs -->
+    <form data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Login form without submit button">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password">
+    </form>
+
+    <!-- Discovery 4: Form with button type="button" (not a submit button) -->
+    <form data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Form has button but not type=submit">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name">
+        <button type="button" onclick="alert('This is not a submit button')">Click Me</button>
+    </form>
+</body>
+</html>

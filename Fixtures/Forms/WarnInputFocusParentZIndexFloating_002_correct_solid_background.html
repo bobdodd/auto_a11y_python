@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusParentZIndexFloating - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusParentZIndexFloating_002_correct_solid_background",
+    "issueId": "WarnInputFocusParentZIndexFloating",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "expectedWarningCount": 0,
+    "description": "Input fields in parents with solid backgrounds or no z-index",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* CORRECT 1: Parent with z-index BUT solid background */
+        .safe-container-1 {
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .safe-container-1 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .safe-container-1 input:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 3px;
+        }
+
+        /* CORRECT 2: Parent with NO z-index */
+        .safe-container-2 {
+            padding: 20px;
+            background: transparent;
+        }
+
+        .safe-container-2 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .safe-container-2 input:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusParentZIndexFloating - Correct Examples</h1>
+    <p>These should NOT trigger warnings.</p>
+
+    <div class="safe-container-1">
+        <label for="input1">Correct 1: Parent with z-index AND solid background</label>
+        <input type="text" id="input1" placeholder="Solid background = verifiable">
+    </div>
+
+    <div class="safe-container-2">
+        <label for="input2">Correct 2: Parent with NO z-index</label>
+        <input type="text" id="input2" placeholder="No z-index = safe">
+    </div>
+</body>
+</html>

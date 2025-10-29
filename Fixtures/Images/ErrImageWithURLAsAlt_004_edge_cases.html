@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithURLAsAlt - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithURLAsAlt_004_edge_cases",
+    "issueId": "ErrImageWithURLAsAlt",
+    "expectedViolationCount": 5,
+    "expectedPassCount": 5,
+    "description": "Edge cases including relative paths, data URLs, and mixed content",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Edge Cases for URL Detection</h1>
+
+    <!-- VIOLATION 1: HTTP with uppercase -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff0000' width='100' height='100'/%3E%3C/svg%3E"
+         alt="HTTP://EXAMPLE.COM/IMAGE.JPG"
+         data-expected-violation="true"
+         data-violation-reason="URL in uppercase, still a URL">
+
+    <!-- VIOLATION 2: WWW with uppercase -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300ff00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="WWW.EXAMPLE.COM/logo.png"
+         data-expected-violation="true"
+         data-violation-reason="www. prefix in uppercase">
+
+    <!-- VIOLATION 3: Path with multiple levels -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%230000ff' width='100' height='100'/%3E%3C/svg%3E"
+         alt="/assets/images/products/category/item-photo.jpg"
+         data-expected-violation="true"
+         data-violation-reason="Multi-level absolute path">
+
+    <!-- VIOLATION 4: Mixed case protocol -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ffff00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="HtTpS://example.com/photo.gif"
+         data-expected-violation="true"
+         data-violation-reason="Mixed case https protocol">
+
+    <!-- VIOLATION 5: FTP with port number -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff00ff' width='100' height='100'/%3E%3C/svg%3E"
+         alt="ftp://ftp.example.com:21/public/images/banner.png"
+         data-expected-violation="true"
+         data-violation-reason="FTP URL with port number">
+
+    <!-- PASS 1: Relative path (not starting with /) -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300ffff' width='100' height='100'/%3E%3C/svg%3E"
+         alt="images/photo.jpg"
+         data-expected-pass="true"
+         data-pass-reason="Relative path not starting with / could be descriptive text like 'images photo'">
+
+    <!-- PASS 2: Text starting with letter then slash -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ffa500' width='100' height='100'/%3E%3C/svg%3E"
+         alt="A/B testing results visualization"
+         data-expected-pass="true"
+         data-pass-reason="Slash in middle of descriptive text">
+
+    <!-- PASS 3: Empty alt (decorative) -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23800080' width='100' height='100'/%3E%3C/svg%3E"
+         alt=""
+         data-expected-pass="true"
+         data-pass-reason="Empty alt for decorative image">
+
+    <!-- PASS 4: Description mentioning web -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23008000' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Web design portfolio showcase"
+         data-expected-pass="true"
+         data-pass-reason="Word 'web' in description but not URL">
+
+    <!-- PASS 5: Description with protocol-like word -->
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23000080' width='100' height='100'/%3E%3C/svg%3E"
+         alt="The file contains important data"
+         data-expected-pass="true"
+         data-pass-reason="Word 'file' in description but not file:// protocol">
+</body>
+</html>

@@ -456,11 +456,10 @@ class ClaudeAnalyzer:
         # Interactive element issues - most specific matching
         if analysis_type == 'interactive':
             # Check for specific interactive patterns
+            # Note: Non-semantic button detection is now handled algorithmically in test_buttons.py
             if 'button' in description or 'click' in description:
-                if 'div' in element or 'span' in element:
-                    return ('AI_ErrNonSemanticButton', ImpactLevel.HIGH)
-                elif 'keyboard' not in description and 'onclick' in description:
-                    return ('AI_ErrClickableWithoutKeyboard', ImpactLevel.HIGH)
+                if 'keyboard' not in description and 'onclick' in description:
+                    return ('ErrClickableWithoutKeyboard', ImpactLevel.HIGH)
             
             if 'toggle' in description or 'expand' in description or 'collapse' in description:
                 if 'aria-expanded' not in description:
@@ -468,29 +467,29 @@ class ClaudeAnalyzer:
             
             if 'menu' in description or 'navigation' in description:
                 if 'aria' not in description:
-                    return ('AI_ErrMenuWithoutARIA', ImpactLevel.HIGH)
-            
+                    return ('ErrMenuWithoutARIA', ImpactLevel.HIGH)
+
             if 'tab' in description:
                 if 'aria-selected' not in description and 'role' not in description:
-                    return ('AI_ErrTabsWithoutARIA', ImpactLevel.HIGH)
-            
+                    return ('ErrTabpanelWithoutARIA', ImpactLevel.HIGH)
+
             if 'accordion' in description:
-                return ('AI_ErrAccordionWithoutARIA', ImpactLevel.HIGH)
-            
+                return ('ErrAccordionWithoutARIA', ImpactLevel.HIGH)
+
             if 'carousel' in description or 'slider' in description:
-                return ('AI_ErrCarouselWithoutARIA', ImpactLevel.HIGH)
-            
+                return ('ErrCarouselWithoutARIA', ImpactLevel.HIGH)
+
             if 'tooltip' in description:
-                return ('AI_WarnTooltipIssue', ImpactLevel.MEDIUM)
-            
+                return ('ErrTooltipWithoutARIA', ImpactLevel.MEDIUM)
+
             if 'dropdown' in description:
-                return ('AI_ErrDropdownWithoutARIA', ImpactLevel.HIGH)
-            
+                return ('ErrDropdownWithoutARIA', ImpactLevel.HIGH)
+
             if 'dialog' in description or 'modal' in description:
-                return ('AI_ErrDialogWithoutARIA', ImpactLevel.HIGH)
-            
+                return ('ErrDialogMissingRole', ImpactLevel.HIGH)
+
             # Generic interactive issue fallback
-            return ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH)
+            return ('ErrInteractiveElementIssue', ImpactLevel.HIGH)
         
         # Heading issues
         elif analysis_type == 'headings':
@@ -527,7 +526,6 @@ class ClaudeAnalyzer:
             'wrong_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
             'unmarked_foreign': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
             'interactive_issue': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
-            'non_semantic_button': ('AI_ErrNonSemanticButton', ImpactLevel.HIGH),
             'missing_aria': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
             'visual_cue': ('AI_InfoVisualCue', ImpactLevel.LOW)
         }

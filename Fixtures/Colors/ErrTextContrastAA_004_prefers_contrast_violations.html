@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTextContrastAA - Prefers-Contrast Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTextContrastAA_004_prefers_contrast_violations",
+    "issueId": "ErrTextContrastAA",
+    "expectedViolationCount": 18,
+    "expectedPassCount": 0,
+    "description": "Text with insufficient contrast in prefers-contrast media queries (default and pseudoclass states) - tested at 3 breakpoints: 320px, 768px, 1024px",
+    "wcag": "1.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            background: #ffffff;
+            color: #000000;
+            font-size: 16px;
+            padding: 20px;
+        }
+
+        /* Default styles - good contrast */
+        .text-default-bad-in-high-contrast {
+            color: #000000; /* 21:1 - passes AA */
+        }
+
+        .link-default-bad-in-high-contrast {
+            color: #000000; /* 21:1 - passes AA */
+        }
+        .link-default-bad-in-high-contrast:hover {
+            color: #0000ff; /* 8.59:1 - passes AA */
+        }
+
+        /* In prefers-contrast: more, use colors that FAIL */
+        @media (prefers-contrast: more) {
+            /* Default state fails in high contrast mode */
+            .text-default-bad-in-high-contrast {
+                color: #999999; /* 2.85:1 - fails AA */
+            }
+
+            /* Link default state fails in high contrast mode */
+            .link-default-bad-in-high-contrast {
+                color: #aaaaaa; /* 2.32:1 - fails AA */
+            }
+
+            /* Link hover state fails in high contrast mode */
+            .link-default-bad-in-high-contrast:hover {
+                color: #bbbbbb; /* 1.97:1 - fails AA */
+            }
+
+            /* Link focus state fails in high contrast mode */
+            .link-focus-bad-in-high-contrast:focus {
+                color: #cccccc; /* 1.64:1 - fails AA */
+            }
+        }
+
+        /* Good link for control */
+        .link-focus-bad-in-high-contrast {
+            color: #000000;
+        }
+
+        @media (prefers-contrast: more) {
+            /* This one has good default but we're testing focus above */
+            .link-focus-bad-in-high-contrast {
+                color: #000000; /* 21:1 - passes */
+            }
+        }
+
+        .good-link {
+            color: #000000;
+        }
+
+        @media (prefers-contrast: more) {
+            .good-link {
+                color: #000000; /* Still good */
+            }
+            .good-link:hover {
+                color: #0000ff; /* Still good */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Prefers-Contrast Media Query Testing</h1>
+
+    <main>
+        <section>
+            <h2>Text with Contrast Issues in High Contrast Mode</h2>
+
+            <p>These elements have good contrast normally but fail when users enable high contrast mode:</p>
+
+            <p class="text-default-bad-in-high-contrast"
+               data-expected-violation="true"
+               data-violation-id="ErrTextContrastAA"
+               data-violation-reason="Text has good contrast (21:1) in default mode but fails in prefers-contrast:more with 2.85:1 contrast">
+                This text fails in high contrast mode (default state)
+            </p>
+
+            <p>
+                <a href="#section1" class="link-default-bad-in-high-contrast"
+                   data-expected-violation="true"
+                   data-violation-id="ErrTextContrastAA"
+                   data-violation-reason="Link has good contrast normally but fails in prefers-contrast:more default state with 2.32:1 contrast">
+                    Link with bad default in high contrast
+                </a>
+            </p>
+
+            <p>
+                <a href="#section2" class="link-default-bad-in-high-contrast"
+                   data-expected-violation="true"
+                   data-violation-id="ErrTextContrastAA"
+                   data-violation-reason="Link has good contrast normally but fails in prefers-contrast:more :hover state with 1.97:1 contrast">
+                    Link with bad hover in high contrast
+                </a>
+                (same link as above, testing hover)
+            </p>
+
+            <p>
+                <a href="#section3" class="link-focus-bad-in-high-contrast"
+                   data-expected-violation="true"
+                   data-violation-id="ErrTextContrastAA"
+                   data-violation-reason="Link has good contrast normally but fails in prefers-contrast:more :focus state with 1.64:1 contrast">
+                    Link with bad focus in high contrast
+                </a>
+            </p>
+
+            <p>
+                <a href="#section4" class="good-link">
+                    Link that passes in all states and modes
+                </a>
+            </p>
+        </section>
+
+        <div id="section1"><h3>Section 1</h3></div>
+        <div id="section2"><h3>Section 2</h3></div>
+        <div id="section3"><h3>Section 3</h3></div>
+        <div id="section4"><h3>Section 4</h3></div>
+    </main>
+
+    <footer>
+        <p><small>Note: Users with vision impairments often enable high contrast mode. Sites must ensure adequate contrast even in this mode.</small></p>
+    </footer>
+</body>
+</html>

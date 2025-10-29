@@ -94,10 +94,6 @@ WHAT_GENERIC_ADDITIONS = {
     'ErrInaccessibleFont': "Font being used is known to be difficult to read",
     'WarnFontNotInRecommenedListForA11y': "Font is not included in the recommended list of accessibility-friendly fonts",
 
-    # In-page link targets
-    'ErrInPageTargetWrongTabindex': "Element is the target of in-page links but has incorrect tabindex value",
-    'WarnMissingNegativeTabindex': "Element is the target of in-page links but lacks tabindex attribute",
-
     # Page title issues
     'WarnPageTitleTooLong': "Page title exceeds the recommended character limit",
     'WarnPageTitleTooShort': "Page title is potentially not descriptive enough",

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInputFocusColorChangeOnly - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInputFocusColorChangeOnly_001_violations_color_only",
+    "issueId": "ErrInputFocusColorChangeOnly",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Input fields with only border color change on focus (violates WCAG 1.4.1 Use of Color)",
+    "wcag": "2.4.7, 1.4.1",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        /* Basic input styling */
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        /* VIOLATION 1: Only border color changes (gray → blue) */
+        .color-only-1 {
+            border: 1px solid #ccc;
+        }
+        .color-only-1:focus {
+            outline: none;
+            border-color: #0066cc; /* Only color changes, not width */
+        }
+
+        /* VIOLATION 2: Only border color changes (gray → red) */
+        .color-only-2 {
+            border: 1px solid #999;
+        }
+        .color-only-2:focus {
+            outline: 0;
+            border-color: #cc0000; /* Only color changes */
+        }
+
+        /* VIOLATION 3: textarea with only border color change */
+        .textarea-color-only {
+            border: 2px solid #aaa;
+        }
+        .textarea-color-only:focus {
+            outline: none;
+            border-color: #00aa00; /* Only color changes, width stays 2px */
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: Input Focus with Only Color Change</h1>
+
+    <p>These input fields change only border color on focus without structural changes,
+       violating WCAG 1.4.1 Use of Color (Level A).</p>
+
+    <section>
+        <h2>VIOLATION 1: Border color gray → blue (no width change)</h2>
+        <label for="input1">Username</label>
+        <input type="text"
+               id="input1"
+               class="color-only-1"
+               data-expected-violation="true"
+               data-violation-id="ErrInputColorChangeOnly"
+               data-violation-reason="Border color changes from gray to blue with no structural change">
+    </section>
+
+    <section>
+        <h2>VIOLATION 2: Border color gray → red (no width change)</h2>
+        <label for="input2">Email</label>
+        <input type="email"
+               id="input2"
+               class="color-only-2"
+               data-expected-violation="true"
+               data-violation-id="ErrInputColorChangeOnly"
+               data-violation-reason="Border color changes with no structural indicator">
+    </section>
+
+    <section>
+        <h2>VIOLATION 3: Textarea with only color change</h2>
+        <label for="textarea1">Message</label>
+        <textarea id="textarea1"
+                  class="textarea-color-only"
+                  rows="4"
+                  data-expected-violation="true"
+                  data-violation-id="ErrInputColorChangeOnly"
+                  data-violation-reason="Textarea border color changes with no structural indicator"></textarea>
+    </section>
+</body>
+</html>

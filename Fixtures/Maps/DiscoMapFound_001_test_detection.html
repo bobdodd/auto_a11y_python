@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoMapFound - Detection Test</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoMapFound_001_test_detection",
+    "issueId": "DiscoMapFound",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 0,
+    "description": "Test map detection and discovery reporting - should discover Google Maps iframe with metadata",
+    "wcag": "N/A",
+    "impact": "Informational"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        section {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Map Detection Test</h1>
+
+    <main>
+        <section>
+            <h2>Office Location</h2>
+            <p>Visit our office using the map below:</p>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.123456789!2d-73.987654!3d40.748567"
+                    width="600"
+                    height="450"
+                    style="border:0;"
+                    title="Map showing downtown office location"
+                    data-requires-review="true"
+                    data-review-reason="Should discover this Google Maps iframe with provider metadata"></iframe>
+        </section>
+    </main>
+</body>
+</html>

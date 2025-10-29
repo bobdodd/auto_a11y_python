@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaLabelledby - Heuristic Dialog Detection Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby_005_violations_heuristic",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Heuristic-detected dialogs (high z-index + modal/dialog classes) missing aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Heuristic Dialog Detection</h1>
+
+    <!-- Violation 1: High z-index + "modal" class, no aria-labelledby -->
+    <div class="modal" style="display: block; position: fixed; z-index: 1500; width: 300px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="Modal class with high z-index but no aria-labelledby">
+        <h2 id="heuristic-title-1">Cookie Consent</h2>
+        <p>This site uses cookies.</p>
+        <button>Accept</button>
+        <button>Decline</button>
+    </div>
+
+    <!-- Violation 2: High z-index + "dialog" class, no aria-labelledby -->
+    <div class="dialog" style="display: block; position: fixed; z-index: 2000; top: 220px; width: 350px; height: 180px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="Dialog class with high z-index but no aria-labelledby">
+        <h2 id="heuristic-title-2">Newsletter Signup</h2>
+        <p>Subscribe to our updates.</p>
+        <input type="email" placeholder="Your email">
+        <button>Subscribe</button>
+    </div>
+
+    <!-- Violation 3: High z-index + "alert" class, meets size requirements -->
+    <div class="alert" style="display: block; position: fixed; z-index: 1800; top: 420px; width: 280px; height: 150px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="Alert class with high z-index but no aria-labelledby">
+        <h2 id="heuristic-title-3">Connection Lost</h2>
+        <p>Please check your network.</p>
+        <button>Retry</button>
+    </div>
+
+    <!-- Violation 4: High z-index + multiple keywords in class -->
+    <div class="popup-modal-dialog" style="display: block; position: fixed; z-index: 2500; top: 590px; width: 320px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="Multiple modal keywords in class but no aria-labelledby">
+        <h2 id="heuristic-title-4">Survey</h2>
+        <p>How satisfied are you?</p>
+        <button>Very Satisfied</button>
+        <button>Neutral</button>
+        <button>Dissatisfied</button>
+    </div>
+</body>
+</html>

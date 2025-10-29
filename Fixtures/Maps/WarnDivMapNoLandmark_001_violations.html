@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnDivMapNoLandmark - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnDivMapNoLandmark_001_violations",
+    "issueId": "WarnDivMapNoLandmark",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "expectedWarningCount": 0,
+    "description": "Div-based maps with preceding heading but not in landmark region (best practice issue)",
+    "wcag": "Best Practice",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <p><strong>Regional Maps</strong></p>
+
+    <!-- Warning 1: Leaflet map with h2 but no landmark -->
+    <h2>Store Locations</h2>
+    <p>Find a store near you:</p>
+        <div id="leaflet-map-stores"
+             class="leaflet-container"
+             aria-label="Interactive map showing store locations"
+             data-expected-warning="true"
+             data-warning-id="WarnDivMapNoLandmark"
+             data-warning-reason="Leaflet map has preceding h2 heading which provides some structure, but map is not wrapped in landmark region. Best practice is to wrap map in <section> with aria-label for better navigation. Users can find via heading but not via landmark navigation."
+             style="width: 600px; height: 450px;">
+        </div>
+
+        <!-- Some content in between -->
+        <p>We have stores across the country. Use the zoom controls to explore specific regions.</p>
+
+        <!-- Warning 2: Mapbox map with h3 but no landmark -->
+        <h3>Delivery Coverage Areas</h3>
+        <p>Areas where we offer delivery service:</p>
+        <div id="mapbox-delivery"
+             class="mapboxgl-map"
+             data-expected-warning="true"
+             data-warning-id="WarnDivMapNoLandmark"
+             data-warning-reason="Mapbox map preceded by h3 heading (acceptable structure) but not in landmark. While findable via heading navigation, landmark wrapping would improve accessibility. Best practice: wrap in <section role='region' aria-label='Delivery coverage map'>."
+             style="width: 600px; height: 450px;">
+        </div>
+
+        <!-- More content -->
+        <article>
+            <h2>Service Information</h2>
+            <p>Details about our service areas...</p>
+        </article>
+
+        <!-- Warning 3: Google Maps div with h2 but no landmark -->
+        <h2>Regional Offices</h2>
+        <p>Our office locations nationwide:</p>
+        <div id="google-map-offices"
+             class="map"
+             data-expected-warning="true"
+             data-warning-id="WarnDivMapNoLandmark"
+             data-warning-reason="Google Maps div preceded by h2 heading (meets minimum structural requirement) but not in landmark region. Landmark wrapping would provide better context and navigation. Best practice recommendation."
+             style="width: 600px; height: 450px; background: #f5f5f5;">
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Regional Services. All rights reserved.</p>
+    </footer>
+</body>
+</html>

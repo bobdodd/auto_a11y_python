@@ -3608,6 +3608,22 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
                     min_line_height = font_size * 1.5
                     desc[key] = desc[key].replace('{minLineHeight}', f"{min_line_height:.2f}")
 
+                # Special handling for contrast ratio placeholders
+                # The test sends: textColor, backgroundColor, contrastRatio
+                # But descriptions use: {fg}, {bg}, {ratio}
+                if '{ratio}' in desc[key] and 'contrastRatio' in metadata:
+                    contrast_ratio = metadata.get('contrastRatio', '')
+                    # Remove ":1" suffix if present
+                    if isinstance(contrast_ratio, str) and contrast_ratio.endswith(':1'):
+                        contrast_ratio = contrast_ratio[:-2]
+                    desc[key] = desc[key].replace('{ratio}', str(contrast_ratio))
+
+                if '{fg}' in desc[key] and 'textColor' in metadata:
+                    desc[key] = desc[key].replace('{fg}', str(metadata.get('textColor', '')))
+
+                if '{bg}' in desc[key] and 'backgroundColor' in metadata:
+                    desc[key] = desc[key].replace('{bg}', str(metadata.get('backgroundColor', '')))
+
                 # Replace nested metadata placeholders (e.g., {currentElement.tag})
                 import re
                 nested_pattern = r'\{([^}]+)\}'

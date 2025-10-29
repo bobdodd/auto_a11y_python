@@ -51,11 +51,43 @@ def enrich_test_result_with_catalog(test_result):
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
                 # Add enriched metadata
                 violation.metadata['title'] = catalog_info.get('type', '')
-                violation.metadata['what'] = catalog_info['description']
+
+                # Get descriptions with placeholders
+                what_template = catalog_info['description']
+                why_template = catalog_info['why_it_matters']
+                how_template = catalog_info['how_to_fix']
+
+                # Fill in placeholders from violation data (for contrast violations)
+                placeholder_values = {}
+                if hasattr(violation, 'metadata') and violation.metadata:
+                    # Extract contrast ratio without ":1" suffix if present
+                    contrast_ratio = violation.metadata.get('contrastRatio', '')
+                    if isinstance(contrast_ratio, str) and contrast_ratio.endswith(':1'):
+                        contrast_ratio = contrast_ratio[:-2]
+
+                    # Convert all values to strings for format()
+                    placeholder_values = {
+                        'ratio': str(contrast_ratio) if contrast_ratio else '',
+                        'fg': str(violation.metadata.get('textColor', '')),
+                        'bg': str(violation.metadata.get('backgroundColor', '')),
+                        'fontSize': str(violation.metadata.get('fontSize', '')),
+                        'breakpoint': str(violation.metadata.get('breakpoint', ''))
+                    }
+
+                # Replace placeholders in templates
+                try:
+                    violation.metadata['what'] = what_template.format(**placeholder_values)
+                    violation.metadata['why'] = why_template.format(**placeholder_values)
+                    violation.metadata['how'] = how_template.format(**placeholder_values)
+                except (KeyError, ValueError):
+                    # If placeholder replacement fails, use templates as-is
+                    violation.metadata['what'] = what_template
+                    violation.metadata['why'] = why_template
+                    violation.metadata['how'] = how_template
+
                 violation.metadata['what_generic'] = catalog_info['description']  # Always store generic for grouped headers
-                violation.metadata['why'] = catalog_info['why_it_matters']
                 violation.metadata['who'] = catalog_info['who_it_affects']
-                violation.metadata['how'] = catalog_info['how_to_fix']
+
                 # Handle WCAG criteria properly
                 wcag = catalog_info.get('wcag', [])
                 if isinstance(wcag, list) and wcag:

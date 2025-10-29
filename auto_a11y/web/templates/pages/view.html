@@ -573,12 +573,40 @@
                                         {% endif %}
                                     </button>
                                 </h2>
-                                <div id="viol-group-{{ viol_counter.value }}" 
+                                <div id="viol-group-{{ viol_counter.value }}"
                                      class="accordion-collapse collapse">
                                     <div class="accordion-body">
-                                        <div class="accordion" id="viol-group-instances-{{ viol_counter.value }}">
+                                        {% set has_breakpoints = group_list[0].metadata and group_list[0].metadata.breakpoint %}
+
+                                        {% if has_breakpoints %}
+                                            {# Group by breakpoint for contrast violations #}
+                                            {% set breakpoint_groups = group_list|groupby('metadata.breakpoint') %}
+                                            <div class="accordion" id="viol-group-breakpoints-{{ viol_counter.value }}">
+                                            {% for breakpoint, breakpoint_violations in breakpoint_groups %}
+                                                {% set breakpoint_list = breakpoint_violations|list %}
+                                                {% set breakpoint_id = viol_counter.value ~ '-bp-' ~ (breakpoint if breakpoint else 'none') %}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#viol-breakpoint-{{ breakpoint_id }}">
+                                                            <span class="badge bg-info me-2">{{ breakpoint_list|length }}</span>
+                                                            <strong>Breakpoint: {{ breakpoint }}px width</strong>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="viol-breakpoint-{{ breakpoint_id }}"
+                                                         class="accordion-collapse collapse"
+                                                         data-bs-parent="#viol-group-breakpoints-{{ viol_counter.value }}">
+                                                        <div class="accordion-body">
+                                                            <div class="accordion" id="viol-breakpoint-instances-{{ breakpoint_id }}">
+                                                            {% for violation in breakpoint_list %}
+                                                            {% set instance_id = breakpoint_id ~ '-' ~ loop.index %}
+                                        {% else %}
+                                            {# No breakpoints - use regular instance grouping #}
+                                            <div class="accordion" id="viol-group-instances-{{ viol_counter.value }}">
                                             {% for violation in group_list %}
                                             {% set instance_id = viol_counter.value ~ '-' ~ loop.index %}
+                                        {% endif %}
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button"
@@ -903,7 +931,16 @@
                                                 </div>
                                             </div>
                                             {% endfor %}
-                                        </div>
+                                            {% if has_breakpoints %}
+                                                            </div> {# Close viol-breakpoint-instances #}
+                                                        </div> {# Close accordion-body #}
+                                                    </div> {# Close viol-breakpoint collapse #}
+                                                </div> {# Close accordion-item #}
+                                            {% endfor %} {# End breakpoint loop #}
+                                            </div> {# Close viol-group-breakpoints #}
+                                        {% else %}
+                                            </div> {# Close viol-group-instances #}
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

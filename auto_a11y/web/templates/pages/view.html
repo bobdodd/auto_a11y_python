@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{# NOTE: Due to template complexity, instance HTML rendering is duplicated in two places below.
+   Search for "INSTANCE_HTML_START" to find both locations. Keep them in sync. #}
+
 {% block title %}{{ page.title or page.url }} - Auto A11y{% endblock %}
 
 {% block extra_css %}
@@ -601,12 +604,7 @@
                                                             <div class="accordion" id="viol-breakpoint-instances-{{ breakpoint_id }}">
                                                             {% for violation in breakpoint_list %}
                                                             {% set instance_id = breakpoint_id ~ '-' ~ loop.index %}
-                                        {% else %}
-                                            {# No breakpoints - use regular instance grouping #}
-                                            <div class="accordion" id="viol-group-instances-{{ viol_counter.value }}">
-                                            {% for violation in group_list %}
-                                            {% set instance_id = viol_counter.value ~ '-' ~ loop.index %}
-                                        {% endif %}
+                                                            {# INSTANCE_HTML_START - Keep in sync with non-breakpoint path #}
                                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button"
@@ -924,8 +922,8 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            {# INSTANCE_HTML_END #}
                                             {% endfor %}
-                                            {% if has_breakpoints %}
                                                             </div> {# Close viol-breakpoint-instances #}
                                                         </div> {# Close accordion-body #}
                                                     </div> {# Close viol-breakpoint collapse #}
@@ -933,7 +931,331 @@
                                             {% endfor %} {# End breakpoint loop #}
                                             </div> {# Close viol-group-breakpoints #}
                                         {% else %}
-                                            </div> {# Close viol-group-instances #}
+                                            {# No breakpoints - render instances directly #}
+                                            <div class="accordion" id="viol-group-instances-{{ viol_counter.value }}">
+                                            {% for violation in group_list %}
+                                            {% set instance_id = viol_counter.value ~ '-' ~ loop.index %}
+                                            {# INSTANCE_HTML_START - Keep in sync with breakpoint path #}
+                                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#viol-instance-{{ instance_id }}">
+                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
+                                                        <span class="ms-2">{{ violation.metadata.duplicateName }}</span>
+                                                        {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
+                                                        <span class="ms-2">Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}</span>
+                                                        {% elif violation.xpath %}
+                                                        <code class="ms-2">{{ violation.xpath }}</code>
+                                                        {% endif %}
+                                                    </button>
+                                                </h2>
+                                                <div id="viol-instance-{{ instance_id }}" 
+                                                     class="accordion-collapse collapse"
+                                                     data-bs-parent="#viol-group-instances-{{ viol_counter.value }}">
+                                                    <div class="accordion-body">
+                                                        <!-- Full violation details as before -->
+                                                        {% if violation.metadata and violation.metadata.title %}
+                                                        <!-- Enhanced description available -->
+                                                        <div class="alert alert-danger mb-3">
+                                                            <h6 class="alert-heading">{{ violation.description }}</h6>
+                                                        </div>
+                                                        
+                                                        <h6 class="text-danger mb-2">About this issue:</h6>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>What the issue is:</strong>
+                                                            {% if 'ErrLinkAccessibleNameMismatch' in violation.id and violation.description %}
+                                                            <p>{{ violation.description }}</p>
+                                                            {% else %}
+                                                            <p>{{ violation.metadata.what|default(violation.description) }}</p>
+                                                            {% endif %}
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Why this is important:</strong>
+                                                            <p>{{ violation.metadata.why }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>Who it affects:</strong>
+                                                            <p>{{ violation.metadata.who }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>How to remediate:</strong>
+                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
+                                                        </div>
+
+                                                        {% if violation.metadata.wcag_full or violation.wcag_criteria %}
+                                                        <h6 class="text-danger mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <div class="mb-3">
+                                                            {% if violation.metadata.wcag_full %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in violation.metadata.wcag_full %}
+                                                                <li>{{ criterion|safe }}</li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% elif violation.wcag_criteria %}
+                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <ul>
+                                                            {% for criterion in violation.wcag_criteria %}
+                                                                <li>
+                                                                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                                                        {{ criterion }}
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% endif %}
+                                                        {% else %}
+                                                        <!-- Standard description -->
+                                                        <p><strong>Rule:</strong> {{ violation.rule_id|default(violation.id) }}</p>
+                                                        <p><strong>Help:</strong> {{ violation.help_text|default(violation.description) }}</p>
+                                                        {% if violation.failure_summary %}
+                                                        <p><strong>How to fix:</strong> {{ violation.failure_summary }}</p>
+                                                        {% endif %}
+                                                        {% endif %}
+                                                        
+                                                        <hr>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <p><strong>Touchpoint:</strong> {{ violation.touchpoint|default('General') }}</p>
+                                                                <p><strong>Impact:</strong> 
+                                                                    <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
+                                                                        {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
+                                                                    </span>
+                                                                </p>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                {% if violation.metadata.wcag_full %}
+                                                                    {% for criterion in violation.metadata.wcag_full|sort %}
+                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                                                        <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                                                            WCAG {{ criterion|safe }}
+                                                                        </p>
+                                                                        
+                                                                        <p style="margin: 0 0 5px 0;">
+                                                                            <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
+                                                                                More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        <p style="margin: 0;">
+                                                                            <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
+                                                                                Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        
+                                                                    </div>
+                                                                    {% endfor %}
+                                                                {% elif violation.wcag_criteria %}
+                                                                    {% for wcag_criterion in violation.wcag_criteria|sort %}
+                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                                                        <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                                                            WCAG {{ wcag_criterion }}
+                                                                        </p>
+                                                                        
+                                                                        <p style="margin: 0 0 5px 0;">
+                                                                            <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
+                                                                                More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        <p style="margin: 0;">
+                                                                            <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
+                                                                                Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                            </a>
+                                                                        </p>
+                                                                        
+                                                                    </div>
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        {% if (violation.selector or violation.xpath) and 'ErrDuplicateNavNames' not in violation.id %}
+                                                        <p>
+                                                            <strong>Location:</strong> <code>{{ violation.selector|default(violation.xpath) }}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{ violation.selector|default(violation.xpath)|e }}', this)" title="Copy XPath to clipboard">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
+                                                        {% endif %}
+
+                                                        {% if violation.metadata and violation.metadata.pseudoclass %}
+                                                        <p>
+                                                            <strong>CSS State:</strong>
+                                                            {% if '@' in violation.metadata.pseudoclass %}
+                                                                {% set parts = violation.metadata.pseudoclass.split('@') %}
+                                                                <span class="badge bg-warning">{{ parts[0] }}</span>
+                                                                <span class="badge bg-secondary">{{ parts[1] }}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-warning">{{ violation.metadata.pseudoclass }}</span>
+                                                            {% endif %}
+                                                        </p>
+                                                        {% endif %}
+
+                                                        {% if violation.html %}
+                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
+                                                        <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                                        {% elif 'ErrContentObscuring' in violation.id and violation.metadata and 'obscuredElements' in violation.metadata %}
+                                                        <p class="mb-2"><strong>Obscuring element (dialog/overlay):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                                        <h6 class="mt-4">{{ violation.metadata.obscuredCount }} Interactive element(s) being obscured:</h6>
+                                                        {% for element in violation.metadata.obscuredElements %}
+                                                        <div class="mb-3 border-start border-warning border-3 ps-3">
+                                                            <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{element.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
+                                                        <h6 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h6>
+                                                        {% for h1 in violation.metadata.allH1s %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>H1 #{{ h1.index }}:</strong> {{ h1.text }}</p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{h1.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{h1.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrFakeListImplementation' in violation.id and violation.metadata and 'sampleItems' in violation.metadata %}
+                                                        <p class="mb-2"><strong>Detected pattern:</strong> {{ violation.metadata.pattern }}</p>
+                                                        <p class="mb-2"><strong>Number of items found:</strong> {{ violation.metadata.itemCount }}</p>
+                                                        {% if violation.metadata.sampleItems %}
+                                                        <h6 class="mt-4">Sample list items detected:</h6>
+                                                        {% for item in violation.metadata.sampleItems %}
+                                                        <div class="mb-2 border-start border-info border-3 ps-3">
+                                                            <p class="mb-0"><strong>Item {{ item.index }}:</strong> {{ item.text }}</p>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% if violation.metadata.itemCount > 5 %}
+                                                        <p class="text-muted small mt-2">...and {{ violation.metadata.itemCount - 5 }} more items</p>
+                                                        {% endif %}
+                                                        {% endif %}
+                                                        <p class="mb-2 mt-3"><strong>Container element:</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                                        {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
+                                                        <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                                        <h6 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h6>
+                                                        {% for instance in violation.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrDuplicateNavNames' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
+                                                        <h6 class="mt-3">All {{ violation.metadata.totalCount }} navigation elements with the name "{{ violation.metadata.duplicateName }}":</h6>
+                                                        {% for instance in violation.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Navigation {{ instance.index }}:</strong></p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
+                                                        <h6 class="mt-3">{{ violation.metadata.allInstances|length }} element(s) with text smaller than 16px:</h6>
+                                                        {% for instance in violation.metadata.allInstances %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
+                                                            <p class="mb-1 small">Text preview: "{{ instance.text }}"</p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrAnchorTargetTabindex' in violation.id and violation.metadata and violation.metadata.anchorLinksCount %}
+                                                        <h6 class="mt-3">Link target (needs tabindex="-1"):</h6>
+                                                        <p class="mb-2"><strong>Target element:</strong> &lt;{{ violation.element }}&gt; with id="{{ violation.metadata.targetId }}"</p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                                        <h6 class="mt-4">{{ violation.metadata.anchorLinksCount }} anchor link(s) pointing to this target:</h6>
+                                                        {% for anchor in violation.metadata.anchorLinks %}
+                                                        <div class="mb-3">
+                                                            <p class="mb-1"><strong>Link {{ anchor.index }}:</strong> "{{ anchor.text }}"</p>
+                                                            <p class="mb-1 small text-muted">
+                                                            Location: <code>{{anchor.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{anchor.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </p>
+                                                            <pre class="bg-dark text-light p-2 rounded"><code>{{ anchor.html|e }}</code></pre>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% elif 'ErrTabOrderViolation' in violation.id and violation.metadata and 'previousElement' in violation.metadata %}
+                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
+                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousElement.html|e }}</code></pre>
+                                                        <div class="alert alert-info">
+                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
+                                                            <p class="mb-1">• This element: x={{ violation.metadata.currentElement.position.x }}, y={{ violation.metadata.currentElement.position.y }} (tab stop #{{ violation.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• Previous element: x={{ violation.metadata.previousElement.position.x }}, y={{ violation.metadata.previousElement.position.y }} (tab stop #{{ violation.metadata.previousElement.tabIndex }})</p>
+                                                        </div>
+                                                        {% else %}
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
+                                                        {% endif %}
+                                                        {% endif %}
+
+                                                        <!-- Thumbnail of the page at time of test -->
+                                                        {% if screenshot_filename %}
+                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 class="img-thumbnail"
+                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                        </a>
+                                                        <p class="text-muted small mt-1">Click to view full size</p>
+                                                        {% endif %}
+
+                                                        {% if violation.metadata.ai_detected %}
+                                                        <div class="alert alert-info mt-3">
+                                                            <i class="bi bi-robot"></i> <strong>AI Detection Note:</strong>
+                                                            <p class="mb-0">This issue was detected through visual analysis.</p>
+                                                            {% if violation.metadata.ai_confidence %}
+                                                            <p><strong>Confidence:</strong> {{ (violation.metadata.ai_confidence * 100)|round }}%</p>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {# INSTANCE_HTML_END #}
+                                            {% endfor %}
+                                            </div>
                                         {% endif %}
                                     </div>
                                 </div>

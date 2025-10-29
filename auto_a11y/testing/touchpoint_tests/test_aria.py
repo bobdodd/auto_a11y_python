@@ -56,6 +56,15 @@ async def test_aria(page) -> Dict[str, Any]:
                     checks: []
                 };
 
+                // Helper function to safely get className as string (handles SVG elements)
+                function getClassName(element) {
+                    if (!element.className) return '';
+                    // SVG elements have className as SVGAnimatedString object
+                    return typeof element.className === 'string'
+                        ? element.className
+                        : (element.className.baseVal || '');
+                }
+
                 // Function to generate XPath for elements
                 function getFullXPath(element) {
                     if (!element) return '';
@@ -125,7 +134,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 const accordionTriggers = allElements.filter(el => {
                     const tag = el.tagName.toLowerCase();
                     const onclick = el.getAttribute('onclick') || '';
-                    const classes = el.className || '';
+                    const classes = getClassName(el);
 
                     // Pattern 1: Button elements with toggle/accordion functionality
                     const isToggleButton = tag === 'button' &&
@@ -164,7 +173,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 // Test 3: ErrDialogMissingRole
                 // Look for dialog/modal patterns: elements with "dialog" or "modal" in class/id
                 const potentialDialogs = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     const id = (el.id || '').toLowerCase();
                     return (classes.includes('dialog') || classes.includes('modal') ||
                             id.includes('dialog') || id.includes('modal')) &&
@@ -195,7 +204,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 // Test 4: ErrMenuWithoutARIA
                 // Look for menu patterns: elements with "menubar" or containers with menu items
                 const potentialMenus = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     const hasMenubarClass = classes.includes('menubar');
                     const hasMenuClass = classes.split(' ').includes('menu') && !classes.includes('menu-');
                     return (hasMenubarClass || hasMenuClass) && el.tagName.toLowerCase() === 'div';
@@ -204,7 +213,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 checksRun += potentialMenus.length;
                 potentialMenus.forEach(menu => {
                     const role = menu.getAttribute('role');
-                    const classes = (menu.className || '').toLowerCase();
+                    const classes = getClassName(menu).toLowerCase();
                     const hasMenuItems = menu.querySelectorAll('[class*="menu-item"]').length > 0;
 
                     // Only check if it has menu items (it's an actual menu pattern)
@@ -261,7 +270,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 // Test 6: ErrMissingInteractiveRole
                 // Look for custom controls (checkbox, radio, switch, slider patterns) without roles
                 const customControls = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     return (classes.includes('custom-checkbox') || classes.includes('custom-radio') ||
                             classes.includes('custom-switch') || classes.includes('custom-slider')) &&
                            el.hasAttribute('tabindex');
@@ -270,7 +279,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 checksRun += customControls.length;
                 customControls.forEach(control => {
                     const role = control.getAttribute('role');
-                    const classes = (control.className || '').toLowerCase();
+                    const classes = getClassName(control).toLowerCase();
 
                     let expectedRole = '';
                     if (classes.includes('checkbox')) expectedRole = 'checkbox';
@@ -298,7 +307,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 // Test 7: ErrTabpanelWithoutARIA
                 // Look for tab patterns: buttons with "tab" class without proper ARIA
                 const tabContainers = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     const children = el.querySelectorAll('[class*="tab"]');
                     return classes.includes('tabs') && children.length > 1;
                 });
@@ -335,7 +344,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 // Test 8: ErrTooltipWithoutARIA
                 // Look for tooltip patterns: elements with "tooltip" in class
                 const tooltipTriggers = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     return classes.includes('tooltip-trigger') ||
                            (el.querySelector('[class*="tooltip"]') && !el.querySelector('[role="tooltip"]'));
                 });
@@ -365,7 +374,7 @@ async def test_aria(page) -> Dict[str, Any]:
 
                 // Test 9: WarnSliderWithoutARIA (Warning, not error)
                 const sliderElements = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     return (classes.includes('slider-track') || classes.includes('slider-container')) &&
                            !el.closest('[role="slider"]');
                 });
@@ -391,7 +400,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 // Test 10: WarnSwitchWithoutARIA (Warning, not error)
                 // Look for the main switch control element (not subparts like switch-track, switch-thumb)
                 const switchElements = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     const classList = classes.split(' ');
                     // Only match elements with exactly "switch" class or "switch " (with space after)
                     // This excludes switch-track, switch-thumb, switch-label, etc.
@@ -422,7 +431,7 @@ async def test_aria(page) -> Dict[str, Any]:
 
                 // Test 11: WarnTreeviewWithoutARIA (Warning, not error)
                 const treeContainers = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     return classes.includes('tree') && el.tagName.toLowerCase() === 'ul';
                 });
 
@@ -448,7 +457,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 // Test 12: ErrCarouselWithoutARIA
                 // Look for carousel patterns: elements with carousel/slider classes and navigation controls
                 const carousels = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     const hasCarouselClass = classes.includes('carousel') || classes.includes('slider');
                     const hasSlides = el.querySelectorAll('[class*="slide"]').length > 1 ||
                                      el.querySelectorAll('[class*="carousel-item"]').length > 1;
@@ -519,7 +528,7 @@ async def test_aria(page) -> Dict[str, Any]:
                 // Test 14: ErrDropdownWithoutARIA
                 // Look for dropdown/combobox patterns: select-like elements, dropdowns with class names
                 const dropdowns = allElements.filter(el => {
-                    const classes = (el.className || '').toLowerCase();
+                    const classes = getClassName(el).toLowerCase();
                     const hasDropdownClass = classes.includes('dropdown') || classes.includes('select') ||
                                             classes.includes('combobox');
 

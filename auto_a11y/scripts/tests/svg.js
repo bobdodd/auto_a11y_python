@@ -47,7 +47,7 @@ function svgScrape() {
                 url: window.location.href,
                 type: 'err',
                 cat: 'svg',
-                err: 'ErrSvgImageNoLabel',
+                err: 'ErrSVGNoAccessibleName',
                 xpath: xpath,
                 fpTempId: img.getAttribute('a11y-fpId')
             });

@@ -65,13 +65,13 @@ function imagesScrape() {
                 url: window.location.href,
                 type: 'err',
                 cat: 'img',
-                err: 'ErrImageWithNoAlt',
+                err: 'ErrNoAlt',
                 src: src,
                 xpath: xpath,
                 parentLandmark: element.getAttribute('a11y-parentLandmark'),
                 parentLandmarkXpath: element.getAttribute('a11y-parentLandmark.xpath'),
                 parentLandmarkAN: element.getAttribute('a11y-parentLandmark.an'),
-                fpTempId: element.getAttribute('a11y-fpId')    
+                fpTempId: element.getAttribute('a11y-fpId')
             });
 
         }

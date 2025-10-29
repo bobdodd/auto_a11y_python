@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Starting Timers - Basic Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnAutoStartTimers_001_violations_basic",
+    "issueId": "WarnAutoStartTimers",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page has auto-starting timers (setTimeout and setInterval) - manual review required",
+    "wcag": "2.2.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .content {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .countdown {
+            font-size: 2em;
+            font-weight: bold;
+            color: #d32f2f;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnAutoStartTimers"
+      data-violation-reason="Page contains setTimeout and setInterval that start immediately on page load">
+    <div class="content">
+        <h1>Session Timer</h1>
+        <p>Your session will expire in:</p>
+        <div class="countdown" id="countdown">05:00</div>
+    </div>
+
+    <script>
+        // Auto-starting setInterval - runs immediately on page load
+        let timeLeft = 300; // 5 minutes
+        const countdownEl = document.getElementById('countdown');
+
+        setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
+
+        // Auto-starting setTimeout - also runs on page load
+        setTimeout(() => {
+            console.log('Timer started on page load');
+        }, 100);
+    </script>
+</body>
+</html>

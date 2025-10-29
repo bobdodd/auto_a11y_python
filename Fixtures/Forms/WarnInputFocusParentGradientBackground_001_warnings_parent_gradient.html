@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusParentGradientBackground - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusParentGradientBackground_001_warnings_parent_gradient",
+    "issueId": "WarnInputFocusParentGradientBackground",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Input parents with gradient backgrounds preventing outline contrast verification",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* WARNING 1: Linear gradient parent */
+        .gradient-container-1 {
+            padding: 20px;
+            background: linear-gradient(to bottom, #f0f0f0, #333333);
+            border-radius: 5px;
+        }
+
+        .gradient-container-1 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .gradient-container-1 input:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 3px;
+        }
+
+        /* WARNING 2: Radial gradient parent */
+        .gradient-container-2 {
+            padding: 20px;
+            background: radial-gradient(circle, #ffffff, #999999);
+            border-radius: 5px;
+        }
+
+        .gradient-container-2 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .gradient-container-2 input:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusParentGradientBackground - Warning Examples</h1>
+    <p>Parents with gradients prevent automatic outline contrast verification.</p>
+
+    <div class="gradient-container-1">
+        <label for="input1">Warning 1: Linear gradient parent (light to dark)</label><br>
+        <input type="text" id="input1" placeholder="Parent has linear gradient">
+    </div>
+
+    <br><br>
+
+    <div class="gradient-container-2">
+        <label for="input2">Warning 2: Radial gradient parent</label><br>
+        <input type="text" id="input2" placeholder="Parent has radial gradient">
+    </div>
+</body>
+</html>

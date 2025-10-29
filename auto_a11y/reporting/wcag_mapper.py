@@ -73,7 +73,6 @@ WCAG_CRITERION_SLUGS = {
 # Comprehensive WCAG mapping for all known issue types
 WCAG_MAPPINGS = {
     # Image Issues
-    'ErrImageWithNoAlt': ['1.1.1 Non-text Content'],
     'ErrEmptyAltText': ['1.1.1 Non-text Content'],
     'ErrAltTooLong': ['1.1.1 Non-text Content'],
     'ErrRedundantAlt': ['1.1.1 Non-text Content'],
@@ -114,7 +113,7 @@ WCAG_MAPPINGS = {
 
     # Form Input Focus Issues
     'ErrInputNoVisibleFocus': ['2.4.7 Focus Visible'],
-    'ErrInputColorChangeOnly': ['2.4.7 Focus Visible', '1.4.1 Use of Color'],
+    'ErrInputFocusColorChangeOnly': ['2.4.7 Focus Visible', '1.4.1 Use of Color'],
     'ErrInputFocusContrastFail': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
     'ErrInputSingleSideBoxShadow': ['2.4.7 Focus Visible'],
     'ErrInputBorderChangeInsufficient': ['2.4.7 Focus Visible'],
@@ -123,6 +122,11 @@ WCAG_MAPPINGS = {
     'WarnInputDefaultFocus': ['2.4.7 Focus Visible'],
     'WarnInputFocusGradientBackground': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
     'WarnInputTransparentFocus': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnInputFocusZIndexFloating': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnInputFocusParentZIndexFloating': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnInputFocusOutlineExceedsParent': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnInputFocusParentGradientBackground': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
+    'WarnInputFocusParentImageBackground': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
 
     # Landmark Issues
     'ErrNoMainLandmark': ['1.3.1 Info and Relationships', '2.4.1 Bypass Blocks'],
@@ -146,7 +150,11 @@ WCAG_MAPPINGS = {
     
     # Color/Contrast Issues
     'ErrTextContrast': ['1.4.3 Contrast (Minimum)'],
-    'ErrInsufficientContrast': ['1.4.3 Contrast (Minimum)'],
+    'ErrTextContrastAA': ['1.4.3 Contrast (Minimum)'],
+    'ErrLargeTextContrastAA': ['1.4.3 Contrast (Minimum)'],
+    'ErrTextContrastAAA': ['1.4.6 Contrast (Enhanced)'],
+    'ErrLargeTextContrastAAA': ['1.4.6 Contrast (Enhanced)'],
+    'WarnTextContrastCannotCalculate': ['1.4.3 Contrast (Minimum)'],
     'ErrLinkContrast': ['1.4.3 Contrast (Minimum)', '1.4.1 Use of Color'],
     'WarnColorRelatedStyleDefinedExplicitlyInElement': ['1.4.1 Use of Color'],
     'WarnColorRelatedStyleDefinedExplicitlyInStyleTag': ['1.4.1 Use of Color'],
@@ -166,7 +174,6 @@ WCAG_MAPPINGS = {
     'WarnZeroOutlineOffset': ['2.4.7 Focus Visible'],
 
     # Button Focus Issues
-    'ErrButtonOutlineNoneNoBoxShadow': ['2.4.7 Focus Visible', '1.4.1 Use of Color'],
     'ErrButtonFocusContrastFail': ['2.4.7 Focus Visible', '1.4.11 Non-text Contrast'],
     'ErrButtonOutlineWidthInsufficient': ['2.4.7 Focus Visible', '2.4.11 Focus Appearance'],
     'ErrButtonOutlineOffsetInsufficient': ['2.4.7 Focus Visible'],
@@ -225,9 +232,8 @@ WCAG_MAPPINGS = {
     'ErrPageTitleTooShort': ['2.4.2 Page Titled'],
     'ErrMultiplePageTitles': ['2.4.2 Page Titled'],
     'WarnMultipleTitleElements': ['2.4.2 Page Titled'],  # Deprecated - use ErrMultiplePageTitles
-    
+
     # SVG Issues
-    'ErrSvgImageNoLabel': ['1.1.1 Non-text Content'],
     'ErrSvgStaticWithoutRole': ['1.1.1 Non-text Content', '4.1.2 Name, Role, Value'],
     'DiscoInteractiveSvg': [],  # Discovery - manual review required
     'DiscoFoundSvgImage': [],  # Discovery
@@ -256,7 +262,10 @@ WCAG_MAPPINGS = {
     'ErrTitleAttrFound': ['3.3.2 Labels or Instructions'],
     'ErrElementHasNoText': ['1.3.1 Info and Relationships'],
     'DiscoElementFound': [],  # Discovery
-    
+
+    # List Issues
+    'ErrListitemEmpty': ['1.3.1 Info and Relationships', '4.1.2 Name, Role, Value'],
+
     # Tabindex Issues
     'ErrInvalidTabindex': ['2.4.3 Focus Order'],
     'ErrPositiveTabindex': ['2.4.3 Focus Order'],

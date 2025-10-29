@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageAltContainsHTML - HTML Entities vs Tags</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageAltContainsHTML_004_html_entities",
+    "issueId": "ErrImageAltContainsHTML",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 6,
+    "description": "HTML entities should pass (not tags), ensuring we only catch actual tags",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>ErrImageAltContainsHTML - HTML Entities (Should Pass)</h1>
+
+    <!-- PASS 1: Common HTML entities -->
+    <h2>Pass 1: Common HTML entities</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ff6600' width='100' height='100'/%3E%3C/svg%3E"
+         alt="A &amp; B Company &copy; 2024"
+         data-expected-pass="true"
+         data-pass-reason="HTML entities (&amp;, &copy;) are character references, not tags">
+
+    <!-- PASS 2: Non-breaking space -->
+    <h2>Pass 2: Non-breaking space entity</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300aa00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Price:&nbsp;$299"
+         data-expected-pass="true"
+         data-pass-reason="&nbsp; is an entity, not a tag">
+
+    <!-- PASS 3: Quote entities -->
+    <h2>Pass 3: Quote entities</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%230000aa' width='100' height='100'/%3E%3C/svg%3E"
+         alt="She said &quot;hello&quot; to everyone"
+         data-expected-pass="true"
+         data-pass-reason="&quot; is an entity for quotation marks">
+
+    <!-- PASS 4: Mathematical symbols as entities -->
+    <h2>Pass 4: Mathematical symbol entities</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23aa00aa' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Formula: x &lt; y &gt; z"
+         data-expected-pass="true"
+         data-pass-reason="&lt; and &gt; are entities, not angle brackets for tags">
+
+    <!-- PASS 5: Currency symbols -->
+    <h2>Pass 5: Currency symbol entities</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23aaaa00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Price: &euro;50 or &pound;45"
+         data-expected-pass="true"
+         data-pass-reason="Currency entities are not tags">
+
+    <!-- PASS 6: Registered trademark -->
+    <h2>Pass 6: Trademark entity</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300aaaa' width='100' height='100'/%3E%3C/svg%3E"
+         alt="ProductName&reg; Logo"
+         data-expected-pass="true"
+         data-pass-reason="&reg; is an entity for registered trademark symbol">
+</body>
+</html>

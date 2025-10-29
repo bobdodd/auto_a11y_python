@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTextContrastAA - Interactive vs Link Pseudoclasses</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTextContrastAA_006_interactive_vs_link_pseudoclasses",
+    "issueId": "ErrTextContrastAA",
+    "expectedViolationCount": 33,
+    "expectedPassCount": 0,
+    "description": "Tests distinction between link-specific pseudoclasses (:link, :visited) and general interactive pseudoclasses (:hover, :focus, :active) across different element types - tested at 3 breakpoints. Note: first link reports both default and :link state as they share the same poor contrast.",
+    "wcag": "1.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            background: #ffffff;
+            color: #000000;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        /* ===== LINK ELEMENTS - Should test :link, :visited, :hover, :focus, :active ===== */
+
+        /* Link with bad :link state */
+        .link-bad-link {
+            /* Don't set default color - let :link and :visited handle it */
+        }
+        .link-bad-link:link {
+            color: #aaaaaa;
+            /* Contrast ratio: 2.32:1 - fails AA */
+        }
+        .link-bad-link:visited {
+            color: #000000; /* Good contrast */
+        }
+        .link-bad-link:hover {
+            color: #000000; /* Good contrast */
+        }
+
+        /* Link with bad :visited state */
+        .link-bad-visited {
+            color: #000000; /* Good contrast */
+        }
+        .link-bad-visited:visited {
+            color: #bbbbbb;
+            /* Contrast ratio: 1.87:1 - fails AA */
+        }
+
+        /* Link with bad :hover state */
+        .link-bad-hover {
+            color: #000000; /* Good contrast */
+        }
+        .link-bad-hover:hover {
+            color: #cccccc;
+            /* Contrast ratio: 1.61:1 - fails AA */
+        }
+
+        /* Link with bad :focus state */
+        .link-bad-focus {
+            color: #000000; /* Good contrast */
+        }
+        .link-bad-focus:focus {
+            color: #dddddd;
+            /* Contrast ratio: 1.42:1 - fails AA */
+        }
+
+        /* Link with bad :active state */
+        .link-bad-active {
+            color: #000000; /* Good contrast */
+        }
+        .link-bad-active:active {
+            color: #eeeeee;
+            /* Contrast ratio: 1.27:1 - fails AA */
+        }
+
+        /* ===== BUTTON ELEMENTS - Should NOT test :link or :visited ===== */
+
+        /* Button with :link style (should be ignored - buttons aren't links) */
+        .button-with-link-style {
+            color: #000000; /* Good contrast */
+        }
+        .button-with-link-style:link {
+            color: #999999;
+            /* This should be IGNORED - buttons don't have :link state */
+        }
+
+        /* Button with bad :hover state */
+        .button-bad-hover {
+            color: #000000; /* Good contrast */
+        }
+        .button-bad-hover:hover {
+            color: #aaaaaa;
+            /* Contrast ratio: 2.32:1 - fails AA */
+        }
+
+        /* Button with bad :focus state */
+        .button-bad-focus {
+            color: #000000; /* Good contrast */
+        }
+        .button-bad-focus:focus {
+            color: #bbbbbb;
+            /* Contrast ratio: 1.87:1 - fails AA */
+        }
+
+        /* Button with bad :active state */
+        .button-bad-active {
+            color: #000000; /* Good contrast */
+        }
+        .button-bad-active:active {
+            color: #cccccc;
+            /* Contrast ratio: 1.61:1 - fails AA */
+        }
+
+        /* ===== DIV WITH ROLE="LINK" - Should test like links ===== */
+
+        .div-link-bad-hover {
+            color: #000000; /* Good contrast */
+            cursor: pointer;
+        }
+        .div-link-bad-hover:hover {
+            color: #dddddd;
+            /* Contrast ratio: 1.42:1 - fails AA */
+        }
+
+        /* ===== DIV WITH ROLE="BUTTON" - Should test like buttons (no :link/:visited) ===== */
+
+        .div-button-bad-focus {
+            color: #000000; /* Good contrast */
+            cursor: pointer;
+        }
+        .div-button-bad-focus:focus {
+            color: #eeeeee;
+            /* Contrast ratio: 1.27:1 - fails AA */
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive vs Link Pseudoclass Testing</h1>
+
+    <section>
+        <h2>Links (should test :link, :visited, :hover, :focus, :active)</h2>
+
+        <p>
+            <a href="#test1" class="link-bad-link"
+               data-expected-violation=":link"
+               data-violation-reason="Link in :link state has 2.32:1 contrast, failing AA requirement. This affects unvisited links.">
+                Link with bad :link state
+            </a>
+        </p>
+
+        <p>
+            <a href="#test2" class="link-bad-visited"
+               data-expected-violation=":visited"
+               data-violation-reason="Link in :visited state has 1.87:1 contrast, failing AA requirement. This affects previously visited links.">
+                Link with bad :visited state
+            </a>
+        </p>
+
+        <p>
+            <a href="#test3" class="link-bad-hover"
+               data-expected-violation=":hover"
+               data-violation-reason="Link in :hover state has 1.61:1 contrast, failing AA requirement. This affects mouse hover interaction.">
+                Link with bad :hover state
+            </a>
+        </p>
+
+        <p>
+            <a href="#test4" class="link-bad-focus"
+               data-expected-violation=":focus"
+               data-violation-reason="Link in :focus state has 1.42:1 contrast, failing AA requirement. This affects keyboard navigation.">
+                Link with bad :focus state
+            </a>
+        </p>
+
+        <p>
+            <a href="#test5" class="link-bad-active"
+               data-expected-violation=":active"
+               data-violation-reason="Link in :active state has 1.27:1 contrast, failing AA requirement. This affects the moment of clicking.">
+                Link with bad :active state
+            </a>
+        </p>
+    </section>
+
+    <section>
+        <h2>Buttons (should test :hover, :focus, :active but NOT :link or :visited)</h2>
+
+        <p>
+            <button class="button-with-link-style"
+                    data-expected-pass="true"
+                    data-pass-reason="Button has good contrast in default state. The :link pseudoclass style should be IGNORED because buttons don't have link states.">
+                Button with :link style (should be ignored)
+            </button>
+        </p>
+
+        <p>
+            <button class="button-bad-hover"
+                    data-expected-violation=":hover"
+                    data-violation-reason="Button in :hover state has 2.32:1 contrast, failing AA requirement.">
+                Button with bad :hover state
+            </button>
+        </p>
+
+        <p>
+            <button class="button-bad-focus"
+                    data-expected-violation=":focus"
+                    data-violation-reason="Button in :focus state has 1.87:1 contrast, failing AA requirement.">
+                Button with bad :focus state
+            </button>
+        </p>
+
+        <p>
+            <button class="button-bad-active"
+                    data-expected-violation=":active"
+                    data-violation-reason="Button in :active state has 1.61:1 contrast, failing AA requirement.">
+                Button with bad :active state
+            </button>
+        </p>
+    </section>
+
+    <section>
+        <h2>ARIA Roles</h2>
+
+        <p>
+            <div role="link" tabindex="0" class="div-link-bad-hover"
+                 data-expected-violation=":hover"
+                 data-violation-reason="Element with role='link' should be tested like a link. Fails in :hover state with 1.42:1 contrast.">
+                Div with role="link" and bad :hover
+            </div>
+        </p>
+
+        <p>
+            <div role="button" tabindex="0" class="div-button-bad-focus"
+                 data-expected-violation=":focus"
+                 data-violation-reason="Element with role='button' should be tested like a button. Fails in :focus state with 1.27:1 contrast.">
+                Div with role="button" and bad :focus
+            </div>
+        </p>
+    </section>
+
+    <section>
+        <h2>Expected Violations Summary</h2>
+        <p>Testing at 3 breakpoints (320px, 768px, 1024px):</p>
+        <ul>
+            <li><strong>Links</strong>: 5 violations × 3 breakpoints = 15 violations
+                <ul>
+                    <li>1 with bad :link state</li>
+                    <li>1 with bad :visited state</li>
+                    <li>1 with bad :hover state</li>
+                    <li>1 with bad :focus state</li>
+                    <li>1 with bad :active state</li>
+                </ul>
+            </li>
+            <li><strong>Buttons</strong>: 3 violations × 3 breakpoints = 9 violations
+                <ul>
+                    <li>0 with :link style (correctly ignored)</li>
+                    <li>1 with bad :hover state</li>
+                    <li>1 with bad :focus state</li>
+                    <li>1 with bad :active state</li>
+                </ul>
+            </li>
+            <li><strong>ARIA roles</strong>: 2 violations × 3 breakpoints = 6 violations
+                <ul>
+                    <li>1 role="link" with bad :hover</li>
+                    <li>1 role="button" with bad :focus</li>
+                </ul>
+            </li>
+            <li><strong>Total Expected</strong>: 15 + 9 + 6 = 30 violations</li>
+        </ul>
+    </section>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusOutlineExceedsParent - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusOutlineExceedsParent_001_warnings_exceeds_bounds",
+    "issueId": "WarnInputFocusOutlineExceedsParent",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Input outlines that extend beyond parent container bounds",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* WARNING 1: Small padding, large outline extent */
+        .tight-container-1 {
+            padding: 2px;
+            background: #f5f5f5;
+            display: inline-block;
+        }
+
+        .tight-container-1 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .tight-container-1 input:focus {
+            outline: 3px solid #0056b3;
+            outline-offset: 5px;
+            /* Total extent: 5px + 3px = 8px, exceeds 2px padding */
+        }
+
+        /* WARNING 2: No padding, any outline exceeds */
+        .no-padding-container {
+            padding: 0px;
+            background: #e8f4f8;
+            display: inline-block;
+        }
+
+        .no-padding-container input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .no-padding-container input:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: 2px;
+            /* Total extent: 2px + 2px = 4px, exceeds 0px padding */
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusOutlineExceedsParent - Warning Examples</h1>
+    <p>Outlines that extend beyond parent bounds cannot have contrast verified.</p>
+
+    <div class="tight-container-1">
+        <label for="input1">Warning 1: Outline extent (8px) > parent padding (2px)</label><br>
+        <input type="text" id="input1" placeholder="Outline extends beyond parent">
+    </div>
+
+    <br><br>
+
+    <div class="no-padding-container">
+        <label for="input2">Warning 2: Parent has no padding</label><br>
+        <input type="text" id="input2" placeholder="Any outline-offset exceeds">
+    </div>
+</body>
+</html>

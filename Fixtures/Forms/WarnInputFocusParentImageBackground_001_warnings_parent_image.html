@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusParentImageBackground - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusParentImageBackground_001_warnings_parent_image",
+    "issueId": "WarnInputFocusParentImageBackground",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Input parents with background images preventing outline contrast verification",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* WARNING 1: Background image using data URI */
+        .image-container-1 {
+            padding: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23f0f0f0" width="50" height="100"/><rect fill="%23333333" x="50" width="50" height="100"/></svg>');
+            background-size: 100px 100px;
+            border-radius: 5px;
+        }
+
+        .image-container-1 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .image-container-1 input:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 3px;
+        }
+
+        /* WARNING 2: Background image with pattern */
+        .image-container-2 {
+            padding: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle fill="%23cccccc" cx="10" cy="10" r="5"/></svg>');
+            background-size: 20px 20px;
+            border-radius: 5px;
+        }
+
+        .image-container-2 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .image-container-2 input:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusParentImageBackground - Warning Examples</h1>
+    <p>Parents with background images prevent automatic outline contrast verification.</p>
+
+    <div class="image-container-1">
+        <label for="input1">Warning 1: Parent with background image (stripes)</label><br>
+        <input type="text" id="input1" placeholder="Parent has background image">
+    </div>
+
+    <br><br>
+
+    <div class="image-container-2">
+        <label for="input2">Warning 2: Parent with pattern background</label><br>
+        <input type="text" id="input2" placeholder="Parent has pattern">
+    </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaLabelledby - Basic Example</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 1,
+    "description": "Basic dialog with and without aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Basic Dialog Example</h1>
+
+    <!-- VIOLATION: Dialog without aria-labelledby -->
+    <div role="dialog" aria-modal="true" style="display: block; position: fixed; z-index: 1000;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="Dialog missing aria-labelledby attribute">
+        <h2 id="dialog1-title">Confirm Action</h2>
+        <p>Are you sure?</p>
+        <button>Cancel</button>
+        <button>OK</button>
+    </div>
+
+    <!-- CORRECT: Dialog with aria-labelledby -->
+    <div role="dialog" aria-modal="true" aria-labelledby="dialog2-title"
+         style="display: block; position: fixed; z-index: 1001; top: 100px;"
+         data-expected-pass="true"
+         data-pass-reason="Dialog has aria-labelledby">
+        <h2 id="dialog2-title">Success</h2>
+        <p>Operation completed.</p>
+        <button>Close</button>
+    </div>
+</body>
+</html>

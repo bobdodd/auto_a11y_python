@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrDialogMissingRole - Modal Variants</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrDialogMissingRole_003_modal_variants",
+    "issueId": "ErrDialogMissingRole",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Various modal/dialog patterns without proper role attribute",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 1000; min-width: 300px; }
+        .modal.active, .modal-overlay.active { display: block; }
+        .close-btn { float: right; cursor: pointer; font-size: 24px; line-height: 1; }
+    </style>
+</head>
+<body>
+    <h1>Website Actions</h1>
+
+    <main>
+        <button onclick="showModal('modal1')">Delete Account</button>
+        <button onclick="showModal('modal2')">Download Data</button>
+        <button onclick="showModal('modal3')">Subscribe</button>
+        <button onclick="showModal('modal4')">Report Issue</button>
+
+        <!-- Confirmation dialog without role -->
+        <div class="modal-overlay" id="overlay1"></div>
+        <div class="modal" id="modal1" aria-labelledby="title1"
+             data-expected-violation="true"
+             data-violation-reason="Confirmation modal lacks role='alertdialog'. Screen readers don't announce critical confirmation dialog">
+            <span class="close-btn" onclick="hideModal('modal1')">&times;</span>
+            <h2 id="title1">Confirm Account Deletion</h2>
+            <p>This action cannot be undone. Are you sure?</p>
+            <button onclick="hideModal('modal1')">Cancel</button>
+            <button onclick="deleteAccount()">Delete</button>
+        </div>
+
+        <!-- Lightbox/dialog without role -->
+        <div class="modal-overlay" id="overlay2"></div>
+        <div class="modal" id="modal2" aria-labelledby="title2"
+             data-expected-violation="true"
+             data-violation-reason="Dialog with aria-labelledby but missing role='dialog'. ARIA labeling without proper role doesn't convey dialog semantics">
+            <span class="close-btn" onclick="hideModal('modal2')">&times;</span>
+            <h2 id="title2">Download Your Data</h2>
+            <p>Your data export is ready.</p>
+            <button onclick="downloadData()">Download</button>
+        </div>
+
+        <!-- Form modal without role -->
+        <div class="modal-overlay" id="overlay3"></div>
+        <div class="modal" id="modal3" aria-describedby="desc3"
+             data-expected-violation="true"
+             data-violation-reason="Form dialog has aria-describedby but missing role='dialog'. Screen readers treat as generic div container">
+            <span class="close-btn" onclick="hideModal('modal3')">&times;</span>
+            <h2>Subscribe to Newsletter</h2>
+            <p id="desc3">Get weekly updates and exclusive offers</p>
+            <form>
+                <input type="email" placeholder="Your email" aria-label="Email address">
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+
+        <!-- Modal with aria-modal but missing role -->
+        <div class="modal-overlay" id="overlay4"></div>
+        <div class="modal" id="modal4" aria-modal="true" aria-labelledby="title4"
+             data-expected-violation="true"
+             data-violation-reason="Modal has aria-modal='true' and aria-labelledby but missing role='dialog'. aria-modal alone doesn't establish dialog semantics">
+            <span class="close-btn" onclick="hideModal('modal4')">&times;</span>
+            <h2 id="title4">Report an Issue</h2>
+            <p>Tell us what went wrong</p>
+            <textarea aria-label="Issue description"></textarea>
+            <button onclick="hideModal('modal4')">Submit</button>
+        </div>
+    </main>
+
+    <script>
+        function showModal(id) {
+            document.getElementById(id).classList.add('active');
+            const overlayNum = id.replace('modal', '');
+            document.getElementById('overlay' + overlayNum).classList.add('active');
+        }
+
+        function hideModal(id) {
+            document.getElementById(id).classList.remove('active');
+            const overlayNum = id.replace('modal', '');
+            document.getElementById('overlay' + overlayNum).classList.remove('active');
+        }
+
+        function deleteAccount() { alert('Account deleted'); hideModal('modal1'); }
+        function downloadData() { alert('Downloading...'); hideModal('modal2'); }
+    </script>
+</body>
+</html>

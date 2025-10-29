@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - Required Properly Indicated</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnRequiredNotIndicated_002_correct_with_indication",
+    "issueId": "WarnRequiredNotIndicated",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Required fields with both visual and programmatic indication",
+    "wcag": "3.3.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .required { color: #d32f2f; }
+    </style>
+</head>
+<body>
+    <h1>Create Account</h1>
+
+    <p>Fields marked with <span class="required">*</span> are required.</p>
+
+    <form>
+        <div data-expected-pass="true"
+             data-pass-reason="Username field has required attribute, aria-required, and visual asterisk indicator">
+            <label for="username">Username <span class="required">*</span></label>
+            <input type="text" id="username" name="username" required aria-required="true">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Email field properly indicates required status with multiple indicators">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" name="email" required aria-required="true">
+        </div>
+
+        <div data-expected-pass="true"
+             data-pass-reason="Password field has both programmatic (required, aria-required) and visual indication">
+            <label for="password">Password <span class="required">*</span></label>
+            <input type="password" id="password" name="password" required aria-required="true">
+        </div>
+
+        <div>
+            <label for="phone">Phone (Optional)</label>
+            <input type="tel" id="phone" name="phone">
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

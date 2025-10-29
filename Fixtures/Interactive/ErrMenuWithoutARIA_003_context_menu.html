@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMenuWithoutARIA - Context Menu</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMenuWithoutARIA_003_context_menu",
+    "issueId": "ErrMenuWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Context menus and nested menus without proper ARIA",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .context-menu { display: none; position: absolute; background: white; border: 1px solid #ccc; padding: 0; min-width: 150px; z-index: 1000; }
+        .menu { display: none; position: absolute; background: white; border: 1px solid #ccc; min-width: 150px; }
+        .menu-item { padding: 8px 16px; cursor: pointer; }
+        .menu-item:hover { background: #f0f0f0; }
+        .submenu { position: relative; }
+    </style>
+</head>
+<body>
+    <h1>Document Editor</h1>
+
+    <main>
+        <div id="editor-area" oncontextmenu="showContextMenu(event); return false;"
+             style="border: 1px solid #ccc; padding: 20px; min-height: 200px;">
+            Right-click here for context menu
+        </div>
+
+        <!-- Context menu without role -->
+        <div class="context-menu" id="contextMenu"
+             data-expected-violation="true"
+             data-violation-reason="Context menu lacks role='menu'. Screen readers treat as generic div, users miss menu semantics and arrow key navigation">
+            <div class="menu-item" onclick="cut()">Cut</div>
+            <div class="menu-item" onclick="copy()">Copy</div>
+            <div class="menu-item" onclick="paste()">Paste</div>
+            <div class="menu-item submenu" onclick="showSubmenu()">
+                Insert
+                <div class="menu" id="submenu"
+                     data-expected-violation="true"
+                     data-violation-reason="Nested submenu without role='menu'. Missing menu ARIA pattern for hierarchical menu structure">
+                    <div class="menu-item" onclick="insertImage()">Image</div>
+                    <div class="menu-item" onclick="insertLink()">Link</div>
+                    <div class="menu-item" onclick="insertTable()">Table</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showContextMenu(e) {
+            const menu = document.getElementById('contextMenu');
+            menu.style.display = 'block';
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            e.preventDefault();
+        }
+
+        function showSubmenu() {
+            document.getElementById('submenu').style.display = 'block';
+        }
+
+        document.addEventListener('click', function() {
+            document.getElementById('contextMenu').style.display = 'none';
+            document.getElementById('submenu').style.display = 'none';
+        });
+
+        function cut() { alert('Cut'); }
+        function copy() { alert('Copy'); }
+        function paste() { alert('Paste'); }
+        function insertImage() { alert('Insert image'); }
+        function insertLink() { alert('Insert link'); }
+        function insertTable() { alert('Insert table'); }
+    </script>
+</body>
+</html>

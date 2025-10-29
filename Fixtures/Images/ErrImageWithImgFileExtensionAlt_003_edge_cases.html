@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithImgFileExtensionAlt - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithImgFileExtensionAlt_003_edge_cases",
+    "issueId": "ErrImageWithImgFileExtensionAlt",
+    "expectedViolationCount": 8,
+    "expectedPassCount": 5,
+    "description": "Edge cases for filename extension detection in alt text",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>ErrImageWithImgFileExtensionAlt - Edge Cases</h1>
+
+    <!-- ERROR 1: Camera filename with extension -->
+    <h2>Error 1: Camera-generated filename</h2>
+    <img src="IMG_1234.jpg" alt="IMG_1234.jpg"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Alt contains camera-generated filename with .jpg extension">
+
+    <!-- ERROR 2: Filename with underscores and extension -->
+    <h2>Error 2: Filename with underscores</h2>
+    <img src="hero_banner_2.png" alt="hero_banner_2.png"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Alt contains filename with underscores and .png extension">
+
+    <!-- ERROR 3: Uppercase extension -->
+    <h2>Error 3: Uppercase file extension</h2>
+    <img src="logo.PNG" alt="logo.PNG"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Alt contains filename with uppercase .PNG extension">
+
+    <!-- ERROR 4: SVG extension -->
+    <h2>Error 4: SVG file extension</h2>
+    <img src="icon.svg" alt="icon.svg"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Alt contains filename with .svg extension">
+
+    <!-- ERROR 5: WebP extension -->
+    <h2>Error 5: WebP file extension</h2>
+    <img src="modern-image.webp" alt="modern-image.webp"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Alt contains filename with .webp extension">
+
+    <!-- ERROR 6: ICO extension -->
+    <h2>Error 6: ICO file extension</h2>
+    <img src="favicon.ico" alt="favicon.ico"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Alt contains filename with .ico extension">
+
+    <!-- ERROR 7: TIFF extension -->
+    <h2>Error 7: TIFF file extension</h2>
+    <img src="scan.tiff" alt="scan.tiff"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Alt contains filename with .tiff extension">
+
+    <!-- ERROR 8: Long descriptive filename with extension (still error) -->
+    <h2>Error 8: Descriptive filename but still has extension</h2>
+    <img src="smiling-customer-testimonial.jpg" alt="smiling-customer-testimonial.jpg"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Even though filename is descriptive, having .jpg extension is still an error">
+
+    <!-- PASS 1: Descriptive alt text (no extension) -->
+    <h2>Pass 1: Proper descriptive alt</h2>
+    <img src="product.jpg" alt="Professional laptop with backlit keyboard"
+         data-expected-pass="true"
+         data-pass-reason="Alt text is descriptive without file extension">
+
+    <!-- PASS 2: Alt mentions 'JPEG' as part of description -->
+    <h2>Pass 2: Word 'JPEG' in description (not as extension)</h2>
+    <img src="file-format.png" alt="JPEG compression example"
+         data-expected-pass="true"
+         data-pass-reason="JPEG is part of the description, not a file extension at end">
+
+    <!-- PASS 3: Filename-like but no extension -->
+    <h2>Pass 3: Filename pattern without extension</h2>
+    <img src="hero-banner.jpg" alt="hero-banner"
+         data-expected-pass="true"
+         data-pass-reason="Alt looks like filename but has no file extension">
+
+    <!-- PASS 4: Empty alt for decorative -->
+    <h2>Pass 4: Decorative image with empty alt</h2>
+    <img src="decorative-pattern.jpg" alt=""
+         data-expected-pass="true"
+         data-pass-reason="Empty alt is valid for decorative images">
+
+    <!-- PASS 5: Company name that happens to end in letters -->
+    <h2>Pass 5: Company name ABC Inc.</h2>
+    <img src="logo.jpg" alt="ABC Inc. Company Logo"
+         data-expected-pass="true"
+         data-pass-reason="'Inc.' is not a file extension, descriptive text is provided">
+</body>
+</html>

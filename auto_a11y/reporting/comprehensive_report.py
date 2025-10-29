@@ -1538,7 +1538,6 @@ class ComprehensiveReportGenerator:
             'landmarks_ErrElementNotContainedInALandmark': 'Add proper landmarks',
             'focus_ErrOutlineIsNoneOnInteractiveElement': 'Add visible focus styles',
             'focus_ErrZeroOutlineOffset': 'Adjust outline offset',
-            'forms_ErrInputMissingLabel': 'Add form labels',
             'color_ErrContrastRatio': 'Improve color contrast',
             'headings_ErrBrokenHierarchy': 'Fix heading structure',
             'images_ErrImageMissingAlt': 'Add alt text',

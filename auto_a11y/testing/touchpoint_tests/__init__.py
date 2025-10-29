@@ -11,6 +11,7 @@ from .test_animations import test_animations, TEST_DOCUMENTATION as ANIMATIONS_D
 from .test_buttons import test_buttons, TEST_DOCUMENTATION as BUTTONS_DOCS
 from .test_links import test_links, TEST_DOCUMENTATION as LINKS_DOCS
 from .test_colors import test_colors, TEST_DOCUMENTATION as COLORS_DOCS
+from .test_text_contrast import test_text_contrast, TEST_DOCUMENTATION as TEXT_CONTRAST_DOCS
 from .test_document_links import test_document_links, TEST_DOCUMENTATION as DOCUMENT_LINKS_DOCS
 from .test_event_handlers import test_event_handlers, TEST_DOCUMENTATION as EVENT_HANDLERS_DOCS
 from .test_floating_dialogs import test_floating_dialogs, TEST_DOCUMENTATION as FLOATING_DIALOGS_DOCS
@@ -43,6 +44,7 @@ TOUCHPOINT_TESTS = {
     'buttons': test_buttons,
     'links': test_links,
     'colors': test_colors,
+    'colors_contrast': test_text_contrast,
     'document_links': test_document_links,
     'event_handlers': test_event_handlers,
     'floating_dialogs': test_floating_dialogs,
@@ -78,6 +80,7 @@ TEST_DOCUMENTATION = {
     'buttons': BUTTONS_DOCS,
     'links': LINKS_DOCS,
     'colors': COLORS_DOCS,
+    'colors_contrast': TEXT_CONTRAST_DOCS,
     'document_links': DOCUMENT_LINKS_DOCS,
     'event_handlers': EVENT_HANDLERS_DOCS,
     'floating_dialogs': FLOATING_DIALOGS_DOCS,
@@ -110,6 +113,7 @@ __all__ = [
     'test_buttons',
     'test_links',
     'test_colors',
+    'test_text_contrast',
     'test_document_links',
     'test_event_handlers',
     'test_floating_dialogs',

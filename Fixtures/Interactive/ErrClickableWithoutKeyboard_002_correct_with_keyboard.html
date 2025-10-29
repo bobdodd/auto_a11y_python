@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrClickableWithoutKeyboard - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "AI_ErrClickableWithoutKeyboard_002_correct_with_keyboard",
+    "issueId": "ErrClickableWithoutKeyboard",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "description": "Interactive elements with proper keyboard accessibility",
+    "wcag": "2.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Product Gallery - Correct Usage</h1>
+
+    <main>
+        <!-- Button element (best practice) - CORRECT -->
+        <button class="card"
+                onclick="showDetails('product1')"
+                data-expected-pass="true"
+                data-pass-reason="Uses semantic button element which is inherently keyboard accessible with Enter and Space key support">
+            <img src="product1.jpg" alt="Product 1">
+            <p>Click to view details</p>
+        </button>
+
+        <!-- Div with tabindex and keyboard handlers - CORRECT -->
+        <div class="card"
+             tabindex="0"
+             role="button"
+             onclick="showDetails('product2')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){showDetails('product2');event.preventDefault();}"
+             data-expected-pass="true"
+             data-pass-reason="Div has tabindex='0' for focus, role='button', and keyboard handlers for Enter and Space keys, making it fully keyboard accessible">
+            <img src="product2.jpg" alt="Product 2">
+            <p>Click to view details</p>
+        </div>
+
+        <!-- Span with full keyboard support - CORRECT -->
+        <span class="close-icon"
+              tabindex="0"
+              role="button"
+              aria-label="Close panel"
+              onclick="closePanel()"
+              onkeydown="if(event.key==='Enter'||event.key===' '){closePanel();event.preventDefault();}"
+              data-expected-pass="true"
+              data-pass-reason="Span has tabindex='0', role='button', aria-label, and handles both Enter and Space key presses for full keyboard accessibility">
+            ×
+        </span>
+    </main>
+
+    <script>
+        function showDetails(id) {
+            alert('Showing details for ' + id);
+        }
+
+        function closePanel() {
+            alert('Panel closed');
+        }
+    </script>
+</body>
+</html>

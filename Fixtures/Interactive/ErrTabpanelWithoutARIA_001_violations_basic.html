@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTabpanelWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabpanelWithoutARIA_001_violations_basic",
+    "issueId": "ErrTabpanelWithoutARIA",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Tab interface without proper ARIA attributes",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .tabs { display: flex; border-bottom: 2px solid #333; }
+        .tab { padding: 10px 20px; background: #f0f0f0; border: none; cursor: pointer; margin-right: 2px; }
+        .tab.active { background: white; border-bottom: 2px solid white; margin-bottom: -2px; }
+        .tab-panel { display: none; padding: 20px; border: 1px solid #ccc; border-top: none; }
+        .tab-panel.active { display: block; }
+    </style>
+    <script>
+        function showTab(tabIndex) {
+            const tabs = document.querySelectorAll('.tab');
+            const panels = document.querySelectorAll('.tab-panel');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            panels.forEach(panel => panel.classList.remove('active'));
+
+            tabs[tabIndex].classList.add('active');
+            panels[tabIndex].classList.add('active');
+        }
+    </script>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <div data-expected-violation="true"
+             data-violation-reason="Tab interface implemented without ARIA attributes. Tab container lacks role='tablist'. Tabs missing role='tab', aria-selected, and aria-controls. Panels don't have role='tabpanel' or aria-labelledby. Screen readers can't identify tab pattern. Users don't know which tab is selected. Arrow key navigation expectations unclear. Violates WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value by missing tab ARIA pattern">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab(0)">Overview</button>
+                <button class="tab" onclick="showTab(1)">Specifications</button>
+                <button class="tab" onclick="showTab(2)">Reviews</button>
+            </div>
+
+            <div class="tab-panel active">
+                <h2>Product Overview</h2>
+                <p>This premium widget offers cutting-edge features and exceptional build quality.</p>
+            </div>
+
+            <div class="tab-panel">
+                <h2>Technical Specifications</h2>
+                <ul>
+                    <li>Weight: 2.5 pounds</li>
+                    <li>Dimensions: 12 x 8 x 3 inches</li>
+                    <li>Material: Aluminum alloy</li>
+                </ul>
+            </div>
+
+            <div class="tab-panel">
+                <h2>Customer Reviews</h2>
+                <p>Average rating: 4.5 out of 5 stars</p>
+                <p>"Excellent product with great performance." - John D.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

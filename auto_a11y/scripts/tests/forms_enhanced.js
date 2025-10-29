@@ -346,22 +346,7 @@ function formsEnhancedScrape() {
             });
         }
     });
-    
-    // Discovery: Placeholder used as label
-    const inputsWithPlaceholder = document.querySelectorAll('[placeholder]');
-    inputsWithPlaceholder.forEach(element => {
-        const hasLabel = hasAssociatedLabel(element);
-        if (!hasLabel) {
-            result.discovery.push({
-                err: 'forms_DiscoPlaceholderAsLabel',
-                cat: 'forms',
-                placeholder: element.getAttribute('placeholder'),
-                xpath: Elements.DOMPath.xPath(element, true),
-                message: 'Placeholder appears to be used instead of label - manual review recommended'
-            });
-        }
-    });
-    
+
     // Calculate overall compliance for forms
     if (result.elements_tested > 0) {
         result.compliance_rate = (result.elements_passed / result.elements_tested) * 100;

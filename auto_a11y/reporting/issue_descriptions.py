@@ -292,32 +292,6 @@ ISSUE_DESCRIPTIONS = {
     ),
     
     # ============= IMAGES ERRORS =============
-    'images_ErrImageWithNoAlt': IssueDescription(
-        title="Image Missing Alt Attribute",
-        what="An img element has no alt attribute at all.",
-        why="The alt attribute is required for all images. It provides text alternatives for users who cannot see images. Without it, screen readers may read the filename, which is usually meaningless.",
-        who="Screen reader users, users with images disabled, users on slow connections",
-        impact=ImpactScale.HIGH,
-        wcag=["1.1.1"],
-        remediation="""
-        Add an alt attribute to every image:
-        
-        Incorrect:
-        <img src="logo.png">
-        
-        Correct for informative images:
-        <img src="logo.png" alt="Company Name Logo">
-        
-        Correct for decorative images:
-        <img src="decoration.png" alt="">
-        
-        Guidelines:
-        - Informative images: Describe the content/function
-        - Decorative images: Use empty alt=""
-        - Complex images: Provide detailed description elsewhere and reference it
-        """
-    ),
-    
     'images_ErrImageWithEmptyAlt': IssueDescription(
         title="Empty Alt Text on Informative Image",
         what="An image that appears to convey information has an empty alt attribute.",

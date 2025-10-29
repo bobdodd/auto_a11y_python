@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaLabelledby - aria-modal Without Role Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby_004_violations_aria_modal",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Elements with aria-modal=true but no explicit role, missing aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>aria-modal Without Explicit Role</h1>
+
+    <!-- Violation 1: aria-modal=true without role attribute, no aria-labelledby -->
+    <div aria-modal="true" style="display: block; position: fixed; z-index: 1000; width: 300px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="Element with aria-modal=true but no aria-labelledby">
+        <h2 id="modal-title-1">Warning</h2>
+        <p>Your session is about to expire.</p>
+        <button>Extend Session</button>
+        <button>Logout</button>
+    </div>
+
+    <!-- Violation 2: aria-modal="true" as string, no role, no aria-labelledby -->
+    <div aria-modal="true" style="display: block; position: fixed; z-index: 1001; top: 220px; width: 350px; height: 180px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="aria-modal element without aria-labelledby">
+        <h2 id="modal-title-2">Update Available</h2>
+        <p>A new version is ready to install.</p>
+        <button>Update Now</button>
+        <button>Later</button>
+    </div>
+</body>
+</html>

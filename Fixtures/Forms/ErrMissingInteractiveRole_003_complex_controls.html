@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMissingInteractiveRole - Complex Controls</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMissingInteractiveRole_003_complex_controls",
+    "issueId": "ErrMissingInteractiveRole",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Complex custom controls without specific widget roles",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .custom-checkbox { width: 20px; height: 20px; border: 2px solid #ccc; display: inline-block; cursor: pointer; }
+        .custom-radio { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; display: inline-block; cursor: pointer; }
+        .custom-slider { width: 200px; height: 10px; background: #ddd; border-radius: 5px; position: relative; cursor: pointer; }
+        .custom-switch { width: 50px; height: 24px; background: #ccc; border-radius: 24px; position: relative; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Custom Form Controls</h1>
+
+    <main>
+        <!-- Custom checkbox with only tabindex, no role -->
+        <div data-expected-violation="true"
+             data-violation-reason="Custom checkbox with tabindex but missing role='checkbox' and aria-checked">
+            <div class="custom-checkbox" tabindex="0" onclick="toggle(this)"></div>
+            <label>Accept terms and conditions</label>
+        </div>
+
+        <!-- Custom radio group without roles -->
+        <fieldset data-expected-violation="true"
+                  data-violation-reason="Custom radio buttons with tabindex but missing role='radio' and aria-checked">
+            <legend>Select payment method:</legend>
+            <div>
+                <div class="custom-radio" tabindex="0" onclick="selectRadio(this)"></div>
+                <label>Credit Card</label>
+            </div>
+            <div>
+                <div class="custom-radio" tabindex="0" onclick="selectRadio(this)"></div>
+                <label>PayPal</label>
+            </div>
+        </fieldset>
+
+        <!-- Custom slider without role -->
+        <div data-expected-violation="true"
+             data-violation-reason="Custom slider with tabindex but missing role='slider', aria-valuenow, aria-valuemin, aria-valuemax">
+            <label>Volume: <span id="volume-value">50</span>%</label>
+            <div class="custom-slider" tabindex="0" onclick="adjustSlider(event)">
+                <div style="width: 50%; height: 100%; background: #2196F3; border-radius: 5px;"></div>
+            </div>
+        </div>
+
+        <!-- Custom toggle switch without role -->
+        <div data-expected-violation="true"
+             data-violation-reason="Custom toggle switch with tabindex but missing role='switch' and aria-checked">
+            <label>Enable notifications</label>
+            <div class="custom-switch" tabindex="0" onclick="toggleSwitch(this)">
+                <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.3s;"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggle(el) { el.style.background = el.style.background === 'blue' ? 'white' : 'blue'; }
+        function selectRadio(el) {
+            document.querySelectorAll('.custom-radio').forEach(r => r.style.background = 'white');
+            el.style.background = 'blue';
+        }
+        function adjustSlider(e) { /* slider logic */ }
+        function toggleSwitch(el) { el.style.background = el.style.background === '#2196F3' ? '#ccc' : '#2196F3'; }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaLabelledby - role=alertdialog Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby_002_violations_alertdialog",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Elements with role=alertdialog missing aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Alert Dialogs</h1>
+
+    <!-- Violation 1: role=alertdialog without aria-labelledby -->
+    <div role="alertdialog" aria-modal="true" style="display: block; position: fixed; z-index: 1000; width: 300px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="role=alertdialog without aria-labelledby">
+        <h2 id="error-title">Error Occurred</h2>
+        <p>Network connection failed.</p>
+        <button>Retry</button>
+        <button>Cancel</button>
+    </div>
+
+    <!-- Violation 2: role=alertdialog with aria-modal, no aria-labelledby -->
+    <div role="alertdialog" aria-modal="true" style="display: block; position: fixed; z-index: 1001; top: 220px; width: 300px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="role=alertdialog missing aria-labelledby">
+        <h2 id="alert-title">Security Alert</h2>
+        <p>Suspicious activity detected.</p>
+        <button>Review</button>
+        <button>Dismiss</button>
+    </div>
+</body>
+</html>

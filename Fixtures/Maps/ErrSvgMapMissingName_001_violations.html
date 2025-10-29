@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrSvgMapMissingName - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrSvgMapMissingName_001_violations",
+    "issueId": "ErrSvgMapMissingName",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "SVG maps without accessible names (no title element, aria-label, or aria-labelledby)",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <h1>Regional Sales Data Visualization</h1>
+
+    <main>
+        <section>
+            <h2>Q1 Sales by Region</h2>
+            <p>Geographic distribution of Q1 sales:</p>
+
+            <!-- Violation 1: SVG choropleth map without any accessible name -->
+            <svg width="600" height="400" viewBox="0 0 600 400"
+                 data-expected-violation="true"
+                 data-violation-id="ErrSvgMapMissingName"
+                 data-violation-reason="SVG choropleth map completely lacks accessible name. No title element, no aria-label, no aria-labelledby. Screen readers cannot identify this as a map or describe its purpose. Violates WCAG 4.1.2 Name, Role, Value.">
+                <path d="M50,50 L150,50 L150,150 L50,150 Z" fill="#b3d9ff" data-region="North" data-value="45000"/>
+                <path d="M150,50 L250,50 L250,150 L150,150 Z" fill="#80bfff" data-region="South" data-value="62000"/>
+                <path d="M250,50 L350,50 L350,150 L250,150 Z" fill="#4da6ff" data-region="East" data-value="78000"/>
+                <path d="M350,50 L450,50 L450,150 L350,150 Z" fill="#1a8cff" data-region="West" data-value="83000"/>
+                <path d="M200,150 L300,150 L300,250 L200,250 Z" fill="#0073e6" data-region="Central" data-value="91000"/>
+            </svg>
+        </section>
+
+        <section>
+            <h2>Q2 Sales by Region</h2>
+            <p>Geographic distribution of Q2 sales:</p>
+
+            <!-- Violation 2: SVG with title but not as first child -->
+            <svg width="600" height="400" viewBox="0 0 600 400"
+                 data-expected-violation="true"
+                 data-violation-id="ErrSvgMapMissingName"
+                 data-violation-reason="SVG map has title element but not as first child. Per SVG accessibility spec, title must be the first child element to be properly announced. Current structure means screen readers may not announce the title. Fails WCAG 4.1.2.">
+                <g class="map-container">
+                    <title>Q2 sales geographic distribution</title>
+                    <path d="M50,50 L150,50 L150,150 L50,150 Z" fill="#ffcccc" data-region="Region1"/>
+                    <path d="M150,50 L250,50 L250,150 L150,150 Z" fill="#ff9999" data-region="Region2"/>
+                    <path d="M250,50 L350,50 L350,150 L250,150 Z" fill="#ff6666" data-region="Region3"/>
+                </g>
+            </svg>
+        </section>
+
+        <section>
+            <h2>Annual Comparison Map</h2>
+            <p>Year-over-year comparison by territory:</p>
+
+            <!-- Violation 3: D3.js generated SVG without accessible name -->
+            <svg id="d3-map" width="600" height="400"
+                 data-expected-violation="true"
+                 data-violation-id="ErrSvgMapMissingName"
+                 data-violation-reason="D3.js generated geographic map lacks accessible name. No title, aria-label, or aria-labelledby provided. Common mistake with programmatically generated maps. Screen readers cannot identify map purpose. Violates WCAG 4.1.2.">
+                <g class="projection">
+                    <path class="graticule" d="M0,0 L600,0 L600,400 L0,400 Z" fill="none" stroke="#ccc"/>
+                    <path d="M100,100 L200,120 L180,200 L90,190 Z" fill="#e6f2ff" data-country="Country1"/>
+                    <path d="M200,120 L300,140 L280,220 L180,200 Z" fill="#cce5ff" data-country="Country2"/>
+                    <path d="M300,140 L400,160 L380,240 L280,220 Z" fill="#b3d9ff" data-country="Country3"/>
+                    <path d="M400,160 L500,180 L480,260 L380,240 Z" fill="#99ccff" data-country="Country4"/>
+                </g>
+            </svg>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Sales Analytics. All rights reserved.</p>
+    </footer>
+</body>
+</html>

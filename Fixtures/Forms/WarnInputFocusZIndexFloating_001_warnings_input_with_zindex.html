@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusZIndexFloating - Warnings</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusZIndexFloating_001_warnings_input_with_zindex",
+    "issueId": "WarnInputFocusZIndexFloating",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Input fields with z-index and positive outline-offset that may float over varying backgrounds",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* WARNING 1: Input with z-index and outline-offset > 0 */
+        .floating-input-1 {
+            position: relative;
+            z-index: 10;
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .floating-input-1:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 3px;
+        }
+
+        /* WARNING 2: Absolutely positioned input with z-index */
+        .floating-input-2 {
+            position: absolute;
+            top: 200px;
+            left: 40px;
+            z-index: 100;
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .floating-input-2:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusZIndexFloating - Warning Examples</h1>
+    <p>Input fields with z-index positioning may float over varying backgrounds, making outline contrast verification impossible.</p>
+
+    <label for="input1">Warning 1: Input with z-index (relative positioning)</label>
+    <input type="text" id="input1" class="floating-input-1" placeholder="Has z-index: 10 and outline-offset: 3px">
+
+    <br><br><br><br>
+
+    <label for="input2">Warning 2: Absolutely positioned with z-index</label>
+    <input type="text" id="input2" class="floating-input-2" placeholder="Position absolute, z-index: 100">
+</body>
+</html>

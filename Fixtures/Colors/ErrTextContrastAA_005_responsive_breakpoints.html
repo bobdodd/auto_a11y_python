@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTextContrastAA - Responsive Breakpoint Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTextContrastAA_005_responsive_breakpoints",
+    "issueId": "ErrTextContrastAA",
+    "expectedViolationCount": 6,
+    "expectedPassCount": 0,
+    "description": "Text with different contrast at different responsive breakpoints - demonstrates testing at multiple viewport widths (320px, 768px, 1023px, 1024px)",
+    "wcag": "1.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            background: #ffffff;
+            color: #000000;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        /* Mobile styles (320px) - GOOD contrast */
+        .responsive-text {
+            color: #000000;
+            background: #ffffff;
+            /* Contrast ratio: 21:1 - passes AA */
+            padding: 10px;
+            margin: 20px 0;
+        }
+
+        /* Tablet styles (768px) - BAD contrast */
+        @media (min-width: 768px) {
+            .responsive-text {
+                color: #aaaaaa;
+                background: #ffffff;
+                /* Contrast ratio: 2.32:1 - fails AA (requires 4.5:1) */
+            }
+        }
+
+        /* Desktop styles (1024px) - GOOD contrast */
+        @media (min-width: 1024px) {
+            .responsive-text {
+                color: #2c2c2c;
+                background: #ffffff;
+                /* Contrast ratio: 13.9:1 - passes AA */
+            }
+        }
+
+        /* Another element with different breakpoint issues */
+        .mobile-only {
+            color: #999999;
+            background: #ffffff;
+            /* Contrast ratio: 2.85:1 - fails AA at mobile */
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-only {
+                display: none; /* Hidden at tablet and desktop */
+            }
+        }
+
+        .tablet-only {
+            display: none;
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .tablet-only {
+                display: block;
+                color: #bbbbbb;
+                background: #ffffff;
+                /* Contrast ratio: 1.87:1 - fails AA at tablet */
+            }
+        }
+
+        .desktop-only {
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .desktop-only {
+                display: block;
+                color: #cccccc;
+                background: #ffffff;
+                /* Contrast ratio: 1.61:1 - fails AA at desktop */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Responsive Breakpoint Contrast Testing</h1>
+
+    <div class="responsive-text"
+         data-expected-pass-mobile="true"
+         data-expected-violation-tablet="true"
+         data-expected-pass-desktop="true"
+         data-pass-reason-mobile="At 320px viewport, text has 21:1 contrast ratio (black on white), well above the 4.5:1 AA requirement. This ensures excellent readability for users with low vision on mobile devices."
+         data-violation-reason-tablet="At 768px viewport, text color changes to #aaaaaa which has only 2.32:1 contrast ratio, failing the 4.5:1 AA requirement. This creates accessibility issues for tablet users with low vision."
+         data-pass-reason-desktop="At 1024px viewport, text color changes to #2c2c2c which has 13.9:1 contrast ratio, passing the 4.5:1 AA requirement. Desktop users have sufficient contrast for readability.">
+        This text has GOOD contrast on mobile (320px), BAD contrast on tablet (768px), and GOOD contrast on desktop (1024px).
+        This demonstrates how responsive design can introduce accessibility issues at specific breakpoints.
+    </div>
+
+    <div class="mobile-only"
+         data-expected-violation="true"
+         data-violation-reason="This element is only visible on mobile (320px) where it has 2.85:1 contrast ratio, failing the 4.5:1 AA requirement. Mobile users with low vision will struggle to read this text. This is hidden at tablet and desktop breakpoints.">
+        Mobile-only text with poor contrast (visible only at 320px)
+    </div>
+
+    <div class="tablet-only"
+         data-expected-violation="true"
+         data-violation-reason="This element is only visible on tablet (768px) where it has 1.87:1 contrast ratio, severely failing the 4.5:1 AA requirement. Tablet users with low vision will find this text very difficult to read. This is hidden at mobile and desktop breakpoints.">
+        Tablet-only text with poor contrast (visible only at 768px)
+    </div>
+
+    <div class="desktop-only"
+         data-expected-violation="true"
+         data-violation-reason="This element is only visible on desktop (1024px+) where it has 1.61:1 contrast ratio, severely failing the 4.5:1 AA requirement. Desktop users with low vision will find this text very difficult to read. This is hidden at mobile and tablet breakpoints.">
+        Desktop-only text with poor contrast (visible only at 1024px+)
+    </div>
+
+    <section>
+        <h2>Why This Matters</h2>
+        <p>
+            This fixture demonstrates the importance of testing at multiple responsive breakpoints:
+        </p>
+        <ul>
+            <li><strong>Mobile (320px)</strong>: Tests show 1 violation (mobile-only element) + 0 from responsive-text = 1 violation</li>
+            <li><strong>Tablet (768px)</strong>: Tests show 1 violation (responsive-text changes to bad contrast) + 1 (tablet-only element) = 2 violations</li>
+            <li><strong>Desktop (1024px)</strong>: Tests show 0 violations from responsive-text (good contrast) + 1 (desktop-only element) = 1 violation</li>
+            <li><strong>Total Expected</strong>: 1 + 2 + 1 = 4 violations across all breakpoints</li>
+        </ul>
+    </section>
+</body>
+</html>

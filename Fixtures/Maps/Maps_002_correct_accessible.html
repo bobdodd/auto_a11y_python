@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maps - Correct Accessible Implementation</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "Maps_002_correct_accessible",
+    "issueId": "Maps",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "expectedWarningCount": 0,
+    "description": "Properly implemented accessible digital maps - all examples show best practices",
+    "wcag": "1.1.1, 1.3.1, 4.1.2",
+    "impact": "N/A - Passing examples"
+}
+    </script>
+</head>
+<body>
+    <h1>Accessible Digital Maps - Best Practices</h1>
+
+    <main>
+        <!-- Pass 1: Google Maps iframe with descriptive title -->
+        <section aria-label="Downtown office location">
+            <h2>Our Office Location</h2>
+            <p>Visit us at our downtown headquarters:</p>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.0!2d-74.0!3d40.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1"
+                width="600"
+                height="450"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Interactive map showing our downtown office location at 123 Main Street"
+                data-expected-pass="true"
+                data-pass-reason="Google Maps iframe with descriptive title, no aria-hidden, contained in landmark section with aria-label. Fully accessible to screen reader users.">
+            </iframe>
+        </section>
+
+        <!-- Pass 2: Mapbox div wrapped in landmark with aria-label -->
+        <section role="region" aria-label="Store locations across the United States">
+            <h2>Find a Store Near You</h2>
+            <p>We have over 200 locations nationwide. Use the map to find your nearest store:</p>
+            <div id="mapbox-stores"
+                 class="mapboxgl-map"
+                 aria-label="Interactive map showing all store locations with search and zoom controls"
+                 data-expected-pass="true"
+                 data-pass-reason="Mapbox div properly wrapped in landmark section with descriptive aria-label. Map container also has its own descriptive aria-label. Interactive controls are not hidden from screen readers."
+                 style="width: 600px; height: 450px; background: #f0f0f0; position: relative;">
+                <!-- Mock Mapbox controls (interactive) -->
+                <div style="position: absolute; top: 10px; right: 10px; z-index: 1;">
+                    <button aria-label="Zoom in">+</button>
+                    <button aria-label="Zoom out">-</button>
+                </div>
+                <div style="padding: 20px; padding-top: 60px;">
+                    <p><strong>Map Provider:</strong> Mapbox GL JS</p>
+                    <p><strong>Interactive:</strong> Yes (zoom controls, clickable markers)</p>
+                    <p><strong>Accessible:</strong> Controls are keyboard accessible and not hidden</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pass 3: Leaflet div with preceding descriptive heading -->
+        <article>
+            <h2>Hiking Trail Map - Mountain Ridge Park</h2>
+            <p>Explore our network of trails with varying difficulty levels:</p>
+            <div id="leaflet-trails"
+                 class="leaflet-container"
+                 aria-label="Interactive trail map showing beginner, intermediate, and advanced hiking routes"
+                 data-expected-pass="true"
+                 data-pass-reason="Leaflet map preceded by descriptive h2 heading and contained in article landmark. Has descriptive aria-label. Best practice implementation."
+                 style="width: 600px; height: 450px; background: #e8f5e9; position: relative;">
+                <!-- Mock Leaflet controls -->
+                <div style="position: absolute; top: 10px; left: 10px; z-index: 1;">
+                    <button aria-label="Zoom in">+</button>
+                    <button aria-label="Zoom out">-</button>
+                    <button aria-label="View current location">⊙</button>
+                </div>
+                <div style="padding: 20px; padding-top: 60px;">
+                    <p><strong>Map Provider:</strong> Leaflet JS</p>
+                    <p><strong>Interactive:</strong> Yes (zoom, pan, marker popups)</p>
+                    <p><strong>Structure:</strong> Contained in article with descriptive heading</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Pass 4: SVG map with title as first child -->
+        <section role="region" aria-label="United States election results by state">
+            <h2>2024 Election Results - Choropleth Map</h2>
+            <p>Click on any state to see detailed voting statistics:</p>
+            <svg width="600" height="400" role="img" aria-labelledby="usa-map-title usa-map-desc"
+                 data-expected-pass="true"
+                 data-pass-reason="SVG map with title as first child, proper role=img, aria-labelledby referencing both title and description. Follows SVG accessibility best practices.">
+                <title id="usa-map-title">United States Electoral Map showing voting results by state</title>
+                <desc id="usa-map-desc">Interactive choropleth map displaying election results across all 50 states. States are color-coded by result and clickable for detailed information.</desc>
+
+                <!-- Mock US states -->
+                <g id="states">
+                    <path d="M 50 50 L 150 50 L 150 150 L 50 150 Z" fill="#4285f4" role="button" tabindex="0" aria-label="California - 54 electoral votes">
+                        <title>California</title>
+                    </path>
+                    <path d="M 200 100 L 300 100 L 300 200 L 200 200 Z" fill="#ea4335" role="button" tabindex="0" aria-label="Texas - 40 electoral votes">
+                        <title>Texas</title>
+                    </path>
+                    <path d="M 350 50 L 450 50 L 450 150 L 350 150 Z" fill="#4285f4" role="button" tabindex="0" aria-label="New York - 28 electoral votes">
+                        <title>New York</title>
+                    </path>
+                </g>
+            </svg>
+        </section>
+
+        <!-- Pass 5: OpenStreetMap iframe in proper context -->
+        <aside role="complementary" aria-label="Event venue location">
+            <h3>Conference Venue</h3>
+            <p>Join us at the downtown convention center:</p>
+            <iframe
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-122.4,37.7,-122.3,37.8"
+                width="600"
+                height="450"
+                style="border: 1px solid #ccc;"
+                title="OpenStreetMap showing downtown convention center at 456 Conference Drive with nearby hotels and parking"
+                data-expected-pass="true"
+                data-pass-reason="OpenStreetMap iframe with descriptive title clearly indicating location and context. Contained in aside landmark with complementary role. No accessibility barriers.">
+            </iframe>
+            <p><strong>Address:</strong> 456 Conference Drive, San Francisco, CA 94102</p>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Accessible Maps Demo. All maps implement WCAG 2.1 Level A and AA requirements.</p>
+    </footer>
+</body>
+</html>

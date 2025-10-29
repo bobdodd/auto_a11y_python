@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusOutlineExceedsParent - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusOutlineExceedsParent_002_correct_sufficient_padding",
+    "issueId": "WarnInputFocusOutlineExceedsParent",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "expectedWarningCount": 0,
+    "description": "Parents with sufficient padding to contain outline extent",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* CORRECT 1: Adequate padding for outline extent */
+        .safe-container-1 {
+            padding: 10px;
+            background: #f5f5f5;
+            display: inline-block;
+        }
+
+        .safe-container-1 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .safe-container-1 input:focus {
+            outline: 3px solid #0056b3;
+            outline-offset: 5px;
+            /* Total extent: 5px + 3px = 8px, within 10px padding */
+        }
+
+        /* CORRECT 2: No outline-offset */
+        .safe-container-2 {
+            padding: 5px;
+            background: #e8f4f8;
+            display: inline-block;
+        }
+
+        .safe-container-2 input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .safe-container-2 input:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: 0px;
+            /* Total extent: 0px + 2px = 2px, within 5px padding */
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusOutlineExceedsParent - Correct Examples</h1>
+    <p>These should NOT trigger warnings.</p>
+
+    <div class="safe-container-1">
+        <label for="input1">Correct 1: Padding (10px) > outline extent (8px)</label><br>
+        <input type="text" id="input1" placeholder="Outline fits within parent">
+    </div>
+
+    <br><br>
+
+    <div class="safe-container-2">
+        <label for="input2">Correct 2: Small extent with adequate padding</label><br>
+        <input type="text" id="input2" placeholder="No offset, small outline">
+    </div>
+</body>
+</html>

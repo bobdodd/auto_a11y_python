@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAccordionWithoutARIA - Partial ARIA</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAccordionWithoutARIA_003_partial_aria",
+    "issueId": "ErrAccordionWithoutARIA",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Accordion patterns with partial/incomplete ARIA implementation",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .accordion-button { display: block; width: 100%; padding: 10px; background: #f0f0f0; border: 1px solid #ccc; text-align: left; cursor: pointer; }
+        .accordion-panel { display: none; padding: 10px; border: 1px solid #ccc; border-top: none; }
+        .accordion-panel.active { display: block; }
+    </style>
+</head>
+<body>
+    <h1>Product FAQ</h1>
+
+    <main>
+        <!-- Accordion with aria-controls but missing aria-expanded -->
+        <section data-expected-violation="true"
+                 data-violation-reason="Accordion button has aria-controls but missing aria-expanded. Screen readers can't determine if panel is expanded or collapsed">
+            <button class="accordion-button"
+                    aria-controls="panel1"
+                    onclick="toggleAccordion(this)">
+                What is the warranty period?
+            </button>
+            <div class="accordion-panel" id="panel1">
+                <p>Our products come with a 2-year warranty covering manufacturing defects.</p>
+            </div>
+        </section>
+
+        <!-- Accordion with static aria-expanded (never updates) -->
+        <section data-expected-violation="true"
+                 data-violation-reason="Accordion button has aria-expanded='false' but value never changes. Screen readers get incorrect state information when panel expands">
+            <button class="accordion-button"
+                    aria-expanded="false"
+                    onclick="toggleAccordionNoUpdate(this)">
+                How do I return a product?
+            </button>
+            <div class="accordion-panel" id="panel2">
+                <p>Contact customer service within 30 days for return authorization.</p>
+            </div>
+        </section>
+
+        <!-- Nested accordion - outer has ARIA, inner missing -->
+        <section>
+            <button class="accordion-button"
+                    aria-expanded="false"
+                    aria-controls="panel3"
+                    onclick="toggleAccordion(this)">
+                Shipping Information
+            </button>
+            <div class="accordion-panel" id="panel3">
+                <p>We offer multiple shipping options:</p>
+
+                <!-- Inner nested accordion WITHOUT ARIA -->
+                <div data-expected-violation="true"
+                     data-violation-reason="Nested accordion button lacks aria-expanded. Inner accordions need complete ARIA just like top-level ones">
+                    <button class="accordion-button" onclick="toggleAccordion(this)">
+                        Domestic Shipping
+                    </button>
+                    <div class="accordion-panel">
+                        <p>Standard: 5-7 days, Express: 2-3 days</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function toggleAccordion(button) {
+            const panel = button.nextElementSibling;
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+            // Update aria-expanded
+            button.setAttribute('aria-expanded', !isExpanded);
+
+            // Toggle panel
+            panel.classList.toggle('active');
+        }
+
+        function toggleAccordionNoUpdate(button) {
+            // BUG: Doesn't update aria-expanded state
+            const panel = button.nextElementSibling;
+            panel.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

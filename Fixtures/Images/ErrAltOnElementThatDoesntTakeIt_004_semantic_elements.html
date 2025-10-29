@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrAltOnElementThatDoesntTakeIt - Semantic Elements</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrAltOnElementThatDoesntTakeIt_004_semantic_elements",
+    "issueId": "ErrAltOnElementThatDoesntTakeIt",
+    "expectedViolationCount": 10,
+    "expectedPassCount": 0,
+    "description": "Alt on various semantic and structural elements",
+    "wcag": "4.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <!-- VIOLATION 1: header with alt -->
+    <header alt="Page header"
+            data-expected-violation="true"
+            data-violation-reason="Header element has alt attribute, invalid HTML">
+        <h1>Website Title</h1>
+    </header>
+
+    <!-- VIOLATION 2: footer with alt -->
+    <footer alt="Page footer"
+            data-expected-violation="true"
+            data-violation-reason="Footer element has alt attribute, not allowed">
+        <p>Copyright 2024</p>
+    </footer>
+
+    <!-- VIOLATION 3: main with alt -->
+    <main alt="Main content"
+          data-expected-violation="true"
+          data-violation-reason="Main element has alt attribute, invalid">
+        <p>Content here</p>
+    </main>
+
+    <!-- VIOLATION 4: aside with alt -->
+    <aside alt="Sidebar"
+           data-expected-violation="true"
+           data-violation-reason="Aside element has alt attribute, not valid">
+        <p>Related links</p>
+    </aside>
+
+    <!-- VIOLATION 5: figure with alt -->
+    <figure alt="Chart figure"
+            data-expected-violation="true"
+            data-violation-reason="Figure element has alt attribute, invalid. Use figcaption instead">
+        <figcaption>Figure caption</figcaption>
+    </figure>
+
+    <!-- VIOLATION 6: h1 with alt -->
+    <h1 alt="Main heading"
+        data-expected-violation="true"
+        data-violation-reason="H1 element has alt attribute, not allowed">
+        Heading Text
+    </h1>
+
+    <!-- VIOLATION 7: ul with alt -->
+    <ul alt="Navigation list"
+        data-expected-violation="true"
+        data-violation-reason="Ul element has alt attribute, invalid HTML">
+        <li>Item 1</li>
+    </ul>
+
+    <!-- VIOLATION 8: ol with alt -->
+    <ol alt="Ordered list"
+        data-expected-violation="true"
+        data-violation-reason="Ol element has alt attribute, not allowed">
+        <li>Step 1</li>
+    </ol>
+
+    <!-- VIOLATION 9: dl with alt -->
+    <dl alt="Definition list"
+        data-expected-violation="true"
+        data-violation-reason="Dl element has alt attribute, invalid">
+        <dt>Term</dt>
+        <dd>Definition</dd>
+    </dl>
+
+    <!-- VIOLATION 10: form with alt -->
+    <form alt="Contact form"
+          data-expected-violation="true"
+          data-violation-reason="Form element has alt attribute, not valid HTML">
+        <input type="text">
+    </form>
+</body>
+</html>

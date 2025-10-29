@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaLabelledby - role=dialog Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby_001_violations_role_dialog",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Elements with role=dialog missing aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Dialogs with role=dialog</h1>
+
+    <!-- Violation 1: role=dialog without aria-labelledby -->
+    <div role="dialog" aria-modal="true" style="display: block; position: fixed; z-index: 1000; width: 300px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="role=dialog without aria-labelledby">
+        <h2 id="confirm-title">Confirm Deletion</h2>
+        <p>This cannot be undone.</p>
+        <button>Cancel</button>
+        <button>Delete</button>
+    </div>
+
+    <!-- Violation 2: role=dialog with aria-modal=true, no aria-labelledby -->
+    <div role="dialog" aria-modal="true" style="display: block; position: fixed; z-index: 1001; top: 220px; width: 300px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="role=dialog with aria-modal but no aria-labelledby">
+        <h2 id="warning-title">Warning</h2>
+        <p>Low disk space.</p>
+        <button>OK</button>
+    </div>
+
+    <!-- Violation 3: role=dialog without aria-modal, still needs aria-labelledby -->
+    <div role="dialog" style="display: block; position: fixed; z-index: 1002; top: 440px; width: 300px; height: 200px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="role=dialog without aria-labelledby (no aria-modal)">
+        <h2 id="info-title">Information</h2>
+        <p>Update available.</p>
+        <button>Later</button>
+        <button>Update Now</button>
+    </div>
+</body>
+</html>

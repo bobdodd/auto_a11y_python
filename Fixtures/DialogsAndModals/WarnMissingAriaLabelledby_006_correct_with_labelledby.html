@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaLabelledby - Correct Examples</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby_006_correct_with_labelledby",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 6,
+    "description": "All dialog types correctly using aria-labelledby",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Correct Dialogs with aria-labelledby</h1>
+
+    <!-- Correct 1: role=dialog with aria-labelledby -->
+    <div role="dialog" aria-modal="true" aria-labelledby="correct-title-1"
+         style="display: block; position: fixed; z-index: 1000; width: 300px; height: 200px;"
+         data-expected-pass="true"
+         data-pass-reason="Dialog with aria-labelledby">
+        <h2 id="correct-title-1">Account Settings</h2>
+        <p>Manage your preferences.</p>
+        <button>Save</button>
+        <button>Cancel</button>
+    </div>
+
+    <!-- Correct 2: role=alertdialog with aria-labelledby -->
+    <div role="alertdialog" aria-modal="true" aria-labelledby="correct-title-2"
+         style="display: block; position: fixed; z-index: 1001; top: 220px; width: 300px; height: 180px;"
+         data-expected-pass="true"
+         data-pass-reason="Alert dialog with aria-labelledby">
+        <h2 id="correct-title-2">Error</h2>
+        <p>File upload failed.</p>
+        <button>Retry</button>
+    </div>
+
+    <!-- Correct 3: Native dialog with aria-labelledby -->
+    <dialog open aria-labelledby="correct-title-3"
+            style="width: 300px; height: 200px; position: fixed; top: 420px;"
+            data-expected-pass="true"
+            data-pass-reason="Native dialog with aria-labelledby">
+        <h2 id="correct-title-3">Help Center</h2>
+        <p>Browse our documentation.</p>
+        <button>Close</button>
+    </dialog>
+
+    <!-- Correct 4: aria-modal with aria-labelledby -->
+    <div aria-modal="true" aria-labelledby="correct-title-4"
+         style="display: block; position: fixed; z-index: 1500; top: 640px; width: 280px; height: 150px;"
+         data-expected-pass="true"
+         data-pass-reason="aria-modal element with aria-labelledby">
+        <h2 id="correct-title-4">Notification</h2>
+        <p>Message sent successfully.</p>
+        <button>OK</button>
+    </div>
+
+    <!-- Correct 5: Heuristic dialog (modal class) with aria-labelledby -->
+    <div class="modal" aria-labelledby="correct-title-5"
+         style="display: block; position: fixed; z-index: 2000; top: 810px; width: 320px; height: 180px;"
+         data-expected-pass="true"
+         data-pass-reason="Heuristic modal with aria-labelledby">
+        <h2 id="correct-title-5">Terms of Service</h2>
+        <p>Please review our terms.</p>
+        <button>Accept</button>
+        <button>Decline</button>
+    </div>
+
+    <!-- Correct 6: Multiple ID references in aria-labelledby -->
+    <div role="dialog" aria-modal="true" aria-labelledby="correct-title-6a correct-title-6b"
+         style="display: block; position: fixed; z-index: 1600; top: 1010px; width: 300px; height: 200px;"
+         data-expected-pass="true"
+         data-pass-reason="Dialog with multiple aria-labelledby references">
+        <h2 id="correct-title-6a">Payment</h2>
+        <p id="correct-title-6b">Complete your order</p>
+        <button>Pay Now</button>
+        <button>Cancel</button>
+    </div>
+</body>
+</html>

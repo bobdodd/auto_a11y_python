@@ -28,13 +28,10 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrImageAltContainsHTML',
         'ErrImageWithEmptyAlt',
         'ErrImageWithImgFileExtensionAlt',
-        'ErrImageWithNoAlt',
         'ErrImageWithURLAsAlt',
         'ErrNoAlt',
         'ErrRedundantAlt',
         'ErrSVGNoAccessibleName',
-        'ErrSvgImageNoLabel',
-        'WarnSVGNoRole',
         'WarnSvgPositiveTabindex',
     ],
     
@@ -65,14 +62,15 @@ TOUCHPOINT_TEST_MAPPING = {
         'WarnNoFieldset',
         'WarnNoLegend',
         'ErrFormLandmarkMustHaveAccessibleName',
-        'WarnUnlabelledRegion',
-        'forms_ErrNoButtonText',
+        'DiscoNoSubmitButton',
+        'WarnGenericButtonText',
+        'WarnRequiredNotIndicated',
     ],
     
     'buttons': [
         'ErrButtonEmpty',
         'ErrButtonNoText',
-        'ErrButtonOutlineNoneNoBoxShadow',
+        'ErrButtonNoVisibleFocusRelyingOnColorOnly',
         'ErrButtonFocusContrastFail',
         'ErrButtonOutlineWidthInsufficient',
         'ErrButtonOutlineOffsetInsufficient',
@@ -105,9 +103,6 @@ TOUCHPOINT_TEST_MAPPING = {
     ],
     
     'navigation': [
-        'AI_ErrAccordionWithoutARIA',
-        'AI_ErrCarouselWithoutARIA',
-        'AI_ErrDropdownWithoutARIA',
         'ErrDuplicateNavNames',
         'ErrInappropriateMenuRole',
         'ErrNavMissingAccessibleName',
@@ -118,7 +113,11 @@ TOUCHPOINT_TEST_MAPPING = {
     ],
     
     'colors_contrast': [
-        'ErrInsufficientContrast',
+        'ErrTextContrastAA',
+        'ErrLargeTextContrastAA',
+        'ErrTextContrastAAA',
+        'ErrLargeTextContrastAAA',
+        'WarnTextContrastCannotCalculate',
         'WarnNoColorSchemeSupport',
         'WarnNoContrastSupport',
         'WarnColorOnlyLink',
@@ -131,7 +130,6 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrPositiveTabindex',
         'ErrTabOrderViolation',
         'WarnHighTabindex',
-        'WarnMissingNegativeTabindex',
         'WarnModalNoFocusableElements',
         'WarnNegativeTabindex',
     ],
@@ -144,6 +142,7 @@ TOUCHPOINT_TEST_MAPPING = {
         'WarnContentOutsideLandmarks',
         'WarnMissingBannerLandmark',
         'WarnMissingContentinfoLandmark',
+        'WarnUnlabelledRegion',
     ],
     
     'language': [
@@ -163,6 +162,7 @@ TOUCHPOINT_TEST_MAPPING = {
     
     'lists': [
         'ErrEmptyList',
+        'ErrListitemEmpty',
         'ErrFakeListImplementation',
         'WarnCustomBulletStyling',
         'WarnDeepListNesting',
@@ -183,19 +183,18 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrModalWithoutEscape',
         'WarnMissingAriaLabelledby',
         'WarnMissingAriaModal',
-        'WarnModalMissingAriaModal',
     ],
     
     'animation': [
-        'ErrAutoStartTimers',
         'ErrInfiniteAnimation',
         'ErrNoReducedMotionSupport',
-        'WarnFastInterval',
         'WarnLongAnimation',
     ],
-    
-    'timing': [
+
+    'timers': [
         'ErrTimersWithoutControls',
+        'WarnAutoStartTimers',
+        'WarnFastInterval',
     ],
     
     'fonts': [
@@ -210,16 +209,28 @@ TOUCHPOINT_TEST_MAPPING = {
 
     'semantic_structure': [
         'ErrHeaderMissingScope',
+        'ErrInvalidTabindex',
         'ErrMissingDocumentType',
         'WarnVisualHierarchy',
     ],
     
     'aria': [
-        'AI_ErrMissingInteractiveRole',
+        'ErrAccordionWithoutARIA',
+        'ErrCarouselWithoutARIA',
+        'ErrClickableWithoutKeyboard',
+        'ErrDialogMissingRole',
+        'ErrDropdownWithoutARIA',
+        'ErrInteractiveElementIssue',
+        'ErrMenuWithoutARIA',
+        'ErrMissingInteractiveRole',
+        'ErrTabpanelWithoutARIA',
+        'ErrTooltipWithoutARIA',
         'ErrAriaLabelMayNotBeFoundByVoiceControl',
         'ErrFoundAriaLevelButNoRoleAppliedAtAll',
-        'ErrMapAriaHidden',
         'WarnMissingAriaModal',
+        'WarnSliderWithoutARIA',
+        'WarnSwitchWithoutARIA',
+        'WarnTreeviewWithoutARIA',
     ],
     
     'focus_management': [
@@ -256,8 +267,16 @@ TOUCHPOINT_TEST_MAPPING = {
     ],
     
     'maps': [
+        'DiscoMapFound',
         'ErrDivMapMissingAttributes',
+        'ErrDivMapMissingStructure',
+        'ErrMapAriaHidden',
+        'ErrMapGenericName',
         'ErrMapMissingTitle',
+        'ErrMapRolePresentation',
+        'ErrSvgMapMissingName',
+        'WarnDivMapNoLandmark',
+        'WarnMapPotentialContentHiding',
     ],
     
     'documents': [

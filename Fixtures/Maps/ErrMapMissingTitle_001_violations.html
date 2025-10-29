@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMapMissingTitle - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMapMissingTitle_001_violations",
+    "issueId": "ErrMapMissingTitle",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Map iframes without accessible names (no title, aria-label, or aria-labelledby)",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Store Locations Without Proper Titles</h1>
+
+    <main>
+        <section>
+            <h2>Downtown Store</h2>
+            <p>Our flagship store location:</p>
+
+            <!-- Violation 1: No title attribute at all -->
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.123456789!2d-73.987654!3d40.748567"
+                    width="600"
+                    height="450"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    data-expected-violation="true"
+                    data-violation-id="ErrMapMissingTitle"
+                    data-violation-reason="Google Maps iframe completely lacks title attribute. Screen reader users have no way to identify the purpose of this iframe. Violates WCAG 4.1.2 Name, Role, Value by not providing an accessible name."></iframe>
+        </section>
+
+        <section>
+            <h2>Suburban Store</h2>
+            <p>Located in the suburbs:</p>
+
+            <!-- Violation 2: Empty title attribute -->
+            <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-0.004017949104309083%2C51.47612752641776%2C0.00030577182769775396%2C51.478569861898606"
+                    width="600"
+                    height="450"
+                    style="border: 1px solid black"
+                    title=""
+                    data-expected-violation="true"
+                    data-violation-id="ErrMapMissingTitle"
+                    data-violation-reason="OpenStreetMap iframe has empty title attribute (title=''). Empty string is not a valid accessible name. Equivalent to having no title. Fails WCAG 4.1.2."></iframe>
+        </section>
+
+        <section>
+            <h2>Airport Store</h2>
+            <p>Near the international airport:</p>
+
+            <!-- Violation 3: Whitespace-only title -->
+            <iframe src="https://www.bing.com/maps/embed"
+                    width="600"
+                    height="450"
+                    style="border:0;"
+                    title="   "
+                    data-expected-violation="true"
+                    data-violation-id="ErrMapMissingTitle"
+                    data-violation-reason="Bing Maps iframe has title with only whitespace (title='   '). Whitespace-only titles are not meaningful accessible names. Screen readers will announce nothing useful. Violates WCAG 4.1.2."></iframe>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Store Network. All rights reserved.</p>
+    </footer>
+</body>
+</html>

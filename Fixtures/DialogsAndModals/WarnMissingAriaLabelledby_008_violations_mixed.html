@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingAriaLabelledby - Mixed Scenarios</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingAriaLabelledby_008_violations_mixed",
+    "issueId": "WarnMissingAriaLabelledby",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 3,
+    "description": "Mixed scenarios with violations and correct examples",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Mixed Scenarios</h1>
+
+    <!-- Violation 1: Native dialog without aria-labelledby -->
+    <dialog open style="width: 300px; height: 180px; position: fixed;"
+            data-expected-violation="true"
+            data-violation-id="WarnMissingAriaLabelledby"
+            data-violation-reason="Native dialog missing aria-labelledby">
+        <h2 id="mixed-title-1">Preferences</h2>
+        <p>Update your settings.</p>
+        <button>Save</button>
+    </dialog>
+
+    <!-- Correct 1: role=dialog with aria-labelledby -->
+    <div role="dialog" aria-modal="true" aria-labelledby="mixed-title-2"
+         style="display: block; position: fixed; z-index: 1000; top: 200px; width: 300px; height: 180px;"
+         data-expected-pass="true"
+         data-pass-reason="Dialog has aria-labelledby">
+        <h2 id="mixed-title-2">Confirmation</h2>
+        <p>Proceed with action?</p>
+        <button>Yes</button>
+        <button>No</button>
+    </div>
+
+    <!-- Violation 2: Heuristic modal without aria-labelledby -->
+    <div class="modal-dialog" style="display: block; position: fixed; z-index: 1500; top: 400px; width: 280px; height: 160px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="Heuristic modal missing aria-labelledby">
+        <h2 id="mixed-title-3">Subscribe</h2>
+        <p>Join our newsletter.</p>
+        <button>Subscribe</button>
+    </div>
+
+    <!-- Correct 2: role=alertdialog with aria-labelledby -->
+    <div role="alertdialog" aria-modal="true" aria-labelledby="mixed-title-4"
+         style="display: block; position: fixed; z-index: 1100; top: 580px; width: 300px; height: 180px;"
+         data-expected-pass="true"
+         data-pass-reason="Alert dialog has aria-labelledby">
+        <h2 id="mixed-title-4">Warning</h2>
+        <p>Unsaved changes will be lost.</p>
+        <button>Continue</button>
+        <button>Cancel</button>
+    </div>
+
+    <!-- Violation 3: aria-modal without aria-labelledby -->
+    <div aria-modal="true" style="display: block; position: fixed; z-index: 1200; top: 780px; width: 300px; height: 150px;"
+         data-expected-violation="true"
+         data-violation-id="WarnMissingAriaLabelledby"
+         data-violation-reason="aria-modal element missing aria-labelledby">
+        <h2 id="mixed-title-5">Update Required</h2>
+        <p>New version available.</p>
+        <button>Update</button>
+    </div>
+
+    <!-- Correct 3: Native dialog with aria-labelledby -->
+    <dialog open aria-labelledby="mixed-title-6"
+            style="width: 300px; height: 180px; position: fixed; top: 950px;"
+            data-expected-pass="true"
+            data-pass-reason="Native dialog has aria-labelledby">
+        <h2 id="mixed-title-6">Success</h2>
+        <p>Operation completed successfully.</p>
+        <button>Close</button>
+    </dialog>
+</body>
+</html>

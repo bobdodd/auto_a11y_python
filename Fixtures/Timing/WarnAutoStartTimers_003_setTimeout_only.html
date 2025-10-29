@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>setTimeout Only - Warning</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnAutoStartTimers_003_setTimeout_only",
+    "issueId": "WarnAutoStartTimers",
+    "expectedViolationCount": 1,
+    "expectedPassCount": 0,
+    "description": "Page has setTimeout calls starting on page load",
+    "wcag": "2.2.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body data-expected-violation="true"
+      data-violation-id="WarnAutoStartTimers"
+      data-violation-reason="Multiple setTimeout calls execute on page load">
+    <div class="content">
+        <h1>Delayed Content Loading</h1>
+        <div id="message1">Loading...</div>
+        <div id="message2">Loading...</div>
+        <div id="message3">Loading...</div>
+    </div>
+
+    <script>
+        // Multiple setTimeout calls - auto-start on page load
+        setTimeout(() => {
+            document.getElementById('message1').textContent = 'Content 1 loaded after 1 second';
+        }, 1000);
+
+        setTimeout(() => {
+            document.getElementById('message2').textContent = 'Content 2 loaded after 2 seconds';
+        }, 2000);
+
+        setTimeout(() => {
+            document.getElementById('message3').textContent = 'Content 3 loaded after 3 seconds';
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithImgFileExtensionAlt - Common Patterns</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithImgFileExtensionAlt_004_common_patterns",
+    "issueId": "ErrImageWithImgFileExtensionAlt",
+    "expectedViolationCount": 6,
+    "expectedPassCount": 0,
+    "description": "Common real-world filename patterns with extensions",
+    "wcag": "1.1.1",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>ErrImageWithImgFileExtensionAlt - Common Patterns</h1>
+
+    <!-- ERROR 1: Date-based filename -->
+    <h2>Error 1: Date-based filename</h2>
+    <img src="2024-01-15-photo.jpg" alt="2024-01-15-photo.jpg"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Date-based filename with .jpg extension provides no description">
+
+    <!-- ERROR 2: Screenshot filename -->
+    <h2>Error 2: Screenshot filename</h2>
+    <img src="Screenshot_20240115_143022.png" alt="Screenshot_20240115_143022.png"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Screenshot filename with timestamp and .png extension">
+
+    <!-- ERROR 3: Downloaded file pattern -->
+    <h2>Error 3: Downloaded file with number suffix</h2>
+    <img src="image(1).jpg" alt="image(1).jpg"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Generic 'image' filename with download counter and .jpg extension">
+
+    <!-- ERROR 4: Stock photo filename -->
+    <h2>Error 4: Stock photo ID</h2>
+    <img src="shutterstock_123456789.jpeg" alt="shutterstock_123456789.jpeg"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Stock photo ID with .jpeg extension provides no content description">
+
+    <!-- ERROR 5: Versioned filename -->
+    <h2>Error 5: Versioned filename</h2>
+    <img src="logo-v2-final.png" alt="logo-v2-final.png"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Versioned filename with .png extension includes technical metadata">
+
+    <!-- ERROR 6: Numbered sequence -->
+    <h2>Error 6: Numbered sequence filename</h2>
+    <img src="slide-03.gif" alt="slide-03.gif"
+         data-expected-violation="true"
+         data-violation-id="ErrImageWithImgFileExtensionAlt"
+         data-violation-reason="Numbered sequence filename with .gif extension lacks description">
+</body>
+</html>

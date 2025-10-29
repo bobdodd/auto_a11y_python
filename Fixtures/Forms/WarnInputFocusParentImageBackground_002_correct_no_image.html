@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusParentImageBackground - Correct Examples</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusParentImageBackground_002_correct_no_image",
+    "issueId": "WarnInputFocusParentImageBackground",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 3,
+    "expectedWarningCount": 0,
+    "description": "Inputs without parent image backgrounds or with zero/negative outline-offset",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* PASS 1: Parent with solid background */
+        .solid-container {
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        .solid-container input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .solid-container input:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 3px;
+        }
+
+        /* PASS 2: Parent has image but outline-offset is 0 (outline sits ON input) */
+        .image-container-zero-offset {
+            padding: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23f0f0f0" width="50" height="100"/><rect fill="%23333333" x="50" width="50" height="100"/></svg>');
+            background-size: 100px 100px;
+            border-radius: 5px;
+        }
+
+        .image-container-zero-offset input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .image-container-zero-offset input:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 0px; /* Sits on input background, not parent */
+        }
+
+        /* PASS 3: Parent has image but outline-offset is negative (inside input) */
+        .image-container-negative-offset {
+            padding: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle fill="%23cccccc" cx="10" cy="10" r="5"/></svg>');
+            background-size: 20px 20px;
+            border-radius: 5px;
+        }
+
+        .image-container-negative-offset input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .image-container-negative-offset input:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: -2px; /* Inside input */
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusParentImageBackground - Correct Examples</h1>
+    <p>These inputs do NOT trigger warnings because outline sits on input background, not parent.</p>
+
+    <div class="solid-container">
+        <label for="input1">Pass 1: Parent with solid background (no image)</label><br>
+        <input type="text" id="input1"
+               data-expected-pass="true"
+               data-pass-reason="Parent has solid background, no image"
+               placeholder="Parent is solid color">
+    </div>
+
+    <br><br>
+
+    <div class="image-container-zero-offset">
+        <label for="input2">Pass 2: Parent has image but outline-offset: 0</label><br>
+        <input type="text" id="input2"
+               data-expected-pass="true"
+               data-pass-reason="Outline sits ON input (offset=0), parent image irrelevant"
+               placeholder="Outline on input surface">
+    </div>
+
+    <br><br>
+
+    <div class="image-container-negative-offset">
+        <label for="input3">Pass 3: Parent has image but outline-offset: -2px</label><br>
+        <input type="text" id="input3"
+               data-expected-pass="true"
+               data-pass-reason="Outline sits INSIDE input (offset<0), parent image irrelevant"
+               placeholder="Outline inside input">
+    </div>
+</body>
+</html>

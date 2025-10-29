@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnInputFocusZIndexFloating - Correct</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnInputFocusZIndexFloating_002_correct_no_zindex",
+    "issueId": "WarnInputFocusZIndexFloating",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "expectedWarningCount": 0,
+    "description": "Input fields without z-index or with outline-offset: 0",
+    "wcag": "2.4.7, 1.4.11",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+
+        /* CORRECT 1: No z-index, outline-offset > 0 is OK */
+        .normal-input-1 {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .normal-input-1:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 3px;
+        }
+
+        /* CORRECT 2: Has z-index but outline-offset: 0 */
+        .zindex-no-offset {
+            position: relative;
+            z-index: 10;
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            background-color: white;
+        }
+
+        .zindex-no-offset:focus {
+            outline: 2px solid #ff6600;
+            outline-offset: 0px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WarnInputFocusZIndexFloating - Correct Examples</h1>
+    <p>These inputs should NOT trigger the warning.</p>
+
+    <label for="input1">Correct 1: No z-index with outline-offset</label>
+    <input type="text" id="input1" class="normal-input-1" placeholder="No z-index, offset OK">
+
+    <br><br>
+
+    <label for="input2">Correct 2: Has z-index but offset: 0</label>
+    <input type="text" id="input2" class="zindex-no-offset" placeholder="Z-index but outline-offset: 0">
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTextContrastAA - Pseudoclass Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTextContrastAA_003_pseudoclass_violations",
+    "issueId": "ErrTextContrastAA",
+    "expectedViolationCount": 12,
+    "expectedPassCount": 0,
+    "description": "Links and interactive text with insufficient contrast in pseudoclass states (hover, focus, visited) - tested at 3 breakpoints: 320px, 768px, 1024px",
+    "wcag": "1.4.3",
+    "impact": "High"
+}
+    </script>
+    <style>
+        body {
+            background: #ffffff;
+            color: #000000;
+            font-size: 16px;
+            padding: 20px;
+        }
+
+        /* Link with good default but bad hover */
+        .link-bad-hover {
+            color: #000000; /* 21:1 - passes AA */
+        }
+        .link-bad-hover:hover {
+            color: #999999; /* 2.85:1 - fails AA */
+        }
+
+        /* Link with good default but bad focus */
+        .link-bad-focus {
+            color: #000000; /* 21:1 - passes AA */
+        }
+        .link-bad-focus:focus {
+            color: #aaaaaa; /* 2.32:1 - fails AA */
+        }
+
+        /* Link with bad visited state */
+        .link-bad-visited {
+            color: #000000; /* 21:1 - passes AA */
+        }
+        .link-bad-visited:visited {
+            color: #bbbbbb; /* 1.97:1 - fails AA */
+        }
+
+        /* Link with bad active state */
+        .link-bad-active {
+            color: #000000; /* 21:1 - passes AA */
+        }
+        .link-bad-active:active {
+            color: #cccccc; /* 1.64:1 - fails AA */
+        }
+
+        /* Link that passes in all states (control) */
+        .link-good {
+            color: #000000;
+        }
+        .link-good:hover,
+        .link-good:focus,
+        .link-good:visited,
+        .link-good:active {
+            color: #0000ff; /* 8.59:1 - passes AA */
+        }
+    </style>
+</head>
+<body>
+    <h1>Pseudoclass Contrast Testing</h1>
+
+    <main>
+        <section>
+            <h2>Links with Pseudoclass Contrast Issues</h2>
+
+            <p>This page tests contrast in different interactive states:</p>
+
+            <p>
+                <a href="#section1" class="link-bad-hover"
+                   data-expected-violation="true"
+                   data-violation-id="ErrTextContrastAA"
+                   data-violation-reason="Link has good contrast (21:1) in default state but fails in :hover state with 2.85:1 contrast">
+                    Link with bad hover contrast
+                </a>
+                - Try hovering over this link
+            </p>
+
+            <p>
+                <a href="#section2" class="link-bad-focus"
+                   data-expected-violation="true"
+                   data-violation-id="ErrTextContrastAA"
+                   data-violation-reason="Link has good contrast (21:1) in default state but fails in :focus state with 2.32:1 contrast">
+                    Link with bad focus contrast
+                </a>
+                - Try tabbing to this link
+            </p>
+
+            <p>
+                <a href="#section3" class="link-bad-visited"
+                   data-expected-violation="true"
+                   data-violation-id="ErrTextContrastAA"
+                   data-violation-reason="Link has good contrast (21:1) in default state but fails in :visited state with 1.97:1 contrast">
+                    Link with bad visited contrast
+                </a>
+                - After visiting, this link will have poor contrast
+            </p>
+
+            <p>
+                <a href="#section4" class="link-bad-active"
+                   data-expected-violation="true"
+                   data-violation-id="ErrTextContrastAA"
+                   data-violation-reason="Link has good contrast (21:1) in default state but fails in :active state with 1.64:1 contrast">
+                    Link with bad active contrast
+                </a>
+                - Click and hold to see poor contrast
+            </p>
+
+            <p>
+                <a href="#section5" class="link-good">
+                    Link with good contrast in all states
+                </a>
+                - This link maintains proper contrast
+            </p>
+        </section>
+
+        <div id="section1"><h3>Section 1</h3></div>
+        <div id="section2"><h3>Section 2</h3></div>
+        <div id="section3"><h3>Section 3</h3></div>
+        <div id="section4"><h3>Section 4</h3></div>
+        <div id="section5"><h3>Section 5</h3></div>
+    </main>
+</body>
+</html>

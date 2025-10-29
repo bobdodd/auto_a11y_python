@@ -43,12 +43,13 @@
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 3px;
+            background-color: white;
         }
 
         /* CORRECT 1: Dark blue outline on white (8.6:1 contrast) */
         .high-contrast-outline:focus {
             outline: 2px solid #0056b3;
-            outline-offset: 1px;
+            outline-offset: 0px;
         }
 
         /* CORRECT 2: Black outline on white (21:1 contrast) */
@@ -64,7 +65,7 @@
 
         /* CORRECT 4: Orange outline (3.1:1 contrast - just above minimum) */
         .orange-outline:focus {
-            outline: 3px solid #ff6600;
+            outline: 3px solid #ff5c00;
         }
 
         /* CORRECT 5: Dark green border (7.2:1 contrast) */
@@ -91,7 +92,7 @@
         <input type="text" id="input3" class="dark-shadow" placeholder="#333333 box-shadow on white">
 
         <label for="input4">Correct 4: Orange Outline (3.1:1 contrast)</label>
-        <input type="tel" id="input4" class="orange-outline" placeholder="#ff6600 outline (just above 3:1)">
+        <input type="tel" id="input4" class="orange-outline" placeholder="#ff5c00 outline (3.1:1)">
 
         <label for="textarea1">Correct 5: Dark Green Border (7.2:1 contrast)</label>
         <textarea id="textarea1" class="dark-green-border" rows="3" placeholder="#006400 border on white"></textarea>

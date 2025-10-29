@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingRequiredIndication - Optional Fields (No Warning)</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingRequiredIndication_005_correct_optional_fields",
+    "issueId": "WarnMissingRequiredIndication",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 5,
+    "description": "Optional fields without required attribute should not trigger warning",
+    "wcag": "3.3.2",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>Survey Form - All Optional Fields</h1>
+
+    <p>All fields in this form are optional. Only required fields need visual indicators.</p>
+
+    <form>
+        <!-- Correct 1: Optional field, no required attribute -->
+        <div data-expected-pass="true"
+             data-pass-reason="Field is optional (no required attribute), so no indicator needed">
+            <label for="name">Name (Optional)</label>
+            <input type="text" id="name" name="name">
+        </div>
+
+        <!-- Correct 2: Optional email -->
+        <div data-expected-pass="true"
+             data-pass-reason="Optional field, no warning expected">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
+        </div>
+
+        <!-- Correct 3: Optional textarea -->
+        <div data-expected-pass="true"
+             data-pass-reason="Optional field, no warning expected">
+            <label for="feedback">Feedback</label>
+            <textarea id="feedback" name="feedback"></textarea>
+        </div>
+
+        <!-- Correct 4: Optional select -->
+        <div data-expected-pass="true"
+             data-pass-reason="Optional field, no warning expected">
+            <label for="rating">Rating</label>
+            <select id="rating" name="rating">
+                <option value="">Select a rating</option>
+                <option value="5">Excellent</option>
+                <option value="4">Good</option>
+            </select>
+        </div>
+
+        <!-- Correct 5: aria-required="false" is treated as not required -->
+        <div data-expected-pass="true"
+             data-pass-reason="aria-required='false' means not required, no warning expected">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" aria-required="false">
+        </div>
+
+        <button type="submit">Submit Survey</button>
+    </form>
+</body>
+</html>

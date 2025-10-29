@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoNoSubmitButton - Wrong Button Types</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "DiscoNoSubmitButton_005_discovery_wrong_button_types",
+    "issueId": "DiscoNoSubmitButton",
+    "expectedViolationCount": 4,
+    "expectedPassCount": 0,
+    "description": "Forms with buttons but wrong types (button, reset) should trigger discovery",
+    "wcag": "3.3.2",
+    "impact": "Info"
+}
+    </script>
+</head>
+<body>
+    <h1>Forms With Wrong Button Types</h1>
+
+    <!-- Discovery: Only has button type="button" -->
+    <form data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Form has button but type=button, not submit">
+        <label for="email1">Email</label>
+        <input type="email" id="email1" name="email">
+        <button type="button" onclick="alert('Not a submit')">Click</button>
+    </form>
+
+    <!-- Discovery: Only has button type="reset" -->
+    <form data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Form only has reset button">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name">
+        <button type="reset">Clear</button>
+    </form>
+
+    <!-- Discovery: Multiple buttons but none are submit -->
+    <form data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Form has multiple buttons but none are submit">
+        <label for="email2">Email</label>
+        <input type="email" id="email2" name="email">
+        <button type="button">Save Draft</button>
+        <button type="reset">Clear</button>
+        <button type="button">Preview</button>
+    </form>
+
+    <!-- Discovery: Has input type="button" (not a submit button) -->
+    <form data-expected-discovery="true"
+          data-discovery-id="DiscoNoSubmitButton"
+          data-discovery-reason="Form has input type=button, not submit">
+        <label for="search">Search</label>
+        <input type="search" id="search" name="q">
+        <input type="button" value="Search" onclick="doSearch()">
+    </form>
+</body>
+</html>

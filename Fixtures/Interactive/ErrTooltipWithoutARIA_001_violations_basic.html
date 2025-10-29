@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_ErrTooltipWithoutARIA - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTooltipWithoutARIA_001_violations_basic",
+    "issueId": "ErrTooltipWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Tooltip patterns without proper ARIA attributes",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .tooltip-trigger { position: relative; border-bottom: 1px dashed #333; cursor: help; }
+        .tooltip { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 5px 10px; border-radius: 4px; white-space: nowrap; z-index: 1000; }
+        .tooltip-trigger:hover .tooltip { display: block; }
+    </style>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <section>
+            <h2>Features</h2>
+
+            <p data-expected-violation="true"
+               data-violation-reason="Tooltip implemented without ARIA attributes. Trigger element lacks role='button', aria-describedby, or aria-label. Tooltip div missing role='tooltip'. Screen readers can't identify tooltip relationship. Users don't get tooltip content announced. Keyboard users can't access tooltip on focus. Violates WCAG 4.1.2 Name, Role, Value by missing tooltip ARIA pattern">
+                Our product includes
+                <span class="tooltip-trigger">
+                    advanced security
+                    <span class="tooltip">256-bit encryption with multi-factor authentication</span>
+                </span>
+                features.
+            </p>
+        </section>
+
+        <section>
+            <h2>Specifications</h2>
+
+            <p data-expected-violation="true"
+               data-violation-reason="Tooltip pattern without ARIA implementation. No aria-describedby linking trigger to tooltip. Tooltip lacks role='tooltip' and proper ID. Screen readers miss additional information in tooltip. Users with assistive technology don't receive tooltip content. Keyboard-only users can't trigger tooltip. Violates WCAG 4.1.2 Name, Role, Value by not implementing tooltip ARIA semantics">
+                Battery life up to
+                <span class="tooltip-trigger">
+                    10 hours
+                    <span class="tooltip">Based on typical usage patterns. May vary with intensive applications.</span>
+                </span>
+                of continuous use.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

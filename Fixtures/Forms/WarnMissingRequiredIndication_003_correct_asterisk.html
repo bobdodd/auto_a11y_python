@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingRequiredIndication - Correct with Asterisk</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingRequiredIndication_003_correct_asterisk",
+    "issueId": "WarnMissingRequiredIndication",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 6,
+    "description": "Required fields with asterisk (*) in label text",
+    "wcag": "3.3.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .required { color: #d32f2f; }
+    </style>
+</head>
+<body>
+    <h1>Registration Form - Correct Asterisk Indicators</h1>
+
+    <p>Fields marked with <span class="required">*</span> are required.</p>
+
+    <form>
+        <!-- Correct 1: Asterisk at end of label -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label contains asterisk">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <!-- Correct 2: Asterisk in span element -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label contains asterisk in span">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <!-- Correct 3: Asterisk at beginning -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label starts with asterisk">
+            <label for="password">* Password</label>
+            <input type="password" id="password" name="password" aria-required="true">
+        </div>
+
+        <!-- Correct 4: Asterisk on textarea -->
+        <div data-expected-pass="true"
+             data-pass-reason="Textarea label contains asterisk">
+            <label for="bio">Biography *</label>
+            <textarea id="bio" name="bio" required></textarea>
+        </div>
+
+        <!-- Correct 5: Asterisk on select -->
+        <div data-expected-pass="true"
+             data-pass-reason="Select label contains asterisk">
+            <label for="country">Country *</label>
+            <select id="country" name="country" required>
+                <option value="">Select</option>
+                <option value="us">USA</option>
+            </select>
+        </div>
+
+        <!-- Correct 6: Both required and aria-required with asterisk -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label contains asterisk">
+            <label for="phone">Phone *</label>
+            <input type="tel" id="phone" name="phone" required aria-required="true">
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

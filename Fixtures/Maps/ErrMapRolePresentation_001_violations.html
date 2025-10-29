@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrMapRolePresentation - Violations</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrMapRolePresentation_001_violations",
+    "issueId": "ErrMapRolePresentation",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Interactive maps with role='presentation' removing semantics from focusable elements",
+    "wcag": "4.1.2",
+    "impact": "High"
+}
+    </script>
+</head>
+<body>
+    <h1>Regional Offices</h1>
+
+    <main>
+        <section>
+            <h2>East Coast Office</h2>
+
+            <!-- Violation 1: OpenStreetMap iframe with role="presentation" -->
+            <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-0.004017949104309083%2C51.47612752641776%2C0.00030577182769775396%2C51.478569861898606"
+                    width="600"
+                    height="450"
+                    style="border: 1px solid black"
+                    title="Map of East Coast office location"
+                    role="presentation"
+                    data-expected-violation="true"
+                    data-violation-id="ErrMapRolePresentation"
+                    data-violation-reason="OpenStreetMap iframe has role='presentation' which strips semantic meaning from the iframe while it contains interactive controls. Map has zoom buttons and pan controls that remain focusable but lose their semantic context. Violates WCAG 4.1.2 Name, Role, Value."></iframe>
+        </section>
+
+        <section>
+            <h2>West Coast Office</h2>
+
+            <!-- Violation 2: Google Maps div with role="presentation" and buttons -->
+            <div id="google-map"
+                 class="map"
+                 role="presentation"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMapRolePresentation"
+                 data-violation-reason="Google Maps container has role='presentation' but contains interactive elements (buttons for zoom, street view). The presentation role removes semantic structure while focusable controls remain, breaking Name, Role, Value requirements. Fails WCAG 4.1.2."
+                 style="width: 600px; height: 450px; background: #f0f0f0;">
+                <button id="zoom-in" style="position: absolute; top: 10px; right: 10px;">Zoom In</button>
+                <button id="zoom-out" style="position: absolute; top: 40px; right: 10px;">Zoom Out</button>
+                <button id="street-view" style="position: absolute; bottom: 10px; right: 10px;">Street View</button>
+            </div>
+            <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+        </section>
+
+        <section>
+            <h2>Central Office</h2>
+
+            <!-- Violation 3: Mapbox div with role="presentation" -->
+            <div id="mapbox-central"
+                 class="mapboxgl-map"
+                 role="presentation"
+                 aria-label="Central office location"
+                 data-expected-violation="true"
+                 data-violation-id="ErrMapRolePresentation"
+                 data-violation-reason="Mapbox map has role='presentation' which conflicts with aria-label and removes semantics from interactive controls. Map contains navigation controls and markers with links. The presentation role invalidates the semantic structure required for proper accessibility. Violates WCAG 4.1.2."
+                 style="width: 600px; height: 450px;">
+                <a href="/office-details" class="mapboxgl-marker" style="position: absolute; top: 200px; left: 300px;">
+                    <img src="marker.png" alt="Central office marker">
+                </a>
+                <div class="mapboxgl-ctrl-group">
+                    <button type="button" aria-label="Zoom in">+</button>
+                    <button type="button" aria-label="Zoom out">-</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Regional Offices. All rights reserved.</p>
+    </footer>
+</body>
+</html>

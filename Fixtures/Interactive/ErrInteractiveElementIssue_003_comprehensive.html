@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrInteractiveElementIssue - Comprehensive</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrInteractiveElementIssue_003_comprehensive",
+    "issueId": "ErrInteractiveElementIssue",
+    "expectedViolationCount": 6,
+    "expectedPassCount": 0,
+    "description": "Various non-semantic elements used interactively without proper roles",
+    "wcag": "2.1.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .clickable { cursor: pointer; padding: 10px; margin: 5px; background: #e0e0e0; }
+    </style>
+</head>
+<body>
+    <h1>Interactive Elements Test</h1>
+
+    <main>
+        <!-- Div with onkeydown only (no onclick) -->
+        <div class="clickable" onkeydown="handleKey(event)" tabindex="0"
+             data-expected-violation="true"
+             data-violation-reason="Div with keyboard handler but no role or onclick">
+            Press Enter to activate
+        </div>
+
+        <!-- Paragraph as button -->
+        <p class="clickable" onclick="alert('Clicked')" tabindex="0"
+           data-expected-violation="true"
+           data-violation-reason="Paragraph element used as interactive button without role='button'">
+            Click here to continue
+        </p>
+
+        <!-- Image as delete button -->
+        <img src="delete-icon.png" alt="Delete" onclick="deleteItem()"
+             data-expected-violation="true"
+             data-violation-reason="Image with onclick acting as button without role='button' or wrapping button element"
+             style="cursor: pointer; width: 24px; height: 24px;">
+
+        <!-- Li as clickable item (without role) -->
+        <ul>
+            <li onclick="selectItem(1)" tabindex="0" class="clickable"
+                data-expected-violation="true"
+                data-violation-reason="List item with onclick but no role. Should have role='button' or be actual button">
+                Option 1
+            </li>
+            <li onclick="selectItem(2)" tabindex="0" class="clickable"
+                data-expected-violation="true"
+                data-violation-reason="List item acting as interactive control without appropriate role">
+                Option 2
+            </li>
+        </ul>
+
+        <!-- Table cell as button -->
+        <table>
+            <tr>
+                <td onclick="editRow()" tabindex="0" class="clickable"
+                    data-expected-violation="true"
+                    data-violation-reason="Table cell with onclick used as button without role='button'">
+                    Edit
+                </td>
+            </tr>
+        </table>
+    </main>
+
+    <script>
+        function handleKey(e) { if (e.key === 'Enter') alert('Activated'); }
+        function deleteItem() { alert('Deleted'); }
+        function selectItem(n) { alert('Selected ' + n); }
+        function editRow() { alert('Editing'); }
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTabpanelWithoutARIA - Complex Tabs</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTabpanelWithoutARIA_003_complex_tabs",
+    "issueId": "ErrTabpanelWithoutARIA",
+    "expectedViolationCount": 2,
+    "expectedPassCount": 0,
+    "description": "Complex tab patterns and nested tabs without ARIA",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .tabs { display: flex; border-bottom: 2px solid #333; }
+        .tab { padding: 10px 20px; background: #f0f0f0; border: none; cursor: pointer; }
+        .tab.active { background: white; border-bottom: 2px solid white; margin-bottom: -2px; }
+        .panel { display: none; padding: 20px; border: 1px solid #ccc; border-top: none; }
+        .panel.active { display: block; }
+    </style>
+</head>
+<body>
+    <h1>Dashboard</h1>
+
+    <main>
+        <!-- Vertical tabs without ARIA -->
+        <div data-expected-violation="true"
+             data-violation-reason="Vertical tab interface missing role='tablist' on container and role='tab' on tabs. Screen readers cannot identify tab pattern">
+            <div style="display: flex;">
+                <div style="border-right: 1px solid #ccc;">
+                    <div class="tab active" onclick="showTab(0, this)">Overview</div>
+                    <div class="tab" onclick="showTab(1, this)">Analytics</div>
+                    <div class="tab" onclick="showTab(2, this)">Reports</div>
+                </div>
+                <div style="flex: 1;">
+                    <div class="panel active">Overview content</div>
+                    <div class="panel">Analytics content</div>
+                    <div class="panel">Reports content</div>
+                </div>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0;">
+
+        <!-- Nested tabs - outer has partial ARIA, inner missing -->
+        <div class="tabs" role="tablist">
+            <button class="tab active" role="tab" aria-selected="true" onclick="showMainTab(0)">
+                Settings
+            </button>
+            <button class="tab" role="tab" aria-selected="false" onclick="showMainTab(1)">
+                Profile
+            </button>
+        </div>
+
+        <div class="panel active" id="main-panel-0">
+            <h2>Settings</h2>
+
+            <!-- Inner nested tabs WITHOUT ARIA -->
+            <div data-expected-violation="true"
+                 data-violation-reason="Nested tab interface within Settings lacks proper ARIA attributes. Inner tabs need complete role='tablist', role='tab', and aria-selected">
+                <div class="tabs">
+                    <div class="tab active" onclick="showSubTab(0)">General</div>
+                    <div class="tab" onclick="showSubTab(1)">Privacy</div>
+                    <div class="tab" onclick="showSubTab(2)">Notifications</div>
+                </div>
+                <div class="panel active">General settings</div>
+                <div class="panel">Privacy settings</div>
+                <div class="panel">Notification settings</div>
+            </div>
+        </div>
+
+        <div class="panel" id="main-panel-1">
+            <h2>Profile</h2>
+            <p>Profile information goes here</p>
+        </div>
+    </main>
+
+    <script>
+        function showTab(index, tab) {
+            const parent = tab.closest('div').parentElement;
+            const tabs = parent.querySelectorAll('.tab');
+            const panels = parent.querySelectorAll('.panel');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+
+            tab.classList.add('active');
+            panels[index].classList.add('active');
+        }
+
+        function showMainTab(index) {
+            document.querySelectorAll('[id^="main-panel-"]').forEach((p, i) => {
+                p.classList.toggle('active', i === index);
+            });
+        }
+
+        function showSubTab(index) {
+            const container = event.target.closest('div[data-expected-violation]');
+            const panels = container.querySelectorAll('.panel');
+            const tabs = container.querySelectorAll('.tab');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+
+            tabs[index].classList.add('active');
+            panels[index].classList.add('active');
+        }
+    </script>
+</body>
+</html>

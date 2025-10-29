@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_WarnSliderWithoutARIA - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnSliderWithoutARIA_002_correct_with_aria",
+    "issueId": "WarnSliderWithoutARIA",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 2,
+    "description": "Custom slider controls with complete ARIA implementation",
+    "wcag": "1.3.1, 4.1.2",
+    "impact": "High"
+}
+    </script>
+    <style>
+        .slider-container { margin: 20px 0; }
+        .slider-track { width: 300px; height: 10px; background: #ddd; position: relative; border-radius: 5px; }
+        .slider-thumb { width: 20px; height: 20px; background: #2196F3; border-radius: 50%; position: absolute; top: -5px; cursor: pointer; }
+        .slider-label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .value-display { margin-top: 5px; font-size: 14px; color: #666; }
+    </style>
+    <script>
+        function updateSlider(slider, value) {
+            slider.setAttribute('aria-valuenow', value);
+            slider.style.left = value + '%';
+            const container = slider.closest('.slider-container');
+            const display = container.querySelector('.value-display');
+            display.textContent = 'Current value: ' + value;
+        }
+
+        function handleKeydown(event, slider) {
+            let value = parseInt(slider.getAttribute('aria-valuenow'));
+            const min = parseInt(slider.getAttribute('aria-valuemin'));
+            const max = parseInt(slider.getAttribute('aria-valuemax'));
+
+            switch(event.key) {
+                case 'ArrowLeft':
+                case 'ArrowDown':
+                    value = Math.max(min, value - 1);
+                    updateSlider(slider, value);
+                    event.preventDefault();
+                    break;
+                case 'ArrowRight':
+                case 'ArrowUp':
+                    value = Math.min(max, value + 1);
+                    updateSlider(slider, value);
+                    event.preventDefault();
+                    break;
+                case 'Home':
+                    updateSlider(slider, min);
+                    event.preventDefault();
+                    break;
+                case 'End':
+                    updateSlider(slider, max);
+                    event.preventDefault();
+                    break;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Settings</h1>
+
+    <main>
+        <section data-expected-pass="true"
+                 data-pass-reason="Custom slider implemented with complete ARIA attributes. Slider has role='slider' identifying control type. aria-valuenow='50' indicates current value. aria-valuemin='0' and aria-valuemax='100' define range. aria-label provides accessible name. tabindex='0' enables keyboard focus. Screen readers announce as 'Volume slider, 50'. Keyboard users can adjust with arrow keys. Complies with WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value - complete slider ARIA pattern">
+            <h2>Volume Control</h2>
+
+            <div class="slider-container">
+                <label class="slider-label">Volume:</label>
+                <div class="slider-track">
+                    <div class="slider-thumb"
+                         role="slider"
+                         aria-label="Volume"
+                         aria-valuenow="50"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-orientation="horizontal"
+                         tabindex="0"
+                         style="left: 50%;"
+                         onkeydown="handleKeydown(event, this)"></div>
+                </div>
+                <div class="value-display">Current value: 50</div>
+            </div>
+        </section>
+
+        <section data-expected-pass="true"
+                 data-pass-reason="Slider with full ARIA implementation. role='slider' defines control semantics. aria-labelledby links to visible label. aria-valuenow='75' indicates current position. aria-valuemin and aria-valuemax establish 0-100 range. aria-orientation='horizontal' clarifies direction. Keyboard accessible via tabindex. Arrow keys adjust value. Screen readers announce 'Brightness slider, 75'. Meets WCAG 1.3.1 Info and Relationships and 4.1.2 Name, Role, Value - proper custom control implementation">
+            <h2>Brightness Control</h2>
+
+            <div class="slider-container">
+                <label class="slider-label" id="brightness-label">Brightness:</label>
+                <div class="slider-track">
+                    <div class="slider-thumb"
+                         role="slider"
+                         aria-labelledby="brightness-label"
+                         aria-valuenow="75"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-orientation="horizontal"
+                         tabindex="0"
+                         style="left: 75%;"
+                         onkeydown="handleKeydown(event, this)"></div>
+                </div>
+                <div class="value-display">Current value: 75</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Company Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>

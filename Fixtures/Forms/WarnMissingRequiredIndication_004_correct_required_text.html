@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarnMissingRequiredIndication - Correct with 'required' Text</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "WarnMissingRequiredIndication_004_correct_required_text",
+    "issueId": "WarnMissingRequiredIndication",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 7,
+    "description": "Required fields with 'required' word in label text (case-insensitive)",
+    "wcag": "3.3.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .required-text {
+            font-size: 0.9em;
+            color: #d32f2f;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Application Form - Using 'Required' Text</h1>
+
+    <form>
+        <!-- Correct 1: "(required)" in parentheses -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label contains 'required' text">
+            <label for="name">Full Name (required)</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <!-- Correct 2: "Required" at beginning -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label starts with 'Required'">
+            <label for="email">Required: Email Address</label>
+            <input type="email" id="email" name="email" aria-required="true">
+        </div>
+
+        <!-- Correct 3: "REQUIRED" in all caps -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label contains 'REQUIRED' (case-insensitive match)">
+            <label for="password">Password (REQUIRED)</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <!-- Correct 4: "Required" in span -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label contains 'required' in span">
+            <label for="phone">
+                Phone Number
+                <span class="required-text">(required)</span>
+            </label>
+            <input type="tel" id="phone" name="phone" required>
+        </div>
+
+        <!-- Correct 5: Mixed case "ReQuIrEd" -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label contains 'required' in mixed case">
+            <label for="address">Address - ReQuIrEd</label>
+            <input type="text" id="address" name="address" aria-required="true">
+        </div>
+
+        <!-- Correct 6: "required field" -->
+        <div data-expected-pass="true"
+             data-pass-reason="Label contains 'required field'">
+            <label for="city">City (required field)</label>
+            <input type="text" id="city" name="city" required>
+        </div>
+
+        <!-- Correct 7: Textarea with "required" -->
+        <div data-expected-pass="true"
+             data-pass-reason="Textarea label contains 'required'">
+            <label for="comments">Comments (Required)</label>
+            <textarea id="comments" name="comments" required></textarea>
+        </div>
+
+        <button type="submit">Submit Application</button>
+    </form>
+</body>
+</html>

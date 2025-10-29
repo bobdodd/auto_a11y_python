@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrTooltipWithoutARIA - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrTooltipWithoutARIA_003_edge_cases",
+    "issueId": "ErrTooltipWithoutARIA",
+    "expectedViolationCount": 3,
+    "expectedPassCount": 0,
+    "description": "Various tooltip implementations without proper ARIA",
+    "wcag": "4.1.2",
+    "impact": "Medium"
+}
+    </script>
+    <style>
+        .tooltip-container { position: relative; display: inline-block; }
+        .tooltip-text { visibility: hidden; position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 5px 10px; border-radius: 4px; white-space: nowrap; z-index: 1; }
+        .tooltip-container:hover .tooltip-text { visibility: visible; }
+    </style>
+</head>
+<body>
+    <h1>Product Information</h1>
+
+    <main>
+        <!-- Tooltip on button (title attribute only, no ARIA) -->
+        <p data-expected-violation="true"
+           data-violation-reason="Tooltip using title attribute only without aria-describedby. Title not consistently announced by screen readers">
+            Our product includes <button title="256-bit AES encryption with hardware security module">advanced security</button>.
+        </p>
+
+        <!-- CSS-only tooltip without ARIA -->
+        <p data-expected-violation="true"
+           data-violation-reason="CSS hover tooltip without role='tooltip' or aria-describedby. Screen readers miss tooltip content, keyboard users cannot access">
+            Battery life up to
+            <span class="tooltip-container">
+                10 hours
+                <span class="tooltip-text">Based on typical usage patterns</span>
+            </span>
+            of use.
+        </p>
+
+        <!-- JavaScript tooltip without proper ARIA -->
+        <p data-expected-violation="true"
+           data-violation-reason="JavaScript-triggered tooltip lacks role='tooltip' and aria-describedby connection. Screen readers don't announce tooltip relationship">
+            Click <span id="info-trigger" style="cursor: help; text-decoration: underline;" onmouseenter="showTooltip()" onmouseleave="hideTooltip()">here</span> for details.
+            <span id="info-tooltip" style="display:none; position: absolute; background: #fff; border: 1px solid #ccc; padding: 5px;">
+                Additional information about this feature
+            </span>
+        </p>
+    </main>
+
+    <script>
+        function showTooltip() {
+            document.getElementById('info-tooltip').style.display = 'block';
+        }
+        function hideTooltip() {
+            document.getElementById('info-tooltip').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

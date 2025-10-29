@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrImageWithEmptyAlt - Correct Usage</title>
+    <script type="application/json" id="test-metadata">
+{
+    "id": "ErrImageWithEmptyAlt_002_correct_proper_usage",
+    "issueId": "ErrImageWithEmptyAlt",
+    "expectedViolationCount": 0,
+    "expectedPassCount": 4,
+    "description": "Images with proper alt usage (truly empty or descriptive text)",
+    "wcag": "1.1.1",
+    "impact": "Medium"
+}
+    </script>
+</head>
+<body>
+    <h1>ErrImageWithEmptyAlt - Correct Usage</h1>
+
+    <!-- PASS 1: Truly empty alt (decorative image) -->
+    <h2>Pass 1: Decorative image with properly empty alt</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle fill='%23ff6600' cx='50' cy='50' r='40'/%3E%3C/svg%3E"
+         alt=""
+         data-expected-pass="true"
+         data-pass-reason="Truly empty alt (alt='') properly marks image as decorative. No whitespace characters.">
+
+    <!-- PASS 2: Informative image with descriptive alt -->
+    <h2>Pass 2: Informative image with descriptive alt text</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%2300aa00' width='100' height='100'/%3E%3C/svg%3E"
+         alt="Green square representing success status"
+         data-expected-pass="true"
+         data-pass-reason="Descriptive alt text provides meaningful information about the image.">
+
+    <!-- PASS 3: Company logo with alt text -->
+    <h2>Pass 3: Logo with company name in alt</h2>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ctext x='10' y='50' font-size='20'%3ELogo%3C/text%3E%3C/svg%3E"
+         alt="Acme Corporation"
+         data-expected-pass="true"
+         data-pass-reason="Logo has company name as alt text, providing accessible name.">
+
+    <!-- PASS 4: Decorative bullet/icon with empty alt -->
+    <h2>Pass 4: Decorative icon with empty alt</h2>
+    <ul>
+        <li>
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle fill='%23333333' cx='10' cy='10' r='5'/%3E%3C/svg%3E"
+                 alt=""
+                 data-expected-pass="true"
+                 data-pass-reason="Decorative bullet icon properly marked with empty alt (no whitespace).">
+            Item with icon bullet
+        </li>
+    </ul>
+</body>
+</html>

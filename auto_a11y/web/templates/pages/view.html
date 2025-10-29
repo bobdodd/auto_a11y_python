@@ -579,7 +579,7 @@
                                 <div id="viol-group-{{ viol_counter.value }}"
                                      class="accordion-collapse collapse">
                                     <div class="accordion-body">
-                                        {% set has_breakpoints = group_list[0].metadata and group_list[0].metadata.breakpoint %}
+                                        {% set has_breakpoints = group_list[0].metadata and group_list[0].metadata.get('breakpoint') is not none %}
 
                                         {% if has_breakpoints %}
                                             {# Group by breakpoint for contrast violations #}

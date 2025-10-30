@@ -140,6 +140,26 @@
         display: none;
     }
 
+    /* State selector button text contrast */
+    .state-selector.btn-outline-primary.active .state-counts,
+    .state-selector.btn-outline-primary:hover .state-counts,
+    .state-selector.btn-outline-primary:focus .state-counts,
+    .state-selector.btn-outline-primary:active .state-counts {
+        color: white !important;
+    }
+
+    .state-selector.btn-outline-primary .state-counts {
+        color: #6c757d;
+    }
+
+    .state-content {
+        display: none;
+    }
+
+    .state-content.active {
+        display: block;
+    }
+
     body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         min-height: 100vh;
@@ -555,6 +575,32 @@
             <h5 class="mb-0">Latest Test Results</h5>
             <small class="text-muted">Tested on {{ page.test_date|default('Recently') }}</small>
         </div>
+
+        <!-- Multi-State Selector -->
+        {% if page.states and page.states|length > 1 %}
+        <div class="card-body border-bottom bg-light">
+            <h6 class="mb-3"><i class="bi bi-layers"></i> Page States Tested</h6>
+            <p class="text-muted small mb-3">
+                This page was tested in multiple states. Select a state below to view its test results.
+            </p>
+            <div class="btn-group" role="group" aria-label="Page states">
+                {% for state in page.states %}
+                    <button type="button"
+                            class="btn btn-outline-primary state-selector {% if loop.index0 == 0 %}active{% endif %}"
+                            data-state-index="{{ loop.index0 }}"
+                            onclick="showState({{ loop.index0 }})">
+                        <i class="bi bi-circle-fill" style="font-size: 8px;"></i>
+                        {{ state.description }}
+                        <br>
+                        <small class="state-counts">
+                            Errors: {{ state.issues.errors }} | Warnings: {{ state.issues.warnings }}
+                        </small>
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <div class="card-body">
 
             <!-- Errors (Violations) -->
@@ -1027,6 +1073,26 @@ function copyXpathToClipboard(xpath, button) {
         }
         document.body.removeChild(textArea);
     }
+}
+
+// Multi-state result switcher
+function showState(stateIndex) {
+    // Hide all state content sections
+    document.querySelectorAll('.state-content').forEach(function(content) {
+        content.classList.remove('active');
+    });
+
+    // Show selected state content
+    const selectedContent = document.querySelector(`.state-content[data-state-index="${stateIndex}"]`);
+    if (selectedContent) {
+        selectedContent.classList.add('active');
+    }
+
+    // Update button states
+    document.querySelectorAll('.state-selector').forEach(function(btn) {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`.state-selector[data-state-index="${stateIndex}"]`)?.classList.add('active');
 }
 
 // Initialize tooltips

@@ -29,7 +29,7 @@ def list_page_scripts(page_id):
     # Get website-level scripts
     website_scripts = current_app.db.get_scripts_for_website(
         page.website_id,
-        scope=ScriptScope.WEBSITE,
+        scope=ScriptScope.WEBSITE.value,  # Pass the string value, not the enum
         enabled_only=False
     )
 

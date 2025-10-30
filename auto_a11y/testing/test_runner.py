@@ -465,7 +465,7 @@ class TestRunner:
             logger.info(f"Started script session for website {page.website_id}")
 
         # Get session ID
-        session_id = self.session_manager.session.session_id if self.session_manager.session else None
+        session_id = self.session_manager.current_session.session_id if self.session_manager.current_session else None
 
         # Get all applicable scripts for this page
         scripts_to_execute = self.db.get_scripts_for_page_v2(

@@ -486,6 +486,9 @@ class Database:
             # Screenshot info
             'screenshot_path': test_result.screenshot_path,
 
+            # Test metadata (includes applicable_checks, passed_checks, etc.)
+            'metadata': test_result.metadata if hasattr(test_result, 'metadata') and test_result.metadata else {},
+
             # Metadata
             '_has_detailed_items': True,
             '_items_collection': 'test_result_items'

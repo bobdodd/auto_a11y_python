@@ -300,7 +300,7 @@ function addStep(stepData = null) {
                         <input type="text" class="form-control font-monospace" name="step_${stepIndex}_selector"
                                id="step_${stepIndex}_selector"
                                placeholder=".cookie-banner, #element-id, button[data-action='accept']"
-                               value="${stepData ? stepData.selector || '' : ''}">
+                               value="${stepData && stepData.selector ? stepData.selector : ''}">
                         <small class="form-text text-muted selector-help">
                             The element to interact with
                         </small>

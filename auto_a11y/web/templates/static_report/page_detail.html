@@ -635,6 +635,12 @@
                                                             {% set parent_id = 'viol-breakpoint-instances-' ~ breakpoint_id %}
                                                             {{ render_instance_accordion(violation, instance_id, parent_id, 'danger') }}
                                                             {% endfor %}
+                                                            </div> {# Close viol-breakpoint-instances #}
+                                                        </div> {# Close accordion-body #}
+                                                    </div> {# Close viol-breakpoint collapse #}
+                                                </div> {# Close accordion-item #}
+                                            {% endfor %} {# End breakpoint loop #}
+                                            </div> {# Close viol-group-breakpoints #}
                                         {% else %}
                                             {# No breakpoints - use regular instance grouping #}
                                             <div class="accordion" id="viol-group-instances-{{ viol_counter.value }}">
@@ -643,15 +649,6 @@
                                             {% set parent_id = 'viol-group-instances-' ~ viol_counter.value %}
                                             {{ render_instance_accordion(violation, instance_id, parent_id, 'danger') }}
                                             {% endfor %}
-                                        {% endif %}
-                                            {% if has_breakpoints %}
-                                                            </div> {# Close viol-breakpoint-instances #}
-                                                        </div> {# Close accordion-body #}
-                                                    </div> {# Close viol-breakpoint collapse #}
-                                                </div> {# Close accordion-item #}
-                                            {% endfor %} {# End breakpoint loop #}
-                                            </div> {# Close viol-group-breakpoints #}
-                                        {% else %}
                                             </div> {# Close viol-group-instances #}
                                         {% endif %}
                                     {% else %}
@@ -743,6 +740,12 @@
                                                             {% set parent_id = 'warn-breakpoint-instances-' ~ breakpoint_id %}
                                                             {{ render_instance_accordion(warning, instance_id, parent_id, 'warning') }}
                                                             {% endfor %}
+                                                            </div> {# Close warn-breakpoint-instances #}
+                                                        </div> {# Close accordion-body #}
+                                                    </div> {# Close warn-breakpoint collapse #}
+                                                </div> {# Close accordion-item #}
+                                            {% endfor %} {# End breakpoint loop #}
+                                            </div> {# Close warn-group-breakpoints #}
                                         {% else %}
                                             {# No breakpoints - use regular instance grouping #}
                                             <div class="accordion" id="warn-group-instances-{{ warn_counter.value }}">
@@ -751,15 +754,6 @@
                                             {% set parent_id = 'warn-group-instances-' ~ warn_counter.value %}
                                             {{ render_instance_accordion(warning, instance_id, parent_id, 'warning') }}
                                             {% endfor %}
-                                        {% endif %}
-                                            {% if has_breakpoints %}
-                                                            </div> {# Close warn-breakpoint-instances #}
-                                                        </div> {# Close accordion-body #}
-                                                    </div> {# Close warn-breakpoint collapse #}
-                                                </div> {# Close accordion-item #}
-                                            {% endfor %} {# End breakpoint loop #}
-                                            </div> {# Close warn-group-breakpoints #}
-                                        {% else %}
                                             </div> {# Close warn-group-instances #}
                                         {% endif %}
                                     {% else %}

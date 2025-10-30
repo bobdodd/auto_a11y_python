@@ -59,7 +59,7 @@ def create_page_script(page_id):
             step_count = 0
             while f'step_{step_count}_action' in data:
                 selector = data.get(f'step_{step_count}_selector', '')
-                logger.debug(f"Step {step_count}: selector field value = '{selector}'")
+                logger.warning(f"Step {step_count}: selector field value = '{selector}'")
                 step = ScriptStep(
                     step_number=step_count + 1,
                     action_type=ActionType(data[f'step_{step_count}_action']),
@@ -69,7 +69,7 @@ def create_page_script(page_id):
                     timeout=int(data.get(f'step_{step_count}_timeout', 5000)),
                     wait_after=int(data.get(f'step_{step_count}_wait_after', 0))
                 )
-                logger.debug(f"Created step: {step.to_dict()}")
+                logger.warning(f"Created step: {step.to_dict()}")
                 steps.append(step)
                 step_count += 1
 
@@ -170,9 +170,10 @@ def edit_script(script_id):
             # Update script steps
             steps = []
             step_count = 0
+            logger.warning(f"EDIT: Parsing form data. Keys: {list(data.keys())}")
             while f'step_{step_count}_action' in data:
                 selector = data.get(f'step_{step_count}_selector', '')
-                logger.debug(f"Step {step_count}: selector field value = '{selector}'")
+                logger.warning(f"EDIT Step {step_count}: selector field value = '{selector}'")
                 step = ScriptStep(
                     step_number=step_count + 1,
                     action_type=ActionType(data[f'step_{step_count}_action']),
@@ -182,7 +183,7 @@ def edit_script(script_id):
                     timeout=int(data.get(f'step_{step_count}_timeout', 5000)),
                     wait_after=int(data.get(f'step_{step_count}_wait_after', 0))
                 )
-                logger.debug(f"Created step: {step.to_dict()}")
+                logger.warning(f"EDIT Created step: {step.to_dict()}")
                 steps.append(step)
                 step_count += 1
 
@@ -216,6 +217,11 @@ def edit_script(script_id):
     page = current_app.db.get_page(script.page_id) if script.page_id else None
     website = current_app.db.get_website(script.website_id)
     project = current_app.db.get_project(website.project_id) if website else None
+
+    # Debug: Log the script steps being loaded
+    logger.warning(f"EDIT GET: Loading script '{script.name}' with {len(script.steps)} steps")
+    for i, step in enumerate(script.steps):
+        logger.warning(f"EDIT GET Step {i}: {step.to_dict()}")
 
     action_types = [
         {'value': ActionType.CLICK.value, 'label': 'Click Element'},

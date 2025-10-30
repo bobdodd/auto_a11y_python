@@ -158,13 +158,13 @@
 </head>
 <body>
 
-{% macro render_instance_accordion(violation, instance_id, parent_id, alert_type) %}
+{% macro render_instance_accordion(violation, instance_id, parent_id, alert_type, loop_index) %}
 <div class="accordion-item">
     <h2 class="accordion-header">
         <button class="accordion-button collapsed" type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#{{ instance_id }}">
-            <strong>Instance {{ loop.index }}:</strong>
+            <strong>Instance {{ loop_index }}:</strong>
             {% if violation.xpath %}
             <code class="ms-2">{{ violation.xpath }}</code>
             {% endif %}
@@ -633,7 +633,7 @@
                                                             {% for violation in breakpoint_list %}
                                                             {% set instance_id = 'viol-instance-' ~ breakpoint_id ~ '-' ~ loop.index %}
                                                             {% set parent_id = 'viol-breakpoint-instances-' ~ breakpoint_id %}
-                                                            {{ render_instance_accordion(violation, instance_id, parent_id, 'danger') }}
+                                                            {{ render_instance_accordion(violation, instance_id, parent_id, 'danger', loop.index) }}
                                                             {% endfor %}
                                                             </div> {# Close viol-breakpoint-instances #}
                                                         </div> {# Close accordion-body #}
@@ -647,7 +647,7 @@
                                             {% for violation in group_list %}
                                             {% set instance_id = 'viol-instance-' ~ viol_counter.value ~ '-' ~ loop.index %}
                                             {% set parent_id = 'viol-group-instances-' ~ viol_counter.value %}
-                                            {{ render_instance_accordion(violation, instance_id, parent_id, 'danger') }}
+                                            {{ render_instance_accordion(violation, instance_id, parent_id, 'danger', loop.index) }}
                                             {% endfor %}
                                             </div> {# Close viol-group-instances #}
                                         {% endif %}
@@ -738,7 +738,7 @@
                                                             {% for warning in breakpoint_list %}
                                                             {% set instance_id = 'warn-instance-' ~ breakpoint_id ~ '-' ~ loop.index %}
                                                             {% set parent_id = 'warn-breakpoint-instances-' ~ breakpoint_id %}
-                                                            {{ render_instance_accordion(warning, instance_id, parent_id, 'warning') }}
+                                                            {{ render_instance_accordion(warning, instance_id, parent_id, 'warning', loop.index) }}
                                                             {% endfor %}
                                                             </div> {# Close warn-breakpoint-instances #}
                                                         </div> {# Close accordion-body #}
@@ -752,7 +752,7 @@
                                             {% for warning in group_list %}
                                             {% set instance_id = 'warn-instance-' ~ warn_counter.value ~ '-' ~ loop.index %}
                                             {% set parent_id = 'warn-group-instances-' ~ warn_counter.value %}
-                                            {{ render_instance_accordion(warning, instance_id, parent_id, 'warning') }}
+                                            {{ render_instance_accordion(warning, instance_id, parent_id, 'warning', loop.index) }}
                                             {% endfor %}
                                             </div> {# Close warn-group-instances #}
                                         {% endif %}

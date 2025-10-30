@@ -255,10 +255,30 @@ def view_page(page_id):
 
     # Calculate accessibility score
     score_data = None
+    compliance_score = None
     if test_result:
         from auto_a11y.testing.result_processor import ResultProcessor
         processor = ResultProcessor()
         score_data = processor.calculate_score(test_result)
+
+        # Calculate compliance score (tests with zero violations)
+        # Get unique test codes from violations/warnings
+        violation_test_codes = set()
+        warning_test_codes = set()
+        for v in test_result.violations:
+            if hasattr(v, 'id'):
+                # Extract test code from violation id (format: testCode_instance)
+                violation_test_codes.add(v.id.split('_')[0] if '_' in v.id else v.id)
+        for w in test_result.warnings:
+            if hasattr(w, 'id'):
+                warning_test_codes.add(w.id.split('_')[0] if '_' in w.id else w.id)
+
+        # Count total tests run from metadata
+        total_tests = test_result.metadata.get('test_count', 0) if hasattr(test_result, 'metadata') and test_result.metadata else 0
+        failed_tests = len(violation_test_codes.union(warning_test_codes))
+        passed_tests = max(0, total_tests - failed_tests)
+
+        compliance_score = (passed_tests / total_tests * 100) if total_tests > 0 else 0
 
     # Get test history
     test_history = current_app.db.get_test_results(page_id=page_id, limit=10)
@@ -269,6 +289,7 @@ def view_page(page_id):
                          project=project,
                          latest_result=test_result,
                          score_data=score_data,
+                         compliance_score=compliance_score,
                          test_history=test_history)
 
 

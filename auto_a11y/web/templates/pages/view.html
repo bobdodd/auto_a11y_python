@@ -188,24 +188,26 @@
         </div>
     </div>
 
-    <!-- Accessibility Score (if available) -->
+    <!-- Accessibility & Compliance Scores (if available) -->
     {% if page.status.value == 'tested' and latest_result and score_data %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">Accessibility Score <button class="help-icon" data-help="scoring.accessibility_score" aria-label="Get help about accessibility score">?</button></h5>
-        </div>
-        <div class="card-body">
-            <div class="row align-items-center">
-                <div class="col-md-3 text-center">
-                    {% set score = score_data.score|default(0) %}
-                    <div class="display-4 fw-bold
-                        {% if score >= 90 %}text-success
-                        {% elif score >= 70 %}text-warning
-                        {% else %}text-danger{% endif %}">
-                        {{ score|round(1) }}%
-                    </div>
-                    <p class="text-muted">Accessibility Score <button class="help-icon" data-help="scoring.score_difference" aria-label="Understanding score differences">?</button></p>
+    <div class="row mb-4">
+        <!-- Accessibility Score Card -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Accessibility Score <button class="help-icon" data-help="scoring.accessibility_score" aria-label="Get help about accessibility score">?</button></h5>
                 </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        {% set score = score_data.score|default(0) %}
+                        <div class="display-3 fw-bold
+                            {% if score >= 90 %}text-success
+                            {% elif score >= 70 %}text-warning
+                            {% else %}text-danger{% endif %}">
+                            {{ score|round(1) }}%
+                        </div>
+                        <p class="text-muted mb-0">Track Your Progress <button class="help-icon" data-help="scoring.score_difference" aria-label="Understanding score differences">?</button></p>
+                    </div>
                 <div class="col-md-9">
                     <div class="row g-3">
                         <div class="col-6 col-lg-3">
@@ -280,6 +282,55 @@
                         </small>
                     </div>
                     {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Compliance Score Card -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Compliance Score <button class="help-icon" data-help="scoring.compliance_score" aria-label="Get help about compliance score">?</button></h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        {% if compliance_score is not none %}
+                        <div class="display-3 fw-bold
+                            {% if compliance_score >= 90 %}text-success
+                            {% elif compliance_score >= 70 %}text-warning
+                            {% else %}text-danger{% endif %}">
+                            {{ compliance_score|round(1) }}%
+                        </div>
+                        {% else %}
+                        <div class="display-3 fw-bold text-muted">N/A</div>
+                        {% endif %}
+                        <p class="text-muted mb-0">Tests with Zero Violations</p>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                <div>
+                                    <div class="fw-bold">{{ (latest_result.metadata.get('test_count', 0) - (score_data.high_issues|default(0) + score_data.medium_issues|default(0) + score_data.low_issues|default(0)))|default(0) if latest_result and latest_result.metadata else 0 }}</div>
+                                    <small class="text-muted">Tests Passed</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-x-circle text-danger me-2"></i>
+                                <div>
+                                    <div class="fw-bold">{{ (score_data.high_issues|default(0) + score_data.medium_issues|default(0) + score_data.low_issues|default(0)) if score_data else 0 }}</div>
+                                    <small class="text-muted">Tests Failed</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3 mb-0" role="alert">
+                        <small><strong>Note:</strong> A test with even one violation counts as failed for compliance, even if most checks passed.</small>
+                    </div>
                 </div>
             </div>
         </div>

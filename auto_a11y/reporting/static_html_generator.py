@@ -244,6 +244,58 @@ class StaticHTMLReportGenerator:
             # Calculate score
             score = self._calculate_page_score(latest_result)
 
+            # Check for multi-state testing
+            state_results = []
+            if hasattr(latest_result, 'session_id') and latest_result.session_id:
+                # Get all state results for this session
+                all_session_results = self.db.get_test_results_by_session(latest_result.session_id)
+
+                # Process each state
+                for state_result in all_session_results:
+                    state_violations = []
+                    state_warnings = []
+
+                    # Process violations for this state
+                    for violation in state_result.violations or []:
+                        state_violations.append({
+                            'id': violation.id,
+                            'description': violation.description,
+                            'touchpoint': violation.touchpoint,
+                            'impact': violation.impact.value if hasattr(violation.impact, 'value') else violation.impact,
+                            'xpath': violation.xpath,
+                            'html_snippet': violation.html,
+                            'metadata': violation.metadata,
+                            'wcag_criteria': violation.wcag_criteria
+                        })
+
+                    # Process warnings for this state
+                    for warning in state_result.warnings or []:
+                        state_warnings.append({
+                            'id': warning.id,
+                            'description': warning.description,
+                            'touchpoint': warning.touchpoint,
+                            'impact': warning.impact.value if hasattr(warning.impact, 'value') else warning.impact,
+                            'xpath': warning.xpath,
+                            'html_snippet': warning.html,
+                            'metadata': warning.metadata,
+                            'wcag_criteria': warning.wcag_criteria
+                        })
+
+                    state_data = {
+                        'sequence': state_result.state_sequence if hasattr(state_result, 'state_sequence') else 0,
+                        'description': state_result.page_state.description if hasattr(state_result, 'page_state') and state_result.page_state else f"State {state_result.state_sequence if hasattr(state_result, 'state_sequence') else 0}",
+                        'violations': state_violations,
+                        'warnings': state_warnings,
+                        'issues': {
+                            'errors': len(state_violations),
+                            'warnings': len(state_warnings)
+                        }
+                    }
+                    state_results.append(state_data)
+
+                # Sort by sequence
+                state_results.sort(key=lambda s: s['sequence'])
+
             pages_data.append({
                 'id': page_id,
                 'title': page.title or 'Untitled Page',
@@ -260,7 +312,8 @@ class StaticHTMLReportGenerator:
                     'warnings': len(warnings),
                     'info': len(informational),
                     'discovery': len(discovery)
-                }
+                },
+                'states': state_results  # Add multi-state results
             })
 
         return pages_data

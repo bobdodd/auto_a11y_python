@@ -171,8 +171,8 @@
                             Elements That Should Be <strong>Visible</strong> After Script
                         </label>
                         <textarea class="form-control font-monospace" id="expect_visible_after" name="expect_visible_after" rows="3"
-                                  placeholder=".modal-dialog&#10;#settings-panel&#10;[data-modal-open]"></textarea>
-                        <div class="form-text">CSS selectors, one per line. Example: After opening a modal, you'd expect ".modal-dialog" to be visible</div>
+                                  placeholder=".modal-dialog&#10;#settings-panel&#10;//*[@id='modal']"></textarea>
+                        <div class="form-text">CSS selectors or XPath, one per line. Example: After opening a modal, you'd expect ".modal-dialog" to be visible</div>
                     </div>
 
                     <div class="mb-3">
@@ -180,8 +180,8 @@
                             Elements That Should Be <strong>Hidden</strong> After Script
                         </label>
                         <textarea class="form-control font-monospace" id="expect_hidden_after" name="expect_hidden_after" rows="3"
-                                  placeholder=".cookie-banner&#10;#cookie-notice&#10;[data-cookie-modal]"></textarea>
-                        <div class="form-text">CSS selectors, one per line. Example: After dismissing cookies, you'd expect ".cookie-banner" to be hidden</div>
+                                  placeholder=".cookie-banner&#10;#cookie-notice&#10;//*[@id='cookie-banner']"></textarea>
+                        <div class="form-text">CSS selectors or XPath, one per line. Example: After dismissing cookies, you'd expect ".cookie-banner" to be hidden</div>
                     </div>
                 </div>
 
@@ -296,12 +296,12 @@ function addStep(stepData = null) {
                     </div>
 
                     <div class="col-md-8 mb-3" id="step_${stepIndex}_selector_container">
-                        <label class="form-label">CSS Selector</label>
+                        <label class="form-label">Selector (CSS or XPath)</label>
                         <input type="text" class="form-control font-monospace" name="step_${stepIndex}_selector"
                                id="step_${stepIndex}_selector"
-                               placeholder=".cookie-banner, #element-id, button[data-action='accept']">
+                               placeholder="//*[@id='element-id'] or .cookie-banner or button[data-action='accept']">
                         <small class="form-text text-muted selector-help">
-                            The element to interact with
+                            CSS selector or XPath (XPath must start with / or //)
                         </small>
                     </div>
                 </div>

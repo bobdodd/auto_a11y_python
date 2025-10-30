@@ -130,6 +130,51 @@ class ScriptExecutor:
                 'error': str(e) if 'e' in locals() else 'Unknown error'
             }
 
+    async def _find_element(self, page, selector: str):
+        """
+        Find element by CSS selector or XPath
+
+        Args:
+            page: Pyppeteer page object
+            selector: CSS selector or XPath (XPath must start with / or //)
+
+        Returns:
+            Element handle or None
+        """
+        if selector.startswith('/'):
+            # XPath selector
+            elements = await page.xpath(selector)
+            return elements[0] if elements else None
+        else:
+            # CSS selector
+            return await page.querySelector(selector)
+
+    async def _wait_for_selector(self, page, selector: str, timeout: int):
+        """
+        Wait for element by CSS selector or XPath
+
+        Args:
+            page: Pyppeteer page object
+            selector: CSS selector or XPath (XPath must start with / or //)
+            timeout: Timeout in milliseconds
+        """
+        if selector.startswith('/'):
+            # XPath selector - use page.waitForXPath
+            try:
+                await page.waitForXPath(selector, timeout=timeout)
+            except Exception as e:
+                raise ScriptExecutionError(
+                    f"Timeout waiting for XPath: {selector}"
+                ) from e
+        else:
+            # CSS selector
+            try:
+                await page.waitForSelector(selector, timeout=timeout)
+            except Exception as e:
+                raise ScriptExecutionError(
+                    f"Timeout waiting for selector: {selector}"
+                ) from e
+
     async def _execute_step(
         self,
         page,
@@ -151,14 +196,14 @@ class ScriptExecutor:
 
         if action == ActionType.CLICK:
             # Click element
-            element = await page.querySelector(step.selector)
+            element = await self._find_element(page, step.selector)
             if not element:
                 raise ScriptExecutionError(f"Element not found: {step.selector}")
             await element.click()
 
         elif action == ActionType.TYPE:
             # Type into element
-            element = await page.querySelector(step.selector)
+            element = await self._find_element(page, step.selector)
             if not element:
                 raise ScriptExecutionError(f"Element not found: {step.selector}")
             await element.type(value)
@@ -170,15 +215,7 @@ class ScriptExecutor:
 
         elif action == ActionType.WAIT_FOR_SELECTOR:
             # Wait for element to appear
-            try:
-                await page.waitForSelector(
-                    step.selector,
-                    timeout=step.timeout
-                )
-            except Exception as e:
-                raise ScriptExecutionError(
-                    f"Timeout waiting for selector: {step.selector}"
-                ) from e
+            await self._wait_for_selector(page, step.selector, step.timeout)
 
         elif action == ActionType.WAIT_FOR_NAVIGATION:
             # Wait for page navigation
@@ -196,18 +233,20 @@ class ScriptExecutor:
 
         elif action == ActionType.SCROLL:
             # Scroll to element
-            element = await page.querySelector(step.selector)
+            element = await self._find_element(page, step.selector)
             if not element:
                 raise ScriptExecutionError(f"Element not found: {step.selector}")
             await page.evaluate('(element) => element.scrollIntoView()', element)
 
         elif action == ActionType.SELECT:
-            # Select dropdown option
+            # Select dropdown option - Note: XPath not supported for select()
+            if step.selector.startswith('/'):
+                raise ScriptExecutionError("SELECT action does not support XPath selectors, use CSS selector")
             await page.select(step.selector, value)
 
         elif action == ActionType.HOVER:
             # Hover over element
-            element = await page.querySelector(step.selector)
+            element = await self._find_element(page, step.selector)
             if not element:
                 raise ScriptExecutionError(f"Element not found: {step.selector}")
             await element.hover()

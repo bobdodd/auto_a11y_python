@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 import time
 
-from auto_a11y.models import Page, PageStatus, TestResult, ScriptScope
+from auto_a11y.models import Page, PageStatus, TestResult
 from auto_a11y.core.database import Database
 from auto_a11y.core.browser_manager import BrowserManager
 from auto_a11y.testing.script_injector import ScriptInjector

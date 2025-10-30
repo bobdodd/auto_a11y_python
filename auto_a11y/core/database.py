@@ -767,7 +767,17 @@ class Database:
             List of test results ordered by state_sequence
         """
         docs = self.test_results.find({"session_id": session_id}).sort("state_sequence", 1)
-        return [TestResult.from_dict(doc) for doc in docs]
+        results = []
+        for doc in docs:
+            # Check if this uses the new schema (split items)
+            if doc.get('_has_detailed_items'):
+                # Load items from test_result_items collection
+                result = self._load_test_result_with_items(doc)
+            else:
+                # Old schema - data is in the doc
+                result = TestResult.from_dict(doc)
+            results.append(result)
+        return results
 
     def get_test_results_by_page_and_session(
         self,

@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}Page Setup Scripts - {{ page.title or page.url }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages.view_page', page_id=page.id) }}">{{ page.title or 'Page' }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Scripts</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">
+                <i class="bi bi-code-square"></i> Page Setup Scripts
+            </h1>
+            <p class="text-muted">{{ page.url }}</p>
+        </div>
+        <div>
+            <a href="{{ url_for('scripts.create_page_script', page_id=page.id) }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New Script
+            </a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Info Box -->
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>Multi-State Testing:</strong>
+        Scripts with "Test Before" enabled will create multiple test results - one before the script runs and one after.
+        This is perfect for testing cookie banners, modals, and other interactive elements.
+    </div>
+
+    <!-- Page-Level Scripts -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-file-code"></i> Page-Specific Scripts
+                <span class="badge bg-light text-dark">{{ page_scripts|length }}</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if page_scripts %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Steps</th>
+                            <th>Multi-State</th>
+                            <th>Trigger</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for script in page_scripts %}
+                        <tr>
+                            <td>
+                                <strong>{{ script.name }}</strong>
+                                {% if script.description %}
+                                <br><small class="text-muted">{{ script.description }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ script.steps|length }} steps</span>
+                            </td>
+                            <td>
+                                {% if script.test_before_execution and script.test_after_execution %}
+                                <span class="badge bg-success" title="Tests both before and after script">
+                                    <i class="bi bi-layers"></i> Before & After
+                                </span>
+                                {% elif script.test_before_execution %}
+                                <span class="badge bg-info" title="Tests before script only">
+                                    <i class="bi bi-arrow-left"></i> Before Only
+                                </span>
+                                {% elif script.test_after_execution %}
+                                <span class="badge bg-info" title="Tests after script only">
+                                    <i class="bi bi-arrow-right"></i> After Only
+                                </span>
+                                {% else %}
+                                <span class="badge bg-secondary">No Testing</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>{{ script.trigger.value.replace('_', ' ').title() }}</small>
+                            </td>
+                            <td>
+                                {% if script.enabled %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Enabled
+                                </span>
+                                {% else %}
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-pause-circle"></i> Disabled
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ url_for('scripts.view_script', script_id=script.id) }}"
+                                       class="btn btn-outline-primary" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('scripts.edit_script', script_id=script.id) }}"
+                                       class="btn btn-outline-secondary" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-info"
+                                            onclick="toggleScript('{{ script.id }}')" title="Enable/Disable">
+                                        <i class="bi bi-toggle-on"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger"
+                                            onclick="deleteScript('{{ script.id }}')" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-code-slash" style="font-size: 3rem; color: #ddd;"></i>
+                <p class="text-muted mt-3">No page-specific scripts yet</p>
+                <a href="{{ url_for('scripts.create_page_script', page_id=page.id) }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create Your First Script
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Website-Level Scripts -->
+    {% if website_scripts %}
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-globe"></i> Website-Wide Scripts
+                <span class="badge bg-light text-dark">{{ website_scripts|length }}</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">
+                <i class="bi bi-info-circle"></i>
+                These scripts run on ALL pages of this website. They are typically used for common elements like
+                cookie banners or login prompts.
+            </p>
+
+            <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Steps</th>
+                            <th>Multi-State</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for script in website_scripts %}
+                        <tr>
+                            <td>
+                                <strong>{{ script.name }}</strong>
+                                {% if script.description %}
+                                <br><small class="text-muted">{{ script.description }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ script.steps|length }}</span>
+                            </td>
+                            <td>
+                                {% if script.test_before_execution and script.test_after_execution %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-layers"></i> Both
+                                </span>
+                                {% elif script.test_before_execution %}
+                                <span class="badge bg-info">Before</span>
+                                {% elif script.test_after_execution %}
+                                <span class="badge bg-info">After</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if script.enabled %}
+                                <span class="badge bg-success">Enabled</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Disabled</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('scripts.view_script', script_id=script.id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleScript(scriptId) {
+    if (!confirm('Toggle this script (enable/disable)?')) return;
+
+    fetch(`/scripts/${scriptId}/toggle`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(err => {
+        alert('Error toggling script: ' + err);
+    });
+}
+
+function deleteScript(scriptId) {
+    if (!confirm('Are you sure you want to delete this script? This action cannot be undone.')) return;
+
+    fetch(`/scripts/${scriptId}/delete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect;
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(err => {
+        alert('Error deleting script: ' + err);
+    });
+}
+</script>
+{% endblock %}

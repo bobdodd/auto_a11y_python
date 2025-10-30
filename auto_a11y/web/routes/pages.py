@@ -255,6 +255,7 @@ def view_page(page_id):
 
     # Check if this is multi-state testing (has session_id and related results)
     state_results = []
+    selected_state_index = 0  # Default to first state
     if test_result and test_result.session_id:
         # Get all results for this session, ordered by state_sequence
         all_session_results = current_app.db.get_test_results_by_session(test_result.session_id)
@@ -262,6 +263,13 @@ def view_page(page_id):
         state_results = [enrich_test_result_with_catalog(r) for r in all_session_results]
         # Sort by state_sequence to ensure proper order
         state_results.sort(key=lambda r: r.state_sequence if hasattr(r, 'state_sequence') else 0)
+
+        # Check if user selected a specific state via query parameter
+        selected_state = request.args.get('state', type=int)
+        if selected_state is not None and 0 <= selected_state < len(state_results):
+            selected_state_index = selected_state
+            # Use the selected state as the main result to display
+            test_result = state_results[selected_state]
 
     # Calculate accessibility score
     score_data = None
@@ -311,6 +319,7 @@ def view_page(page_id):
                          project=project,
                          latest_result=test_result,
                          state_results=state_results,  # NEW: Multi-state results
+                         selected_state_index=selected_state_index,  # NEW: Currently selected state
                          score_data=score_data,
                          compliance_score=compliance_score,
                          test_history=test_history)

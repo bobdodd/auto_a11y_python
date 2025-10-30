@@ -1,0 +1,47 @@
+{% extends "scripts/create.html" %}
+
+{% block title %}Edit Script: {{ script.name }} - Auto A11y{% endblock %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+// Pre-populate form with existing script data
+document.addEventListener('DOMContentLoaded', function() {
+    // Set basic fields
+    document.getElementById('name').value = {{ script.name | tojson }};
+    document.getElementById('description').value = {{ script.description | tojson }};
+    document.getElementById('enabled').checked = {{ 'true' if script.enabled else 'false' }};
+    document.getElementById('test_before_execution').checked = {{ 'true' if script.test_before_execution else 'false' }};
+    document.getElementById('test_after_execution').checked = {{ 'true' if script.test_after_execution else 'false' }};
+    document.getElementById('trigger').value = {{ script.trigger.value | tojson }};
+    
+    // Set expect fields
+    {% if script.expect_visible_after %}
+    document.getElementById('expect_visible_after').value = {{ script.expect_visible_after | join('\n') | tojson }};
+    {% endif %}
+    {% if script.expect_hidden_after %}
+    document.getElementById('expect_hidden_after').value = {{ script.expect_hidden_after | join('\n') | tojson }};
+    {% endif %}
+    
+    // Clear the default step
+    document.getElementById('steps-container').innerHTML = '';
+    stepCount = 0;
+    
+    // Add existing steps
+    {% for step in script.steps %}
+    addStep({
+        action: {{ step.action_type.value | tojson }},
+        selector: {{ step.selector | tojson }},
+        value: {{ step.value | tojson }},
+        description: {{ step.description | tojson }},
+        timeout: {{ step.timeout }},
+        wait_after: {{ step.wait_after }}
+    });
+    {% endfor %}
+});
+
+// Change button text
+document.querySelector('form button[type="submit"]').innerHTML = '<i class="bi bi-save"></i> Update Script';
+document.querySelector('h1.h2').innerHTML = '<i class="bi bi-pencil-square"></i> Edit Page Setup Script';
+</script>
+{% endblock %}

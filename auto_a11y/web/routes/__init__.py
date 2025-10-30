@@ -8,12 +8,14 @@ from .pages import pages_bp
 from .testing import testing_bp
 from .reports import reports_bp
 from .api import api_bp
+from .scripts import scripts_bp
 
 __all__ = [
     'projects_bp',
-    'websites_bp', 
+    'websites_bp',
     'pages_bp',
     'testing_bp',
     'reports_bp',
-    'api_bp'
+    'api_bp',
+    'scripts_bp'
 ]

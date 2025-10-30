@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+
+{% block title %}Create Page Setup Script - Auto A11y{% endblock %}
+
+{% block extra_css %}
+<style>
+    .step-card {
+        border-left: 4px solid #0d6efd;
+        margin-bottom: 1rem;
+    }
+    .step-header {
+        background-color: #f8f9fa;
+        padding: 0.75rem 1rem;
+        cursor: move;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .step-number {
+        background-color: #0d6efd;
+        color: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    .selector-help {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+    .form-section {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.375rem;
+        margin-bottom: 1.5rem;
+    }
+    .form-section h5 {
+        color: #0d6efd;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages.view_page', page_id=page.id) }}">{{ page.title or 'Page' }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Create Script</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-10 col-xl-8">
+            <h1 class="h2 mb-4">
+                <i class="bi bi-code-square"></i> Create Page Setup Script
+            </h1>
+
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>What are Page Setup Scripts?</strong><br>
+                Scripts that prepare pages for testing (e.g., dismiss cookie banners, open modals, navigate tabs).
+                With <strong>multi-state testing</strong>, you can test the page both before and after the script runs.
+            </div>
+
+            <form method="POST" id="script-form">
+
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h5><i class="bi bi-info-circle"></i> Basic Information</h5>
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Script Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" required
+                               placeholder="e.g., Dismiss Cookie Banner">
+                        <div class="form-text">A descriptive name for this script</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="2"
+                                  placeholder="Optional: Describe what this script does"></textarea>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="enabled" name="enabled" checked>
+                        <label class="form-check-label" for="enabled">
+                            <strong>Script Enabled</strong>
+                        </label>
+                        <div class="form-text">Uncheck to disable this script without deleting it</div>
+                    </div>
+                </div>
+
+                <!-- Multi-State Testing Configuration -->
+                <div class="form-section">
+                    <h5><i class="bi bi-layers"></i> Multi-State Testing</h5>
+
+                    <div class="alert alert-success">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>Example:</strong> For a cookie banner, check both boxes to test the page WITH the banner (before),
+                        then dismiss it, then test WITHOUT the banner (after). This creates 2 test results showing the difference.
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="test_before_execution" name="test_before_execution">
+                        <label class="form-check-label" for="test_before_execution">
+                            <strong>Test BEFORE executing script</strong>
+                        </label>
+                        <div class="form-text">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Recommended for cookie banners, modals, and any element you want to test before dismissing
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="test_after_execution" name="test_after_execution" checked>
+                        <label class="form-check-label" for="test_after_execution">
+                            <strong>Test AFTER executing script</strong>
+                        </label>
+                        <div class="form-text">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Usually checked - test the page in its final state after setup
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Execution Trigger -->
+                <div class="form-section">
+                    <h5><i class="bi bi-play-circle"></i> Execution Trigger</h5>
+
+                    <div class="mb-3">
+                        <label for="trigger" class="form-label">When should this script run?</label>
+                        <select class="form-select" id="trigger" name="trigger">
+                            {% for option in trigger_options %}
+                            <option value="{{ option.value }}" {% if option.value == 'always' %}selected{% endif %}>
+                                {{ option.label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">
+                            <strong>Always:</strong> Runs every time the page is tested<br>
+                            <strong>Once Per Page:</strong> Runs only once per testing session<br>
+                            <strong>Conditional:</strong> Runs only if a specific element exists (useful for optional popups)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- State Validation -->
+                <div class="form-section">
+                    <h5><i class="bi bi-check2-square"></i> State Validation (Optional)</h5>
+
+                    <p class="text-muted">
+                        Specify elements that should be visible or hidden after the script runs.
+                        The system will report violations if expectations aren't met.
+                    </p>
+
+                    <div class="mb-3">
+                        <label for="expect_visible_after" class="form-label">
+                            Elements That Should Be <strong>Visible</strong> After Script
+                        </label>
+                        <textarea class="form-control font-monospace" id="expect_visible_after" name="expect_visible_after" rows="3"
+                                  placeholder=".modal-dialog&#10;#settings-panel&#10;[data-modal-open]"></textarea>
+                        <div class="form-text">CSS selectors, one per line. Example: After opening a modal, you'd expect ".modal-dialog" to be visible</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="expect_hidden_after" class="form-label">
+                            Elements That Should Be <strong>Hidden</strong> After Script
+                        </label>
+                        <textarea class="form-control font-monospace" id="expect_hidden_after" name="expect_hidden_after" rows="3"
+                                  placeholder=".cookie-banner&#10;#cookie-notice&#10;[data-cookie-modal]"></textarea>
+                        <div class="form-text">CSS selectors, one per line. Example: After dismissing cookies, you'd expect ".cookie-banner" to be hidden</div>
+                    </div>
+                </div>
+
+                <!-- Script Steps -->
+                <div class="form-section">
+                    <h5><i class="bi bi-list-ol"></i> Script Steps</h5>
+
+                    <p class="text-muted">
+                        Define the actions to perform. Steps execute in order from top to bottom.
+                    </p>
+
+                    <div id="steps-container">
+                        <!-- Steps will be added here dynamically -->
+                    </div>
+
+                    <button type="button" class="btn btn-outline-primary" onclick="addStep()">
+                        <i class="bi bi-plus-circle"></i> Add Step
+                    </button>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Create Script
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Help Sidebar -->
+        <div class="col-lg-2 col-xl-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <i class="bi bi-question-circle"></i> Quick Help
+                </div>
+                <div class="card-body">
+                    <h6>Common Selectors</h6>
+                    <ul class="small">
+                        <li><code>.cookie-banner</code> - Class name</li>
+                        <li><code>#accept-btn</code> - ID</li>
+                        <li><code>button[data-action="accept"]</code> - Attribute</li>
+                        <li><code>.modal .close-button</code> - Nested</li>
+                    </ul>
+
+                    <h6>Step Types</h6>
+                    <ul class="small">
+                        <li><strong>Click:</strong> Click a button/link</li>
+                        <li><strong>Type:</strong> Enter text in field</li>
+                        <li><strong>Wait for Element:</strong> Wait until element appears</li>
+                        <li><strong>Wait (Fixed):</strong> Pause for X milliseconds</li>
+                    </ul>
+
+                    <h6>Examples</h6>
+                    <p class="small"><strong>Cookie Banner:</strong></p>
+                    <ol class="small">
+                        <li>Wait for: <code>.cookie-banner</code></li>
+                        <li>Click: <code>.accept-button</code></li>
+                    </ol>
+
+                    <p class="small"><strong>Modal:</strong></p>
+                    <ol class="small">
+                        <li>Click: <code>#open-modal</code></li>
+                        <li>Wait for: <code>.modal-dialog</code></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let stepCount = 0;
+const actionTypes = {{ action_types | tojson }};
+
+function addStep(stepData = null) {
+    const stepIndex = stepCount++;
+    const stepNum = stepIndex + 1;
+
+    const stepHtml = `
+        <div class="card step-card" id="step-${stepIndex}" data-step-index="${stepIndex}">
+            <div class="step-header">
+                <div>
+                    <span class="step-number">${stepNum}</span>
+                    <span class="ms-2"><strong>Step ${stepNum}</strong></span>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeStep(${stepIndex})">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Action Type <span class="text-danger">*</span></label>
+                        <select class="form-select" name="step_${stepIndex}_action" id="step_${stepIndex}_action"
+                                onchange="updateStepFields(${stepIndex})" required>
+                            <option value="">-- Select Action --</option>
+                            ${actionTypes.map(type => `
+                                <option value="${type.value}" ${stepData && stepData.action === type.value ? 'selected' : ''}>
+                                    ${type.label}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
+
+                    <div class="col-md-8 mb-3" id="step_${stepIndex}_selector_container">
+                        <label class="form-label">CSS Selector</label>
+                        <input type="text" class="form-control font-monospace" name="step_${stepIndex}_selector"
+                               id="step_${stepIndex}_selector"
+                               placeholder=".cookie-banner, #element-id, button[data-action='accept']"
+                               value="${stepData ? stepData.selector || '' : ''}">
+                        <small class="form-text text-muted selector-help">
+                            The element to interact with
+                        </small>
+                    </div>
+                </div>
+
+                <div class="row" id="step_${stepIndex}_value_row" style="display: none;">
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Value</label>
+                        <input type="text" class="form-control" name="step_${stepIndex}_value"
+                               id="step_${stepIndex}_value"
+                               placeholder="Text to type or value to set"
+                               value="${stepData ? stepData.value || '' : ''}">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label">Description (Optional)</label>
+                        <input type="text" class="form-control" name="step_${stepIndex}_description"
+                               placeholder="e.g., Wait for cookie banner to appear"
+                               value="${stepData ? stepData.description || '' : ''}">
+                    </div>
+
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">Timeout (ms)</label>
+                        <input type="number" class="form-control" name="step_${stepIndex}_timeout"
+                               value="${stepData ? stepData.timeout || 5000 : 5000}" min="0" step="100">
+                    </div>
+
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">Wait After (ms)</label>
+                        <input type="number" class="form-control" name="step_${stepIndex}_wait_after"
+                               value="${stepData ? stepData.wait_after || 0 : 0}" min="0" step="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('steps-container').insertAdjacentHTML('beforeend', stepHtml);
+
+    // Update field visibility if step data provided
+    if (stepData && stepData.action) {
+        updateStepFields(stepIndex);
+    }
+}
+
+function removeStep(stepIndex) {
+    const step = document.getElementById(`step-${stepIndex}`);
+    if (step) {
+        step.remove();
+        renumberSteps();
+    }
+}
+
+function renumberSteps() {
+    const steps = document.querySelectorAll('.step-card');
+    steps.forEach((step, index) => {
+        const stepNum = index + 1;
+        step.querySelector('.step-number').textContent = stepNum;
+        step.querySelector('.step-header strong').textContent = `Step ${stepNum}`;
+    });
+}
+
+function updateStepFields(stepIndex) {
+    const actionSelect = document.getElementById(`step_${stepIndex}_action`);
+    const action = actionSelect.value;
+
+    const selectorContainer = document.getElementById(`step_${stepIndex}_selector_container`);
+    const valueRow = document.getElementById(`step_${stepIndex}_value_row`);
+    const selectorInput = document.getElementById(`step_${stepIndex}_selector`);
+
+    // Show/hide selector based on action type
+    const noSelectorActions = ['wait_for_timeout', 'wait_for_network_idle'];
+    if (noSelectorActions.includes(action)) {
+        selectorContainer.style.display = 'none';
+        selectorInput.required = false;
+    } else {
+        selectorContainer.style.display = 'block';
+        selectorInput.required = true;
+    }
+
+    // Show/hide value field for type and select actions
+    const valueActions = ['type', 'select', 'press_key', 'evaluate'];
+    if (valueActions.includes(action)) {
+        valueRow.style.display = 'flex';
+    } else {
+        valueRow.style.display = 'none';
+    }
+}
+
+// Add initial step on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Add first step by default
+    addStep();
+});
+
+// Form validation
+document.getElementById('script-form').addEventListener('submit', function(e) {
+    const steps = document.querySelectorAll('.step-card');
+    if (steps.length === 0) {
+        e.preventDefault();
+        alert('Please add at least one step to the script.');
+        return false;
+    }
+});
+</script>
+{% endblock %}

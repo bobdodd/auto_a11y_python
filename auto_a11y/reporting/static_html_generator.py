@@ -281,9 +281,17 @@ class StaticHTMLReportGenerator:
                             'wcag_criteria': warning.wcag_criteria
                         })
 
+                    # Get state description - handle both object and dict
+                    state_description = f"State {state_result.state_sequence if hasattr(state_result, 'state_sequence') else 0}"
+                    if hasattr(state_result, 'page_state') and state_result.page_state:
+                        if isinstance(state_result.page_state, dict):
+                            state_description = state_result.page_state.get('description', state_description)
+                        elif hasattr(state_result.page_state, 'description'):
+                            state_description = state_result.page_state.description
+
                     state_data = {
                         'sequence': state_result.state_sequence if hasattr(state_result, 'state_sequence') else 0,
-                        'description': state_result.page_state.description if hasattr(state_result, 'page_state') and state_result.page_state else f"State {state_result.state_sequence if hasattr(state_result, 'state_sequence') else 0}",
+                        'description': state_description,
                         'violations': state_violations,
                         'warnings': state_warnings,
                         'issues': {

@@ -43,6 +43,7 @@ class Page:
     error_reason: Optional[str] = None  # Reason for discovery/test failure
     is_in_latest_discovery: bool = True  # Is this page in the most recent discovery?
     screenshot_path: Optional[str] = None  # Path to page screenshot
+    setup_script_id: Optional[str] = None  # Reference to page_setup_scripts._id
     _id: Optional[ObjectId] = None
     
     @property
@@ -81,7 +82,8 @@ class Page:
             'depth': self.depth,
             'error_reason': self.error_reason,
             'is_in_latest_discovery': self.is_in_latest_discovery,
-            'screenshot_path': self.screenshot_path
+            'screenshot_path': self.screenshot_path,
+            'setup_script_id': self.setup_script_id
         }
         if self._id:
             data['_id'] = self._id
@@ -110,5 +112,6 @@ class Page:
             error_reason=data.get('error_reason'),
             is_in_latest_discovery=data.get('is_in_latest_discovery', True),
             screenshot_path=data.get('screenshot_path'),
+            setup_script_id=data.get('setup_script_id'),
             _id=data.get('_id')
         )

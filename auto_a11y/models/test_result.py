@@ -136,7 +136,7 @@ class AIFinding:
 @dataclass
 class TestResult:
     """Complete test result for a page"""
-    
+
     page_id: str
     test_date: datetime = field(default_factory=datetime.now)
     duration_ms: int = 0
@@ -151,6 +151,13 @@ class TestResult:
     ai_analysis_results: Dict[str, Any] = field(default_factory=dict)
     error: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+    # NEW: Multi-state testing fields
+    page_state: Optional[Dict[str, Any]] = None  # PageTestState as dict
+    state_sequence: int = 0  # 0=initial, 1=after first script, 2=after button A, etc.
+    session_id: Optional[str] = None  # Reference to script_execution_sessions
+    related_result_ids: List[str] = field(default_factory=list)  # Other results for same page/session
+
     _id: Optional[ObjectId] = None
     
     @property
@@ -214,7 +221,12 @@ class TestResult:
             'js_test_results': self.js_test_results,
             'ai_analysis_results': self.ai_analysis_results,
             'error': self.error,
-            'metadata': self.metadata
+            'metadata': self.metadata,
+            # Multi-state testing fields
+            'page_state': self.page_state,
+            'state_sequence': self.state_sequence,
+            'session_id': self.session_id,
+            'related_result_ids': self.related_result_ids
         }
         if self._id:
             data['_id'] = self._id
@@ -238,5 +250,10 @@ class TestResult:
             ai_analysis_results=data.get('ai_analysis_results', {}),
             error=data.get('error'),
             metadata=data.get('metadata', {}),
+            # Multi-state testing fields (defaults for backward compatibility)
+            page_state=data.get('page_state'),
+            state_sequence=data.get('state_sequence', 0),
+            session_id=data.get('session_id'),
+            related_result_ids=data.get('related_result_ids', []),
             _id=data.get('_id')
         )

@@ -41,6 +41,8 @@ class Database:
         self.document_references: Collection = self.db.document_references
         self.discovery_runs: Collection = self.db.discovery_runs
         self.issue_documentation_status: Collection = self.db.issue_documentation_status
+        self.page_setup_scripts: Collection = self.db.page_setup_scripts  # Page training scripts
+        self.script_execution_sessions: Collection = self.db.script_execution_sessions  # Session tracking
 
         # Create indexes
         self._create_indexes()
@@ -66,6 +68,10 @@ class Database:
         # Test results
         self.test_results.create_index("page_id")
         self.test_results.create_index("test_date")
+        # Multi-state testing indexes
+        self.test_results.create_index("session_id")
+        self.test_results.create_index([("page_id", 1), ("session_id", 1), ("state_sequence", 1)])
+        self.test_results.create_index([("session_id", 1), ("state_sequence", 1)])
 
         # Test result items (NEW: detailed violations/warnings)
         self.test_result_items.create_index("test_result_id")
@@ -93,10 +99,22 @@ class Database:
         # Issue documentation status
         self.issue_documentation_status.create_index("issue_code", unique=True)
         self.discovery_runs.create_index([("website_id", 1), ("is_latest", 1)])
-        
+
         # Update pages index for discovery run
         self.pages.create_index("discovery_run_id")
         self.pages.create_index("is_in_latest_discovery")
+
+        # Page setup scripts
+        self.page_setup_scripts.create_index("page_id")
+        self.page_setup_scripts.create_index("website_id")  # NEW: For website-level scripts
+        self.page_setup_scripts.create_index([("website_id", 1), ("scope", 1), ("enabled", 1)])
+        self.page_setup_scripts.create_index([("page_id", 1), ("enabled", 1)])
+        self.page_setup_scripts.create_index("created_date")
+
+        # Script execution sessions
+        self.script_execution_sessions.create_index("session_id", unique=True)
+        self.script_execution_sessions.create_index("website_id")
+        self.script_execution_sessions.create_index([("website_id", 1), ("started_at", -1)])
     
     def test_connection(self) -> bool:
         """Test database connection"""
@@ -730,6 +748,100 @@ class Database:
         result = self.test_results.delete_one({"_id": ObjectId(result_id)})
         return result.deleted_count > 0
 
+    # Multi-state test result methods
+
+    def get_test_results_by_session(self, session_id: str) -> List[TestResult]:
+        """
+        Get all test results for a script execution session
+
+        Args:
+            session_id: Script execution session ID
+
+        Returns:
+            List of test results ordered by state_sequence
+        """
+        docs = self.test_results.find({"session_id": session_id}).sort("state_sequence", 1)
+        return [TestResult.from_dict(doc) for doc in docs]
+
+    def get_test_results_by_page_and_session(
+        self,
+        page_id: str,
+        session_id: str
+    ) -> List[TestResult]:
+        """
+        Get all test results for a specific page in a session
+
+        Args:
+            page_id: Page ID
+            session_id: Script execution session ID
+
+        Returns:
+            List of test results ordered by state_sequence
+        """
+        docs = self.test_results.find({
+            "page_id": page_id,
+            "session_id": session_id
+        }).sort("state_sequence", 1)
+        return [TestResult.from_dict(doc) for doc in docs]
+
+    def get_related_test_results(self, result_id: str) -> List[TestResult]:
+        """
+        Get all test results related to a specific result
+
+        Args:
+            result_id: Test result ID
+
+        Returns:
+            List of related test results
+        """
+        # First get the result to find its related IDs
+        result = self.get_test_result(result_id)
+        if not result or not result.related_result_ids:
+            return []
+
+        # Get all related results
+        object_ids = [ObjectId(rid) for rid in result.related_result_ids]
+        docs = self.test_results.find({"_id": {"$in": object_ids}}).sort("state_sequence", 1)
+        return [TestResult.from_dict(doc) for doc in docs]
+
+    def get_latest_test_results_per_state(
+        self,
+        page_id: str,
+        limit: int = 1
+    ) -> Dict[int, TestResult]:
+        """
+        Get the most recent test result for each state sequence
+
+        Args:
+            page_id: Page ID
+            limit: Number of test runs to consider (default: most recent)
+
+        Returns:
+            Dictionary of {state_sequence: TestResult}
+        """
+        # Get all test results for page, grouped by session
+        pipeline = [
+            {"$match": {"page_id": page_id}},
+            {"$sort": {"test_date": -1}},
+            {"$group": {
+                "_id": {"session_id": "$session_id", "state_sequence": "$state_sequence"},
+                "latest": {"$first": "$$ROOT"}
+            }},
+            {"$limit": limit * 10}  # Get more than we need to handle multiple sequences
+        ]
+
+        results = self.test_results.aggregate(pipeline)
+        state_results = {}
+
+        for doc in results:
+            result = TestResult.from_dict(doc['latest'])
+            state_seq = result.state_sequence
+            # Only keep the most recent for each state
+            if state_seq not in state_results or result.test_date > state_results[state_seq].test_date:
+                state_results[state_seq] = result
+
+        return state_results
+
     # Query methods for reporting
 
     def get_violations_by_issue(self, test_result_id: str, item_type: str = 'violation') -> Dict[str, List[Dict[str, Any]]]:
@@ -1109,3 +1221,334 @@ class Database:
         """Get list of issue codes not marked as production ready"""
         docs = self.issue_documentation_status.find({'production_ready': {'$ne': True}})
         return [doc['issue_code'] for doc in docs]
+
+    # Page Setup Script Methods
+
+    def create_page_setup_script(self, script: 'PageSetupScript') -> str:
+        """
+        Create a new page setup script
+
+        Args:
+            script: PageSetupScript object
+
+        Returns:
+            Script ID as string
+        """
+        from auto_a11y.models import PageSetupScript
+
+        result = self.page_setup_scripts.insert_one(script.to_dict())
+        script._id = result.inserted_id
+        logger.info(f"Created page setup script: {script.name} ({script.id}) for page {script.page_id}")
+        return script.id
+
+    def get_page_setup_script(self, script_id: str) -> Optional['PageSetupScript']:
+        """
+        Get a page setup script by ID
+
+        Args:
+            script_id: Script ID
+
+        Returns:
+            PageSetupScript object or None
+        """
+        from auto_a11y.models import PageSetupScript
+
+        doc = self.page_setup_scripts.find_one({"_id": ObjectId(script_id)})
+        return PageSetupScript.from_dict(doc) if doc else None
+
+    def get_page_setup_scripts_for_page(self, page_id: str, enabled_only: bool = False) -> List['PageSetupScript']:
+        """
+        Get all setup scripts for a page
+
+        Args:
+            page_id: Page ID
+            enabled_only: If True, only return enabled scripts
+
+        Returns:
+            List of PageSetupScript objects
+        """
+        from auto_a11y.models import PageSetupScript
+
+        query = {"page_id": page_id}
+        if enabled_only:
+            query["enabled"] = True
+
+        docs = self.page_setup_scripts.find(query).sort("created_date", -1)
+        return [PageSetupScript.from_dict(doc) for doc in docs]
+
+    def get_enabled_script_for_page(self, page_id: str) -> Optional['PageSetupScript']:
+        """
+        Get the enabled setup script for a page (returns first enabled script)
+
+        Args:
+            page_id: Page ID
+
+        Returns:
+            PageSetupScript object or None
+        """
+        from auto_a11y.models import PageSetupScript
+
+        doc = self.page_setup_scripts.find_one(
+            {"page_id": page_id, "enabled": True},
+            sort=[("created_date", -1)]
+        )
+        return PageSetupScript.from_dict(doc) if doc else None
+
+    def update_page_setup_script(self, script: 'PageSetupScript') -> bool:
+        """
+        Update an existing page setup script
+
+        Args:
+            script: PageSetupScript object with updates
+
+        Returns:
+            True if updated successfully
+        """
+        if not script._id:
+            logger.error("Cannot update script without _id")
+            return False
+
+        script.update_timestamp()
+        result = self.page_setup_scripts.update_one(
+            {"_id": script._id},
+            {"$set": script.to_dict()}
+        )
+
+        if result.modified_count > 0:
+            logger.info(f"Updated page setup script: {script.name} ({script.id})")
+            return True
+        return False
+
+    def delete_page_setup_script(self, script_id: str) -> bool:
+        """
+        Delete a page setup script
+
+        Args:
+            script_id: Script ID
+
+        Returns:
+            True if deleted successfully
+        """
+        result = self.page_setup_scripts.delete_one({"_id": ObjectId(script_id)})
+
+        if result.deleted_count > 0:
+            logger.info(f"Deleted page setup script: {script_id}")
+            return True
+        return False
+
+    def enable_page_setup_script(self, script_id: str, enabled: bool = True) -> bool:
+        """
+        Enable or disable a page setup script
+
+        Args:
+            script_id: Script ID
+            enabled: True to enable, False to disable
+
+        Returns:
+            True if updated successfully
+        """
+        result = self.page_setup_scripts.update_one(
+            {"_id": ObjectId(script_id)},
+            {
+                "$set": {
+                    "enabled": enabled,
+                    "last_modified": datetime.now()
+                }
+            }
+        )
+
+        if result.modified_count > 0:
+            logger.info(f"{'Enabled' if enabled else 'Disabled'} page setup script: {script_id}")
+            return True
+        return False
+
+    def update_script_execution_stats(
+        self,
+        script_id: str,
+        success: bool,
+        duration_ms: int
+    ) -> bool:
+        """
+        Update execution statistics for a script
+
+        Args:
+            script_id: Script ID
+            success: Whether execution was successful
+            duration_ms: Execution duration in milliseconds
+
+        Returns:
+            True if updated successfully
+        """
+        # Get current stats
+        script = self.get_page_setup_script(script_id)
+        if not script:
+            return False
+
+        stats = script.execution_stats
+
+        # Update stats
+        stats.last_executed = datetime.now()
+        if success:
+            stats.success_count += 1
+        else:
+            stats.failure_count += 1
+
+        # Update average duration (rolling average)
+        total_executions = stats.success_count + stats.failure_count
+        if total_executions > 0:
+            stats.average_duration_ms = int(
+                (stats.average_duration_ms * (total_executions - 1) + duration_ms) / total_executions
+            )
+
+        # Save updated stats
+        result = self.page_setup_scripts.update_one(
+            {"_id": ObjectId(script_id)},
+            {"$set": {"execution_stats": stats.to_dict()}}
+        )
+
+        return result.modified_count > 0
+
+    def get_scripts_for_website(
+        self,
+        website_id: str,
+        scope: Optional[str] = None,
+        enabled_only: bool = True
+    ) -> List['PageSetupScript']:
+        """
+        Get scripts for a website (any scope or specific scope)
+
+        Args:
+            website_id: Website ID
+            scope: Optional scope filter ("website", "page", "test_run")
+            enabled_only: If True, only return enabled scripts
+
+        Returns:
+            List of PageSetupScript objects
+        """
+        from auto_a11y.models import PageSetupScript
+
+        query = {"website_id": website_id}
+        if scope:
+            query["scope"] = scope
+        if enabled_only:
+            query["enabled"] = True
+
+        docs = self.page_setup_scripts.find(query).sort("created_date", -1)
+        return [PageSetupScript.from_dict(doc) for doc in docs]
+
+    def get_scripts_for_page_v2(
+        self,
+        page_id: str,
+        website_id: str,
+        enabled_only: bool = True
+    ) -> List['PageSetupScript']:
+        """
+        Get all applicable scripts for a page (both page-level and website-level)
+
+        Args:
+            page_id: Page ID
+            website_id: Website ID
+            enabled_only: If True, only return enabled scripts
+
+        Returns:
+            List of PageSetupScript objects (website-level + page-level)
+        """
+        from auto_a11y.models import PageSetupScript, ScriptScope
+
+        query_filter = {"enabled": True} if enabled_only else {}
+
+        # Get website-level scripts
+        website_query = {
+            "website_id": website_id,
+            "scope": ScriptScope.WEBSITE.value,
+            **query_filter
+        }
+        website_scripts = list(self.page_setup_scripts.find(website_query))
+
+        # Get page-level scripts
+        page_query = {
+            "page_id": page_id,
+            "scope": ScriptScope.PAGE.value,
+            **query_filter
+        }
+        page_scripts = list(self.page_setup_scripts.find(page_query))
+
+        # Combine and return
+        all_scripts = website_scripts + page_scripts
+        return [PageSetupScript.from_dict(doc) for doc in all_scripts]
+
+    # Script Execution Session Methods
+
+    def create_script_session(self, session: 'ScriptExecutionSession') -> str:
+        """
+        Create a new script execution session
+
+        Args:
+            session: ScriptExecutionSession object
+
+        Returns:
+            Session ID as string
+        """
+        from auto_a11y.models import ScriptExecutionSession
+
+        result = self.script_execution_sessions.insert_one(session.to_dict())
+        session._id = result.inserted_id
+        logger.info(f"Created script execution session: {session.session_id} for website {session.website_id}")
+        return session.session_id
+
+    def get_script_session(self, session_id: str) -> Optional['ScriptExecutionSession']:
+        """
+        Get a script execution session by session ID
+
+        Args:
+            session_id: Session ID (UUID string)
+
+        Returns:
+            ScriptExecutionSession object or None
+        """
+        from auto_a11y.models import ScriptExecutionSession
+
+        doc = self.script_execution_sessions.find_one({"session_id": session_id})
+        return ScriptExecutionSession.from_dict(doc) if doc else None
+
+    def update_script_session(self, session: 'ScriptExecutionSession') -> bool:
+        """
+        Update an existing script execution session
+
+        Args:
+            session: ScriptExecutionSession object with updates
+
+        Returns:
+            True if updated successfully
+        """
+        if not session._id:
+            logger.error("Cannot update session without _id")
+            return False
+
+        result = self.script_execution_sessions.update_one(
+            {"_id": session._id},
+            {"$set": session.to_dict()}
+        )
+
+        if result.modified_count > 0:
+            logger.info(f"Updated script execution session: {session.session_id}")
+            return True
+        return False
+
+    def get_latest_session_for_website(self, website_id: str) -> Optional['ScriptExecutionSession']:
+        """
+        Get the most recent session for a website
+
+        Args:
+            website_id: Website ID
+
+        Returns:
+            ScriptExecutionSession object or None
+        """
+        from auto_a11y.models import ScriptExecutionSession
+
+        doc = self.script_execution_sessions.find_one(
+            {"website_id": website_id},
+            sort=[("started_at", -1)]
+        )
+        return ScriptExecutionSession.from_dict(doc) if doc else None

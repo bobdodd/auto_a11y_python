@@ -9,11 +9,14 @@ from datetime import datetime
 from pathlib import Path
 import time
 
-from auto_a11y.models import Page, PageStatus, TestResult
+from auto_a11y.models import Page, PageStatus, TestResult, ScriptScope
 from auto_a11y.core.database import Database
 from auto_a11y.core.browser_manager import BrowserManager
 from auto_a11y.testing.script_injector import ScriptInjector
 from auto_a11y.testing.result_processor import ResultProcessor
+from auto_a11y.testing.script_executor import ScriptExecutor
+from auto_a11y.testing.script_session_manager import ScriptSessionManager
+from auto_a11y.testing.multi_state_test_runner import MultiStateTestRunner
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +36,12 @@ class TestRunner:
         self.browser_manager = BrowserManager(browser_config)
         self.script_injector = ScriptInjector()  # Will use test_config from project
         self.result_processor = ResultProcessor()
+        self.script_executor = ScriptExecutor()  # For executing page setup scripts
+        self.session_manager = ScriptSessionManager(database)  # For tracking script execution
+        self.multi_state_runner = MultiStateTestRunner(self.script_executor)  # For multi-state testing
         self.screenshot_dir = Path(browser_config.get('SCREENSHOTS_DIR', 'screenshots'))
         self.screenshot_dir.mkdir(exist_ok=True, parents=True)
+        self._current_website_id = None  # Track current website for session management
     
     async def test_page(
         self,
@@ -105,6 +112,65 @@ class TestRunner:
                 if wait_strategy == 'domcontentloaded':
                     import asyncio
                     await asyncio.sleep(2)  # Wait 2 seconds for JS to initialize
+
+                # Start script session if not already started for this website
+                if self._current_website_id != page.website_id:
+                    # End previous session if exists
+                    if self._current_website_id is not None:
+                        self.session_manager.end_session()
+
+                    # Start new session for this website
+                    self.session_manager.start_session(page.website_id)
+                    self._current_website_id = page.website_id
+                    logger.info(f"Started script session for website {page.website_id}")
+
+                # Get all applicable scripts for this page (website-level + page-level)
+                scripts_to_execute = self.db.get_scripts_for_page_v2(
+                    page_id=page.id,
+                    website_id=page.website_id,
+                    enabled_only=True
+                )
+
+                # Execute scripts with session awareness
+                script_violations = []
+                for script in scripts_to_execute:
+                    logger.info(f"Processing script: {script.name} (scope={script.scope.value}, trigger={script.trigger.value})")
+                    try:
+                        result = await self.script_executor.execute_with_session(
+                            browser_page,
+                            script,
+                            page.id,
+                            self.session_manager
+                        )
+
+                        # Check for violations reported by scripts
+                        if 'violation' in result:
+                            script_violations.append(result['violation'])
+                            logger.warning(f"Script reported violation: {result['violation'].message}")
+
+                        # Log result
+                        if result.get('skipped'):
+                            logger.info(f"Script '{script.name}' skipped: {result.get('skip_reason')}")
+                        elif result['success']:
+                            logger.info(f"Script '{script.name}' completed successfully in {result['duration_ms']}ms")
+                            # Update execution stats
+                            self.db.update_script_execution_stats(
+                                script.id,
+                                success=True,
+                                duration_ms=result['duration_ms']
+                            )
+                        else:
+                            logger.warning(f"Script '{script.name}' failed: {result.get('error', 'Unknown error')}")
+                            # Update execution stats
+                            self.db.update_script_execution_stats(
+                                script.id,
+                                success=False,
+                                duration_ms=result['duration_ms']
+                            )
+
+                    except Exception as e:
+                        logger.error(f"Error executing script '{script.name}': {e}")
+                        # Continue with testing even if script crashes
                 
                 # Get project configuration including WCAG level and touchpoint settings
                 wcag_level = 'AA'  # Default to AA
@@ -299,9 +365,15 @@ class TestRunner:
                     ai_findings=ai_findings,
                     ai_analysis_results=ai_analysis_results
                 )
-                
+
                 # AI findings are now merged in result_processor.process_test_results()
-                
+
+                # Add script violations to test result
+                if script_violations:
+                    logger.info(f"Adding {len(script_violations)} script violations to test result")
+                    test_result.violations.extend(script_violations)
+                    test_result.violation_count += len(script_violations)
+
                 # Save test result to database
                 result_id = self.db.create_test_result(test_result)
                 test_result._id = result_id
@@ -351,7 +423,225 @@ class TestRunner:
             test_result._id = result_id
             
             return test_result
-    
+
+    async def test_page_multi_state(
+        self,
+        page: Page,
+        enable_multi_state: bool = True,
+        take_screenshot: bool = True,
+        run_ai_analysis: bool = False,
+        ai_api_key: Optional[str] = None
+    ) -> List[TestResult]:
+        """
+        Run accessibility tests on a single page across multiple states
+
+        This method tests the page in multiple states by executing setup scripts
+        and testing before/after each script execution as configured.
+
+        Args:
+            page: Page to test
+            enable_multi_state: Whether to use multi-state testing
+            take_screenshot: Whether to capture screenshots
+            run_ai_analysis: Whether to run AI analysis
+            ai_api_key: API key for AI analysis
+
+        Returns:
+            List of test results (one per state)
+        """
+        if not enable_multi_state:
+            # Fall back to single-state testing
+            result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key)
+            return [result]
+
+        # Start script session if not already started for this website
+        if self._current_website_id != page.website_id:
+            # End previous session if exists
+            if self._current_website_id is not None:
+                self.session_manager.end_session()
+
+            # Start new session for this website
+            self.session_manager.start_session(page.website_id)
+            self._current_website_id = page.website_id
+            logger.info(f"Started script session for website {page.website_id}")
+
+        # Get session ID
+        session_id = self.session_manager.session.session_id if self.session_manager.session else None
+
+        # Get all applicable scripts for this page
+        scripts_to_execute = self.db.get_scripts_for_page_v2(
+            page_id=page.id,
+            website_id=page.website_id,
+            enabled_only=True
+        )
+
+        # Filter scripts that have multi-state testing configured
+        multi_state_scripts = [
+            script for script in scripts_to_execute
+            if script.test_before_execution or script.test_after_execution
+        ]
+
+        if not multi_state_scripts:
+            logger.info(f"No multi-state scripts configured for page {page.url}, using single-state testing")
+            result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key)
+            return [result]
+
+        logger.info(f"Testing page {page.url} with {len(multi_state_scripts)} multi-state scripts")
+
+        # Update page status
+        page.status = PageStatus.TESTING
+        self.db.update_page(page)
+
+        # Start browser if needed
+        if not await self.browser_manager.is_running():
+            await self.browser_manager.start()
+
+        results = []
+
+        try:
+            async with self.browser_manager.get_page() as browser_page:
+                # Navigate to page
+                wait_strategy = 'networkidle2'
+                try:
+                    website = self.db.get_website(page.website_id)
+                    if website:
+                        project = self.db.get_project(website.project_id)
+                        if project and project.config:
+                            wait_strategy = project.config.get('page_load_strategy', 'networkidle2')
+                except Exception as e:
+                    logger.warning(f"Could not get project config: {e}")
+
+                response = await self.browser_manager.goto(
+                    browser_page,
+                    page.url,
+                    wait_until=wait_strategy,
+                    timeout=30000
+                )
+
+                if not response:
+                    raise RuntimeError(f"Failed to load page: {page.url}")
+
+                await browser_page.waitForSelector('body', {'timeout': 5000})
+
+                # Create a test function that can be called multiple times
+                async def run_single_test(browser_page, page_id):
+                    """Run accessibility tests and return TestResult"""
+                    # Get project config
+                    test_config = None
+                    project_config = None
+                    wcag_level = 'AA'
+
+                    try:
+                        website = self.db.get_website(page.website_id)
+                        if website:
+                            project = self.db.get_project(website.project_id)
+                            if project and project.config:
+                                project_config = project.config
+                                wcag_level = project_config.get('wcag_level', 'AA')
+
+                                from auto_a11y.config.test_config import TestConfiguration
+                                test_config = TestConfiguration(database=self.db, debug_mode=False)
+
+                                if 'touchpoints' in project_config:
+                                    test_config.config['touchpoints'] = project_config['touchpoints']
+
+                                test_config.config['global']['run_ai_tests'] = project_config.get('enable_ai_testing', False)
+                    except Exception as e:
+                        logger.warning(f"Could not get project config: {e}")
+
+                    # Set test configuration
+                    if test_config:
+                        self.script_injector.test_config = test_config
+                    self.script_injector.project_config = project_config
+
+                    # Inject test scripts
+                    await self.script_injector.inject_script_files(browser_page)
+
+                    # Set WCAG level
+                    await browser_page.evaluate(f'window.WCAG_LEVEL = "{wcag_level}";')
+
+                    # Run tests
+                    raw_results = await self.script_injector.run_all_tests(browser_page)
+
+                    # Take screenshot if requested
+                    screenshot_path = None
+                    if take_screenshot:
+                        screenshot_path = await self._take_screenshot(browser_page, page_id)
+
+                    # Process results
+                    duration_ms = 0  # Will be set by caller
+                    test_result = self.result_processor.process_test_results(
+                        page_id=page_id,
+                        raw_results=raw_results,
+                        screenshot_path=screenshot_path,
+                        duration_ms=duration_ms,
+                        ai_findings=[],
+                        ai_analysis_results={}
+                    )
+
+                    return test_result
+
+                # Run multi-state testing
+                results = await self.multi_state_runner.test_page_multi_state(
+                    page=browser_page,
+                    page_id=page.id,
+                    scripts=multi_state_scripts,
+                    test_function=run_single_test,
+                    session_id=session_id
+                )
+
+                # Save all results to database
+                for result in results:
+                    result_id = self.db.create_test_result(result)
+                    result._id = result_id
+
+                # Update page with results from final state
+                if results:
+                    final_result = results[-1]
+                    page.status = PageStatus.TESTED
+                    page.last_tested = datetime.now()
+                    page.violation_count = final_result.violation_count
+                    page.warning_count = final_result.warning_count
+                    page.info_count = final_result.info_count
+                    page.discovery_count = final_result.discovery_count
+                    page.pass_count = final_result.pass_count
+                    page.test_duration_ms = sum(r.duration_ms for r in results)
+                    page.screenshot_path = final_result.screenshot_path
+                    self.db.update_page(page)
+
+                # Update website's last_tested timestamp
+                website = self.db.get_website(page.website_id)
+                if website:
+                    website.last_tested = datetime.now()
+                    self.db.update_website(website)
+
+                logger.info(f"Multi-state testing complete: {len(results)} test results generated")
+
+                return results
+
+        except Exception as e:
+            logger.error(f"Error in multi-state testing for page {page.url}: {e}")
+
+            # Update page status
+            page.status = PageStatus.ERROR
+            self.db.update_page(page)
+
+            # Create error result
+            test_result = TestResult(
+                page_id=page.id,
+                test_date=datetime.now(),
+                duration_ms=0,
+                error=str(e),
+                violations=[],
+                warnings=[],
+                passes=[]
+            )
+
+            # Save error result
+            result_id = self.db.create_test_result(test_result)
+            test_result._id = result_id
+
+            return [test_result]
+
     async def test_pages(
         self,
         pages: List[Page],

@@ -660,3 +660,252 @@ def cleanup_page_counts():
     except Exception as e:
         logger.error(f"Error cleaning up page counts: {e}")
         return jsonify({'error': f'Failed to clean up page counts: {str(e)}'}), 500
+
+
+# Multi-State Testing API Endpoints
+
+@api_bp.route('/test-results/<result_id>/states', methods=['GET'])
+def get_test_result_states(result_id):
+    """
+    Get all related state test results for a given result
+
+    Returns all test results from the same testing session, showing different
+    page states (before/after scripts, button states, etc.)
+    """
+    try:
+        # Get the result
+        result = current_app.db.get_test_result(result_id)
+        if not result:
+            return jsonify({'error': 'Test result not found'}), 404
+
+        # Get related results
+        related_results = current_app.db.get_related_test_results(result_id)
+
+        # Include the original result
+        all_results = [result] + related_results
+
+        # Sort by state_sequence
+        all_results.sort(key=lambda r: r.state_sequence)
+
+        # Serialize results
+        results_data = []
+        for r in all_results:
+            state_info = {
+                'result_id': str(r._id) if r._id else None,
+                'state_sequence': r.state_sequence,
+                'page_state': r.page_state,
+                'session_id': r.session_id,
+                'test_date': r.test_date.isoformat() if r.test_date else None,
+                'violation_count': r.violation_count,
+                'warning_count': r.warning_count,
+                'info_count': r.info_count,
+                'pass_count': r.pass_count,
+                'duration_ms': r.duration_ms
+            }
+            results_data.append(state_info)
+
+        return jsonify({
+            'success': True,
+            'result_id': result_id,
+            'total_states': len(results_data),
+            'states': results_data
+        })
+
+    except Exception as e:
+        logger.error(f"Error getting test result states: {e}")
+        return jsonify({'error': f'Failed to get test result states: {str(e)}'}), 500
+
+
+@api_bp.route('/pages/<page_id>/test-states', methods=['GET'])
+def get_page_test_states(page_id):
+    """
+    Get latest test results per state for a page
+
+    Shows the most recent test result for each state (initial, after script, etc.)
+    """
+    try:
+        # Check page exists
+        page = current_app.db.get_page(page_id)
+        if not page:
+            return jsonify({'error': 'Page not found'}), 404
+
+        # Get latest results per state
+        state_results = current_app.db.get_latest_test_results_per_state(page_id)
+
+        # Serialize results
+        states_data = {}
+        for state_seq, result in state_results.items():
+            states_data[state_seq] = {
+                'result_id': str(result._id) if result._id else None,
+                'state_sequence': state_seq,
+                'page_state': result.page_state,
+                'session_id': result.session_id,
+                'test_date': result.test_date.isoformat() if result.test_date else None,
+                'violation_count': result.violation_count,
+                'warning_count': result.warning_count,
+                'info_count': result.info_count,
+                'pass_count': result.pass_count,
+                'duration_ms': result.duration_ms
+            }
+
+        return jsonify({
+            'success': True,
+            'page_id': page_id,
+            'page_url': page.url,
+            'total_states': len(states_data),
+            'states': states_data
+        })
+
+    except Exception as e:
+        logger.error(f"Error getting page test states: {e}")
+        return jsonify({'error': f'Failed to get page test states: {str(e)}'}), 500
+
+
+@api_bp.route('/pages/<page_id>/test-sessions', methods=['GET'])
+def get_page_test_sessions(page_id):
+    """
+    Get all test sessions for a page with their state counts
+
+    Shows all testing sessions and how many states were tested in each
+    """
+    try:
+        # Check page exists
+        page = current_app.db.get_page(page_id)
+        if not page:
+            return jsonify({'error': 'Page not found'}), 404
+
+        # Get all test results for page
+        all_results = current_app.db.get_test_results(page_id=page_id, limit=1000)
+
+        # Group by session
+        sessions = {}
+        for result in all_results:
+            session_id = result.session_id or 'single_state'
+
+            if session_id not in sessions:
+                sessions[session_id] = {
+                    'session_id': session_id,
+                    'test_date': result.test_date,
+                    'states': [],
+                    'total_violations': 0,
+                    'total_warnings': 0
+                }
+
+            sessions[session_id]['states'].append({
+                'result_id': str(result._id) if result._id else None,
+                'state_sequence': result.state_sequence,
+                'state_description': result.page_state.get('description') if result.page_state else None,
+                'violation_count': result.violation_count,
+                'warning_count': result.warning_count
+            })
+
+            sessions[session_id]['total_violations'] += result.violation_count
+            sessions[session_id]['total_warnings'] += result.warning_count
+
+        # Convert to list and sort by date
+        sessions_list = list(sessions.values())
+        sessions_list.sort(key=lambda s: s['test_date'], reverse=True)
+
+        # Sort states within each session
+        for session in sessions_list:
+            session['states'].sort(key=lambda s: s['state_sequence'])
+            session['state_count'] = len(session['states'])
+            session['test_date'] = session['test_date'].isoformat() if session['test_date'] else None
+
+        return jsonify({
+            'success': True,
+            'page_id': page_id,
+            'page_url': page.url,
+            'total_sessions': len(sessions_list),
+            'sessions': sessions_list
+        })
+
+    except Exception as e:
+        logger.error(f"Error getting page test sessions: {e}")
+        return jsonify({'error': f'Failed to get page test sessions: {str(e)}'}), 500
+
+
+@api_bp.route('/test-results/compare', methods=['POST'])
+def compare_test_results():
+    """
+    Compare two test results (typically from different states)
+
+    Request body:
+    {
+        "result_id_1": "...",
+        "result_id_2": "..."
+    }
+
+    Returns:
+    - Violations that appeared in result_2 (new violations)
+    - Violations that disappeared from result_1 (fixed violations)
+    - Violations that exist in both (persistent violations)
+    """
+    try:
+        data = request.get_json()
+        result_id_1 = data.get('result_id_1')
+        result_id_2 = data.get('result_id_2')
+
+        if not result_id_1 or not result_id_2:
+            return jsonify({'error': 'Both result_id_1 and result_id_2 are required'}), 400
+
+        # Get results
+        result1 = current_app.db.get_test_result(result_id_1)
+        result2 = current_app.db.get_test_result(result_id_2)
+
+        if not result1 or not result2:
+            return jsonify({'error': 'One or both test results not found'}), 404
+
+        # Get violation IDs (using issue_id for comparison)
+        violations1_ids = {v.id for v in result1.violations}
+        violations2_ids = {v.id for v in result2.violations}
+
+        # Calculate differences
+        new_violations = [v for v in result2.violations if v.id not in violations1_ids]
+        fixed_violations = [v for v in result1.violations if v.id not in violations2_ids]
+        persistent_violations = [v for v in result2.violations if v.id in violations1_ids]
+
+        # Serialize violations
+        def serialize_violation(v):
+            return {
+                'id': v.id,
+                'impact': v.impact.value if hasattr(v.impact, 'value') else v.impact,
+                'touchpoint': v.touchpoint,
+                'description': v.description,
+                'element': v.element
+            }
+
+        comparison = {
+            'result_1': {
+                'id': result_id_1,
+                'state_sequence': result1.state_sequence,
+                'state_description': result1.page_state.get('description') if result1.page_state else None,
+                'violation_count': result1.violation_count,
+                'test_date': result1.test_date.isoformat() if result1.test_date else None
+            },
+            'result_2': {
+                'id': result_id_2,
+                'state_sequence': result2.state_sequence,
+                'state_description': result2.page_state.get('description') if result2.page_state else None,
+                'violation_count': result2.violation_count,
+                'test_date': result2.test_date.isoformat() if result2.test_date else None
+            },
+            'new_violations': [serialize_violation(v) for v in new_violations],
+            'fixed_violations': [serialize_violation(v) for v in fixed_violations],
+            'persistent_violations': [serialize_violation(v) for v in persistent_violations],
+            'summary': {
+                'new_count': len(new_violations),
+                'fixed_count': len(fixed_violations),
+                'persistent_count': len(persistent_violations),
+                'net_change': result2.violation_count - result1.violation_count
+            }
+        }
+
+        return jsonify({
+            'success': True,
+            'comparison': comparison
+        })
+
+    except Exception as e:
+        logger.error(f"Error comparing test results: {e}")
+        return jsonify({'error': f'Failed to compare test results: {str(e)}'}), 500

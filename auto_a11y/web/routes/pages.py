@@ -340,11 +340,15 @@ def test_page(page_id):
     from auto_a11y.testing import TestRunner
     from auto_a11y.core.task_runner import task_runner
     import asyncio
-    
+
     page = current_app.db.get_page(page_id)
     if not page:
         return jsonify({'error': 'Page not found'}), 404
-    
+
+    # Check if multi-state testing requested
+    data = request.get_json() if request.is_json else {}
+    enable_multi_state = data.get('enable_multi_state', True)  # Default: enabled
+
     # Update page status
     page.status = PageStatus.QUEUED
     current_app.db.update_page(page)
@@ -379,12 +383,26 @@ def test_page(page_id):
                 # Create test runner inside the async context with new event loop
                 test_runner_instance = TestRunner(db, browser_config)
                 try:
-                    return await test_runner_instance.test_page(
-                        page,
-                        take_screenshot=True,
-                        run_ai_analysis=None,  # Let test_runner decide based on project config
-                        ai_api_key=ai_key
-                    )
+                    # Use multi-state testing if enabled
+                    if enable_multi_state:
+                        results = await test_runner_instance.test_page_multi_state(
+                            page,
+                            enable_multi_state=True,
+                            take_screenshot=True,
+                            run_ai_analysis=None,  # Let test_runner decide based on project config
+                            ai_api_key=ai_key
+                        )
+                        # Return list of results
+                        return results
+                    else:
+                        # Single-state testing (backward compatible)
+                        result = await test_runner_instance.test_page(
+                            page,
+                            take_screenshot=True,
+                            run_ai_analysis=None,
+                            ai_api_key=ai_key
+                        )
+                        return [result]  # Wrap in list for consistency
                 finally:
                     await test_runner_instance.cleanup()
 
@@ -399,11 +417,12 @@ def test_page(page_id):
         args=(),
         task_id=f'test_page_{page_id}_{datetime.now().timestamp()}'
     )
-    
+
     return jsonify({
         'success': True,
-        'message': 'Page queued for testing',
+        'message': 'Page queued for testing' + (' (multi-state enabled)' if enable_multi_state else ''),
         'job_id': job_id,
+        'multi_state': enable_multi_state,
         'status_url': url_for('pages.test_status', page_id=page_id)
     })
 

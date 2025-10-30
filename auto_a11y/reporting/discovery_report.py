@@ -228,10 +228,18 @@ class DiscoveryReportGenerator:
                 continue
 
             # Initialize page inspection data
+            page_state_desc = ""
+            if hasattr(test_result, 'page_state') and test_result.page_state:
+                if isinstance(test_result.page_state, dict):
+                    page_state_desc = test_result.page_state.get('description', '')
+                elif hasattr(test_result.page_state, 'description'):
+                    page_state_desc = test_result.page_state.description
+
             page_data = {
                 'page': page,
                 'url': page.url,
                 'title': page.title or 'Untitled',
+                'page_state': page_state_desc,
                 'disco_issues': [],
                 'info_issues': [],
                 'accessible_name_issues': [],

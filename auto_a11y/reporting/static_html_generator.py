@@ -266,18 +266,13 @@ class StaticHTMLReportGenerator:
         return pages_data
 
     def _calculate_page_score(self, test_result) -> float:
-        """Calculate accessibility score for a page"""
-        if not test_result.metadata:
-            return 0.0
+        """Calculate accessibility score for a page using result_processor's scoring logic"""
+        from auto_a11y.testing.result_processor import ResultProcessor
 
-        metadata = test_result.metadata
-        if 'applicable_checks' not in metadata or metadata['applicable_checks'] == 0:
-            return 0.0
+        processor = ResultProcessor(None)
+        score_data = processor.calculate_score(test_result)
 
-        passed = metadata.get('passed_checks', 0)
-        applicable = metadata['applicable_checks']
-
-        return (passed / applicable) * 100.0
+        return score_data['score']
 
     def _generate_summary_stats(self, pages_data: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Generate summary statistics across all pages"""

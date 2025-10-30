@@ -356,7 +356,15 @@
             </div>
             <div class="card-body">
                 {# Calculate actual totals from metadata if available, otherwise use page counts #}
-                {% if latest_result and latest_result.metadata and latest_result.metadata.checks %}
+                {% if score_data %}
+                    {# Use calculated score_data (most reliable) #}
+                    {% set actual_passed = score_data.passed_checks|default(0) %}
+                    {% set actual_failed = score_data.failed_checks|default(0) %}
+                    {% set actual_na = score_data.not_applicable_count|default(0) %}
+                    {% set total_tested = score_data.applicable_checks|default(0) %}
+                    {% set pass_rate = score_data.score|default(0) %}
+                    {% set data_source = "score_data" %}
+                {% elif latest_result and latest_result.metadata and latest_result.metadata.checks %}
                     {# Use the accurate check counts from metadata #}
                     {% set actual_passed = latest_result.metadata.checks | map(attribute='passed') | map('default', 0) | sum %}
                     {% set actual_failed = latest_result.metadata.checks | map(attribute='failed') | map('default', 0) | sum %}

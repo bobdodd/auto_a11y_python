@@ -406,7 +406,7 @@ class ResultProcessor:
             metadata={
                 'test_count': len(raw_results),
                 'tests_run': list(raw_results.keys()),
-                'applicable_checks': total_applicable_checks,
+                'applicable_checks': total_passed_checks + total_failed_checks,  # Fix: use passed+failed instead of reported total
                 'passed_checks': total_passed_checks,
                 'failed_checks': total_failed_checks,
                 'not_applicable_tests': not_applicable_tests,

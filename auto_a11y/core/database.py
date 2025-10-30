@@ -745,9 +745,64 @@ class Database:
                 query["test_date"]["$gte"] = start_date
             if end_date:
                 query["test_date"]["$lte"] = end_date
-        
+
         docs = self.test_results.find(query).limit(limit).skip(skip).sort("test_date", -1)
-        return [TestResult.from_dict(doc) for doc in docs]
+        results = []
+        for doc in docs:
+            # Check if this uses the new schema (split items)
+            if doc.get('_has_detailed_items'):
+                # Load items from test_result_items collection
+                test_result_id = doc['_id']
+                items = self._get_test_result_items(test_result_id)
+
+                # Group items by type
+                violations = []
+                warnings = []
+                info = []
+                discovery = []
+                passes = []
+
+                for item in items:
+                    item_data = {
+                        'id': item.get('issue_id'),
+                        'impact': item.get('impact'),
+                        'touchpoint': item.get('touchpoint'),
+                        'xpath': item.get('xpath'),
+                        'element': item.get('element'),
+                        'html': item.get('html'),
+                        'description': item.get('description'),
+                        'metadata': item.get('metadata', {})
+                    }
+
+                    item_type = item.get('item_type')
+                    if item_type == 'violation':
+                        item_data['failure_summary'] = item.get('failure_summary')
+                        item_data['wcag_criteria'] = item.get('wcag_criteria', [])
+                        item_data['help_url'] = item.get('help_url')
+                        violations.append(item_data)
+                    elif item_type == 'warning':
+                        item_data['failure_summary'] = item.get('failure_summary')
+                        item_data['wcag_criteria'] = item.get('wcag_criteria', [])
+                        item_data['help_url'] = item.get('help_url')
+                        warnings.append(item_data)
+                    elif item_type == 'info':
+                        info.append(item_data)
+                    elif item_type == 'discovery':
+                        discovery.append(item_data)
+                    elif item_type == 'pass':
+                        passes.append(item_data)
+
+                # Add arrays back to doc
+                doc['violations'] = violations
+                doc['warnings'] = warnings
+                doc['info'] = info
+                doc['discovery'] = discovery
+                doc['passes'] = passes
+
+            # Old schema already has arrays, or we just loaded them
+            results.append(TestResult.from_dict(doc))
+
+        return results
     
     def delete_test_result(self, result_id: str) -> bool:
         """Delete test result"""

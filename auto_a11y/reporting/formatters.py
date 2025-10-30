@@ -919,6 +919,12 @@ class ExcelFormatter(BaseFormatter):
         ws_summary.title = "Summary"
         self._create_summary_sheet(ws_summary, data, styles)
 
+        # Multi-State Summary Sheet (if applicable)
+        test_result = data.get('test_result', {})
+        if test_result and test_result.get('session_id'):
+            ws_states = wb.create_sheet("Page States")
+            self._create_page_states_sheet(ws_states, data, styles)
+
         # All Issues Sheet (combined view)
         ws_all_issues = wb.create_sheet("All Issues")
         self._create_all_issues_sheet(ws_all_issues, data, styles)
@@ -1298,13 +1304,24 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_all_issues_sheet(self, ws, data, styles):
         """Create a combined sheet with all issues (violations, warnings, info, discovery)"""
-        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL']
+        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Breakpoint (px)', 'Pseudoclass', 'Page State']
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             self._apply_style(cell, styles['header'])
 
         row = 2
+
+        # Get page state description from test result if available
+        page_state_desc = ''
+        test_result = data.get('test_result', {})
+        if test_result:
+            page_state = test_result.get('page_state')
+            if page_state:
+                if isinstance(page_state, dict):
+                    page_state_desc = page_state.get('description', '')
+                elif hasattr(page_state, 'description'):
+                    page_state_desc = page_state.description
 
         # Add all violations
         for v in data.get('violations', []):
@@ -1321,8 +1338,14 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=11, value=v.get('element', ''))
             ws.cell(row=row, column=12, value=v.get('url', ''))
 
+            # Add metadata columns
+            metadata = v.get('metadata', {})
+            ws.cell(row=row, column=13, value=metadata.get('breakpoint', ''))
+            ws.cell(row=row, column=14, value=metadata.get('pseudoclass', ''))
+            ws.cell(row=row, column=15, value=page_state_desc)
+
             # Apply violation coloring
-            for col in range(1, 13):
+            for col in range(1, 16):
                 ws.cell(row=row, column=col).fill = styles['violation']['fill']
 
             row += 1
@@ -1342,8 +1365,14 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=11, value=w.get('element', ''))
             ws.cell(row=row, column=12, value=w.get('url', ''))
 
+            # Add metadata columns
+            metadata = w.get('metadata', {})
+            ws.cell(row=row, column=13, value=metadata.get('breakpoint', ''))
+            ws.cell(row=row, column=14, value=metadata.get('pseudoclass', ''))
+            ws.cell(row=row, column=15, value=page_state_desc)
+
             # Apply warning coloring
-            for col in range(1, 13):
+            for col in range(1, 16):
                 ws.cell(row=row, column=col).fill = styles['warning']['fill']
 
             row += 1
@@ -1363,8 +1392,14 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=11, value=i.get('element', ''))
             ws.cell(row=row, column=12, value=i.get('url', ''))
 
+            # Add metadata columns
+            metadata = i.get('metadata', {})
+            ws.cell(row=row, column=13, value=metadata.get('breakpoint', ''))
+            ws.cell(row=row, column=14, value=metadata.get('pseudoclass', ''))
+            ws.cell(row=row, column=15, value=page_state_desc)
+
             # Apply info coloring
-            for col in range(1, 13):
+            for col in range(1, 16):
                 ws.cell(row=row, column=col).fill = styles['info']['fill']
 
             row += 1
@@ -1384,8 +1419,14 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=11, value=d.get('element', ''))
             ws.cell(row=row, column=12, value=d.get('url', ''))
 
+            # Add metadata columns
+            metadata = d.get('metadata', {})
+            ws.cell(row=row, column=13, value=metadata.get('breakpoint', ''))
+            ws.cell(row=row, column=14, value=metadata.get('pseudoclass', ''))
+            ws.cell(row=row, column=15, value=page_state_desc)
+
             # Apply discovery coloring
-            for col in range(1, 13):
+            for col in range(1, 16):
                 cell = ws.cell(row=row, column=col)
                 if 'discovery' in styles:
                     cell.fill = styles['discovery']['fill']
@@ -2063,12 +2104,59 @@ class ExcelFormatter(BaseFormatter):
         for attr, value in style.items():
             setattr(cell, attr, value)
     
+    def _create_page_states_sheet(self, ws, data, styles):
+        """Create sheet showing multi-state test results summary"""
+        # Title
+        ws.merge_cells('A1:E1')
+        title_cell = ws['A1']
+        title_cell.value = "Page States Tested"
+        title_cell.font = self.Font(bold=True, size=14)
+        title_cell.alignment = self.Alignment(horizontal="center")
+
+        # Headers
+        row = 3
+        headers = ['State', 'Description', 'Errors', 'Warnings', 'Test Date']
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=row, column=col, value=header)
+            self._apply_style(cell, styles['header'])
+
+        row += 1
+
+        # Get test result
+        test_result = data.get('test_result', {})
+        session_id = test_result.get('session_id')
+
+        # Note: This assumes the report_generator will pass session results in data
+        # For now, just show the current state
+        state_sequence = test_result.get('state_sequence', 0)
+        page_state = test_result.get('page_state', {})
+
+        if isinstance(page_state, dict):
+            state_desc = page_state.get('description', f'State {state_sequence}')
+        else:
+            state_desc = f'State {state_sequence}'
+
+        ws.cell(row=row, column=1, value=state_sequence)
+        ws.cell(row=row, column=2, value=state_desc)
+        ws.cell(row=row, column=3, value=len(data.get('violations', [])))
+        ws.cell(row=row, column=4, value=len(data.get('warnings', [])))
+        ws.cell(row=row, column=5, value=test_result.get('test_date', ''))
+
+        # Add note about multi-state testing
+        row += 2
+        ws.cell(row=row, column=1, value="Note:").font = self.Font(bold=True)
+        ws.cell(row=row, column=2, value=f"This page was tested with session ID: {session_id}")
+        row += 1
+        ws.cell(row=row, column=2, value="Multiple states may have been tested. Check the 'Page State' column in the 'All Issues' sheet.")
+
+        self._auto_adjust_columns(ws)
+
     def _auto_adjust_columns(self, ws):
         """Auto-adjust column widths"""
         for column in ws.columns:
             max_length = 0
             column_letter = self.get_column_letter(column[0].column)
-            
+
             for cell in column:
                 try:
                     if cell.value:

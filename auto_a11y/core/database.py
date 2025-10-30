@@ -772,10 +772,55 @@ class Database:
             # Check if this uses the new schema (split items)
             if doc.get('_has_detailed_items'):
                 # Load items from test_result_items collection
-                result = self._load_test_result_with_items(doc)
-            else:
-                # Old schema - data is in the doc
-                result = TestResult.from_dict(doc)
+                test_result_id = doc['_id']
+                items = self._get_test_result_items(test_result_id)
+
+                # Group items by type
+                violations = []
+                warnings = []
+                info = []
+                discovery = []
+                passes = []
+
+                for item in items:
+                    item_data = {
+                        'id': item.get('issue_id'),
+                        'impact': item.get('impact'),
+                        'touchpoint': item.get('touchpoint'),
+                        'xpath': item.get('xpath'),
+                        'element': item.get('element'),
+                        'html': item.get('html'),
+                        'description': item.get('description'),
+                        'metadata': item.get('metadata', {})
+                    }
+
+                    item_type = item.get('item_type')
+                    if item_type == 'violation':
+                        item_data['failure_summary'] = item.get('failure_summary')
+                        item_data['wcag_criteria'] = item.get('wcag_criteria', [])
+                        item_data['help_url'] = item.get('help_url')
+                        violations.append(item_data)
+                    elif item_type == 'warning':
+                        item_data['failure_summary'] = item.get('failure_summary')
+                        item_data['wcag_criteria'] = item.get('wcag_criteria', [])
+                        item_data['help_url'] = item.get('help_url')
+                        warnings.append(item_data)
+                    elif item_type == 'info':
+                        info.append(item_data)
+                    elif item_type == 'discovery':
+                        discovery.append(item_data)
+                    elif item_type == 'pass':
+                        passes.append(item_data)
+
+                # Add arrays back to doc for TestResult.from_dict()
+                doc['violations'] = violations
+                doc['warnings'] = warnings
+                doc['info'] = info
+                doc['discovery'] = discovery
+                doc['passes'] = passes
+
+            # Old schema already has arrays, or we just added them
+            result = TestResult.from_dict(doc)
             results.append(result)
         return results
 

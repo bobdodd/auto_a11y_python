@@ -507,6 +507,12 @@ class Database:
             # Test metadata (includes applicable_checks, passed_checks, etc.)
             'metadata': test_result.metadata if hasattr(test_result, 'metadata') and test_result.metadata else {},
 
+            # Multi-state testing fields
+            'session_id': test_result.session_id if hasattr(test_result, 'session_id') else None,
+            'state_sequence': test_result.state_sequence if hasattr(test_result, 'state_sequence') else 0,
+            'page_state': test_result.page_state if hasattr(test_result, 'page_state') else None,
+            'related_result_ids': test_result.related_result_ids if hasattr(test_result, 'related_result_ids') else [],
+
             # Metadata
             '_has_detailed_items': True,
             '_items_collection': 'test_result_items'

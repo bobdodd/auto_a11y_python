@@ -299,8 +299,7 @@ function addStep(stepData = null) {
                         <label class="form-label">CSS Selector</label>
                         <input type="text" class="form-control font-monospace" name="step_${stepIndex}_selector"
                                id="step_${stepIndex}_selector"
-                               placeholder=".cookie-banner, #element-id, button[data-action='accept']"
-                               value="${stepData && stepData.selector ? stepData.selector : ''}">
+                               placeholder=".cookie-banner, #element-id, button[data-action='accept']">
                         <small class="form-text text-muted selector-help">
                             The element to interact with
                         </small>
@@ -312,8 +311,7 @@ function addStep(stepData = null) {
                         <label class="form-label">Value</label>
                         <input type="text" class="form-control" name="step_${stepIndex}_value"
                                id="step_${stepIndex}_value"
-                               placeholder="Text to type or value to set"
-                               value="${stepData ? stepData.value || '' : ''}">
+                               placeholder="Text to type or value to set">
                     </div>
                 </div>
 
@@ -321,8 +319,8 @@ function addStep(stepData = null) {
                     <div class="col-md-8 mb-3">
                         <label class="form-label">Description (Optional)</label>
                         <input type="text" class="form-control" name="step_${stepIndex}_description"
-                               placeholder="e.g., Wait for cookie banner to appear"
-                               value="${stepData ? stepData.description || '' : ''}">
+                               id="step_${stepIndex}_description"
+                               placeholder="e.g., Wait for cookie banner to appear">
                     </div>
 
                     <div class="col-md-2 mb-3">
@@ -342,6 +340,19 @@ function addStep(stepData = null) {
     `;
 
     document.getElementById('steps-container').insertAdjacentHTML('beforeend', stepHtml);
+
+    // Set field values using DOM manipulation (safer than template literals for user input with special chars)
+    if (stepData) {
+        if (stepData.selector) {
+            document.getElementById(`step_${stepIndex}_selector`).value = stepData.selector;
+        }
+        if (stepData.value) {
+            document.getElementById(`step_${stepIndex}_value`).value = stepData.value;
+        }
+        if (stepData.description) {
+            document.getElementById(`step_${stepIndex}_description`).value = stepData.description;
+        }
+    }
 
     // Update field visibility if step data provided
     if (stepData && stepData.action) {

@@ -516,7 +516,7 @@
                         <i class="bi bi-circle-fill" style="font-size: 8px;"></i>
                         {{ state_desc }}
                         <br>
-                        <small class="text-muted">
+                        <small class="{% if is_active %}text-white{% else %}text-muted{% endif %}">
                             Errors: {{ state_result.violations|length }} | Warnings: {{ state_result.warnings|length }}
                         </small>
                     </button>

@@ -110,12 +110,12 @@ def create_page_script(page_id):
         {'value': ActionType.TYPE.value, 'label': 'Type Text'},
         {'value': ActionType.SELECT.value, 'label': 'Select Dropdown Option'},
         {'value': ActionType.WAIT_FOR_SELECTOR.value, 'label': 'Wait for Element'},
-        {'value': ActionType.WAIT_FOR_TIMEOUT.value, 'label': 'Wait (Fixed Time)'},
+        {'value': ActionType.WAIT.value, 'label': 'Wait (Fixed Time)'},
         {'value': ActionType.WAIT_FOR_NETWORK_IDLE.value, 'label': 'Wait for Network Idle'},
-        {'value': ActionType.SCROLL_TO.value, 'label': 'Scroll to Element'},
+        {'value': ActionType.SCROLL.value, 'label': 'Scroll to Element'},
         {'value': ActionType.HOVER.value, 'label': 'Hover Over Element'},
-        {'value': ActionType.PRESS_KEY.value, 'label': 'Press Key'},
-        {'value': ActionType.EVALUATE.value, 'label': 'Run JavaScript'}
+        {'value': ActionType.WAIT_FOR_NAVIGATION.value, 'label': 'Wait for Navigation'},
+        {'value': ActionType.SCREENSHOT.value, 'label': 'Take Screenshot'}
     ]
 
     trigger_options = [
@@ -216,12 +216,12 @@ def edit_script(script_id):
         {'value': ActionType.TYPE.value, 'label': 'Type Text'},
         {'value': ActionType.SELECT.value, 'label': 'Select Dropdown Option'},
         {'value': ActionType.WAIT_FOR_SELECTOR.value, 'label': 'Wait for Element'},
-        {'value': ActionType.WAIT_FOR_TIMEOUT.value, 'label': 'Wait (Fixed Time)'},
+        {'value': ActionType.WAIT.value, 'label': 'Wait (Fixed Time)'},
         {'value': ActionType.WAIT_FOR_NETWORK_IDLE.value, 'label': 'Wait for Network Idle'},
-        {'value': ActionType.SCROLL_TO.value, 'label': 'Scroll to Element'},
+        {'value': ActionType.SCROLL.value, 'label': 'Scroll to Element'},
         {'value': ActionType.HOVER.value, 'label': 'Hover Over Element'},
-        {'value': ActionType.PRESS_KEY.value, 'label': 'Press Key'},
-        {'value': ActionType.EVALUATE.value, 'label': 'Run JavaScript'}
+        {'value': ActionType.WAIT_FOR_NAVIGATION.value, 'label': 'Wait for Navigation'},
+        {'value': ActionType.SCREENSHOT.value, 'label': 'Take Screenshot'}
     ]
 
     trigger_options = [

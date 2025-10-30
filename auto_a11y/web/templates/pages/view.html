@@ -508,7 +508,7 @@
             <div class="btn-group" role="group" aria-label="Page states">
                 {% for state_result in state_results %}
                     {% set state_desc = state_result.page_state.description if state_result.page_state else ("State " ~ state_result.state_sequence) %}
-                    {% set is_active = loop.first %}
+                    {% set is_active = (loop.index0 == selected_state_index) %}
                     <button type="button"
                             class="btn btn-outline-primary state-selector {% if is_active %}active{% endif %}"
                             data-state-index="{{ loop.index0 }}"
@@ -3299,6 +3299,14 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('beforeunload', function() {
     stopStatusPolling();
 });
+
+// Multi-state result switcher
+function showState(stateIndex) {
+    // Reload page with state parameter
+    const url = new URL(window.location.href);
+    url.searchParams.set('state', stateIndex);
+    window.location.href = url.toString();
+}
 
 // Copy xpath to clipboard
 function copyXpathToClipboard(xpath, button) {

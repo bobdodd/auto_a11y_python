@@ -114,15 +114,31 @@ class AIExecutiveSummaryGenerator:
                         }
                         all_warnings.append(warning_info)
         
+        # Check if any pages were tested with multi-state or responsive breakpoints
+        testing_notes = []
+        for website_data in report_data.get('websites', []):
+            for page_data in website_data.get('pages', []):
+                test_result = page_data.get('test_result')
+                if test_result:
+                    if hasattr(test_result, 'session_id') and test_result.session_id:
+                        testing_notes.append("Some pages tested in multiple states (e.g., with/without cookie banners)")
+                        break
+
+        testing_context = "\n".join(f"- {note}" for note in set(testing_notes)) if testing_notes else ""
+
         prompt = f"""
         Analyze the following accessibility test results and provide a comprehensive executive summary.
-        
+
         PROJECT INFORMATION:
         - Project: {report_data.get('project', {}).get('name', 'Unknown')}
         - Description: {report_data.get('project', {}).get('description', 'No description')}
         - Total Websites: {stats.get('total_websites', 0)}
         - Total Pages Tested: {stats.get('total_pages', 0)}
-        
+        {f'''
+        TESTING CONTEXT:
+        {testing_context}
+        ''' if testing_context else ''}
+
         TEST RESULTS SUMMARY:
         - Total Violations (Errors): {stats.get('total_violations', 0)}
         - Total Warnings: {stats.get('total_warnings', 0)}

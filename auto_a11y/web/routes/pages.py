@@ -253,6 +253,16 @@ def view_page(page_id):
     test_result = current_app.db.get_latest_test_result(page_id)
     test_result = enrich_test_result_with_catalog(test_result)
 
+    # Check if this is multi-state testing (has session_id and related results)
+    state_results = []
+    if test_result and test_result.session_id:
+        # Get all results for this session, ordered by state_sequence
+        all_session_results = current_app.db.get_test_results_by_session(test_result.session_id)
+        # Enrich each one with catalog data
+        state_results = [enrich_test_result_with_catalog(r) for r in all_session_results]
+        # Sort by state_sequence to ensure proper order
+        state_results.sort(key=lambda r: r.state_sequence if hasattr(r, 'state_sequence') else 0)
+
     # Calculate accessibility score
     score_data = None
     compliance_score = None
@@ -300,6 +310,7 @@ def view_page(page_id):
                          website=website,
                          project=project,
                          latest_result=test_result,
+                         state_results=state_results,  # NEW: Multi-state results
                          score_data=score_data,
                          compliance_score=compliance_score,
                          test_history=test_history)

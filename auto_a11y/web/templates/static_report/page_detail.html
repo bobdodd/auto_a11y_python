@@ -603,8 +603,133 @@
 
         <div class="card-body">
 
-            <!-- Errors (Violations) -->
-            {% if violations %}
+            {% if page.states and page.states|length > 1 %}
+                {# Multi-state: Render each state's results separately #}
+                {% for state in page.states %}
+                <div class="state-content {% if loop.index0 == 0 %}active{% endif %}" data-state-index="{{ loop.index0 }}">
+                    <!-- Errors (Violations) for {{ state.description }} -->
+                    {% if state.violations %}
+                    <h6 class="text-danger mb-3">
+                        <i class="bi bi-x-circle"></i> Errors ({{ state.violations|length }})
+                    </h6>
+                    <div class="accordion mb-4" id="violationsAccordion_{{ loop.index0 }}">
+                        {% set viol_counter = namespace(value=0) %}
+                        {% for touchpoint, touchpoint_violations in state.violations|groupby('touchpoint') %}
+                            <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #dc3545;">
+                                <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                            </div>
+
+                            {% for error_code, description_group in touchpoint_violations|groupby('id') %}
+                                {% set group_list = description_group|list %}
+                                {% set viol_counter.value = viol_counter.value + 1 %}
+                                {% set first_violation = group_list[0] %}
+
+                                <div class="accordion-item issue-item"
+                                     data-type="error"
+                                     data-impact="{{ first_violation.impact|lower }}"
+                                     data-touchpoint="{{ first_violation.touchpoint|lower }}"
+                                     data-id="{{ error_code }}"
+                                     data-description="{{ first_violation.metadata.what_generic|lower if first_violation.metadata.what_generic else first_violation.description|lower }}"
+                                     data-xpath="{{ first_violation.xpath|lower if first_violation.xpath else '' }}">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#viol_state{{ loop.index0 }}_group_{{ viol_counter.value }}">
+                                            {% if group_list|length > 1 %}
+                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact|lower] or 'secondary' }} me-2">{{ group_list|length }}</span>
+                                            {% endif %}
+                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact|lower] or 'secondary' }} me-2 impact-badge">
+                                                {{ first_violation.impact|upper }}
+                                            </span>
+                                            <code class="me-2">{{ error_code }}</code>
+                                            {{ first_violation.metadata.what_generic if first_violation.metadata.what_generic else first_violation.description }}
+                                        </button>
+                                    </h2>
+                                    <div id="viol_state{{ loop.index0 }}_group_{{ viol_counter.value }}"
+                                         class="accordion-collapse collapse">
+                                        <div class="accordion-body">
+                                            <p><strong>Description:</strong> {{ first_violation.description }}</p>
+                                            {% if first_violation.html_snippet %}
+                                            <p><strong>HTML:</strong> <code>{{ first_violation.html_snippet }}</code></p>
+                                            {% endif %}
+                                            {% if first_violation.xpath %}
+                                            <p><strong>XPath:</strong> <code>{{ first_violation.xpath }}</code></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Warnings for {{ state.description }} -->
+                    {% if state.warnings %}
+                    <h6 class="text-warning mb-3">
+                        <i class="bi bi-exclamation-triangle"></i> Warnings ({{ state.warnings|length }})
+                    </h6>
+                    <div class="accordion mb-4" id="warningsAccordion_{{ loop.index0 }}">
+                        {% set warn_counter = namespace(value=0) %}
+                        {% for touchpoint, touchpoint_warnings in state.warnings|groupby('touchpoint') %}
+                            <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #ffc107;">
+                                <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                            </div>
+
+                            {% for warning_code, description_group in touchpoint_warnings|groupby('id') %}
+                                {% set group_list = description_group|list %}
+                                {% set warn_counter.value = warn_counter.value + 1 %}
+                                {% set first_warning = group_list[0] %}
+
+                                <div class="accordion-item issue-item"
+                                     data-type="warning"
+                                     data-impact="{{ first_warning.impact|lower }}"
+                                     data-touchpoint="{{ first_warning.touchpoint|lower }}"
+                                     data-id="{{ warning_code }}"
+                                     data-description="{{ first_warning.metadata.what_generic|lower if first_warning.metadata.what_generic else first_warning.description|lower }}"
+                                     data-xpath="{{ first_warning.xpath|lower if first_warning.xpath else '' }}">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#warn_state{{ loop.index0 }}_group_{{ warn_counter.value }}">
+                                            {% if group_list|length > 1 %}
+                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact|lower] or 'secondary' }} me-2">{{ group_list|length }}</span>
+                                            {% endif %}
+                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact|lower] or 'secondary' }} me-2 impact-badge">
+                                                {{ first_warning.impact|upper }}
+                                            </span>
+                                            <code class="me-2">{{ warning_code }}</code>
+                                            {{ first_warning.metadata.what_generic if first_warning.metadata.what_generic else first_warning.description }}
+                                        </button>
+                                    </h2>
+                                    <div id="warn_state{{ loop.index0 }}_group_{{ warn_counter.value }}"
+                                         class="accordion-collapse collapse">
+                                        <div class="accordion-body">
+                                            <p><strong>Description:</strong> {{ first_warning.description }}</p>
+                                            {% if first_warning.html_snippet %}
+                                            <p><strong>HTML:</strong> <code>{{ first_warning.html_snippet }}</code></p>
+                                            {% endif %}
+                                            {% if first_warning.xpath %}
+                                            <p><strong>XPath:</strong> <code>{{ first_warning.xpath }}</code></p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if not state.violations and not state.warnings %}
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle"></i> No issues found in this state!
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                {# Single state: Render normally #}
+                <!-- Errors (Violations) -->
+                {% if violations %}
             <h6 class="text-danger mb-3">
                 <i class="bi bi-x-circle"></i> Errors ({{ violations|length }})
             </h6>
@@ -974,6 +1099,7 @@
                 {% endfor %}
             </div>
             {% endif %}
+            {% endif %} {# End of single-state / multi-state conditional #}
 
         </div>
     </div>

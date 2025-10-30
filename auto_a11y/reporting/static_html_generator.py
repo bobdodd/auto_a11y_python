@@ -269,7 +269,7 @@ class StaticHTMLReportGenerator:
         """Calculate accessibility score for a page using result_processor's scoring logic"""
         from auto_a11y.testing.result_processor import ResultProcessor
 
-        processor = ResultProcessor(None)
+        processor = ResultProcessor()
         score_data = processor.calculate_score(test_result)
 
         return score_data['score']

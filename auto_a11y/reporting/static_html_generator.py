@@ -244,6 +244,9 @@ class StaticHTMLReportGenerator:
             # Calculate score
             score = self._calculate_page_score(latest_result)
 
+            # Calculate compliance score
+            compliance_score = self._calculate_compliance_score(latest_result)
+
             # Check for multi-state testing
             state_results = []
             if hasattr(latest_result, 'session_id') and latest_result.session_id:
@@ -310,6 +313,7 @@ class StaticHTMLReportGenerator:
                 'url': page.url,
                 'test_date': latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') if latest_result.test_date else None,
                 'score': score,
+                'compliance_score': compliance_score,
                 'screenshot_path': page.screenshot_path,
                 'violations': violations,
                 'warnings': warnings,
@@ -334,6 +338,38 @@ class StaticHTMLReportGenerator:
         score_data = processor.calculate_score(test_result)
 
         return score_data['score']
+
+    def _calculate_compliance_score(self, test_result) -> Dict[str, Any]:
+        """Calculate compliance score (percentage of tests with zero violations)"""
+        # Get unique test codes that have violations/warnings
+        failed_test_codes = set()
+
+        # Extract test codes from violations
+        for v in test_result.violations or []:
+            test_code = v.id if hasattr(v, 'id') else ''
+            if test_code:
+                # Extract base code (before underscore if present)
+                base_code = test_code.split('_')[0] if '_' in test_code else test_code
+                failed_test_codes.add(base_code)
+
+        # Extract test codes from warnings
+        for w in test_result.warnings or []:
+            test_code = w.id if hasattr(w, 'id') else ''
+            if test_code:
+                base_code = test_code.split('_')[0] if '_' in test_code else test_code
+                failed_test_codes.add(base_code)
+
+        # Count total tests run from metadata
+        total_tests = test_result.metadata.get('test_count', 0) if hasattr(test_result, 'metadata') and test_result.metadata else 0
+        failed_tests = len(failed_test_codes)
+        passed_tests = max(0, total_tests - failed_tests)
+
+        return {
+            'score': (passed_tests / total_tests * 100) if total_tests > 0 else 0,
+            'passed_tests': passed_tests,
+            'failed_tests': failed_tests,
+            'total_tests': total_tests
+        }
 
     def _generate_summary_stats(self, pages_data: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Generate summary statistics across all pages"""
@@ -634,6 +670,7 @@ class StaticHTMLReportGenerator:
                 warnings_count=page['issues']['warnings'],
                 info_count=page['issues']['info'],
                 discovery_count=page['issues']['discovery'],
+                compliance_score=page.get('compliance_score'),
                 all_touchpoints=sorted(all_touchpoints),
                 navigation=navigation,
                 project_name=project_name,

@@ -375,7 +375,7 @@ function updateStepFields(stepIndex) {
     const selectorInput = document.getElementById(`step_${stepIndex}_selector`);
 
     // Show/hide selector based on action type
-    const noSelectorActions = ['wait_for_timeout', 'wait_for_network_idle'];
+    const noSelectorActions = ['wait', 'wait_for_network_idle'];
     if (noSelectorActions.includes(action)) {
         selectorContainer.style.display = 'none';
         selectorInput.required = false;
@@ -385,7 +385,7 @@ function updateStepFields(stepIndex) {
     }
 
     // Show/hide value field for type and select actions
-    const valueActions = ['type', 'select', 'press_key', 'evaluate'];
+    const valueActions = ['type', 'select'];
     if (valueActions.includes(action)) {
         valueRow.style.display = 'flex';
     } else {

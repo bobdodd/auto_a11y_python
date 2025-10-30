@@ -189,9 +189,7 @@
     </div>
 
     <!-- Accessibility Score (if available) -->
-    {% if page.status.value == 'tested' and latest_result and latest_result.metadata %}
-    {% set score_data = latest_result.metadata %}
-    {% if score_data.applicable_checks and score_data.applicable_checks > 0 %}
+    {% if page.status.value == 'tested' and latest_result and score_data %}
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">Accessibility Score <button class="help-icon" data-help="scoring.accessibility_score" aria-label="Get help about accessibility score">?</button></h5>
@@ -199,11 +197,12 @@
         <div class="card-body">
             <div class="row align-items-center">
                 <div class="col-md-3 text-center">
-                    <div class="display-4 fw-bold 
-                        {% if score_data.passed_checks / score_data.applicable_checks >= 0.9 %}text-success
-                        {% elif score_data.passed_checks / score_data.applicable_checks >= 0.7 %}text-warning
+                    {% set score = score_data.score|default(0) %}
+                    <div class="display-4 fw-bold
+                        {% if score >= 90 %}text-success
+                        {% elif score >= 70 %}text-warning
                         {% else %}text-danger{% endif %}">
-                        {{ ((score_data.passed_checks / score_data.applicable_checks) * 100)|round(1) }}%
+                        {{ score|round(1) }}%
                     </div>
                     <p class="text-muted">Accessibility Score <button class="help-icon" data-help="scoring.score_difference" aria-label="Understanding score differences">?</button></p>
                 </div>
@@ -231,7 +230,7 @@
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-dash-circle text-secondary me-2"></i>
                                 <div>
-                                    <div class="fw-bold">{{ score_data.not_applicable_tests|length|default(0) }}</div>
+                                    <div class="fw-bold">{{ score_data.not_applicable_count|default(0) }}</div>
                                     <small class="text-muted">Not Applicable</small>
                                 </div>
                             </div>
@@ -240,7 +239,7 @@
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-clipboard-check text-info me-2"></i>
                                 <div>
-                                    <div class="fw-bold">{{ score_data.passed_checks|default(0) + score_data.failed_checks|default(0) }}</div>
+                                    <div class="fw-bold">{{ score_data.applicable_checks|default(0) }}</div>
                                     <small class="text-muted">Total Tested</small>
                                 </div>
                             </div>
@@ -258,23 +257,33 @@
                     </div>
                     {% endif %}
                     
+                    {% if score_data.applicable_checks and score_data.applicable_checks > 0 %}
                     <div class="progress mt-3" style="height: 30px;">
                         {% set pass_pct = ((score_data.passed_checks / score_data.applicable_checks) * 100)|round(1) %}
                         {% set fail_pct = ((score_data.failed_checks / score_data.applicable_checks) * 100)|round(1) %}
-                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ pass_pct }}%" 
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ pass_pct }}%"
                              aria-valuenow="{{ pass_pct }}" aria-valuemin="0" aria-valuemax="100">
                             {{ pass_pct }}% Passed
                         </div>
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ fail_pct }}%" 
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ fail_pct }}%"
                              aria-valuenow="{{ fail_pct }}" aria-valuemin="0" aria-valuemax="100">
                             {{ fail_pct }}% Failed
                         </div>
                     </div>
+                    {% endif %}
+
+                    {% if score_data.method %}
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <strong>Scoring Method:</strong> {{ score_data.method|replace('_', ' ')|title }}
+                            {% if score_data.reason %}({{ score_data.reason }}){% endif %}
+                        </small>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-    {% endif %}
     {% endif %}
 
     <!-- Test Results Summary -->

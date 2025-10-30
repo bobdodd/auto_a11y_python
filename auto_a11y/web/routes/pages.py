@@ -245,22 +245,30 @@ def view_page(page_id):
     if not page:
         flash('Page not found', 'error')
         return redirect(url_for('projects.list_projects'))
-    
+
     website = current_app.db.get_website(page.website_id)
     project = current_app.db.get_project(website.project_id)
-    
+
     # Get latest test result and enrich with catalog data
     test_result = current_app.db.get_latest_test_result(page_id)
     test_result = enrich_test_result_with_catalog(test_result)
-    
+
+    # Calculate accessibility score
+    score_data = None
+    if test_result:
+        from auto_a11y.testing.result_processor import ResultProcessor
+        processor = ResultProcessor()
+        score_data = processor.calculate_score(test_result)
+
     # Get test history
     test_history = current_app.db.get_test_results(page_id=page_id, limit=10)
-    
+
     return render_template('pages/view.html',
                          page=page,
                          website=website,
                          project=project,
                          latest_result=test_result,
+                         score_data=score_data,
                          test_history=test_history)
 
 

@@ -11,6 +11,60 @@ from auto_a11y.models import Violation, ImpactLevel, PageTestState
 class StateValidator:
     """Validates page state after script execution"""
 
+    async def _find_element(self, page, selector: str):
+        """
+        Find element by CSS selector or XPath
+
+        Args:
+            page: Pyppeteer page object
+            selector: CSS selector or XPath (XPath must start with / or //)
+
+        Returns:
+            Element handle or None
+        """
+        if selector.startswith('/'):
+            # XPath selector
+            elements = await page.xpath(selector)
+            return elements[0] if elements else None
+        else:
+            # CSS selector
+            return await page.querySelector(selector)
+
+    async def _is_element_visible(self, page, selector: str) -> bool:
+        """
+        Check if element is visible (supports both CSS and XPath)
+
+        Args:
+            page: Pyppeteer page object
+            selector: CSS selector or XPath
+
+        Returns:
+            True if element exists and is visible
+        """
+        if selector.startswith('/'):
+            # XPath selector
+            return await page.evaluate('''(xpath) => {
+                const result = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+                const el = result.singleNodeValue;
+                if (!el) return false;
+                const style = window.getComputedStyle(el);
+                return style.display !== 'none' &&
+                       style.visibility !== 'hidden' &&
+                       style.opacity !== '0' &&
+                       el.offsetParent !== null;
+            }''', selector)
+        else:
+            # CSS selector
+            return await page.evaluate('''(selector) => {
+                const el = document.querySelector(selector);
+                if (!el) return false;
+                const style = window.getComputedStyle(el);
+                return style.display !== 'none' &&
+                       style.visibility !== 'hidden' &&
+                       style.opacity !== '0' &&
+                       el.offsetParent !== null;
+            }''', selector)
+
     async def validate_state(
         self,
         page,
@@ -31,7 +85,7 @@ class StateValidator:
         # Check elements that should be visible
         for selector in expected_state.elements_visible:
             try:
-                element = await page.querySelector(selector)
+                element = await self._find_element(page, selector)
                 if not element:
                     violations.append(Violation(
                         id='ErrExpectedElementNotVisible',
@@ -46,15 +100,7 @@ class StateValidator:
                     ))
                 else:
                     # Check if element is actually visible (not hidden by CSS)
-                    is_visible = await page.evaluate('''(selector) => {
-                        const el = document.querySelector(selector);
-                        if (!el) return false;
-                        const style = window.getComputedStyle(el);
-                        return style.display !== 'none' &&
-                               style.visibility !== 'hidden' &&
-                               style.opacity !== '0' &&
-                               el.offsetParent !== null;
-                    }''', selector)
+                    is_visible = await self._is_element_visible(page, selector)
 
                     if not is_visible:
                         violations.append(Violation(
@@ -84,18 +130,10 @@ class StateValidator:
         # Check elements that should be hidden
         for selector in expected_state.elements_hidden:
             try:
-                element = await page.querySelector(selector)
+                element = await self._find_element(page, selector)
                 if element:
                     # Check if element is actually visible
-                    is_visible = await page.evaluate('''(selector) => {
-                        const el = document.querySelector(selector);
-                        if (!el) return false;
-                        const style = window.getComputedStyle(el);
-                        return style.display !== 'none' &&
-                               style.visibility !== 'hidden' &&
-                               style.opacity !== '0' &&
-                               el.offsetParent !== null;
-                    }''', selector)
+                    is_visible = await self._is_element_visible(page, selector)
 
                     if is_visible:
                         violations.append(Violation(

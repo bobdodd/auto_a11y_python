@@ -294,12 +294,12 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-3">
-                        {% if compliance_score is not none %}
+                        {% if compliance_score %}
                         <div class="display-3 fw-bold
-                            {% if compliance_score >= 90 %}text-success
-                            {% elif compliance_score >= 70 %}text-warning
+                            {% if compliance_score.score >= 90 %}text-success
+                            {% elif compliance_score.score >= 70 %}text-warning
                             {% else %}text-danger{% endif %}">
-                            {{ compliance_score|round(1) }}%
+                            {{ compliance_score.score|round(1) }}%
                         </div>
                         {% else %}
                         <div class="display-3 fw-bold text-muted">N/A</div>
@@ -312,7 +312,7 @@
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-check-circle text-success me-2"></i>
                                 <div>
-                                    <div class="fw-bold">{{ (latest_result.metadata.get('test_count', 0) - (score_data.high_issues|default(0) + score_data.medium_issues|default(0) + score_data.low_issues|default(0)))|default(0) if latest_result and latest_result.metadata else 0 }}</div>
+                                    <div class="fw-bold">{{ compliance_score.passed_tests if compliance_score else 0 }}</div>
                                     <small class="text-muted">Tests Passed</small>
                                 </div>
                             </div>
@@ -321,7 +321,7 @@
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-x-circle text-danger me-2"></i>
                                 <div>
-                                    <div class="fw-bold">{{ (score_data.high_issues|default(0) + score_data.medium_issues|default(0) + score_data.low_issues|default(0)) if score_data else 0 }}</div>
+                                    <div class="fw-bold">{{ compliance_score.failed_tests if compliance_score else 0 }}</div>
                                     <small class="text-muted">Tests Failed</small>
                                 </div>
                             </div>

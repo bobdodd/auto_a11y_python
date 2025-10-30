@@ -262,23 +262,35 @@ def view_page(page_id):
         score_data = processor.calculate_score(test_result)
 
         # Calculate compliance score (tests with zero violations)
-        # Get unique test codes from violations/warnings
-        violation_test_codes = set()
-        warning_test_codes = set()
+        # Get unique test codes that have violations/warnings
+        failed_test_codes = set()
+
+        # Extract test codes from violations (structure: dict with 'id' key)
         for v in test_result.violations:
-            if hasattr(v, 'id'):
-                # Extract test code from violation id (format: testCode_instance)
-                violation_test_codes.add(v.id.split('_')[0] if '_' in v.id else v.id)
+            test_code = v.get('id', '') if isinstance(v, dict) else (v.id if hasattr(v, 'id') else '')
+            if test_code:
+                # Extract base code (before underscore if present)
+                base_code = test_code.split('_')[0] if '_' in test_code else test_code
+                failed_test_codes.add(base_code)
+
+        # Extract test codes from warnings
         for w in test_result.warnings:
-            if hasattr(w, 'id'):
-                warning_test_codes.add(w.id.split('_')[0] if '_' in w.id else w.id)
+            test_code = w.get('id', '') if isinstance(w, dict) else (w.id if hasattr(w, 'id') else '')
+            if test_code:
+                base_code = test_code.split('_')[0] if '_' in test_code else test_code
+                failed_test_codes.add(base_code)
 
         # Count total tests run from metadata
         total_tests = test_result.metadata.get('test_count', 0) if hasattr(test_result, 'metadata') and test_result.metadata else 0
-        failed_tests = len(violation_test_codes.union(warning_test_codes))
+        failed_tests = len(failed_test_codes)
         passed_tests = max(0, total_tests - failed_tests)
 
-        compliance_score = (passed_tests / total_tests * 100) if total_tests > 0 else 0
+        compliance_score = {
+            'score': (passed_tests / total_tests * 100) if total_tests > 0 else 0,
+            'passed_tests': passed_tests,
+            'failed_tests': failed_tests,
+            'total_tests': total_tests
+        }
 
     # Get test history
     test_history = current_app.db.get_test_results(page_id=page_id, limit=10)

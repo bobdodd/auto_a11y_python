@@ -396,7 +396,7 @@
                         <!-- Progress bar visualization -->
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span><strong>Overall Pass Rate</strong></span>
+                                <span><strong>Overall Pass Rate</strong> <button class="help-icon" data-help="scoring.accessibility_score" aria-label="Get help about overall pass rate">?</button></span>
                                 <span class="{% if pass_rate >= 90 %}text-success{% elif pass_rate >= 70 %}text-warning{% else %}text-danger{% endif %}">
                                     <strong>{{ "%.1f"|format(pass_rate) }}%</strong>
                                 </span>

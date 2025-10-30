@@ -58,15 +58,18 @@ def create_page_script(page_id):
             steps = []
             step_count = 0
             while f'step_{step_count}_action' in data:
+                selector = data.get(f'step_{step_count}_selector', '')
+                logger.debug(f"Step {step_count}: selector field value = '{selector}'")
                 step = ScriptStep(
                     step_number=step_count + 1,
                     action_type=ActionType(data[f'step_{step_count}_action']),
-                    selector=data.get(f'step_{step_count}_selector', ''),
+                    selector=selector if selector else None,
                     value=data.get(f'step_{step_count}_value', ''),
                     description=data.get(f'step_{step_count}_description', ''),
                     timeout=int(data.get(f'step_{step_count}_timeout', 5000)),
                     wait_after=int(data.get(f'step_{step_count}_wait_after', 0))
                 )
+                logger.debug(f"Created step: {step.to_dict()}")
                 steps.append(step)
                 step_count += 1
 
@@ -168,15 +171,18 @@ def edit_script(script_id):
             steps = []
             step_count = 0
             while f'step_{step_count}_action' in data:
+                selector = data.get(f'step_{step_count}_selector', '')
+                logger.debug(f"Step {step_count}: selector field value = '{selector}'")
                 step = ScriptStep(
                     step_number=step_count + 1,
                     action_type=ActionType(data[f'step_{step_count}_action']),
-                    selector=data.get(f'step_{step_count}_selector', ''),
+                    selector=selector if selector else None,
                     value=data.get(f'step_{step_count}_value', ''),
                     description=data.get(f'step_{step_count}_description', ''),
                     timeout=int(data.get(f'step_{step_count}_timeout', 5000)),
                     wait_after=int(data.get(f'step_{step_count}_wait_after', 0))
                 )
+                logger.debug(f"Created step: {step.to_dict()}")
                 steps.append(step)
                 step_count += 1
 

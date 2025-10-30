@@ -8,6 +8,12 @@ from .page import Page, PageStatus
 from .test_result import TestResult, Violation, AIFinding, ImpactLevel
 from .document_reference import DocumentReference, DocumentType
 from .discovery_run import DiscoveryRun, DiscoveryStatus
+from .page_setup_script import (
+    PageSetupScript, ScriptStep, ScriptValidation, ExecutionStats,
+    ActionType, ScriptScope, ExecutionTrigger,
+    ScriptExecutionSession, ScriptExecutionRecord, ConditionCheck,
+    PageTestState
+)
 
 __all__ = [
     'Project', 'ProjectStatus',
@@ -15,5 +21,9 @@ __all__ = [
     'Page', 'PageStatus',
     'TestResult', 'Violation', 'AIFinding', 'ImpactLevel',
     'DocumentReference', 'DocumentType',
-    'DiscoveryRun', 'DiscoveryStatus'
+    'DiscoveryRun', 'DiscoveryStatus',
+    'PageSetupScript', 'ScriptStep', 'ScriptValidation', 'ExecutionStats',
+    'ActionType', 'ScriptScope', 'ExecutionTrigger',
+    'ScriptExecutionSession', 'ScriptExecutionRecord', 'ConditionCheck',
+    'PageTestState'
 ]

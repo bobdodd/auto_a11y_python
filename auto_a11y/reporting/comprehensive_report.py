@@ -228,6 +228,25 @@ class ComprehensiveReportGenerator:
     def _generate_header(self, data: Dict[str, Any]) -> str:
         """Generate report header"""
         project = data.get('project', {})
+
+        # Check for multi-state testing
+        test_result = data.get('test_result', {})
+        multi_state_note = ""
+        if test_result and test_result.get('session_id'):
+            page_state = test_result.get('page_state', {})
+            if isinstance(page_state, dict):
+                state_desc = page_state.get('description', '')
+            else:
+                state_desc = ''
+
+            if state_desc:
+                multi_state_note = f"""
+                    <div class="metadata-item">
+                        <span class="label">Page State Tested:</span>
+                        <span class="value">{state_desc}</span>
+                    </div>
+                """
+
         return f"""
         <header class="report-header">
             <div class="header-content">
@@ -249,6 +268,7 @@ class ComprehensiveReportGenerator:
                         <span class="label">WCAG Standard:</span>
                         <span class="value">WCAG 2.1 Level AA</span>
                     </div>
+                    {multi_state_note}
                 </div>
             </div>
         </header>

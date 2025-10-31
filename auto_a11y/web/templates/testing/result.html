@@ -153,6 +153,18 @@
                                                         <dt class="col-sm-5">WCAG:</dt>
                                                         <dd class="col-sm-7">{{ violation.wcag_criteria|join(', ') }}</dd>
                                                         {% endif %}
+
+                                                        {% if violation.metadata %}
+                                                            {% if violation.metadata.breakpoint %}
+                                                            <dt class="col-sm-5">Breakpoint:</dt>
+                                                            <dd class="col-sm-7">{{ violation.metadata.breakpoint }}px</dd>
+                                                            {% endif %}
+
+                                                            {% if violation.metadata.pseudoclass %}
+                                                            <dt class="col-sm-5">Pseudoclass:</dt>
+                                                            <dd class="col-sm-7"><code>{{ violation.metadata.pseudoclass }}</code></dd>
+                                                            {% endif %}
+                                                        {% endif %}
                                                     </dl>
                                                 </div>
                                             </div>

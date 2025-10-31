@@ -587,10 +587,12 @@ class ComprehensiveReportGenerator:
     
     def _generate_detailed_issues_section(self, data: Dict[str, Any], analytics: Dict[str, Any]) -> str:
         """Generate detailed issues tables"""
+        color_contrast_breakdown = self._generate_color_contrast_breakdown(data)
+
         return f"""
         <section class="detailed-issues">
             <h2>Detailed Issue Analysis</h2>
-            
+
             <div class="issues-summary">
                 <h3>Most Frequent Issues</h3>
                 <table class="issues-table">
@@ -609,7 +611,9 @@ class ComprehensiveReportGenerator:
                     </tbody>
                 </table>
             </div>
-            
+
+            {color_contrast_breakdown}
+
             <div class="pages-summary">
                 <h3>Pages with Most Issues</h3>
                 <table class="pages-table">
@@ -1610,4 +1614,114 @@ class ComprehensiveReportGenerator:
                 </span></td>
             </tr>
             """
+        return html
+
+    def _generate_color_contrast_breakdown(self, data: Dict[str, Any]) -> str:
+        """Generate color contrast breakdown by breakpoint and instance"""
+        # Collect all color contrast issues grouped by breakpoint
+        contrast_by_breakpoint = defaultdict(list)
+
+        for website_data in data.get('websites', []):
+            for page_data in website_data.get('pages', []):
+                test_result = page_data.get('test_result')
+                page_url = page_data.get('page', {}).get('url', 'Unknown')
+
+                if test_result:
+                    # Check violations
+                    if hasattr(test_result, 'violations'):
+                        for v in test_result.violations:
+                            if 'contrast' in v.id.lower() or 'color' in v.touchpoint.lower():
+                                breakpoint = v.metadata.get('breakpoint', 'default') if v.metadata else 'default'
+                                pseudoclass = v.metadata.get('pseudoclass', '') if v.metadata else ''
+                                contrast_by_breakpoint[breakpoint].append({
+                                    'page_url': page_url,
+                                    'description': v.description,
+                                    'element': v.element,
+                                    'xpath': v.xpath,
+                                    'html': v.html,
+                                    'pseudoclass': pseudoclass,
+                                    'impact': v.impact.value if hasattr(v.impact, 'value') else str(v.impact)
+                                })
+
+                    # Check warnings
+                    if hasattr(test_result, 'warnings'):
+                        for w in test_result.warnings:
+                            if 'contrast' in w.id.lower() or 'color' in w.touchpoint.lower():
+                                breakpoint = w.metadata.get('breakpoint', 'default') if w.metadata else 'default'
+                                pseudoclass = w.metadata.get('pseudoclass', '') if w.metadata else ''
+                                contrast_by_breakpoint[breakpoint].append({
+                                    'page_url': page_url,
+                                    'description': w.description,
+                                    'element': w.element,
+                                    'xpath': w.xpath,
+                                    'html': w.html,
+                                    'pseudoclass': pseudoclass,
+                                    'impact': w.impact.value if hasattr(w.impact, 'value') else str(w.impact)
+                                })
+
+        # If no color contrast issues, return empty string
+        if not contrast_by_breakpoint:
+            return ""
+
+        # Generate HTML
+        html = """
+            <div class="color-contrast-breakdown" style="margin-top: 2rem;">
+                <h3>Color Contrast Issues by Breakpoint</h3>
+                <p class="text-muted">Color contrast violations organized by responsive breakpoint and instance</p>
+        """
+
+        for breakpoint in sorted(contrast_by_breakpoint.keys()):
+            issues = contrast_by_breakpoint[breakpoint]
+            breakpoint_display = f"{breakpoint}px" if breakpoint != 'default' else 'Default (no breakpoint)'
+
+            html += f"""
+                <details class="breakpoint-section" style="margin-bottom: 1rem; border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 1rem;">
+                    <summary style="cursor: pointer; font-weight: bold; margin-bottom: 0.5rem;">
+                        <span style="color: #0066cc;">{breakpoint_display}</span>
+                        <span class="badge" style="background-color: #dc3545; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.875rem;">{len(issues)} instances</span>
+                    </summary>
+                    <table class="contrast-table" style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background-color: #f8f9fa;">
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Page</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Element</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Pseudoclass</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Description</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            """
+
+            for issue in issues[:20]:  # Limit to 20 instances per breakpoint
+                element_str = issue.get('element', 'unknown')
+                pseudoclass_str = issue.get('pseudoclass', '')
+                pseudoclass_display = f'<code style="background-color: #f8f9fa; padding: 0.125rem 0.25rem; border-radius: 0.125rem;">{pseudoclass_str}</code>' if pseudoclass_str else '-'
+
+                html += f"""
+                            <tr style="border-bottom: 1px solid #dee2e6;">
+                                <td style="padding: 0.75rem; font-size: 0.875rem;">{issue['page_url'][:50]}...</td>
+                                <td style="padding: 0.75rem;"><code style="background-color: #f8f9fa; padding: 0.125rem 0.25rem; border-radius: 0.125rem;">{element_str}</code></td>
+                                <td style="padding: 0.75rem;">{pseudoclass_display}</td>
+                                <td style="padding: 0.75rem; font-size: 0.875rem;">{issue['description'][:80]}...</td>
+                                <td style="padding: 0.75rem;"><span class="impact-badge {issue['impact'].lower()}">{issue['impact'].title()}</span></td>
+                            </tr>
+                """
+
+            if len(issues) > 20:
+                html += f"""
+                            <tr>
+                                <td colspan="5" style="padding: 0.75rem; text-align: center; font-style: italic; color: #6c757d;">
+                                    ... and {len(issues) - 20} more instances
+                                </td>
+                            </tr>
+                """
+
+            html += """
+                        </tbody>
+                    </table>
+                </details>
+            """
+
+        html += "</div>"
         return html

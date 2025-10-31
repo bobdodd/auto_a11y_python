@@ -43,6 +43,7 @@ class Database:
         self.issue_documentation_status: Collection = self.db.issue_documentation_status
         self.page_setup_scripts: Collection = self.db.page_setup_scripts  # Page training scripts
         self.script_execution_sessions: Collection = self.db.script_execution_sessions  # Session tracking
+        self.website_users: Collection = self.db.website_users  # Test users for authenticated testing
 
         # Create indexes
         self._create_indexes()
@@ -115,6 +116,12 @@ class Database:
         self.script_execution_sessions.create_index("session_id", unique=True)
         self.script_execution_sessions.create_index("website_id")
         self.script_execution_sessions.create_index([("website_id", 1), ("started_at", -1)])
+
+        # Website users (test users for authenticated testing)
+        self.website_users.create_index("website_id")
+        self.website_users.create_index([("website_id", 1), ("username", 1)], unique=True)
+        self.website_users.create_index([("website_id", 1), ("enabled", 1)])
+        self.website_users.create_index("roles")
     
     def test_connection(self) -> bool:
         """Test database connection"""
@@ -1683,3 +1690,146 @@ class Database:
             sort=[("started_at", -1)]
         )
         return ScriptExecutionSession.from_dict(doc) if doc else None
+
+    # ==================== Website Users ====================
+
+    def create_website_user(self, user: 'WebsiteUser') -> str:
+        """
+        Create a new website user for authenticated testing
+
+        Args:
+            user: WebsiteUser object
+
+        Returns:
+            User ID as string
+        """
+        from auto_a11y.models import WebsiteUser
+
+        result = self.website_users.insert_one(user.to_dict())
+        user._id = result.inserted_id
+        logger.info(f"Created website user: {user.username} for website {user.website_id}")
+        return str(result.inserted_id)
+
+    def get_website_user(self, user_id: str) -> Optional['WebsiteUser']:
+        """
+        Get a website user by ID
+
+        Args:
+            user_id: User ID
+
+        Returns:
+            WebsiteUser object or None
+        """
+        from auto_a11y.models import WebsiteUser
+
+        doc = self.website_users.find_one({"_id": ObjectId(user_id)})
+        return WebsiteUser.from_dict(doc) if doc else None
+
+    def get_website_users(self, website_id: str, enabled_only: bool = False, role: Optional[str] = None) -> List['WebsiteUser']:
+        """
+        Get all users for a website
+
+        Args:
+            website_id: Website ID
+            enabled_only: If True, only return enabled users
+            role: If specified, only return users with this role
+
+        Returns:
+            List of WebsiteUser objects
+        """
+        from auto_a11y.models import WebsiteUser
+
+        query = {"website_id": website_id}
+        if enabled_only:
+            query["enabled"] = True
+        if role:
+            query["roles"] = role
+
+        docs = self.website_users.find(query).sort("display_name", 1)
+        return [WebsiteUser.from_dict(doc) for doc in docs]
+
+    def get_website_user_by_username(self, website_id: str, username: str) -> Optional['WebsiteUser']:
+        """
+        Get a website user by username
+
+        Args:
+            website_id: Website ID
+            username: Username
+
+        Returns:
+            WebsiteUser object or None
+        """
+        from auto_a11y.models import WebsiteUser
+
+        doc = self.website_users.find_one({
+            "website_id": website_id,
+            "username": username
+        })
+        return WebsiteUser.from_dict(doc) if doc else None
+
+    def update_website_user(self, user: 'WebsiteUser') -> bool:
+        """
+        Update a website user
+
+        Args:
+            user: WebsiteUser object
+
+        Returns:
+            True if updated successfully
+        """
+        if not user._id:
+            logger.error("Cannot update user without _id")
+            return False
+
+        user.update_timestamp()
+
+        # Get dict and remove _id (can't update _id in MongoDB)
+        update_data = user.to_dict()
+        if '_id' in update_data:
+            del update_data['_id']
+
+        result = self.website_users.update_one(
+            {"_id": user._id},
+            {"$set": update_data}
+        )
+
+        if result.modified_count > 0:
+            logger.info(f"Updated website user: {user.username} ({user.id})")
+            return True
+        return False
+
+    def delete_website_user(self, user_id: str) -> bool:
+        """
+        Delete a website user
+
+        Args:
+            user_id: User ID
+
+        Returns:
+            True if deleted successfully
+        """
+        result = self.website_users.delete_one({"_id": ObjectId(user_id)})
+        if result.deleted_count > 0:
+            logger.info(f"Deleted website user: {user_id}")
+            return True
+        return False
+
+    def get_user_roles_for_website(self, website_id: str) -> List[str]:
+        """
+        Get all unique roles used by users in a website
+
+        Args:
+            website_id: Website ID
+
+        Returns:
+            List of unique role names
+        """
+        pipeline = [
+            {"$match": {"website_id": website_id}},
+            {"$unwind": "$roles"},
+            {"$group": {"_id": "$roles"}},
+            {"$sort": {"_id": 1}}
+        ]
+
+        results = self.website_users.aggregate(pipeline)
+        return [doc["_id"] for doc in results]

@@ -117,9 +117,16 @@ async def test_tabindex(page) -> Dict[str, Any]:
                 // Check if element is target of in-page link
                 function isInPageTarget(element) {
                     if (!element.id) return false;
-                    const selector = `a[href="#${element.id}"]`;
-                    const link = document.querySelector(selector);
-                    return !!link;
+                    // Use CSS.escape to safely escape the ID for use in a selector
+                    const escapedId = CSS.escape(element.id);
+                    const selector = `a[href="#${escapedId}"]`;
+                    try {
+                        const link = document.querySelector(selector);
+                        return !!link;
+                    } catch (e) {
+                        // If selector is still invalid, return false
+                        return false;
+                    }
                 }
                 
                 // Check if element is within SVG

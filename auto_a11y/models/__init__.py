@@ -14,6 +14,7 @@ from .page_setup_script import (
     ScriptExecutionSession, ScriptExecutionRecord, ConditionCheck,
     PageTestState
 )
+from .website_user import WebsiteUser, LoginConfig, AuthenticationMethod
 
 __all__ = [
     'Project', 'ProjectStatus',
@@ -25,5 +26,6 @@ __all__ = [
     'PageSetupScript', 'ScriptStep', 'ScriptValidation', 'ExecutionStats',
     'ActionType', 'ScriptScope', 'ExecutionTrigger',
     'ScriptExecutionSession', 'ScriptExecutionRecord', 'ConditionCheck',
-    'PageTestState'
+    'PageTestState',
+    'WebsiteUser', 'LoginConfig', 'AuthenticationMethod'
 ]

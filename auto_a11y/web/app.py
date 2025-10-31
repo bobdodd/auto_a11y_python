@@ -14,7 +14,8 @@ from auto_a11y.web.routes import (
     testing_bp,
     reports_bp,
     api_bp,
-    scripts_bp
+    scripts_bp,
+    website_users_bp
 )
 
 logger = logging.getLogger(__name__)
@@ -66,6 +67,7 @@ def create_app(config):
     app.register_blueprint(reports_bp, url_prefix='/reports')
     app.register_blueprint(api_bp, url_prefix='/api/v1')
     app.register_blueprint(scripts_bp, url_prefix='/scripts')
+    app.register_blueprint(website_users_bp, url_prefix='/users')
 
     # Custom Jinja filters
     @app.template_filter('error_code_only')

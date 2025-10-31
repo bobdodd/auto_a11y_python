@@ -29,6 +29,11 @@ class LoginConfig:
     submit_button_selector: Optional[str] = None  # CSS selector for submit button
     success_indicator_selector: Optional[str] = None  # Selector to verify successful login
 
+    # Logout configuration
+    logout_url: Optional[str] = None  # URL to visit for logout (e.g., /logout)
+    logout_button_selector: Optional[str] = None  # CSS selector for logout button/link
+    logout_success_indicator_selector: Optional[str] = None  # Selector to verify successful logout
+
     # Additional login steps (for multi-step logins)
     additional_steps: List[Dict[str, Any]] = field(default_factory=list)  # PageSetupScript-like steps
 
@@ -44,6 +49,9 @@ class LoginConfig:
             'password_field_selector': self.password_field_selector,
             'submit_button_selector': self.submit_button_selector,
             'success_indicator_selector': self.success_indicator_selector,
+            'logout_url': self.logout_url,
+            'logout_button_selector': self.logout_button_selector,
+            'logout_success_indicator_selector': self.logout_success_indicator_selector,
             'additional_steps': self.additional_steps,
             'session_timeout_minutes': self.session_timeout_minutes
         }
@@ -65,6 +73,9 @@ class LoginConfig:
             password_field_selector=data.get('password_field_selector'),
             submit_button_selector=data.get('submit_button_selector'),
             success_indicator_selector=data.get('success_indicator_selector'),
+            logout_url=data.get('logout_url'),
+            logout_button_selector=data.get('logout_button_selector'),
+            logout_success_indicator_selector=data.get('logout_success_indicator_selector'),
             additional_steps=data.get('additional_steps', []),
             session_timeout_minutes=data.get('session_timeout_minutes', 30)
         )

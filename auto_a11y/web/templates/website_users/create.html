@@ -153,6 +153,36 @@
                             </div>
                         </div>
 
+                        <h6 class="mt-4 mb-3"><i class="bi bi-box-arrow-right"></i> Logout Configuration</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="logout_url" class="form-label">Logout URL</label>
+                                    <input type="text" class="form-control" id="logout_url"
+                                           name="logout_url"
+                                           placeholder="/logout, /auth/logout">
+                                    <div class="form-text">URL to visit for logout (optional if using button)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="logout_button_selector" class="form-label">Logout Button Selector</label>
+                                    <input type="text" class="form-control" id="logout_button_selector"
+                                           name="logout_button_selector"
+                                           placeholder="#logout-btn, .logout-link">
+                                    <div class="form-text">CSS selector for logout button/link (optional)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="logout_success_indicator_selector" class="form-label">Logout Success Indicator Selector</label>
+                            <input type="text" class="form-control" id="logout_success_indicator_selector"
+                                   name="logout_success_indicator_selector"
+                                   placeholder=".login-form, #login-btn">
+                            <div class="form-text">CSS selector that appears after successful logout (e.g., login button visible again)</div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="session_timeout_minutes" class="form-label">Session Timeout (minutes)</label>
                             <input type="number" class="form-control" id="session_timeout_minutes"

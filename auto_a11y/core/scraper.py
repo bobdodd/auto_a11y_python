@@ -116,7 +116,47 @@ class ScrapingEngine:
                     'error': error_msg
                 })
             raise RuntimeError(error_msg)
-        
+
+        # Helper function to perform authentication
+        async def perform_authentication(context_msg=""):
+            """Perform authentication and return authenticated user or None"""
+            if not website_user_id or not login_automation:
+                return None
+
+            try:
+                user = self.db.get_website_user(website_user_id)
+                if not user:
+                    return None
+
+                if not user.enabled:
+                    logger.warning(f"User {user.username} is disabled, skipping authentication{context_msg}")
+                    return None
+
+                logger.info(f"Authenticating as user: {user.username} (roles: {user.role_display}){context_msg}")
+
+                # Get a page from the browser to perform login
+                browser_page = await self.browser_manager.get_page()
+
+                # Perform login
+                login_result = await login_automation.perform_login(
+                    browser_page,
+                    user,
+                    timeout=30000
+                )
+
+                if login_result['success']:
+                    logger.info(f"Successfully authenticated as {user.username} in {login_result['duration_ms']}ms{context_msg}")
+                    return user
+                else:
+                    logger.error(f"Failed to authenticate as {user.username}: {login_result.get('error', 'Unknown error')}{context_msg}")
+                    return None
+            except Exception as e:
+                logger.error(f"Error during authentication{context_msg}: {e}")
+                return None
+
+        # Perform initial authentication if user specified
+        authenticated_user = await perform_authentication(" for initial discovery")
+
         try:
             depth = 0
             max_pages_reached = False
@@ -170,6 +210,9 @@ class ScrapingEngine:
                             await self.browser_manager.start()
                             pages_since_restart = 0
                             logger.info("Browser restarted successfully (periodic restart)")
+
+                            # Re-authenticate after restart
+                            authenticated_user = await perform_authentication(" after periodic browser restart")
                         except Exception as e:
                             logger.error(f"Failed to restart browser (periodic): {e}")
                             max_pages_reached = True
@@ -188,6 +231,9 @@ class ScrapingEngine:
                             await self.browser_manager.ensure_running()
                             logger.info("Browser restarted successfully after connection loss")
                             pages_since_restart = 0
+
+                            # Re-authenticate after restart
+                            authenticated_user = await perform_authentication(" after connection loss restart")
                         except Exception as e:
                             logger.error(f"Failed to restart browser after connection loss: {e}")
                             max_pages_reached = True  # Use this flag to exit both loops

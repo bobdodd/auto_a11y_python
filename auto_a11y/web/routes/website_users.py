@@ -62,6 +62,9 @@ def create_user(website_id):
                 password_field_selector=data.get('password_field_selector', '').strip() or None,
                 submit_button_selector=data.get('submit_button_selector', '').strip() or None,
                 success_indicator_selector=data.get('success_indicator_selector', '').strip() or None,
+                logout_url=data.get('logout_url', '').strip() or None,
+                logout_button_selector=data.get('logout_button_selector', '').strip() or None,
+                logout_success_indicator_selector=data.get('logout_success_indicator_selector', '').strip() or None,
                 session_timeout_minutes=int(data.get('session_timeout_minutes', 30))
             )
 
@@ -140,6 +143,9 @@ def edit_user(user_id):
             user.login_config.password_field_selector = data.get('password_field_selector', '').strip() or None
             user.login_config.submit_button_selector = data.get('submit_button_selector', '').strip() or None
             user.login_config.success_indicator_selector = data.get('success_indicator_selector', '').strip() or None
+            user.login_config.logout_url = data.get('logout_url', '').strip() or None
+            user.login_config.logout_button_selector = data.get('logout_button_selector', '').strip() or None
+            user.login_config.logout_success_indicator_selector = data.get('logout_success_indicator_selector', '').strip() or None
             user.login_config.session_timeout_minutes = int(data.get('session_timeout_minutes', 30))
 
             # Update user fields

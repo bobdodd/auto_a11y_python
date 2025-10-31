@@ -265,6 +265,20 @@ class ScrapingJob:
                             if website_user_id not in all_pages_by_url[url].visible_to_users:
                                 all_pages_by_url[url].visible_to_users.append(website_user_id)
 
+                # Logout before switching to next user (if not the last user)
+                if user and user_index < len(self.website_user_ids) - 1:
+                    try:
+                        logger.info(f"Logging out user {user_label} before switching to next user")
+                        browser_page = await scraper.browser_manager.get_page()
+                        logout_result = await login_automation.perform_logout(browser_page, user, timeout=30000)
+                        if logout_result['success']:
+                            logger.info(f"Successfully logged out {user_label} in {logout_result['duration_ms']}ms")
+                        else:
+                            logger.warning(f"Logout failed for {user_label}: {logout_result.get('error', 'Unknown')}")
+                    except Exception as e:
+                        logger.error(f"Error during logout for {user_label}: {e}")
+                        # Continue anyway - browser will be cleaned up
+
                 # Clean up this scraper before next user
                 await scraper.cleanup()
                 scraper = None

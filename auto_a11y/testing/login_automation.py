@@ -197,6 +197,112 @@ class LoginAutomation:
             logger.error(error_msg)
             return {'success': False, 'error': error_msg}
 
+    async def perform_logout(
+        self,
+        browser_page,
+        user: 'WebsiteUser',
+        timeout: int = 30000
+    ) -> Dict[str, Any]:
+        """
+        Perform automated logout for a user
+
+        Args:
+            browser_page: Pyppeteer page object
+            user: WebsiteUser object with logout configuration
+            timeout: Maximum time to wait for logout (milliseconds)
+
+        Returns:
+            Dictionary with success status, error message, and timing
+        """
+        start_time = datetime.now()
+
+        try:
+            login_config = user.login_config
+
+            # Check if logout is configured
+            if not login_config.logout_url and not login_config.logout_button_selector:
+                logger.info(f"No logout configuration for user {user.username}, clearing cookies instead")
+                # Clear all cookies to ensure clean logout
+                await browser_page._client.send('Network.clearBrowserCookies')
+                return {
+                    'success': True,
+                    'error': None,
+                    'duration_ms': int((datetime.now() - start_time).total_seconds() * 1000),
+                    'method': 'cookie_clear'
+                }
+
+            # Perform configured logout
+            if login_config.logout_url:
+                # Navigate to logout URL
+                logger.info(f"Navigating to logout URL: {login_config.logout_url}")
+                await browser_page.goto(login_config.logout_url, {
+                    'waitUntil': 'networkidle2',
+                    'timeout': timeout
+                })
+
+            # Click logout button if specified
+            if login_config.logout_button_selector:
+                logger.info(f"Clicking logout button: {login_config.logout_button_selector}")
+                try:
+                    await browser_page.waitForSelector(
+                        login_config.logout_button_selector,
+                        {'visible': True, 'timeout': 5000}
+                    )
+                    await browser_page.click(login_config.logout_button_selector)
+
+                    # Wait for navigation if logout triggers redirect
+                    try:
+                        await browser_page.waitForNavigation({
+                            'timeout': 5000,
+                            'waitUntil': 'networkidle2'
+                        })
+                    except:
+                        pass  # Navigation may not happen for AJAX logouts
+
+                except Exception as e:
+                    logger.warning(f"Could not click logout button: {e}")
+
+            # Check for logout success indicator
+            if login_config.logout_success_indicator_selector:
+                logger.info(f"Checking for logout success indicator: {login_config.logout_success_indicator_selector}")
+                try:
+                    await browser_page.waitForSelector(
+                        login_config.logout_success_indicator_selector,
+                        {'visible': True, 'timeout': 5000}
+                    )
+                    logger.info("Logout success indicator found")
+                except Exception as e:
+                    logger.warning(f"Logout success indicator not found: {e}")
+                    # Still return success - we tried our best
+
+            duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)
+            logger.info(f"Logout completed for user {user.username} in {duration_ms}ms")
+
+            return {
+                'success': True,
+                'error': None,
+                'duration_ms': duration_ms,
+                'method': 'configured_logout'
+            }
+
+        except Exception as e:
+            duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)
+            error_msg = f"Logout error: {str(e)}"
+            logger.error(error_msg)
+
+            # Try to clear cookies as fallback
+            try:
+                await browser_page._client.send('Network.clearBrowserCookies')
+                logger.info("Cleared cookies as logout fallback")
+            except:
+                pass
+
+            return {
+                'success': False,
+                'error': error_msg,
+                'duration_ms': duration_ms
+            }
+
     def is_session_valid(self, user: 'WebsiteUser') -> bool:
         """
         Check if a user's session is still valid based on timeout

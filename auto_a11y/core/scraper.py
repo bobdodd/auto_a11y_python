@@ -47,15 +47,20 @@ class ScrapingEngine:
         self,
         website: Website,
         progress_callback: Optional[callable] = None,
-        job: Optional['ScrapingJob'] = None
+        job: Optional['ScrapingJob'] = None,
+        website_user_id: Optional[str] = None,
+        login_automation: Optional['LoginAutomation'] = None
     ) -> List[Page]:
         """
         Discover all pages in a website
-        
+
         Args:
             website: Website to discover
             progress_callback: Optional callback for progress updates
-            
+            job: Optional scraping job for cancellation checks
+            website_user_id: Optional website user ID for authenticated discovery (empty string for guest)
+            login_automation: Optional LoginAutomation instance for performing login
+
         Returns:
             List of discovered pages
         """

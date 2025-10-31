@@ -4,7 +4,7 @@ Database-backed scraping job implementation
 
 import logging
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from auto_a11y.core.job_manager import JobManager, JobType, JobStatus
 from auto_a11y.core.database import Database
 
@@ -23,11 +23,12 @@ class ScrapingJob:
         job_id: str,
         max_pages: Optional[int] = None,
         user_id: Optional[str] = None,
-        session_id: Optional[str] = None
+        session_id: Optional[str] = None,
+        website_user_ids: Optional[List[str]] = None
     ):
         """
         Initialize scraping job
-        
+
         Args:
             job_manager: JobManager instance
             website_id: Website ID
@@ -35,6 +36,7 @@ class ScrapingJob:
             max_pages: Optional override for max pages to discover
             user_id: User who initiated the job
             session_id: Session ID for tracking
+            website_user_ids: Optional list of website user IDs to discover pages for (empty string for guest)
         """
         self.job_manager = job_manager
         self.website_id = website_id
@@ -42,9 +44,10 @@ class ScrapingJob:
         self.max_pages = max_pages
         self.user_id = user_id
         self.session_id = session_id
-        
+        self.website_user_ids = website_user_ids or ['']  # Default to guest only
+
         # Create job in database
-        logger.info(f"Creating job {job_id} in database...")
+        logger.info(f"Creating job {job_id} in database for {len(self.website_user_ids)} users...")
         try:
             self.job_doc = job_manager.create_job(
                 job_id=job_id,
@@ -53,7 +56,9 @@ class ScrapingJob:
                 user_id=user_id,
                 session_id=session_id,
                 metadata={
-                    'max_pages': max_pages
+                    'max_pages': max_pages,
+                    'website_user_ids': self.website_user_ids,
+                    'user_count': len(self.website_user_ids)
                 }
             )
             logger.info(f"Successfully created scraping job {job_id} in database for website {website_id}")
@@ -184,50 +189,100 @@ class ScrapingJob:
     
     async def run(self, database: Database, browser_config: Dict[str, Any]):
         """
-        Run the scraping job
-        
+        Run the scraping job with multi-user support
+
         Args:
             database: Database instance
             browser_config: Browser configuration
         """
         from auto_a11y.core.scraper import ScrapingEngine
-        
-        logger.info(f"ScrapingJob.run started for job {self.job_id}")
-        
+        from auto_a11y.testing.login_automation import LoginAutomation
+
+        logger.info(f"ScrapingJob.run started for job {self.job_id} with {len(self.website_user_ids)} users")
+
+        scraper = None
+        login_automation = LoginAutomation(database)
+        all_pages_by_url = {}  # Track unique pages and which users can see them
+
         try:
             # Mark as running
             self.set_running()
             logger.info(f"Job {self.job_id} marked as running")
-            
+
             # Get website
             website = database.get_website(self.website_id)
             logger.info(f"Got website {self.website_id}: {website.url if website else 'None'}")
             if not website:
                 raise ValueError(f"Website {self.website_id} not found")
-            
-            # Create scraper
-            scraper = ScrapingEngine(database, browser_config)
-            
+
             # Apply max_pages override if provided
             if self.max_pages is not None and self.max_pages > 0:
                 logger.info(f"Applying max_pages override: {self.max_pages} (was {website.scraping_config.max_pages})")
                 website.scraping_config.max_pages = self.max_pages
-            
-            # Run discovery with progress callback
-            pages = await scraper.discover_website(
-                website=website,
-                progress_callback=self._update_progress,
-                job=self  # Pass self so scraper can check cancellation
-            )
-            
+
+            # Discover pages for each user
+            for user_index, website_user_id in enumerate(self.website_user_ids):
+                # Check for cancellation
+                if self.is_cancelled():
+                    logger.info(f"Discovery job {self.job_id} was cancelled")
+                    self.set_cancelled()
+                    return
+
+                # Get user info for logging
+                if website_user_id:
+                    user = database.get_website_user(website_user_id)
+                    user_label = user.name_display if user else f"user {website_user_id}"
+                else:
+                    user = None
+                    user_label = "guest"
+
+                logger.info(f"Starting discovery {user_index + 1}/{len(self.website_user_ids)} as {user_label}")
+
+                # Create fresh scraper for this user
+                scraper = ScrapingEngine(database, browser_config)
+
+                # Run discovery with optional authentication
+                pages = await scraper.discover_website(
+                    website=website,
+                    progress_callback=self._update_progress,
+                    job=self,  # Pass self so scraper can check cancellation
+                    website_user_id=website_user_id,  # Pass user ID for authentication
+                    login_automation=login_automation
+                )
+
+                logger.info(f"Discovery as {user_label} found {len(pages) if pages else 0} pages")
+
+                # Track which pages this user can see
+                if pages:
+                    for page in pages:
+                        url = page.url
+                        if url not in all_pages_by_url:
+                            # First time seeing this page
+                            all_pages_by_url[url] = page
+                            all_pages_by_url[url].visible_to_users = [website_user_id]
+                        else:
+                            # Page already discovered by another user
+                            if website_user_id not in all_pages_by_url[url].visible_to_users:
+                                all_pages_by_url[url].visible_to_users.append(website_user_id)
+
+                # Clean up this scraper before next user
+                await scraper.cleanup()
+                scraper = None
+
+            # Update all pages in database with visibility information
+            logger.info(f"Updating {len(all_pages_by_url)} unique pages with visibility information")
+            for page in all_pages_by_url.values():
+                database.update_page(page)
+
             # Check final cancellation status
             if self.is_cancelled():
                 logger.info(f"Discovery job {self.job_id} was cancelled")
                 self.set_cancelled()
             else:
                 # Mark as completed
-                pages_found = len(pages) if pages else 0
-                self.set_completed(pages_found, pages_found)
+                total_pages_found = len(all_pages_by_url)
+                self.set_completed(total_pages_found, total_pages_found)
+                logger.info(f"Discovery completed: {total_pages_found} unique pages found across {len(self.website_user_ids)} users")
 
         except Exception as e:
             logger.error(f"Discovery job {self.job_id} failed: {e}")

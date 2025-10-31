@@ -31,6 +31,14 @@
             <button class="btn btn-danger me-2" id="cancelDiscoveryBtn" style="display: none;">
                 <i class="bi bi-stop-circle-fill"></i> ABORT DISCOVERY
             </button>
+            {% if website_users %}
+            <select class="form-select form-select-sm d-inline-block me-2" id="batch-test-user-select" style="width: auto;">
+                <option value="">Test as guest (no login)</option>
+                {% for user in website_users %}
+                <option value="{{ user.id }}">{{ user.name_display }} {% if user.roles %}({{ user.roles|join(', ') }}){% endif %}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
             <button class="btn btn-primary me-2" id="testAllBtn">
                 <i class="bi bi-play-fill"></i> Test All Pages
             </button>
@@ -786,13 +794,28 @@ $(document).ready(function() {
     
     $('#testAllBtn').click(function() {
         if (!confirm('Test all pages? This may take some time.')) return;
-        
+
         const btn = $(this);
         const cancelBtn = $('#cancelTestingBtn');
-        
+
+        // Get selected user if any
+        const userSelect = document.getElementById('batch-test-user-select');
+        const websiteUserId = userSelect ? userSelect.value : null;
+
+        // Prepare test data
+        const testData = {};
+        if (websiteUserId) {
+            testData.website_user_id = websiteUserId;
+        }
+
         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Starting...');
-        
-        $.post("{{ url_for('websites.test_all_pages', website_id=website.id) }}", function(data) {
+
+        $.ajax({
+            url: "{{ url_for('websites.test_all_pages', website_id=website.id) }}",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(testData),
+            success: function(data) {
             console.log('Test all response:', data);
             
             if (data.success) {

@@ -306,11 +306,12 @@ class WebsiteManager:
         test_all: bool = False,
         take_screenshot: bool = True,
         run_ai_analysis: Optional[bool] = None,
-        ai_api_key: Optional[str] = None
+        ai_api_key: Optional[str] = None,
+        website_user_id: Optional[str] = None
     ) -> TestingJob:
         """
         Start testing for website pages
-        
+
         Args:
             website_id: Website ID
             page_ids: Specific page IDs to test (if not test_all)
@@ -321,7 +322,8 @@ class WebsiteManager:
             take_screenshot: Whether to take screenshots
             run_ai_analysis: Whether to run AI analysis
             ai_api_key: API key for AI analysis
-            
+            website_user_id: Optional WebsiteUser ID for authenticated testing
+
         Returns:
             Testing job
         """
@@ -344,7 +346,8 @@ class WebsiteManager:
                 page_ids=page_ids,
                 user_id=user_id,
                 session_id=session_id,
-                test_all=test_all
+                test_all=test_all,
+                website_user_id=website_user_id
             )
             logger.info(f"TestingJob created successfully: {job_id}")
         except Exception as e:

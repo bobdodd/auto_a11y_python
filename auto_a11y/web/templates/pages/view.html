@@ -3258,40 +3258,41 @@ function testPage(pageId) {
         contentType: 'application/json',
         data: JSON.stringify(testData),
         success: function(data) {
-        if (data.success) {
-            // Store job ID for potential cancellation
-            window.currentTestJobId = data.job_id;
-            
-            // Hide modal
-            modal.hide();
-            
-            // Update status immediately
-            updateStatusBadge('queued');
-            
-            // Replace Run Test button with Cancel button
-            updateActionButtons('cancel');
-            
-            // Add to global tracking
-            const pageTitle = '{{ page.title or page.url }}';
-            if (typeof trackPageTest !== 'undefined') {
-                trackPageTest(pageId, pageTitle);
-            }
-            
-            // Start polling for status updates
-            startStatusPolling(pageId);
-            
-            // Show progress notification
-            if (window.showNotification) {
-                showNotification('Test started', 'The accessibility test is running. The page will refresh when complete.', 'info');
-            }
-        } else {
-            modal.hide();
-            alert('Test failed: ' + (data.error || 'Unknown error'));
-            
-            // Re-enable button
-            if (testBtn) {
-                testBtn.disabled = false;
-                testBtn.innerHTML = '<i class="bi bi-play"></i> Run Test';
+            if (data.success) {
+                // Store job ID for potential cancellation
+                window.currentTestJobId = data.job_id;
+
+                // Hide modal
+                modal.hide();
+
+                // Update status immediately
+                updateStatusBadge('queued');
+
+                // Replace Run Test button with Cancel button
+                updateActionButtons('cancel');
+
+                // Add to global tracking
+                const pageTitle = '{{ page.title or page.url }}';
+                if (typeof trackPageTest !== 'undefined') {
+                    trackPageTest(pageId, pageTitle);
+                }
+
+                // Start polling for status updates
+                startStatusPolling(pageId);
+
+                // Show progress notification
+                if (window.showNotification) {
+                    showNotification('Test started', 'The accessibility test is running. The page will refresh when complete.', 'info');
+                }
+            } else {
+                modal.hide();
+                alert('Test failed: ' + (data.error || 'Unknown error'));
+
+                // Re-enable button
+                if (testBtn) {
+                    testBtn.disabled = false;
+                    testBtn.innerHTML = '<i class="bi bi-play"></i> Run Test';
+                }
             }
         }
     }).fail(function() {

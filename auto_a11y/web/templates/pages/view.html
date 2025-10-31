@@ -511,7 +511,18 @@
     <div class="card test-results-card" data-filterable="true">
         <div class="card-header">
             <h5 class="mb-0">Latest Test Results</h5>
-            <small class="text-muted">Tested on {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+            <small class="text-muted">
+                Tested on {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
+                {% if latest_result.metadata and latest_result.metadata.get('authenticated_user') %}
+                    | <i class="bi bi-person-fill"></i>
+                    <strong>{{ latest_result.metadata.authenticated_user.display_name }}</strong>
+                    {% if latest_result.metadata.authenticated_user.roles %}
+                        ({{ latest_result.metadata.authenticated_user.roles|join(', ') }})
+                    {% endif %}
+                {% else %}
+                    | <i class="bi bi-person"></i> <strong>Guest</strong> (no login)
+                {% endif %}
+            </small>
         </div>
 
         <!-- Multi-State Selector -->
@@ -2982,6 +2993,7 @@
                     <thead>
                         <tr>
                             <th>Date</th>
+                            <th>User</th>
                             <th>Errors</th>
                             <th>Warnings</th>
                             <th>Info</th>
@@ -2995,6 +3007,16 @@
                         {% for result in test_history %}
                         <tr>
                             <td>{{ result.test_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                {% if result.metadata and result.metadata.get('authenticated_user') %}
+                                    <i class="bi bi-person-fill"></i> {{ result.metadata.authenticated_user.display_name }}
+                                    {% if result.metadata.authenticated_user.roles %}
+                                        <br><small class="text-muted">{{ result.metadata.authenticated_user.roles|join(', ') }}</small>
+                                    {% endif %}
+                                {% else %}
+                                    <i class="bi bi-person"></i> Guest
+                                {% endif %}
+                            </td>
                             <td><span class="badge bg-danger">{{ result.violation_count }}</span></td>
                             <td><span class="badge bg-warning text-dark">{{ result.warning_count }}</span></td>
                             <td><span class="badge bg-info">{{ result.info_count|default(0) }}</span></td>
@@ -3002,7 +3024,7 @@
                             <td><span class="badge bg-success">{{ result.pass_count }}</span></td>
                             <td>{{ "%.2f"|format(result.duration_ms / 1000) }}s</td>
                             <td>
-                                <a href="{{ url_for('testing.view_result', result_id=result.id) }}" 
+                                <a href="{{ url_for('testing.view_result', result_id=result.id) }}"
                                    class="btn btn-sm btn-primary">
                                     <i class="bi bi-eye"></i> View
                                 </a>

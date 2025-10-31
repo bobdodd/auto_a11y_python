@@ -471,7 +471,8 @@ class TestRunner:
         enable_multi_state: bool = True,
         take_screenshot: bool = True,
         run_ai_analysis: bool = False,
-        ai_api_key: Optional[str] = None
+        ai_api_key: Optional[str] = None,
+        website_user_id: Optional[str] = None
     ) -> List[TestResult]:
         """
         Run accessibility tests on a single page across multiple states
@@ -485,13 +486,14 @@ class TestRunner:
             take_screenshot: Whether to capture screenshots
             run_ai_analysis: Whether to run AI analysis
             ai_api_key: API key for AI analysis
+            website_user_id: Optional ID of user to authenticate as
 
         Returns:
             List of test results (one per state)
         """
         if not enable_multi_state:
             # Fall back to single-state testing
-            result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key)
+            result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key, website_user_id)
             return [result]
 
         # Start script session if not already started for this website
@@ -563,6 +565,25 @@ class TestRunner:
 
                 await browser_page.waitForSelector('body', {'timeout': 5000})
 
+                # Perform authentication if user specified
+                authenticated_user = None
+                if website_user_id:
+                    user = self.db.get_website_user(website_user_id)
+                    if user and user.enabled:
+                        logger.info(f"Authenticating as user: {user.username} for multi-state testing")
+                        login_result = await self.login_automation.perform_login(
+                            browser_page,
+                            user,
+                            timeout=30000
+                        )
+
+                        if login_result['success']:
+                            logger.info(f"Successfully authenticated as {user.username}")
+                            authenticated_user = user
+                            self._logged_in_user = user
+                        else:
+                            logger.error(f"Authentication failed: {login_result['error']}")
+
                 # Create a test function that can be called multiple times
                 async def run_single_test(browser_page, page_id):
                     """Run accessibility tests and return TestResult"""
@@ -629,6 +650,17 @@ class TestRunner:
                     test_function=run_single_test,
                     session_id=session_id
                 )
+
+                # Add authenticated user information to all results
+                if authenticated_user:
+                    for result in results:
+                        result.metadata['authenticated_user'] = {
+                            'user_id': authenticated_user.id,
+                            'username': authenticated_user.username,
+                            'display_name': authenticated_user.display_name,
+                            'roles': authenticated_user.roles
+                        }
+                    logger.info(f"Multi-state tests completed as authenticated user: {authenticated_user.username}")
 
                 # Save all results to database
                 for result in results:

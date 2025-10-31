@@ -313,6 +313,9 @@ def view_page(page_id):
     # Get test history
     test_history = current_app.db.get_test_results(page_id=page_id, limit=10)
 
+    # Get available test users for this website
+    website_users = current_app.db.get_website_users(page.website_id, enabled_only=True)
+
     return render_template('pages/view.html',
                          page=page,
                          website=website,
@@ -322,7 +325,8 @@ def view_page(page_id):
                          selected_state_index=selected_state_index,  # NEW: Currently selected state
                          score_data=score_data,
                          compliance_score=compliance_score,
-                         test_history=test_history)
+                         test_history=test_history,
+                         website_users=website_users)
 
 
 @pages_bp.route('/<page_id>/edit', methods=['GET', 'POST'])
@@ -368,6 +372,7 @@ def test_page(page_id):
     # Check if multi-state testing requested
     data = request.get_json() if request.is_json else {}
     enable_multi_state = data.get('enable_multi_state', True)  # Default: enabled
+    website_user_id = data.get('website_user_id')  # Optional authenticated user
 
     # Update page status
     page.status = PageStatus.QUEUED
@@ -410,7 +415,8 @@ def test_page(page_id):
                             enable_multi_state=True,
                             take_screenshot=True,
                             run_ai_analysis=None,  # Let test_runner decide based on project config
-                            ai_api_key=ai_key
+                            ai_api_key=ai_key,
+                            website_user_id=website_user_id
                         )
                         # Return list of results
                         return results
@@ -420,7 +426,8 @@ def test_page(page_id):
                             page,
                             take_screenshot=True,
                             run_ai_analysis=None,
-                            ai_api_key=ai_key
+                            ai_api_key=ai_key,
+                            website_user_id=website_user_id
                         )
                         return [result]  # Wrap in list for consistency
                 finally:

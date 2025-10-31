@@ -81,6 +81,14 @@
                 <i class="bi bi-x-circle"></i> Cancel Test
             </button>
             {% else %}
+            {% if website_users %}
+            <select class="form-select form-select-sm d-inline-block me-2" id="test-user-select" style="width: auto;">
+                <option value="">Test as guest (no login)</option>
+                {% for user in website_users %}
+                <option value="{{ user.id }}">{{ user.name_display }} {% if user.roles %}({{ user.roles|join(', ') }}){% endif %}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
             <button class="btn btn-primary" onclick="testPage('{{ page.id }}')" id="run-test-btn">
                 <i class="bi bi-play"></i> Run Test
             </button>
@@ -3226,15 +3234,30 @@ function testPage(pageId) {
         testBtn.disabled = true;
         testBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Starting Test...';
     }
-    
+
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('testModal'));
     modal.show();
-    
+
     testInProgress = true;
-    
+
+    // Get selected user if any
+    const userSelect = document.getElementById('test-user-select');
+    const websiteUserId = userSelect ? userSelect.value : null;
+
+    // Prepare test data
+    const testData = {};
+    if (websiteUserId) {
+        testData.website_user_id = websiteUserId;
+    }
+
     // Run test
-    $.post(`/pages/${pageId}/test`, function(data) {
+    $.ajax({
+        url: `/pages/${pageId}/test`,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(testData),
+        success: function(data) {
         if (data.success) {
             // Store job ID for potential cancellation
             window.currentTestJobId = data.job_id;

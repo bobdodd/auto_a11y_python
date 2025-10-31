@@ -241,18 +241,20 @@ class WebsiteManager:
         max_pages: Optional[int] = None,
         job_id: Optional[str] = None,
         user_id: Optional[str] = None,
-        session_id: Optional[str] = None
+        session_id: Optional[str] = None,
+        website_user_ids: Optional[List[str]] = None
     ) -> ScrapingJob:
         """
         Start page discovery for website
-        
+
         Args:
             website_id: Website ID
             max_pages: Optional maximum number of pages to discover
             job_id: Optional job ID
             user_id: User initiating discovery
             session_id: Session ID for tracking
-            
+            website_user_ids: Optional list of website user IDs to discover pages for (empty string for guest)
+
         Returns:
             Scraping job
         """
@@ -279,7 +281,8 @@ class WebsiteManager:
                 job_id=job_id,
                 max_pages=max_pages,
                 user_id=user_id,
-                session_id=session_id
+                session_id=session_id,
+                website_user_ids=website_user_ids
             )
             logger.info(f"ScrapingJob created successfully: {job_id}")
         except Exception as e:

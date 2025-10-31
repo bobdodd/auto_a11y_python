@@ -188,13 +188,19 @@ def discover_pages(website_id):
     if not website:
         return jsonify({'error': 'Website not found'}), 404
     
-    # Get max_pages parameter from request
-    max_pages = None
-    if request.is_json:
-        max_pages = request.json.get('max_pages')
-    else:
-        max_pages = request.form.get('max_pages')
-    
+    # Get parameters from request
+    data = request.get_json() if request.is_json else {}
+    max_pages = data.get('max_pages') if request.is_json else request.form.get('max_pages')
+    website_user_ids = data.get('website_user_ids', [])
+
+    # Convert to list if single value provided for backward compatibility
+    if isinstance(website_user_ids, str):
+        website_user_ids = [website_user_ids]
+
+    # Default to guest only if no users specified
+    if not website_user_ids:
+        website_user_ids = ['']  # empty string represents guest/no login
+
     if max_pages:
         try:
             max_pages = int(max_pages)
@@ -256,24 +262,24 @@ def discover_pages(website_id):
 
         # Create website manager
         website_manager = WebsiteManager(current_app.db, browser_config)
-        
-        # Submit discovery task - use a more predictable job ID format
+
+        # Get user info from session if available
+        session_user_id = session.get('user_id') if session else None
+        session_id_value = session.get('session_id') if session else None
+
+        # Submit a single combined discovery task that will scrape with all users
         import uuid
         task_id = f'discovery_{website_id}_{uuid.uuid4().hex[:8]}'
-        logger.info(f"Submitting discovery task with ID: {task_id}")
-        
+        logger.info(f"Submitting discovery task with ID: {task_id} for {len(website_user_ids)} users")
+
         # Create a wrapper that handles the async execution properly
         def discovery_wrapper():
             import asyncio
             import nest_asyncio
             nest_asyncio.apply()
-            
-            logger.info(f"Discovery wrapper starting for website {website_id}, task_id: {task_id}")
-            
-            # Get user info from session if available
-            user_id = session.get('user_id') if session else None
-            session_id = session.get('session_id') if session else None
-            
+
+            logger.info(f"Discovery wrapper starting for website {website_id}, task_id: {task_id}, users: {len(website_user_ids)}")
+
             # Try to get the running loop, or create a new one
             try:
                 loop = asyncio.get_running_loop()
@@ -282,15 +288,16 @@ def discover_pages(website_id):
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
                 logger.info("Created new event loop for discovery")
-            
+
             try:
                 result = loop.run_until_complete(
                     website_manager.discover_pages(
-                        website_id, 
-                        max_pages=max_pages, 
+                        website_id,
+                        max_pages=max_pages,
                         job_id=task_id,
-                        user_id=user_id,
-                        session_id=session_id
+                        user_id=session_user_id,
+                        session_id=session_id_value,
+                        website_user_ids=website_user_ids
                     )
                 )
                 logger.info(f"Discovery wrapper completed, result job_id: {result.job_id if result else 'None'}")
@@ -306,24 +313,35 @@ def discover_pages(website_id):
                         logger.info("Closed discovery event loop")
                 except:
                     pass
-        
+
         submitted_id = task_runner.submit_task(
             func=discovery_wrapper,
             args=(),
             task_id=task_id
         )
-        
+
         logger.info(f"Discovery task submitted successfully with ID: {submitted_id}")
-        
-        message = f'Page discovery started'
+
+        # Build message
+        user_count = len(website_user_ids)
+        if user_count == 1:
+            if website_user_ids[0]:
+                user_info = current_app.db.get_website_user(website_user_ids[0])
+                message = f'Page discovery started as {user_info.name_display if user_info else "user"}'
+            else:
+                message = f'Page discovery started as guest'
+        else:
+            message = f'Page discovery started with {user_count} users'
+
         if max_pages:
             message += f' (limited to {max_pages} pages)'
-        
+
         return jsonify({
             'success': True,
             'message': message,
             'job_id': submitted_id,
             'max_pages': max_pages,
+            'user_count': user_count,
             'status_url': url_for('websites.discovery_status', website_id=website_id, job_id=submitted_id)
         })
         

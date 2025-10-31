@@ -4,7 +4,7 @@ Page model for individual web pages
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
 from bson import ObjectId
 
@@ -44,6 +44,7 @@ class Page:
     is_in_latest_discovery: bool = True  # Is this page in the most recent discovery?
     screenshot_path: Optional[str] = None  # Path to page screenshot
     setup_script_id: Optional[str] = None  # Reference to page_setup_scripts._id
+    visible_to_users: List[str] = field(default_factory=list)  # List of user IDs who can access this page (empty string for guest, user_id for authenticated)
     _id: Optional[ObjectId] = None
     
     @property
@@ -83,7 +84,8 @@ class Page:
             'error_reason': self.error_reason,
             'is_in_latest_discovery': self.is_in_latest_discovery,
             'screenshot_path': self.screenshot_path,
-            'setup_script_id': self.setup_script_id
+            'setup_script_id': self.setup_script_id,
+            'visible_to_users': self.visible_to_users
         }
         if self._id:
             data['_id'] = self._id
@@ -113,5 +115,6 @@ class Page:
             is_in_latest_discovery=data.get('is_in_latest_discovery', True),
             screenshot_path=data.get('screenshot_path'),
             setup_script_id=data.get('setup_script_id'),
+            visible_to_users=data.get('visible_to_users', []),
             _id=data.get('_id')
         )

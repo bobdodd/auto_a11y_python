@@ -32,12 +32,41 @@
                 <i class="bi bi-stop-circle-fill"></i> ABORT DISCOVERY
             </button>
             {% if website_users %}
-            <select class="form-select form-select-sm d-inline-block me-2" id="batch-test-user-select" style="width: auto;">
-                <option value="">Test as guest (no login)</option>
-                {% for user in website_users %}
-                <option value="{{ user.id }}">{{ user.name_display }} {% if user.roles %}({{ user.roles|join(', ') }}){% endif %}</option>
-                {% endfor %}
-            </select>
+            <div class="btn-group me-2" role="group">
+                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="userSelectionBtn">
+                    <i class="bi bi-person-check"></i> Test Users: <span id="userSelectionCount">Guest</span>
+                </button>
+                <ul class="dropdown-menu p-2" style="min-width: 280px;">
+                    <li class="px-2 mb-2">
+                        <strong>Select users to test:</strong>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li class="px-2">
+                        <div class="form-check">
+                            <input class="form-check-input batch-test-user-checkbox" type="checkbox" value="" id="user-guest" checked>
+                            <label class="form-check-label" for="user-guest">
+                                <strong>Guest</strong> (no login)
+                            </label>
+                        </div>
+                    </li>
+                    {% for user in website_users %}
+                    <li class="px-2">
+                        <div class="form-check">
+                            <input class="form-check-input batch-test-user-checkbox" type="checkbox" value="{{ user.id }}" id="user-{{ user.id }}">
+                            <label class="form-check-label" for="user-{{ user.id }}">
+                                <strong>{{ user.name_display }}</strong>
+                                {% if user.roles %}<br><small class="text-muted">{{ user.roles|join(', ') }}</small>{% endif %}
+                            </label>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li class="px-2">
+                        <button class="btn btn-sm btn-link p-0" onclick="selectAllTestUsers()">Select All</button> |
+                        <button class="btn btn-sm btn-link p-0" onclick="clearAllTestUsers()">Clear All</button>
+                    </li>
+                </ul>
+            </div>
             {% endif %}
             <button class="btn btn-primary me-2" id="testAllBtn">
                 <i class="bi bi-play-fill"></i> Test All Pages
@@ -532,6 +561,44 @@ let testingJobId = null;
 let discoveryStatusInterval = null;
 let discoveryJobId = null;
 
+// Multi-user selection functions
+function updateUserSelectionDisplay() {
+    const checkboxes = document.querySelectorAll('.batch-test-user-checkbox:checked');
+    const count = checkboxes.length;
+    const countSpan = document.getElementById('userSelectionCount');
+
+    if (count === 0) {
+        countSpan.textContent = 'None';
+    } else if (count === 1) {
+        const checkbox = checkboxes[0];
+        if (checkbox.value === '') {
+            countSpan.textContent = 'Guest';
+        } else {
+            const label = checkbox.nextElementSibling.querySelector('strong').textContent;
+            countSpan.textContent = label;
+        }
+    } else {
+        countSpan.textContent = `${count} users`;
+    }
+}
+
+function selectAllTestUsers() {
+    document.querySelectorAll('.batch-test-user-checkbox').forEach(cb => cb.checked = true);
+    updateUserSelectionDisplay();
+}
+
+function clearAllTestUsers() {
+    document.querySelectorAll('.batch-test-user-checkbox').forEach(cb => cb.checked = false);
+    updateUserSelectionDisplay();
+}
+
+// Update display when checkboxes change
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.batch-test-user-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', updateUserSelectionDisplay);
+    });
+});
+
 function updatePageStatus(pageId, status) {
     const statusCell = document.querySelector(`td[data-page-id="${pageId}"]`);
     if (!statusCell) return;
@@ -793,20 +860,30 @@ $(document).ready(function() {
     });
     
     $('#testAllBtn').click(function() {
-        if (!confirm('Test all pages? This may take some time.')) return;
+        // Get selected users
+        const selectedUserIds = [];
+        document.querySelectorAll('.batch-test-user-checkbox:checked').forEach(checkbox => {
+            selectedUserIds.push(checkbox.value); // empty string for guest, user ID for authenticated
+        });
+
+        if (selectedUserIds.length === 0) {
+            alert('Please select at least one test user (or Guest) to continue.');
+            return;
+        }
+
+        // Create confirmation message
+        let confirmMsg = `Test all pages with ${selectedUserIds.length} user${selectedUserIds.length > 1 ? 's' : ''}?\n\n`;
+        confirmMsg += `This will run tests for each selected user. This may take some time.`;
+
+        if (!confirm(confirmMsg)) return;
 
         const btn = $(this);
         const cancelBtn = $('#cancelTestingBtn');
 
-        // Get selected user if any
-        const userSelect = document.getElementById('batch-test-user-select');
-        const websiteUserId = userSelect ? userSelect.value : null;
-
-        // Prepare test data
-        const testData = {};
-        if (websiteUserId) {
-            testData.website_user_id = websiteUserId;
-        }
+        // Prepare test data with multiple users
+        const testData = {
+            website_user_ids: selectedUserIds
+        };
 
         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Starting...');
 

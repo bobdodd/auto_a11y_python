@@ -519,9 +519,17 @@ def test_all_pages(website_id):
     if not website:
         return jsonify({'error': 'Website not found'}), 404
 
-    # Extract website_user_id from request
+    # Extract website_user_ids from request (array of user IDs, empty string for guest)
     data = request.get_json() if request.is_json else {}
-    website_user_id = data.get('website_user_id')
+    website_user_ids = data.get('website_user_ids', [])
+
+    # Convert to list if single value provided for backward compatibility
+    if isinstance(website_user_ids, str):
+        website_user_ids = [website_user_ids]
+
+    # Default to guest if no users specified
+    if not website_user_ids:
+        website_user_ids = ['']  # empty string represents guest/no login
 
     pages = current_app.db.get_pages(website_id)
     # Allow testing of all pages, not just untested ones
@@ -551,82 +559,105 @@ def test_all_pages(website_id):
 
         # Create website manager
         website_manager = WebsiteManager(current_app.db, browser_config)
-        
-        # Generate job ID
-        job_id = f'testing_{website_id}_{uuid.uuid4().hex[:8]}'
-        logger.info(f"Submitting testing job with ID: {job_id}")
-        
+
         # Get AI configuration
         ai_key = getattr(current_app.app_config, 'CLAUDE_API_KEY', None)
-        
-        # Create a wrapper that handles the async execution properly
-        def testing_wrapper():
-            import asyncio
-            import nest_asyncio
-            nest_asyncio.apply()
-            
-            logger.info(f"Testing wrapper starting for website {website_id}, job_id: {job_id}")
-            
-            # Get user info from session if available
-            user_id = session.get('user_id') if session else None
-            session_id = session.get('session_id') if session else None
-            
-            # Try to get the running loop, or create a new one
-            try:
-                loop = asyncio.get_running_loop()
-                logger.info("Using existing event loop")
-            except RuntimeError:
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-                logger.info("Created new event loop")
-            
-            try:
-                # Get page IDs for testing
-                page_ids = [p.id for p in testable_pages]
 
-                result = loop.run_until_complete(
-                    website_manager.test_website(
-                        website_id=website_id,
-                        page_ids=page_ids,
-                        job_id=job_id,
-                        user_id=user_id,
-                        session_id=session_id,
-                        test_all=False,  # We're providing specific page_ids
-                        take_screenshot=True,
-                        run_ai_analysis=None,
-                        ai_api_key=ai_key,
-                        website_user_id=website_user_id
-                    )
-                )
-                logger.info(f"Testing wrapper completed, result job_id: {result.job_id if result else 'None'}")
-                return result
-            except Exception as e:
-                logger.error(f"Error in testing wrapper: {e}")
-                raise
-            finally:
-                # Don't close the loop immediately - let it complete tasks
-                # Only close if we created a new loop
+        # Get user info from session if available
+        session_user_id = session.get('user_id') if session else None
+        session_id_value = session.get('session_id') if session else None
+
+        # Submit a separate testing job for each selected user
+        job_ids = []
+        total_tests = len(website_user_ids) * len(testable_pages)
+
+        for website_user_id in website_user_ids:
+            # Generate unique job ID for this user
+            job_id = f'testing_{website_id}_{uuid.uuid4().hex[:8]}'
+            logger.info(f"Submitting testing job with ID: {job_id} for user: {website_user_id or 'guest'}")
+
+            # Create a wrapper that handles the async execution properly
+            def testing_wrapper(current_website_user_id=website_user_id, current_job_id=job_id):
+                import asyncio
+                import nest_asyncio
+                nest_asyncio.apply()
+
+                logger.info(f"Testing wrapper starting for website {website_id}, job_id: {current_job_id}, user: {current_website_user_id or 'guest'}")
+
+                # Try to get the running loop, or create a new one
                 try:
-                    if not loop.is_running():
-                        loop.close()
-                        logger.info("Closed event loop")
-                except:
-                    pass
-        
-        # Submit testing task
-        submitted_id = task_runner.submit_task(
-            func=testing_wrapper,
-            args=(),
-            task_id=job_id
-        )
-        
-        logger.info(f"Testing job submitted successfully with ID: {submitted_id}")
-        
+                    loop = asyncio.get_running_loop()
+                    logger.info("Using existing event loop")
+                except RuntimeError:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    logger.info("Created new event loop")
+
+                try:
+                    # Get page IDs for testing
+                    page_ids = [p.id for p in testable_pages]
+
+                    # Convert empty string to None for guest testing
+                    user_id_to_pass = current_website_user_id if current_website_user_id else None
+
+                    result = loop.run_until_complete(
+                        website_manager.test_website(
+                            website_id=website_id,
+                            page_ids=page_ids,
+                            job_id=current_job_id,
+                            user_id=session_user_id,
+                            session_id=session_id_value,
+                            test_all=False,  # We're providing specific page_ids
+                            take_screenshot=True,
+                            run_ai_analysis=None,
+                            ai_api_key=ai_key,
+                            website_user_id=user_id_to_pass
+                        )
+                    )
+                    logger.info(f"Testing wrapper completed, result job_id: {result.job_id if result else 'None'}")
+                    return result
+                except Exception as e:
+                    logger.error(f"Error in testing wrapper: {e}")
+                    raise
+                finally:
+                    # Don't close the loop immediately - let it complete tasks
+                    # Only close if we created a new loop
+                    try:
+                        if not loop.is_running():
+                            loop.close()
+                            logger.info("Closed event loop")
+                    except:
+                        pass
+
+            # Submit testing task
+            submitted_id = task_runner.submit_task(
+                func=testing_wrapper,
+                args=(),
+                task_id=job_id
+            )
+
+            job_ids.append(submitted_id)
+            logger.info(f"Testing job submitted successfully with ID: {submitted_id} for user: {website_user_id or 'guest'}")
+
+        # Build response message
+        user_count = len(website_user_ids)
+        if user_count == 1:
+            if website_user_ids[0]:
+                user_info = current_app.db.get_website_user(website_user_ids[0])
+                message = f'Testing {len(testable_pages)} pages as {user_info.name_display if user_info else "user"}'
+            else:
+                message = f'Testing {len(testable_pages)} pages as guest'
+        else:
+            message = f'Testing {len(testable_pages)} pages with {user_count} users ({total_tests} total tests)'
+
         return jsonify({
             'success': True,
-            'message': f'Testing {len(testable_pages)} pages',
-            'job_id': submitted_id,
+            'message': message,
+            'job_id': job_ids[0],  # Return first job ID for backward compatibility
+            'job_ids': job_ids,  # Return all job IDs
             'pages_queued': len(testable_pages),
+            'user_count': user_count,
+            'total_tests': total_tests,
             'status_url': url_for('websites.test_status', website_id=website_id)
         })
         

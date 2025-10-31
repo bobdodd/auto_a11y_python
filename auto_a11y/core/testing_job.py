@@ -25,11 +25,12 @@ class TestingJob:
         page_ids: Optional[List[str]] = None,
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
-        test_all: bool = False
+        test_all: bool = False,
+        website_user_id: Optional[str] = None
     ):
         """
         Initialize testing job
-        
+
         Args:
             job_manager: JobManager instance
             website_id: Website ID
@@ -38,6 +39,7 @@ class TestingJob:
             user_id: User who initiated the job
             session_id: Session ID for tracking
             test_all: Whether to test all pages in the website
+            website_user_id: Optional WebsiteUser ID for authenticated testing
         """
         self.job_manager = job_manager
         self.website_id = website_id
@@ -46,6 +48,7 @@ class TestingJob:
         self.user_id = user_id
         self.session_id = session_id
         self.test_all = test_all
+        self.website_user_id = website_user_id
         
         # Create job in database
         logger.info(f"Creating testing job {job_id} in database...")
@@ -59,7 +62,8 @@ class TestingJob:
                 metadata={
                     'page_ids': page_ids,
                     'test_all': test_all,
-                    'total_pages': len(page_ids) if page_ids else 0
+                    'total_pages': len(page_ids) if page_ids else 0,
+                    'website_user_id': website_user_id
                 }
             )
             logger.info(f"Successfully created testing job {job_id} in database for website {website_id}")
@@ -317,7 +321,8 @@ class TestingJob:
                         page=page,
                         take_screenshot=take_screenshot,
                         run_ai_analysis=run_ai_analysis,
-                        ai_api_key=ai_api_key
+                        ai_api_key=ai_api_key,
+                        website_user_id=self.website_user_id
                     )
                     
                     # Update page status based on results

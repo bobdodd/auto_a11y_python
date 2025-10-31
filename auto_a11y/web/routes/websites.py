@@ -107,11 +107,15 @@ def view_website(website_id):
     start_page = max(1, page_num - 2)
     end_page = min(total_pages_pagination, page_num + 2)
 
+    # Get available test users for this website
+    website_users = current_app.db.get_website_users(website_id, enabled_only=True)
+
     return render_template('websites/view.html',
                          website=website,
                          project=project,
                          pages=pages,
                          stats=stats,
+                         website_users=website_users,
                          pagination={
                              'page': page_num,
                              'per_page': per_page,
@@ -510,22 +514,26 @@ def test_all_pages(website_id):
     from auto_a11y.core.website_manager import WebsiteManager
     from auto_a11y.core.task_runner import task_runner
     import uuid
-    
+
     website = current_app.db.get_website(website_id)
     if not website:
         return jsonify({'error': 'Website not found'}), 404
-    
+
+    # Extract website_user_id from request
+    data = request.get_json() if request.is_json else {}
+    website_user_id = data.get('website_user_id')
+
     pages = current_app.db.get_pages(website_id)
     # Allow testing of all pages, not just untested ones
     # Users may want to re-test pages to check for improvements
     testable_pages = [p for p in pages if p.status != PageStatus.TESTING]  # Exclude currently testing pages
-    
+
     if not testable_pages:
         return jsonify({
             'success': False,
             'message': 'No pages available for testing (some may be currently testing)'
         })
-    
+
     try:
         # Get project to access stealth_mode setting
         project = current_app.db.get_project(website.project_id)
@@ -575,7 +583,7 @@ def test_all_pages(website_id):
             try:
                 # Get page IDs for testing
                 page_ids = [p.id for p in testable_pages]
-                
+
                 result = loop.run_until_complete(
                     website_manager.test_website(
                         website_id=website_id,
@@ -586,7 +594,8 @@ def test_all_pages(website_id):
                         test_all=False,  # We're providing specific page_ids
                         take_screenshot=True,
                         run_ai_analysis=None,
-                        ai_api_key=ai_key
+                        ai_api_key=ai_key,
+                        website_user_id=website_user_id
                     )
                 )
                 logger.info(f"Testing wrapper completed, result job_id: {result.job_id if result else 'None'}")

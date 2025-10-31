@@ -165,6 +165,12 @@ class PageSetupScript:
     expect_visible_after: List[str] = field(default_factory=list)   # Selectors that should become visible
     expect_hidden_after: List[str] = field(default_factory=list)    # Selectors that should become hidden
 
+    # NEW: Clean state options (especially useful for website-level scripts)
+    clear_cookies_before: bool = False       # Clear cookies before executing script
+    clear_local_storage_before: bool = False # Clear localStorage and sessionStorage before executing
+    wait_for_selector: bool = False          # Wait for condition_selector to appear
+    wait_timeout: int = 5000                 # Timeout for waiting (milliseconds)
+
     # Existing fields
     enabled: bool = True
     steps: List[ScriptStep] = field(default_factory=list)
@@ -202,6 +208,11 @@ class PageSetupScript:
             'test_after_execution': self.test_after_execution,
             'expect_visible_after': self.expect_visible_after,
             'expect_hidden_after': self.expect_hidden_after,
+            # Clean state options
+            'clear_cookies_before': self.clear_cookies_before,
+            'clear_local_storage_before': self.clear_local_storage_before,
+            'wait_for_selector': self.wait_for_selector,
+            'wait_timeout': self.wait_timeout,
             # Existing fields
             'enabled': self.enabled,
             'steps': [step.to_dict() for step in self.steps],
@@ -238,6 +249,11 @@ class PageSetupScript:
             test_after_execution=data.get('test_after_execution', True),
             expect_visible_after=data.get('expect_visible_after', []),
             expect_hidden_after=data.get('expect_hidden_after', []),
+            # Clean state options (defaults for backward compatibility)
+            clear_cookies_before=data.get('clear_cookies_before', False),
+            clear_local_storage_before=data.get('clear_local_storage_before', False),
+            wait_for_selector=data.get('wait_for_selector', False),
+            wait_timeout=data.get('wait_timeout', 5000),
             # Existing fields
             enabled=data.get('enabled', True),
             steps=[ScriptStep.from_dict(step) for step in data.get('steps', [])],

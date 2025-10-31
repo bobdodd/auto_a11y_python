@@ -231,13 +231,23 @@ function toggleScript(scriptId) {
     fetch(`/scripts/${scriptId}/toggle`, {
         method: 'POST'
     })
-    .then(r => r.json())
-    .then(data => {
+    .then(r => {
+        console.log('Response status:', r.status);
+        console.log('Response headers:', r.headers);
+        return r.text(); // Get as text first to debug
+    })
+    .then(text => {
+        console.log('Response text:', text);
+        const data = JSON.parse(text); // Try to parse
         if (data.success) {
             location.reload();
         } else {
             alert('Error: ' + (data.error || 'Unknown error'));
         }
+    })
+    .catch(err => {
+        console.error('Toggle error:', err);
+        alert('Error toggling script: ' + err.message);
     });
 }
 

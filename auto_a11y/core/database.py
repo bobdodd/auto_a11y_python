@@ -1425,10 +1425,25 @@ class Database:
             return False
 
         script.update_timestamp()
-        result = self.page_setup_scripts.update_one(
-            {"_id": script._id},
-            {"$set": script.to_dict()}
-        )
+
+        # Get dict and remove _id (can't update _id in MongoDB)
+        update_data = script.to_dict()
+        if '_id' in update_data:
+            del update_data['_id']
+
+        logger.debug(f"Updating script {script._id} with data keys: {list(update_data.keys())}")
+
+        try:
+            result = self.page_setup_scripts.update_one(
+                {"_id": script._id},
+                {"$set": update_data}
+            )
+        except Exception as e:
+            logger.error(f"MongoDB update error: {e}")
+            logger.error(f"Script ID: {script._id}, type: {type(script._id)}")
+            import traceback
+            logger.error(traceback.format_exc())
+            raise
 
         if result.modified_count > 0:
             logger.info(f"Updated page setup script: {script.name} ({script.id})")

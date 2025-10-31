@@ -55,24 +55,32 @@
             <li class="breadcrumb-item">
                 <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
             </li>
+            {% if page %}
             <li class="breadcrumb-item">
                 <a href="{{ url_for('pages.view_page', page_id=page.id) }}">{{ page.title or 'Page' }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">Create Script</li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">Create {% if is_website_script %}Website{% else %}Page{% endif %} Script</li>
         </ol>
     </nav>
 
     <div class="row">
         <div class="col-lg-10 col-xl-8">
             <h1 class="h2 mb-4">
-                <i class="bi bi-code-square"></i> Create Page Setup Script
+                <i class="bi bi-code-square"></i> Create {% if is_website_script %}Website-Level{% else %}Page-Level{% endif %} Setup Script
             </h1>
 
             <div class="alert alert-info">
                 <i class="bi bi-info-circle"></i>
-                <strong>What are Page Setup Scripts?</strong><br>
-                Scripts that prepare pages for testing (e.g., dismiss cookie banners, open modals, navigate tabs).
-                With <strong>multi-state testing</strong>, you can test the page both before and after the script runs.
+                {% if is_website_script %}
+                <strong>What are Website-Level Scripts?</strong><br>
+                Scripts that run for <strong>all pages</strong> in this website (e.g., dismiss cookie banners, handle login).
+                Perfect for cookie notices that appear across the entire site!
+                {% else %}
+                <strong>What are Page-Level Scripts?</strong><br>
+                Scripts that prepare a <strong>specific page</strong> for testing (e.g., open modals, navigate tabs).
+                {% endif %}
+                With <strong>multi-state testing</strong>, you can test pages both before and after the script runs.
             </div>
 
             <form method="POST" id="script-form">
@@ -136,6 +144,31 @@
                     </div>
                 </div>
 
+                <!-- Script Scope (only show for website scripts) -->
+                {% if scope_options and scope_options|length > 1 %}
+                <div class="form-section">
+                    <h5><i class="bi bi-diagram-3"></i> Script Scope</h5>
+
+                    <div class="mb-3">
+                        <label for="scope" class="form-label">Script Applies To:</label>
+                        <select class="form-select" id="scope" name="scope" disabled>
+                            {% for option in scope_options %}
+                            <option value="{{ option.value }}" selected>
+                                {{ option.label }} - {{ option.description }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">
+                            {% if is_website_script %}
+                            <i class="bi bi-globe"></i> <strong>Website-Level:</strong> This script will run for all pages in the website
+                            {% else %}
+                            <i class="bi bi-file-text"></i> <strong>Page-Level:</strong> This script only runs on this specific page
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Execution Trigger -->
                 <div class="form-section">
                     <h5><i class="bi bi-play-circle"></i> Execution Trigger</h5>
@@ -144,18 +177,72 @@
                         <label for="trigger" class="form-label">When should this script run?</label>
                         <select class="form-select" id="trigger" name="trigger">
                             {% for option in trigger_options %}
-                            <option value="{{ option.value }}" {% if option.value == 'always' %}selected{% endif %}>
+                            <option value="{{ option.value }}"
+                                    {% if (is_website_script and option.value == 'once_per_session') or (not is_website_script and option.value == 'always') %}selected{% endif %}
+                                    data-description="{{ option.description }}">
                                 {{ option.label }}
                             </option>
                             {% endfor %}
                         </select>
-                        <div class="form-text">
-                            <strong>Always:</strong> Runs every time the page is tested<br>
-                            <strong>Once Per Page:</strong> Runs only once per testing session<br>
-                            <strong>Conditional:</strong> Runs only if a specific element exists (useful for optional popups)
+                        <div class="form-text" id="trigger-help">
+                            Select when this script should execute during testing
+                        </div>
+                    </div>
+
+                    <!-- Conditional selector (shown when trigger is 'conditional') -->
+                    <div class="mb-3" id="conditional-section" style="display: none;">
+                        <label for="condition_selector" class="form-label">Conditional Selector</label>
+                        <input type="text" class="form-control font-monospace" id="condition_selector" name="condition_selector"
+                               placeholder=".cookie-banner, #cookie-notice">
+                        <div class="form-text">Script will only run if this element exists on the page</div>
+
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="wait_for_selector" name="wait_for_selector">
+                            <label class="form-check-label" for="wait_for_selector">
+                                Wait for element to appear
+                            </label>
+                        </div>
+
+                        <div class="mt-2" id="wait-timeout-section" style="display: none;">
+                            <label for="wait_timeout" class="form-label">Wait Timeout (ms)</label>
+                            <input type="number" class="form-control" id="wait_timeout" name="wait_timeout" value="5000" min="0" max="30000">
+                            <div class="form-text">Maximum time to wait for element (milliseconds)</div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Clean State Options (especially useful for website-level scripts) -->
+                {% if is_website_script %}
+                <div class="form-section">
+                    <h5><i class="bi bi-trash"></i> Clean State Options</h5>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        Clear cookies and storage before testing to ensure a clean starting state
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="clear_cookies_before" name="clear_cookies_before">
+                        <label class="form-check-label" for="clear_cookies_before">
+                            <strong>Clear Cookies Before Script</strong>
+                        </label>
+                        <div class="form-text">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Recommended for cookie banner testing - ensures banner appears
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="clear_local_storage_before" name="clear_local_storage_before">
+                        <label class="form-check-label" for="clear_local_storage_before">
+                            <strong>Clear Local Storage Before Script</strong>
+                        </label>
+                        <div class="form-text">
+                            Clear localStorage and sessionStorage before running
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
 
                 <!-- State Validation -->
                 <div class="form-section">
@@ -404,10 +491,48 @@ function updateStepFields(stepIndex) {
     }
 }
 
+// Handle trigger selection changes
+document.getElementById('trigger').addEventListener('change', function() {
+    const conditionalSection = document.getElementById('conditional-section');
+    const triggerHelp = document.getElementById('trigger-help');
+    const selectedOption = this.options[this.selectedIndex];
+    const description = selectedOption.getAttribute('data-description');
+
+    if (description) {
+        triggerHelp.textContent = description;
+    }
+
+    // Show conditional section if trigger is 'conditional'
+    if (this.value === 'conditional') {
+        conditionalSection.style.display = 'block';
+    } else {
+        conditionalSection.style.display = 'none';
+    }
+});
+
+// Handle wait_for_selector checkbox
+document.getElementById('wait_for_selector').addEventListener('change', function() {
+    const waitTimeoutSection = document.getElementById('wait-timeout-section');
+    waitTimeoutSection.style.display = this.checked ? 'block' : 'none';
+});
+
 // Add initial step on page load
 document.addEventListener('DOMContentLoaded', function() {
     // Add first step by default
     addStep();
+
+    // Initialize trigger help text
+    const triggerSelect = document.getElementById('trigger');
+    const selectedOption = triggerSelect.options[triggerSelect.selectedIndex];
+    const description = selectedOption.getAttribute('data-description');
+    if (description) {
+        document.getElementById('trigger-help').textContent = description;
+    }
+
+    // Check if trigger is conditional on load
+    if (triggerSelect.value === 'conditional') {
+        document.getElementById('conditional-section').style.display = 'block';
+    }
 });
 
 // Form validation

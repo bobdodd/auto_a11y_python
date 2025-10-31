@@ -17,6 +17,7 @@ from auto_a11y.testing.result_processor import ResultProcessor
 from auto_a11y.testing.script_executor import ScriptExecutor
 from auto_a11y.testing.script_session_manager import ScriptSessionManager
 from auto_a11y.testing.multi_state_test_runner import MultiStateTestRunner
+from auto_a11y.testing.login_automation import LoginAutomation
 
 logger = logging.getLogger(__name__)
 
@@ -39,25 +40,30 @@ class TestRunner:
         self.script_executor = ScriptExecutor()  # For executing page setup scripts
         self.session_manager = ScriptSessionManager(database)  # For tracking script execution
         self.multi_state_runner = MultiStateTestRunner(self.script_executor)  # For multi-state testing
+        self.login_automation = LoginAutomation(database)  # For authenticated testing
         self.screenshot_dir = Path(browser_config.get('SCREENSHOTS_DIR', 'screenshots'))
         self.screenshot_dir.mkdir(exist_ok=True, parents=True)
         self._current_website_id = None  # Track current website for session management
+        self._logged_in_user = None  # Track currently logged in user
     
     async def test_page(
         self,
         page: Page,
         take_screenshot: bool = True,
         run_ai_analysis: bool = False,
-        ai_api_key: Optional[str] = None
+        ai_api_key: Optional[str] = None,
+        website_user_id: Optional[str] = None
     ) -> TestResult:
         """
         Run accessibility tests on a single page
-        
+
         Args:
             page: Page to test
             take_screenshot: Whether to capture screenshot
             run_ai_analysis: Whether to run AI analysis
-            
+            ai_api_key: API key for AI analysis
+            website_user_id: Optional ID of user to authenticate as before testing
+
         Returns:
             Test result
         """
@@ -112,6 +118,31 @@ class TestRunner:
                 if wait_strategy == 'domcontentloaded':
                     import asyncio
                     await asyncio.sleep(2)  # Wait 2 seconds for JS to initialize
+
+                # Perform authentication if user specified
+                authenticated_user = None
+                if website_user_id:
+                    user = self.db.get_website_user(website_user_id)
+                    if user:
+                        if not user.enabled:
+                            logger.warning(f"User {user.username} is disabled, skipping authentication")
+                        else:
+                            logger.info(f"Authenticating as user: {user.username} (roles: {user.role_display})")
+                            login_result = await self.login_automation.perform_login(
+                                browser_page,
+                                user,
+                                timeout=30000
+                            )
+
+                            if login_result['success']:
+                                logger.info(f"Successfully authenticated as {user.username} in {login_result['duration_ms']}ms")
+                                authenticated_user = user
+                                self._logged_in_user = user
+                            else:
+                                logger.error(f"Authentication failed: {login_result['error']}")
+                                # Continue with testing even if login fails, but record the failure
+                    else:
+                        logger.warning(f"User ID {website_user_id} not found")
 
                 # Start script session if not already started for this website
                 if self._current_website_id != page.website_id:
@@ -373,6 +404,16 @@ class TestRunner:
                     logger.info(f"Adding {len(script_violations)} script violations to test result")
                     test_result.violations.extend(script_violations)
                     test_result.violation_count += len(script_violations)
+
+                # Add authenticated user information to metadata
+                if authenticated_user:
+                    test_result.metadata['authenticated_user'] = {
+                        'user_id': authenticated_user.id,
+                        'username': authenticated_user.username,
+                        'display_name': authenticated_user.display_name,
+                        'roles': authenticated_user.roles
+                    }
+                    logger.info(f"Test completed as authenticated user: {authenticated_user.username}")
 
                 # Save test result to database
                 result_id = self.db.create_test_result(test_result)

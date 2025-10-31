@@ -128,9 +128,9 @@
                                        class="btn btn-outline-secondary" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button type="button" class="btn btn-outline-info"
-                                            onclick="toggleScript('{{ script.id }}')" title="Enable/Disable">
-                                        <i class="bi bi-toggle-on"></i>
+                                    <button type="button" class="btn btn-outline-{% if script.enabled %}success{% else %}secondary{% endif %}"
+                                            onclick="toggleScript('{{ script.id }}')" title="{% if script.enabled %}Disable{% else %}Enable{% endif %}">
+                                        <i class="bi bi-toggle-{% if script.enabled %}on{% else %}off{% endif %}"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger"
                                             onclick="deleteScript('{{ script.id }}')" title="Delete">
@@ -233,24 +233,41 @@
 {% block extra_js %}
 <script>
 function toggleScript(scriptId) {
-    if (!confirm('Toggle this script (enable/disable)?')) return;
+    console.log('=== toggleScript called with scriptId:', scriptId);
 
-    fetch(`/scripts/${scriptId}/toggle`, {
+    if (!confirm('Toggle this script (enable/disable)?')) {
+        console.log('User cancelled toggle');
+        return;
+    }
+
+    const url = `/scripts/${scriptId}/toggle`;
+    console.log('Fetching URL:', url);
+
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         }
     })
-    .then(r => r.json())
-    .then(data => {
+    .then(r => {
+        console.log('Response status:', r.status);
+        console.log('Response content-type:', r.headers.get('content-type'));
+        return r.text(); // Get as text first to debug
+    })
+    .then(text => {
+        console.log('Response text:', text);
+        const data = JSON.parse(text); // Try to parse
+        console.log('Parsed data:', data);
         if (data.success) {
+            console.log('Success! Reloading page...');
             location.reload();
         } else {
             alert('Error: ' + (data.error || 'Unknown error'));
         }
     })
     .catch(err => {
-        alert('Error toggling script: ' + err);
+        console.error('Toggle error:', err);
+        alert('Error toggling script: ' + err.message);
     });
 }
 

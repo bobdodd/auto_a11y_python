@@ -279,11 +279,22 @@ class ComprehensiveReportGenerator:
         stats = data.get('statistics', {})
         total_issues = analytics['total_issues']
         critical_issues = analytics['by_impact'].get('high', 0)
-        
-        # Calculate compliance score (based on violations only, not info/discovery)
-        total_violations = analytics.get('total_violations', 0)
-        total_tests = stats.get('total_passes', 0) + total_violations
-        compliance_score = (stats.get('total_passes', 0) / total_tests * 100) if total_tests > 0 else 0
+
+        # Calculate compliance score (based on violations + warnings, not info/discovery)
+        # Get violations and warnings from stats (report_generator separates them)
+        total_errors = stats.get('total_violations', 0)  # Errors only
+        total_warnings = stats.get('total_warnings', 0)  # Warnings only
+        total_violations = total_errors + total_warnings  # Combined for compliance
+        total_passes = stats.get('total_passes', 0)
+
+        # Compliance = passes / (passes + violations + warnings) * 100
+        total_tests = total_passes + total_violations
+        compliance_score = (total_passes / total_tests * 100) if total_tests > 0 else 0
+
+        # Debug logging and print to help troubleshoot
+        logger.info(f"COMPLIANCE CALCULATION: passes={total_passes}, errors={total_errors}, warnings={total_warnings}, total_violations={total_violations}, total_tests={total_tests}, score={compliance_score:.1f}%")
+        print(f"DEBUG COMPLIANCE: passes={total_passes}, errors={total_errors}, warnings={total_warnings}, total_violations={total_violations}, total_tests={total_tests}, score={compliance_score:.1f}%")
+        print(f"DEBUG STATS DICT: {stats}")
         
         return f"""
         <section class="executive-summary">

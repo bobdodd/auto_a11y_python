@@ -1518,7 +1518,7 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_project_all_issues_sheet(self, ws, data, styles):
         """Create a combined sheet with all issues from all pages across all websites"""
-        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Website']
+        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Website', 'Breakpoint (px)', 'Pseudoclass', 'Page State']
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1538,6 +1538,16 @@ class ExcelFormatter(BaseFormatter):
                 test_result = page_result.get('test_result')
                 if not test_result:
                     continue
+
+                # Get page state description from test result if available
+                page_state_desc = ''
+                if test_result:
+                    page_state = getattr(test_result, 'page_state', None) if hasattr(test_result, 'page_state') else test_result.get('page_state')
+                    if page_state:
+                        if isinstance(page_state, dict):
+                            page_state_desc = page_state.get('description', '')
+                        elif hasattr(page_state, 'description'):
+                            page_state_desc = page_state.description
 
                 # Add violations (from list attributes) - enrich with catalog data
                 violations = getattr(test_result, 'violations', []) if hasattr(test_result, 'violations') else []
@@ -1565,7 +1575,13 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=12, value=page_url)
                     ws.cell(row=row, column=13, value=website_name)
 
-                    for col in range(1, 14):
+                    # Add metadata columns
+                    metadata = v_dict.get('metadata', {})
+                    ws.cell(row=row, column=14, value=metadata.get('breakpoint', ''))
+                    ws.cell(row=row, column=15, value=metadata.get('pseudoclass', ''))
+                    ws.cell(row=row, column=16, value=page_state_desc)
+
+                    for col in range(1, 17):
                         ws.cell(row=row, column=col).fill = styles['violation']['fill']
                     row += 1
 
@@ -1594,7 +1610,13 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=12, value=page_url)
                     ws.cell(row=row, column=13, value=website_name)
 
-                    for col in range(1, 14):
+                    # Add metadata columns
+                    metadata = w_dict.get('metadata', {})
+                    ws.cell(row=row, column=14, value=metadata.get('breakpoint', ''))
+                    ws.cell(row=row, column=15, value=metadata.get('pseudoclass', ''))
+                    ws.cell(row=row, column=16, value=page_state_desc)
+
+                    for col in range(1, 17):
                         ws.cell(row=row, column=col).fill = styles['warning']['fill']
                     row += 1
 
@@ -1623,7 +1645,13 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=12, value=page_url)
                     ws.cell(row=row, column=13, value=website_name)
 
-                    for col in range(1, 14):
+                    # Add metadata columns
+                    metadata = i_dict.get('metadata', {})
+                    ws.cell(row=row, column=14, value=metadata.get('breakpoint', ''))
+                    ws.cell(row=row, column=15, value=metadata.get('pseudoclass', ''))
+                    ws.cell(row=row, column=16, value=page_state_desc)
+
+                    for col in range(1, 17):
                         ws.cell(row=row, column=col).fill = styles['info']['fill']
                     row += 1
 
@@ -1652,7 +1680,13 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=12, value=page_url)
                     ws.cell(row=row, column=13, value=website_name)
 
-                    for col in range(1, 14):
+                    # Add metadata columns
+                    metadata = d_dict.get('metadata', {})
+                    ws.cell(row=row, column=14, value=metadata.get('breakpoint', ''))
+                    ws.cell(row=row, column=15, value=metadata.get('pseudoclass', ''))
+                    ws.cell(row=row, column=16, value=page_state_desc)
+
+                    for col in range(1, 17):
                         ws.cell(row=row, column=col).fill = styles['discovery']['fill']
                     row += 1
 
@@ -1677,8 +1711,11 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=11, value='')
                     ws.cell(row=row, column=12, value=page_url)
                     ws.cell(row=row, column=13, value=website_name)
+                    ws.cell(row=row, column=14, value='')  # AI findings don't have breakpoint
+                    ws.cell(row=row, column=15, value='')  # AI findings don't have pseudoclass
+                    ws.cell(row=row, column=16, value=page_state_desc)
 
-                    for col in range(1, 14):
+                    for col in range(1, 17):
                         ws.cell(row=row, column=col).fill = styles['info']['fill']
                     row += 1
 
@@ -1790,7 +1827,7 @@ class ExcelFormatter(BaseFormatter):
         """Create a deduplicated issues sheet that groups issues by common components"""
         headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected',
                    'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element',
-                   'Common Component(s)', 'Pages with Issue', 'Page Count']
+                   'Common Component(s)', 'Pages with Issue', 'Page Count', 'Breakpoints', 'Pseudoclasses', 'Page States']
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1817,6 +1854,16 @@ class ExcelFormatter(BaseFormatter):
                 if not test_result:
                     continue
 
+                # Get page state description from test result if available
+                page_state_desc = ''
+                if test_result:
+                    page_state = getattr(test_result, 'page_state', None) if hasattr(test_result, 'page_state') else test_result.get('page_state')
+                    if page_state:
+                        if isinstance(page_state, dict):
+                            page_state_desc = page_state.get('description', '')
+                        elif hasattr(page_state, 'description'):
+                            page_state_desc = page_state.description
+
                 # Process all issue types
                 for issue_type, issue_list_attr in [('violation', 'violations'), ('warning', 'warnings'),
                                                       ('info', 'info'), ('discovery', 'discovery')]:
@@ -1833,6 +1880,11 @@ class ExcelFormatter(BaseFormatter):
 
                         rule_id = issue_dict.get('id', '')
                         issue_xpath = issue_dict.get('xpath', '')
+
+                        # Get metadata (breakpoint, pseudoclass)
+                        metadata = issue_dict.get('metadata', {})
+                        breakpoint = metadata.get('breakpoint', '')
+                        pseudoclass = metadata.get('pseudoclass', '')
 
                         # Find which common components contain this issue
                         containing_components = []
@@ -1857,11 +1909,22 @@ class ExcelFormatter(BaseFormatter):
                                 'data': issue_dict,
                                 'component': ', '.join(containing_components) if containing_components else '',
                                 'pages': set(),
-                                'page_xpaths': {}  # page -> xpath mapping
+                                'page_xpaths': {},  # page -> xpath mapping
+                                'breakpoints': set(),  # Track all breakpoints where this issue appears
+                                'pseudoclasses': set(),  # Track all pseudoclasses
+                                'page_states': set()  # Track all page states
                             }
 
                         unique_issues[dedup_key]['pages'].add(page_url)
                         unique_issues[dedup_key]['page_xpaths'][page_url] = issue_xpath
+
+                        # Add metadata to tracking sets
+                        if breakpoint:
+                            unique_issues[dedup_key]['breakpoints'].add(breakpoint)
+                        if pseudoclass:
+                            unique_issues[dedup_key]['pseudoclasses'].add(pseudoclass)
+                        if page_state_desc:
+                            unique_issues[dedup_key]['page_states'].add(page_state_desc)
 
         # Write deduplicated issues to sheet
         for (rule_id, dedup_value), issue_data in sorted(unique_issues.items(),
@@ -1907,8 +1970,19 @@ class ExcelFormatter(BaseFormatter):
 
             ws.cell(row=row, column=14, value=len(issue_data['pages']))
 
+            # Add metadata columns - show all unique values across all instances of this issue
+            breakpoints_list = ', '.join(sorted([str(bp) for bp in issue_data['breakpoints']])) if issue_data['breakpoints'] else ''
+            ws.cell(row=row, column=15, value=breakpoints_list)
+
+            pseudoclasses_list = ', '.join(sorted([str(pc) for pc in issue_data['pseudoclasses']])) if issue_data['pseudoclasses'] else ''
+            ws.cell(row=row, column=16, value=pseudoclasses_list)
+
+            page_states_list = ', '.join(sorted([str(ps) for ps in issue_data['page_states']])) if issue_data['page_states'] else ''
+            ws.cell(row=row, column=17, value=page_states_list)
+            ws.cell(row=row, column=17).alignment = self.Alignment(wrap_text=True, vertical='top')
+
             # Apply fill color
-            for col in range(1, 15):
+            for col in range(1, 18):
                 ws.cell(row=row, column=col).fill = fill_color
 
             row += 1
@@ -1949,32 +2023,46 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_pages_sheet(self, ws, pages, styles):
         """Create pages sheet"""
-        headers = ['Page URL', 'Violations', 'Warnings', 'Passes', 'Last Tested']
-        
+        headers = ['Page URL', 'Violations', 'Warnings', 'Passes', 'Last Tested', 'Page State', 'State Sequence', 'Session ID']
+
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             self._apply_style(cell, styles['header'])
-        
+
         row = 2
         for pr in pages:
             page = pr.get('page', {})
             test = pr.get('test_result', {})
-            
+
             ws.cell(row=row, column=1, value=page.get('url', ''))
-            
-            violations_cell = ws.cell(row=row, column=2, value=test.get('violation_count', 0))
-            if test.get('violation_count', 0) > 0:
+
+            violations_cell = ws.cell(row=row, column=2, value=test.get('violation_count', 0) if isinstance(test, dict) else getattr(test, 'violation_count', 0))
+            if (test.get('violation_count', 0) if isinstance(test, dict) else getattr(test, 'violation_count', 0)) > 0:
                 violations_cell.fill = styles['violation']['fill']
-            
-            warnings_cell = ws.cell(row=row, column=3, value=test.get('warning_count', 0))
-            if test.get('warning_count', 0) > 0:
+
+            warnings_cell = ws.cell(row=row, column=3, value=test.get('warning_count', 0) if isinstance(test, dict) else getattr(test, 'warning_count', 0))
+            if (test.get('warning_count', 0) if isinstance(test, dict) else getattr(test, 'warning_count', 0)) > 0:
                 warnings_cell.fill = styles['warning']['fill']
-            
-            ws.cell(row=row, column=4, value=test.get('pass_count', 0))
-            ws.cell(row=row, column=5, value=str(test.get('test_date', '')))
-            
+
+            ws.cell(row=row, column=4, value=test.get('pass_count', 0) if isinstance(test, dict) else getattr(test, 'pass_count', 0))
+            ws.cell(row=row, column=5, value=str(test.get('test_date', '') if isinstance(test, dict) else getattr(test, 'test_date', '')))
+
+            # Add multi-state information
+            page_state = test.get('page_state') if isinstance(test, dict) else getattr(test, 'page_state', None)
+            if page_state:
+                state_desc = page_state.get('description', '') if isinstance(page_state, dict) else getattr(page_state, 'description', '')
+                ws.cell(row=row, column=6, value=state_desc)
+            else:
+                ws.cell(row=row, column=6, value='')
+
+            state_seq = test.get('state_sequence', '') if isinstance(test, dict) else getattr(test, 'state_sequence', '')
+            ws.cell(row=row, column=7, value=state_seq if state_seq != 0 else '')
+
+            session_id = test.get('session_id', '') if isinstance(test, dict) else getattr(test, 'session_id', '')
+            ws.cell(row=row, column=8, value=session_id or '')
+
             row += 1
-        
+
         self._auto_adjust_columns(ws)
     
     def _create_violation_types_sheet(self, ws, violation_types, styles):
@@ -2164,15 +2252,15 @@ class ExcelFormatter(BaseFormatter):
     def _create_page_states_sheet(self, ws, data, styles):
         """Create sheet showing multi-state test results summary"""
         # Title
-        ws.merge_cells('A1:E1')
+        ws.merge_cells('A1:G1')
         title_cell = ws['A1']
-        title_cell.value = "Page States Tested"
+        title_cell.value = "Page State Information"
         title_cell.font = self.Font(bold=True, size=14)
         title_cell.alignment = self.Alignment(horizontal="center")
 
         # Headers
         row = 3
-        headers = ['State', 'Description', 'Errors', 'Warnings', 'Test Date']
+        headers = ['State Sequence', 'State Description', 'Errors', 'Warnings', 'Info', 'Discovery', 'Test Date']
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=row, column=col, value=header)
             self._apply_style(cell, styles['header'])
@@ -2183,28 +2271,61 @@ class ExcelFormatter(BaseFormatter):
         test_result = data.get('test_result', {})
         session_id = test_result.get('session_id')
 
-        # Note: This assumes the report_generator will pass session results in data
-        # For now, just show the current state
+        # Show the current state
         state_sequence = test_result.get('state_sequence', 0)
         page_state = test_result.get('page_state', {})
 
         if isinstance(page_state, dict):
             state_desc = page_state.get('description', f'State {state_sequence}')
+            scripts_executed = page_state.get('scripts_executed', [])
+            elements_clicked = page_state.get('elements_clicked', [])
         else:
             state_desc = f'State {state_sequence}'
+            scripts_executed = []
+            elements_clicked = []
 
         ws.cell(row=row, column=1, value=state_sequence)
         ws.cell(row=row, column=2, value=state_desc)
         ws.cell(row=row, column=3, value=len(data.get('violations', [])))
         ws.cell(row=row, column=4, value=len(data.get('warnings', [])))
-        ws.cell(row=row, column=5, value=test_result.get('test_date', ''))
+        ws.cell(row=row, column=5, value=len(data.get('info', [])))
+        ws.cell(row=row, column=6, value=len(data.get('discovery', [])))
+        ws.cell(row=row, column=7, value=str(test_result.get('test_date', '')))
+
+        # Add state details section
+        row += 2
+        ws.cell(row=row, column=1, value="State Details:").font = self.Font(bold=True, size=12)
+        row += 1
+
+        if session_id:
+            ws.cell(row=row, column=1, value="Session ID:").font = self.Font(bold=True)
+            ws.cell(row=row, column=2, value=session_id)
+            row += 1
+
+        if scripts_executed:
+            ws.cell(row=row, column=1, value="Scripts Executed:").font = self.Font(bold=True)
+            ws.cell(row=row, column=2, value=', '.join(scripts_executed) if isinstance(scripts_executed, list) else str(scripts_executed))
+            row += 1
+
+        if elements_clicked:
+            ws.cell(row=row, column=1, value="Elements Clicked:").font = self.Font(bold=True)
+            if isinstance(elements_clicked, list) and len(elements_clicked) > 0:
+                click_desc = ', '.join([str(el.get('description', el.get('selector', str(el)))) if isinstance(el, dict) else str(el) for el in elements_clicked])
+                ws.cell(row=row, column=2, value=click_desc)
+            row += 1
 
         # Add note about multi-state testing
-        row += 2
-        ws.cell(row=row, column=1, value="Note:").font = self.Font(bold=True)
-        ws.cell(row=row, column=2, value=f"This page was tested with session ID: {session_id}")
         row += 1
-        ws.cell(row=row, column=2, value="Multiple states may have been tested. Check the 'Page State' column in the 'All Issues' sheet.")
+        ws.cell(row=row, column=1, value="Note:").font = self.Font(bold=True)
+        row += 1
+        ws.cell(row=row, column=1, value="Multi-State Testing:")
+        ws.cell(row=row, column=2, value="This report shows results for a single page state. If multiple states were tested during the same session, each state will have its own test result with a different state_sequence value.")
+        row += 1
+        ws.cell(row=row, column=1, value="Breakpoint Testing:")
+        ws.cell(row=row, column=2, value="Some issues may have been detected at specific breakpoints (viewport widths). Check the 'Breakpoint (px)' column in the 'All Issues' sheet for breakpoint-specific issues.")
+        row += 1
+        ws.cell(row=row, column=1, value="Context Information:")
+        ws.cell(row=row, column=2, value="Check the 'All Issues' sheet for complete context including Page State, Breakpoint, and Pseudoclass information for each issue.")
 
         self._auto_adjust_columns(ws)
 

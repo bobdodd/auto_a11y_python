@@ -2045,11 +2045,18 @@ class ExcelFormatter(BaseFormatter):
                         # Track authenticated user info
                         auth_user = metadata.get('authenticated_user', {})
                         if auth_user:
-                            unique_issues[dedup_key]['test_users'].add(auth_user.get('display_name', ''))
-                            for role in auth_user.get('roles', []):
-                                unique_issues[dedup_key]['user_roles'].add(role)
+                            user_name = auth_user.get('display_name', '')
+                            user_roles = auth_user.get('roles', [])
+
+                            if user_name:
+                                unique_issues[dedup_key]['test_users'].add(user_name)
+
+                            if user_roles:
+                                for role in user_roles:
+                                    unique_issues[dedup_key]['user_roles'].add(role)
                         else:
                             unique_issues[dedup_key]['test_users'].add('Guest')
+                            unique_issues[dedup_key]['user_roles'].add('no login')
 
         # Write deduplicated issues to sheet
         for (rule_id, dedup_value), issue_data in sorted(unique_issues.items(),

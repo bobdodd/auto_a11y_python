@@ -18,12 +18,22 @@ class ImpactLevel(Enum):
 
 @dataclass
 class Violation:
-    """Accessibility violation"""
-    
-    id: str  # Error code
+    """
+    Unified accessibility violation model.
+    Supports both automated test findings and manual audit findings.
+    """
+
+    # Core fields (required for all violations)
+    id: str  # Error code or unique identifier
     impact: ImpactLevel
-    touchpoint: str  # Renamed from category
+    touchpoint: str  # Accessibility category (e.g., "Images", "Forms")
     description: str
+
+    # Source tracking (NEW)
+    source_type: str = "automated"  # "automated", "manual", "hybrid"
+    detection_method: Optional[str] = None  # "axe", "pa11y", "dictaphone", "expert"
+
+    # Automated test fields (may be None for manual findings)
     help_url: Optional[str] = None
     xpath: Optional[str] = None
     element: Optional[str] = None
@@ -31,6 +41,18 @@ class Violation:
     failure_summary: Optional[str] = None
     wcag_criteria: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)  # Additional details
+
+    # Manual audit fields (NEW - from Dictaphone/expert audits)
+    short_title: Optional[str] = None
+    what: Optional[str] = None  # Detailed issue description
+    why: Optional[str] = None  # Why it matters / impact explanation
+    who: Optional[str] = None  # Affected user groups
+    remediation: Optional[str] = None  # How to fix
+
+    # Recording context (NEW - for manual findings)
+    recording_id: Optional[str] = None
+    timecodes: List[Dict[str, str]] = field(default_factory=list)
+    # timecode format: [{"start": "00:00:56.085", "end": "00:01:19.265", "duration": "00:00:23.180"}]
     
     def to_dict(self) -> dict:
         """Convert to dictionary"""
@@ -39,13 +61,22 @@ class Violation:
             'impact': self.impact.value,
             'touchpoint': self.touchpoint,
             'description': self.description,
+            'source_type': self.source_type,
+            'detection_method': self.detection_method,
             'help_url': self.help_url,
             'xpath': self.xpath,
             'element': self.element,
             'html': self.html,
             'failure_summary': self.failure_summary,
             'wcag_criteria': self.wcag_criteria,
-            'metadata': self.metadata
+            'metadata': self.metadata,
+            'short_title': self.short_title,
+            'what': self.what,
+            'why': self.why,
+            'who': self.who,
+            'remediation': self.remediation,
+            'recording_id': self.recording_id,
+            'timecodes': self.timecodes
         }
     
     @classmethod
@@ -58,27 +89,36 @@ class Violation:
             'moderate': 'medium',
             'minor': 'low'
         }
-        
+
         impact_value = data['impact']
         # If it's an old value, map it to the new one
         if impact_value in impact_mapping:
             impact_value = impact_mapping[impact_value]
-        
+
         # Handle both old 'category' and new 'touchpoint' field names
         touchpoint = data.get('touchpoint', data.get('category', ''))
-        
+
         return cls(
             id=data['id'],
             impact=ImpactLevel(impact_value),
             touchpoint=touchpoint,
             description=data['description'],
+            source_type=data.get('source_type', 'automated'),
+            detection_method=data.get('detection_method'),
             help_url=data.get('help_url'),
             xpath=data.get('xpath'),
             element=data.get('element'),
             html=data.get('html'),
             failure_summary=data.get('failure_summary'),
             wcag_criteria=data.get('wcag_criteria', []),
-            metadata=data.get('metadata', {})
+            metadata=data.get('metadata', {}),
+            short_title=data.get('short_title'),
+            what=data.get('what'),
+            why=data.get('why'),
+            who=data.get('who'),
+            remediation=data.get('remediation'),
+            recording_id=data.get('recording_id'),
+            timecodes=data.get('timecodes', [])
         )
 
 

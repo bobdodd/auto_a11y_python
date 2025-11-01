@@ -20,7 +20,7 @@ class ProjectStatus(Enum):
 @dataclass
 class Project:
     """Project model"""
-    
+
     name: str
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.ACTIVE
@@ -28,6 +28,7 @@ class Project:
     updated_at: datetime = field(default_factory=datetime.now)
     config: Dict[str, Any] = field(default_factory=dict)
     website_ids: List[str] = field(default_factory=list)
+    recording_ids: List[str] = field(default_factory=list)  # NEW: Link to manual audit recordings
     _id: Optional[ObjectId] = None
     
     @property
@@ -44,7 +45,8 @@ class Project:
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'config': self.config,
-            'website_ids': self.website_ids
+            'website_ids': self.website_ids,
+            'recording_ids': self.recording_ids
         }
         if self._id:
             data['_id'] = self._id
@@ -61,6 +63,7 @@ class Project:
             updated_at=data.get('updated_at', datetime.now()),
             config=data.get('config', {}),
             website_ids=data.get('website_ids', []),
+            recording_ids=data.get('recording_ids', []),
             _id=data.get('_id')
         )
     

@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 from datetime import datetime
 
-from auto_a11y.models import Recording, RecordingIssue, AuditType
+from auto_a11y.models import Recording, RecordingIssue, RecordingType
 from auto_a11y.importers import DictaphoneImporter
 
 logger = logging.getLogger(__name__)
@@ -24,19 +24,19 @@ def list_recordings():
     """List all recordings"""
     try:
         project_id = request.args.get('project_id')
-        audit_type = request.args.get('audit_type')
+        recording_type = request.args.get('recording_type')
 
-        # Convert audit_type string to enum if provided
-        audit_type_enum = None
-        if audit_type:
+        # Convert recording_type string to enum if provided
+        recording_type_enum = None
+        if recording_type:
             try:
-                audit_type_enum = AuditType(audit_type)
+                recording_type_enum = RecordingType(recording_type)
             except ValueError:
                 pass
 
         recordings = current_app.db.get_recordings(
             project_id=project_id,
-            audit_type=audit_type_enum
+            recording_type=recording_type_enum
         )
 
         # Get projects for filter dropdown
@@ -47,7 +47,7 @@ def list_recordings():
             recordings=recordings,
             projects=projects,
             selected_project_id=project_id,
-            selected_audit_type=audit_type
+            selected_recording_type=recording_type
         )
     except Exception as e:
         logger.error(f"Error listing recordings: {e}", exc_info=True)
@@ -126,7 +126,7 @@ def upload_recording():
         description = request.form.get('description', '')
         auditor_name = request.form.get('auditor_name', '')
         auditor_role = request.form.get('auditor_role', '')
-        audit_type = request.form.get('audit_type', 'manual')
+        recording_type = request.form.get('recording_type', 'audit')
         page_urls_str = request.form.get('page_urls', '')
         media_file_path = request.form.get('media_file_path', '')
 
@@ -161,7 +161,7 @@ def upload_recording():
                 project_id=project_id,
                 page_urls=page_urls,
                 auditor_info=auditor_info,
-                audit_type=audit_type
+                recording_type=recording_type
             )
 
             # Check if recording with this recording_id already exists
@@ -243,7 +243,7 @@ def api_list_recordings():
                     'title': r.title,
                     'auditor_name': r.auditor_name,
                     'auditor_role': r.auditor_role,
-                    'audit_type': r.audit_type.value,
+                    'recording_type': r.recording_type.value,
                     'total_issues': r.total_issues,
                     'high_impact_count': r.high_impact_count,
                     'medium_impact_count': r.medium_impact_count,

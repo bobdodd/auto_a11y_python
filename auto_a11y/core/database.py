@@ -13,7 +13,7 @@ import logging
 from auto_a11y.models import (
     Project, Website, Page, TestResult,
     ProjectStatus, PageStatus,
-    Recording, RecordingIssue, AuditType,
+    Recording, RecordingIssue, RecordingType,
     DocumentReference, DiscoveryRun,
     PageSetupScript, ScriptExecutionSession,
     WebsiteUser
@@ -133,7 +133,7 @@ class Database:
         self.recordings.create_index("recording_id", unique=True)
         self.recordings.create_index("project_id")
         self.recordings.create_index("recorded_date")
-        self.recordings.create_index("audit_type")
+        self.recordings.create_index("recording_type")
         self.recordings.create_index([("project_id", 1), ("recorded_date", -1)])
 
         # Recording issues
@@ -1876,7 +1876,7 @@ class Database:
     def get_recordings(
         self,
         project_id: Optional[str] = None,
-        audit_type: Optional[AuditType] = None,
+        recording_type: Optional[RecordingType] = None,
         limit: int = 100,
         skip: int = 0
     ) -> List[Recording]:
@@ -1884,8 +1884,8 @@ class Database:
         query = {}
         if project_id:
             query["project_id"] = project_id
-        if audit_type:
-            query["audit_type"] = audit_type.value
+        if recording_type:
+            query["recording_type"] = recording_type.value
 
         docs = self.recordings.find(query).sort("recorded_date", -1).limit(limit).skip(skip)
         return [Recording.from_dict(doc) for doc in docs]

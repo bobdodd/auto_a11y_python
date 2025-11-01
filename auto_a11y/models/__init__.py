@@ -15,7 +15,7 @@ from .page_setup_script import (
     PageTestState
 )
 from .website_user import WebsiteUser, LoginConfig, AuthenticationMethod
-from .recording import Recording, AuditType, Timecode, WCAGReference
+from .recording import Recording, RecordingType, Timecode, WCAGReference
 from .recording_issue import RecordingIssue
 
 __all__ = [
@@ -30,6 +30,6 @@ __all__ = [
     'ScriptExecutionSession', 'ScriptExecutionRecord', 'ConditionCheck',
     'PageTestState',
     'WebsiteUser', 'LoginConfig', 'AuthenticationMethod',
-    'Recording', 'AuditType', 'Timecode', 'WCAGReference',
+    'Recording', 'RecordingType', 'Timecode', 'WCAGReference',
     'RecordingIssue'
 ]

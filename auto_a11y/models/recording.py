@@ -9,13 +9,13 @@ from enum import Enum
 from bson import ObjectId
 
 
-class AuditType(Enum):
-    """Type of audit conducted"""
-    MANUAL = "manual"
-    LIVED_EXPERIENCE = "lived_experience"
-    EXPERT_REVIEW = "expert_review"
-    USABILITY = "usability"
-    COGNITIVE = "cognitive"
+class RecordingType(Enum):
+    """Type of recording"""
+    AUDIT = "audit"
+    LIVED_EXPERIENCE_WEBSITE = "lived_experience_website"
+    LIVED_EXPERIENCE_APP = "lived_experience_app"
+    LIVED_EXPERIENCE_TANGIBLE_DEVICE = "lived_experience_tangible_device"
+    LIVED_EXPERIENCE_NAV_AND_WAYFINDING = "lived_experience_nav_and_wayfinding"
 
 
 @dataclass
@@ -35,7 +35,7 @@ class Recording:
     # Audit context
     auditor_name: Optional[str] = None
     auditor_role: Optional[str] = None  # e.g., "Screen Reader User", "Expert Auditor"
-    audit_type: AuditType = AuditType.MANUAL
+    recording_type: RecordingType = RecordingType.AUDIT
 
     # Relationships
     project_id: Optional[str] = None  # Link to AutoA11y project
@@ -72,7 +72,7 @@ class Recording:
             'recorded_date': self.recorded_date,
             'auditor_name': self.auditor_name,
             'auditor_role': self.auditor_role,
-            'audit_type': self.audit_type.value,
+            'recording_type': self.recording_type.value,
             'project_id': self.project_id,
             'website_ids': self.website_ids,
             'page_urls': self.page_urls,
@@ -95,9 +95,9 @@ class Recording:
         # Handle ObjectId
         obj_id = data.get('_id')
 
-        # Parse audit_type enum
-        audit_type_value = data.get('audit_type', 'manual')
-        audit_type = AuditType(audit_type_value) if audit_type_value else AuditType.MANUAL
+        # Parse recording_type enum (with backward compatibility for old audit_type field)
+        recording_type_value = data.get('recording_type') or data.get('audit_type', 'audit')
+        recording_type = RecordingType(recording_type_value) if recording_type_value else RecordingType.AUDIT
 
         return cls(
             recording_id=data['recording_id'],
@@ -108,7 +108,7 @@ class Recording:
             recorded_date=data.get('recorded_date'),
             auditor_name=data.get('auditor_name'),
             auditor_role=data.get('auditor_role'),
-            audit_type=audit_type,
+            recording_type=recording_type,
             project_id=data.get('project_id'),
             website_ids=data.get('website_ids', []),
             page_urls=data.get('page_urls', []),

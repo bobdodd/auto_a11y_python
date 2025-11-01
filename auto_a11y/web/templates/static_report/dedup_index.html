@@ -1,0 +1,287 @@
+{% extends "static_report/base.html" %}
+
+{% block title %}Deduplicated Report - Index{% endblock %}
+
+{% block extra_css %}
+<style>
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .component-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .component-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
+    }
+
+    .component-info {
+        flex: 1;
+    }
+
+    .component-type {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .component-label {
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+
+    .component-meta {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .component-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .component-badge.navigation { background-color: #cfe2ff; color: #084298; }
+    .component-badge.header { background-color: #e2d9f3; color: #432874; }
+    .component-badge.footer { background-color: #d1e7dd; color: #0f5132; }
+    .component-badge.form { background-color: #ffe5d0; color: #984c0c; }
+    .component-badge.aside { background-color: #f8d7da; color: #842029; }
+    .component-badge.section { background-color: #d3f9d8; color: #0a3622; }
+
+    .issue-summary {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .issue-count {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .issue-count.violations { background-color: #f8d7da; color: #842029; }
+    .issue-count.warnings { background-color: #fff3cd; color: #856404; }
+    .issue-count.info { background-color: #cfe2ff; color: #084298; }
+
+    .no-components {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h1 class="h2">Deduplicated Accessibility Report</h1>
+        <p class="text-muted">Issues grouped by common components • {{ report_date.strftime('%Y-%m-%d %H:%M') }}</p>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <div class="summary-cards">
+        <!-- Accessibility Score Card -->
+        {% if overall_accessibility_score is defined %}
+        <div class="stat-card">
+            <div class="stat-value {% if overall_accessibility_score >= 90 %}text-success{% elif overall_accessibility_score >= 70 %}text-warning{% else %}text-danger{% endif %}">
+                {{ "%.1f"|format(overall_accessibility_score) }}%
+            </div>
+            <div class="stat-label">Accessibility Score</div>
+        </div>
+        {% endif %}
+
+        <!-- Compliance Score Card -->
+        {% if overall_compliance_score is defined %}
+        <div class="stat-card">
+            <div class="stat-value {% if overall_compliance_score >= 90 %}text-success{% elif overall_compliance_score >= 70 %}text-warning{% else %}text-danger{% endif %}">
+                {{ "%.1f"|format(overall_compliance_score) }}%
+            </div>
+            <div class="stat-label">Compliance Score</div>
+        </div>
+        {% endif %}
+
+        <div class="stat-card">
+            <div class="stat-value text-danger">{{ total_violations }}</div>
+            <div class="stat-label">Violations</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value text-warning">{{ total_warnings }}</div>
+            <div class="stat-label">Warnings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value text-info">{{ total_info }}</div>
+            <div class="stat-label">Info Items</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value text-primary">{{ total_components }}</div>
+            <div class="stat-label">Components</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value text-secondary">{{ total_pages }}</div>
+            <div class="stat-label">Pages</div>
+        </div>
+    </div>
+
+    <!-- Common Components List -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Common Components</h5>
+            <small class="text-muted">Click a component to view its deduplicated issues</small>
+        </div>
+        <div class="card-body">
+            {% if components_with_issues %}
+                {% for comp_data in components_with_issues %}
+                <a href="components/{{ comp_data.safe_signature }}.html" class="text-decoration-none">
+                    <div class="component-card">
+                        <div class="component-info">
+                            <div class="component-type">
+                                <span class="component-badge {{ comp_data.type|lower }}">{{ comp_data.type }}</span>
+                                {{ comp_data.label }}
+                            </div>
+                            <div class="component-meta">
+                                <span><i class="bi bi-file-earmark"></i> {{ comp_data.page_count }} page(s)</span>
+                                {% if comp_data.score is defined %}
+                                <span><i class="bi bi-graph-up"></i> Score:
+                                    <strong class="{% if comp_data.score >= 90 %}text-success{% elif comp_data.score >= 70 %}text-warning{% else %}text-danger{% endif %}">
+                                        {{ "%.1f"|format(comp_data.score) }}%
+                                    </strong>
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="issue-summary">
+                            {% if comp_data.violations > 0 %}
+                            <span class="issue-count violations">{{ comp_data.violations }} violation(s)</span>
+                            {% endif %}
+                            {% if comp_data.warnings > 0 %}
+                            <span class="issue-count warnings">{{ comp_data.warnings }} warning(s)</span>
+                            {% endif %}
+                            {% if comp_data.info > 0 %}
+                            <span class="issue-count info">{{ comp_data.info }} info</span>
+                            {% endif %}
+                            <i class="bi bi-chevron-right"></i>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            {% else %}
+                <div class="no-components">
+                    <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
+                    <p class="mt-3">No common components found</p>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Pages with Non-Component Issues -->
+    {% if pages_with_unassigned %}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Pages with Non-Component Issues</h5>
+            <small class="text-muted">Issues not associated with common components, organized by page</small>
+        </div>
+        <div class="card-body">
+            <div class="page-search-filter mb-3">
+                <input type="text" class="form-control" id="pageSearch" placeholder="Search pages...">
+            </div>
+
+            {% for page_data in pages_with_unassigned %}
+            <a href="pages/{{ page_data.safe_url }}.html" class="text-decoration-none">
+                <div class="component-card">
+                    <div class="component-info">
+                        <div class="component-type">
+                            <i class="bi bi-file-earmark-text"></i>
+                            {{ page_data.title or page_data.url }}
+                        </div>
+                        <div class="component-meta">
+                            <span><i class="bi bi-link-45deg"></i> {{ page_data.url }}</span>
+                            {% if page_data.dedup_score is defined %}
+                            <span><i class="bi bi-graph-up"></i> Score:
+                                <strong class="{% if page_data.dedup_score >= 90 %}text-success{% elif page_data.dedup_score >= 70 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ "%.1f"|format(page_data.dedup_score) }}%
+                                </strong>
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="issue-summary">
+                        {% if page_data.violations > 0 %}
+                        <span class="issue-count violations">{{ page_data.violations }} violation(s)</span>
+                        {% endif %}
+                        {% if page_data.warnings > 0 %}
+                        <span class="issue-count warnings">{{ page_data.warnings }} warning(s)</span>
+                        {% endif %}
+                        {% if page_data.info > 0 %}
+                        <span class="issue-count info">{{ page_data.info }} info</span>
+                        {% endif %}
+                        <i class="bi bi-chevron-right"></i>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Simple page search filter
+const pageSearch = document.getElementById('pageSearch');
+if (pageSearch) {
+    pageSearch.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.component-card');
+
+        cards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                card.parentElement.style.display = '';
+            } else {
+                card.parentElement.style.display = 'none';
+            }
+        });
+    });
+}
+</script>
+{% endblock %}

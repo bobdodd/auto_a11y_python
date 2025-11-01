@@ -1,0 +1,399 @@
+{% extends "static_report/base.html" %}
+
+{% block title %}{{ component_type }}: {{ component_label }} - Deduplicated Issues{% endblock %}
+
+{% block extra_css %}
+<style>
+    .component-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .component-header.navigation { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .component-header.header { background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%); }
+    .component-header.footer { background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); }
+    .component-header.form { background: linear-gradient(135deg, #f77062 0%, #fe5196 100%); }
+    .component-header.aside { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+    .component-header.section { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+    .component-header.none { background: linear-gradient(135deg, #757F9A 0%, #D7DDE8 100%); }
+
+    .back-link {
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+
+    .back-link:hover {
+        opacity: 1;
+        text-decoration: underline;
+    }
+
+    .component-meta {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1rem;
+        font-size: 0.95rem;
+    }
+
+    /* Issue Cards */
+    .issue-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+    .issue-header {
+        padding: 1.25rem;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 1rem;
+    }
+
+    .issue-title {
+        flex: 1;
+    }
+
+    .issue-code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+    .issue-description {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin: 0.25rem 0 0.5rem 0;
+    }
+
+    .issue-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .impact-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .impact-badge.critical, .impact-badge.high, .impact-badge.serious {
+        background-color: #f8d7da;
+        color: #842029;
+    }
+
+    .impact-badge.moderate, .impact-badge.medium {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .impact-badge.low, .impact-badge.minor {
+        background-color: #cfe2ff;
+        color: #084298;
+    }
+
+    .type-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .type-badge.violation { background-color: #dc3545; color: white; }
+    .type-badge.warning { background-color: #ffc107; color: #000; }
+    .type-badge.info { background-color: #0dcaf0; color: #000; }
+
+    .issue-body {
+        padding: 1.25rem;
+    }
+
+    .issue-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .issue-section h6 {
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #495057;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .wcag-links {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .wcag-link {
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        background: #e7f1ff;
+        color: #004085;
+        text-decoration: none;
+        font-size: 0.875rem;
+    }
+
+    .wcag-link:hover {
+        background: #cfe2ff;
+    }
+
+    .pages-list {
+        background: #f8f9fa;
+        border-radius: 4px;
+        padding: 1rem;
+    }
+
+    .page-item {
+        padding: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 0.9rem;
+    }
+
+    .page-item:last-child {
+        border-bottom: none;
+    }
+
+    .page-item i {
+        color: #6c757d;
+        margin-right: 0.5rem;
+    }
+
+    .test-users {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .user-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        background: #e2e3e5;
+        color: #383d41;
+        font-size: 0.875rem;
+    }
+
+    .no-issues {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Component Header -->
+    <div class="component-header {{ component_type|lower }}">
+        <a href="../index.html" class="back-link">
+            <i class="bi bi-arrow-left"></i> Back to Index
+        </a>
+        <h1 class="h2 mb-0">{{ component_type }}: {{ component_label }}</h1>
+        <div class="component-meta">
+            <span><i class="bi bi-file-earmark"></i> Found on {{ page_count }} page(s)</span>
+            <span><i class="bi bi-bug"></i> {{ total_issues }} deduplicated issue(s)</span>
+            {% if component_score is defined %}
+            <span><i class="bi bi-graph-up"></i> Accessibility Score:
+                <strong class="{% if component_score >= 90 %}text-success{% elif component_score >= 70 %}text-warning{% else %}text-danger{% endif %}">
+                    {{ "%.1f"|format(component_score) }}%
+                </strong>
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Issues List -->
+    {% if issues %}
+        <div class="accordion" id="issuesAccordion">
+        {% set issue_counter = namespace(value=0) %}
+        {% for touchpoint, touchpoint_issues in issues|groupby('touchpoint') %}
+            <!-- Touchpoint Header -->
+            {% set border_color = {'violation': '#dc3545', 'warning': '#ffc107', 'info': '#0dcaf0'}[touchpoint_issues[0].type] or '#dc3545' %}
+            <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid {{ border_color }};">
+                <strong>{{ touchpoint|replace('_', ' ')|title if touchpoint else 'General' }}</strong>
+            </div>
+
+            {% for issue in touchpoint_issues %}
+            {% set issue_counter.value = issue_counter.value + 1 %}
+            {% set issue_id = issue_counter.value %}
+            <div class="accordion-item mb-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue-{{ issue_id }}">
+                        <span class="badge bg-{{ {'critical': 'danger', 'high': 'danger', 'serious': 'danger', 'moderate': 'warning', 'medium': 'warning', 'minor': 'info', 'low': 'info'}[issue.impact|lower] or 'secondary' }} me-2 impact-badge">
+                            {{ issue.impact|upper }}
+                        </span>
+                        <code class="me-2">{{ issue.rule_id }}</code>
+                        {% if issue.description %}
+                            {{ issue.description }}
+                        {% endif %}
+                        <span class="badge bg-secondary ms-auto me-2">{{ issue.page_count }} page(s)</span>
+                        {% if issue.test_users %}
+                        {% for user in issue.test_users %}
+                        <span class="badge bg-secondary ms-1">
+                            <i class="bi bi-person-fill"></i> {{ user }}
+                            {% if issue.user_roles %}
+                            ({{ issue.user_roles|join(', ') }})
+                            {% endif %}
+                        </span>
+                        {% endfor %}
+                        {% endif %}
+                    </button>
+                </h2>
+                <div id="issue-{{ issue_id }}" class="accordion-collapse collapse" data-bs-parent="#issuesAccordion">
+                <div class="accordion-body">
+                    {% set alert_type = {'violation': 'danger', 'warning': 'warning', 'info': 'info'}[issue.type] or 'secondary' %}
+
+                    <!-- Issue Type Alert -->
+                    <div class="alert alert-{{ alert_type }}">
+                        <h6 class="alert-heading">{{ issue.description }}</h6>
+                    </div>
+
+                    <h6 class="text-{{ alert_type }} mb-2">About this issue:</h6>
+
+                    <!-- What -->
+                    <div class="mb-3">
+                        <strong>What the issue is:</strong>
+                        <p>{{ issue.description }}</p>
+                    </div>
+
+                    <!-- Why -->
+                    {% if issue.why %}
+                    <div class="mb-3">
+                        <strong>Why this is important:</strong>
+                        <p>{{ issue.why }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Who -->
+                    {% if issue.who %}
+                    <div class="mb-3">
+                        <strong>Who it affects:</strong>
+                        <p>{{ issue.who }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- How to Fix -->
+                    {% if issue.full_remediation %}
+                    <div class="mb-3">
+                        <strong>How to remediate:</strong>
+                        <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ issue.full_remediation }}</div>
+                    </div>
+                    {% endif %}
+
+                    <!-- WCAG Criteria -->
+                    {% if issue.wcag_full %}
+                    <h6 class="text-{{ alert_type }} mb-2 mt-4">Relevant test criteria:</h6>
+                    <div class="mb-3">
+                        <strong>WCAG Success Criteria:</strong>
+                        <ul>
+                        {% for criterion in issue.wcag_full %}
+                            <li>{{ criterion|safe }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <hr>
+
+                    <!-- Touchpoint and Impact -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% if issue.touchpoint %}
+                            <p><strong>Touchpoint:</strong> {{ issue.touchpoint|replace('_', ' ')|title }}</p>
+                            {% endif %}
+                            <p><strong>Impact:</strong>
+                                <span class="badge bg-{{ {'critical': 'danger', 'high': 'danger', 'serious': 'danger', 'moderate': 'warning', 'medium': 'warning', 'minor': 'info', 'low': 'info'}[issue.impact|lower] or 'secondary' }} impact-badge">
+                                    {{ issue.impact|upper }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- WCAG Links -->
+                            {% if issue.wcag_full %}
+                                {% for criterion in issue.wcag_full|sort %}
+                                <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                    <p style="margin: 0 0 8px 0; font-weight: bold;">
+                                        WCAG {{ criterion|safe }}
+                                    </p>
+
+                                    {% set criterion_code = criterion.split()[0] %}
+                                    <p style="margin: 0 0 5px 0;">
+                                        <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion_code }}" target="_blank">
+                                            More about {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                    </p>
+                                    <p style="margin: 0;">
+                                        <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion_code }}" target="_blank">
+                                            Ways to meet {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                    </p>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Affected Pages -->
+                    <hr>
+                    <div class="mb-3">
+                        <strong>Affected Pages ({{ issue.page_count }}):</strong>
+                        <div class="mt-2">
+                            <details>
+                                <summary class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-chevron-down"></i> Show all {{ issue.page_count }} page(s)
+                                </summary>
+                                <div class="mt-2 p-3 bg-light rounded">
+                                    {% for page_url in issue.pages %}
+                                    <div class="mb-2">
+                                        <i class="bi bi-file-earmark-text text-muted"></i> <code>{{ page_url }}</code>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+
+                    <!-- Element Details -->
+                    {% if issue.element or issue.xpath %}
+                    <hr>
+                    <h6 class="text-{{ alert_type }} mb-2">Element Details:</h6>
+                    {% if issue.element %}
+                    <p><strong>Element:</strong> <code>{{ issue.element }}</code></p>
+                    {% endif %}
+                    {% if issue.xpath %}
+                    <p><strong>XPath:</strong></p>
+                    <div class="bg-light p-2 rounded" style="font-family: monospace; font-size: 0.875rem; overflow-x: auto;">
+                        {{ issue.xpath }}
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %} {# End issue loop #}
+        {% endfor %} {# End touchpoint loop #}
+        </div>
+    {% else %}
+        <div class="no-issues">
+            <i class="bi bi-check-circle" style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-3">No issues found for this component</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -747,3 +747,959 @@ class StaticHTMLReportGenerator:
                     zipf.write(file_path, arcname)
 
         return zip_path
+
+    def generate_project_deduplicated_report(
+        self,
+        project_id: Optional[str] = None,
+        website_id: Optional[str] = None
+    ) -> Path:
+        """
+        Generate deduplicated offline HTML report for an entire project or specific website.
+        Groups issues by common components and allows filtering by component.
+
+        Args:
+            project_id: ID of the project to generate report for (optional if website_id provided)
+            website_id: ID of specific website to generate report for (optional)
+
+        Returns:
+            Path to generated ZIP file
+        """
+        from auto_a11y.reporting.issue_catalog import IssueCatalog
+
+        # Determine scope
+        if website_id:
+            # Generate for specific website
+            website = self.db.get_website(website_id)
+            if not website:
+                raise ValueError(f"Website {website_id} not found")
+
+            project = None
+            if website.project_id:
+                project = self.db.get_project(website.project_id)
+
+            websites = [website]
+            # Use project name if available, otherwise use website name
+            project_name = project.name if project else website.name
+        elif project_id:
+            # Generate for entire project
+            project = self.db.get_project(project_id)
+            if not project:
+                raise ValueError(f"Project {project_id} not found")
+
+            websites = self.db.get_websites(project_id)
+            project_name = project.name
+        else:
+            # Generate for all projects
+            project = None
+            projects = self.db.get_projects()
+            websites = []
+            for p in projects:
+                websites.extend(self.db.get_websites(p.id))
+            project_name = "All_Projects"
+
+        # Collect all data from websites and pages
+        project_data = {
+            'project': project,
+            'websites': []
+        }
+
+        for website in websites:
+            website_data = {
+                'website': website,
+                'pages': []
+            }
+
+            # Get all pages for this website
+            pages = self.db.get_pages(website.id)
+
+            for page in pages:
+                # Get latest test result for this page
+                test_result = self.db.get_latest_test_result(page.id)
+                if test_result:
+                    website_data['pages'].append({
+                        'page': page,
+                        'test_result': test_result
+                    })
+
+            if website_data['pages']:
+                project_data['websites'].append(website_data)
+
+        # Extract common components
+        common_components = self._extract_common_components(project_data)
+
+        # Deduplicate issues by component
+        deduplicated_issues = self._deduplicate_issues_by_component(project_data, common_components)
+
+        # Group issues by component
+        issues_by_component = self._group_issues_by_component(deduplicated_issues, common_components)
+
+        # Calculate statistics
+        total_violations = sum(1 for issue in deduplicated_issues if issue['type'] == 'violation')
+        total_warnings = sum(1 for issue in deduplicated_issues if issue['type'] == 'warning')
+        total_info = sum(1 for issue in deduplicated_issues if issue['type'] == 'info')
+        total_pages = sum(len(wd['pages']) for wd in project_data['websites'])
+
+        # Calculate overall site scores (average across all pages)
+        all_page_scores = []
+        all_compliance_scores = []
+
+        for website_data in project_data['websites']:
+            for page_result in website_data['pages']:
+                test_result = page_result.get('test_result')
+                if test_result:
+                    # Get accessibility score
+                    page_score = self._calculate_page_score(test_result)
+                    all_page_scores.append(page_score)
+
+                    # Get compliance score (passed / total checks)
+                    violations_list = test_result.violations if hasattr(test_result, 'violations') else []
+                    warnings_list = test_result.warnings if hasattr(test_result, 'warnings') else []
+                    info_list = test_result.info if hasattr(test_result, 'info') else []
+
+                    total_tests = len(violations_list) + len(warnings_list) + len(info_list)
+                    passed_tests = total_tests - len(violations_list)
+
+                    if total_tests > 0:
+                        compliance_score = (passed_tests / total_tests) * 100
+                        all_compliance_scores.append(compliance_score)
+
+        # Calculate averages
+        overall_accessibility_score = sum(all_page_scores) / len(all_page_scores) if all_page_scores else 0
+        overall_compliance_score = sum(all_compliance_scores) / len(all_compliance_scores) if all_compliance_scores else 0
+
+        # Create temporary directory for report
+        import tempfile
+        import shutil
+
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        generation_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        temp_dir = Path(tempfile.mkdtemp(prefix='dedup_report_'))
+
+        try:
+            # Create directory structure
+            (temp_dir / 'components').mkdir(exist_ok=True)
+            (temp_dir / 'pages').mkdir(exist_ok=True)
+            (temp_dir / 'assets' / 'css').mkdir(parents=True, exist_ok=True)
+            (temp_dir / 'assets' / 'js').mkdir(parents=True, exist_ok=True)
+
+            # Copy assets
+            self._copy_dedup_assets(temp_dir)
+
+            # Group unassigned issues by page
+            pages_with_unassigned = self._group_unassigned_by_page(
+                project_data, issues_by_component.get('unassigned', []), common_components
+            )
+
+            # Generate index page
+            self._generate_dedup_index(
+                temp_dir, project, project_name, common_components,
+                issues_by_component, pages_with_unassigned,
+                total_violations, total_warnings, total_info, total_pages,
+                overall_accessibility_score, overall_compliance_score
+            )
+
+            # Generate component detail pages
+            self._generate_component_pages(
+                temp_dir, common_components, issues_by_component
+            )
+
+            # Generate page detail pages for unassigned issues
+            self._generate_page_detail_pages(
+                temp_dir, pages_with_unassigned, project, project_name, generation_date
+            )
+
+            # Package as ZIP
+            safe_project_name = project_name.replace(' ', '_')
+            zip_filename = f'{safe_project_name}_deduplicated_{timestamp}.zip'
+            zip_path = self.output_dir / zip_filename
+
+            with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                for file_path in temp_dir.rglob('*'):
+                    if file_path.is_file():
+                        arcname = file_path.relative_to(temp_dir)
+                        zipf.write(file_path, arcname)
+
+            return zip_path
+        finally:
+            # Clean up temp directory
+            shutil.rmtree(temp_dir, ignore_errors=True)
+
+    def _extract_common_components(self, data: Dict[str, Any]) -> Dict[str, Dict]:
+        """
+        Extract common components (forms, navs, asides, sections, headers) from discovery issues.
+
+        Args:
+            data: Project report data
+
+        Returns:
+            Dictionary mapping signature -> component info with xpaths per page
+        """
+        common_components = {}
+
+        # Iterate through all websites and pages
+        for website_data in data.get('websites', []):
+            website = website_data.get('website', {})
+
+            for page_result in website_data.get('pages', []):
+                page = page_result.get('page', {})
+                page_url = page.url if hasattr(page, 'url') else page.get('url', '')
+
+                test_result = page_result.get('test_result')
+                if not test_result:
+                    continue
+
+                # Get discovery items
+                discovery_items = test_result.discovery if hasattr(test_result, 'discovery') else []
+
+                for d in discovery_items:
+                    if hasattr(d, 'to_dict'):
+                        d_dict = d.to_dict()
+                    else:
+                        d_dict = d if isinstance(d, dict) else {}
+
+                    issue_id = d_dict.get('id', '')
+                    metadata = d_dict.get('metadata', {})
+
+                    # Extract signature and xpath for different component types
+                    signature = None
+                    component_type = None
+                    label = None
+
+                    if issue_id in ['DiscoFormOnPage', 'forms_DiscoFormOnPage']:
+                        signature = metadata.get('formSignature')
+                        component_type = 'Form'
+                        field_count = metadata.get('fieldCount', 0)
+                        label = f"Form ({field_count} fields)"
+                    elif issue_id in ['DiscoNavFound', 'landmarks_DiscoNavFound']:
+                        signature = metadata.get('navSignature')
+                        component_type = 'Navigation'
+                        label = metadata.get('navLabel', 'Navigation')
+                    elif issue_id in ['DiscoAsideFound', 'landmarks_DiscoAsideFound']:
+                        signature = metadata.get('asideSignature')
+                        component_type = 'Aside'
+                        label = metadata.get('asideLabel', 'Aside')
+                    elif issue_id in ['DiscoSectionFound', 'landmarks_DiscoSectionFound']:
+                        signature = metadata.get('sectionSignature')
+                        component_type = 'Section'
+                        label = metadata.get('sectionLabel', 'Section')
+                    elif issue_id in ['DiscoHeaderFound', 'landmarks_DiscoHeaderFound']:
+                        signature = metadata.get('headerSignature')
+                        component_type = 'Header'
+                        label = metadata.get('headerLabel', 'Header')
+
+                    if signature and signature != 'unknown':
+                        if signature not in common_components:
+                            common_components[signature] = {
+                                'type': component_type,
+                                'label': label,
+                                'signature': signature,
+                                'xpaths_by_page': {},
+                                'pages': set()
+                            }
+
+                        xpath = d_dict.get('xpath', '') or metadata.get('xpath', '')
+                        common_components[signature]['xpaths_by_page'][page_url] = xpath
+                        common_components[signature]['pages'].add(page_url)
+
+        # Filter to only include components that appear on 2+ pages
+        filtered_components = {
+            sig: comp_data
+            for sig, comp_data in common_components.items()
+            if len(comp_data['pages']) >= 2
+        }
+
+        return filtered_components
+
+    def _deduplicate_issues_by_component(
+        self,
+        data: Dict[str, Any],
+        common_components: Dict[str, Dict]
+    ) -> List[Dict[str, Any]]:
+        """
+        Deduplicate issues by grouping them by component signature and rule ID.
+
+        Args:
+            data: Project report data
+            common_components: Dictionary of common components
+
+        Returns:
+            List of deduplicated issue dictionaries
+        """
+        from auto_a11y.reporting.issue_catalog import IssueCatalog
+
+        # Track unique issues: (rule_id, component_signature_or_xpath) -> issue data
+        unique_issues = {}
+
+        # Iterate through all websites and their pages
+        for website_data in data.get('websites', []):
+            for page_result in website_data.get('pages', []):
+                page = page_result.get('page', {})
+                page_url = page.url if hasattr(page, 'url') else page.get('url', '')
+
+                test_result = page_result.get('test_result')
+                if not test_result:
+                    continue
+
+                # Process all issue types except discovery
+                for issue_type, issue_list_attr in [('violation', 'violations'),
+                                                      ('warning', 'warnings'),
+                                                      ('info', 'info')]:
+                    issues = getattr(test_result, issue_list_attr, []) if hasattr(test_result, issue_list_attr) else []
+
+                    for issue in issues:
+                        if hasattr(issue, 'to_dict'):
+                            issue_dict = issue.to_dict()
+                        else:
+                            issue_dict = issue if isinstance(issue, dict) else {}
+
+                        # Enrich with catalog information
+                        issue_dict = IssueCatalog.enrich_issue(issue_dict)
+
+                        rule_id = issue_dict.get('id', '')
+                        issue_xpath = issue_dict.get('xpath', '')
+
+                        # Get authenticated user info
+                        metadata = issue_dict.get('metadata', {})
+                        auth_user = metadata.get('authenticated_user', {})
+                        user_name = auth_user.get('display_name', '') if auth_user else 'Guest'
+                        user_roles = auth_user.get('roles', []) if auth_user else []
+
+                        # Find which common component contains this issue
+                        component_signature = None
+                        component_type = None
+                        component_label = None
+
+                        for signature, comp_data in common_components.items():
+                            comp_xpath = comp_data['xpaths_by_page'].get(page_url)
+                            if comp_xpath and self._xpath_is_within(issue_xpath, comp_xpath):
+                                component_signature = signature
+                                component_type = comp_data['type']
+                                component_label = comp_data['label']
+                                break
+
+                        # Create deduplication key
+                        if component_signature:
+                            dedup_key = (rule_id, component_signature)
+                        else:
+                            dedup_key = (rule_id, issue_xpath)
+
+                        # Initialize or update issue data
+                        if dedup_key not in unique_issues:
+                            # Get enriched metadata
+                            issue_metadata = issue_dict.get('metadata', {})
+
+                            unique_issues[dedup_key] = {
+                                'type': issue_type,
+                                'rule_id': rule_id,
+                                'description': issue_dict.get('description', ''),
+                                'impact': issue_dict.get('impact', 'moderate'),
+                                'wcag': ', '.join(issue_dict.get('wcag', [])),
+                                'wcag_full': issue_metadata.get('wcag_full', []),
+                                'touchpoint': issue_dict.get('touchpoint', ''),
+                                'element': issue_dict.get('element', ''),
+                                'xpath': issue_xpath,
+                                'component_signature': component_signature,
+                                'component_type': component_type,
+                                'component_label': component_label,
+                                # Enriched content from IssueCatalog
+                                'why': issue_metadata.get('why', ''),
+                                'who': issue_metadata.get('who', ''),
+                                'full_remediation': issue_metadata.get('full_remediation', ''),
+                                'pages': set(),
+                                'test_users': set(),
+                                'user_roles': set()
+                            }
+
+                        # Add page and user info
+                        unique_issues[dedup_key]['pages'].add(page_url)
+                        if user_name:
+                            unique_issues[dedup_key]['test_users'].add(user_name)
+                        if user_roles:
+                            for role in user_roles:
+                                unique_issues[dedup_key]['user_roles'].add(role)
+                        if not auth_user:
+                            unique_issues[dedup_key]['user_roles'].add('no login')
+
+        # Convert to list and add page count
+        result = []
+        for issue_data in unique_issues.values():
+            issue_data['pages'] = sorted(list(issue_data['pages']))
+            issue_data['page_count'] = len(issue_data['pages'])
+            issue_data['test_users'] = sorted(list(issue_data['test_users']))
+            issue_data['user_roles'] = sorted(list(issue_data['user_roles']))
+            result.append(issue_data)
+
+        # Sort by impact (high -> medium -> low) then by type then by rule_id
+        impact_order = {'critical': 0, 'high': 1, 'serious': 1, 'moderate': 2, 'medium': 2, 'minor': 3, 'low': 3}
+        type_order = {'violation': 0, 'warning': 1, 'info': 2}
+
+        result.sort(key=lambda x: (
+            type_order.get(x['type'], 99),
+            impact_order.get(x['impact'].lower(), 99),
+            x['rule_id']
+        ))
+
+        return result
+
+    def _xpath_is_within(self, issue_xpath: str, component_xpath: str) -> bool:
+        """
+        Check if an issue's XPath is within a component's XPath.
+
+        Args:
+            issue_xpath: XPath of the issue
+            component_xpath: XPath of the component
+
+        Returns:
+            True if issue_xpath is within or equal to component_xpath
+        """
+        if not issue_xpath or not component_xpath:
+            return False
+
+        # Normalize xpaths by removing trailing slashes
+        issue_xpath = issue_xpath.rstrip('/')
+        component_xpath = component_xpath.rstrip('/')
+
+        # Check if issue xpath starts with component xpath
+        return issue_xpath == component_xpath or issue_xpath.startswith(component_xpath + '/')
+
+    def _group_issues_by_component(
+        self,
+        deduplicated_issues: List[Dict[str, Any]],
+        common_components: Dict[str, Dict]
+    ) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Group deduplicated issues by their component signature.
+
+        Args:
+            deduplicated_issues: List of deduplicated issues
+            common_components: Dictionary of common components
+
+        Returns:
+            Dictionary mapping component signature -> list of issues
+        """
+        grouped = {}
+
+        for issue in deduplicated_issues:
+            component_sig = issue.get('component_signature')
+            if component_sig:
+                if component_sig not in grouped:
+                    grouped[component_sig] = []
+                grouped[component_sig].append(issue)
+            else:
+                # Issues without components go into 'unassigned' group
+                if 'unassigned' not in grouped:
+                    grouped['unassigned'] = []
+                grouped['unassigned'].append(issue)
+
+        return grouped
+
+    def _copy_dedup_assets(self, report_dir: Path):
+        """Copy CSS and JS assets to report directory"""
+        static_dir = Path(__file__).parent.parent / 'web' / 'static'
+
+        # Copy CSS files
+        css_files = ['bootstrap.min.css', 'bootstrap-icons.css']
+        for css_file in css_files:
+            src = static_dir / 'css' / css_file
+            if src.exists():
+                shutil.copy(src, report_dir / 'assets' / 'css' / css_file)
+
+        # Copy custom CSS (if exists)
+        custom_css = static_dir / 'css' / 'custom.css'
+        if custom_css.exists():
+            shutil.copy(custom_css, report_dir / 'assets' / 'css' / 'custom.css')
+
+        # Copy JS files
+        js_files = ['bootstrap.bundle.min.js']
+        for js_file in js_files:
+            src = static_dir / 'js' / js_file
+            if src.exists():
+                shutil.copy(src, report_dir / 'assets' / 'js' / js_file)
+
+    def _generate_dedup_index(
+        self,
+        report_dir: Path,
+        project: Any,
+        project_name: str,
+        common_components: Dict[str, Dict],
+        issues_by_component: Dict[str, List[Dict[str, Any]]],
+        pages_with_unassigned: List[Dict[str, Any]],
+        total_violations: int,
+        total_warnings: int,
+        total_info: int,
+        total_pages: int,
+        overall_accessibility_score: float,
+        overall_compliance_score: float
+    ):
+        """Generate the index page for deduplicated report"""
+
+        # Prepare components data with issue counts
+        components_with_issues = []
+        for signature, comp_data in common_components.items():
+            issues = issues_by_component.get(signature, [])
+
+            # Count issues by type
+            violations = sum(1 for i in issues if i['type'] == 'violation')
+            warnings = sum(1 for i in issues if i['type'] == 'warning')
+            info_count = sum(1 for i in issues if i['type'] == 'info')
+
+            # Calculate score for this component
+            component_score = self._calculate_dedup_score(issues)
+
+            # Create safe filename
+            import re
+            safe_sig = re.sub(r'[^a-zA-Z0-9_-]', '_', signature)
+
+            components_with_issues.append({
+                'signature': signature,
+                'safe_signature': safe_sig,
+                'type': comp_data['type'],
+                'label': comp_data['label'],
+                'page_count': len(comp_data['pages']),
+                'violations': violations,
+                'warnings': warnings,
+                'info': info_count,
+                'total_issues': len(issues),
+                'score': component_score
+            })
+
+        # Sort by type then by violation count
+        type_order = {'Navigation': 0, 'Header': 1, 'Footer': 2, 'Form': 3, 'Aside': 4, 'Section': 5}
+        components_with_issues.sort(
+            key=lambda x: (type_order.get(x['type'], 99), -x['violations'], -x['total_issues'])
+        )
+
+        # Render template
+        template = self.template_env.get_template('static_report/dedup_index.html')
+        html = template.render(
+            asset_path='assets/',
+            project=project,
+            project_name=project_name,
+            components_with_issues=components_with_issues,
+            pages_with_unassigned=pages_with_unassigned,
+            total_violations=total_violations,
+            total_warnings=total_warnings,
+            total_info=total_info,
+            total_components=len(common_components),
+            total_pages=total_pages,
+            overall_accessibility_score=overall_accessibility_score,
+            overall_compliance_score=overall_compliance_score,
+            report_date=datetime.now()
+        )
+
+        # Write to file
+        (report_dir / 'index.html').write_text(html, encoding='utf-8')
+
+    def _generate_component_pages(
+        self,
+        report_dir: Path,
+        common_components: Dict[str, Dict],
+        issues_by_component: Dict[str, List[Dict[str, Any]]]
+    ):
+        """Generate individual component detail pages"""
+        template = self.template_env.get_template('static_report/dedup_component.html')
+
+        import re
+
+        # Generate page for each component
+        for signature, comp_data in common_components.items():
+            issues = issues_by_component.get(signature, [])
+
+            # Calculate score for this component
+            component_score = self._calculate_dedup_score(issues)
+
+            # Create safe filename
+            safe_sig = re.sub(r'[^a-zA-Z0-9_-]', '_', signature)
+
+            html = template.render(
+                asset_path='../assets/',
+                component_type=comp_data['type'],
+                component_label=comp_data['label'],
+                component_signature=signature,
+                page_count=len(comp_data['pages']),
+                pages=sorted(list(comp_data['pages'])),
+                issues=issues,
+                total_issues=len(issues),
+                component_score=component_score,
+                report_date=datetime.now()
+            )
+
+            # Write to file
+            (report_dir / 'components' / f'{safe_sig}.html').write_text(html, encoding='utf-8')
+
+        # Note: Unassigned issues are now handled by _generate_page_detail_pages()
+        # which creates individual page files in the pages/ directory
+
+    def _calculate_dedup_score(self, issues: List[Dict[str, Any]]) -> float:
+        """
+        Calculate accessibility score for deduplicated issues.
+        Uses similar logic to ResultProcessor but adapted for deduplicated data.
+
+        Args:
+            issues: List of deduplicated issues (violations only count toward score)
+
+        Returns:
+            Score as a percentage (0-100)
+        """
+        if not issues:
+            return 100.0
+
+        # Count violations only
+        violations = [i for i in issues if i.get('type') == 'violation']
+
+        if not violations:
+            return 100.0
+
+        # Weight by impact
+        impact_weights = {
+            'critical': 5,
+            'serious': 5,
+            'high': 5,
+            'moderate': 3,
+            'medium': 3,
+            'minor': 1,
+            'low': 1
+        }
+
+        total_weight = 0
+        for issue in violations:
+            impact = issue.get('impact', 'moderate')
+            # Handle both string and enum formats
+            if hasattr(impact, 'name'):
+                impact = impact.name.lower()
+            else:
+                impact = str(impact).replace('IMPACT_LEVEL.', '').replace('ImpactLevel.', '').lower()
+            weight = impact_weights.get(impact, 3)
+            total_weight += weight
+
+        # Calculate score (diminishing returns for more issues)
+        # Using formula: 100 - (min(total_weight, 100))
+        score = max(0, 100 - total_weight)
+
+        return float(score)
+
+    def _calculate_score_from_violations(self, violations: List) -> float:
+        """
+        Calculate accessibility score from raw violation objects (TestResult violations).
+
+        Args:
+            violations: List of violation objects from TestResult
+
+        Returns:
+            Score as a percentage (0-100)
+        """
+        if not violations:
+            return 100.0
+
+        # Weight by impact
+        impact_weights = {
+            'critical': 5,
+            'serious': 5,
+            'high': 5,
+            'moderate': 3,
+            'medium': 3,
+            'minor': 1,
+            'low': 1
+        }
+
+        total_weight = 0
+        for issue in violations:
+            impact = issue.impact if hasattr(issue, 'impact') else 'moderate'
+            # Handle both string and enum formats
+            if hasattr(impact, 'name'):
+                impact = impact.name.lower()
+            else:
+                impact = str(impact).replace('IMPACT_LEVEL.', '').replace('ImpactLevel.', '').lower()
+            weight = impact_weights.get(impact, 3)
+            total_weight += weight
+
+        # Calculate score (diminishing returns for more issues)
+        # Using formula: 100 - (min(total_weight, 100))
+        score = max(0, 100 - total_weight)
+
+        return float(score)
+
+    def _group_unassigned_by_page(
+        self,
+        project_data: Dict[str, Any],
+        unassigned_issues: List[Dict[str, Any]],
+        common_components: Dict[str, Dict]
+    ) -> List[Dict[str, Any]]:
+        """
+        Group unassigned issues by page and prepare page data for index.
+
+        Args:
+            project_data: Project report data
+            unassigned_issues: List of unassigned issues
+            common_components: Dictionary of common components for filtering
+
+        Returns:
+            List of page data dictionaries with issue counts
+        """
+        import hashlib
+
+        # Group issues by page URL
+        issues_by_page = {}
+        for issue in unassigned_issues:
+            for page_url in issue['pages']:
+                if page_url not in issues_by_page:
+                    issues_by_page[page_url] = []
+                issues_by_page[page_url].append(issue)
+
+        # Create page data list
+        pages_with_unassigned = []
+        for page_url, page_issues in issues_by_page.items():
+            # Count by type
+            violations = [i for i in page_issues if i['type'] == 'violation']
+            warnings = [i for i in page_issues if i['type'] == 'warning']
+            info = [i for i in page_issues if i['type'] == 'info']
+
+            # Find page metadata and actual test results from project_data
+            page_title = None
+            page_test_date = None
+            page_score = 0
+            compliance_score = None
+            errors_count = 0
+            warnings_count = 0
+            info_count = 0
+            discovery_count = 0
+            original_metadata = {}
+            total_page_violations = 0
+            total_page_warnings = 0
+            # Get actual non-deduplicated violations/warnings/info/discovery for this page only
+            page_violations = []
+            page_warnings = []
+            page_info = []
+            page_discovery = []
+
+            for website_data in project_data.get('websites', []):
+                for page_result in website_data.get('pages', []):
+                    page = page_result.get('page', {})
+                    if page.url == page_url:
+                        page_title = page.title if hasattr(page, 'title') else None
+                        page_test_date = page_result.get('test_date')
+
+                        # Get the actual test result with individual instances
+                        test_result = page_result.get('test_result')
+                        if test_result:
+                            # Calculate page score from the full test result
+                            page_score = self._calculate_page_score(test_result)
+                            # Save metadata for score calculation later
+                            original_metadata = test_result.metadata if hasattr(test_result, 'metadata') else {}
+                            # Access TestResult object attributes
+                            violations_list = test_result.violations if hasattr(test_result, 'violations') else []
+                            warnings_list = test_result.warnings if hasattr(test_result, 'warnings') else []
+                            info_list = test_result.info if hasattr(test_result, 'info') else []
+                            discovery_list = test_result.discovery if hasattr(test_result, 'discovery') else []
+
+                            # Store totals for score calculation later
+                            total_page_violations = len(violations_list)
+                            total_page_warnings = len(warnings_list)
+
+                            total_tests = len(violations_list) + len(warnings_list) + len(info_list)
+                            passed_tests = total_tests - len(violations_list)
+                            if total_tests > 0:
+                                compliance_score = {
+                                    'score': (passed_tests / total_tests) * 100,
+                                    'passed_tests': passed_tests,
+                                    'total_tests': total_tests
+                                }
+
+                            # Get full issue counts from test result
+                            errors_count = len(violations_list)
+                            warnings_count = len(warnings_list)
+                            info_count = len(info_list)
+                            discovery_count = len(discovery_list)
+
+                            # Filter to only non-component issues for this page
+                            # Match the logic from _extract_common_components to identify which issues
+                            # are NOT part of common components
+                            for issue in violations_list:
+                                # Check if this issue's xpath matches any common component
+                                is_component_issue = False
+                                issue_xpath = issue.xpath if hasattr(issue, 'xpath') else ''
+
+                                # Check against all common components for this page
+                                if issue_xpath:
+                                    for signature, comp_data in common_components.items():
+                                        comp_xpath = comp_data['xpaths_by_page'].get(page_url)
+                                        if comp_xpath and self._xpath_is_within(issue_xpath, comp_xpath):
+                                            is_component_issue = True
+                                            break
+
+                                # Only include non-component issues
+                                if not is_component_issue:
+                                    page_violations.append(issue)
+
+                            # For warnings, info, and discovery, also filter to non-component only
+                            for issue in warnings_list:
+                                is_component_issue = False
+                                issue_xpath = issue.xpath if hasattr(issue, 'xpath') else ''
+
+                                if issue_xpath:
+                                    for signature, comp_data in common_components.items():
+                                        comp_xpath = comp_data['xpaths_by_page'].get(page_url)
+                                        if comp_xpath and self._xpath_is_within(issue_xpath, comp_xpath):
+                                            is_component_issue = True
+                                            break
+
+                                if not is_component_issue:
+                                    page_warnings.append(issue)
+
+                            for issue in info_list:
+                                is_component_issue = False
+                                issue_xpath = issue.xpath if hasattr(issue, 'xpath') else ''
+
+                                if issue_xpath:
+                                    for signature, comp_data in common_components.items():
+                                        comp_xpath = comp_data['xpaths_by_page'].get(page_url)
+                                        if comp_xpath and self._xpath_is_within(issue_xpath, comp_xpath):
+                                            is_component_issue = True
+                                            break
+
+                                if not is_component_issue:
+                                    page_info.append(issue)
+
+                            for issue in discovery_list:
+                                is_component_issue = False
+                                issue_xpath = issue.xpath if hasattr(issue, 'xpath') else ''
+
+                                if issue_xpath:
+                                    for signature, comp_data in common_components.items():
+                                        comp_xpath = comp_data['xpaths_by_page'].get(page_url)
+                                        if comp_xpath and self._xpath_is_within(issue_xpath, comp_xpath):
+                                            is_component_issue = True
+                                            break
+
+                                if not is_component_issue:
+                                    page_discovery.append(issue)
+
+                        break
+                if page_title:
+                    break
+
+            # Create safe URL for filename
+            safe_url = hashlib.md5(page_url.encode()).hexdigest()[:12]
+
+            # Calculate score for non-component issues on this page
+            # Use the same scoring system as online test reporting (ResultProcessor.calculate_score)
+            # Create a synthetic TestResult with only the filtered non-component issues
+            if test_result and hasattr(test_result, 'metadata'):
+                from types import SimpleNamespace
+
+                # Adjust metadata to reflect the reduced number of violations
+                # The scoring algorithm uses: score = (passed_checks / applicable_checks) * 100
+                original_metadata = test_result.metadata if hasattr(test_result, 'metadata') else {}
+
+                # Calculate how many violations and warnings were removed
+                original_violations = len(violations_list)
+                original_warnings = len(warnings_list)
+                filtered_violations = len(page_violations)
+                filtered_warnings = len(page_warnings)
+
+                removed_violations = original_violations - filtered_violations
+                removed_warnings = original_warnings - filtered_warnings
+                removed_total = removed_violations + removed_warnings
+
+                # Adjust the metadata counts
+                # If we removed violations, that means those checks now pass (they were in components)
+                adjusted_metadata = dict(original_metadata)
+                adjusted_failed_checks = adjusted_metadata.get('failed_checks', 0) - removed_total
+                adjusted_passed_checks = adjusted_metadata.get('passed_checks', 0) + removed_total
+                # applicable_checks stays the same - same tests were run
+
+                adjusted_metadata['failed_checks'] = max(0, adjusted_failed_checks)
+                adjusted_metadata['passed_checks'] = adjusted_passed_checks
+
+                # Create synthetic test result with only non-component issues
+                synthetic_result = SimpleNamespace(
+                    violations=page_violations,
+                    warnings=page_warnings,
+                    info=page_info,
+                    discovery=page_discovery,
+                    passes=test_result.passes if hasattr(test_result, 'passes') else [],
+                    metadata=adjusted_metadata  # Use adjusted metadata
+                )
+
+                # Use the SAME scoring method as for full page score
+                dedup_page_score = self._calculate_page_score(synthetic_result)
+            else:
+                # Fallback if no test_result available
+                dedup_page_score = 100.0 if not page_violations else 0.0
+
+            pages_with_unassigned.append({
+                'url': page_url,
+                'title': page_title,
+                'safe_url': safe_url,
+                'test_date': page_test_date,
+                'score': page_score,  # Original full page score
+                'dedup_score': dedup_page_score,  # Score for non-component issues only
+                'compliance_score': compliance_score,
+                'errors_count': errors_count,
+                'warnings_count': warnings_count,
+                'info_count': info_count,
+                'discovery_count': discovery_count,
+                'violations': len(violations),
+                'warnings': len(warnings),
+                'info': len(info),
+                'total_issues': len(page_issues),
+                'issues': {
+                    'violations': page_violations,  # Use actual test result issues, not deduplicated
+                    'warnings': page_warnings,
+                    'info': page_info,
+                    'discovery': page_discovery
+                }
+            })
+
+        # Sort alphabetically by title (fallback to URL if no title)
+        pages_with_unassigned.sort(key=lambda x: (x.get('title') or x['url']).lower())
+
+        return pages_with_unassigned
+
+    def _generate_page_detail_pages(
+        self,
+        report_dir: Path,
+        pages_with_unassigned: List[Dict[str, Any]],
+        project: Any,
+        project_name: str,
+        generation_date: str
+    ):
+        """Generate individual page detail pages for unassigned issues"""
+        template = self.template_env.get_template('static_report/dedup_unassigned.html')
+
+        wcag_level = project.wcag_level if project and hasattr(project, 'wcag_level') else 'AA'
+
+        for page_data in pages_with_unassigned:
+            # Create page object for template
+            from types import SimpleNamespace
+            page = SimpleNamespace(
+                title=page_data.get('title', 'Untitled Page'),
+                url=page_data['url'],
+                score=page_data.get('score', 0),
+                test_date=page_data.get('test_date', 'Recently')
+            )
+
+            html = template.render(
+                asset_path='../assets/',
+                page=page,
+                page_url=page_data['url'],
+                page_title=page_data.get('title'),
+                violations=page_data['issues']['violations'],
+                warnings=page_data['issues']['warnings'],
+                info=page_data['issues']['info'],
+                discovery=page_data['issues']['discovery'],
+                total_issues=page_data['total_issues'],
+                errors_count=page_data.get('errors_count', 0),
+                warnings_count=page_data.get('warnings_count', 0),
+                info_count=page_data.get('info_count', 0),
+                discovery_count=page_data.get('discovery_count', 0),
+                compliance_score=page_data.get('compliance_score'),
+                dedup_score=page_data.get('dedup_score', 0),  # Score for non-component issues
+                report_date=datetime.now(),
+                generation_date=generation_date,
+                project_name=project_name,
+                wcag_level=wcag_level
+            )
+
+            # Write to file
+            (report_dir / 'pages' / f"{page_data['safe_url']}.html").write_text(html, encoding='utf-8')

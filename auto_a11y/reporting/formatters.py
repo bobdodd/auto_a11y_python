@@ -2134,7 +2134,7 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_common_components_sheet(self, ws, data, styles):
         """Create a sheet listing all common components identified during deduplication"""
-        headers = ['Component Type', 'Signature', 'Label', 'Pages Found', 'Page Count', 'Example XPath', 'Pages with Component']
+        headers = ['Component Type', 'Signature', 'Label', 'Page Count', 'Pages Found', 'Example XPath']
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -2161,23 +2161,17 @@ class ExcelFormatter(BaseFormatter):
             # Label (display name)
             ws.cell(row=row, column=3, value=comp_data['label'])
 
+            # Page count (moved before Pages Found for better readability)
+            ws.cell(row=row, column=4, value=len(comp_data['pages']))
+
             # Pages found (sorted list)
             pages_list = '\n'.join(sorted(comp_data['pages']))
-            ws.cell(row=row, column=4, value=pages_list)
-            ws.cell(row=row, column=4).alignment = self.Alignment(wrap_text=True, vertical='top')
-
-            # Page count
-            ws.cell(row=row, column=5, value=len(comp_data['pages']))
+            ws.cell(row=row, column=5, value=pages_list)
+            ws.cell(row=row, column=5).alignment = self.Alignment(wrap_text=True, vertical='top')
 
             # Example XPath (show one representative xpath)
             example_xpath = list(comp_data['xpaths_by_page'].values())[0] if comp_data['xpaths_by_page'] else ''
             ws.cell(row=row, column=6, value=example_xpath)
-
-            # Pages with component (just the page count as a summary)
-            page_urls = ', '.join(sorted(comp_data['pages'])[:3])  # Show first 3 pages
-            if len(comp_data['pages']) > 3:
-                page_urls += f' ... and {len(comp_data["pages"]) - 3} more'
-            ws.cell(row=row, column=7, value=page_urls)
 
             # Apply styling based on component type
             if comp_data['type'] == 'Navigation':
@@ -2189,7 +2183,7 @@ class ExcelFormatter(BaseFormatter):
             else:
                 fill_color = self.PatternFill(start_color="FFF9C4", end_color="FFF9C4", fill_type="solid")
 
-            for col in range(1, 8):
+            for col in range(1, 7):
                 ws.cell(row=row, column=col).fill = fill_color
 
             row += 1
@@ -2198,7 +2192,7 @@ class ExcelFormatter(BaseFormatter):
         if sorted_components:
             # Insert a blank row after headers
             ws.insert_rows(2)
-            ws.merge_cells('A2:G2')
+            ws.merge_cells('A2:F2')
             summary_cell = ws['A2']
             summary_cell.value = f'Found {len(sorted_components)} common components across {len(data.get("websites", []))} websites'
             summary_cell.font = self.Font(italic=True, color="666666")

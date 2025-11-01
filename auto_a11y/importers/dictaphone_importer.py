@@ -12,7 +12,7 @@ from typing import Dict, List, Optional, Tuple, Any
 from datetime import datetime
 
 from auto_a11y.models import (
-    Recording, RecordingIssue, AuditType,
+    Recording, RecordingIssue, RecordingType,
     Timecode, WCAGReference, ImpactLevel
 )
 
@@ -39,7 +39,7 @@ class DictaphoneImporter:
         website_ids: Optional[List[str]] = None,
         page_urls: Optional[List[str]] = None,
         auditor_info: Optional[Dict[str, Any]] = None,
-        audit_type: str = "manual"
+        recording_type: str = "audit"
     ) -> Tuple[Recording, List[RecordingIssue]]:
         """
         Import a Dictaphone JSON file.
@@ -50,7 +50,7 @@ class DictaphoneImporter:
             website_ids: Optional website IDs this recording covers
             page_urls: Optional specific page URLs discussed in recording
             auditor_info: Optional dict with auditor_name, auditor_role, etc.
-            audit_type: Type of audit (manual, lived_experience, expert_review)
+            recording_type: Type of recording (audit, lived_experience_website, etc.)
 
         Returns:
             Tuple of (Recording object, List of RecordingIssue objects)
@@ -77,7 +77,7 @@ class DictaphoneImporter:
             website_ids=website_ids or [],
             page_urls=page_urls or [],
             auditor_info=auditor_info or {},
-            audit_type=audit_type
+            recording_type=recording_type
         )
 
         logger.info(f"Successfully parsed recording '{recording.recording_id}' with {len(issues)} issues")
@@ -91,7 +91,7 @@ class DictaphoneImporter:
         website_ids: List[str],
         page_urls: List[str],
         auditor_info: Dict[str, Any],
-        audit_type: str
+        recording_type: str
     ) -> Tuple[Recording, List[RecordingIssue]]:
         """
         Parse Dictaphone JSON structure into Recording and RecordingIssue objects.
@@ -102,7 +102,7 @@ class DictaphoneImporter:
             website_ids: Website IDs
             page_urls: Page URLs
             auditor_info: Auditor information
-            audit_type: Type of audit
+            recording_type: Type of recording
 
         Returns:
             Tuple of (Recording, List[RecordingIssue])
@@ -119,12 +119,12 @@ class DictaphoneImporter:
         recording_id = data['recording']
         issues_data = data['issues']
 
-        # Parse audit type
+        # Parse recording type
         try:
-            audit_type_enum = AuditType(audit_type)
+            recording_type_enum = RecordingType(recording_type)
         except ValueError:
-            logger.warning(f"Invalid audit_type '{audit_type}', defaulting to 'manual'")
-            audit_type_enum = AuditType.MANUAL
+            logger.warning(f"Invalid recording_type '{recording_type}', defaulting to 'audit'")
+            recording_type_enum = RecordingType.AUDIT
 
         # Count issues by impact
         high_count = sum(1 for issue in issues_data if issue.get('impact', '').lower() in ['high', 'critical'])
@@ -144,7 +144,7 @@ class DictaphoneImporter:
             recorded_date=auditor_info.get('recorded_date'),
             auditor_name=auditor_info.get('auditor_name'),
             auditor_role=auditor_info.get('auditor_role'),
-            audit_type=audit_type_enum,
+            recording_type=recording_type_enum,
             project_id=project_id,
             website_ids=website_ids,
             page_urls=page_urls,

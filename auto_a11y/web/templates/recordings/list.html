@@ -34,14 +34,14 @@
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label for="audit_type" class="form-label">Audit Type</label>
-                    <select name="audit_type" id="audit_type" class="form-select" onchange="this.form.submit()">
+                    <label for="recording_type" class="form-label">Recording Type</label>
+                    <select name="recording_type" id="recording_type" class="form-select" onchange="this.form.submit()">
                         <option value="">All Types</option>
-                        <option value="manual" {{ 'selected' if selected_audit_type == 'manual' }}>Manual Audit</option>
-                        <option value="lived_experience" {{ 'selected' if selected_audit_type == 'lived_experience' }}>Lived Experience</option>
-                        <option value="expert_review" {{ 'selected' if selected_audit_type == 'expert_review' }}>Expert Review</option>
-                        <option value="usability" {{ 'selected' if selected_audit_type == 'usability' }}>Usability Testing</option>
-                        <option value="cognitive" {{ 'selected' if selected_audit_type == 'cognitive' }}>Cognitive Testing</option>
+                        <option value="audit" {{ 'selected' if selected_recording_type == 'audit' }}>Audit</option>
+                        <option value="lived_experience_website" {{ 'selected' if selected_recording_type == 'lived_experience_website' }}>Lived Experience Website</option>
+                        <option value="lived_experience_app" {{ 'selected' if selected_recording_type == 'lived_experience_app' }}>Lived Experience App</option>
+                        <option value="lived_experience_tangible_device" {{ 'selected' if selected_recording_type == 'lived_experience_tangible_device' }}>Lived Experience Tangible Device</option>
+                        <option value="lived_experience_nav_and_wayfinding" {{ 'selected' if selected_recording_type == 'lived_experience_nav_and_wayfinding' }}>Lived Experience Nav and Wayfinding</option>
                     </select>
                 </div>
             </form>
@@ -56,7 +56,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <h5 class="card-title">{{ recording.title }}</h5>
-                        <span class="badge bg-info">{{ recording.audit_type.value|replace('_', ' ')|title }}</span>
+                        <span class="badge bg-info">{{ recording.recording_type.value|replace('_', ' ')|title }}</span>
                     </div>
 
                     <h6 class="text-muted mb-3">

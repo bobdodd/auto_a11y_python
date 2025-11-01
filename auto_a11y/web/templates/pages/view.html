@@ -662,6 +662,18 @@
                                                             data-bs-toggle="collapse"
                                                             data-bs-target="#viol-instance-{{ instance_id }}">
                                                         <strong>Instance {{ loop.index }}:</strong>
+                                                        {% if violation.metadata and violation.metadata.authenticated_user %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                                                                {% if violation.metadata.authenticated_user.roles %}
+                                                                    ({{ violation.metadata.authenticated_user.roles|join(', ') }})
+                                                                {% endif %}
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person"></i> Guest
+                                                            </span>
+                                                        {% endif %}
                                                         {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
                                                         <span class="ms-2">{{ violation.metadata.duplicateName }}</span>
                                                         {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
@@ -993,6 +1005,18 @@
                                                             data-bs-toggle="collapse"
                                                             data-bs-target="#viol-instance-{{ instance_id }}">
                                                         <strong>Instance {{ loop.index }}:</strong>
+                                                        {% if violation.metadata and violation.metadata.authenticated_user %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                                                                {% if violation.metadata.authenticated_user.roles %}
+                                                                    ({{ violation.metadata.authenticated_user.roles|join(', ') }})
+                                                                {% endif %}
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person"></i> Guest
+                                                            </span>
+                                                        {% endif %}
                                                         {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
                                                         <span class="ms-2">{{ violation.metadata.duplicateName }}</span>
                                                         {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
@@ -1324,6 +1348,18 @@
                                         <span class="badge bg-info me-2" title="Detected by AI analysis">
                                             <i class="bi bi-robot"></i> AI
                                         </span>
+                                        {% endif %}
+                                        {% if violation.metadata and violation.metadata.authenticated_user %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                                                {% if violation.metadata.authenticated_user.roles %}
+                                                    ({{ violation.metadata.authenticated_user.roles|join(', ') }})
+                                                {% endif %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person"></i> Guest
+                                            </span>
                                         {% endif %}
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if 'DiscoFontFound' in violation.id and violation.metadata.fontName %}

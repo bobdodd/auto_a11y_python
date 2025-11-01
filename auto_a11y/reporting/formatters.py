@@ -1206,64 +1206,84 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_violations_sheet(self, ws, violations, styles):
         """Create violations sheet"""
-        headers = ['Rule ID', 'Description', 'Impact', 'WCAG Criteria', 'Elements Affected', 'Suggested Fix']
-        
+        headers = ['Rule ID', 'Description', 'Impact', 'WCAG Criteria', 'Elements Affected', 'Suggested Fix', 'Test User', 'User Roles']
+
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             self._apply_style(cell, styles['header'])
-        
+
         row = 2
         for v in violations:
             ws.cell(row=row, column=1, value=v.get('rule_id', ''))
             ws.cell(row=row, column=2, value=v.get('description', ''))
-            
+
             impact = v.get('impact', 'moderate')
             impact_cell = ws.cell(row=row, column=3, value=impact.upper())
             if impact.lower() in styles:
                 impact_cell.font = styles[impact.lower()]['font']
-            
+
             ws.cell(row=row, column=4, value=', '.join(v.get('wcag_criteria', [])))
             ws.cell(row=row, column=5, value=v.get('node_count', 0))
             ws.cell(row=row, column=6, value=v.get('suggested_fix', ''))
-            
+
+            # Add authenticated user info
+            metadata = v.get('metadata', {})
+            auth_user = metadata.get('authenticated_user', {})
+            if auth_user:
+                ws.cell(row=row, column=7, value=auth_user.get('display_name', ''))
+                ws.cell(row=row, column=8, value=', '.join(auth_user.get('roles', [])))
+            else:
+                ws.cell(row=row, column=7, value='Guest')
+                ws.cell(row=row, column=8, value='no login')
+
             # Apply row coloring
-            for col in range(1, 7):
+            for col in range(1, 9):
                 ws.cell(row=row, column=col).fill = styles['violation']['fill']
-            
+
             row += 1
-        
+
         self._auto_adjust_columns(ws)
     
     def _create_warnings_sheet(self, ws, warnings, styles):
         """Create warnings sheet"""
-        headers = ['Rule ID', 'Description', 'Elements Affected']
-        
+        headers = ['Rule ID', 'Description', 'Elements Affected', 'Test User', 'User Roles']
+
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             self._apply_style(cell, styles['header'])
-        
+
         row = 2
         for w in warnings:
             ws.cell(row=row, column=1, value=w.get('rule_id', ''))
             ws.cell(row=row, column=2, value=w.get('description', ''))
             ws.cell(row=row, column=3, value=w.get('node_count', 0))
-            
+
+            # Add authenticated user info
+            metadata = w.get('metadata', {})
+            auth_user = metadata.get('authenticated_user', {})
+            if auth_user:
+                ws.cell(row=row, column=4, value=auth_user.get('display_name', ''))
+                ws.cell(row=row, column=5, value=', '.join(auth_user.get('roles', [])))
+            else:
+                ws.cell(row=row, column=4, value='Guest')
+                ws.cell(row=row, column=5, value='no login')
+
             # Apply row coloring
-            for col in range(1, 4):
+            for col in range(1, 6):
                 ws.cell(row=row, column=col).fill = styles['warning']['fill']
-            
+
             row += 1
-        
+
         self._auto_adjust_columns(ws)
     
     def _create_info_sheet(self, ws, info_items, styles):
         """Create info sheet"""
-        headers = ['ID', 'Description', 'Category', 'WCAG Criteria', 'Location']
-        
+        headers = ['ID', 'Description', 'Category', 'WCAG Criteria', 'Location', 'Test User', 'User Roles']
+
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             self._apply_style(cell, styles['header'])
-        
+
         row = 2
         for item in info_items:
             ws.cell(row=row, column=1, value=item.get('id', ''))
@@ -1271,23 +1291,33 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=3, value=item.get('category', ''))
             ws.cell(row=row, column=4, value=', '.join(item.get('wcag_criteria', [])))
             ws.cell(row=row, column=5, value=item.get('xpath', ''))
-            
+
+            # Add authenticated user info
+            metadata = item.get('metadata', {})
+            auth_user = metadata.get('authenticated_user', {})
+            if auth_user:
+                ws.cell(row=row, column=6, value=auth_user.get('display_name', ''))
+                ws.cell(row=row, column=7, value=', '.join(auth_user.get('roles', [])))
+            else:
+                ws.cell(row=row, column=6, value='Guest')
+                ws.cell(row=row, column=7, value='no login')
+
             # Apply info coloring (blue)
-            for col in range(1, 6):
+            for col in range(1, 8):
                 ws.cell(row=row, column=col).fill = styles['info']['fill']
-            
+
             row += 1
-        
+
         self._auto_adjust_columns(ws)
     
     def _create_discovery_sheet(self, ws, discovery_items, styles):
         """Create discovery sheet"""
-        headers = ['ID', 'Description', 'Category', 'Location', 'Manual Check Required']
-        
+        headers = ['ID', 'Description', 'Category', 'Location', 'Manual Check Required', 'Test User', 'User Roles']
+
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             self._apply_style(cell, styles['header'])
-        
+
         row = 2
         for item in discovery_items:
             ws.cell(row=row, column=1, value=item.get('id', ''))
@@ -1295,9 +1325,19 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=3, value=item.get('category', ''))
             ws.cell(row=row, column=4, value=item.get('xpath', ''))
             ws.cell(row=row, column=5, value='Yes')
-            
+
+            # Add authenticated user info
+            metadata = item.get('metadata', {})
+            auth_user = metadata.get('authenticated_user', {})
+            if auth_user:
+                ws.cell(row=row, column=6, value=auth_user.get('display_name', ''))
+                ws.cell(row=row, column=7, value=', '.join(auth_user.get('roles', [])))
+            else:
+                ws.cell(row=row, column=6, value='Guest')
+                ws.cell(row=row, column=7, value='no login')
+
             # Apply discovery coloring (purple)
-            for col in range(1, 6):
+            for col in range(1, 8):
                 cell = ws.cell(row=row, column=col)
                 if 'discovery' in styles:
                     cell.fill = styles['discovery']['fill']
@@ -1305,9 +1345,9 @@ class ExcelFormatter(BaseFormatter):
                     # Use a purple-ish color if not defined
                     from openpyxl.styles import PatternFill
                     cell.fill = PatternFill(start_color="E6E0FF", end_color="E6E0FF", fill_type="solid")
-            
+
             row += 1
-        
+
         self._auto_adjust_columns(ws)
     
     def _create_ai_findings_sheet(self, ws, findings, styles):
@@ -1361,7 +1401,7 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_all_issues_sheet(self, ws, data, styles):
         """Create a combined sheet with all issues (violations, warnings, info, discovery)"""
-        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Breakpoint (px)', 'Pseudoclass', 'Page State']
+        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Breakpoint (px)', 'Pseudoclass', 'Page State', 'Test User', 'User Roles']
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1401,8 +1441,17 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=14, value=metadata.get('pseudoclass', ''))
             ws.cell(row=row, column=15, value=page_state_desc)
 
+            # Add authenticated user info
+            auth_user = metadata.get('authenticated_user', {})
+            if auth_user:
+                ws.cell(row=row, column=16, value=auth_user.get('display_name', ''))
+                ws.cell(row=row, column=17, value=', '.join(auth_user.get('roles', [])))
+            else:
+                ws.cell(row=row, column=16, value='Guest')
+                ws.cell(row=row, column=17, value='no login')
+
             # Apply violation coloring
-            for col in range(1, 16):
+            for col in range(1, 18):
                 ws.cell(row=row, column=col).fill = styles['violation']['fill']
 
             row += 1
@@ -1428,8 +1477,17 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=14, value=metadata.get('pseudoclass', ''))
             ws.cell(row=row, column=15, value=page_state_desc)
 
+            # Add authenticated user info
+            auth_user = metadata.get('authenticated_user', {})
+            if auth_user:
+                ws.cell(row=row, column=16, value=auth_user.get('display_name', ''))
+                ws.cell(row=row, column=17, value=', '.join(auth_user.get('roles', [])))
+            else:
+                ws.cell(row=row, column=16, value='Guest')
+                ws.cell(row=row, column=17, value='no login')
+
             # Apply warning coloring
-            for col in range(1, 16):
+            for col in range(1, 18):
                 ws.cell(row=row, column=col).fill = styles['warning']['fill']
 
             row += 1
@@ -1455,8 +1513,17 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=14, value=metadata.get('pseudoclass', ''))
             ws.cell(row=row, column=15, value=page_state_desc)
 
+            # Add authenticated user info
+            auth_user = metadata.get('authenticated_user', {})
+            if auth_user:
+                ws.cell(row=row, column=16, value=auth_user.get('display_name', ''))
+                ws.cell(row=row, column=17, value=', '.join(auth_user.get('roles', [])))
+            else:
+                ws.cell(row=row, column=16, value='Guest')
+                ws.cell(row=row, column=17, value='no login')
+
             # Apply info coloring
-            for col in range(1, 16):
+            for col in range(1, 18):
                 ws.cell(row=row, column=col).fill = styles['info']['fill']
 
             row += 1
@@ -1482,8 +1549,17 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=14, value=metadata.get('pseudoclass', ''))
             ws.cell(row=row, column=15, value=page_state_desc)
 
+            # Add authenticated user info
+            auth_user = metadata.get('authenticated_user', {})
+            if auth_user:
+                ws.cell(row=row, column=16, value=auth_user.get('display_name', ''))
+                ws.cell(row=row, column=17, value=', '.join(auth_user.get('roles', [])))
+            else:
+                ws.cell(row=row, column=16, value='Guest')
+                ws.cell(row=row, column=17, value='no login')
+
             # Apply discovery coloring
-            for col in range(1, 16):
+            for col in range(1, 18):
                 cell = ws.cell(row=row, column=col)
                 if 'discovery' in styles:
                     cell.fill = styles['discovery']['fill']

@@ -216,13 +216,13 @@ def create_project():
         name = request.form.get('name')
         description = request.form.get('description', '')
         wcag_level = request.form.get('wcag_level', 'AA')
-        project_type_value = request.form.get('project_type', 'websites')
+        project_type_value = request.form.get('project_type', 'website')
 
         # Parse project type
         try:
             project_type = ProjectType(project_type_value)
         except ValueError:
-            project_type = ProjectType.WEBSITES
+            project_type = ProjectType.WEBSITE
 
         # Get type-specific fields
         app_identifier = request.form.get('app_identifier', '').strip() or None

@@ -45,7 +45,7 @@
                         <h5 class="card-title">{{ project.name }}</h5>
                         <div>
                             <span class="badge bg-secondary me-1">
-                                <i class="bi bi-{{ {'websites': 'globe', 'app': 'phone', 'tangible_device': 'device-hdd', 'nav_and_wayfinding': 'signpost'}[project.project_type.value] }}"></i>
+                                <i class="bi bi-{{ {'website': 'globe', 'app': 'phone', 'tangible_device': 'device-hdd', 'nav_and_wayfinding': 'signpost'}[project.project_type.value] }}"></i>
                                 {{ project.project_type_display }}
                             </span>
                             <span class="badge bg-{{ {'active': 'success', 'paused': 'warning', 'completed': 'info', 'archived': 'secondary'}[project.status.value] }}">

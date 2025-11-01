@@ -136,6 +136,7 @@ class Database:
         self.recordings.create_index("project_id")
         self.recordings.create_index("recorded_date")
         self.recordings.create_index("recording_type")
+        self.recordings.create_index("component_names")  # For component-specific queries
         self.recordings.create_index([("project_id", 1), ("recorded_date", -1)])
 
         # Recording issues
@@ -143,6 +144,7 @@ class Database:
         self.recording_issues.create_index("project_id")
         self.recording_issues.create_index("impact")
         self.recording_issues.create_index("status")
+        self.recording_issues.create_index("component_names")  # For component-specific queries
         self.recording_issues.create_index([("recording_id", 1), ("impact", 1)])
         self.recording_issues.create_index([("project_id", 1), ("status", 1)])
     

@@ -38,6 +38,11 @@ class DictaphoneImporter:
         project_id: str,
         website_ids: Optional[List[str]] = None,
         page_urls: Optional[List[str]] = None,
+        page_ids: Optional[List[str]] = None,
+        component_names: Optional[List[str]] = None,
+        app_screens: Optional[List[str]] = None,
+        device_sections: Optional[List[str]] = None,
+        task_description: Optional[str] = None,
         auditor_info: Optional[Dict[str, Any]] = None,
         recording_type: str = "audit"
     ) -> Tuple[Recording, List[RecordingIssue]]:
@@ -49,6 +54,11 @@ class DictaphoneImporter:
             project_id: AutoA11y project ID to attach to
             website_ids: Optional website IDs this recording covers
             page_urls: Optional specific page URLs discussed in recording
+            page_ids: Optional specific page IDs from database
+            component_names: Optional common component names (header, nav, footer, etc.)
+            app_screens: Optional app screens/views covered
+            device_sections: Optional device sections covered
+            task_description: Optional task being performed
             auditor_info: Optional dict with auditor_name, auditor_role, etc.
             recording_type: Type of recording (audit, lived_experience_website, etc.)
 
@@ -76,6 +86,11 @@ class DictaphoneImporter:
             project_id=project_id,
             website_ids=website_ids or [],
             page_urls=page_urls or [],
+            page_ids=page_ids or [],
+            component_names=component_names or [],
+            app_screens=app_screens or [],
+            device_sections=device_sections or [],
+            task_description=task_description,
             auditor_info=auditor_info or {},
             recording_type=recording_type
         )
@@ -90,6 +105,11 @@ class DictaphoneImporter:
         project_id: str,
         website_ids: List[str],
         page_urls: List[str],
+        page_ids: List[str],
+        component_names: List[str],
+        app_screens: List[str],
+        device_sections: List[str],
+        task_description: Optional[str],
         auditor_info: Dict[str, Any],
         recording_type: str
     ) -> Tuple[Recording, List[RecordingIssue]]:
@@ -148,6 +168,11 @@ class DictaphoneImporter:
             project_id=project_id,
             website_ids=website_ids,
             page_urls=page_urls,
+            page_ids=page_ids,
+            component_names=component_names,
+            app_screens=app_screens,
+            device_sections=device_sections,
+            task_description=task_description,
             total_issues=len(issues_data),
             high_impact_count=high_count,
             medium_impact_count=medium_count,
@@ -165,9 +190,14 @@ class DictaphoneImporter:
                     recording_id=recording_id,
                     project_id=project_id
                 )
-                # Add page_urls and website_ids from recording
-                issue.page_urls = page_urls
+                # Add component references from recording
                 issue.website_ids = website_ids
+                issue.page_urls = page_urls
+                issue.page_ids = page_ids
+                issue.component_names = component_names
+                issue.app_screens = app_screens
+                issue.device_sections = device_sections
+                issue.task_description = task_description
 
                 # Infer touchpoint from WCAG criteria if not present
                 if not issue.touchpoint:

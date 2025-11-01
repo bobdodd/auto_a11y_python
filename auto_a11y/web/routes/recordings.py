@@ -128,10 +128,17 @@ def upload_recording():
         auditor_role = request.form.get('auditor_role', '')
         recording_type = request.form.get('recording_type', 'audit')
         page_urls_str = request.form.get('page_urls', '')
+        component_names_str = request.form.get('component_names', '')
+        app_screens_str = request.form.get('app_screens', '')
+        device_sections_str = request.form.get('device_sections', '')
+        task_description = request.form.get('task_description', '').strip() or None
         media_file_path = request.form.get('media_file_path', '')
 
-        # Parse page URLs
+        # Parse multi-line fields
         page_urls = [url.strip() for url in page_urls_str.split('\n') if url.strip()]
+        component_names = [c.strip() for c in component_names_str.split('\n') if c.strip()]
+        app_screens = [s.strip() for s in app_screens_str.split('\n') if s.strip()]
+        device_sections = [d.strip() for d in device_sections_str.split('\n') if d.strip()]
 
         # Save uploaded file temporarily
         import tempfile
@@ -160,6 +167,10 @@ def upload_recording():
                 tmp_file_path,
                 project_id=project_id,
                 page_urls=page_urls,
+                component_names=component_names,
+                app_screens=app_screens,
+                device_sections=device_sections,
+                task_description=task_description,
                 auditor_info=auditor_info,
                 recording_type=recording_type
             )

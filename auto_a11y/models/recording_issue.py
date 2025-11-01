@@ -46,8 +46,17 @@ class RecordingIssue:
 
     # Relationships
     project_id: Optional[str] = None
-    page_urls: List[str] = field(default_factory=list)  # Pages where issue occurs
-    website_ids: List[str] = field(default_factory=list)
+
+    # Component/Section references (same as Recording model)
+    website_ids: List[str] = field(default_factory=list)  # Specific websites
+    page_urls: List[str] = field(default_factory=list)  # Specific page URLs where issue occurs
+    page_ids: List[str] = field(default_factory=list)  # Specific page IDs
+    component_names: List[str] = field(default_factory=list)  # Common components affected
+    app_screens: List[str] = field(default_factory=list)  # App screens where issue occurs
+    device_sections: List[str] = field(default_factory=list)  # Device sections affected
+
+    # Task context
+    task_description: Optional[str] = None  # Task being performed when issue encountered
 
     # Status tracking
     status: str = "open"  # open, in_progress, resolved, verified
@@ -89,8 +98,13 @@ class RecordingIssue:
             'element': self.element,
             'html': self.html,
             'project_id': self.project_id,
-            'page_urls': self.page_urls,
             'website_ids': self.website_ids,
+            'page_urls': self.page_urls,
+            'page_ids': self.page_ids,
+            'component_names': self.component_names,
+            'app_screens': self.app_screens,
+            'device_sections': self.device_sections,
+            'task_description': self.task_description,
             'status': self.status,
             'assigned_to': self.assigned_to,
             'resolution_notes': self.resolution_notes,
@@ -147,8 +161,13 @@ class RecordingIssue:
             element=data.get('element'),
             html=data.get('html'),
             project_id=data.get('project_id'),
-            page_urls=data.get('page_urls', []),
             website_ids=data.get('website_ids', []),
+            page_urls=data.get('page_urls', []),
+            page_ids=data.get('page_ids', []),
+            component_names=data.get('component_names', []),
+            app_screens=data.get('app_screens', []),
+            device_sections=data.get('device_sections', []),
+            task_description=data.get('task_description'),
             status=data.get('status', 'open'),
             assigned_to=data.get('assigned_to'),
             resolution_notes=data.get('resolution_notes'),

@@ -39,8 +39,17 @@ class Recording:
 
     # Relationships
     project_id: Optional[str] = None  # Link to AutoA11y project
-    website_ids: List[str] = field(default_factory=list)  # Websites covered
-    page_urls: List[str] = field(default_factory=list)  # Specific URLs discussed
+
+    # Component/Section references (context-specific based on project type)
+    website_ids: List[str] = field(default_factory=list)  # Specific websites (for WEBSITE projects)
+    page_urls: List[str] = field(default_factory=list)  # Specific page URLs
+    page_ids: List[str] = field(default_factory=list)  # Specific page IDs (from database)
+    component_names: List[str] = field(default_factory=list)  # Common components (header, nav, footer, etc.)
+    app_screens: List[str] = field(default_factory=list)  # Specific screens/views (for APP projects)
+    device_sections: List[str] = field(default_factory=list)  # Device sections (for TANGIBLE_DEVICE projects)
+
+    # Task context
+    task_description: Optional[str] = None  # Specific task performed (e.g., "Complete checkout process", "Navigate to settings")
 
     # Statistics (computed from issues)
     total_issues: int = 0
@@ -76,6 +85,11 @@ class Recording:
             'project_id': self.project_id,
             'website_ids': self.website_ids,
             'page_urls': self.page_urls,
+            'page_ids': self.page_ids,
+            'component_names': self.component_names,
+            'app_screens': self.app_screens,
+            'device_sections': self.device_sections,
+            'task_description': self.task_description,
             'total_issues': self.total_issues,
             'high_impact_count': self.high_impact_count,
             'medium_impact_count': self.medium_impact_count,
@@ -112,6 +126,11 @@ class Recording:
             project_id=data.get('project_id'),
             website_ids=data.get('website_ids', []),
             page_urls=data.get('page_urls', []),
+            page_ids=data.get('page_ids', []),
+            component_names=data.get('component_names', []),
+            app_screens=data.get('app_screens', []),
+            device_sections=data.get('device_sections', []),
+            task_description=data.get('task_description'),
             total_issues=data.get('total_issues', 0),
             high_impact_count=data.get('high_impact_count', 0),
             medium_impact_count=data.get('medium_impact_count', 0),

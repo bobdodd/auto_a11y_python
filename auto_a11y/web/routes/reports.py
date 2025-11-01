@@ -551,3 +551,33 @@ def generate_static_html_report():
         logger.error(f"Failed to generate static HTML report: {e}", exc_info=True)
         flash(f'Failed to generate report: {str(e)}', 'error')
         return redirect(url_for('reports.reports_dashboard'))
+
+
+@reports_bp.route('/generate/deduplicated', methods=['POST'])
+def generate_deduplicated_report():
+    """Generate deduplicated offline HTML report for a project or website"""
+    project_id = request.form.get('project_id')
+    website_id = request.form.get('website_id')
+
+    try:
+        # Initialize static HTML generator
+        generator = StaticHTMLReportGenerator(
+            current_app.db,
+            output_dir=current_app.app_config.REPORTS_DIR
+        )
+
+        # Generate deduplicated report (returns ZIP path)
+        # If website_id is provided, pass it along; otherwise generate for all websites in project
+        zip_path = generator.generate_project_deduplicated_report(
+            project_id=project_id,
+            website_id=website_id if website_id else None
+        )
+
+        # Flash success message and redirect to dashboard
+        flash(f'Deduplicated report generated successfully!', 'success')
+        return redirect(url_for('reports.reports_dashboard'))
+
+    except Exception as e:
+        logger.error(f"Failed to generate deduplicated report: {e}", exc_info=True)
+        flash(f'Failed to generate report: {str(e)}', 'error')
+        return redirect(url_for('reports.reports_dashboard'))

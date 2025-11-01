@@ -12,7 +12,11 @@ import logging
 
 from auto_a11y.models import (
     Project, Website, Page, TestResult,
-    ProjectStatus, PageStatus
+    ProjectStatus, PageStatus,
+    Recording, RecordingIssue, AuditType,
+    DocumentReference, DiscoveryRun,
+    PageSetupScript, ScriptExecutionSession,
+    WebsiteUser
 )
 
 logger = logging.getLogger(__name__)
@@ -44,6 +48,8 @@ class Database:
         self.page_setup_scripts: Collection = self.db.page_setup_scripts  # Page training scripts
         self.script_execution_sessions: Collection = self.db.script_execution_sessions  # Session tracking
         self.website_users: Collection = self.db.website_users  # Test users for authenticated testing
+        self.recordings: Collection = self.db.recordings  # Manual audit recordings from Dictaphone
+        self.recording_issues: Collection = self.db.recording_issues  # Issues from manual audits
 
         # Create indexes
         self._create_indexes()
@@ -122,6 +128,21 @@ class Database:
         self.website_users.create_index([("website_id", 1), ("username", 1)], unique=True)
         self.website_users.create_index([("website_id", 1), ("enabled", 1)])
         self.website_users.create_index("roles")
+
+        # Recordings (manual audit recordings)
+        self.recordings.create_index("recording_id", unique=True)
+        self.recordings.create_index("project_id")
+        self.recordings.create_index("recorded_date")
+        self.recordings.create_index("audit_type")
+        self.recordings.create_index([("project_id", 1), ("recorded_date", -1)])
+
+        # Recording issues
+        self.recording_issues.create_index("recording_id")
+        self.recording_issues.create_index("project_id")
+        self.recording_issues.create_index("impact")
+        self.recording_issues.create_index("status")
+        self.recording_issues.create_index([("recording_id", 1), ("impact", 1)])
+        self.recording_issues.create_index([("project_id", 1), ("status", 1)])
     
     def test_connection(self) -> bool:
         """Test database connection"""
@@ -1833,3 +1854,165 @@ class Database:
 
         results = self.website_users.aggregate(pipeline)
         return [doc["_id"] for doc in results]
+    # Recording operations (Manual audits from Dictaphone)
+
+    def create_recording(self, recording: Recording) -> str:
+        """Create new recording"""
+        result = self.recordings.insert_one(recording.to_dict())
+        recording._id = result.inserted_id
+        logger.info(f"Created recording: {recording.recording_id} ({recording.id})")
+        return recording.id
+
+    def get_recording(self, recording_id: str) -> Optional[Recording]:
+        """Get recording by MongoDB ID"""
+        doc = self.recordings.find_one({"_id": ObjectId(recording_id)})
+        return Recording.from_dict(doc) if doc else None
+
+    def get_recording_by_recording_id(self, recording_id: str) -> Optional[Recording]:
+        """Get recording by recording_id field (e.g., 'NED-A')"""
+        doc = self.recordings.find_one({"recording_id": recording_id})
+        return Recording.from_dict(doc) if doc else None
+
+    def get_recordings(
+        self,
+        project_id: Optional[str] = None,
+        audit_type: Optional[AuditType] = None,
+        limit: int = 100,
+        skip: int = 0
+    ) -> List[Recording]:
+        """Get recordings with optional filtering"""
+        query = {}
+        if project_id:
+            query["project_id"] = project_id
+        if audit_type:
+            query["audit_type"] = audit_type.value
+
+        docs = self.recordings.find(query).sort("recorded_date", -1).limit(limit).skip(skip)
+        return [Recording.from_dict(doc) for doc in docs]
+
+    def get_recordings_for_project(self, project_id: str) -> List[Recording]:
+        """Get all recordings for a project"""
+        docs = self.recordings.find({"project_id": project_id}).sort("recorded_date", -1)
+        return [Recording.from_dict(doc) for doc in docs]
+
+    def update_recording(self, recording: Recording) -> bool:
+        """Update existing recording"""
+        recording.updated_at = datetime.now()
+        result = self.recordings.replace_one(
+            {"_id": recording._id},
+            recording.to_dict()
+        )
+        return result.modified_count > 0
+
+    def delete_recording(self, recording_id: str) -> bool:
+        """Delete recording and related issues"""
+        # Get recording to find recording_id field
+        recording = self.get_recording(recording_id)
+        if recording:
+            # Delete related issues
+            self.recording_issues.delete_many({"recording_id": recording.recording_id})
+
+        # Delete recording
+        result = self.recordings.delete_one({"_id": ObjectId(recording_id)})
+        logger.info(f"Deleted recording: {recording_id}")
+        return result.deleted_count > 0
+
+    def get_recording_count(self, project_id: Optional[str] = None) -> int:
+        """Get total count of recordings"""
+        query = {}
+        if project_id:
+            query["project_id"] = project_id
+        return self.recordings.count_documents(query)
+
+    # Recording Issue operations
+
+    def create_recording_issue(self, issue: RecordingIssue) -> str:
+        """Create new recording issue"""
+        result = self.recording_issues.insert_one(issue.to_dict())
+        issue._id = result.inserted_id
+        return issue.id
+
+    def create_recording_issues_bulk(self, issues: List[RecordingIssue]) -> List[str]:
+        """Create multiple recording issues at once"""
+        if not issues:
+            return []
+
+        docs = [issue.to_dict() for issue in issues]
+        result = self.recording_issues.insert_many(docs)
+
+        # Update issue objects with their new IDs
+        for issue, inserted_id in zip(issues, result.inserted_ids):
+            issue._id = inserted_id
+
+        logger.info(f"Created {len(issues)} recording issues")
+        return [str(id) for id in result.inserted_ids]
+
+    def get_recording_issue(self, issue_id: str) -> Optional[RecordingIssue]:
+        """Get recording issue by ID"""
+        doc = self.recording_issues.find_one({"_id": ObjectId(issue_id)})
+        return RecordingIssue.from_dict(doc) if doc else None
+
+    def get_recording_issues(
+        self,
+        recording_id: Optional[str] = None,
+        project_id: Optional[str] = None,
+        status: Optional[str] = None,
+        limit: int = 1000,
+        skip: int = 0
+    ) -> List[RecordingIssue]:
+        """Get recording issues with optional filtering"""
+        query = {}
+        if recording_id:
+            query["recording_id"] = recording_id
+        if project_id:
+            query["project_id"] = project_id
+        if status:
+            query["status"] = status
+
+        docs = self.recording_issues.find(query).limit(limit).skip(skip)
+        return [RecordingIssue.from_dict(doc) for doc in docs]
+
+    def get_recording_issues_for_recording(self, recording_id: str) -> List[RecordingIssue]:
+        """Get all issues for a specific recording"""
+        docs = self.recording_issues.find({"recording_id": recording_id})
+        return [RecordingIssue.from_dict(doc) for doc in docs]
+
+    def update_recording_issue(self, issue: RecordingIssue) -> bool:
+        """Update existing recording issue"""
+        issue.updated_at = datetime.now()
+        result = self.recording_issues.replace_one(
+            {"_id": issue._id},
+            issue.to_dict()
+        )
+        return result.modified_count > 0
+
+    def delete_recording_issue(self, issue_id: str) -> bool:
+        """Delete recording issue"""
+        result = self.recording_issues.delete_one({"_id": ObjectId(issue_id)})
+        return result.deleted_count > 0
+
+    def get_recording_issue_count(
+        self,
+        recording_id: Optional[str] = None,
+        project_id: Optional[str] = None
+    ) -> int:
+        """Get total count of recording issues"""
+        query = {}
+        if recording_id:
+            query["recording_id"] = recording_id
+        if project_id:
+            query["project_id"] = project_id
+        return self.recording_issues.count_documents(query)
+
+    def update_recording_issue_status(self, issue_id: str, status: str) -> bool:
+        """Update status of a recording issue"""
+        result = self.recording_issues.update_one(
+            {"_id": ObjectId(issue_id)},
+            {
+                "$set": {
+                    "status": status,
+                    "updated_at": datetime.now()
+                }
+            }
+        )
+        return result.modified_count > 0

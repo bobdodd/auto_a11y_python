@@ -407,12 +407,32 @@ class TestRunner:
 
                 # Add authenticated user information to metadata
                 if authenticated_user:
-                    test_result.metadata['authenticated_user'] = {
+                    user_info = {
                         'user_id': authenticated_user.id,
                         'username': authenticated_user.username,
                         'display_name': authenticated_user.display_name,
                         'roles': authenticated_user.roles
                     }
+
+                    # Add to test result metadata
+                    test_result.metadata['authenticated_user'] = user_info
+
+                    # Add to each violation's metadata
+                    for violation in test_result.violations:
+                        violation.metadata['authenticated_user'] = user_info
+
+                    # Add to each warning's metadata
+                    for warning in test_result.warnings:
+                        warning.metadata['authenticated_user'] = user_info
+
+                    # Add to each info item's metadata
+                    for info in test_result.info:
+                        info.metadata['authenticated_user'] = user_info
+
+                    # Add to each discovery item's metadata
+                    for discovery in test_result.discovery:
+                        discovery.metadata['authenticated_user'] = user_info
+
                     logger.info(f"Test completed as authenticated user: {authenticated_user.username}")
 
                 # Save test result to database
@@ -653,13 +673,33 @@ class TestRunner:
 
                 # Add authenticated user information to all results
                 if authenticated_user:
+                    user_info = {
+                        'user_id': authenticated_user.id,
+                        'username': authenticated_user.username,
+                        'display_name': authenticated_user.display_name,
+                        'roles': authenticated_user.roles
+                    }
+
                     for result in results:
-                        result.metadata['authenticated_user'] = {
-                            'user_id': authenticated_user.id,
-                            'username': authenticated_user.username,
-                            'display_name': authenticated_user.display_name,
-                            'roles': authenticated_user.roles
-                        }
+                        # Add to result metadata
+                        result.metadata['authenticated_user'] = user_info
+
+                        # Add to each violation's metadata
+                        for violation in result.violations:
+                            violation.metadata['authenticated_user'] = user_info
+
+                        # Add to each warning's metadata
+                        for warning in result.warnings:
+                            warning.metadata['authenticated_user'] = user_info
+
+                        # Add to each info item's metadata
+                        for info in result.info:
+                            info.metadata['authenticated_user'] = user_info
+
+                        # Add to each discovery item's metadata
+                        for discovery in result.discovery:
+                            discovery.metadata['authenticated_user'] = user_info
+
                     logger.info(f"Multi-state tests completed as authenticated user: {authenticated_user.username}")
 
                 # Save all results to database

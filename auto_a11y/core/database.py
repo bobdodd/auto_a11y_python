@@ -12,7 +12,7 @@ import logging
 
 from auto_a11y.models import (
     Project, Website, Page, TestResult,
-    ProjectStatus, PageStatus,
+    ProjectStatus, ProjectType, PageStatus,
     Recording, RecordingIssue, RecordingType,
     DocumentReference, DiscoveryRun,
     PageSetupScript, ScriptExecutionSession,
@@ -61,6 +61,8 @@ class Database:
         # Projects
         self.projects.create_index("name")
         self.projects.create_index("status")
+        self.projects.create_index("project_type")
+        self.projects.create_index([("project_type", 1), ("status", 1)])
         
         # Websites
         self.websites.create_index("project_id")

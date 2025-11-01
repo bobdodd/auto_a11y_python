@@ -3,7 +3,7 @@ Project management routes
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
-from auto_a11y.models import Project, ProjectStatus
+from auto_a11y.models import Project, ProjectStatus, ProjectType
 import logging
 
 logger = logging.getLogger(__name__)
@@ -216,7 +216,19 @@ def create_project():
         name = request.form.get('name')
         description = request.form.get('description', '')
         wcag_level = request.form.get('wcag_level', 'AA')
-        
+        project_type_value = request.form.get('project_type', 'websites')
+
+        # Parse project type
+        try:
+            project_type = ProjectType(project_type_value)
+        except ValueError:
+            project_type = ProjectType.WEBSITES
+
+        # Get type-specific fields
+        app_identifier = request.form.get('app_identifier', '').strip() or None
+        device_model = request.form.get('device_model', '').strip() or None
+        location = request.form.get('location', '').strip() or None
+
         if not name:
             flash('Project name is required', 'error')
             # Redirect to GET handler which will populate everything
@@ -282,6 +294,10 @@ def create_project():
             name=name,
             description=description,
             status=ProjectStatus.ACTIVE,
+            project_type=project_type,
+            app_identifier=app_identifier,
+            device_model=device_model,
+            location=location,
             config={
                 'wcag_level': wcag_level,
                 'page_load_strategy': page_load_strategy,

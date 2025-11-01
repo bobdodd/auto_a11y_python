@@ -249,9 +249,29 @@ def view_page(page_id):
     website = current_app.db.get_website(page.website_id)
     project = current_app.db.get_project(website.project_id)
 
-    # Get latest test result and enrich with catalog data
-    test_result = current_app.db.get_latest_test_result(page_id)
-    test_result = enrich_test_result_with_catalog(test_result)
+    # Get latest test result per user and enrich with catalog data
+    latest_results_per_user = current_app.db.get_latest_test_results_per_user(page_id)
+    latest_results_per_user = [enrich_test_result_with_catalog(r) for r in latest_results_per_user]
+
+    # Check if user selected a specific user filter
+    selected_user_id = request.args.get('user_id', None)
+
+    # Determine which result to display as primary
+    test_result = None
+    if latest_results_per_user:
+        if selected_user_id is not None:
+            # Find result for selected user
+            for r in latest_results_per_user:
+                user_id = r.metadata.get('authenticated_user', {}).get('user_id') if r.metadata else None
+                if (selected_user_id == 'guest' and not user_id) or (user_id == selected_user_id):
+                    test_result = r
+                    break
+            # If not found, default to first result
+            if not test_result:
+                test_result = latest_results_per_user[0]
+        else:
+            # No filter, show first result (most recent overall)
+            test_result = latest_results_per_user[0]
 
     # Check if this is multi-state testing (has session_id and related results)
     state_results = []
@@ -321,6 +341,8 @@ def view_page(page_id):
                          website=website,
                          project=project,
                          latest_result=test_result,
+                         latest_results_per_user=latest_results_per_user,  # NEW: Latest result per user
+                         selected_user_id=selected_user_id,  # NEW: Currently selected user filter
                          state_results=state_results,  # NEW: Multi-state results
                          selected_state_index=selected_state_index,  # NEW: Currently selected state
                          score_data=score_data,

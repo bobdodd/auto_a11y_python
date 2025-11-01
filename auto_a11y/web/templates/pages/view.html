@@ -506,14 +506,12 @@
     {% endif %}
 
     <!-- Test Results Detail -->
-    {% if latest_results_per_user %}
-    {% set latest_result = latest_results_per_user[0] if not selected_user_id else latest_result %}
-    {% set screenshot_filename = latest_result.screenshot_path.split('/')[-1] if latest_result and latest_result.screenshot_path else none %}
+    {% if latest_result %}
+    {% set screenshot_filename = latest_result.screenshot_path.split('/')[-1] if latest_result.screenshot_path else none %}
     <div class="card test-results-card" data-filterable="true">
         <div class="card-header">
             <h5 class="mb-0">Latest Test Results</h5>
             <small class="text-muted">
-                {% if latest_result %}
                 Tested on {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
                 {% if latest_result.metadata and latest_result.metadata.get('authenticated_user') %}
                     | <i class="bi bi-person-fill"></i>
@@ -524,37 +522,8 @@
                 {% else %}
                     | <i class="bi bi-person"></i> <strong>Guest</strong> (no login)
                 {% endif %}
-                {% endif %}
             </small>
         </div>
-
-        <!-- User Filter -->
-        {% if latest_results_per_user|length > 1 %}
-        <div class="card-body border-bottom bg-light">
-            <h6 class="mb-3"><i class="bi bi-people-fill"></i> Filter by Test User</h6>
-            <p class="text-muted small mb-3">
-                This page has been tested with multiple users. Select a user to view their test results.
-            </p>
-            <div class="btn-group flex-wrap" role="group" aria-label="Test users">
-                {% for user_result in latest_results_per_user %}
-                    {% set user_data = user_result.metadata.get('authenticated_user') if user_result.metadata else None %}
-                    {% set user_id = user_data.user_id if user_data else 'guest' %}
-                    {% set user_display = user_data.display_name if user_data else 'Guest' %}
-                    {% set user_roles = user_data.roles|join(', ') if user_data and user_data.roles else 'no login' %}
-                    {% set is_active = (selected_user_id == user_id) or (not selected_user_id and loop.first) %}
-                    <a href="{{ url_for('pages.view_page', page_id=page.id, user_id=user_id) }}"
-                       class="btn btn-outline-primary {% if is_active %}active{% endif %}">
-                        <i class="bi bi-person{% if user_data %}-fill{% endif %}"></i>
-                        {{ user_display }}
-                        <br>
-                        <small class="{% if is_active %}text-white{% else %}text-muted{% endif %}">
-                            {{ user_roles }}{% if user_result.violations %} | Errors: {{ user_result.violations|length }}{% endif %}
-                        </small>
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
 
         <!-- Multi-State Selector -->
         {% if state_results and state_results|length > 1 %}

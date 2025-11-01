@@ -9,6 +9,7 @@ class IssueFilterManager {
             type: new Set(),
             impact: new Set(),
             touchpoint: new Set(),
+            testUser: new Set(),  // Filter by authenticated test user
             search: ''
         };
 

@@ -1941,7 +1941,7 @@ class ExcelFormatter(BaseFormatter):
         """Create a deduplicated issues sheet that groups issues by common components"""
         headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected',
                    'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element',
-                   'Common Component(s)', 'Pages with Issue', 'Page Count', 'Breakpoints', 'Pseudoclasses', 'Page States']
+                   'Common Component(s)', 'Pages with Issue', 'Page Count', 'Breakpoints', 'Pseudoclasses', 'Page States', 'Test Users', 'User Roles']
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -2026,7 +2026,9 @@ class ExcelFormatter(BaseFormatter):
                                 'page_xpaths': {},  # page -> xpath mapping
                                 'breakpoints': set(),  # Track all breakpoints where this issue appears
                                 'pseudoclasses': set(),  # Track all pseudoclasses
-                                'page_states': set()  # Track all page states
+                                'page_states': set(),  # Track all page states
+                                'test_users': set(),  # Track all test users who encountered this
+                                'user_roles': set()  # Track all unique user roles
                             }
 
                         unique_issues[dedup_key]['pages'].add(page_url)
@@ -2039,6 +2041,15 @@ class ExcelFormatter(BaseFormatter):
                             unique_issues[dedup_key]['pseudoclasses'].add(pseudoclass)
                         if page_state_desc:
                             unique_issues[dedup_key]['page_states'].add(page_state_desc)
+
+                        # Track authenticated user info
+                        auth_user = metadata.get('authenticated_user', {})
+                        if auth_user:
+                            unique_issues[dedup_key]['test_users'].add(auth_user.get('display_name', ''))
+                            for role in auth_user.get('roles', []):
+                                unique_issues[dedup_key]['user_roles'].add(role)
+                        else:
+                            unique_issues[dedup_key]['test_users'].add('Guest')
 
         # Write deduplicated issues to sheet
         for (rule_id, dedup_value), issue_data in sorted(unique_issues.items(),
@@ -2095,8 +2106,15 @@ class ExcelFormatter(BaseFormatter):
             ws.cell(row=row, column=17, value=page_states_list)
             ws.cell(row=row, column=17).alignment = self.Alignment(wrap_text=True, vertical='top')
 
+            # Add test user columns
+            test_users_list = ', '.join(sorted(issue_data['test_users'])) if issue_data['test_users'] else ''
+            ws.cell(row=row, column=18, value=test_users_list)
+
+            user_roles_list = ', '.join(sorted(issue_data['user_roles'])) if issue_data['user_roles'] else ''
+            ws.cell(row=row, column=19, value=user_roles_list)
+
             # Apply fill color
-            for col in range(1, 18):
+            for col in range(1, 20):
                 ws.cell(row=row, column=col).fill = fill_color
 
             row += 1

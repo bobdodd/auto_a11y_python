@@ -268,7 +268,10 @@ class IssueFilterManager {
             // Extract test user from badge
             const button = item.querySelector('.accordion-button');
             const userBadge = button?.querySelector('.badge.bg-secondary');
+            const userIds = new Set();
+
             if (userBadge) {
+                // Direct user badge on this item (single instance or nested instance)
                 const badgeText = userBadge.textContent.trim();
                 // Extract user info from badge text like "Guest" or "Admin (admin, editor)"
                 const userMatch = badgeText.match(/^(.*?)\s*(?:\((.*?)\))?$/);
@@ -278,13 +281,36 @@ class IssueFilterManager {
 
                     // Create a unique ID for the user (use display name as key)
                     const userId = displayName.toLowerCase();
-                    item.dataset.filterTestUser = userId;
+                    userIds.add(userId);
 
                     // Store user info
                     if (!testUsers.has(userId)) {
                         testUsers.set(userId, { displayName, roles });
                     }
                 }
+            } else {
+                // No direct badge - check if this is a group with nested instances
+                const nestedInstances = item.querySelectorAll('.accordion-item .badge.bg-secondary');
+                nestedInstances.forEach(nestedBadge => {
+                    const badgeText = nestedBadge.textContent.trim();
+                    const userMatch = badgeText.match(/^(.*?)\s*(?:\((.*?)\))?$/);
+                    if (userMatch) {
+                        const displayName = userMatch[1].trim();
+                        const roles = userMatch[2] ? userMatch[2].trim() : '';
+                        const userId = displayName.toLowerCase();
+                        userIds.add(userId);
+
+                        // Store user info
+                        if (!testUsers.has(userId)) {
+                            testUsers.set(userId, { displayName, roles });
+                        }
+                    }
+                });
+            }
+
+            // Store user IDs as comma-separated list
+            if (userIds.size > 0) {
+                item.dataset.filterTestUser = Array.from(userIds).join(',');
             }
 
             // Extract searchable text
@@ -486,8 +512,11 @@ class IssueFilterManager {
 
         // Check test user filter
         if (this.activeFilters.testUser.size > 0) {
-            const itemTestUser = item.dataset.filterTestUser;
-            if (!itemTestUser || !this.activeFilters.testUser.has(itemTestUser)) {
+            const itemTestUsers = (item.dataset.filterTestUser || '').split(',');
+            const hasMatch = itemTestUsers.some(user =>
+                this.activeFilters.testUser.has(user)
+            );
+            if (!hasMatch) {
                 return false;
             }
         }

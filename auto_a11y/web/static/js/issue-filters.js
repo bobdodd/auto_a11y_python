@@ -11,6 +11,7 @@ class IssueFilterManager {
             wcag: new Set(),
             touchpoint: new Set(),
             user: new Set(),
+            testUser: new Set(),  // Filter by authenticated test user
             search: ''
         };
         
@@ -181,6 +182,16 @@ class IssueFilterManager {
                     </div>
                 </div>
 
+                <!-- Test User Filter -->
+                <div class="row g-3 mt-2">
+                    <div class="col-12">
+                        <label class="form-label fw-bold small">Test User</label>
+                        <div class="filter-chips" id="testUserFilterChips">
+                            <!-- Dynamically populated based on test results -->
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Quick Search -->
                 <div class="row g-3 mt-2">
                     <div class="col-12">
@@ -201,8 +212,9 @@ class IssueFilterManager {
     populateFilterOptions() {
         const wcagCriteria = new Set();
         const touchpoints = new Set();
+        const testUsers = new Map();  // Map of user_id -> {display_name, roles}
         const typeCounts = { error: 0, warning: 0, info: 0, discovery: 0 };
-        
+
         // Mark all issue items with data attributes for filtering
         document.querySelectorAll('.accordion-item').forEach(item => {
             // Determine type from parent accordion
@@ -253,8 +265,29 @@ class IssueFilterManager {
                 touchpoints.add(category);
             }
             
-            // Extract searchable text
+            // Extract test user from badge
             const button = item.querySelector('.accordion-button');
+            const userBadge = button?.querySelector('.badge.bg-secondary');
+            if (userBadge) {
+                const badgeText = userBadge.textContent.trim();
+                // Extract user info from badge text like "Guest" or "Admin (admin, editor)"
+                const userMatch = badgeText.match(/^(.*?)\s*(?:\((.*?)\))?$/);
+                if (userMatch) {
+                    const displayName = userMatch[1].trim();
+                    const roles = userMatch[2] ? userMatch[2].trim() : '';
+
+                    // Create a unique ID for the user (use display name as key)
+                    const userId = displayName.toLowerCase();
+                    item.dataset.filterTestUser = userId;
+
+                    // Store user info
+                    if (!testUsers.has(userId)) {
+                        testUsers.set(userId, { displayName, roles });
+                    }
+                }
+            }
+
+            // Extract searchable text
             const body = item.querySelector('.accordion-body');
             item.dataset.searchText = [
                 button?.textContent || '',
@@ -298,6 +331,36 @@ class IssueFilterManager {
                     touchpointSelect.appendChild(option);
                 });
             }
+        }
+
+        // Populate Test User filter
+        const testUserChips = document.getElementById('testUserFilterChips');
+        if (testUserChips && testUsers.size > 0) {
+            testUserChips.innerHTML = '';
+            // Sort users: Guest first, then alphabetically by display name
+            const sortedUsers = [...testUsers.entries()].sort((a, b) => {
+                if (a[0] === 'guest') return -1;
+                if (b[0] === 'guest') return 1;
+                return a[1].displayName.localeCompare(b[1].displayName);
+            });
+
+            sortedUsers.forEach(([userId, userInfo]) => {
+                const chip = document.createElement('button');
+                chip.className = 'btn btn-sm btn-outline-secondary filter-chip me-2 mb-2';
+                chip.setAttribute('data-filter-type', 'testUser');
+                chip.setAttribute('data-filter-value', userId);
+
+                const icon = userId === 'guest' ? 'bi-person' : 'bi-person-fill';
+                const roleText = userInfo.roles ? ` (${userInfo.roles})` : '';
+                chip.innerHTML = `<i class="bi ${icon} me-1"></i>${userInfo.displayName}${roleText}`;
+
+                testUserChips.appendChild(chip);
+            });
+
+            // Attach event listeners to the new chips
+            testUserChips.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', () => this.toggleFilter(chip));
+            });
         }
     }
     
@@ -415,12 +478,20 @@ class IssueFilterManager {
         // Check user impact filter
         if (this.activeFilters.user.size > 0) {
             const affectedUsers = this.getAffectedUsers(item);
-            const hasMatch = [...this.activeFilters.user].some(user => 
+            const hasMatch = [...this.activeFilters.user].some(user =>
                 affectedUsers.includes(user)
             );
             if (!hasMatch) return false;
         }
-        
+
+        // Check test user filter
+        if (this.activeFilters.testUser.size > 0) {
+            const itemTestUser = item.dataset.filterTestUser;
+            if (!itemTestUser || !this.activeFilters.testUser.has(itemTestUser)) {
+                return false;
+            }
+        }
+
         // Check search filter
         if (this.activeFilters.search) {
             const searchText = item.dataset.searchText || '';
@@ -428,7 +499,7 @@ class IssueFilterManager {
                 return false;
             }
         }
-        
+
         return true;
     }
     

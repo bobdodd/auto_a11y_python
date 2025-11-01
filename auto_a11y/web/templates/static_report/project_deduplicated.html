@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.name }} - Deduplicated Report - Auto A11y</title>
+
+    <!-- Inlined Bootstrap CSS -->
+    <style>
+    {{ bootstrap_css|safe }}
+    </style>
+
+    <!-- Inlined Bootstrap Icons CSS -->
+    <style>
+    {{ bootstrap_icons_css|safe }}
+    </style>
+
+    <!-- Page-specific styles -->
+    <style>
+    /* Match online view styling exactly */
+    .impact-badge {
+        min-width: 75px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    /* Move accordion indicators to the left for accessibility */
+    .accordion-button {
+        padding-left: 2.5rem;
+        padding-right: 1.25rem;
+    }
+
+    .accordion-button::after {
+        position: absolute;
+        left: 1rem;
+        right: auto;
+        transform: rotate(-90deg);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .accordion-button:not(.collapsed)::after {
+        transform: rotate(0deg);
+    }
+
+    /* Ensure proper spacing for content */
+    .accordion-button > * {
+        margin-left: 0.5rem;
+    }
+
+    .accordion-button > *:first-child {
+        margin-left: 0;
+    }
+
+    .test-results-card {
+        margin-bottom: 2rem;
+    }
+
+    .touchpoint-header {
+        background-color: #f8f9fa;
+        padding: 8px;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        padding-left: 0.5rem;
+    }
+
+    /* Component header styling */
+    .component-header {
+        background-color: #e3f2fd;
+        padding: 12px;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        padding-left: 0.75rem;
+        border-left: 4px solid #1976d2;
+    }
+
+    .component-header.navigation {
+        background-color: #e3f2fd;
+        border-left-color: #1976d2;
+    }
+
+    .component-header.header {
+        background-color: #f3e5f5;
+        border-left-color: #7b1fa2;
+    }
+
+    .component-header.footer {
+        background-color: #e8f5e9;
+        border-left-color: #388e3c;
+    }
+
+    .component-header.form {
+        background-color: #fff3e0;
+        border-left-color: #f57c00;
+    }
+
+    .component-header.aside {
+        background-color: #fce4ec;
+        border-left-color: #c2185b;
+    }
+
+    .component-header.section {
+        background-color: #f1f8e9;
+        border-left-color: #689f38;
+    }
+
+    /* Filter Panel Styling */
+    .filter-panel {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        position: sticky;
+        top: 20px;
+        z-index: 100;
+    }
+
+    .filter-group {
+        margin-bottom: 1rem;
+    }
+
+    .filter-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .filter-chip {
+        padding: 0.25rem 0.75rem;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.875rem;
+    }
+
+    .filter-chip:hover {
+        background: #e9ecef;
+    }
+
+    .filter-chip.active {
+        background: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+
+    .filtered-out {
+        display: none !important;
+    }
+
+    /* Statistics panel */
+    .stats-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #0d6efd;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Component badge styling */
+    .component-badge {
+        display: inline-block;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.375rem;
+        margin-right: 0.5rem;
+    }
+
+    .component-badge.navigation { background-color: #1976d2; }
+    .component-badge.header { background-color: #7b1fa2; }
+    .component-badge.footer { background-color: #388e3c; }
+    .component-badge.form { background-color: #f57c00; }
+    .component-badge.aside { background-color: #c2185b; }
+    .component-badge.section { background-color: #689f38; }
+    .component-badge.none { background-color: #6c757d; }
+
+    /* Page list styling */
+    .page-list {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 0.5rem;
+    }
+
+    .page-list-item {
+        padding: 0.25rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .page-list-item:last-child {
+        border-bottom: none;
+    }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1><i class="bi bi-collection"></i> {{ project.name }}</h1>
+                <p class="text-muted">Deduplicated Accessibility Report - Generated {{ report_date }}</p>
+                <p class="lead">Issues grouped by common components across {{ websites|length }} website(s) and {{ total_pages }} pages</p>
+            </div>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-number text-danger">{{ total_violations }}</div>
+                        <div class="stat-label">Violations</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-number text-warning">{{ total_warnings }}</div>
+                        <div class="stat-label">Warnings</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-number text-info">{{ total_info }}</div>
+                        <div class="stat-label">Info</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-number text-primary">{{ common_components|length }}</div>
+                        <div class="stat-label">Common Components</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Panel -->
+        <div class="filter-panel">
+            <h5 class="mb-3"><i class="bi bi-funnel"></i> Filter Issues</h5>
+
+            <!-- Issue Type Filter -->
+            <div class="filter-group">
+                <label class="form-label fw-bold small">Issue Type</label>
+                <div class="filter-chips">
+                    <button class="btn btn-sm btn-outline-danger filter-chip" data-filter-type="type" data-filter-value="violation">
+                        <i class="bi bi-x-circle me-1"></i>Violations
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning filter-chip" data-filter-type="type" data-filter-value="warning">
+                        <i class="bi bi-exclamation-triangle me-1"></i>Warnings
+                    </button>
+                    <button class="btn btn-sm btn-outline-info filter-chip" data-filter-type="type" data-filter-value="info">
+                        <i class="bi bi-info-circle me-1"></i>Info
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary filter-chip" data-filter-type="type" data-filter-value="discovery">
+                        <i class="bi bi-search me-1"></i>Discovery
+                    </button>
+                </div>
+            </div>
+
+            <!-- Component Filter -->
+            <div class="filter-group">
+                <label class="form-label fw-bold small">Component</label>
+                <div class="filter-chips" id="componentFilterChips">
+                    <button class="btn btn-sm btn-outline-secondary filter-chip" data-filter-type="component" data-filter-value="none">
+                        <i class="bi bi-file-earmark me-1"></i>No Component
+                    </button>
+                    {% for signature, comp_data in common_components.items() %}
+                    <button class="btn btn-sm btn-outline-secondary filter-chip"
+                            data-filter-type="component"
+                            data-filter-value="{{ signature }}">
+                        <i class="bi bi-box me-1"></i>{{ comp_data.type }}: {{ comp_data.label }} ({{ comp_data.pages|length }} pages)
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Impact Filter -->
+            <div class="filter-group">
+                <label class="form-label fw-bold small">Impact</label>
+                <div class="filter-chips">
+                    <button class="btn btn-sm btn-outline-danger filter-chip" data-filter-type="impact" data-filter-value="high">
+                        High
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning filter-chip" data-filter-type="impact" data-filter-value="medium">
+                        Medium
+                    </button>
+                    <button class="btn btn-sm btn-outline-info filter-chip" data-filter-type="impact" data-filter-value="low">
+                        Low
+                    </button>
+                </div>
+            </div>
+
+            <!-- Clear Filters -->
+            <div class="mt-3">
+                <button class="btn btn-sm btn-outline-secondary" id="clearFilters">
+                    <i class="bi bi-x-circle me-1"></i>Clear All Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Common Components Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-boxes"></i> Common Components Found</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">These components appear across multiple pages. Issues within these components affect multiple pages.</p>
+                        {% if common_components %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Component Type</th>
+                                        <th>Label</th>
+                                        <th>Pages</th>
+                                        <th>Issues</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for signature, comp_data in common_components.items() %}
+                                    <tr>
+                                        <td>
+                                            <span class="component-badge {{ comp_data.type|lower }}">
+                                                {{ comp_data.type }}
+                                            </span>
+                                        </td>
+                                        <td>{{ comp_data.label }}</td>
+                                        <td>{{ comp_data.pages|length }} pages</td>
+                                        <td>{{ comp_data.issue_count|default(0) }} issues</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted">No common components detected across pages.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deduplicated Issues Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card test-results-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-list-check"></i> Deduplicated Issues</h5>
+                        <small class="text-muted">Issues grouped by component and deduplicated across pages</small>
+                    </div>
+                    <div class="card-body">
+                        {% if deduplicated_issues %}
+                            {% for issue_data in deduplicated_issues %}
+                            <div class="issue-group mb-4 issue-item"
+                                 data-type="{{ issue_data.type }}"
+                                 data-impact="{{ issue_data.impact|lower }}"
+                                 data-component="{{ issue_data.component_signature|default('none') }}">
+
+                                <!-- Issue Header -->
+                                <div class="d-flex align-items-start mb-2">
+                                    <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[issue_data.impact|lower] or 'secondary' }} me-2 impact-badge">
+                                        {{ issue_data.impact|upper }}
+                                    </span>
+                                    {% if issue_data.component_signature %}
+                                    <span class="component-badge {{ issue_data.component_type|lower }}">
+                                        {{ issue_data.component_type }}: {{ issue_data.component_label }}
+                                    </span>
+                                    {% else %}
+                                    <span class="component-badge none">No Component</span>
+                                    {% endif %}
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0">
+                                            <code>{{ issue_data.rule_id }}</code> - {{ issue_data.description }}
+                                        </h6>
+                                        <small class="text-muted">
+                                            Found on {{ issue_data.page_count }} page(s)
+                                            {% if issue_data.test_users %} | Tested by: {{ issue_data.test_users|join(', ') }}{% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Issue Details -->
+                                <div class="ms-4">
+                                    {% if issue_data.wcag_criteria %}
+                                    <p class="mb-1"><strong>WCAG:</strong> {{ issue_data.wcag_criteria|join(', ') }}</p>
+                                    {% endif %}
+
+                                    {% if issue_data.how_to_fix %}
+                                    <p class="mb-1"><strong>How to Fix:</strong> {{ issue_data.how_to_fix }}</p>
+                                    {% endif %}
+
+                                    <!-- Pages Affected -->
+                                    <details class="mt-2">
+                                        <summary class="text-primary" style="cursor: pointer;">
+                                            <i class="bi bi-chevron-right"></i> View {{ issue_data.page_count }} affected page(s)
+                                        </summary>
+                                        <div class="page-list mt-2 ms-3">
+                                            {% for page_url in issue_data.pages %}
+                                            <div class="page-list-item">
+                                                <i class="bi bi-file-earmark-text me-1"></i>{{ page_url }}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </details>
+                                </div>
+
+                                <hr class="my-3">
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle"></i> No issues found!
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inlined Bootstrap JS -->
+    <script>
+    {{ bootstrap_js|safe }}
+    </script>
+
+    <!-- Inlined Filters JS -->
+    <script>
+    {{ filters_js|safe }}
+    </script>
+
+    <script>
+    // Initialize filters when document is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof IssueFilterManager !== 'undefined') {
+            window.filterManager = new IssueFilterManager();
+        }
+    });
+    </script>
+</body>
+</html>

@@ -10,6 +10,7 @@ class IssueFilterManager {
             impact: new Set(),
             touchpoint: new Set(),
             testUser: new Set(),  // Filter by authenticated test user
+            component: new Set(),  // Filter by common component
             search: ''
         };
 
@@ -123,6 +124,14 @@ class IssueFilterManager {
         // Check touchpoint filter
         if (this.activeFilters.touchpoint.size > 0) {
             if (!this.activeFilters.touchpoint.has(item.dataset.touchpoint)) {
+                return false;
+            }
+        }
+
+        // Check component filter
+        if (this.activeFilters.component.size > 0) {
+            const itemComponent = item.dataset.component || 'none';
+            if (!this.activeFilters.component.has(itemComponent)) {
                 return false;
             }
         }

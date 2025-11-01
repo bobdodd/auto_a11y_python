@@ -1594,7 +1594,7 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_project_all_issues_sheet(self, ws, data, styles):
         """Create a combined sheet with all issues from all pages across all websites"""
-        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Website', 'Breakpoint (px)', 'Pseudoclass', 'Page State']
+        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Website', 'Breakpoint (px)', 'Pseudoclass', 'Page State', 'Test User', 'User Roles']
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1657,7 +1657,16 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=15, value=metadata.get('pseudoclass', ''))
                     ws.cell(row=row, column=16, value=page_state_desc)
 
-                    for col in range(1, 17):
+                    # Add authenticated user info
+                    auth_user = metadata.get('authenticated_user', {})
+                    if auth_user:
+                        ws.cell(row=row, column=17, value=auth_user.get('display_name', ''))
+                        ws.cell(row=row, column=18, value=', '.join(auth_user.get('roles', [])))
+                    else:
+                        ws.cell(row=row, column=17, value='Guest')
+                        ws.cell(row=row, column=18, value='no login')
+
+                    for col in range(1, 19):
                         ws.cell(row=row, column=col).fill = styles['violation']['fill']
                     row += 1
 
@@ -1692,7 +1701,16 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=15, value=metadata.get('pseudoclass', ''))
                     ws.cell(row=row, column=16, value=page_state_desc)
 
-                    for col in range(1, 17):
+                    # Add authenticated user info
+                    auth_user = metadata.get('authenticated_user', {})
+                    if auth_user:
+                        ws.cell(row=row, column=17, value=auth_user.get('display_name', ''))
+                        ws.cell(row=row, column=18, value=', '.join(auth_user.get('roles', [])))
+                    else:
+                        ws.cell(row=row, column=17, value='Guest')
+                        ws.cell(row=row, column=18, value='no login')
+
+                    for col in range(1, 19):
                         ws.cell(row=row, column=col).fill = styles['warning']['fill']
                     row += 1
 
@@ -1727,7 +1745,16 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=15, value=metadata.get('pseudoclass', ''))
                     ws.cell(row=row, column=16, value=page_state_desc)
 
-                    for col in range(1, 17):
+                    # Add authenticated user info
+                    auth_user = metadata.get('authenticated_user', {})
+                    if auth_user:
+                        ws.cell(row=row, column=17, value=auth_user.get('display_name', ''))
+                        ws.cell(row=row, column=18, value=', '.join(auth_user.get('roles', [])))
+                    else:
+                        ws.cell(row=row, column=17, value='Guest')
+                        ws.cell(row=row, column=18, value='no login')
+
+                    for col in range(1, 19):
                         ws.cell(row=row, column=col).fill = styles['info']['fill']
                     row += 1
 
@@ -1762,7 +1789,16 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=15, value=metadata.get('pseudoclass', ''))
                     ws.cell(row=row, column=16, value=page_state_desc)
 
-                    for col in range(1, 17):
+                    # Add authenticated user info
+                    auth_user = metadata.get('authenticated_user', {})
+                    if auth_user:
+                        ws.cell(row=row, column=17, value=auth_user.get('display_name', ''))
+                        ws.cell(row=row, column=18, value=', '.join(auth_user.get('roles', [])))
+                    else:
+                        ws.cell(row=row, column=17, value='Guest')
+                        ws.cell(row=row, column=18, value='no login')
+
+                    for col in range(1, 19):
                         ws.cell(row=row, column=col).fill = styles['discovery']['fill']
                     row += 1
 
@@ -1790,8 +1826,10 @@ class ExcelFormatter(BaseFormatter):
                     ws.cell(row=row, column=14, value='')  # AI findings don't have breakpoint
                     ws.cell(row=row, column=15, value='')  # AI findings don't have pseudoclass
                     ws.cell(row=row, column=16, value=page_state_desc)
+                    ws.cell(row=row, column=17, value='')  # AI findings don't have test user
+                    ws.cell(row=row, column=18, value='')  # AI findings don't have user roles
 
-                    for col in range(1, 17):
+                    for col in range(1, 19):
                         ws.cell(row=row, column=col).fill = styles['info']['fill']
                     row += 1
 

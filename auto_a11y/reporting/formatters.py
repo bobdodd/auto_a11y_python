@@ -1079,6 +1079,10 @@ class ExcelFormatter(BaseFormatter):
         ws_deduped_issues = wb.create_sheet("All Issues (Deduplicated)")
         self._create_project_deduped_issues_sheet(ws_deduped_issues, data, styles)
 
+        # Common Components Sheet - shows all identified common components
+        ws_common_components = wb.create_sheet("Common Components")
+        self._create_common_components_sheet(ws_common_components, data, styles)
+
         # Save to bytes
         from io import BytesIO
         output = BytesIO()
@@ -2125,6 +2129,80 @@ class ExcelFormatter(BaseFormatter):
                 ws.cell(row=row, column=col).fill = fill_color
 
             row += 1
+
+        self._auto_adjust_columns(ws)
+
+    def _create_common_components_sheet(self, ws, data, styles):
+        """Create a sheet listing all common components identified during deduplication"""
+        headers = ['Component Type', 'Signature', 'Label', 'Pages Found', 'Page Count', 'Example XPath', 'Pages with Component']
+
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            self._apply_style(cell, styles['header'])
+
+        row = 2
+
+        # Extract common components from discovery issues
+        common_components = self._extract_common_components(data)
+
+        # Sort components by type and then by page count (descending)
+        sorted_components = sorted(
+            common_components.items(),
+            key=lambda x: (x[1]['type'], -len(x[1]['pages']))
+        )
+
+        for signature, comp_data in sorted_components:
+            # Component type (Navigation, Header, Footer)
+            ws.cell(row=row, column=1, value=comp_data['type'])
+
+            # Signature (the unique identifier)
+            ws.cell(row=row, column=2, value=comp_data['signature'])
+
+            # Label (display name)
+            ws.cell(row=row, column=3, value=comp_data['label'])
+
+            # Pages found (sorted list)
+            pages_list = '\n'.join(sorted(comp_data['pages']))
+            ws.cell(row=row, column=4, value=pages_list)
+            ws.cell(row=row, column=4).alignment = self.Alignment(wrap_text=True, vertical='top')
+
+            # Page count
+            ws.cell(row=row, column=5, value=len(comp_data['pages']))
+
+            # Example XPath (show one representative xpath)
+            example_xpath = list(comp_data['xpaths_by_page'].values())[0] if comp_data['xpaths_by_page'] else ''
+            ws.cell(row=row, column=6, value=example_xpath)
+
+            # Pages with component (just the page count as a summary)
+            page_urls = ', '.join(sorted(comp_data['pages'])[:3])  # Show first 3 pages
+            if len(comp_data['pages']) > 3:
+                page_urls += f' ... and {len(comp_data["pages"]) - 3} more'
+            ws.cell(row=row, column=7, value=page_urls)
+
+            # Apply styling based on component type
+            if comp_data['type'] == 'Navigation':
+                fill_color = self.PatternFill(start_color="E3F2FD", end_color="E3F2FD", fill_type="solid")
+            elif comp_data['type'] == 'Header':
+                fill_color = self.PatternFill(start_color="F3E5F5", end_color="F3E5F5", fill_type="solid")
+            elif comp_data['type'] == 'Footer':
+                fill_color = self.PatternFill(start_color="E8F5E9", end_color="E8F5E9", fill_type="solid")
+            else:
+                fill_color = self.PatternFill(start_color="FFF9C4", end_color="FFF9C4", fill_type="solid")
+
+            for col in range(1, 8):
+                ws.cell(row=row, column=col).fill = fill_color
+
+            row += 1
+
+        # Add summary row at the top (after data)
+        if sorted_components:
+            # Insert a blank row after headers
+            ws.insert_rows(2)
+            ws.merge_cells('A2:G2')
+            summary_cell = ws['A2']
+            summary_cell.value = f'Found {len(sorted_components)} common components across {len(data.get("websites", []))} websites'
+            summary_cell.font = self.Font(italic=True, color="666666")
+            summary_cell.alignment = self.Alignment(horizontal='center')
 
         self._auto_adjust_columns(ws)
 

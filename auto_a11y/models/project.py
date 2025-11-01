@@ -19,7 +19,7 @@ class ProjectStatus(Enum):
 
 class ProjectType(Enum):
     """Project type enum"""
-    WEBSITES = "websites"
+    WEBSITE = "website"
     APP = "app"
     TANGIBLE_DEVICE = "tangible_device"
     NAV_AND_WAYFINDING = "nav_and_wayfinding"
@@ -31,7 +31,7 @@ class Project:
     Project model - container for accessibility audits
 
     Projects can be of different types:
-    - websites: Contains multiple websites (backward compatible)
+    - website: Contains multiple websites (backward compatible)
     - app: Mobile or desktop application
     - tangible_device: Physical devices (kiosks, ATMs, etc.)
     - nav_and_wayfinding: Signage, navigation systems, etc.
@@ -44,10 +44,10 @@ class Project:
     name: str
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.ACTIVE
-    project_type: ProjectType = ProjectType.WEBSITES  # Default for backward compatibility
+    project_type: ProjectType = ProjectType.WEBSITE  # Default for backward compatibility
 
     # Type-specific identifiers
-    website_ids: List[str] = field(default_factory=list)  # Only for WEBSITES type
+    website_ids: List[str] = field(default_factory=list)  # Only for WEBSITE type
     app_identifier: Optional[str] = None  # For APP type (e.g., bundle ID, package name)
     device_model: Optional[str] = None  # For TANGIBLE_DEVICE type
     location: Optional[str] = None  # For NAV_AND_WAYFINDING type
@@ -71,13 +71,13 @@ class Project:
     @property
     def is_website_project(self) -> bool:
         """Check if this is a website project"""
-        return self.project_type == ProjectType.WEBSITES
+        return self.project_type == ProjectType.WEBSITE
 
     @property
     def project_type_display(self) -> str:
         """Get human-readable project type"""
         type_map = {
-            ProjectType.WEBSITES: "Websites",
+            ProjectType.WEBSITE: "Website",
             ProjectType.APP: "App",
             ProjectType.TANGIBLE_DEVICE: "Tangible Device",
             ProjectType.NAV_AND_WAYFINDING: "Nav and Wayfinding"
@@ -108,12 +108,12 @@ class Project:
     @classmethod
     def from_dict(cls, data: dict) -> 'Project':
         """Create from MongoDB document with backward compatibility"""
-        # Backward compatibility: if project_type not set, default to WEBSITES
-        project_type_value = data.get('project_type', 'websites')
+        # Backward compatibility: if project_type not set, default to WEBSITE
+        project_type_value = data.get('project_type', 'website')
         try:
             project_type = ProjectType(project_type_value)
         except ValueError:
-            project_type = ProjectType.WEBSITES
+            project_type = ProjectType.WEBSITE
 
         return cls(
             name=data['name'],

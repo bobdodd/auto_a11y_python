@@ -513,15 +513,6 @@
             <h5 class="mb-0">Latest Test Results</h5>
             <small class="text-muted">
                 Tested on {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
-                {% if latest_result.metadata and latest_result.metadata.get('authenticated_user') %}
-                    | <i class="bi bi-person-fill"></i>
-                    <strong>{{ latest_result.metadata.authenticated_user.display_name }}</strong>
-                    {% if latest_result.metadata.authenticated_user.roles %}
-                        ({{ latest_result.metadata.authenticated_user.roles|join(', ') }})
-                    {% endif %}
-                {% else %}
-                    | <i class="bi bi-person"></i> <strong>Guest</strong> (no login)
-                {% endif %}
             </small>
         </div>
 

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Recording - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="mb-4">
+        <h1 class="h2">
+            <i class="bi bi-upload"></i> Upload Manual Audit Recording
+        </h1>
+        <p class="text-muted">
+            Upload a Dictaphone JSON file containing accessibility findings from manual audits or lived experience testing.
+        </p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('recordings.upload_recording') }}" enctype="multipart/form-data">
+                        <!-- JSON File Upload -->
+                        <div class="mb-4">
+                            <label for="json_file" class="form-label">Dictaphone JSON File *</label>
+                            <input type="file" class="form-control" id="json_file" name="json_file"
+                                   accept=".json" required>
+                            <div class="form-text">
+                                Select the JSON file exported from Dictaphone containing accessibility issues and timecodes.
+                            </div>
+                        </div>
+
+                        <!-- Project Selection -->
+                        <div class="mb-4">
+                            <label for="project_id" class="form-label">Project *</label>
+                            <select class="form-select" id="project_id" name="project_id" required>
+                                <option value="">Select a project...</option>
+                                {% for project in projects %}
+                                <option value="{{ project.id }}">{{ project.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">
+                                Which project should this recording be associated with?
+                            </div>
+                        </div>
+
+                        <!-- Recording Metadata -->
+                        <div class="mb-4">
+                            <label for="title" class="form-label">Recording Title</label>
+                            <input type="text" class="form-control" id="title" name="title"
+                                   placeholder="e.g., Main Website Screen Reader Audit">
+                            <div class="form-text">
+                                Optional: A descriptive title for this recording.
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description"
+                                      rows="3" placeholder="Brief description of what was tested and key findings..."></textarea>
+                        </div>
+
+                        <!-- Auditor Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="auditor_name" class="form-label">Auditor Name</label>
+                                <input type="text" class="form-control" id="auditor_name" name="auditor_name"
+                                       placeholder="e.g., Jane Smith">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="auditor_role" class="form-label">Auditor Role</label>
+                                <input type="text" class="form-control" id="auditor_role" name="auditor_role"
+                                       placeholder="e.g., Screen Reader User, Expert Auditor">
+                            </div>
+                        </div>
+
+                        <!-- Audit Type -->
+                        <div class="mb-4">
+                            <label for="audit_type" class="form-label">Audit Type</label>
+                            <select class="form-select" id="audit_type" name="audit_type">
+                                <option value="manual" selected>Manual Audit</option>
+                                <option value="lived_experience">Lived Experience Testing</option>
+                                <option value="expert_review">Expert Review</option>
+                                <option value="usability">Usability Testing</option>
+                                <option value="cognitive">Cognitive Testing</option>
+                            </select>
+                        </div>
+
+                        <!-- Page URLs -->
+                        <div class="mb-4">
+                            <label for="page_urls" class="form-label">Page URLs Covered</label>
+                            <textarea class="form-control" id="page_urls" name="page_urls" rows="4"
+                                      placeholder="https://example.com/&#10;https://example.com/about&#10;https://example.com/contact"></textarea>
+                            <div class="form-text">
+                                Optional: Enter one URL per line for pages discussed in this recording.
+                            </div>
+                        </div>
+
+                        <!-- Media File Path -->
+                        <div class="mb-4">
+                            <label for="media_file_path" class="form-label">Media File Path</label>
+                            <input type="text" class="form-control" id="media_file_path" name="media_file_path"
+                                   placeholder="/path/to/recording.mp4 or https://videos.example.com/audit.mp4">
+                            <div class="form-text">
+                                Optional: Path or URL to the actual video/audio recording file for reference.
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-upload"></i> Upload Recording
+                            </button>
+                            <a href="{{ url_for('recordings.list_recordings') }}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">About Dictaphone Format</h5>
+                </div>
+                <div class="card-body">
+                    <p class="small">
+                        Dictaphone generates accessibility findings from audio/video recordings of manual audits.
+                        The JSON format includes:
+                    </p>
+                    <ul class="small">
+                        <li><strong>Recording ID:</strong> Unique identifier</li>
+                        <li><strong>Issues:</strong> List of accessibility problems found</li>
+                        <li><strong>Timecodes:</strong> Start/end times in the recording</li>
+                        <li><strong>Impact Levels:</strong> High, Medium, Low</li>
+                        <li><strong>WCAG Criteria:</strong> Relevant guidelines</li>
+                        <li><strong>Detailed Descriptions:</strong> What, why, who, and how to fix</li>
+                    </ul>
+
+                    <h6 class="mt-4">Example JSON Structure</h6>
+                    <pre class="small bg-light p-2" style="font-size: 0.75rem;"><code>{
+  "recording": "NED-A",
+  "issues": [
+    {
+      "title": "Issue title",
+      "impact": "high",
+      "timecodes": [...],
+      "wcag": [...]
+    }
+  ]
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

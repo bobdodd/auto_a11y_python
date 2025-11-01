@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recording.title }} - Recordings{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('recordings.list_recordings') }}">Recordings</a></li>
+                    <li class="breadcrumb-item active">{{ recording.recording_id }}</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-0">{{ recording.title }}</h1>
+        </div>
+        <div>
+            <form method="post" action="{{ url_for('recordings.delete_recording', recording_id=recording.id) }}"
+                  onsubmit="return confirm('Are you sure you want to delete this recording?')" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Recording Metadata -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Recording ID</h6>
+                            <p class="mb-0">{{ recording.recording_id }}</p>
+                        </div>
+                        {% if recording.auditor_name %}
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Auditor</h6>
+                            <p class="mb-0">
+                                {{ recording.auditor_name }}
+                                {% if recording.auditor_role %}
+                                <span class="text-muted">({{ recording.auditor_role }})</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% endif %}
+                        {% if recording.recorded_date %}
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Recording Date</h6>
+                            <p class="mb-0">{{ recording.recorded_date.strftime('%B %d, %Y') }}</p>
+                        </div>
+                        {% endif %}
+                        {% if recording.duration %}
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Duration</h6>
+                            <p class="mb-0">{{ recording.duration }}</p>
+                        </div>
+                        {% endif %}
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Audit Type</h6>
+                            <span class="badge bg-info">
+                                {{ recording.audit_type.value|replace('_', ' ')|title }}
+                            </span>
+                        </div>
+                        {% if project %}
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">Project</h6>
+                            <p class="mb-0">
+                                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">
+                                    {{ project.name }}
+                                </a>
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if recording.description %}
+                    <div class="mt-3 pt-3 border-top">
+                        <h6 class="text-muted mb-1">Description</h6>
+                        <p class="mb-0">{{ recording.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if recording.page_urls %}
+                    <div class="mt-3 pt-3 border-top">
+                        <h6 class="text-muted mb-2">Pages Covered</h6>
+                        <ul class="list-unstyled mb-0">
+                            {% for url in recording.page_urls %}
+                            <li><i class="bi bi-link-45deg"></i> {{ url }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% if recording.media_file_path %}
+                    <div class="mt-3 pt-3 border-top">
+                        <h6 class="text-muted mb-2">Media File</h6>
+                        <p class="mb-0">
+                            <i class="bi bi-film"></i> {{ recording.media_file_path }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Statistics Card -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Issue Summary</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="h3 mb-0">{{ recording.total_issues }}</span>
+                        <span class="text-muted">Total Issues</span>
+                    </div>
+
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>High Impact</span>
+                            <span class="badge bg-danger">{{ recording.high_impact_count }}</span>
+                        </div>
+                        {% if recording.total_issues > 0 %}
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                 style="width: {{ (recording.high_impact_count / recording.total_issues * 100)|round|int }}%"></div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Medium Impact</span>
+                            <span class="badge bg-warning text-dark">{{ recording.medium_impact_count }}</span>
+                        </div>
+                        {% if recording.total_issues > 0 %}
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-warning" role="progressbar"
+                                 style="width: {{ (recording.medium_impact_count / recording.total_issues * 100)|round|int }}%"></div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Low Impact</span>
+                            <span class="badge bg-secondary">{{ recording.low_impact_count }}</span>
+                        </div>
+                        {% if recording.total_issues > 0 %}
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-secondary" role="progressbar"
+                                 style="width: {{ (recording.low_impact_count / recording.total_issues * 100)|round|int }}%"></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Issues List -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Accessibility Issues ({{ recording.total_issues }})</h5>
+        </div>
+        <div class="card-body">
+            {% if issues %}
+                {% for touchpoint, touchpoint_issues in issues_by_touchpoint.items() %}
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2 mb-3">
+                        <i class="bi bi-folder"></i> {{ touchpoint }}
+                        <span class="badge bg-secondary">{{ touchpoint_issues|length }}</span>
+                    </h5>
+
+                    <div class="accordion" id="accordion-{{ touchpoint|replace(' ', '-') }}">
+                        {% for issue in touchpoint_issues %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#issue-{{ loop.index }}-{{ touchpoint|replace(' ', '-') }}">
+                                    <div class="w-100 d-flex justify-content-between align-items-center me-2">
+                                        <span>
+                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}[issue.impact.value] }} me-2">
+                                                {{ issue.impact.value|upper }}
+                                            </span>
+                                            {{ issue.title }}
+                                        </span>
+                                        {% if issue.timecodes %}
+                                        <span class="badge bg-info">
+                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} timecode(s)
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="issue-{{ loop.index }}-{{ touchpoint|replace(' ', '-') }}" class="accordion-collapse collapse"
+                                 data-bs-parent="#accordion-{{ touchpoint|replace(' ', '-') }}">
+                                <div class="accordion-body">
+                                    {% if issue.short_title %}
+                                    <p class="text-muted fst-italic">{{ issue.short_title }}</p>
+                                    {% endif %}
+
+                                    {% if issue.timecodes %}
+                                    <div class="mb-3">
+                                        <strong>Timecodes:</strong>
+                                        <div class="mt-1">
+                                            {% for tc in issue.timecodes %}
+                                            <span class="badge bg-secondary me-2">
+                                                {{ tc.start }} - {{ tc.end }} ({{ tc.duration }})
+                                            </span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if issue.what %}
+                                    <div class="mb-3">
+                                        <strong>What:</strong>
+                                        <p class="mb-0">{{ issue.what }}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if issue.why %}
+                                    <div class="mb-3">
+                                        <strong>Why:</strong>
+                                        <p class="mb-0">{{ issue.why }}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if issue.who %}
+                                    <div class="mb-3">
+                                        <strong>Who is affected:</strong>
+                                        <p class="mb-0">{{ issue.who }}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if issue.remediation %}
+                                    <div class="mb-3">
+                                        <strong>How to fix:</strong>
+                                        <p class="mb-0">{{ issue.remediation }}</p>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if issue.wcag %}
+                                    <div class="mb-3">
+                                        <strong>WCAG:</strong>
+                                        <div class="mt-1">
+                                            {% for wcag_ref in issue.wcag %}
+                                            <span class="badge bg-primary me-1">
+                                                {{ wcag_ref.criteria }} (Level {{ wcag_ref.level }})
+                                            </span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    <div class="mt-3">
+                                        <strong>Status:</strong>
+                                        <select class="form-select form-select-sm d-inline-block w-auto"
+                                                onchange="updateIssueStatus('{{ issue.id }}', this.value)">
+                                            <option value="open" {{ 'selected' if issue.status == 'open' }}>Open</option>
+                                            <option value="in_progress" {{ 'selected' if issue.status == 'in_progress' }}>In Progress</option>
+                                            <option value="resolved" {{ 'selected' if issue.status == 'resolved' }}>Resolved</option>
+                                            <option value="verified" {{ 'selected' if issue.status == 'verified' }}>Verified</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <p class="text-muted">No issues found in this recording.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function updateIssueStatus(issueId, status) {
+    fetch(`/recordings/api/issue/${issueId}/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message (optional)
+            console.log('Status updated successfully');
+        } else {
+            alert('Failed to update status');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating status');
+    });
+}
+</script>
+{% endblock %}

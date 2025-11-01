@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Recordings - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">
+            <i class="bi bi-mic"></i> Manual Audit Recordings
+        </h1>
+        <a href="{{ url_for('recordings.upload_recording') }}" class="btn btn-primary">
+            <i class="bi bi-upload"></i> Upload Recording
+        </a>
+    </div>
+
+    <p class="text-muted">
+        Manual audit recordings from Dictaphone and expert reviews. These complement automated test results
+        with human observations and lived experience findings.
+    </p>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" action="{{ url_for('recordings.list_recordings') }}" class="row g-3">
+                <div class="col-md-6">
+                    <label for="project_id" class="form-label">Project</label>
+                    <select name="project_id" id="project_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Projects</option>
+                        {% for project in projects %}
+                        <option value="{{ project.id }}" {{ 'selected' if selected_project_id == project.id }}>
+                            {{ project.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="audit_type" class="form-label">Audit Type</label>
+                    <select name="audit_type" id="audit_type" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Types</option>
+                        <option value="manual" {{ 'selected' if selected_audit_type == 'manual' }}>Manual Audit</option>
+                        <option value="lived_experience" {{ 'selected' if selected_audit_type == 'lived_experience' }}>Lived Experience</option>
+                        <option value="expert_review" {{ 'selected' if selected_audit_type == 'expert_review' }}>Expert Review</option>
+                        <option value="usability" {{ 'selected' if selected_audit_type == 'usability' }}>Usability Testing</option>
+                        <option value="cognitive" {{ 'selected' if selected_audit_type == 'cognitive' }}>Cognitive Testing</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if recordings %}
+    <div class="row">
+        {% for recording in recordings %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title">{{ recording.title }}</h5>
+                        <span class="badge bg-info">{{ recording.audit_type.value|replace('_', ' ')|title }}</span>
+                    </div>
+
+                    <h6 class="text-muted mb-3">
+                        <i class="bi bi-file-earmark-text"></i> {{ recording.recording_id }}
+                    </h6>
+
+                    {% if recording.auditor_name %}
+                    <p class="mb-2">
+                        <i class="bi bi-person"></i> {{ recording.auditor_name }}
+                        {% if recording.auditor_role %}
+                        <span class="text-muted">({{ recording.auditor_role }})</span>
+                        {% endif %}
+                    </p>
+                    {% endif %}
+
+                    {% if recording.recorded_date %}
+                    <p class="mb-2">
+                        <i class="bi bi-calendar"></i> {{ recording.recorded_date.strftime('%Y-%m-%d') }}
+                    </p>
+                    {% endif %}
+
+                    {% if recording.duration %}
+                    <p class="mb-3">
+                        <i class="bi bi-clock"></i> {{ recording.duration }}
+                    </p>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <strong>Issues: {{ recording.total_issues }}</strong>
+                        <div class="mt-1">
+                            {% if recording.high_impact_count > 0 %}
+                            <span class="badge bg-danger">{{ recording.high_impact_count }} High</span>
+                            {% endif %}
+                            {% if recording.medium_impact_count > 0 %}
+                            <span class="badge bg-warning text-dark">{{ recording.medium_impact_count }} Medium</span>
+                            {% endif %}
+                            {% if recording.low_impact_count > 0 %}
+                            <span class="badge bg-secondary">{{ recording.low_impact_count }} Low</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('recordings.view_recording', recording_id=recording.id) }}"
+                           class="btn btn-sm btn-primary flex-grow-1">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                        <form method="post" action="{{ url_for('recordings.delete_recording', recording_id=recording.id) }}"
+                              onsubmit="return confirm('Are you sure you want to delete this recording?')" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> No recordings found.
+        <a href="{{ url_for('recordings.upload_recording') }}">Upload your first recording</a> to get started.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -185,6 +185,18 @@
                 data-bs-toggle="collapse"
                 data-bs-target="#{{ instance_id }}">
             <strong>Instance {{ loop_index }}:</strong>
+            {% if violation.metadata and violation.metadata.authenticated_user %}
+                <span class="badge bg-secondary ms-2">
+                    <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                    {% if violation.metadata.authenticated_user.roles %}
+                        ({{ violation.metadata.authenticated_user.roles|join(', ') }})
+                    {% endif %}
+                </span>
+            {% else %}
+                <span class="badge bg-secondary ms-2">
+                    <i class="bi bi-person"></i> Guest
+                </span>
+            {% endif %}
             {% if violation.xpath %}
             <code class="ms-2">{{ violation.xpath }}</code>
             {% endif %}
@@ -795,6 +807,21 @@
                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact|lower] or 'secondary' }} me-2 impact-badge">
                                         {{ first_violation.impact|upper }}
                                     </span>
+                                    {% if group_list|length == 1 %}
+                                        {# Show user badge for single violations #}
+                                        {% if first_violation.metadata and first_violation.metadata.authenticated_user %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person-fill"></i> {{ first_violation.metadata.authenticated_user.display_name }}
+                                                {% if first_violation.metadata.authenticated_user.roles %}
+                                                    ({{ first_violation.metadata.authenticated_user.roles|join(', ') }})
+                                                {% endif %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person"></i> Guest
+                                            </span>
+                                        {% endif %}
+                                    {% endif %}
                                     <code class="me-2">{{ error_code }}</code>
                                     {% if group_list|length > 1 %}
                                         {{ first_violation.metadata.what_generic if first_violation.metadata.what_generic else (first_violation.metadata.what if first_violation.metadata.what else error_code) }}
@@ -901,6 +928,21 @@
                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact|lower] or 'secondary' }} me-2 impact-badge">
                                         {{ first_warning.impact|upper }}
                                     </span>
+                                    {% if group_list|length == 1 %}
+                                        {# Show user badge for single warnings #}
+                                        {% if first_warning.metadata and first_warning.metadata.authenticated_user %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person-fill"></i> {{ first_warning.metadata.authenticated_user.display_name }}
+                                                {% if first_warning.metadata.authenticated_user.roles %}
+                                                    ({{ first_warning.metadata.authenticated_user.roles|join(', ') }})
+                                                {% endif %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person"></i> Guest
+                                            </span>
+                                        {% endif %}
+                                    {% endif %}
                                     <code class="me-2">{{ error_code }}</code>
                                     {% if group_list|length > 1 %}
                                         {{ first_warning.metadata.what_generic if first_warning.metadata.what_generic else (first_warning.metadata.what if first_warning.metadata.what else error_code) }}
@@ -1002,6 +1044,21 @@
                                     {% if group_list|length > 1 %}
                                     <span class="badge bg-info me-2">{{ group_list|length }}</span>
                                     {% endif %}
+                                    {% if group_list|length == 1 %}
+                                        {# Show user badge for single info items #}
+                                        {% if first_info.metadata and first_info.metadata.authenticated_user %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person-fill"></i> {{ first_info.metadata.authenticated_user.display_name }}
+                                                {% if first_info.metadata.authenticated_user.roles %}
+                                                    ({{ first_info.metadata.authenticated_user.roles|join(', ') }})
+                                                {% endif %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person"></i> Guest
+                                            </span>
+                                        {% endif %}
+                                    {% endif %}
                                     <code class="me-2">{{ error_code }}</code>
                                     {% if group_list|length > 1 %}
                                         {{ first_info.metadata.what_generic if first_info.metadata.what_generic else (first_info.metadata.what if first_info.metadata.what else error_code) }}
@@ -1026,6 +1083,18 @@
                                                             data-bs-toggle="collapse"
                                                             data-bs-target="#info-instance-{{ instance_id }}">
                                                         <strong>Instance {{ loop.index }}:</strong>
+                                                        {% if info_item.metadata and info_item.metadata.authenticated_user %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person-fill"></i> {{ info_item.metadata.authenticated_user.display_name }}
+                                                                {% if info_item.metadata.authenticated_user.roles %}
+                                                                    ({{ info_item.metadata.authenticated_user.roles|join(', ') }})
+                                                                {% endif %}
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person"></i> Guest
+                                                            </span>
+                                                        {% endif %}
                                                         {% if info_item.xpath %}
                                                         <code class="ms-2">{{ info_item.xpath }}</code>
                                                         {% endif %}
@@ -1083,6 +1152,21 @@
                                     {% if group_list|length > 1 %}
                                     <span class="badge bg-secondary me-2">{{ group_list|length }}</span>
                                     {% endif %}
+                                    {% if group_list|length == 1 %}
+                                        {# Show user badge for single discovery items #}
+                                        {% if first_disco.metadata and first_disco.metadata.authenticated_user %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person-fill"></i> {{ first_disco.metadata.authenticated_user.display_name }}
+                                                {% if first_disco.metadata.authenticated_user.roles %}
+                                                    ({{ first_disco.metadata.authenticated_user.roles|join(', ') }})
+                                                {% endif %}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary me-2">
+                                                <i class="bi bi-person"></i> Guest
+                                            </span>
+                                        {% endif %}
+                                    {% endif %}
                                     <code class="me-2">{{ error_code }}</code>
                                     {% if group_list|length > 1 %}
                                         {{ first_disco.metadata.what_generic if first_disco.metadata.what_generic else (first_disco.metadata.what if first_disco.metadata.what else error_code) }}
@@ -1107,6 +1191,18 @@
                                                             data-bs-toggle="collapse"
                                                             data-bs-target="#disco-instance-{{ instance_id }}">
                                                         <strong>Instance {{ loop.index }}:</strong>
+                                                        {% if disco_item.metadata and disco_item.metadata.authenticated_user %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person-fill"></i> {{ disco_item.metadata.authenticated_user.display_name }}
+                                                                {% if disco_item.metadata.authenticated_user.roles %}
+                                                                    ({{ disco_item.metadata.authenticated_user.roles|join(', ') }})
+                                                                {% endif %}
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person"></i> Guest
+                                                            </span>
+                                                        {% endif %}
                                                         {% if disco_item.xpath %}
                                                         <code class="ms-2">{{ disco_item.xpath }}</code>
                                                         {% endif %}

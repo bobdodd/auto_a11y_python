@@ -2,7 +2,7 @@
 Database models for Auto A11y Python
 """
 
-from .project import Project, ProjectStatus
+from .project import Project, ProjectStatus, ProjectType
 from .website import Website, ScrapingConfig
 from .page import Page, PageStatus
 from .test_result import TestResult, Violation, AIFinding, ImpactLevel
@@ -19,7 +19,7 @@ from .recording import Recording, RecordingType, Timecode, WCAGReference
 from .recording_issue import RecordingIssue
 
 __all__ = [
-    'Project', 'ProjectStatus',
+    'Project', 'ProjectStatus', 'ProjectType',
     'Website', 'ScrapingConfig',
     'Page', 'PageStatus',
     'TestResult', 'Violation', 'AIFinding', 'ImpactLevel',

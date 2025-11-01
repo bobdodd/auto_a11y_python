@@ -96,11 +96,44 @@
                         
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" name="description" 
+                            <textarea class="form-control" id="description" name="description"
                                       rows="3" maxlength="500"></textarea>
                             <div class="form-text">Optional description of the project goals</div>
                         </div>
-                        
+
+                        <div class="mb-4">
+                            <label for="project_type" class="form-label">Project Type *</label>
+                            <select class="form-select" id="project_type" name="project_type" required onchange="updateProjectTypeFields()">
+                                <option value="websites" selected>Websites</option>
+                                <option value="app">App</option>
+                                <option value="tangible_device">Tangible Device</option>
+                                <option value="nav_and_wayfinding">Nav and Wayfinding</option>
+                            </select>
+                            <div class="form-text">Select the type of project you're testing</div>
+                        </div>
+
+                        <!-- Type-specific fields -->
+                        <div id="app_fields" class="mb-3" style="display: none;">
+                            <label for="app_identifier" class="form-label">App Identifier</label>
+                            <input type="text" class="form-control" id="app_identifier" name="app_identifier"
+                                   placeholder="e.g., com.example.myapp or Bundle ID">
+                            <div class="form-text">Optional: Package name (Android) or Bundle ID (iOS)</div>
+                        </div>
+
+                        <div id="device_fields" class="mb-3" style="display: none;">
+                            <label for="device_model" class="form-label">Device Model</label>
+                            <input type="text" class="form-control" id="device_model" name="device_model"
+                                   placeholder="e.g., NCR SelfServ 84, Diebold ATM">
+                            <div class="form-text">Optional: Manufacturer and model of the device</div>
+                        </div>
+
+                        <div id="location_fields" class="mb-3" style="display: none;">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" name="location"
+                                   placeholder="e.g., Building A, Floor 2 or Downtown Campus">
+                            <div class="form-text">Optional: Physical location of the navigation system</div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="wcag_level" class="form-label">WCAG Compliance Level *</label>
                             <select class="form-select" id="wcag_level" name="wcag_level" required>
@@ -851,5 +884,29 @@ function toggleProductionReadyInline(testId, newValue) {
         alert('Error updating status. Please try again.');
     });
 }
+
+// Show/hide project type-specific fields
+function updateProjectTypeFields() {
+    const projectType = document.getElementById('project_type').value;
+
+    // Hide all type-specific fields first
+    document.getElementById('app_fields').style.display = 'none';
+    document.getElementById('device_fields').style.display = 'none';
+    document.getElementById('location_fields').style.display = 'none';
+
+    // Show relevant fields based on project type
+    if (projectType === 'app') {
+        document.getElementById('app_fields').style.display = 'block';
+    } else if (projectType === 'tangible_device') {
+        document.getElementById('device_fields').style.display = 'block';
+    } else if (projectType === 'nav_and_wayfinding') {
+        document.getElementById('location_fields').style.display = 'block';
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateProjectTypeFields();
+});
 </script>
 {% endblock %}

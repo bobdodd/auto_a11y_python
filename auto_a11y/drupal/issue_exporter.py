@@ -274,12 +274,14 @@ class IssueExporter:
         }
         # Note: field_ticket_status omitted - all existing issues have null for this field
 
-        # Add description/body if provided
+        # Add description/body (always include for updates to clear if removed)
         if description:
             attributes['body'] = {
                 'value': description,
                 'format': 'formatted_text'
             }
+        else:
+            attributes['body'] = None
 
         # Add issue type text field - "WCAG" if WCAG criteria present, "NOT WCAG" otherwise
         if wcag_criteria:
@@ -287,22 +289,30 @@ class IssueExporter:
         else:
             attributes['field_txt_issue_type'] = 'NOT WCAG'
 
-        # Add relevant test criteria text field
+        # Add relevant test criteria text field (always include, may be empty)
         if wcag_criteria:
             attributes['field_txt_relevant_test_criteria'] = ', '.join(wcag_criteria)
+        else:
+            attributes['field_txt_relevant_test_criteria'] = None
 
-        # Add issue category text field from issue_type (touchpoint)
+        # Add issue category text field from issue_type (touchpoint) (always include)
         if issue_type:
             attributes['field_txt_issue_category'] = issue_type
+        else:
+            attributes['field_txt_issue_category'] = None
 
-        # Add optional fields
+        # Add optional fields (always include for updates to clear removed values)
         if xpath:
             attributes['field_xpath'] = xpath
+        else:
+            attributes['field_xpath'] = None
 
         if url:
             attributes['field_url'] = {
                 'uri': url
             }
+        else:
+            attributes['field_url'] = None
 
         # field_video_timecode has 8-char limit, so extract just start time in MM:SS format
         if video_timecode:
@@ -328,9 +338,13 @@ class IssueExporter:
                 logger.warning(f"Failed to parse video_timecode '{video_timecode}': {e}")
                 # Fallback: take first 8 chars
                 attributes['field_video_timecode'] = video_timecode[:8]
+        else:
+            attributes['field_video_timecode'] = None
 
         if issue_id is not None:
             attributes['field_id'] = issue_id
+        else:
+            attributes['field_id'] = None
 
         # Build relationships
         relationships = {
@@ -342,7 +356,7 @@ class IssueExporter:
             }
         }
 
-        # Add video relationship if provided
+        # Add video relationship (always include for updates to clear if removed)
         if video_uuid:
             relationships['field_video'] = {
                 'data': {
@@ -350,6 +364,8 @@ class IssueExporter:
                     'id': video_uuid
                 }
             }
+        else:
+            relationships['field_video'] = {'data': None}
 
         # Note: field_ticket_status has been removed from the staging Issue content type
         # (test-audits.pantheonsite.io) to allow issue creation via JSON:API.

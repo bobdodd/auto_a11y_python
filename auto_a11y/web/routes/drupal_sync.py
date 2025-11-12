@@ -426,11 +426,12 @@ def upload_to_drupal(project_id):
 
                     if result.get('success'):
                         # Update database with Drupal UUID
+                        video_uuid = result['uuid']
                         db.recordings.update_one(
                             {'_id': ObjectId(recording_id)},
                             {
                                 '$set': {
-                                    'drupal_video_uuid': result['uuid'],
+                                    'drupal_video_uuid': video_uuid,
                                     'drupal_video_nid': result.get('nid'),
                                     'drupal_sync_status': 'synced',
                                     'drupal_last_synced': datetime.now(),
@@ -444,10 +445,46 @@ def upload_to_drupal(project_id):
                             'current': current_item,
                             'total': total_items,
                             'item': recording.title,
-                            'uuid': result['uuid'],
+                            'uuid': video_uuid,
                             'nid': result.get('nid')
                         }) + '\n'
                         success_count += 1
+
+                        # Export associated RecordingIssues for this recording
+                        recording_issues = list(db.recording_issues.find({'recording_id': recording.recording_id}))
+                        if recording_issues:
+                            yield json.dumps({
+                                'type': 'info',
+                                'message': f'Exporting {len(recording_issues)} issues from recording "{recording.title}"'
+                            }) + '\n'
+
+                            for issue_doc in recording_issues:
+                                try:
+                                    from auto_a11y.models import RecordingIssue
+                                    rec_issue = RecordingIssue.from_dict(issue_doc)
+
+                                    issue_result = issue_exporter.export_from_recording_issue(
+                                        rec_issue,
+                                        audit_uuid,
+                                        video_uuid
+                                    )
+
+                                    if issue_result.get('success'):
+                                        yield json.dumps({
+                                            'type': 'info',
+                                            'message': f'  ✓ Exported issue: {rec_issue.title}'
+                                        }) + '\n'
+                                    else:
+                                        yield json.dumps({
+                                            'type': 'warning',
+                                            'message': f'  ✗ Failed to export issue "{rec_issue.title}": {issue_result.get("error")}'
+                                        }) + '\n'
+                                except Exception as issue_err:
+                                    logger.error(f"Error exporting recording issue: {issue_err}")
+                                    yield json.dumps({
+                                        'type': 'warning',
+                                        'message': f'  ✗ Error exporting issue: {str(issue_err)}'
+                                    }) + '\n'
                     else:
                         # Update database with error
                         db.recordings.update_one(

@@ -264,9 +264,9 @@ class IssueExporter:
         # Build attributes
         attributes = {
             'title': title,
-            'field_impact': impact,
-            'field_ticket_status': 'open'  # Plain text field, not taxonomy
+            'field_impact': impact
         }
+        # Note: field_ticket_status omitted - all existing issues have null for this field
 
         # Add description/body if provided
         if description:

@@ -274,14 +274,12 @@ class IssueExporter:
         }
         # Note: field_ticket_status omitted - all existing issues have null for this field
 
-        # Add description/body (always include for updates to clear if removed)
+        # Add description/body (only include if present - body field accepts null but format is required)
         if description:
             attributes['body'] = {
                 'value': description,
                 'format': 'formatted_text'
             }
-        else:
-            attributes['body'] = None
 
         # Add issue type text field - "WCAG" if WCAG criteria present, "NOT WCAG" otherwise
         if wcag_criteria:
@@ -302,16 +300,16 @@ class IssueExporter:
             attributes['field_txt_issue_category'] = None
 
         # Add optional fields (always include for updates to clear removed values)
-        if xpath:
-            attributes['field_xpath'] = xpath
-        else:
-            attributes['field_xpath'] = None
+        # Simple text fields can be set to None to clear them
+        attributes['field_xpath'] = xpath if xpath else None
 
+        # URL field has special structure - only include if present, or set to None to clear
         if url:
             attributes['field_url'] = {
                 'uri': url
             }
         else:
+            # Set to None to clear the field on updates
             attributes['field_url'] = None
 
         # field_video_timecode has 8-char limit, so extract just start time in MM:SS format
@@ -341,10 +339,9 @@ class IssueExporter:
         else:
             attributes['field_video_timecode'] = None
 
+        # field_id is required if present, so only add if we have a value
         if issue_id is not None:
             attributes['field_id'] = issue_id
-        else:
-            attributes['field_id'] = None
 
         # Build relationships
         relationships = {

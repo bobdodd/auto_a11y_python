@@ -9,6 +9,7 @@ from bson import ObjectId
 
 from auto_a11y.models.test_result import ImpactLevel
 from auto_a11y.models.recording import Timecode, WCAGReference
+from auto_a11y.models.page import DrupalSyncStatus
 
 
 @dataclass
@@ -68,6 +69,13 @@ class RecordingIssue:
     updated_at: datetime = field(default_factory=datetime.now)
     tags: List[str] = field(default_factory=list)
 
+    # Drupal sync tracking
+    drupal_uuid: Optional[str] = None  # Drupal issue node UUID
+    drupal_nid: Optional[int] = None  # Drupal issue node ID
+    drupal_sync_status: DrupalSyncStatus = DrupalSyncStatus.NOT_SYNCED
+    drupal_last_synced: Optional[datetime] = None
+    drupal_error_message: Optional[str] = None
+
     _id: Optional[ObjectId] = None
 
     @property
@@ -110,7 +118,12 @@ class RecordingIssue:
             'resolution_notes': self.resolution_notes,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
-            'tags': self.tags
+            'tags': self.tags,
+            'drupal_uuid': self.drupal_uuid,
+            'drupal_nid': self.drupal_nid,
+            'drupal_sync_status': self.drupal_sync_status.value,
+            'drupal_last_synced': self.drupal_last_synced,
+            'drupal_error_message': self.drupal_error_message
         }
         if self._id:
             data['_id'] = self._id
@@ -174,6 +187,11 @@ class RecordingIssue:
             created_at=data.get('created_at', datetime.now()),
             updated_at=data.get('updated_at', datetime.now()),
             tags=data.get('tags', []),
+            drupal_uuid=data.get('drupal_uuid'),
+            drupal_nid=data.get('drupal_nid'),
+            drupal_sync_status=DrupalSyncStatus(data.get('drupal_sync_status', 'not_synced')),
+            drupal_last_synced=data.get('drupal_last_synced'),
+            drupal_error_message=data.get('drupal_error_message'),
             _id=obj_id
         )
 

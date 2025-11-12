@@ -470,11 +470,37 @@ def upload_to_drupal(project_id):
                                     )
 
                                     if issue_result.get('success'):
+                                        # Update RecordingIssue with Drupal UUID and sync status
+                                        db.recording_issues.update_one(
+                                            {'_id': issue_doc['_id']},
+                                            {
+                                                '$set': {
+                                                    'drupal_uuid': issue_result['uuid'],
+                                                    'drupal_nid': issue_result.get('nid'),
+                                                    'drupal_sync_status': 'synced',
+                                                    'drupal_last_synced': datetime.now(),
+                                                    'drupal_error_message': None
+                                                }
+                                            }
+                                        )
+
+                                        action = "Updated" if rec_issue.drupal_uuid else "Exported"
                                         yield json.dumps({
                                             'type': 'info',
-                                            'message': f'  ✓ Exported issue: {rec_issue.title}'
+                                            'message': f'  ✓ {action} issue: {rec_issue.title}'
                                         }) + '\n'
                                     else:
+                                        # Update RecordingIssue with error status
+                                        db.recording_issues.update_one(
+                                            {'_id': issue_doc['_id']},
+                                            {
+                                                '$set': {
+                                                    'drupal_sync_status': 'sync_failed',
+                                                    'drupal_error_message': issue_result.get('error')
+                                                }
+                                            }
+                                        )
+
                                         yield json.dumps({
                                             'type': 'warning',
                                             'message': f'  ✗ Failed to export issue "{rec_issue.title}": {issue_result.get("error")}'

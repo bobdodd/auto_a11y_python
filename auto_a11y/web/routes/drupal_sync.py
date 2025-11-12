@@ -8,13 +8,15 @@ from bson import ObjectId
 import json
 from datetime import datetime
 
-from auto_a11y.models import Project, DiscoveredPage, Recording, DrupalSyncStatus
+from auto_a11y.models import Project, DiscoveredPage, Recording, Issue, DrupalSyncStatus
 from auto_a11y.drupal import (
     DrupalJSONAPIClient,
     DiscoveredPageExporter,
     DiscoveredPageImporter,
     DiscoveredPageTaxonomies,
-    RecordingExporter
+    RecordingExporter,
+    IssueImporter,
+    IssueExporter
 )
 from auto_a11y.drupal.config import get_drupal_config
 
@@ -252,6 +254,7 @@ def upload_to_drupal(project_id):
             data = request.get_json()
             discovered_page_ids = data.get('discovered_page_ids', [])
             recording_ids = data.get('recording_ids', [])
+            issue_ids = data.get('issue_ids', [])
             options = data.get('options', {})
 
             yield json.dumps({
@@ -286,8 +289,9 @@ def upload_to_drupal(project_id):
             taxonomies = DiscoveredPageTaxonomies(client)
             page_exporter = DiscoveredPageExporter(client, taxonomies)
             recording_exporter = RecordingExporter(client)
+            issue_exporter = IssueExporter(client)
 
-            total_items = len(discovered_page_ids) + len(recording_ids)
+            total_items = len(discovered_page_ids) + len(recording_ids) + len(issue_ids)
             current_item = 0
             success_count = 0
             failure_count = 0
@@ -472,6 +476,92 @@ def upload_to_drupal(project_id):
                         'current': current_item,
                         'total': total_items,
                         'item': recording_id,
+                        'error': str(e)
+                    }) + '\n'
+                    failure_count += 1
+
+            # Export issues
+            for issue_id in issue_ids:
+                current_item += 1
+
+                try:
+                    issue_doc = db.issues.find_one({'_id': ObjectId(issue_id)})
+                    if not issue_doc:
+                        yield json.dumps({
+                            'type': 'error',
+                            'current': current_item,
+                            'total': total_items,
+                            'item': issue_id,
+                            'error': 'Issue not found'
+                        }) + '\n'
+                        failure_count += 1
+                        continue
+
+                    issue = Issue.from_dict(issue_doc)
+
+                    yield json.dumps({
+                        'type': 'progress',
+                        'current': current_item,
+                        'total': total_items,
+                        'item': issue.title,
+                        'status': 'exporting'
+                    }) + '\n'
+
+                    # Export issue
+                    result = issue_exporter.export_from_issue_model(issue, audit_uuid)
+
+                    if result.get('success'):
+                        # Update database with Drupal UUID
+                        db.issues.update_one(
+                            {'_id': ObjectId(issue_id)},
+                            {
+                                '$set': {
+                                    'drupal_uuid': result['uuid'],
+                                    'drupal_nid': result.get('nid'),
+                                    'drupal_sync_status': 'synced',
+                                    'drupal_last_synced': datetime.now(),
+                                    'drupal_error_message': None
+                                }
+                            }
+                        )
+
+                        yield json.dumps({
+                            'type': 'success',
+                            'current': current_item,
+                            'total': total_items,
+                            'item': issue.title,
+                            'uuid': result['uuid'],
+                            'nid': result.get('nid')
+                        }) + '\n'
+                        success_count += 1
+                    else:
+                        # Update database with error
+                        db.issues.update_one(
+                            {'_id': ObjectId(issue_id)},
+                            {
+                                '$set': {
+                                    'drupal_sync_status': 'sync_failed',
+                                    'drupal_error_message': result.get('error')
+                                }
+                            }
+                        )
+
+                        yield json.dumps({
+                            'type': 'error',
+                            'current': current_item,
+                            'total': total_items,
+                            'item': issue.title,
+                            'error': result.get('error')
+                        }) + '\n'
+                        failure_count += 1
+
+                except Exception as e:
+                    logger.error(f"Error exporting issue {issue_id}: {e}")
+                    yield json.dumps({
+                        'type': 'error',
+                        'current': current_item,
+                        'total': total_items,
+                        'item': issue_id,
                         'error': str(e)
                     }) + '\n'
                     failure_count += 1
@@ -698,6 +788,172 @@ def import_discovered_pages(project_id):
 
         except Exception as e:
             logger.error(f"Error importing discovered pages: {e}")
+            yield json.dumps({'type': 'error', 'error': str(e)}) + '\n'
+
+    return Response(stream_with_context(generate()), content_type='application/x-ndjson')
+
+
+@drupal_sync_bp.route('/projects/<project_id>/issues')
+def list_issues(project_id):
+    """List issues for a project"""
+    try:
+        db = current_app.db
+
+        # Get issues
+        issues = list(db.issues.find({'project_id': project_id}))
+
+        # Convert to dict
+        result = []
+        for issue_doc in issues:
+            issue = Issue.from_dict(issue_doc)
+            result.append({
+                'id': issue.id,
+                'title': issue.title,
+                'impact': issue.impact.value,
+                'issue_type': issue.issue_type,
+                'location_on_page': issue.location_on_page,
+                'wcag_criteria': issue.wcag_criteria,
+                'source_type': issue.source_type,
+                'detection_method': issue.detection_method,
+                'status': issue.status,
+                'drupal_uuid': issue.drupal_uuid,
+                'drupal_nid': issue.drupal_nid,
+                'drupal_sync_status': issue.drupal_sync_status.value,
+                'drupal_last_synced': issue.drupal_last_synced.isoformat() if issue.drupal_last_synced else None,
+                'is_synced': issue.is_synced,
+                'needs_sync': issue.needs_sync
+            })
+
+        return jsonify(result)
+
+    except Exception as e:
+        logger.error(f"Error listing issues: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@drupal_sync_bp.route('/projects/<project_id>/sync/import-issues', methods=['POST'])
+def import_issues(project_id):
+    """
+    Import issues from Drupal for a project.
+
+    Streams progress updates as JSON lines.
+    """
+    def generate():
+        try:
+            db = current_app.db
+
+            # Get project
+            project_doc = db.projects.find_one({'_id': ObjectId(project_id)})
+            if not project_doc:
+                yield json.dumps({'type': 'error', 'error': 'Project not found'}) + '\n'
+                return
+
+            project = Project.from_dict(project_doc)
+
+            # Initialize Drupal client
+            client = _get_drupal_client()
+            if not client:
+                yield json.dumps({'type': 'error', 'error': 'Failed to initialize Drupal client'}) + '\n'
+                return
+
+            # Lookup audit UUID
+            yield json.dumps({'type': 'info', 'message': 'Looking up Drupal audit...'}) + '\n'
+            audit_uuid = _lookup_audit_uuid(client, project)
+
+            if not audit_uuid:
+                yield json.dumps({'type': 'error', 'error': 'Could not find Drupal audit'}) + '\n'
+                return
+
+            logger.info(f"[IMPORT DEBUG] Project: {project.name}, Drupal Audit Name: {project.drupal_audit_name}, Audit UUID: {audit_uuid}")
+            yield json.dumps({'type': 'info', 'message': f'Found Drupal audit: {project.drupal_audit_name or project.name} (UUID: {audit_uuid})'}) + '\n'
+
+            # Initialize importer
+            importer = IssueImporter(client)
+
+            yield json.dumps({'type': 'info', 'message': 'Fetching issues from Drupal...'}) + '\n'
+
+            # Fetch issues from Drupal
+            drupal_issues = importer.fetch_issues_for_audit(audit_uuid)
+
+            logger.info(f"[IMPORT DEBUG] Fetched {len(drupal_issues)} issues from Drupal for audit {audit_uuid}")
+            for idx, issue in enumerate(drupal_issues, 1):
+                logger.info(f"[IMPORT DEBUG] Issue {idx}: Title='{issue['title']}', UUID={issue['uuid']}, Impact={issue['impact']}")
+
+            yield json.dumps({'type': 'info', 'message': f'Found {len(drupal_issues)} issues in Drupal'}) + '\n'
+
+            # Import each issue
+            imported_count = 0
+            updated_count = 0
+            skipped_count = 0
+
+            for i, drupal_issue in enumerate(drupal_issues, 1):
+                try:
+                    yield json.dumps({
+                        'type': 'progress',
+                        'current': i,
+                        'total': len(drupal_issues),
+                        'item': drupal_issue['title'],
+                        'status': 'importing'
+                    }) + '\n'
+
+                    # Check if issue already exists by UUID
+                    existing_issue = db.issues.find_one({'drupal_uuid': drupal_issue['uuid']})
+
+                    if existing_issue:
+                        # Update existing issue
+                        issue_dict = importer.to_database_dict(drupal_issue, project_id)
+                        issue_dict['_id'] = existing_issue['_id']
+
+                        db.issues.update_one(
+                            {'_id': existing_issue['_id']},
+                            {'$set': issue_dict}
+                        )
+
+                        yield json.dumps({
+                            'type': 'success',
+                            'current': i,
+                            'total': len(drupal_issues),
+                            'item': drupal_issue['title'],
+                            'action': 'updated'
+                        }) + '\n'
+                        updated_count += 1
+
+                    else:
+                        # Create new issue
+                        issue_dict = importer.to_database_dict(drupal_issue, project_id)
+                        db.issues.insert_one(issue_dict)
+
+                        yield json.dumps({
+                            'type': 'success',
+                            'current': i,
+                            'total': len(drupal_issues),
+                            'item': drupal_issue['title'],
+                            'action': 'imported'
+                        }) + '\n'
+                        imported_count += 1
+
+                except Exception as e:
+                    logger.error(f"Error importing issue {drupal_issue.get('title')}: {e}")
+                    skipped_count += 1
+                    yield json.dumps({
+                        'type': 'error',
+                        'current': i,
+                        'total': len(drupal_issues),
+                        'item': drupal_issue.get('title', 'Unknown'),
+                        'error': str(e)
+                    }) + '\n'
+
+            # Send completion
+            yield json.dumps({
+                'type': 'complete',
+                'imported': imported_count,
+                'updated': updated_count,
+                'skipped': skipped_count,
+                'total': len(drupal_issues)
+            }) + '\n'
+
+        except Exception as e:
+            logger.error(f"Error importing issues: {e}")
             yield json.dumps({'type': 'error', 'error': str(e)}) + '\n'
 
     return Response(stream_with_context(generate()), content_type='application/x-ndjson')

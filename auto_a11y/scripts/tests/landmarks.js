@@ -252,6 +252,68 @@ function landmarksScrape() {
         });
     }
 
+    // Check for duplicate labels on region landmarks
+    {
+        // Select all elements with role="region" - includes div, section, and any other element with this role
+        const regionElements = document.querySelectorAll('[role="region"]');
+        const regionLabels = new Map(); // Map of label -> array of elements
+
+        regionElements.forEach(region => {
+            // Get accessible name
+            let accessibleName = '';
+            const ariaLabel = region.getAttribute('aria-label');
+            if (ariaLabel) {
+                accessibleName = ariaLabel.trim();
+            } else {
+                const labelledBy = region.getAttribute('aria-labelledby');
+                if (labelledBy) {
+                    const labelEl = document.getElementById(labelledBy);
+                    if (labelEl) {
+                        accessibleName = labelEl.textContent.trim();
+                    }
+                }
+            }
+
+            // Only check regions that have an accessible name
+            if (accessibleName) {
+                if (!regionLabels.has(accessibleName)) {
+                    regionLabels.set(accessibleName, []);
+                }
+                regionLabels.get(accessibleName).push(region);
+            }
+        });
+
+        // Check for duplicates and report errors
+        regionLabels.forEach((regions, label) => {
+            if (regions.length > 1) {
+                // Multiple regions with the same label - report as error for each
+                regions.forEach(region => {
+                    errorList.push({
+                        url: window.location.href,
+                        type: 'err',
+                        cat: 'landmarks',
+                        err: 'ErrDuplicateLabelForRegionLandmark',
+                        xpath: Elements.DOMPath.xPath(region, true),
+                        element: region.tagName.toLowerCase(),
+                        regionLabel: label,
+                        duplicateCount: regions.length,
+                        fpTempId: region.getAttribute('a11y-fpId')
+                    });
+                });
+            } else {
+                // Single region with unique label - report as pass
+                const region = regions[0];
+                passList.push({
+                    check: 'region_unique_label',
+                    element: region.tagName,
+                    xpath: Elements.DOMPath.xPath(region, true),
+                    wcag: ['1.3.1', '2.4.6'],
+                    reason: `Region landmark has unique label: "${label}"`
+                });
+            }
+        });
+    }
+
     // DISCOVERY: Report each <section> with role="region" or explicit aria-label/labelledby
     {
         const sectionElements = document.querySelectorAll('section[role="region"], section[aria-label], section[aria-labelledby]');

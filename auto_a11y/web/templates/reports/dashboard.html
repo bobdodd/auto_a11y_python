@@ -178,7 +178,7 @@
 
     <!-- Second row for Offline Reports -->
     <div class="row mb-4 g-3">
-        <div class="col-md-4 offset-md-2">
+        <div class="col-md-4">
             <div class="card h-100 report-card">
                 <div class="card-body text-center">
                     <div class="icon-wrapper">
@@ -209,6 +209,24 @@
                     <div class="btn-wrapper">
                         <button class="btn btn-summary" data-bs-toggle="modal" data-bs-target="#deduplicatedModal">
                             <i class="bi bi-file-earmark-zip me-2"></i>Generate Deduplicated Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 report-card">
+                <div class="card-body text-center">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-mic display-3 icon-pdf"></i>
+                    </div>
+                    <div class="content-wrapper">
+                        <h5 class="card-title mt-3">Recordings Report</h5>
+                        <p class="card-text text-muted">Manual accessibility audit findings from recorded testing sessions</p>
+                    </div>
+                    <div class="btn-wrapper">
+                        <button class="btn btn-pdf" data-bs-toggle="modal" data-bs-target="#recordingsModal">
+                            <i class="bi bi-mic me-2"></i>Generate Recordings Report
                         </button>
                     </div>
                 </div>
@@ -1226,6 +1244,144 @@ if (deduplicatedModal) {
         .then(response => {
             // Flask will redirect, so reload the page to see the new report in the list
             window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error generating report: ' + error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
+    });
+}
+</script>
+
+<!-- Recordings Report Modal -->
+<div class="modal fade" id="recordingsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Recordings Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="recordingsForm">
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle"></i> This report includes manual accessibility findings from:
+                        <ul class="mt-2 mb-0">
+                            <li>Accessibility audit recordings</li>
+                            <li>Lived experience testing sessions</li>
+                            <li>All issues organized by touchpoint and impact</li>
+                            <li>Key takeaways and user painpoints</li>
+                            <li>WCAG criteria mappings and remediation guidance</li>
+                        </ul>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="recordingsProject" class="form-label">Project</label>
+                                <select class="form-select" id="recordingsProject" required>
+                                    <option value="">Choose a project...</option>
+                                    {% for project in projects %}
+                                    <option value="{{ project.id }}">{{ project.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted">All recordings from this project will be included</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordingsFormat" class="form-label">Export Format</label>
+                        <select class="form-select" id="recordingsFormat">
+                            <option value="html">HTML (Recommended)</option>
+                            <option value="pdf">PDF</option>
+                            <option value="xlsx">Excel Spreadsheet</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Include in Report</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="recordingsIncludeSummary" checked>
+                            <label class="form-check-label" for="recordingsIncludeSummary">
+                                Executive Summary
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="recordingsIncludeTimecodes" checked>
+                            <label class="form-check-label" for="recordingsIncludeTimecodes">
+                                Timecodes
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="recordingsIncludeWCAG" checked>
+                            <label class="form-check-label" for="recordingsIncludeWCAG">
+                                WCAG Criteria
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="recordingsGroupByTouchpoint" checked>
+                            <label class="form-check-label" for="recordingsGroupByTouchpoint">
+                                Group Issues by Touchpoint
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-mic"></i> Generate Recordings Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Recordings Report Modal Logic
+const recordingsModal = document.getElementById('recordingsModal');
+if (recordingsModal) {
+    // Handle form submission
+    document.getElementById('recordingsForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const projectId = document.getElementById('recordingsProject').value;
+
+        if (!projectId) {
+            alert('Please select a project');
+            return;
+        }
+
+        const format = document.getElementById('recordingsFormat').value;
+        const includeSummary = document.getElementById('recordingsIncludeSummary').checked;
+        const includeTimecodes = document.getElementById('recordingsIncludeTimecodes').checked;
+        const includeWCAG = document.getElementById('recordingsIncludeWCAG').checked;
+        const groupByTouchpoint = document.getElementById('recordingsGroupByTouchpoint').checked;
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+
+        // Use FormData to submit as regular form (not JSON)
+        const formDataObj = new FormData();
+        formDataObj.append('project_id', projectId);
+        formDataObj.append('format', format);
+        formDataObj.append('include_summary', includeSummary);
+        formDataObj.append('include_timecodes', includeTimecodes);
+        formDataObj.append('include_wcag', includeWCAG);
+        formDataObj.append('group_by_touchpoint', groupByTouchpoint);
+
+        fetch('/reports/generate/recordings/' + projectId, {
+            method: 'POST',
+            body: formDataObj
+        })
+        .then(response => {
+            if (response.ok) {
+                // Flask will redirect, so reload the page to see the new report in the list
+                window.location.reload();
+            } else {
+                throw new Error('Failed to generate report');
+            }
         })
         .catch(error => {
             console.error('Error:', error);

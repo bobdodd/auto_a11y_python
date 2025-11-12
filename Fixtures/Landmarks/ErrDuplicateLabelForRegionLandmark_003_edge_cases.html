@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate Region Landmark Labels - Edge Cases</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrDuplicateLabelForRegionLandmark_003_edge_cases",
+        "issueId": "ErrDuplicateLabelForRegionLandmark",
+        "expectedViolationCount": 8,
+        "expectedPassCount": 4,
+        "description": "Edge cases for duplicate region landmark detection including whitespace, case sensitivity, multiple duplicate groups, and mixed element types",
+        "wcag": "1.3.1, 2.4.6",
+        "impact": "Medium"
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Duplicate Region Landmark Labels - Edge Cases</h1>
+    </header>
+
+    <main>
+        <article>
+            <h2>Testing Edge Cases</h2>
+            <p>This fixture tests edge cases and boundary conditions for duplicate region landmark detection.</p>
+        </article>
+
+        <!-- Edge Case 1: Whitespace variations (should be treated as duplicates after trim) -->
+        <div role="region"
+             aria-label="Special Offers"
+             data-expected-violation="true"
+             data-violation-id="ErrDuplicateLabelForRegionLandmark"
+             data-violation-reason="Label with no extra whitespace">
+            <h3>Current Deals</h3>
+            <p>Special offers section without whitespace.</p>
+        </div>
+
+        <div role="region"
+             aria-label="  Special Offers  "
+             data-expected-violation="true"
+             data-violation-id="ErrDuplicateLabelForRegionLandmark"
+             data-violation-reason="Label with leading and trailing whitespace (should match after trim)">
+            <h3>Weekly Specials</h3>
+            <p>Special offers section with extra whitespace that should be trimmed.</p>
+        </div>
+
+        <!-- Edge Case 2: Multiple duplicate groups on same page -->
+        <!-- Group A: Two regions labeled "Customer Reviews" -->
+        <section role="region"
+                 aria-label="Customer Reviews"
+                 data-expected-violation="true"
+                 data-violation-id="ErrDuplicateLabelForRegionLandmark"
+                 data-violation-reason="First duplicate in Group A">
+            <h3>Product Reviews</h3>
+            <p>Reviews for Product A.</p>
+        </section>
+
+        <section role="region"
+                 aria-label="Customer Reviews"
+                 data-expected-violation="true"
+                 data-violation-id="ErrDuplicateLabelForRegionLandmark"
+                 data-violation-reason="Second duplicate in Group A">
+            <h3>Service Reviews</h3>
+            <p>Reviews for Service B.</p>
+        </section>
+
+        <!-- Group B: Three regions labeled "Featured Content" -->
+        <div role="region"
+             aria-label="Featured Content"
+             data-expected-violation="true"
+             data-violation-id="ErrDuplicateLabelForRegionLandmark"
+             data-violation-reason="First duplicate in Group B (3 total)">
+            <h3>Featured Article 1</h3>
+            <p>First featured article.</p>
+        </div>
+
+        <div role="region"
+             aria-label="Featured Content"
+             data-expected-violation="true"
+             data-violation-id="ErrDuplicateLabelForRegionLandmark"
+             data-violation-reason="Second duplicate in Group B (3 total)">
+            <h3>Featured Article 2</h3>
+            <p>Second featured article.</p>
+        </div>
+
+        <div role="region"
+             aria-label="Featured Content"
+             data-expected-violation="true"
+             data-violation-id="ErrDuplicateLabelForRegionLandmark"
+             data-violation-reason="Third duplicate in Group B (3 total)">
+            <h3>Featured Article 3</h3>
+            <p>Third featured article.</p>
+        </div>
+
+        <!-- Edge Case 3: Mixed labeling methods with same computed name -->
+        <h3 id="updates-heading">Recent Updates</h3>
+
+        <section role="region"
+                 aria-labelledby="updates-heading"
+                 data-expected-violation="true"
+                 data-violation-id="ErrDuplicateLabelForRegionLandmark"
+                 data-violation-reason="Using aria-labelledby referencing 'Recent Updates'">
+            <p>Updates section using aria-labelledby.</p>
+        </section>
+
+        <section role="region"
+                 aria-label="Recent Updates"
+                 data-expected-violation="true"
+                 data-violation-id="ErrDuplicateLabelForRegionLandmark"
+                 data-violation-reason="Using aria-label with same text 'Recent Updates'">
+            <p>Updates section using aria-label with matching text.</p>
+        </section>
+
+        <!-- Edge Case 4: Custom elements with role="region" -->
+        <custom-widget role="region"
+                       aria-label="Widget Dashboard"
+                       data-expected-pass="true"
+                       data-pass-reason="Custom element with unique label">
+            <p>Custom element properly labeled as region.</p>
+        </custom-widget>
+
+        <!-- Edge Case 5: SVG with role="region" -->
+        <svg role="region"
+             aria-label="Data Visualization"
+             width="200"
+             height="100"
+             data-expected-pass="true"
+             data-pass-reason="SVG region with unique label">
+            <rect width="200" height="100" fill="#4CAF50"/>
+            <text x="10" y="50" fill="white">Chart Data</text>
+        </svg>
+
+        <!-- Edge Case 6: Regions with unique labels for comparison -->
+        <section role="region"
+                 aria-label="Privacy Policy"
+                 data-expected-pass="true"
+                 data-pass-reason="Unique label, no duplicates">
+            <h3>Privacy Information</h3>
+            <p>Our privacy policy details.</p>
+        </section>
+
+        <section role="region"
+                 aria-label="Terms of Service"
+                 data-expected-pass="true"
+                 data-pass-reason="Unique label, different from others">
+            <h3>Terms and Conditions</h3>
+            <p>Our terms of service.</p>
+        </section>
+
+        <!-- Edge Case 7: Region without label (should not cause issues with duplicate detection) -->
+        <div role="region">
+            <h3>Unlabeled Region</h3>
+            <p>This region has no aria-label or aria-labelledby (separate issue, not a duplicate label issue).</p>
+        </div>
+
+        <!-- Edge Case 8: aria-labelledby referencing multiple IDs -->
+        <span id="label-part1">Announcement:</span>
+        <span id="label-part2">Breaking News</span>
+
+        <section role="region"
+                 aria-labelledby="label-part1 label-part2"
+                 data-expected-pass="true"
+                 data-pass-reason="Compound label from multiple references creates unique name">
+            <p>Region with compound accessible name from multiple IDs.</p>
+        </section>
+
+        <!-- Edge Case 9: Empty aria-label (should not participate in duplicate detection) -->
+        <div role="region"
+             aria-label="">
+            <h3>Empty Label Region</h3>
+            <p>This region has empty aria-label (different issue, not duplicate).</p>
+        </div>
+
+        <!-- Edge Case 10: Implicit section regions (section with aria-label but no explicit role) -->
+        <!-- Note: These may or may not be treated as regions depending on implementation -->
+        <section aria-label="Sidebar Content">
+            <h3>Related Links</h3>
+            <p>Implicit region through section with aria-label.</p>
+        </section>
+    </main>
+
+    <footer>
+        <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border: 1px solid #ffc107;">
+            <h3>Expected Test Results:</h3>
+            <ul>
+                <li><strong>8 Violations Expected:</strong>
+                    <ul>
+                        <li>2 regions with "Special Offers" (including whitespace variant)</li>
+                        <li>2 regions with "Customer Reviews"</li>
+                        <li>3 regions with "Featured Content"</li>
+                        <li>2 regions with "Recent Updates" (mixed aria-label and aria-labelledby)</li>
+                    </ul>
+                </li>
+                <li><strong>4 Passes Expected:</strong>
+                    <ul>
+                        <li>Custom element with unique "Widget Dashboard"</li>
+                        <li>SVG with unique "Data Visualization"</li>
+                        <li>Section with unique "Privacy Policy"</li>
+                        <li>Section with unique "Terms of Service"</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Edge Cases Covered:</h3>
+            <ol>
+                <li>Whitespace handling (leading/trailing spaces should be trimmed)</li>
+                <li>Multiple duplicate groups on same page (2 duplicates + 3 duplicates)</li>
+                <li>Mixed labeling methods (aria-label vs aria-labelledby with same text)</li>
+                <li>Custom elements with role="region"</li>
+                <li>SVG elements with role="region"</li>
+                <li>Regions without labels (should not interfere with duplicate detection)</li>
+                <li>Compound labels from multiple aria-labelledby IDs</li>
+                <li>Empty aria-label values</li>
+            </ol>
+        </div>
+    </footer>
+</body>
+</html>

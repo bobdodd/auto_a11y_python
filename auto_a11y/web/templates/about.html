@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}About - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h2 mb-4">
+        <i class="bi bi-info-circle"></i> About Auto A11y
+    </h1>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- About Auto A11y -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-universal-access-circle"></i> About Auto A11y</h5>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Auto A11y is an automated web accessibility testing tool designed to help developers and testers identify and fix accessibility issues in web applications.</p>
+
+                    <h6 class="mt-4">Features</h6>
+                    <ul>
+                        <li>Automated WCAG 2.2 compliance testing</li>
+                        <li>Lived experience testing with real users</li>
+                        <li>Manual accessibility audits and recordings</li>
+                        <li>Comprehensive reporting and issue tracking</li>
+                        <li>Project and test user management</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- WCAG Data Attribution -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-file-text"></i> WCAG Data Attribution</h5>
+                </div>
+                <div class="card-body">
+                    <p>This application uses official WCAG (Web Content Accessibility Guidelines) data from the World Wide Web Consortium (W3C).</p>
+
+                    <h6 class="mt-3">Source</h6>
+                    <p>The WCAG Success Criteria data used in this application is sourced from:</p>
+                    <ul>
+                        <li>
+                            <strong>Web Content Accessibility Guidelines (WCAG) 2.2</strong><br>
+                            <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">
+                                https://www.w3.org/TR/WCAG22/
+                            </a>
+                        </li>
+                        <li>
+                            <strong>Techniques for WCAG 2.2</strong><br>
+                            <a href="https://www.w3.org/WAI/WCAG22/Techniques/" target="_blank" rel="noopener noreferrer">
+                                https://www.w3.org/WAI/WCAG22/Techniques/
+                            </a>
+                        </li>
+                        <li>
+                            <strong>WCAG 2.2 JSON Data</strong><br>
+                            <a href="https://www.w3.org/WAI/WCAG22/wcag.json" target="_blank" rel="noopener noreferrer">
+                                https://www.w3.org/WAI/WCAG22/wcag.json
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="alert alert-warning mt-3" role="alert">
+                        <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Important Notice</h6>
+                        <p class="mb-0">The WCAG content is used with attribution as permitted by W3C. The content has not been modified. All additional content, analysis, and features provided by Auto A11y are clearly distinguished from the original W3C WCAG content.</p>
+                    </div>
+
+                    <h6 class="mt-3">Copyright</h6>
+                    <p class="small text-muted">
+                        Copyright © 2008-2023 World Wide Web Consortium.
+                        <a href="https://www.w3.org/Consortium/Legal/2015/doc-license" target="_blank" rel="noopener noreferrer">
+                            W3C Document License
+                        </a> applies to the WCAG content.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Additional Resources -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-book"></i> Additional Resources</h5>
+                </div>
+                <div class="card-body">
+                    <h6>W3C Web Accessibility Initiative (WAI)</h6>
+                    <ul>
+                        <li>
+                            <a href="https://www.w3.org/WAI/" target="_blank" rel="noopener noreferrer">
+                                W3C Web Accessibility Initiative
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.w3.org/WAI/WCAG22/quickref/" target="_blank" rel="noopener noreferrer">
+                                How to Meet WCAG (Quick Reference)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.w3.org/WAI/WCAG22/Understanding/" target="_blank" rel="noopener noreferrer">
+                                Understanding WCAG 2.2
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.w3.org/WAI/test-evaluate/" target="_blank" rel="noopener noreferrer">
+                                Evaluating Web Accessibility Overview
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-square"></i> Quick Info</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Version Information</h6>
+                    <p class="small">
+                        <strong>WCAG Version:</strong> 2.2<br>
+                        <strong>Last Updated:</strong> October 2023
+                    </p>
+
+                    <hr>
+
+                    <h6>Conformance Levels</h6>
+                    <p class="small">Auto A11y tests against all three WCAG conformance levels:</p>
+                    <ul class="small">
+                        <li><strong>Level A:</strong> Minimum level of conformance</li>
+                        <li><strong>Level AA:</strong> Standard level (most common target)</li>
+                        <li><strong>Level AAA:</strong> Highest level of conformance</li>
+                    </ul>
+
+                    <hr>
+
+                    <h6>Testing Approaches</h6>
+                    <p class="small">Auto A11y supports multiple testing approaches:</p>
+                    <ul class="small">
+                        <li><strong>Automated Testing:</strong> Using axe-core engine</li>
+                        <li><strong>Manual Audits:</strong> Human expert evaluation</li>
+                        <li><strong>Lived Experience:</strong> Testing by people with disabilities</li>
+                    </ul>
+
+                    <hr>
+
+                    <div class="text-center">
+                        <a href="{{ url_for('help') }}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-question-circle"></i> View Help
+                        </a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,461 @@
+<!-- Drupal Sync Card - Include this in project view -->
+<div class="card mb-4" id="drupalSyncCard">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bi bi-cloud-upload"></i> Drupal Sync
+        </h5>
+        <div>
+            <span class="badge bg-info" id="drupalAuditBadge">
+                <i class="bi bi-info-circle"></i> Loading...
+            </span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div id="drupalSyncContent">
+            <!-- Content loaded via JavaScript -->
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload to Drupal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Step 1: Select Content -->
+                <div id="uploadStep1">
+                    <h6>Select Content to Upload</h6>
+
+                    <!-- Discovered Pages -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <input type="checkbox" id="selectAllPages" checked>
+                            <strong>Discovered Pages (<span id="discoveredPagesCount">0</span>)</strong>
+                        </div>
+                        <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                            <div id="discoveredPagesList">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recordings -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <input type="checkbox" id="selectAllRecordings" checked>
+                            <strong>Recordings (<span id="recordingsCount">0</span>)</strong>
+                        </div>
+                        <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                            <div id="recordingsList">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Upload Progress -->
+                <div id="uploadStep2" style="display:none;">
+                    <h6>Uploading to Drupal...</h6>
+
+                    <div class="progress mb-3" style="height: 30px;">
+                        <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                             role="progressbar" style="width: 0%">
+                            <span id="uploadProgressText">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Upload Log</strong>
+                        </div>
+                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                            <div id="uploadLog" class="font-monospace small">
+                                <!-- Log entries appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Complete -->
+                <div id="uploadStep3" style="display:none;">
+                    <div class="alert alert-success">
+                        <h4><i class="bi bi-check-circle"></i> Upload Complete!</h4>
+                        <p>Successfully uploaded <strong><span id="successCount">0</span></strong> items to Drupal.</p>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="stat-card text-center p-3 border rounded">
+                                <h4 id="uploadedPages">0</h4>
+                                <small>Discovered Pages</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-card text-center p-3 border rounded">
+                                <h4 id="uploadedRecordings">0</h4>
+                                <small>Recordings</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="uploadErrors" class="alert alert-danger" style="display:none;">
+                        <strong><i class="bi bi-exclamation-triangle"></i> Some items failed:</strong>
+                        <ul id="uploadErrorsList"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalBtn">Close</button>
+                <button type="button" class="btn btn-primary" id="startUploadBtn" onclick="startUpload()">
+                    <i class="bi bi-cloud-upload"></i> Start Upload
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Global variables
+let projectId = '{{ project.id }}';
+let syncStatus = null;
+let discoveredPages = [];
+let recordings = [];
+
+// Load sync status on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadSyncStatus();
+});
+
+async function loadSyncStatus() {
+    try {
+        const response = await fetch(`/drupal/projects/${projectId}/sync/status`);
+        syncStatus = await response.json();
+
+        renderSyncStatus();
+    } catch (error) {
+        console.error('Error loading sync status:', error);
+        document.getElementById('drupalSyncContent').innerHTML = `
+            <div class="alert alert-danger">
+                <strong>Error loading sync status:</strong> ${error.message}
+            </div>
+        `;
+    }
+}
+
+function renderSyncStatus() {
+    if (!syncStatus.drupal_enabled) {
+        document.getElementById('drupalSyncContent').innerHTML = `
+            <div class="alert alert-warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Drupal Integration Not Configured</strong>
+                <p class="mb-0">Configure Drupal connection in <code>config/drupal.conf</code> to enable sync.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Update audit badge
+    document.getElementById('drupalAuditBadge').innerHTML = `
+        <i class="bi bi-info-circle"></i> Audit: "${syncStatus.project_name}"
+    `;
+
+    // Render status
+    const content = `
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="stat-box text-center p-3 border rounded">
+                    <div class="stat-label">Discovered Pages</div>
+                    <div class="stat-value">
+                        <span class="text-success">${syncStatus.discovered_pages.synced}</span> / ${syncStatus.discovered_pages.total}
+                    </div>
+                    <small class="text-muted">${syncStatus.discovered_pages.pending} pending</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-box text-center p-3 border rounded">
+                    <div class="stat-label">Recordings</div>
+                    <div class="stat-value">
+                        <span class="text-success">${syncStatus.recordings.synced}</span> / ${syncStatus.recordings.total}
+                    </div>
+                    <small class="text-muted">${syncStatus.recordings.pending} pending</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-box text-center p-3 border rounded">
+                    <div class="stat-label">Last Sync</div>
+                    <div class="stat-value small">
+                        ${syncStatus.last_sync_time ? new Date(syncStatus.last_sync_time).toLocaleString() : 'Never'}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-toolbar mb-3">
+            <a href="/drupal/projects/{{ project.id }}/sync" class="btn btn-primary me-2">
+                <i class="bi bi-cloud-arrow-up-down"></i> Synchronization Page
+            </a>
+            <button type="button" class="btn btn-outline-primary me-2" onclick="openUploadModal()">
+                <i class="bi bi-arrow-up-circle"></i> Quick Upload
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="loadSyncStatus()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+
+        ${syncStatus.sync_errors.length > 0 ? `
+        <div class="alert alert-warning">
+            <strong><i class="bi bi-exclamation-triangle"></i> Sync Issues</strong>
+            <ul class="mb-0 mt-2">
+                ${syncStatus.sync_errors.map(err => `<li>${err}</li>`).join('')}
+            </ul>
+        </div>
+        ` : ''}
+    `;
+
+    document.getElementById('drupalSyncContent').innerHTML = content;
+}
+
+async function openUploadModal() {
+    // Load discovered pages and recordings
+    try {
+        const [pagesResp, recordingsResp] = await Promise.all([
+            fetch(`/drupal/projects/${projectId}/discovered-pages`),
+            fetch(`/drupal/projects/${projectId}/recordings`)
+        ]);
+
+        discoveredPages = await pagesResp.json();
+        recordings = await recordingsResp.json();
+
+        // Populate lists
+        renderDiscoveredPagesList();
+        renderRecordingsList();
+
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('uploadModal'));
+        modal.show();
+    } catch (error) {
+        console.error('Error loading content:', error);
+        alert('Error loading content: ' + error.message);
+    }
+}
+
+function renderDiscoveredPagesList() {
+    const container = document.getElementById('discoveredPagesList');
+    document.getElementById('discoveredPagesCount').textContent = discoveredPages.length;
+
+    if (discoveredPages.length === 0) {
+        container.innerHTML = '<p class="text-muted">No discovered pages found.</p>';
+        return;
+    }
+
+    container.innerHTML = discoveredPages.map(page => `
+        <div class="form-check mb-2">
+            <input class="form-check-input page-checkbox" type="checkbox"
+                   id="page_${page.id}" value="${page.id}"
+                   ${page.needs_sync ? 'checked' : ''}>
+            <label class="form-check-label" for="page_${page.id}">
+                <strong>${page.title}</strong>
+                ${page.is_synced ? '<span class="badge bg-success ms-2">Synced</span>' : ''}
+                ${page.drupal_sync_status === 'sync_failed' ? '<span class="badge bg-danger ms-2">Failed</span>' : ''}
+                <br>
+                <small class="text-muted">${page.url}</small>
+            </label>
+        </div>
+    `).join('');
+
+    // Setup select all checkbox
+    document.getElementById('selectAllPages').onchange = function() {
+        document.querySelectorAll('.page-checkbox').forEach(cb => {
+            cb.checked = this.checked;
+        });
+    };
+}
+
+function renderRecordingsList() {
+    const container = document.getElementById('recordingsList');
+    document.getElementById('recordingsCount').textContent = recordings.length;
+
+    if (recordings.length === 0) {
+        container.innerHTML = '<p class="text-muted">No recordings found.</p>';
+        return;
+    }
+
+    container.innerHTML = recordings.map(recording => `
+        <div class="form-check mb-2">
+            <input class="form-check-input recording-checkbox" type="checkbox"
+                   id="recording_${recording.id}" value="${recording.id}"
+                   ${recording.needs_sync ? 'checked' : ''}>
+            <label class="form-check-label" for="recording_${recording.id}">
+                <strong>${recording.title}</strong>
+                ${recording.is_synced ? '<span class="badge bg-success ms-2">Synced</span>' : ''}
+                ${recording.drupal_sync_status === 'sync_failed' ? '<span class="badge bg-danger ms-2">Failed</span>' : ''}
+                <br>
+                <small class="text-muted">
+                    ${recording.duration || 'Unknown duration'}
+                    ${recording.auditor_name ? `• ${recording.auditor_name}` : ''}
+                    ${recording.total_issues > 0 ? `• ${recording.total_issues} issues` : ''}
+                </small>
+            </label>
+        </div>
+    `).join('');
+
+    // Setup select all checkbox
+    document.getElementById('selectAllRecordings').onchange = function() {
+        document.querySelectorAll('.recording-checkbox').forEach(cb => {
+            cb.checked = this.checked;
+        });
+    };
+}
+
+async function startUpload() {
+    // Get selected items
+    const selectedPageIds = Array.from(document.querySelectorAll('.page-checkbox:checked'))
+        .map(cb => cb.value);
+    const selectedRecordingIds = Array.from(document.querySelectorAll('.recording-checkbox:checked'))
+        .map(cb => cb.value);
+
+    if (selectedPageIds.length === 0 && selectedRecordingIds.length === 0) {
+        alert('Please select at least one item to upload.');
+        return;
+    }
+
+    // Hide step 1, show step 2
+    document.getElementById('uploadStep1').style.display = 'none';
+    document.getElementById('uploadStep2').style.display = 'block';
+    document.getElementById('startUploadBtn').style.display = 'none';
+    document.getElementById('closeModalBtn').disabled = true;
+
+    // Start upload
+    try {
+        const response = await fetch(`/drupal/projects/${projectId}/sync/upload`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                discovered_page_ids: selectedPageIds,
+                recording_ids: selectedRecordingIds,
+                options: {}
+            })
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let totalItems = selectedPageIds.length + selectedRecordingIds.length;
+        let currentItem = 0;
+        let successCount = 0;
+        let failureCount = 0;
+        const errors = [];
+
+        while (true) {
+            const {done, value} = await reader.read();
+            if (done) break;
+
+            const lines = decoder.decode(value).split('\n');
+            for (const line of lines) {
+                if (!line.trim()) continue;
+
+                try {
+                    const data = JSON.parse(line);
+                    handleUploadMessage(data, totalItems);
+
+                    if (data.type === 'success') successCount++;
+                    if (data.type === 'error') {
+                        failureCount++;
+                        errors.push(data);
+                    }
+
+                    if (data.type === 'complete') {
+                        showUploadComplete(successCount, failureCount, errors, totalItems);
+                    }
+                } catch (e) {
+                    console.error('Error parsing upload message:', e, line);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        document.getElementById('uploadLog').innerHTML += `
+            <div class="text-danger">
+                <strong>Error:</strong> ${error.message}
+            </div>
+        `;
+    }
+}
+
+function handleUploadMessage(data, totalItems) {
+    const log = document.getElementById('uploadLog');
+    const progressBar = document.getElementById('uploadProgressBar');
+    const progressText = document.getElementById('uploadProgressText');
+
+    if (data.type === 'progress' || data.type === 'success' || data.type === 'error') {
+        const current = data.current || 0;
+        const percent = Math.round((current / totalItems) * 100);
+        progressBar.style.width = `${percent}%`;
+        progressText.textContent = `${percent}%`;
+    }
+
+    if (data.type === 'info') {
+        log.innerHTML += `<div class="text-info">${data.message}</div>`;
+    } else if (data.type === 'progress') {
+        log.innerHTML += `<div>[${data.current}/${data.total}] ${data.item}...</div>`;
+    } else if (data.type === 'success') {
+        log.innerHTML += `<div class="text-success">[${data.current}/${data.total}] ✓ ${data.item}</div>`;
+    } else if (data.type === 'error') {
+        log.innerHTML += `<div class="text-danger">[${data.current}/${data.total}] ✗ ${data.item}: ${data.error}</div>`;
+    }
+
+    // Auto-scroll log
+    log.scrollTop = log.scrollHeight;
+}
+
+function showUploadComplete(successCount, failureCount, errors, totalItems) {
+    // Hide step 2, show step 3
+    document.getElementById('uploadStep2').style.display = 'none';
+    document.getElementById('uploadStep3').style.display = 'block';
+    document.getElementById('closeModalBtn').disabled = false;
+
+    // Update counts
+    document.getElementById('successCount').textContent = successCount;
+    document.getElementById('uploadedPages').textContent = successCount;
+    document.getElementById('uploadedRecordings').textContent = 0; // Will be updated by actual counts
+
+    // Show errors if any
+    if (errors.length > 0) {
+        document.getElementById('uploadErrors').style.display = 'block';
+        document.getElementById('uploadErrorsList').innerHTML = errors.map(err =>
+            `<li>${err.item}: ${err.error}</li>`
+        ).join('');
+    }
+
+    // Reload sync status
+    setTimeout(() => {
+        loadSyncStatus();
+    }, 1000);
+}
+</script>
+
+<style>
+.stat-box {
+    min-height: 100px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+</style>

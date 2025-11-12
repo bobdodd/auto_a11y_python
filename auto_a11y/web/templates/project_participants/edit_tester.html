@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Tester - {{ project.name }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}">Testing Participants</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Tester</li>
+        </ol>
+    </nav>
+
+    <h1 class="h2 mb-4">
+        <i class="bi bi-person-badge"></i> Edit Lived Experience Tester
+    </h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="needs-validation" novalidate>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-person"></i> Tester Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required
+                                   value="{{ tester.name }}"
+                                   placeholder="e.g., Jane Smith">
+                            <div class="form-text">Full name of the lived experience tester</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                   value="{{ tester.email or '' }}"
+                                   placeholder="e.g., jane.smith@example.com">
+                            <div class="form-text">Contact email for the tester (optional)</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="disability_type" class="form-label">Disability Type</label>
+                            <input type="text" class="form-control" id="disability_type" name="disability_type"
+                                   value="{{ tester.disability_type or '' }}"
+                                   placeholder="e.g., Blind, Low Vision, Deaf, Motor Disability"
+                                   list="common-disabilities">
+                            <datalist id="common-disabilities">
+                                <option value="Blind">
+                                <option value="Low Vision">
+                                <option value="Deaf">
+                                <option value="Hard of Hearing">
+                                <option value="Motor Disability">
+                                <option value="Cognitive Disability">
+                                <option value="Multiple Disabilities">
+                            </datalist>
+                            <div class="form-text">Type of disability (optional)</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="assistive_tech" class="form-label">Assistive Technologies</label>
+                            <input type="text" class="form-control" id="assistive_tech" name="assistive_tech"
+                                   value="{{ tester.assistive_tech|join(', ') if tester.assistive_tech else '' }}"
+                                   placeholder="e.g., JAWS, ZoomText, Dragon NaturallySpeaking"
+                                   list="common-tech">
+                            <datalist id="common-tech">
+                                <option value="JAWS">
+                                <option value="NVDA">
+                                <option value="VoiceOver">
+                                <option value="TalkBack">
+                                <option value="ZoomText">
+                                <option value="Dragon NaturallySpeaking">
+                                <option value="Switch Control">
+                                <option value="Eye Tracking">
+                            </datalist>
+                            <div class="form-text">Comma-separated list of assistive technologies used</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"
+                                      placeholder="Additional information about this tester...">{{ tester.notes or '' }}</textarea>
+                            <div class="form-text">Optional notes (e.g., availability, special requirements)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Sidebar -->
+            <div class="col-md-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> Help</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>About Lived Experience Testers</h6>
+                        <p class="small">Lived experience testers are individuals with disabilities who test your products using assistive technologies.</p>
+
+                        <hr>
+
+                        <h6>Common Disability Types</h6>
+                        <ul class="small">
+                            <li>Blind</li>
+                            <li>Low Vision</li>
+                            <li>Deaf / Hard of Hearing</li>
+                            <li>Motor Disability</li>
+                            <li>Cognitive Disability</li>
+                        </ul>
+
+                        <hr>
+
+                        <h6>Common Assistive Technologies</h6>
+                        <ul class="small">
+                            <li><strong>Screen Readers:</strong> JAWS, NVDA, VoiceOver, TalkBack</li>
+                            <li><strong>Magnification:</strong> ZoomText, built-in magnifiers</li>
+                            <li><strong>Voice Control:</strong> Dragon NaturallySpeaking, Voice Control</li>
+                            <li><strong>Alternative Input:</strong> Switch Control, Eye Tracking</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Update Tester
+                    </button>
+                    <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Form validation
+(function() {
+    'use strict';
+    var forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+</script>
+{% endblock %}

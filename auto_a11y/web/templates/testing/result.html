@@ -204,7 +204,7 @@
                                 {% if result.screenshot_path %}
                                 <dt class="col-sm-4">Screenshot:</dt>
                                 <dd class="col-sm-8">
-                                    <a href="{{ url_for('static', filename='screenshots/' ~ result.screenshot_path) }}" target="_blank">
+                                    <a href="{{ url_for('serve_screenshot', filename=result.screenshot_path.replace('screenshots/', '')) }}" target="_blank">
                                         View Screenshot <i class="bi bi-image"></i>
                                     </a>
                                 </dd>

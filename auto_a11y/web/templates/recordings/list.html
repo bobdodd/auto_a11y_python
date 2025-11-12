@@ -72,6 +72,12 @@
                     </p>
                     {% endif %}
 
+                    {% if recording.test_user_account %}
+                    <p class="mb-2">
+                        <i class="bi bi-person-circle"></i> Test Account: {{ recording.test_user_account }}
+                    </p>
+                    {% endif %}
+
                     {% if recording.recorded_date %}
                     <p class="mb-2">
                         <i class="bi bi-calendar"></i> {{ recording.recorded_date.strftime('%Y-%m-%d') }}

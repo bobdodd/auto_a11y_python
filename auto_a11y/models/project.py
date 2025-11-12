@@ -26,6 +26,84 @@ class ProjectType(Enum):
 
 
 @dataclass
+class LivedExperienceTester:
+    """Lived experience tester for accessibility testing"""
+    name: str
+    email: Optional[str] = None
+    disability_type: Optional[str] = None  # e.g., "Blind", "Low Vision", "Deaf", "Motor Disability"
+    assistive_tech: List[str] = field(default_factory=list)  # e.g., ["JAWS", "Screen Magnifier"]
+    notes: Optional[str] = None
+    _id: Optional[str] = None  # Use string ID for simplicity
+
+    @property
+    def id(self) -> str:
+        """Get tester ID"""
+        return self._id
+
+    def to_dict(self) -> dict:
+        """Convert to dictionary"""
+        return {
+            '_id': self._id,
+            'name': self.name,
+            'email': self.email,
+            'disability_type': self.disability_type,
+            'assistive_tech': self.assistive_tech,
+            'notes': self.notes
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> 'LivedExperienceTester':
+        """Create from dictionary"""
+        return cls(
+            name=data['name'],
+            email=data.get('email'),
+            disability_type=data.get('disability_type'),
+            assistive_tech=data.get('assistive_tech', []),
+            notes=data.get('notes'),
+            _id=data.get('_id')
+        )
+
+
+@dataclass
+class TestSupervisor:
+    """Test supervisor who oversees lived experience testing"""
+    name: str
+    email: Optional[str] = None
+    role: Optional[str] = None  # e.g., "Accessibility Specialist", "Research Lead"
+    organization: Optional[str] = None
+    notes: Optional[str] = None
+    _id: Optional[str] = None  # Use string ID for simplicity
+
+    @property
+    def id(self) -> str:
+        """Get supervisor ID"""
+        return self._id
+
+    def to_dict(self) -> dict:
+        """Convert to dictionary"""
+        return {
+            '_id': self._id,
+            'name': self.name,
+            'email': self.email,
+            'role': self.role,
+            'organization': self.organization,
+            'notes': self.notes
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> 'TestSupervisor':
+        """Create from dictionary"""
+        return cls(
+            name=data['name'],
+            email=data.get('email'),
+            role=data.get('role'),
+            organization=data.get('organization'),
+            notes=data.get('notes'),
+            _id=data.get('_id')
+        )
+
+
+@dataclass
 class Project:
     """
     Project model - container for accessibility audits
@@ -54,6 +132,13 @@ class Project:
 
     # Common to all types
     recording_ids: List[str] = field(default_factory=list)  # Manual audit recordings
+
+    # Lived experience testing participants
+    lived_experience_testers: List[LivedExperienceTester] = field(default_factory=list)
+    test_supervisors: List[TestSupervisor] = field(default_factory=list)
+
+    # Drupal integration
+    drupal_audit_name: Optional[str] = None  # Name of corresponding audit in Drupal (for sync)
 
     # Metadata
     created_at: datetime = field(default_factory=datetime.now)
@@ -96,6 +181,9 @@ class Project:
             'device_model': self.device_model,
             'location': self.location,
             'recording_ids': self.recording_ids,
+            'lived_experience_testers': [t.to_dict() for t in self.lived_experience_testers],
+            'test_supervisors': [s.to_dict() for s in self.test_supervisors],
+            'drupal_audit_name': self.drupal_audit_name,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'config': self.config,
@@ -115,6 +203,13 @@ class Project:
         except ValueError:
             project_type = ProjectType.WEBSITE
 
+        # Parse nested objects
+        testers_data = data.get('lived_experience_testers', [])
+        testers = [LivedExperienceTester.from_dict(t) for t in testers_data]
+
+        supervisors_data = data.get('test_supervisors', [])
+        supervisors = [TestSupervisor.from_dict(s) for s in supervisors_data]
+
         return cls(
             name=data['name'],
             description=data.get('description'),
@@ -125,6 +220,9 @@ class Project:
             device_model=data.get('device_model'),
             location=data.get('location'),
             recording_ids=data.get('recording_ids', []),
+            lived_experience_testers=testers,
+            test_supervisors=supervisors,
+            drupal_audit_name=data.get('drupal_audit_name'),
             created_at=data.get('created_at', datetime.now()),
             updated_at=data.get('updated_at', datetime.now()),
             config=data.get('config', {}),
@@ -135,3 +233,70 @@ class Project:
     def update_timestamp(self):
         """Update the updated_at timestamp"""
         self.updated_at = datetime.now()
+
+    # Helper methods for managing testers and supervisors
+    def add_tester(self, tester: LivedExperienceTester) -> None:
+        """Add a lived experience tester to the project"""
+        import uuid
+        if not tester._id:
+            tester._id = str(uuid.uuid4())
+        self.lived_experience_testers.append(tester)
+        self.update_timestamp()
+
+    def remove_tester(self, tester_id: str) -> bool:
+        """Remove a lived experience tester by ID"""
+        original_count = len(self.lived_experience_testers)
+        self.lived_experience_testers = [t for t in self.lived_experience_testers if t.id != tester_id]
+        if len(self.lived_experience_testers) < original_count:
+            self.update_timestamp()
+            return True
+        return False
+
+    def get_tester(self, tester_id: str) -> Optional[LivedExperienceTester]:
+        """Get a lived experience tester by ID"""
+        for tester in self.lived_experience_testers:
+            if tester.id == tester_id:
+                return tester
+        return None
+
+    def update_tester(self, tester: LivedExperienceTester) -> bool:
+        """Update a lived experience tester"""
+        for i, t in enumerate(self.lived_experience_testers):
+            if t.id == tester.id:
+                self.lived_experience_testers[i] = tester
+                self.update_timestamp()
+                return True
+        return False
+
+    def add_supervisor(self, supervisor: TestSupervisor) -> None:
+        """Add a test supervisor to the project"""
+        import uuid
+        if not supervisor._id:
+            supervisor._id = str(uuid.uuid4())
+        self.test_supervisors.append(supervisor)
+        self.update_timestamp()
+
+    def remove_supervisor(self, supervisor_id: str) -> bool:
+        """Remove a test supervisor by ID"""
+        original_count = len(self.test_supervisors)
+        self.test_supervisors = [s for s in self.test_supervisors if s.id != supervisor_id]
+        if len(self.test_supervisors) < original_count:
+            self.update_timestamp()
+            return True
+        return False
+
+    def get_supervisor(self, supervisor_id: str) -> Optional[TestSupervisor]:
+        """Get a test supervisor by ID"""
+        for supervisor in self.test_supervisors:
+            if supervisor.id == supervisor_id:
+                return supervisor
+        return None
+
+    def update_supervisor(self, supervisor: TestSupervisor) -> bool:
+        """Update a test supervisor"""
+        for i, s in enumerate(self.test_supervisors):
+            if s.id == supervisor.id:
+                self.test_supervisors[i] = supervisor
+                self.update_timestamp()
+                return True
+        return False

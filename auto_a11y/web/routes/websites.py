@@ -107,15 +107,15 @@ def view_website(website_id):
     start_page = max(1, page_num - 2)
     end_page = min(total_pages_pagination, page_num + 2)
 
-    # Get available test users for this website
-    website_users = current_app.db.get_website_users(website_id, enabled_only=True)
+    # Get available test users for this project
+    project_users = current_app.db.get_project_users(website.project_id, enabled_only=True)
 
     return render_template('websites/view.html',
                          website=website,
                          project=project,
                          pages=pages,
                          stats=stats,
-                         website_users=website_users,
+                         website_users=project_users,
                          pagination={
                              'page': page_num,
                              'per_page': per_page,
@@ -191,15 +191,21 @@ def discover_pages(website_id):
     # Get parameters from request
     data = request.get_json() if request.is_json else {}
     max_pages = data.get('max_pages') if request.is_json else request.form.get('max_pages')
-    website_user_ids = data.get('website_user_ids', [])
 
-    # Convert to list if single value provided for backward compatibility
-    if isinstance(website_user_ids, str):
-        website_user_ids = [website_user_ids]
+    # Get project_user_ids (project-level test users)
+    # Still accept 'website_user_ids' key name for backward compatibility with JavaScript
+    user_ids = data.get('project_user_ids') or data.get('website_user_ids', [])
+
+    # Convert to list if single value provided
+    if isinstance(user_ids, str):
+        user_ids = [user_ids]
 
     # Default to guest only if no users specified
-    if not website_user_ids:
-        website_user_ids = ['']  # empty string represents guest/no login
+    if not user_ids:
+        user_ids = ['']  # empty string represents guest/no login
+
+    # Keep the old variable name for compatibility with existing code paths
+    website_user_ids = user_ids
 
     if max_pages:
         try:
@@ -326,7 +332,7 @@ def discover_pages(website_id):
         user_count = len(website_user_ids)
         if user_count == 1:
             if website_user_ids[0]:
-                user_info = current_app.db.get_website_user(website_user_ids[0])
+                user_info = current_app.db.get_project_user(website_user_ids[0])
                 message = f'Page discovery started as {user_info.name_display if user_info else "user"}'
             else:
                 message = f'Page discovery started as guest'
@@ -537,17 +543,23 @@ def test_all_pages(website_id):
     if not website:
         return jsonify({'error': 'Website not found'}), 404
 
-    # Extract website_user_ids from request (array of user IDs, empty string for guest)
+    # Extract user IDs from request (array of user IDs, empty string for guest)
     data = request.get_json() if request.is_json else {}
-    website_user_ids = data.get('website_user_ids', [])
 
-    # Convert to list if single value provided for backward compatibility
-    if isinstance(website_user_ids, str):
-        website_user_ids = [website_user_ids]
+    # Get project_user_ids (project-level test users)
+    # Still accept 'website_user_ids' key name for backward compatibility with JavaScript
+    user_ids = data.get('project_user_ids') or data.get('website_user_ids', [])
+
+    # Convert to list if single value provided
+    if isinstance(user_ids, str):
+        user_ids = [user_ids]
 
     # Default to guest if no users specified
-    if not website_user_ids:
-        website_user_ids = ['']  # empty string represents guest/no login
+    if not user_ids:
+        user_ids = ['']  # empty string represents guest/no login
+
+    # Keep the old variable name for compatibility with existing code paths
+    website_user_ids = user_ids
 
     pages = current_app.db.get_pages(website_id)
     # Allow testing of all pages, not just untested ones
@@ -661,7 +673,7 @@ def test_all_pages(website_id):
         user_count = len(website_user_ids)
         if user_count == 1:
             if website_user_ids[0]:
-                user_info = current_app.db.get_website_user(website_user_ids[0])
+                user_info = current_app.db.get_project_user(website_user_ids[0])
                 message = f'Testing {len(testable_pages)} pages as {user_info.name_display if user_info else "user"}'
             else:
                 message = f'Testing {len(testable_pages)} pages as guest'

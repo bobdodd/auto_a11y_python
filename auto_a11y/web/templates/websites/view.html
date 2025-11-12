@@ -121,7 +121,7 @@
             <a href="{{ url_for('scripts.create_website_script', website_id=website.id) }}" class="btn btn-outline-primary me-2">
                 <i class="bi bi-code-square"></i> Setup Scripts
             </a>
-            <a href="{{ url_for('website_users.list_users', website_id=website.id) }}" class="btn btn-outline-success me-2">
+            <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-success me-2">
                 <i class="bi bi-people"></i> Test Users
             </a>
             <div class="btn-group me-2">
@@ -497,6 +497,39 @@
             </div>
             <form id="discoveryForm">
                 <div class="modal-body">
+                    <div class="mb-4">
+                        <label class="form-label"><strong>Select users for discovery:</strong></label>
+                        <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input modal-discovery-user-checkbox" type="checkbox" value="" id="modal-discovery-user-guest" checked>
+                                <label class="form-check-label" for="modal-discovery-user-guest">
+                                    <strong>Guest</strong> (no login)
+                                </label>
+                            </div>
+                            {% if website_users %}
+                            {% for user in website_users %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input modal-discovery-user-checkbox" type="checkbox" value="{{ user.id }}" id="modal-discovery-user-{{ user.id }}">
+                                <label class="form-check-label" for="modal-discovery-user-{{ user.id }}">
+                                    <strong>{{ user.name_display }}</strong>
+                                    {% if user.roles %}<br><small class="text-muted">{{ user.roles|join(', ') }}</small>{% endif %}
+                                </label>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% if website_users %}
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-sm btn-link p-0" onclick="selectAllModalDiscoveryUsers()">Select All</button> |
+                            <button type="button" class="btn btn-sm btn-link p-0" onclick="clearAllModalDiscoveryUsers()">Clear All</button>
+                        </div>
+                        {% else %}
+                        <small class="text-muted mt-2 d-block">
+                            <i class="bi bi-info-circle"></i> No test users configured. Discovery will run as guest.
+                            <a href="{{ url_for('website_users.list_users', website_id=website.id) }}">Add test users</a>
+                        </small>
+                        {% endif %}
+                    </div>
                     <div class="mb-3">
                         <label for="maxPages" class="form-label">Maximum Pages to Discover</label>
                         <input type="number" class="form-control" id="maxPages" min="1" max="9999999"
@@ -545,6 +578,64 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Add Page</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Test All Pages Modal -->
+<div class="modal fade" id="testAllModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Test All Pages Options</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="testAllForm">
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <label class="form-label"><strong>Select users for testing:</strong></label>
+                        <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input modal-test-user-checkbox" type="checkbox" value="" id="modal-test-user-guest" checked>
+                                <label class="form-check-label" for="modal-test-user-guest">
+                                    <strong>Guest</strong> (no login)
+                                </label>
+                            </div>
+                            {% if website_users %}
+                            {% for user in website_users %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input modal-test-user-checkbox" type="checkbox" value="{{ user.id }}" id="modal-test-user-{{ user.id }}">
+                                <label class="form-check-label" for="modal-test-user-{{ user.id }}">
+                                    <strong>{{ user.name_display }}</strong>
+                                    {% if user.roles %}<br><small class="text-muted">{{ user.roles|join(', ') }}</small>{% endif %}
+                                </label>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% if website_users %}
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-sm btn-link p-0" onclick="selectAllModalTestUsers()">Select All</button> |
+                            <button type="button" class="btn btn-sm btn-link p-0" onclick="clearAllModalTestUsers()">Clear All</button>
+                        </div>
+                        {% else %}
+                        <small class="text-muted mt-2 d-block">
+                            <i class="bi bi-info-circle"></i> No test users configured. Testing will run as guest.
+                            <a href="{{ url_for('website_users.list_users', website_id=website.id) }}">Add test users</a>
+                        </small>
+                        {% endif %}
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> This will run accessibility tests on all pages with the selected user(s). Testing multiple users will increase the total test time.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-play-fill"></i> Start Testing
+                    </button>
                 </div>
             </form>
         </div>
@@ -668,6 +759,24 @@ function selectAllDiscoveryUsers() {
 function clearAllDiscoveryUsers() {
     document.querySelectorAll('.batch-discovery-user-checkbox').forEach(cb => cb.checked = false);
     updateDiscoveryUserSelectionDisplay();
+}
+
+// Modal discovery user selection functions
+function selectAllModalDiscoveryUsers() {
+    document.querySelectorAll('.modal-discovery-user-checkbox').forEach(cb => cb.checked = true);
+}
+
+function clearAllModalDiscoveryUsers() {
+    document.querySelectorAll('.modal-discovery-user-checkbox').forEach(cb => cb.checked = false);
+}
+
+// Modal test user selection functions
+function selectAllModalTestUsers() {
+    document.querySelectorAll('.modal-test-user-checkbox').forEach(cb => cb.checked = true);
+}
+
+function clearAllModalTestUsers() {
+    document.querySelectorAll('.modal-test-user-checkbox').forEach(cb => cb.checked = false);
 }
 
 function updatePageStatus(pageId, status) {
@@ -869,16 +978,18 @@ $(document).ready(function() {
     // Handle discovery form submission
     $('#discoveryForm').submit(function(e) {
         e.preventDefault();
-        
+
         const maxPages = $('#maxPages').val();
         const btn = $('#discoverBtn');
-        
-        // Hide modal
-        $('#discoveryModal').modal('hide');
-        
-        // Get selected discovery users
+
+        // Get selected discovery users from modal (or header if modal doesn't have users)
         const selectedDiscoveryUserIds = [];
-        document.querySelectorAll('.batch-discovery-user-checkbox:checked').forEach(checkbox => {
+        const modalCheckboxes = document.querySelectorAll('.modal-discovery-user-checkbox:checked');
+        const headerCheckboxes = document.querySelectorAll('.batch-discovery-user-checkbox:checked');
+
+        // Use modal checkboxes if they exist, otherwise use header checkboxes
+        const checkboxesToUse = modalCheckboxes.length > 0 ? modalCheckboxes : headerCheckboxes;
+        checkboxesToUse.forEach(checkbox => {
             selectedDiscoveryUserIds.push(checkbox.value); // empty string for guest, user ID for authenticated
         });
 
@@ -886,6 +997,9 @@ $(document).ready(function() {
             alert('Please select at least one user for discovery (or Guest).');
             return;
         }
+
+        // Hide modal
+        $('#discoveryModal').modal('hide');
 
         // Prepare request data
         const requestData = {
@@ -906,40 +1020,41 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(requestData),
             success: function(data) {
-            if (data.success) {
-                discoveryJobId = data.job_id;
-                
-                // Add to global tracking if available
-                if (typeof TestTracker !== 'undefined') {
-                    let description = 'Discovering pages for {{ website.display_name }}';
-                    if (data.max_pages) {
-                        description += ` (max ${data.max_pages} pages)`;
+                if (data.success) {
+                    discoveryJobId = data.job_id;
+
+                    // Add to global tracking if available
+                    if (typeof TestTracker !== 'undefined') {
+                        let description = 'Discovering pages for {{ website.display_name }}';
+                        if (data.max_pages) {
+                            description += ` (max ${data.max_pages} pages)`;
+                        }
+                        // Store with website ID but also save job_id in the data
+                        const tests = TestTracker.getActiveTests();
+                        tests['discovery_{{ website.id }}'] = {
+                            type: 'discovery',
+                            id: '{{ website.id }}',
+                            job_id: data.job_id,  // Store the actual job ID
+                            description: description,
+                            startTime: Date.now()
+                        };
+                        localStorage.setItem(TestTracker.STORAGE_KEY, JSON.stringify(tests));
+                        TestTracker.startTracking();
                     }
-                    // Store with website ID but also save job_id in the data
-                    const tests = TestTracker.getActiveTests();
-                    tests['discovery_{{ website.id }}'] = {
-                        type: 'discovery',
-                        id: '{{ website.id }}',
-                        job_id: data.job_id,  // Store the actual job ID
-                        description: description,
-                        startTime: Date.now()
-                    };
-                    localStorage.setItem(TestTracker.STORAGE_KEY, JSON.stringify(tests));
-                    TestTracker.startTracking();
-                }
-                
-                if (window.showNotification) {
-                    showNotification('Discovery Started', data.message, 'info');
+
+                    if (window.showNotification) {
+                        showNotification('Discovery Started', data.message, 'info');
+                    } else {
+                        alert(data.message);
+                    }
+
+                    // Start polling for discovery progress
+                    startDiscoveryPolling();
                 } else {
-                    alert(data.message);
+                    btn.prop('disabled', false).html('<i class="bi bi-search"></i> Discover Pages');
+                    $('#cancelDiscoveryBtn').hide();
+                    alert(data.message || 'Failed to start discovery');
                 }
-                
-                // Start polling for discovery progress
-                startDiscoveryPolling();
-            } else {
-                btn.prop('disabled', false).html('<i class="bi bi-search"></i> Discover Pages');
-                $('#cancelDiscoveryBtn').hide();
-                alert(data.message || 'Failed to start discovery');
             }
         }).fail(function() {
             btn.prop('disabled', false).html('<i class="bi bi-search"></i> Discover Pages');
@@ -949,10 +1064,23 @@ $(document).ready(function() {
     });
     
     $('#testAllBtn').click(function() {
-        // Get selected users
+        // Show the modal for options
+        $('#testAllModal').modal('show');
+    });
+
+    // Handle test all form submission
+    $('#testAllForm').submit(function(e) {
+        e.preventDefault();
+
+        // Get selected test users from modal (or header if modal doesn't have users)
         const selectedUserIds = [];
-        document.querySelectorAll('.batch-test-user-checkbox:checked').forEach(checkbox => {
-            selectedUserIds.push(checkbox.value); // empty string for guest, user ID for authenticated
+        const modalCheckboxes = document.querySelectorAll('.modal-test-user-checkbox:checked');
+        const headerCheckboxes = document.querySelectorAll('.batch-test-user-checkbox:checked');
+
+        // Use modal checkboxes if they exist, otherwise use header checkboxes
+        const checkboxesToUse = modalCheckboxes.length > 0 ? modalCheckboxes : headerCheckboxes;
+        checkboxesToUse.forEach(checkbox => {
+            selectedUserIds.push(checkbox.value);
         });
 
         if (selectedUserIds.length === 0) {
@@ -960,13 +1088,10 @@ $(document).ready(function() {
             return;
         }
 
-        // Create confirmation message
-        let confirmMsg = `Test all pages with ${selectedUserIds.length} user${selectedUserIds.length > 1 ? 's' : ''}?\n\n`;
-        confirmMsg += `This will run tests for each selected user. This may take some time.`;
+        // Hide modal
+        $('#testAllModal').modal('hide');
 
-        if (!confirm(confirmMsg)) return;
-
-        const btn = $(this);
+        const btn = $('#testAllBtn');
         const cancelBtn = $('#cancelTestingBtn');
 
         // Prepare test data with multiple users
@@ -982,44 +1107,45 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(testData),
             success: function(data) {
-            console.log('Test all response:', data);
-            
-            if (data.success) {
-                testingJobId = data.job_id;
-                
-                // Show cancel button
-                cancelBtn.show();
-                
-                // Add to global tracking if available
-                if (typeof TestTracker !== 'undefined') {
-                    const tests = TestTracker.getActiveTests();
-                    tests['testing_{{ website.id }}'] = {
-                        type: 'testing',
-                        id: '{{ website.id }}',
-                        job_id: data.job_id,
-                        description: `Testing ${data.pages_queued} pages for {{ website.display_name }}`,
-                        startTime: Date.now()
-                    };
-                    localStorage.setItem(TestTracker.STORAGE_KEY, JSON.stringify(tests));
-                    TestTracker.startTracking();
-                }
-                
-                if (window.showNotification) {
-                    showNotification('Testing Started', `Queued ${data.pages_queued} pages for testing`, 'info');
+                console.log('Test all response:', data);
+
+                if (data.success) {
+                    testingJobId = data.job_id;
+
+                    // Show cancel button
+                    cancelBtn.show();
+
+                    // Add to global tracking if available
+                    if (typeof TestTracker !== 'undefined') {
+                        const tests = TestTracker.getActiveTests();
+                        tests['testing_{{ website.id }}'] = {
+                            type: 'testing',
+                            id: '{{ website.id }}',
+                            job_id: data.job_id,
+                            description: `Testing ${data.pages_queued} pages for {{ website.display_name }}`,
+                            startTime: Date.now()
+                        };
+                        localStorage.setItem(TestTracker.STORAGE_KEY, JSON.stringify(tests));
+                        TestTracker.startTracking();
+                    }
+
+                    if (window.showNotification) {
+                        showNotification('Testing Started', `Queued ${data.pages_queued} pages for testing`, 'info');
+                    } else {
+                        alert(data.message);
+                    }
+
+                    // Update button to show it's testing
+                    btn.html(`<span class="spinner-border spinner-border-sm"></span> Testing: 0/${data.pages_queued}`);
+
+                    // Start polling for status immediately
+                    console.log('Starting testing status polling with job_id:', testingJobId);
+                    startTestingStatusPolling();
+
                 } else {
-                    alert(data.message);
+                    alert(data.message || 'Failed to queue tests');
+                    btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> Test All Pages');
                 }
-                
-                // Update button to show it's testing
-                btn.html(`<span class="spinner-border spinner-border-sm"></span> Testing: 0/${data.pages_queued}`);
-                
-                // Start polling for status immediately
-                console.log('Starting testing status polling with job_id:', testingJobId);
-                startTestingStatusPolling();
-                
-            } else {
-                alert(data.message || 'Failed to queue tests');
-                btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> Test All Pages');
             }
         }).fail(function(error) {
             console.error('Failed to start testing:', error);

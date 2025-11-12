@@ -135,6 +135,17 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="drupal_audit_name" class="form-label">Drupal Audit (Optional)</label>
+                            <select class="form-select" id="drupal_audit_name" name="drupal_audit_name">
+                                <option value="">Auto-match by project name</option>
+                                <option value="" disabled>Loading audits...</option>
+                            </select>
+                            <div class="form-text">
+                                Select the corresponding audit in Drupal for synchronization. Leave as "Auto-match" to use the project name.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="wcag_level" class="form-label">WCAG Compliance Level *</label>
                             <select class="form-select" id="wcag_level" name="wcag_level" required>
                                 <option value="AA" selected>Level AA (Recommended)</option>
@@ -907,6 +918,60 @@ function updateProjectTypeFields() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateProjectTypeFields();
+    loadDrupalAudits();
 });
+
+// Load Drupal audits for the dropdown
+async function loadDrupalAudits() {
+    const select = document.getElementById('drupal_audit_name');
+    if (!select) {
+        console.log('Drupal audit select not found');
+        return;
+    }
+
+    console.log('Loading Drupal audits...');
+
+    try {
+        const response = await fetch('/drupal/audits/list');
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Received audits:', data);
+
+        if (data.success && data.audits && data.audits.length > 0) {
+            // Clear loading option
+            select.innerHTML = '<option value="">Auto-match by project name</option>';
+
+            // Add audit options
+            data.audits.forEach(audit => {
+                const option = document.createElement('option');
+                option.value = audit.title;
+                option.textContent = audit.title;
+                select.appendChild(option);
+            });
+        } else if (!data.success && data.error) {
+            // Show error but keep the auto-match option
+            select.innerHTML = '<option value="">Auto-match by project name</option>';
+            const option = document.createElement('option');
+            option.disabled = true;
+            option.textContent = `Error: ${data.error}`;
+            select.appendChild(option);
+        } else {
+            // No audits available
+            select.innerHTML = '<option value="">Auto-match by project name</option>';
+            const option = document.createElement('option');
+            option.disabled = true;
+            option.textContent = 'No Drupal audits found';
+            select.appendChild(option);
+        }
+    } catch (error) {
+        console.error('Error loading Drupal audits:', error);
+        // Keep the auto-match option on error
+        select.innerHTML = '<option value="">Auto-match by project name</option>';
+        const option = document.createElement('option');
+        option.disabled = true;
+        option.textContent = 'Could not load audits (Drupal may not be configured)';
+        select.appendChild(option);
+    }
+}
 </script>
 {% endblock %}

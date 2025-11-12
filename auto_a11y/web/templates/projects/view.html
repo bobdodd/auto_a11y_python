@@ -17,6 +17,12 @@
         </div>
         <div>
             <div class="btn-group" role="group">
+                <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-people"></i> Test Users
+                </a>
+                <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}" class="btn btn-outline-info">
+                    <i class="bi bi-person-badge"></i> Participants
+                </a>
                 <button type="button" class="btn btn-success" onclick="testAllWebsites()">
                     <i class="bi bi-play-fill"></i> Test All Websites
                 </button>
@@ -69,7 +75,7 @@
     </div>
 
     <!-- Websites -->
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Websites</h5>
             <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addWebsiteModal">
@@ -86,6 +92,7 @@
                             <th>URL</th>
                             <th>Pages</th>
                             <th>Last Tested</th>
+                            <th>Issues</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -105,8 +112,19 @@
                                 </span>
                             </td>
                             <td>
+                                {% set stats = website_stats.get(website.id, {'violations': 0, 'warnings': 0}) %}
+                                {% if stats.violations > 0 or stats.warnings > 0 %}
+                                <span class="badge bg-danger">{{ stats.violations }}</span>
+                                {% if stats.warnings > 0 %}
+                                <small class="text-warning">{{ stats.warnings }} warnings</small>
+                                {% endif %}
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ url_for('websites.view_website', website_id=website.id) }}" 
+                                    <a href="{{ url_for('websites.view_website', website_id=website.id) }}"
                                        class="btn btn-sm btn-primary" title="View website">
                                         <i class="bi bi-eye"></i>
                                         <span class="d-none d-lg-inline"> View</span>
@@ -128,6 +146,195 @@
             </div>
             {% else %}
             <p class="text-muted">No websites added yet. Add a website to start testing.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Discovered Pages -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="bi bi-file-earmark-text"></i> Discovered Pages
+            </h5>
+            <span class="badge bg-primary">{{ discovered_pages|length }}</span>
+        </div>
+        <div class="card-body">
+            {% if discovered_pages %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>URL</th>
+                            <th>Interested Because</th>
+                            <th>Page Elements</th>
+                            <th>Status</th>
+                            <th>Sync Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for page in discovered_pages %}
+                        <tr>
+                            <td>{{ page.title }}</td>
+                            <td>
+                                <a href="{{ page.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 300px;">
+                                    {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </td>
+                            <td>
+                                {% if page.interested_because %}
+                                <small class="text-muted">{{ page.interested_because|length }} reasons</small>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if page.page_elements %}
+                                <small class="text-muted">{{ page.page_elements|length }} elements</small>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if page.audited %}
+                                <span class="badge bg-success">Audited</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Not Audited</span>
+                                {% endif %}
+                                {% if page.manual_audit %}
+                                <span class="badge bg-info">Manual</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if page.drupal_uuid %}
+                                    {% if page.drupal_sync_status == 'synced' %}
+                                    <span class="badge bg-success">Synced</span>
+                                    {% elif page.drupal_sync_status == 'sync_failed' %}
+                                    <span class="badge bg-danger" title="{{ page.drupal_error_message }}">Failed</span>
+                                    {% elif page.drupal_sync_status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Not Synced</span>
+                                    {% endif %}
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewPageDetails('{{ page._id }}')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                No discovered pages yet. Pull pages from Drupal using the synchronization page below.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Drupal Sync -->
+    {% include 'drupal_sync/sync_card.html' %}
+
+    <!-- Recordings -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="bi bi-mic"></i> Recordings
+            </h5>
+            <a href="{{ url_for('recordings.upload_recording') }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-plus-circle"></i> Add Recording
+            </a>
+        </div>
+        <div class="card-body">
+            {% if recordings %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Auditor/Tester</th>
+                            <th>Date</th>
+                            <th>Issues</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recording in recordings %}
+                        <tr>
+                            <td>
+                                <code>{{ recording.recording_id }}</code>
+                            </td>
+                            <td>{{ recording.title }}</td>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    {{ recording.recording_type.value|replace('_', ' ')|title }}
+                                </span>
+                            </td>
+                            <td>{{ recording.auditor_name or '-' }}</td>
+                            <td>
+                                {{ recording.recorded_date.strftime('%Y-%m-%d') if recording.recorded_date else '-' }}
+                            </td>
+                            <td>
+                                {% if recording.total_issues > 0 %}
+                                <span class="badge bg-danger">{{ recording.total_issues }}</span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('recordings.view_recording', recording_id=recording.id) }}"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {# Summary row showing combined totals #}
+                        {% if recordings|length > 1 %}
+                        <tr class="table-secondary fw-bold">
+                            <td colspan="2">All Recordings Combined</td>
+                            <td>
+                                <span class="badge bg-dark">{{ recordings|length }} recordings</span>
+                            </td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>
+                                {% set total = namespace(issues=0) %}
+                                {% for recording in recordings %}
+                                    {% set total.issues = total.issues + recording.total_issues %}
+                                {% endfor %}
+                                {% if total.issues > 0 %}
+                                <span class="badge bg-danger">{{ total.issues }}</span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('recordings.view_combined_recordings', project_id=project.id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-list-ul"></i> View Combined
+                                </a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No recordings added yet. <a href="{{ url_for('recordings.upload_recording') }}">Upload a recording</a> to track manual accessibility audits.</p>
             {% endif %}
         </div>
     </div>
@@ -175,6 +382,39 @@
                 <input type="hidden" id="discoveryWebsiteId" />
                 <input type="hidden" id="discoveryWebsiteName" />
                 <div class="modal-body">
+                    <div class="mb-4">
+                        <label class="form-label"><strong>Select users for discovery:</strong></label>
+                        <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input modal-discovery-user-checkbox" type="checkbox" value="" id="modal-discovery-user-guest" checked>
+                                <label class="form-check-label" for="modal-discovery-user-guest">
+                                    <strong>Guest</strong> (no login)
+                                </label>
+                            </div>
+                            <!-- Project test users -->
+                            {% if project_users %}
+                                {% for user in project_users %}
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input modal-discovery-user-checkbox" type="checkbox" value="{{ user.id }}" id="modal-discovery-user-{{ user.id }}">
+                                    <label class="form-check-label" for="modal-discovery-user-{{ user.id }}">
+                                        <strong>{{ user.name_display }}</strong>
+                                        {% if user.roles %}
+                                        <span class="text-muted">({{ user.roles|join(', ') }})</span>
+                                        {% endif %}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <small class="text-muted mt-2 d-block">
+                            <i class="bi bi-info-circle"></i> Discovery will run with the selected user(s).
+                            {% if project_users %}
+                            <a href="{{ url_for('project_users.list_users', project_id=project.id) }}">Manage test users</a>
+                            {% else %}
+                            <a href="{{ url_for('project_users.list_users', project_id=project.id) }}">Add test users</a> to discover pages requiring authentication.
+                            {% endif %}
+                        </small>
+                    </div>
                     <div class="mb-3">
                         <label for="maxPages" class="form-label">Maximum Pages to Discover</label>
                         <input type="number" class="form-control" id="maxPages" min="1" max="1000"
@@ -364,59 +604,78 @@ function discoverPages(websiteId) {
 // Handle discovery form submission
 $('#discoveryForm').submit(function(e) {
     e.preventDefault();
-    
+
     const websiteId = $('#discoveryWebsiteId').val();
     const websiteName = $('#discoveryWebsiteName').val();
     const maxPages = $('#maxPages').val();
-    
+
+    // Get selected discovery users
+    const selectedDiscoveryUserIds = [];
+    document.querySelectorAll('.modal-discovery-user-checkbox:checked').forEach(checkbox => {
+        selectedDiscoveryUserIds.push(checkbox.value);
+    });
+
+    if (selectedDiscoveryUserIds.length === 0) {
+        alert('Please select at least one user for discovery (or Guest).');
+        return;
+    }
+
     // Find the button for this website
     const btn = document.querySelector(`button[onclick="discoverPages('${websiteId}')"]`);
     const originalHtml = btn ? btn.innerHTML : '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> Discover</span>';
-    
+
     // Hide modal
     $('#discoveryModal').modal('hide');
-    
+
     // Prepare request data
-    const requestData = {};
+    const requestData = {
+        website_user_ids: selectedDiscoveryUserIds
+    };
     if (maxPages && maxPages > 0) {
         requestData.max_pages = parseInt(maxPages);
     }
-    
+
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Starting...';
     }
-    
-    $.post(`/websites/${websiteId}/discover`, requestData, function(data) {
-        if (data.success) {
-            discoveryJobs[websiteId] = data.job_id;
-            
-            // Add to global tracking
-            if (typeof TestTracker !== 'undefined') {
-                let description = `Discovering pages for ${websiteName}`;
-                if (data.max_pages) {
-                    description += ` (max ${data.max_pages} pages)`;
+
+    $.ajax({
+        url: `/websites/${websiteId}/discover`,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(requestData),
+        success: function(data) {
+            if (data.success) {
+                discoveryJobs[websiteId] = data.job_id;
+
+                // Add to global tracking
+                if (typeof TestTracker !== 'undefined') {
+                    let description = `Discovering pages for ${websiteName}`;
+                    if (data.max_pages) {
+                        description += ` (max ${data.max_pages} pages)`;
+                    }
+                    TestTracker.addTest('discovery', websiteId, description);
                 }
-                TestTracker.addTest('discovery', websiteId, description);
-            }
-            
-            // Show success message
-            if (window.showNotification) {
-                showNotification('Discovery Started', data.message, 'info');
+
+                // Show success message
+                if (window.showNotification) {
+                    showNotification('Discovery Started', data.message, 'info');
+                } else {
+                    alert(data.message);
+                }
+
+                // Start polling for discovery progress
+                if (btn) {
+                    startDiscoveryPolling(websiteId, btn);
+                }
             } else {
-                alert(data.message);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+                alert(data.message || 'Failed to start discovery');
             }
-            
-            // Start polling for discovery progress
-            if (btn) {
-                startDiscoveryPolling(websiteId, btn);
-            }
-        } else {
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = originalHtml;
-            }
-            alert(data.message || 'Failed to start discovery');
         }
     }).fail(function() {
         if (btn) {
@@ -608,5 +867,10 @@ window.addEventListener('beforeunload', function() {
         stopDiscoveryPolling(websiteId);
     }
 });
+
+// View discovered page details
+function viewPageDetails(pageId) {
+    window.location.href = `/discovered-pages/${pageId}`;
+}
 </script>
 {% endblock %}

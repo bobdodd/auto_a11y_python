@@ -226,7 +226,7 @@ class IssueExporter:
             url=url,
             video_timecode=video_timecode,
             issue_id=None,
-            existing_uuid=None,  # RecordingIssues don't track Drupal UUIDs currently
+            existing_uuid=recording_issue.drupal_uuid,  # Use existing UUID for updates
             video_uuid=video_uuid
         )
 

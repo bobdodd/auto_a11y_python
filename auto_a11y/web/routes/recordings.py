@@ -67,6 +67,27 @@ def view_recording(recording_id):
         # Get issues for this recording
         issues = current_app.db.get_recording_issues_for_recording(recording.recording_id)
 
+        # Calculate manual scores
+        from auto_a11y.scoring import ManualAccessibilityScorer
+        from auto_a11y.wcag_parser import get_wcag_parser
+        scorer = ManualAccessibilityScorer()
+        scores = scorer.calculate_scores(recording, issues, target_level='AA')
+
+        # Get detailed criteria breakdown for the modal
+        wcag_parser = get_wcag_parser()
+        all_criteria = wcag_parser.get_criteria_for_level('AA')
+        applicable_criteria = scorer.scope_mapper.get_applicable_criteria(
+            recording.testing_scope or {},
+            target_level='AA'
+        )
+
+        # Determine which criteria were removed
+        all_criteria_ids = set(c.id for c in all_criteria)
+        applicable_criteria_ids = set(c.id for c in applicable_criteria)
+        removed_criteria_ids = all_criteria_ids - applicable_criteria_ids
+
+        removed_criteria = [c for c in all_criteria if c.id in removed_criteria_ids]
+
         # Group issues by touchpoint
         issues_by_touchpoint = {}
         for issue in issues:
@@ -80,17 +101,92 @@ def view_recording(recording_id):
         if recording.project_id:
             project = current_app.db.get_project(recording.project_id)
 
+        # Get discovered pages for this recording
+        discovered_pages = []
+        if recording.discovered_page_ids:
+            from bson import ObjectId
+            from auto_a11y.models import DiscoveredPage
+            for page_id in recording.discovered_page_ids:
+                try:
+                    page_doc = current_app.db.discovered_pages.find_one({'_id': ObjectId(page_id)})
+                    if page_doc:
+                        discovered_pages.append(DiscoveredPage.from_dict(page_doc))
+                except Exception as e:
+                    logger.warning(f"Could not load discovered page {page_id}: {e}")
+
         return render_template(
             'recordings/detail.html',
             recording=recording,
             issues=issues,
             issues_by_touchpoint=issues_by_touchpoint,
-            project=project
+            project=project,
+            discovered_pages=discovered_pages,
+            scores=scores,
+            all_criteria=all_criteria,
+            applicable_criteria=applicable_criteria,
+            removed_criteria=removed_criteria
         )
     except Exception as e:
         logger.error(f"Error viewing recording: {e}", exc_info=True)
         flash(f"Error loading recording: {str(e)}", "danger")
         return redirect(url_for('recordings.list_recordings'))
+
+
+@recordings_bp.route('/combined/<project_id>')
+def view_combined_recordings(project_id):
+    """View all recordings for a project combined into a single issue list"""
+    try:
+        # Get project
+        project = current_app.db.get_project(project_id)
+        if not project:
+            flash("Project not found", "danger")
+            return redirect(url_for('recordings.list_recordings'))
+
+        # Get all recordings for this project
+        recordings = current_app.db.get_recordings(project_id=project_id)
+
+        if not recordings:
+            flash("No recordings found for this project", "info")
+            return redirect(url_for('projects.view_project', project_id=project_id))
+
+        # Collect all issues from all recordings
+        all_issues = []
+        for recording in recordings:
+            issues = current_app.db.get_recording_issues_for_recording(recording.recording_id)
+            # Add recording reference to each issue for display
+            for issue in issues:
+                issue.recording_ref = recording
+            all_issues.extend(issues)
+
+        # Group all issues by touchpoint
+        issues_by_touchpoint = {}
+        for issue in all_issues:
+            touchpoint = issue.touchpoint or "General"
+            if touchpoint not in issues_by_touchpoint:
+                issues_by_touchpoint[touchpoint] = []
+            issues_by_touchpoint[touchpoint].append(issue)
+
+        # Calculate combined statistics
+        total_issues = len(all_issues)
+        high_count = sum(1 for i in all_issues if i.impact.value.lower() in ['high', 'critical'])
+        medium_count = sum(1 for i in all_issues if i.impact.value.lower() in ['medium', 'moderate'])
+        low_count = sum(1 for i in all_issues if i.impact.value.lower() == 'low')
+
+        return render_template(
+            'recordings/combined.html',
+            project=project,
+            recordings=recordings,
+            all_issues=all_issues,
+            issues_by_touchpoint=issues_by_touchpoint,
+            total_issues=total_issues,
+            high_count=high_count,
+            medium_count=medium_count,
+            low_count=low_count
+        )
+    except Exception as e:
+        logger.error(f"Error viewing combined recordings: {e}", exc_info=True)
+        flash(f"Error loading combined view: {str(e)}", "danger")
+        return redirect(url_for('projects.view_project', project_id=project_id))
 
 
 @recordings_bp.route('/upload', methods=['GET', 'POST'])
@@ -126,7 +222,10 @@ def upload_recording():
         description = request.form.get('description', '')
         auditor_name = request.form.get('auditor_name', '')
         auditor_role = request.form.get('auditor_role', '')
+        test_user_account = request.form.get('test_user_account', '').strip() or None
         recording_type = request.form.get('recording_type', 'audit')
+        lived_experience_tester_id = request.form.get('lived_experience_tester_id', '').strip() or None
+        test_supervisor_id = request.form.get('test_supervisor_id', '').strip() or None
         page_urls_str = request.form.get('page_urls', '')
         component_names_str = request.form.get('component_names', '')
         app_screens_str = request.form.get('app_screens', '')
@@ -134,13 +233,90 @@ def upload_recording():
         task_description = request.form.get('task_description', '').strip() or None
         media_file_path = request.form.get('media_file_path', '')
 
+        # Capture testing scope
+        testing_scope = {
+            'forms': request.form.get('scope_forms') == 'on',
+            'video': request.form.get('scope_video') == 'on',
+            'live_multimedia': request.form.get('scope_live_multimedia') == 'on',
+            'multilingual': request.form.get('scope_multilingual') == 'on',
+            'orientation': request.form.get('scope_orientation') == 'on',
+            'zoom': request.form.get('scope_zoom') == 'on',
+            'timeouts': request.form.get('scope_timeouts') == 'on',
+            'motion_actuation': request.form.get('scope_motion_actuation') == 'on',
+            'drag_drop': request.form.get('scope_drag_drop') == 'on',
+        }
+
         # Parse multi-line fields
         page_urls = [url.strip() for url in page_urls_str.split('\n') if url.strip()]
         component_names = [c.strip() for c in component_names_str.split('\n') if c.strip()]
         app_screens = [s.strip() for s in app_screens_str.split('\n') if s.strip()]
         device_sections = [d.strip() for d in device_sections_str.split('\n') if d.strip()]
 
-        # Save uploaded file temporarily
+        # Get discovered page IDs (from checkboxes)
+        discovered_page_ids = request.form.getlist('discovered_page_ids')
+
+        # Process HTML or JSON content files (key takeaways, painpoints, assertions)
+        from auto_a11y.parsers import (
+            parse_key_takeaways_html,
+            parse_user_painpoints_html,
+            parse_user_assertions_html,
+            parse_key_takeaways_json,
+            parse_user_painpoints_json,
+            parse_user_assertions_json
+        )
+
+        key_takeaways_data = []
+        user_painpoints_data = []
+        user_assertions_data = []
+
+        if 'key_takeaways_file' in request.files:
+            takeaways_file = request.files['key_takeaways_file']
+            if takeaways_file.filename:
+                content = takeaways_file.read().decode('utf-8')
+                try:
+                    if takeaways_file.filename.endswith('.json'):
+                        json_data = json.loads(content)
+                        key_takeaways_data = parse_key_takeaways_json(json_data)
+                        logger.info(f"✓ Parsed {len(key_takeaways_data)} key takeaways from JSON")
+                        if key_takeaways_data:
+                            logger.info(f"  First takeaway keys: {list(key_takeaways_data[0].keys())}")
+                    elif takeaways_file.filename.endswith('.html') or takeaways_file.filename.endswith('.htm'):
+                        key_takeaways_data = parse_key_takeaways_html(content)
+                        logger.info(f"✓ Parsed {len(key_takeaways_data)} key takeaways from HTML")
+                except Exception as e:
+                    logger.warning(f"Error parsing key takeaways: {e}")
+
+        if 'user_painpoints_file' in request.files:
+            painpoints_file = request.files['user_painpoints_file']
+            if painpoints_file.filename:
+                content = painpoints_file.read().decode('utf-8')
+                try:
+                    if painpoints_file.filename.endswith('.json'):
+                        json_data = json.loads(content)
+                        user_painpoints_data = parse_user_painpoints_json(json_data)
+                        logger.info(f"✓ Parsed {len(user_painpoints_data)} painpoints from JSON")
+                        if user_painpoints_data:
+                            logger.info(f"  First painpoint keys: {list(user_painpoints_data[0].keys())}")
+                    elif painpoints_file.filename.endswith('.html') or painpoints_file.filename.endswith('.htm'):
+                        user_painpoints_data = parse_user_painpoints_html(content)
+                        logger.info(f"✓ Parsed {len(user_painpoints_data)} painpoints from HTML")
+                except Exception as e:
+                    logger.warning(f"Error parsing user painpoints: {e}")
+
+        if 'user_assertions_file' in request.files:
+            assertions_file = request.files['user_assertions_file']
+            if assertions_file.filename:
+                content = assertions_file.read().decode('utf-8')
+                try:
+                    if assertions_file.filename.endswith('.json'):
+                        json_data = json.loads(content)
+                        user_assertions_data = parse_user_assertions_json(json_data)
+                    elif assertions_file.filename.endswith('.html') or assertions_file.filename.endswith('.htm'):
+                        user_assertions_data = parse_user_assertions_html(content)
+                except Exception as e:
+                    logger.warning(f"Error parsing user assertions: {e}")
+
+        # Save uploaded JSON file temporarily
         import tempfile
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp_file:
             # Read file content
@@ -152,13 +328,31 @@ def upload_recording():
             # Parse JSON to get recording_id
             data = json.loads(content)
 
+            # If lived experience tester selected but no auditor name, look up tester name
+            if lived_experience_tester_id and not auditor_name:
+                project = current_app.db.get_project(project_id)
+                if project and project.lived_experience_testers:
+                    for tester in project.lived_experience_testers:
+                        if tester.get('_id') == lived_experience_tester_id:
+                            # Format: "Name (Disability)"
+                            name = tester.get('name', 'Unknown')
+                            disability = tester.get('disability_type', '')
+                            auditor_name = f"{name} ({disability})" if disability else name
+                            break
+
             # Prepare auditor info
             auditor_info = {
                 'title': title or f"Recording {data.get('recording', 'Unknown')}",
                 'description': description,
                 'auditor_name': auditor_name,
                 'auditor_role': auditor_role,
-                'media_file_path': media_file_path
+                'test_user_account': test_user_account,
+                'lived_experience_tester_id': lived_experience_tester_id,
+                'test_supervisor_id': test_supervisor_id,
+                'media_file_path': media_file_path,
+                'key_takeaways': key_takeaways_data,
+                'user_painpoints': user_painpoints_data,
+                'user_assertions': user_assertions_data
             }
 
             # Import the recording
@@ -167,12 +361,14 @@ def upload_recording():
                 tmp_file_path,
                 project_id=project_id,
                 page_urls=page_urls,
+                discovered_page_ids=discovered_page_ids,
                 component_names=component_names,
                 app_screens=app_screens,
                 device_sections=device_sections,
                 task_description=task_description,
                 auditor_info=auditor_info,
-                recording_type=recording_type
+                recording_type=recording_type,
+                testing_scope=testing_scope
             )
 
             # Check if recording with this recording_id already exists
@@ -207,6 +403,56 @@ def upload_recording():
         logger.error(f"Error uploading recording: {e}", exc_info=True)
         flash(f"Error uploading recording: {str(e)}", "danger")
         return redirect(url_for('recordings.upload_recording'))
+
+
+@recordings_bp.route('/<recording_id>/edit', methods=['POST'])
+def edit_recording(recording_id):
+    """Edit a recording's page URLs and discovered pages"""
+    try:
+        recording = current_app.db.get_recording(recording_id)
+        if not recording:
+            return jsonify({'success': False, 'error': 'Recording not found'}), 404
+
+        # Get form data
+        data = request.get_json() if request.is_json else request.form
+
+        # Update page_urls
+        page_urls_str = data.get('page_urls', '')
+        if isinstance(page_urls_str, str):
+            recording.page_urls = [url.strip() for url in page_urls_str.split('\n') if url.strip()]
+        else:
+            recording.page_urls = page_urls_str
+
+        # Update discovered_page_ids
+        discovered_page_ids = data.get('discovered_page_ids', [])
+        if isinstance(discovered_page_ids, str):
+            # Handle comma-separated string
+            recording.discovered_page_ids = [id.strip() for id in discovered_page_ids.split(',') if id.strip()]
+        elif isinstance(discovered_page_ids, list):
+            recording.discovered_page_ids = discovered_page_ids
+        else:
+            recording.discovered_page_ids = []
+
+        # Update timestamp
+        from datetime import datetime
+        recording.updated_at = datetime.now()
+
+        # Save to database
+        current_app.db.update_recording(recording)
+
+        if request.is_json:
+            return jsonify({'success': True, 'message': 'Recording updated successfully'})
+        else:
+            flash('Recording updated successfully', 'success')
+            return redirect(url_for('recordings.view_recording', recording_id=recording_id))
+
+    except Exception as e:
+        logger.error(f"Error updating recording: {e}")
+        if request.is_json:
+            return jsonify({'success': False, 'error': str(e)}), 500
+        else:
+            flash(f'Error updating recording: {e}', 'error')
+            return redirect(url_for('recordings.view_recording', recording_id=recording_id))
 
 
 @recordings_bp.route('/<recording_id>/delete', methods=['POST'])

@@ -1,0 +1,459 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} - Discovered Page{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a></li>
+                    <li class="breadcrumb-item active">Discovered Page</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-0" id="pageTitle">{{ page.title }}</h1>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary me-2" id="editBtn" onclick="toggleEditMode()">
+                <i class="bi bi-pencil"></i> Edit
+            </button>
+            <button type="button" class="btn btn-success me-2" id="saveBtn" style="display: none;" onclick="savePage()">
+                <i class="bi bi-check-lg"></i> Save
+            </button>
+            <button type="button" class="btn btn-secondary me-2" id="cancelBtn" style="display: none;" onclick="cancelEdit()">
+                <i class="bi bi-x-lg"></i> Cancel
+            </button>
+            <form method="post" action="{{ url_for('discovered_pages.delete_discovered_page', page_id=page.id) }}"
+                  onsubmit="return confirm('Are you sure you want to delete this discovered page?')" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Basic Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> Page Information</h5>
+                </div>
+                <div class="card-body">
+                    <!-- View Mode -->
+                    <div id="viewMode">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <h6 class="text-muted mb-1">Title</h6>
+                                <p class="mb-0">{{ page.title }}</p>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <h6 class="text-muted mb-1">URL</h6>
+                                <p class="mb-0"><a href="{{ page.url }}" target="_blank">{{ page.url }}</a></p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h6 class="text-muted mb-1">Source Type</h6>
+                                <p class="mb-0">
+                                    {% if page.source_type == 'drupal_import' %}
+                                        <span class="badge bg-info">Drupal Import</span>
+                                    {% elif page.source_type == 'manual' %}
+                                        <span class="badge bg-secondary">Manual</span>
+                                    {% else %}
+                                        {{ page.source_type }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h6 class="text-muted mb-1">Status</h6>
+                                <p class="mb-0">
+                                    {% if page.audited %}
+                                        <span class="badge bg-success">Audited</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Not Audited</span>
+                                    {% endif %}
+                                    {% if page.manual_audit %}
+                                        <span class="badge bg-warning">Manual Audit</span>
+                                    {% endif %}
+                                    {% if page.include_in_report %}
+                                        <span class="badge bg-primary">Include in Report</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Mode -->
+                    <div id="editMode" style="display: none;">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="editTitle" class="form-label">Title *</label>
+                                <input type="text" class="form-control" id="editTitle" value="{{ page.title }}" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="editUrl" class="form-label">URL *</label>
+                                <input type="url" class="form-control" id="editUrl" value="{{ page.url }}" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editAudited" {{ 'checked' if page.audited else '' }}>
+                                    <label class="form-check-label" for="editAudited">
+                                        Audited
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editManualAudit" {{ 'checked' if page.manual_audit else '' }}>
+                                    <label class="form-check-label" for="editManualAudit">
+                                        Manual Audit Required
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editIncludeInReport" {{ 'checked' if page.include_in_report else '' }}>
+                                    <label class="form-check-label" for="editIncludeInReport">
+                                        Include in Report
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discovery Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-search"></i> Discovery Details</h5>
+                </div>
+                <div class="card-body">
+                    <!-- View Mode -->
+                    <div id="discoveryViewMode">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <h6 class="text-muted mb-1">Interested Because</h6>
+                                {% if page.interested_because %}
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% for reason in page.interested_because %}
+                                            <span class="badge bg-primary">{{ reason }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted mb-0">No reasons specified</p>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 mb-3">
+                                <h6 class="text-muted mb-1">Page Elements</h6>
+                                {% if page.page_elements %}
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% for element in page.page_elements %}
+                                            <span class="badge bg-info">{{ element }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted mb-0">No elements specified</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Mode -->
+                    <div id="discoveryEditMode" style="display: none;">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Interested Because</label>
+                                {% if interested_because_terms %}
+                                    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem;">
+                                        {% for term in interested_because_terms %}
+                                        <div class="form-check">
+                                            <input class="form-check-input interested-because-checkbox" type="checkbox"
+                                                   name="interested_because" value="{{ term.name }}" id="ib_{{ loop.index }}"
+                                                   {{ 'checked' if term.name in page.interested_because else '' }}>
+                                            <label class="form-check-label" for="ib_{{ loop.index }}">
+                                                {{ term.name }}
+                                                {% if term.description %}
+                                                <small class="text-muted d-block">{{ term.description }}</small>
+                                                {% endif %}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <small class="form-text text-muted">Select all that apply</small>
+                                {% else %}
+                                    <input type="text" class="form-control" id="editInterestedBecause"
+                                           value="{{ page.interested_because|join(', ') }}"
+                                           placeholder="Enter comma-separated values">
+                                    <small class="form-text text-muted">Separate multiple values with commas (taxonomies not available)</small>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Page Elements</label>
+                                {% if page_elements_terms %}
+                                    <div style="border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem;">
+                                        {% for term in page_elements_terms %}
+                                        <div class="form-check">
+                                            <input class="form-check-input page-elements-checkbox" type="checkbox"
+                                                   name="page_elements" value="{{ term.name }}" id="pe_{{ loop.index }}"
+                                                   {{ 'checked' if term.name in page.page_elements else '' }}>
+                                            <label class="form-check-label" for="pe_{{ loop.index }}">
+                                                {{ term.name }}
+                                                {% if term.description %}
+                                                <small class="text-muted d-block">{{ term.description }}</small>
+                                                {% endif %}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <small class="form-text text-muted">Select all that apply</small>
+                                {% else %}
+                                    <input type="text" class="form-control" id="editPageElements"
+                                           value="{{ page.page_elements|join(', ') }}"
+                                           placeholder="Enter comma-separated values">
+                                    <small class="form-text text-muted">Separate multiple values with commas (taxonomies not available)</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-journal-text"></i> Notes</h5>
+                </div>
+                <div class="card-body">
+                    <!-- View Mode -->
+                    <div id="notesViewMode">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <h6 class="text-muted mb-1">Private Notes</h6>
+                                {% if page.private_notes %}
+                                    <p class="mb-0">{{ page.private_notes }}</p>
+                                {% else %}
+                                    <p class="text-muted mb-0">No private notes</p>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 mb-3">
+                                <h6 class="text-muted mb-1">Public Notes</h6>
+                                {% if page.public_notes %}
+                                    <p class="mb-0">{{ page.public_notes }}</p>
+                                {% else %}
+                                    <p class="text-muted mb-0">No public notes</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Mode -->
+                    <div id="notesEditMode" style="display: none;">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="editPrivateNotes" class="form-label">Private Notes</label>
+                                <textarea class="form-control" id="editPrivateNotes" rows="4">{{ page.private_notes or '' }}</textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="editPublicNotes" class="form-label">Public Notes</label>
+                                <textarea class="form-control" id="editPublicNotes" rows="4">{{ page.public_notes or '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Links -->
+            {% if page.document_links %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-link-45deg"></i> Document Links</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        {% for link in page.document_links %}
+                        <li class="mb-2">
+                            <a href="{{ link.uri }}" target="_blank">
+                                <i class="bi bi-box-arrow-up-right"></i> {{ link.title or link.uri }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Sync Status -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-cloud-arrow-up-down"></i> Drupal Sync</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Sync Status</h6>
+                        <p class="mb-0">
+                            {% if page.drupal_sync_status.value == 'synced' %}
+                                <span class="badge bg-success">Synced</span>
+                            {% elif page.drupal_sync_status.value == 'sync_failed' %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% elif page.drupal_sync_status.value == 'pending' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Not Synced</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% if page.drupal_uuid %}
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Drupal UUID</h6>
+                        <p class="mb-0"><small class="font-monospace">{{ page.drupal_uuid }}</small></p>
+                    </div>
+                    {% endif %}
+                    {% if page.drupal_last_synced %}
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Last Synced</h6>
+                        <p class="mb-0">{{ page.drupal_last_synced.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                    {% endif %}
+                    {% if page.drupal_error_message %}
+                    <div class="alert alert-danger mb-0">
+                        <h6 class="alert-heading">Sync Error</h6>
+                        <p class="mb-0 small">{{ page.drupal_error_message }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Metadata -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Metadata</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Created</h6>
+                        <p class="mb-0">{{ page.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Last Updated</h6>
+                        <p class="mb-0">{{ page.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                    {% if page.created_by %}
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-1">Created By</h6>
+                        <p class="mb-0">{{ page.created_by }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let originalData = {};
+
+function getCheckedValues(checkboxClass) {
+    const checkboxes = document.querySelectorAll('.' + checkboxClass + ':checked');
+    return Array.from(checkboxes).map(cb => cb.value);
+}
+
+function toggleEditMode() {
+    // Store original values
+    originalData = {
+        title: document.getElementById('editTitle').value,
+        url: document.getElementById('editUrl').value,
+        audited: document.getElementById('editAudited').checked,
+        manual_audit: document.getElementById('editManualAudit').checked,
+        include_in_report: document.getElementById('editIncludeInReport').checked,
+        interested_because: getCheckedValues('interested-because-checkbox'),
+        page_elements: getCheckedValues('page-elements-checkbox'),
+        private_notes: document.getElementById('editPrivateNotes').value,
+        public_notes: document.getElementById('editPublicNotes').value
+    };
+
+    // Toggle modes
+    document.getElementById('viewMode').style.display = 'none';
+    document.getElementById('editMode').style.display = 'block';
+    document.getElementById('discoveryViewMode').style.display = 'none';
+    document.getElementById('discoveryEditMode').style.display = 'block';
+    document.getElementById('notesViewMode').style.display = 'none';
+    document.getElementById('notesEditMode').style.display = 'block';
+
+    // Toggle buttons
+    document.getElementById('editBtn').style.display = 'none';
+    document.getElementById('saveBtn').style.display = 'inline-block';
+    document.getElementById('cancelBtn').style.display = 'inline-block';
+}
+
+function setCheckboxValues(checkboxClass, values) {
+    const checkboxes = document.querySelectorAll('.' + checkboxClass);
+    checkboxes.forEach(cb => {
+        cb.checked = values.includes(cb.value);
+    });
+}
+
+function cancelEdit() {
+    // Restore original values
+    document.getElementById('editTitle').value = originalData.title;
+    document.getElementById('editUrl').value = originalData.url;
+    document.getElementById('editAudited').checked = originalData.audited;
+    document.getElementById('editManualAudit').checked = originalData.manual_audit;
+    document.getElementById('editIncludeInReport').checked = originalData.include_in_report;
+    setCheckboxValues('interested-because-checkbox', originalData.interested_because);
+    setCheckboxValues('page-elements-checkbox', originalData.page_elements);
+    document.getElementById('editPrivateNotes').value = originalData.private_notes;
+    document.getElementById('editPublicNotes').value = originalData.public_notes;
+
+    // Toggle back to view mode
+    document.getElementById('viewMode').style.display = 'block';
+    document.getElementById('editMode').style.display = 'none';
+    document.getElementById('discoveryViewMode').style.display = 'block';
+    document.getElementById('discoveryEditMode').style.display = 'none';
+    document.getElementById('notesViewMode').style.display = 'block';
+    document.getElementById('notesEditMode').style.display = 'none';
+
+    // Toggle buttons
+    document.getElementById('editBtn').style.display = 'inline-block';
+    document.getElementById('saveBtn').style.display = 'none';
+    document.getElementById('cancelBtn').style.display = 'none';
+}
+
+async function savePage() {
+    const data = {
+        title: document.getElementById('editTitle').value,
+        url: document.getElementById('editUrl').value,
+        audited: document.getElementById('editAudited').checked ? 'true' : 'false',
+        manual_audit: document.getElementById('editManualAudit').checked ? 'true' : 'false',
+        include_in_report: document.getElementById('editIncludeInReport').checked ? 'true' : 'false',
+        interested_because: getCheckedValues('interested-because-checkbox'),
+        page_elements: getCheckedValues('page-elements-checkbox'),
+        private_notes: document.getElementById('editPrivateNotes').value,
+        public_notes: document.getElementById('editPublicNotes').value
+    };
+
+    try {
+        const response = await fetch('{{ url_for("discovered_pages.edit_discovered_page", page_id=page.id) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Reload the page to show updated data
+            window.location.reload();
+        } else {
+            alert('Error saving page: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error saving page: ' + error.message);
+    }
+}
+</script>
+{% endblock %}

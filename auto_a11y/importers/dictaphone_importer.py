@@ -39,12 +39,14 @@ class DictaphoneImporter:
         website_ids: Optional[List[str]] = None,
         page_urls: Optional[List[str]] = None,
         page_ids: Optional[List[str]] = None,
+        discovered_page_ids: Optional[List[str]] = None,
         component_names: Optional[List[str]] = None,
         app_screens: Optional[List[str]] = None,
         device_sections: Optional[List[str]] = None,
         task_description: Optional[str] = None,
         auditor_info: Optional[Dict[str, Any]] = None,
-        recording_type: str = "audit"
+        recording_type: str = "audit",
+        testing_scope: Optional[Dict[str, bool]] = None
     ) -> Tuple[Recording, List[RecordingIssue]]:
         """
         Import a Dictaphone JSON file.
@@ -55,6 +57,7 @@ class DictaphoneImporter:
             website_ids: Optional website IDs this recording covers
             page_urls: Optional specific page URLs discussed in recording
             page_ids: Optional specific page IDs from database
+            discovered_page_ids: Optional discovered page IDs from database
             component_names: Optional common component names (header, nav, footer, etc.)
             app_screens: Optional app screens/views covered
             device_sections: Optional device sections covered
@@ -87,12 +90,14 @@ class DictaphoneImporter:
             website_ids=website_ids or [],
             page_urls=page_urls or [],
             page_ids=page_ids or [],
+            discovered_page_ids=discovered_page_ids or [],
             component_names=component_names or [],
             app_screens=app_screens or [],
             device_sections=device_sections or [],
             task_description=task_description,
             auditor_info=auditor_info or {},
-            recording_type=recording_type
+            recording_type=recording_type,
+            testing_scope=testing_scope or {}
         )
 
         logger.info(f"Successfully parsed recording '{recording.recording_id}' with {len(issues)} issues")
@@ -106,18 +111,20 @@ class DictaphoneImporter:
         website_ids: List[str],
         page_urls: List[str],
         page_ids: List[str],
+        discovered_page_ids: List[str],
         component_names: List[str],
         app_screens: List[str],
         device_sections: List[str],
         task_description: Optional[str],
         auditor_info: Dict[str, Any],
-        recording_type: str
+        recording_type: str,
+        testing_scope: Dict[str, bool]
     ) -> Tuple[Recording, List[RecordingIssue]]:
         """
         Parse Dictaphone JSON structure into Recording and RecordingIssue objects.
 
         Args:
-            data: Parsed JSON dict from Dictaphone
+            data: Parsed JSON dict from Dictaphone (or list for Claude-generated format)
             project_id: Project ID to link to
             website_ids: Website IDs
             page_urls: Page URLs
@@ -130,14 +137,35 @@ class DictaphoneImporter:
         Raises:
             ValueError: If required fields are missing
         """
-        # Validate required fields
-        if 'recording' not in data:
-            raise ValueError("Missing required field: 'recording'")
-        if 'issues' not in data:
-            raise ValueError("Missing required field: 'issues'")
+        # Handle both formats:
+        # 1. Standard format: {"recording": "ID", "issues": [...]}
+        # 2. Claude format: [{"recording": "ID", "title": "...", ...}, ...]
 
-        recording_id = data['recording']
-        issues_data = data['issues']
+        if isinstance(data, list):
+            # Claude format - array of issues with recording field in each
+            if not data:
+                raise ValueError("Empty issues array")
+
+            # Extract recording ID from first item
+            if 'recording' not in data[0]:
+                raise ValueError("Missing 'recording' field in first issue")
+
+            recording_id = data[0]['recording']
+
+            # Convert to issues format (remove 'recording' field from each issue)
+            issues_data = []
+            for item in data:
+                issue = {k: v for k, v in item.items() if k != 'recording'}
+                issues_data.append(issue)
+        else:
+            # Standard format - object with recording and issues fields
+            if 'recording' not in data:
+                raise ValueError("Missing required field: 'recording'")
+            if 'issues' not in data:
+                raise ValueError("Missing required field: 'issues'")
+
+            recording_id = data['recording']
+            issues_data = data['issues']
 
         # Parse recording type
         try:
@@ -164,15 +192,23 @@ class DictaphoneImporter:
             recorded_date=auditor_info.get('recorded_date'),
             auditor_name=auditor_info.get('auditor_name'),
             auditor_role=auditor_info.get('auditor_role'),
+            test_user_account=auditor_info.get('test_user_account'),
             recording_type=recording_type_enum,
+            lived_experience_tester_id=auditor_info.get('lived_experience_tester_id'),
+            test_supervisor_id=auditor_info.get('test_supervisor_id'),
             project_id=project_id,
             website_ids=website_ids,
             page_urls=page_urls,
             page_ids=page_ids,
+            discovered_page_ids=discovered_page_ids,
             component_names=component_names,
             app_screens=app_screens,
             device_sections=device_sections,
             task_description=task_description,
+            testing_scope=testing_scope,
+            key_takeaways=auditor_info.get('key_takeaways', []),
+            user_painpoints=auditor_info.get('user_painpoints', []),
+            user_assertions=auditor_info.get('user_assertions', []),
             total_issues=len(issues_data),
             high_impact_count=high_count,
             medium_impact_count=medium_count,

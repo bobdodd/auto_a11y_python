@@ -162,6 +162,68 @@ class IssueExporter:
             existing_uuid=issue.drupal_uuid
         )
 
+    def export_from_recording_issue(self, recording_issue, audit_uuid: str, video_uuid: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Export an issue from a RecordingIssue model instance.
+
+        Args:
+            recording_issue: RecordingIssue model instance
+            audit_uuid: Drupal audit UUID to link to
+            video_uuid: Optional Drupal audit_video UUID to link to
+
+        Returns:
+            Dict with 'success', 'uuid', and optional 'error' keys
+        """
+        import html
+
+        # Map impact enum to Drupal format
+        impact_mapping = {
+            'low': 'low',
+            'medium': 'med',
+            'high': 'high'
+        }
+        impact = impact_mapping.get(recording_issue.impact.value, 'med')
+
+        # Build description HTML from what/why/who/remediation
+        description_parts = []
+        if recording_issue.what:
+            description_parts.append(f"<h3>What</h3><p>{html.escape(recording_issue.what)}</p>")
+        if recording_issue.why:
+            description_parts.append(f"<h3>Why</h3><p>{html.escape(recording_issue.why)}</p>")
+        if recording_issue.who:
+            description_parts.append(f"<h3>Who</h3><p>{html.escape(recording_issue.who)}</p>")
+        if recording_issue.remediation:
+            description_parts.append(f"<h3>Remediation</h3><p>{html.escape(recording_issue.remediation)}</p>")
+
+        description = "\n".join(description_parts) if description_parts else recording_issue.what or ""
+
+        # Convert timecodes to video_timecode string
+        video_timecode = None
+        if recording_issue.timecodes:
+            timecode_strs = [f"{tc.start} - {tc.end}" for tc in recording_issue.timecodes]
+            video_timecode = "; ".join(timecode_strs)
+
+        # Extract WCAG criteria strings
+        wcag_criteria = [w.criteria for w in recording_issue.wcag]
+
+        # Get first page URL if available
+        url = recording_issue.page_urls[0] if recording_issue.page_urls else None
+
+        return self.export_issue(
+            title=recording_issue.title,
+            description=description,
+            audit_uuid=audit_uuid,
+            impact=impact,
+            issue_type=recording_issue.touchpoint,
+            location_on_page=None,  # RecordingIssue doesn't have this field
+            wcag_criteria=wcag_criteria,
+            xpath=recording_issue.xpath,
+            url=url,
+            video_timecode=video_timecode,
+            issue_id=None,
+            existing_uuid=None  # RecordingIssues don't track Drupal UUIDs currently
+        )
+
     def _build_payload(
         self,
         title: str,

@@ -322,35 +322,14 @@ class IssueExporter:
             }
         }
 
-        # field_ticket_status - UNRESOLVED ISSUE
+        # Note: field_ticket_status has been removed from the staging Issue content type
+        # (test-audits.pantheonsite.io) to allow issue creation via JSON:API.
+        # The production site (audits.frontier-cnib.ca) still has the workflow field requirement.
         #
-        # This is a Drupal Workflow module field (type: 'workflow') that is REQUIRED
-        # when creating new issues via JSON:API, but the correct value format is unclear.
-        #
-        # Investigation findings:
-        # - Field type: 'workflow' (not entity reference, not taxonomy)
-        # - Writable property: 'value' (confirmed by Drupal error message)
-        # - Valid workflow states: Fail, Pass, Partial pass, Remediated ready for retest,
-        #   Further testing needed, Remediation introduced new issues, Can't replicate,
-        #   Not remediated not ready for retest
-        # - State UUIDs are available via /jsonapi/workflow_state/workflow_state
-        # - ALL existing issues have field_ticket_status = null
-        #
-        # Attempts that FAILED:
-        # - Setting as relationship: {"data": {"type": "workflow_state--workflow_state", "id": "uuid"}}
-        # - Setting as attribute with UUID: [{"value": "uuid-string"}]
-        # - Setting as attribute with numeric SIDs 1-120, 1000-1008: [{"value": 123}]
-        # - Setting as attribute with machine names: [{"value": "fail"}]
-        # - Setting as attribute with labels: [{"value": "Fail"}]
-        #
-        # The field REQUIRES a non-null value when creating issues, but we cannot
-        # determine the correct format without either:
-        # 1. Access to Drupal database to see the actual stored SID values
-        # 2. Creating a test issue via Drupal UI and inspecting via JSON:API
-        # 3. Documentation or guidance on the specific Drupal workflow configuration
-        #
-        # WORKAROUND: For now, we CANNOT create issues via JSON:API until this is resolved.
-        # This blocks RecordingIssue export functionality.
+        # TODO: If workflow states are needed in the future:
+        # - Investigate Drupal Workflow module's JSON:API integration
+        # - Determine correct SID value format for field_ticket_status
+        # - Add workflow state handling as optional parameter
 
         # TODO: Add taxonomy term relationships for issue_type and location_on_page
         # This would require looking up taxonomy term UUIDs by name

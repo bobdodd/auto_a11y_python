@@ -14,6 +14,7 @@ from auto_a11y.drupal import (
     DiscoveredPageExporter,
     DiscoveredPageImporter,
     DiscoveredPageTaxonomies,
+    WCAGChapterCache,
     RecordingExporter,
     IssueImporter,
     IssueExporter
@@ -287,14 +288,18 @@ def upload_to_drupal(project_id):
 
             # Initialize exporters
             taxonomies = DiscoveredPageTaxonomies(client)
+            wcag_cache = WCAGChapterCache(client)
 
             # Preload issue taxonomies for issue exporter
             taxonomies.cache.get_terms('issue_type')
             taxonomies.cache.get_terms('issue_category')
 
+            # Preload WCAG chapters for issue exporter
+            wcag_cache.get_chapters()
+
             page_exporter = DiscoveredPageExporter(client, taxonomies)
             recording_exporter = RecordingExporter(client)
-            issue_exporter = IssueExporter(client, taxonomies.cache)
+            issue_exporter = IssueExporter(client, taxonomies.cache, wcag_cache)
 
             total_items = len(discovered_page_ids) + len(recording_ids) + len(issue_ids)
             current_item = 0

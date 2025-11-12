@@ -18,16 +18,18 @@ class IssueExporter:
     Handles creating and updating issue nodes in Drupal from Auto A11y Issue objects.
     """
 
-    def __init__(self, client, taxonomy_cache=None):
+    def __init__(self, client, taxonomy_cache=None, wcag_cache=None):
         """
         Initialize issue exporter.
 
         Args:
             client: DrupalJSONAPIClient instance
             taxonomy_cache: Optional TaxonomyCache instance for taxonomy lookups
+            wcag_cache: Optional WCAGChapterCache instance for WCAG chapter lookups
         """
         self.client = client
         self.taxonomy_cache = taxonomy_cache
+        self.wcag_cache = wcag_cache
 
     def export_issue(
         self,
@@ -448,6 +450,30 @@ class IssueExporter:
         else:
             relationships['field_issue_category'] = {'data': None}
 
+        # Add WCAG chapter relationships (field_wcag_chapter - multi-value reference to WCAG chapter nodes)
+        if self.wcag_cache and wcag_criteria:
+            # Filter out non-standard criteria like "best practice"
+            valid_criteria = [c for c in wcag_criteria if c and c[0].isdigit()]
+
+            if valid_criteria:
+                chapter_uuids = self.wcag_cache.lookup_uuids(valid_criteria)
+                if chapter_uuids:
+                    # Build multi-value relationship
+                    relationships['field_wcag_chapter'] = {
+                        'data': [
+                            {'type': 'node--wcag_chapter', 'id': uuid}
+                            for uuid in chapter_uuids
+                        ]
+                    }
+                    logger.info(f"Linked {len(chapter_uuids)} WCAG chapters: {', '.join(valid_criteria)}")
+                else:
+                    logger.warning(f"No WCAG chapter UUIDs found for criteria: {valid_criteria}")
+                    relationships['field_wcag_chapter'] = {'data': []}
+            else:
+                relationships['field_wcag_chapter'] = {'data': []}
+        else:
+            relationships['field_wcag_chapter'] = {'data': []}
+
         # Note: field_ticket_status has been removed from the staging Issue content type
         # (test-audits.pantheonsite.io) to allow issue creation via JSON:API.
         # The production site (audits.frontier-cnib.ca) still has the workflow field requirement.
@@ -456,10 +482,6 @@ class IssueExporter:
         # - Investigate Drupal Workflow module's JSON:API integration
         # - Determine correct SID value format for field_ticket_status
         # - Add workflow state handling as optional parameter
-
-        # TODO: Add WCAG chapter relationships
-        # This would require looking up WCAG node UUIDs by criteria
-        # For now, we'll skip these and they can be added later
 
         # Build data section
         data = {

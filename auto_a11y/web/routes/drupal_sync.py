@@ -289,7 +289,7 @@ def upload_to_drupal(project_id):
             taxonomies = DiscoveredPageTaxonomies(client)
             page_exporter = DiscoveredPageExporter(client, taxonomies)
             recording_exporter = RecordingExporter(client)
-            issue_exporter = IssueExporter(client)
+            issue_exporter = IssueExporter(client, taxonomies.cache)
 
             total_items = len(discovered_page_ids) + len(recording_ids) + len(issue_ids)
             current_item = 0

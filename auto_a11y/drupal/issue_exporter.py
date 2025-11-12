@@ -389,8 +389,52 @@ class IssueExporter:
 
         # Add Issue Category taxonomy relationship (from touchpoint/issue_type)
         if self.taxonomy_cache and issue_type:
-            # Try to find matching category term (touchpoint maps to issue_category)
-            category_uuid = self.taxonomy_cache.get_uuid_by_name('issue_category', issue_type)
+            # Map touchpoint names to Drupal issue_category term names
+            touchpoint_to_category = {
+                'color contrast': 'Colour or Contrast',
+                'landmarks': 'Page Regions',
+                'navigation': 'Navigation or Multiple Ways',
+                'forms': 'Forms',
+                'headings': 'Headings or Titles',
+                'links': 'Links or Buttons',
+                'images': 'Images or Non-Text Content',
+                'tables': 'Tables',
+                'aria': 'ARIA',
+                'focus': 'Focus or Keyboard',
+                'keyboard': 'Focus or Keyboard',
+                'search': 'Search or Filters',
+                'text': 'Text or Font',
+                'font': 'Text or Font',
+                'html': 'HTML or Attribute',
+                'language': 'Language',
+                'labels': 'Label or Name',
+                'sequence': 'Sequence or Order',
+                'modal': 'Modal Dialog',
+                'status messages': 'Status Messages, Errors or Instructions',
+                'errors': 'Status Messages, Errors or Instructions',
+                'context': 'Change of Context',
+                'pagination': 'Pagination',
+                'tabs': 'Tabs',
+                'lists': 'Lists',
+                'timing': 'Timing',
+                'menus': 'Menus',
+                'iframes': 'IFrames',
+                'breadcrumbs': 'Breadcrumbs',
+                'accordions': 'Accordions',
+                'carousels': 'Carousels',
+                'motion': 'Motion or Animation',
+                'animation': 'Motion or Animation',
+                'magnifiers': 'Magnifiers',
+                'audio': 'Audio',
+                'skip links': 'Skip links',
+                'reflow': 'Reflow, Resize or Text Spacing',
+                'resize': 'Reflow, Resize or Text Spacing'
+            }
+
+            # Try to map touchpoint to category term name
+            category_name = touchpoint_to_category.get(issue_type.lower(), issue_type)
+
+            category_uuid = self.taxonomy_cache.get_uuid_by_name('issue_category', category_name)
             if category_uuid:
                 relationships['field_issue_category'] = {
                     'data': {
@@ -399,7 +443,7 @@ class IssueExporter:
                     }
                 }
             else:
-                logger.warning(f"Could not find issue_category term '{issue_type}'")
+                logger.warning(f"Could not find issue_category term for touchpoint '{issue_type}' (tried '{category_name}')")
                 relationships['field_issue_category'] = {'data': None}
         else:
             relationships['field_issue_category'] = {'data': None}

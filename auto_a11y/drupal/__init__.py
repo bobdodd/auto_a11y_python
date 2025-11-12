@@ -7,7 +7,7 @@ enabling export of accessibility test results and recording issues.
 
 from .client import DrupalJSONAPIClient
 from .formatters import format_recording_body, format_issue_body
-from .taxonomy import TaxonomyCache, DiscoveredPageTaxonomies
+from .taxonomy import TaxonomyCache, DiscoveredPageTaxonomies, WCAGChapterCache
 from .discovered_page_exporter import DiscoveredPageExporter
 from .discovered_page_importer import DiscoveredPageImporter
 from .recording_exporter import RecordingExporter
@@ -20,6 +20,7 @@ __all__ = [
     'format_issue_body',
     'TaxonomyCache',
     'DiscoveredPageTaxonomies',
+    'WCAGChapterCache',
     'DiscoveredPageExporter',
     'DiscoveredPageImporter',
     'RecordingExporter',

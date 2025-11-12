@@ -403,3 +403,186 @@ class DiscoveredPageTaxonomies:
     def clear_cache(self):
         """Clear all taxonomy caches."""
         self.cache.clear_cache()
+
+
+class WCAGChapterCache:
+    """
+    Cache for WCAG chapter nodes.
+
+    WCAG chapters are stored as nodes (node--wcag_chapter) with field_chapter_number
+    that matches WCAG success criteria format (e.g., "1.3.1", "2.4.6").
+    """
+
+    def __init__(self, client, cache_duration_hours: int = 24):
+        """
+        Initialize WCAG chapter cache.
+
+        Args:
+            client: DrupalJSONAPIClient instance
+            cache_duration_hours: How long to cache chapters before refresh (default: 24 hours)
+        """
+        self.client = client
+        self.cache_duration = timedelta(hours=cache_duration_hours)
+
+        # Cache structure: {'chapters': [...], 'by_number': {number: uuid}, 'by_uuid': {uuid: number}, 'last_updated': datetime}
+        self._cache: Optional[dict] = None
+
+    def get_chapters(self, force_refresh: bool = False) -> List[Dict]:
+        """
+        Get all WCAG chapters.
+
+        Args:
+            force_refresh: Force refresh from Drupal even if cached
+
+        Returns:
+            List of chapter dictionaries with 'uuid', 'number', 'title', etc.
+        """
+        if force_refresh or not self._cache or self._is_cache_expired():
+            self._refresh_chapters()
+
+        return self._cache.get('chapters', [])
+
+    def get_uuid_by_number(self, chapter_number: str) -> Optional[str]:
+        """
+        Look up a WCAG chapter UUID by its number.
+
+        Args:
+            chapter_number: WCAG criteria number (e.g., "1.3.1", "2.4.6")
+
+        Returns:
+            Chapter UUID or None if not found
+        """
+        if not self._cache:
+            self._refresh_chapters()
+
+        by_number = self._cache.get('by_number', {})
+        return by_number.get(chapter_number)
+
+    def get_number_by_uuid(self, chapter_uuid: str) -> Optional[str]:
+        """
+        Look up a WCAG chapter number by its UUID.
+
+        Args:
+            chapter_uuid: Chapter UUID
+
+        Returns:
+            Chapter number or None if not found
+        """
+        if not self._cache:
+            self._refresh_chapters()
+
+        by_uuid = self._cache.get('by_uuid', {})
+        return by_uuid.get(chapter_uuid)
+
+    def lookup_uuids(self, chapter_numbers: List[str]) -> List[str]:
+        """
+        Look up UUIDs for multiple WCAG chapter numbers.
+
+        Args:
+            chapter_numbers: List of WCAG criteria numbers
+
+        Returns:
+            List of UUIDs (skips chapters not found, logs warning)
+        """
+        uuids = []
+
+        for number in chapter_numbers:
+            uuid = self.get_uuid_by_number(number)
+            if uuid:
+                uuids.append(uuid)
+            else:
+                logger.warning(f"WCAG chapter '{number}' not found")
+
+        return uuids
+
+    def refresh(self):
+        """Refresh the WCAG chapter cache."""
+        self._refresh_chapters()
+
+    def clear_cache(self):
+        """Clear cached WCAG chapter data."""
+        self._cache = None
+        logger.info("WCAG chapter cache cleared")
+
+    def _is_cache_expired(self) -> bool:
+        """Check if cached chapters have expired."""
+        if not self._cache:
+            return True
+
+        last_updated = self._cache.get('last_updated')
+        if not last_updated:
+            return True
+
+        return datetime.now() - last_updated > self.cache_duration
+
+    def _refresh_chapters(self):
+        """Refresh WCAG chapters from Drupal."""
+        logger.info("Refreshing WCAG chapters from Drupal")
+
+        try:
+            # Fetch all WCAG chapter nodes with pagination
+            all_chapters = []
+            page_limit = 50
+            offset = 0
+
+            while True:
+                response = self.client.get(
+                    'node/wcag_chapter',
+                    params={
+                        'page[limit]': page_limit,
+                        'page[offset]': offset
+                    }
+                )
+
+                chapters = response.get('data', [])
+                if not chapters:
+                    break
+
+                all_chapters.extend(chapters)
+                offset += page_limit
+
+                # If we got fewer than page_limit, we're done
+                if len(chapters) < page_limit:
+                    break
+
+            # Process chapters into cache structure
+            by_number = {}
+            by_uuid = {}
+            processed_chapters = []
+
+            for chapter in all_chapters:
+                uuid = chapter.get('id')
+                attributes = chapter.get('attributes', {})
+                chapter_number = attributes.get('field_chapter_number')
+                title = attributes.get('title')
+                nid = attributes.get('drupal_internal__nid')
+
+                if not uuid or not chapter_number:
+                    logger.warning(f"Skipping invalid WCAG chapter: {chapter}")
+                    continue
+
+                # Store in lookup maps
+                by_number[chapter_number] = uuid
+                by_uuid[uuid] = chapter_number
+
+                # Store full chapter details
+                processed_chapters.append({
+                    'uuid': uuid,
+                    'number': chapter_number,
+                    'title': title,
+                    'nid': nid
+                })
+
+            # Update cache
+            self._cache = {
+                'chapters': processed_chapters,
+                'by_number': by_number,
+                'by_uuid': by_uuid,
+                'last_updated': datetime.now()
+            }
+
+            logger.info(f"Cached {len(processed_chapters)} WCAG chapters")
+
+        except Exception as e:
+            logger.error(f"Failed to refresh WCAG chapters: {e}")
+            raise

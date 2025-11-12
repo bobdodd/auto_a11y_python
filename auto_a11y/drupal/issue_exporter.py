@@ -18,14 +18,16 @@ class IssueExporter:
     Handles creating and updating issue nodes in Drupal from Auto A11y Issue objects.
     """
 
-    def __init__(self, client):
+    def __init__(self, client, taxonomy_cache=None):
         """
         Initialize issue exporter.
 
         Args:
             client: DrupalJSONAPIClient instance
+            taxonomy_cache: Optional TaxonomyCache instance for taxonomy lookups
         """
         self.client = client
+        self.taxonomy_cache = taxonomy_cache
 
     def export_issue(
         self,
@@ -281,8 +283,30 @@ class IssueExporter:
                 'uri': url
             }
 
+        # field_video_timecode has 8-char limit, so extract just start time in MM:SS format
         if video_timecode:
-            attributes['field_video_timecode'] = video_timecode
+            # Extract first timecode (format: "HH:MM:SS.mmm - HH:MM:SS.mmm")
+            # Convert to MM:SS format (max 8 chars with colon)
+            try:
+                start_time = video_timecode.split(' - ')[0]  # Get start time
+                # Parse HH:MM:SS.mmm
+                parts = start_time.split(':')
+                if len(parts) >= 3:
+                    hours = int(parts[0])
+                    minutes = int(parts[1])
+                    seconds = int(parts[2].split('.')[0])
+                    # Convert to total minutes:seconds
+                    total_minutes = hours * 60 + minutes
+                    formatted_time = f"{total_minutes}:{seconds:02d}"
+                    # Truncate to 8 chars if needed
+                    attributes['field_video_timecode'] = formatted_time[:8]
+                else:
+                    # Fallback: just take first 8 chars
+                    attributes['field_video_timecode'] = video_timecode[:8]
+            except Exception as e:
+                logger.warning(f"Failed to parse video_timecode '{video_timecode}': {e}")
+                # Fallback: take first 8 chars
+                attributes['field_video_timecode'] = video_timecode[:8]
 
         if issue_id is not None:
             attributes['field_id'] = issue_id
@@ -296,6 +320,22 @@ class IssueExporter:
                 }
             }
         }
+
+        # Add ticket_status taxonomy term (required field)
+        if self.taxonomy_cache:
+            try:
+                status_uuid = self.taxonomy_cache.get_uuid_by_name('ticket_status', 'open')
+                if status_uuid:
+                    relationships['field_ticket_status'] = {
+                        'data': {
+                            'type': 'taxonomy_term--ticket_status',
+                            'id': status_uuid
+                        }
+                    }
+                else:
+                    logger.warning("Could not find 'open' term in ticket_status vocabulary")
+            except Exception as e:
+                logger.error(f"Error looking up ticket_status taxonomy: {e}")
 
         # TODO: Add taxonomy term relationships for issue_type and location_on_page
         # This would require looking up taxonomy term UUIDs by name

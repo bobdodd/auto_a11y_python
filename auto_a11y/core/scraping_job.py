@@ -230,7 +230,7 @@ class ScrapingJob:
 
                 # Get user info for logging
                 if website_user_id:
-                    user = database.get_website_user(website_user_id)
+                    user = database.get_project_user(website_user_id)
                     user_label = user.name_display if user else f"user {website_user_id}"
                 else:
                     user = None

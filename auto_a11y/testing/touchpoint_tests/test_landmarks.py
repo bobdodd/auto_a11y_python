@@ -305,7 +305,55 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         }
                     });
                 });
-                
+
+                // Check for duplicate region labels (multiple regions with same accessible name)
+                if (landmarkElements_byType['region'] && landmarkElements_byType['region'].length > 1) {
+                    const regionElements = landmarkElements_byType['region'];
+                    const regionsByLabel = {};
+
+                    // Group regions by their accessible name
+                    regionElements.forEach(region => {
+                        if (region.name) {
+                            if (!regionsByLabel[region.name]) {
+                                regionsByLabel[region.name] = [];
+                            }
+                            regionsByLabel[region.name].push(region);
+                        }
+                    });
+
+                    // Check for duplicates
+                    Object.keys(regionsByLabel).forEach(label => {
+                        const regions = regionsByLabel[label];
+                        if (regions.length > 1) {
+                            // Multiple regions with same label - report each as error
+                            regions.forEach(region => {
+                                results.errors.push({
+                                    err: 'ErrDuplicateLabelForRegionLandmark',
+                                    type: 'err',
+                                    cat: 'landmarks',
+                                    element: region.tag,
+                                    xpath: region.xpath,
+                                    html: region.html,
+                                    description: `Multiple region landmarks share the same accessible name "${label}" (${regions.length} total)`,
+                                    regionLabel: label,
+                                    duplicateCount: regions.length
+                                });
+                                results.elements_failed++;
+                            });
+                        } else {
+                            // Single region with unique label - report as pass
+                            results.passes.push({
+                                check: 'region_unique_label',
+                                element: regions[0].tag,
+                                xpath: regions[0].xpath,
+                                wcag: ['1.3.1', '2.4.6'],
+                                reason: `Region landmark has unique label: "${label}"`
+                            });
+                            results.elements_passed++;
+                        }
+                    });
+                }
+
                 // Get body start for context when landmarks are missing
                 const bodyElement = document.body;
                 const bodyStart = bodyElement ? bodyElement.outerHTML.substring(0, 500) : '<body>';

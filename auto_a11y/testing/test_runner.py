@@ -283,10 +283,30 @@ class TestRunner:
                         window.DOCUMENT_METADATA = {{}};
                     ''')
                 
+                # Store original viewport before running tests
+                # Some tests (like text_contrast and floating_dialogs) change viewport for breakpoint testing
+                original_viewport = await browser_page.evaluate('() => ({ width: window.innerWidth, height: window.innerHeight })')
+                logger.debug(f"Stored original viewport: {original_viewport}")
+
                 # Run all tests
                 # Running JavaScript tests
                 raw_results = await self.script_injector.run_all_tests(browser_page)
-                
+
+                # Restore original viewport after tests complete
+                # This is critical because some tests change viewport for responsive breakpoint testing
+                if original_viewport:
+                    try:
+                        await browser_page.setViewport({
+                            'width': original_viewport['width'],
+                            'height': original_viewport['height']
+                        })
+                        logger.debug(f"Restored viewport to original size: {original_viewport}")
+                        # Give page a moment to reflow after viewport change
+                        import asyncio
+                        await asyncio.sleep(0.1)
+                    except Exception as e:
+                        logger.warning(f"Could not restore viewport: {e}")
+
                 # Take screenshot if requested
                 screenshot_path = None
                 screenshot_bytes = None
@@ -873,28 +893,38 @@ class TestRunner:
     async def _take_screenshot(self, browser_page, page_id: str) -> str:
         """
         Take screenshot of page
-        
+
         Args:
             browser_page: Pyppeteer page object
             page_id: Page ID for filename
-            
+
         Returns:
-            Screenshot file path
+            Screenshot file path (relative to project root for Flask static serving)
         """
         try:
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             filename = f"page_{page_id}_{timestamp}.jpg"
             filepath = self.screenshot_dir / filename
-            
+
             await self.browser_manager.take_screenshot(
                 browser_page,
                 path=filepath,
                 full_page=True
             )
-            
-            logger.debug(f"Screenshot saved: {filepath}")
-            return str(filepath)
-            
+
+            # Return relative path for Flask static serving
+            # Convert absolute path to relative from project root
+            import os
+            try:
+                # Get path relative to current working directory (project root)
+                relative_path = os.path.relpath(filepath, os.getcwd())
+                logger.debug(f"Screenshot saved: {filepath} (relative: {relative_path})")
+                return relative_path
+            except ValueError:
+                # If relative path cannot be computed (different drives on Windows), return just filename
+                logger.debug(f"Screenshot saved: {filepath} (returning: {self.screenshot_dir.name}/{filename})")
+                return f"{self.screenshot_dir.name}/{filename}"
+
         except Exception as e:
             logger.error(f"Failed to take screenshot: {e}")
             return None

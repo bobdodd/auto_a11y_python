@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Duplicate Regions</title>
+</head>
+<body>
+    <main>
+        <div role="region" aria-label="Test Region">
+            <p>First region</p>
+        </div>
+
+        <div role="region" aria-label="Test Region">
+            <p>Second region with same label</p>
+        </div>
+
+        <div role="region" aria-label="Test Region">
+            <p>Third region with same label</p>
+        </div>
+    </main>
+
+    <script src="auto_a11y/scripts/tests/xpath.js"></script>
+    <script src="auto_a11y/scripts/tests/passTracking.js"></script>
+    <script>
+        // Add Elements namespace if not present
+        if (typeof Elements === 'undefined') {
+            window.Elements = {
+                DOMPath: {
+                    xPath: function(element) {
+                        if (!element) return '';
+                        const paths = [];
+                        for (; element && element.nodeType === 1; element = element.parentNode) {
+                            let index = 0;
+                            for (let sibling = element.previousSibling; sibling; sibling = sibling.previousSibling) {
+                                if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName === element.nodeName) {
+                                    index++;
+                                }
+                            }
+                            const tagName = element.nodeName.toLowerCase();
+                            const pathIndex = index ? `[${index + 1}]` : '';
+                            paths.splice(0, 0, tagName + pathIndex);
+                        }
+                        return paths.length ? '/' + paths.join('/') : '';
+                    }
+                }
+            };
+        }
+
+        // Test the duplicate region detection code
+        const regionElements = document.querySelectorAll('[role="region"]');
+        const regionLabels = new Map();
+
+        console.log('Found ' + regionElements.length + ' region elements');
+
+        regionElements.forEach(region => {
+            let accessibleName = '';
+            const ariaLabel = region.getAttribute('aria-label');
+            if (ariaLabel) {
+                accessibleName = ariaLabel.trim();
+            }
+
+            console.log('Region:', region, 'Label:', accessibleName);
+
+            if (accessibleName) {
+                if (!regionLabels.has(accessibleName)) {
+                    regionLabels.set(accessibleName, []);
+                }
+                regionLabels.get(accessibleName).push(region);
+            }
+        });
+
+        console.log('Region labels map:', regionLabels);
+
+        regionLabels.forEach((regions, label) => {
+            console.log('Label "' + label + '" has ' + regions.length + ' regions');
+            if (regions.length > 1) {
+                console.log('DUPLICATE FOUND!');
+            }
+        });
+    </script>
+</body>
+</html>

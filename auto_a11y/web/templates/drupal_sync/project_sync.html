@@ -1,0 +1,574 @@
+{% extends "base.html" %}
+
+{% block title %}Drupal Sync - {{ project.name }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('projects.list_projects') }}">Projects</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a></li>
+                    <li class="breadcrumb-item active">Drupal Sync</li>
+                </ol>
+            </nav>
+            <h1 class="h2">
+                <i class="bi bi-cloud-arrow-up-down"></i> Drupal Synchronization
+            </h1>
+            <p class="text-muted">Manage synchronization between Auto A11y and Drupal for {{ project.name }}</p>
+        </div>
+    </div>
+
+    <!-- Sync Status Overview -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Drupal Audit</h6>
+                    <h4 id="drupalAuditName">Loading...</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Discovered Pages</h6>
+                    <h4><span class="text-success" id="pagesSynced">0</span> / <span id="pagesTotal">0</span></h4>
+                    <small class="text-muted"><span id="pagesPending">0</span> pending</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Recordings</h6>
+                    <h4><span class="text-success" id="recordingsSynced">0</span> / <span id="recordingsTotal">0</span></h4>
+                    <small class="text-muted"><span id="recordingsPending">0</span> pending</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Last Sync</h6>
+                    <h4 class="small" id="lastSyncTime">Never</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-primary" onclick="showPullTab()">
+                    <i class="bi bi-cloud-arrow-down"></i> Pull from Drupal
+                </button>
+                <button type="button" class="btn btn-success" onclick="showPushTab()">
+                    <i class="bi bi-cloud-arrow-up"></i> Push to Drupal
+                </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="loadSyncStatus()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="syncTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pull-tab" data-bs-toggle="tab" data-bs-target="#pull" type="button" role="tab">
+                <i class="bi bi-cloud-arrow-down"></i> Pull from Drupal
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="push-tab" data-bs-toggle="tab" data-bs-target="#push" type="button" role="tab">
+                <i class="bi bi-cloud-arrow-up"></i> Push to Drupal
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">
+                <i class="bi bi-clock-history"></i> Sync History
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="syncTabContent">
+        <!-- Pull Tab -->
+        <div class="tab-pane fade show active" id="pull" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Pull Discovered Pages from Drupal</h5>
+                </div>
+                <div class="card-body">
+                    <div id="importAlert" class="alert alert-info" style="display: none;">
+                        <i class="bi bi-info-circle"></i>
+                        <span id="importAlertMessage"></span>
+                    </div>
+
+                    <h6>What this will do:</h6>
+                    <ul>
+                        <li>Fetch all discovered pages associated with this audit in Drupal</li>
+                        <li>Import them into your local Auto A11y project</li>
+                        <li>Preserve page metadata (URL, title, description, etc.)</li>
+                        <li>Update existing pages if they already exist locally</li>
+                    </ul>
+
+                    <button type="button" class="btn btn-primary" id="importPagesBtn" onclick="importDiscoveredPages()">
+                        <i class="bi bi-cloud-arrow-down"></i> Pull Discovered Pages
+                    </button>
+
+                    <!-- Progress Display -->
+                    <div id="importProgress" class="mt-3" style="display: none;">
+                        <div class="progress">
+                            <div id="importProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                                 role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <div class="mt-2">
+                            <small id="importProgressText" class="text-muted">Starting import...</small>
+                        </div>
+                    </div>
+
+                    <!-- Results Display -->
+                    <div id="importResults" class="mt-3" style="display: none;">
+                        <div class="alert alert-success">
+                            <h6><i class="bi bi-check-circle"></i> Import Complete</h6>
+                            <ul class="mb-0">
+                                <li><strong>Imported:</strong> <span id="importedCount">0</span> new pages</li>
+                                <li><strong>Updated:</strong> <span id="updatedCount">0</span> existing pages</li>
+                                <li><strong>Total:</strong> <span id="totalCount">0</span> pages processed</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Push Tab -->
+        <div class="tab-pane fade" id="push" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Push Content to Drupal</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Discovered Pages -->
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <input type="checkbox" id="selectAllPages" checked>
+                                <strong class="ms-2">Discovered Pages (<span id="pushPagesCount">0</span>)</strong>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshPushLists()">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                            <div id="pushPagesList">
+                                <div class="text-center py-3">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recordings -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <input type="checkbox" id="selectAllRecordings" checked>
+                            <strong class="ms-2">Recordings (<span id="pushRecordingsCount">0</span>)</strong>
+                        </div>
+                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                            <div id="pushRecordingsList">
+                                <div class="text-center py-3">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-success btn-lg" onclick="startPush()">
+                        <i class="bi bi-cloud-arrow-up"></i> Push Selected Items to Drupal
+                    </button>
+                </div>
+            </div>
+
+            <!-- Push Progress (hidden initially) -->
+            <div class="card mt-4" id="pushProgressCard" style="display: none;">
+                <div class="card-header">
+                    <h5 class="mb-0">Upload Progress</h5>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-3" style="height: 30px;">
+                        <div id="pushProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                             role="progressbar" style="width: 0%">
+                            <span id="pushProgressText">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Upload Log</strong>
+                        </div>
+                        <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                            <div id="pushLog" class="font-monospace small">
+                                <!-- Log entries appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div class="tab-pane fade" id="history" role="tabpanel">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Synchronization History</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Coming Soon:</strong> This will show a detailed history of all synchronization operations for this project.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const projectId = '{{ project.id }}';
+let syncStatus = null;
+let discoveredPages = [];
+let recordings = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadSyncStatus();
+    loadPushLists();
+});
+
+async function loadSyncStatus() {
+    try {
+        const response = await fetch(`/drupal/projects/${projectId}/sync/status`);
+        syncStatus = await response.json();
+        updateStatusDisplay();
+    } catch (error) {
+        console.error('Error loading sync status:', error);
+    }
+}
+
+function updateStatusDisplay() {
+    if (!syncStatus) return;
+
+    // Update audit name
+    const auditName = syncStatus.project_name || '{{ project.drupal_audit_name or project.name }}';
+    document.getElementById('drupalAuditName').textContent = auditName;
+
+    // Update pages stats
+    document.getElementById('pagesSynced').textContent = syncStatus.discovered_pages.synced;
+    document.getElementById('pagesTotal').textContent = syncStatus.discovered_pages.total;
+    document.getElementById('pagesPending').textContent = syncStatus.discovered_pages.pending;
+
+    // Update recordings stats
+    document.getElementById('recordingsSynced').textContent = syncStatus.recordings.synced;
+    document.getElementById('recordingsTotal').textContent = syncStatus.recordings.total;
+    document.getElementById('recordingsPending').textContent = syncStatus.recordings.pending;
+
+    // Update last sync time
+    if (syncStatus.last_sync_time) {
+        const date = new Date(syncStatus.last_sync_time);
+        document.getElementById('lastSyncTime').textContent = date.toLocaleString();
+    }
+}
+
+async function loadPushLists() {
+    try {
+        const [pagesResp, recordingsResp] = await Promise.all([
+            fetch(`/drupal/projects/${projectId}/discovered-pages`),
+            fetch(`/drupal/projects/${projectId}/recordings`)
+        ]);
+
+        discoveredPages = await pagesResp.json();
+        recordings = await recordingsResp.json();
+
+        renderPushPagesList();
+        renderPushRecordingsList();
+    } catch (error) {
+        console.error('Error loading push lists:', error);
+    }
+}
+
+function renderPushPagesList() {
+    const container = document.getElementById('pushPagesList');
+    document.getElementById('pushPagesCount').textContent = discoveredPages.length;
+
+    if (discoveredPages.length === 0) {
+        container.innerHTML = '<p class="text-muted">No discovered pages found.</p>';
+        return;
+    }
+
+    container.innerHTML = discoveredPages.map(page => `
+        <div class="form-check mb-2">
+            <input class="form-check-input page-checkbox" type="checkbox"
+                   id="page_${page.id}" value="${page.id}"
+                   ${page.needs_sync ? 'checked' : ''}>
+            <label class="form-check-label" for="page_${page.id}">
+                <strong>${page.title}</strong>
+                ${page.is_synced ? '<span class="badge bg-success ms-2">Synced</span>' : ''}
+                ${page.drupal_sync_status === 'sync_failed' ? '<span class="badge bg-danger ms-2">Failed</span>' : ''}
+                <br>
+                <small class="text-muted">${page.url}</small>
+            </label>
+        </div>
+    `).join('');
+
+    document.getElementById('selectAllPages').onchange = function() {
+        document.querySelectorAll('.page-checkbox').forEach(cb => {
+            cb.checked = this.checked;
+        });
+    };
+}
+
+function renderPushRecordingsList() {
+    const container = document.getElementById('pushRecordingsList');
+    document.getElementById('pushRecordingsCount').textContent = recordings.length;
+
+    if (recordings.length === 0) {
+        container.innerHTML = '<p class="text-muted">No recordings found.</p>';
+        return;
+    }
+
+    container.innerHTML = recordings.map(recording => `
+        <div class="form-check mb-2">
+            <input class="form-check-input recording-checkbox" type="checkbox"
+                   id="recording_${recording.id}" value="${recording.id}"
+                   ${recording.needs_sync ? 'checked' : ''}>
+            <label class="form-check-label" for="recording_${recording.id}">
+                <strong>${recording.title}</strong>
+                ${recording.is_synced ? '<span class="badge bg-success ms-2">Synced</span>' : ''}
+                ${recording.drupal_sync_status === 'sync_failed' ? '<span class="badge bg-danger ms-2">Failed</span>' : ''}
+                <br>
+                <small class="text-muted">
+                    ${recording.duration || 'Unknown duration'}
+                    ${recording.auditor_name ? `• ${recording.auditor_name}` : ''}
+                    ${recording.total_issues > 0 ? `• ${recording.total_issues} issues` : ''}
+                </small>
+            </label>
+        </div>
+    `).join('');
+
+    document.getElementById('selectAllRecordings').onchange = function() {
+        document.querySelectorAll('.recording-checkbox').forEach(cb => {
+            cb.checked = this.checked;
+        });
+    };
+}
+
+function refreshPushLists() {
+    loadPushLists();
+}
+
+async function startPush() {
+    const selectedPageIds = Array.from(document.querySelectorAll('.page-checkbox:checked'))
+        .map(cb => cb.value);
+    const selectedRecordingIds = Array.from(document.querySelectorAll('.recording-checkbox:checked'))
+        .map(cb => cb.value);
+
+    if (selectedPageIds.length === 0 && selectedRecordingIds.length === 0) {
+        alert('Please select at least one item to upload.');
+        return;
+    }
+
+    // Show progress card
+    document.getElementById('pushProgressCard').style.display = 'block';
+    document.getElementById('pushLog').innerHTML = '';
+
+    try {
+        const response = await fetch(`/drupal/projects/${projectId}/sync/upload`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                discovered_page_ids: selectedPageIds,
+                recording_ids: selectedRecordingIds,
+                options: {}
+            })
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let totalItems = selectedPageIds.length + selectedRecordingIds.length;
+
+        while (true) {
+            const {done, value} = await reader.read();
+            if (done) break;
+
+            const lines = decoder.decode(value).split('\n');
+            for (const line of lines) {
+                if (!line.trim()) continue;
+
+                try {
+                    const data = JSON.parse(line);
+                    handlePushMessage(data, totalItems);
+                } catch (e) {
+                    console.error('Error parsing push message:', e, line);
+                }
+            }
+        }
+
+        // Reload status and lists
+        setTimeout(() => {
+            loadSyncStatus();
+            loadPushLists();
+        }, 1000);
+    } catch (error) {
+        console.error('Push error:', error);
+        document.getElementById('pushLog').innerHTML += `
+            <div class="text-danger">
+                <strong>Error:</strong> ${error.message}
+            </div>
+        `;
+    }
+}
+
+function handlePushMessage(data, totalItems) {
+    const log = document.getElementById('pushLog');
+    const progressBar = document.getElementById('pushProgressBar');
+    const progressText = document.getElementById('pushProgressText');
+
+    if (data.type === 'progress' || data.type === 'success' || data.type === 'error') {
+        const current = data.current || 0;
+        const percent = Math.round((current / totalItems) * 100);
+        progressBar.style.width = `${percent}%`;
+        progressText.textContent = `${percent}%`;
+    }
+
+    if (data.type === 'info') {
+        log.innerHTML += `<div class="text-info">${data.message}</div>`;
+    } else if (data.type === 'progress') {
+        log.innerHTML += `<div>[${data.current}/${data.total}] ${data.item}...</div>`;
+    } else if (data.type === 'success') {
+        log.innerHTML += `<div class="text-success">[${data.current}/${data.total}] ✓ ${data.item}</div>`;
+    } else if (data.type === 'error') {
+        log.innerHTML += `<div class="text-danger">[${data.current}/${data.total}] ✗ ${data.item}: ${data.error}</div>`;
+    } else if (data.type === 'complete') {
+        log.innerHTML += `<div class="text-success mt-3"><strong>✓ Upload complete!</strong></div>`;
+    }
+
+    log.scrollTop = log.scrollHeight;
+}
+
+function showPullTab() {
+    document.getElementById('pull-tab').click();
+}
+
+function showPushTab() {
+    document.getElementById('push-tab').click();
+}
+
+async function importDiscoveredPages() {
+    const btn = document.getElementById('importPagesBtn');
+    const progress = document.getElementById('importProgress');
+    const progressBar = document.getElementById('importProgressBar');
+    const progressText = document.getElementById('importProgressText');
+    const results = document.getElementById('importResults');
+    const alert = document.getElementById('importAlert');
+
+    // Hide previous results and alerts
+    results.style.display = 'none';
+    alert.style.display = 'none';
+
+    // Disable button and show progress
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Importing...';
+    progress.style.display = 'block';
+
+    try {
+        const response = await fetch(`/drupal/projects/${projectId}/sync/import-pages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let importedCount = 0;
+        let updatedCount = 0;
+        let totalPages = 0;
+
+        while (true) {
+            const {done, value} = await reader.read();
+            if (done) break;
+
+            const lines = decoder.decode(value).split('\n');
+            for (const line of lines) {
+                if (!line.trim()) continue;
+
+                try {
+                    const data = JSON.parse(line);
+
+                    if (data.type === 'info') {
+                        progressText.textContent = data.message;
+                    } else if (data.type === 'success') {
+                        const percent = Math.round((data.current / data.total) * 100);
+                        progressBar.style.width = `${percent}%`;
+                        progressText.textContent = `[${data.current}/${data.total}] ${data.item}`;
+                        totalPages = data.total;
+                    } else if (data.type === 'error') {
+                        progressText.textContent = `Error: ${data.message}`;
+                        progressBar.classList.remove('progress-bar-animated');
+                        progressBar.classList.add('bg-danger');
+                    } else if (data.type === 'complete') {
+                        importedCount = data.imported || 0;
+                        updatedCount = data.updated || 0;
+
+                        // Show results
+                        document.getElementById('importedCount').textContent = importedCount;
+                        document.getElementById('updatedCount').textContent = updatedCount;
+                        document.getElementById('totalCount').textContent = importedCount + updatedCount;
+
+                        progress.style.display = 'none';
+                        results.style.display = 'block';
+
+                        // Reload sync status and push lists
+                        setTimeout(() => {
+                            loadSyncStatus();
+                            loadPushLists();
+                        }, 1000);
+                    }
+                } catch (e) {
+                    console.error('Error parsing import message:', e, line);
+                }
+            }
+        }
+
+        // Re-enable button
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-cloud-arrow-down"></i> Pull Discovered Pages';
+
+    } catch (error) {
+        console.error('Import error:', error);
+
+        // Show error alert
+        alert.className = 'alert alert-danger';
+        alert.querySelector('#importAlertMessage').textContent = `Import failed: ${error.message}`;
+        alert.style.display = 'block';
+
+        progress.style.display = 'none';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-cloud-arrow-down"></i> Pull Discovered Pages';
+    }
+}
+</script>
+{% endblock %}

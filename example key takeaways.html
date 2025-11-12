@@ -1,0 +1,32 @@
+```html
+<h4>1. Missing skip to main content link</h4>
+<p>The site lacks a skip link that would allow keyboard users to bypass repetitive header content and navigate directly to main content. This is a WCAG requirement for keyboard accessibility. (00:39:16.635 - 00:41:01.810)</p>
+
+<h4>2. Keyboard inaccessible dropdown menus</h4>
+<p>The dropdown menus in the header navigation cannot be opened or accessed via keyboard. When pressing Enter on menu items with dropdowns, users are taken to the page instead of opening the submenu. This makes all dropdown content completely inaccessible to keyboard and screen reader users. (00:08:34.090 - 00:09:32.850)</p>
+
+<h4>3. Critical color contrast failures</h4>
+<p>Multiple color combinations fail WCAG contrast requirements: green text on blue background, white text on green buttons in hover state, and blue text that becomes invisible on blue backgrounds when focused. The search input text is particularly problematic with gray on blue that is nearly invisible. (00:04:12.480 - 00:07:56.085)</p>
+
+<h4>4. Unreliable focus indicators</h4>
+<p>Focus indicators either don't appear, appear after significant delays, or appear on elements that no longer have focus. The blue focus outline also lacks sufficient contrast. This makes keyboard navigation nearly impossible for sighted users. (00:06:17.330 - 00:07:08.210, 00:42:09.675 - 00:42:23.920)</p>
+
+<h4>5. Logo lacks accessible text</h4>
+<p>The logo SVG has no alternative text, causing screen readers to announce only the URL instead of meaningful text. It's inappropriately marked as heading level one and should include descriptive text like "Home - Niagara Economic Development". (00:37:16.735 - 00:41:52.110)</p>
+
+<h4>6. Severely broken search functionality</h4>
+<p>The search has multiple critical issues: the submit button appears before the input field (wrong tab order), the search opens and closes unpredictably during keyboard navigation, the submit button cannot be focused via keyboard, and it's unnecessarily marked as required with confusing alert messages. The search also announces itself multiple times to screen readers. (00:13:05.625 - 00:21:43.695, 00:44:25.805 - 00:49:44.905)</p>
+
+<h4>7. Navigation landmarks missing labels</h4>
+<p>Multiple navigation regions lack required labels, making it difficult for screen reader users to distinguish between different navigation areas. When multiple nav regions exist, they must have unique descriptive labels. (00:00:56.895 - 00:01:19.025, 00:34:22.920 - 00:34:39.055)</p>
+
+<h4>8. Footer heading structure problems</h4>
+<p>Text that visually appears as headings (Niagara Advantage, Key Sectors, etc.) is not marked with HTML heading tags. This prevents screen reader users from understanding the page structure and using heading navigation. (00:31:24.615 - 00:32:14.085)</p>
+
+<h4>9. Unclear link identification in footer</h4>
+<p>Links in the footer are not underlined and use the same color as non-linked text, making it impossible to visually distinguish clickable elements from static text. This violates WCAG requirements for link identification. (00:27:10.335 - 00:29:32.475)</p>
+
+<h4>10. Poor font readability</h4>
+<p>The header navigation uses all capitals with narrow, tightly-spaced lettering that significantly reduces readability, particularly for users with dyslexia or other reading disabilities. (00:43:09.770 - 00:43:58.135)</p>
+
+```

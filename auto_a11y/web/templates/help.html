@@ -74,6 +74,7 @@
                     <a class="nav-link" href="#testing">Testing Process</a>
                     <a class="nav-link" href="#reports">Reports & Exports</a>
                     <a class="nav-link" href="#faq">FAQ</a>
+                    <a class="nav-link" href="#about">About Auto A11y</a>
                 </nav>
             </div>
         </div>
@@ -85,13 +86,59 @@
             <!-- Scoring Section -->
             <section id="scoring" class="help-section">
                 <h2 class="mb-4">Understanding Your Scores</h2>
-                
+
+                <div class="alert alert-info">
+                    <h5 class="alert-heading"><i class="bi bi-info-circle"></i> Automated vs Manual Testing Scores</h5>
+                    <p class="mb-0">
+                        Auto A11y provides two types of scores based on your testing approach:
+                        <strong>Automated Testing Scores</strong> (from automated scans) and
+                        <strong>Manual Testing Scores</strong> (from expert audits and lived experience testing).
+                        Each uses similar scoring models but are calculated independently based on their respective test results.
+                    </p>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="bi bi-robot"></i> Automated Testing Scores</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>Generated from automated scanning tools that check pages for technical accessibility issues.</p>
+                                <ul class="small">
+                                    <li>Fast, consistent, repeatable</li>
+                                    <li>Checks code-level issues</li>
+                                    <li>Can catch 30-40% of accessibility issues</li>
+                                    <li>Available for tested pages</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="bi bi-person-check"></i> Manual Testing Scores</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>Generated from human expert audits and lived experience testing with real users.</p>
+                                <ul class="small">
+                                    <li>Subjective, context-aware testing</li>
+                                    <li>Tests user experience and workflows</li>
+                                    <li>Catches issues automation misses</li>
+                                    <li>Available for manual recordings</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="score-comparison">
                     <h3>Why Do I Have Two Different Scores?</h3>
+                    <p class="text-muted">Within each testing type (automated or manual), you'll see two scores:</p>
                     <div class="row mt-4">
                         <div class="col-md-6">
                             <h4>📊 Accessibility Score</h4>
-                            <p>Measures the percentage of individual checks that passed</p>
+                            <p>Measures the percentage of individual checks/issues that passed</p>
                             <ul>
                                 <li>Shows progress toward compliance</li>
                                 <li>Counts partial successes</li>
@@ -99,11 +146,11 @@
                             </ul>
                         </div>
                         <div class="col-md-6">
-                            <h4>✅ Compliance Score</h4>
-                            <p>Measures the percentage of tests with zero violations</p>
+                            <h4>✅ WCAG Compliance Score</h4>
+                            <p>Measures the percentage of WCAG Success Criteria passed</p>
                             <ul>
-                                <li>Shows true WCAG compliance</li>
-                                <li>All-or-nothing per test</li>
+                                <li>Shows true WCAG conformance</li>
+                                <li>Based on applicable Success Criteria</li>
                                 <li>Used for legal compliance</li>
                             </ul>
                         </div>
@@ -379,6 +426,95 @@
                                 Automated testing (like Auto A11y) can catch about 30-40% of accessibility issues quickly and consistently. Manual testing is needed for subjective criteria like whether alt text is meaningful or if the reading order makes sense. Use both for comprehensive coverage.
                             </div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="help-section">
+                <h2 class="mb-4">About Auto A11y</h2>
+
+                <div class="card help-card">
+                    <div class="card-body">
+                        <p class="lead">Auto A11y is an automated web accessibility testing tool designed to help developers and testers identify and fix accessibility issues in web applications.</p>
+
+                        <h5 class="mt-4">Features</h5>
+                        <ul>
+                            <li>Automated WCAG 2.2 compliance testing</li>
+                            <li>Lived experience testing with real users</li>
+                            <li>Manual accessibility audits and recordings</li>
+                            <li>Comprehensive reporting and issue tracking</li>
+                            <li>Project and test user management</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card help-card border-info">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-file-text"></i> WCAG Data Attribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>This application uses official WCAG (Web Content Accessibility Guidelines) data from the World Wide Web Consortium (W3C).</p>
+
+                        <h6 class="mt-3">Source</h6>
+                        <p>The WCAG Success Criteria data used in this application is sourced from:</p>
+                        <ul>
+                            <li>
+                                <strong>Web Content Accessibility Guidelines (WCAG) 2.2</strong><br>
+                                <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">
+                                    https://www.w3.org/TR/WCAG22/
+                                </a>
+                            </li>
+                            <li>
+                                <strong>Techniques for WCAG 2.2</strong><br>
+                                <a href="https://www.w3.org/WAI/WCAG22/Techniques/" target="_blank" rel="noopener noreferrer">
+                                    https://www.w3.org/WAI/WCAG22/Techniques/
+                                </a>
+                            </li>
+                            <li>
+                                <strong>WCAG 2.2 JSON Data</strong><br>
+                                <a href="https://www.w3.org/WAI/WCAG22/wcag.json" target="_blank" rel="noopener noreferrer">
+                                    https://www.w3.org/WAI/WCAG22/wcag.json
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="alert alert-warning mt-3" role="alert">
+                            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Important Notice</h6>
+                            <p class="mb-0">The WCAG content is used with attribution as permitted by W3C. The content has not been modified. All additional content, analysis, and features provided by Auto A11y are clearly distinguished from the original W3C WCAG content.</p>
+                        </div>
+
+                        <h6 class="mt-3">Copyright</h6>
+                        <p class="small text-muted">
+                            Copyright (c) 2008-2023 World Wide Web Consortium.
+                            <a href="https://www.w3.org/Consortium/Legal/2015/doc-license" target="_blank" rel="noopener noreferrer">
+                                W3C Document License
+                            </a> applies to the WCAG content.
+                        </p>
+
+                        <h6 class="mt-3">Additional Resources</h6>
+                        <ul>
+                            <li>
+                                <a href="https://www.w3.org/WAI/" target="_blank" rel="noopener noreferrer">
+                                    W3C Web Accessibility Initiative
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.w3.org/WAI/WCAG22/quickref/" target="_blank" rel="noopener noreferrer">
+                                    How to Meet WCAG (Quick Reference)
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/" target="_blank" rel="noopener noreferrer">
+                                    Understanding WCAG 2.2
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.w3.org/WAI/test-evaluate/" target="_blank" rel="noopener noreferrer">
+                                    Evaluating Web Accessibility Overview
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </section>

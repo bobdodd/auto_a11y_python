@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Combined Recordings - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('recordings.list_recordings') }}?project_id={{ project.id }}">Recordings</a></li>
+                    <li class="breadcrumb-item active">Combined View</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-0">All Recordings Combined</h1>
+            <p class="text-muted">{{ recordings|length }} recordings, {{ total_issues }} total issues</p>
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Total Issues</h6>
+                    <p class="display-6 mb-0">{{ total_issues }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">High Impact</h6>
+                    <p class="display-6 text-danger mb-0">{{ high_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Medium Impact</h6>
+                    <p class="display-6 text-warning mb-0">{{ medium_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Low Impact</h6>
+                    <p class="display-6 text-info mb-0">{{ low_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recordings Included -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Recordings Included</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for recording in recordings %}
+                <div class="col-md-6 mb-2">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-secondary me-2">{{ recording.recording_type.value|replace('_', ' ')|title }}</span>
+                        <span class="me-2">{{ recording.title }}</span>
+                        <span class="badge bg-danger">{{ recording.total_issues }} issues</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Issues by Touchpoint -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-bug me-2"></i>Accessibility Issues by Touchpoint</h5>
+        </div>
+        <div class="card-body">
+            {% if issues_by_touchpoint %}
+            {% for touchpoint, issues in issues_by_touchpoint.items()|sort %}
+            <div class="mb-4">
+                <h5 class="border-bottom pb-2 mb-3">
+                    <i class="bi bi-folder"></i> {{ touchpoint }}
+                    <span class="badge bg-secondary">{{ issues|length }}</span>
+                </h5>
+
+                <div class="accordion" id="accordion-{{ touchpoint|replace(' ', '-') }}">
+                    {% for issue in issues %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#issue-{{ loop.index }}-{{ touchpoint|replace(' ', '-') }}">
+                                <div class="w-100 d-flex justify-content-between align-items-center me-2">
+                                    <span>
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}[issue.impact.value] }} me-2">
+                                            {{ issue.impact.value|upper }}
+                                        </span>
+                                        {{ issue.title }}
+                                    </span>
+                                    <div>
+                                        {% if issue.timecodes %}
+                                        <span class="badge bg-info me-2">
+                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} timecode(s)
+                                        </span>
+                                        {% endif %}
+                                        <small class="text-muted">
+                                            <i class="bi bi-mic"></i> {{ issue.recording_ref.recording_id }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="issue-{{ loop.index }}-{{ touchpoint|replace(' ', '-') }}" class="accordion-collapse collapse"
+                             data-bs-parent="#accordion-{{ touchpoint|replace(' ', '-') }}">
+                            <div class="accordion-body">
+                                <!-- Recording Info -->
+                                <div class="alert alert-info mb-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Recording:</strong> {{ issue.recording_ref.title }}<br>
+                                            <strong>Type:</strong> {{ issue.recording_ref.recording_type.value|replace('_', ' ')|title }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Auditor/Tester:</strong> {{ issue.recording_ref.auditor_name or '-' }}<br>
+                                            <a href="{{ url_for('recordings.view_recording', recording_id=issue.recording_ref.id) }}" class="btn btn-sm btn-outline-primary mt-2">
+                                                <i class="bi bi-eye"></i> View Recording
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Issue Details -->
+                                {% if issue.what %}
+                                <div class="mb-3">
+                                    <strong>What:</strong>
+                                    <p class="mb-0">{{ issue.what }}</p>
+                                </div>
+                                {% endif %}
+
+                                {% if issue.why %}
+                                <div class="mb-3">
+                                    <strong>Why:</strong>
+                                    <p class="mb-0">{{ issue.why }}</p>
+                                </div>
+                                {% endif %}
+
+                                {% if issue.who %}
+                                <div class="mb-3">
+                                    <strong>Who is affected:</strong>
+                                    <p class="mb-0">{{ issue.who }}</p>
+                                </div>
+                                {% endif %}
+
+                                {% if issue.remediation %}
+                                <div class="mb-3">
+                                    <strong>How to fix:</strong>
+                                    <p class="mb-0">{{ issue.remediation }}</p>
+                                </div>
+                                {% endif %}
+
+                                {% if issue.wcag %}
+                                <div class="mb-3">
+                                    <strong>WCAG:</strong>
+                                    <div class="mt-1">
+                                        {% for wcag_ref in issue.wcag %}
+                                        <span class="badge bg-primary me-1">
+                                            {{ wcag_ref.criteria }} (Level {{ wcag_ref.level }})
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if issue.timecodes %}
+                                <div class="mb-3">
+                                    <strong>Timecodes:</strong>
+                                    <div class="mt-1">
+                                        {% for tc in issue.timecodes %}
+                                        <span class="badge bg-secondary me-1">{{ tc.start }} - {{ tc.end }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="text-muted">No issues found across all recordings.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

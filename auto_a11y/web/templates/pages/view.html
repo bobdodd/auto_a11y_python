@@ -207,31 +207,37 @@
         </div>
     </div>
 
-    <!-- Accessibility & Compliance Scores (if available) -->
+    <!-- Automated Testing Scores (if available) -->
     {% if page.status.value == 'tested' and latest_result and score_data %}
     <div class="row mb-4">
-        <!-- Accessibility Score Card -->
+        <!-- Automated Accessibility Score Card -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body text-center">
                     {% set score = score_data.score|default(0) %}
-                    <h6 class="card-title">Accessibility Score <button class="help-icon" data-help="scoring.accessibility_score" aria-label="Get help about accessibility score">?</button></h6>
+                    <h6 class="card-title">
+                        <i class="bi bi-robot"></i> Automated Accessibility Score
+                        <button class="help-icon" data-help="scoring.accessibility_score" aria-label="Get help about accessibility score">?</button>
+                    </h6>
                     <div class="display-4 fw-bold
                         {% if score >= 90 %}text-success
                         {% elif score >= 70 %}text-warning
                         {% else %}text-danger{% endif %}">
                         {{ score|round(1) }}%
                     </div>
-                    <p class="text-muted small mb-0">{{ score_data.passed_checks|default(0) }} / {{ score_data.applicable_checks|default(0) }} checks passed</p>
+                    <p class="text-muted small mb-0">{{ score_data.passed_checks|default(0) }} / {{ score_data.applicable_checks|default(0) }} automated checks passed</p>
                 </div>
             </div>
         </div>
 
-        <!-- Compliance Score Card -->
+        <!-- Automated Compliance Score Card -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="card-title">Compliance Score <button class="help-icon" data-help="scoring.compliance_score" aria-label="Get help about compliance score">?</button></h6>
+                    <h6 class="card-title">
+                        <i class="bi bi-robot"></i> Automated WCAG Compliance Score
+                        <button class="help-icon" data-help="scoring.compliance_score" aria-label="Get help about compliance score">?</button>
+                    </h6>
                     {% if compliance_score %}
                     <div class="display-4 fw-bold
                         {% if compliance_score.score >= 90 %}text-success
@@ -239,7 +245,7 @@
                         {% else %}text-danger{% endif %}">
                         {{ compliance_score.score|round(1) }}%
                     </div>
-                    <p class="text-muted small mb-0">{{ compliance_score.passed_tests }} / {{ compliance_score.total_tests }} tests passed</p>
+                    <p class="text-muted small mb-0">{{ compliance_score.passed_tests }} / {{ compliance_score.total_tests }} automated tests passed</p>
                     {% else %}
                     <div class="display-4 fw-bold text-muted">N/A</div>
                     <p class="text-muted small mb-0">No data available</p>
@@ -2993,7 +2999,7 @@
                     <small class="text-muted">
                         Test completed in {{ "%.2f"|format(latest_result.duration_ms / 1000) }} seconds
                         {% if latest_result.screenshot_path %}
-                        | <a href="{{ url_for('static', filename='screenshots/' ~ latest_result.screenshot_path) }}" target="_blank">
+                        | <a href="{{ url_for('serve_screenshot', filename=latest_result.screenshot_path.replace('screenshots/', '')) }}" target="_blank">
                             View Screenshot <i class="bi bi-image"></i>
                         </a>
                         {% endif %}

@@ -16,7 +16,7 @@ from auto_a11y.models import (
     Recording, RecordingIssue, RecordingType,
     DocumentReference, DiscoveryRun,
     PageSetupScript, ScriptExecutionSession,
-    WebsiteUser
+    WebsiteUser, ProjectUser
 )
 
 logger = logging.getLogger(__name__)
@@ -47,9 +47,11 @@ class Database:
         self.issue_documentation_status: Collection = self.db.issue_documentation_status
         self.page_setup_scripts: Collection = self.db.page_setup_scripts  # Page training scripts
         self.script_execution_sessions: Collection = self.db.script_execution_sessions  # Session tracking
-        self.website_users: Collection = self.db.website_users  # Test users for authenticated testing
+        self.website_users: Collection = self.db.website_users  # Test users for authenticated testing (deprecated)
+        self.project_users: Collection = self.db.project_users  # Test users at project level
         self.recordings: Collection = self.db.recordings  # Manual audit recordings from Dictaphone
         self.recording_issues: Collection = self.db.recording_issues  # Issues from manual audits
+        self.discovered_pages: Collection = self.db.discovered_pages  # Discovered pages for Drupal export
 
         # Create indexes
         self._create_indexes()
@@ -131,6 +133,12 @@ class Database:
         self.website_users.create_index([("website_id", 1), ("enabled", 1)])
         self.website_users.create_index("roles")
 
+        # Project users (test users at project level)
+        self.project_users.create_index("project_id")
+        self.project_users.create_index([("project_id", 1), ("username", 1)], unique=True)
+        self.project_users.create_index([("project_id", 1), ("enabled", 1)])
+        self.project_users.create_index("roles")
+
         # Recordings (manual audit recordings)
         self.recordings.create_index("recording_id", unique=True)
         self.recordings.create_index("project_id")
@@ -138,6 +146,16 @@ class Database:
         self.recordings.create_index("recording_type")
         self.recordings.create_index("component_names")  # For component-specific queries
         self.recordings.create_index([("project_id", 1), ("recorded_date", -1)])
+        self.recordings.create_index("drupal_video_uuid")  # For Drupal sync
+        self.recordings.create_index("drupal_sync_status")
+
+        # Discovered pages (for Drupal export)
+        self.discovered_pages.create_index("project_id")
+        self.discovered_pages.create_index("url")
+        self.discovered_pages.create_index([("project_id", 1), ("url", 1)], unique=True)
+        self.discovered_pages.create_index("source_type")
+        self.discovered_pages.create_index("drupal_uuid")  # For Drupal sync
+        self.discovered_pages.create_index("drupal_sync_status")
 
         # Recording issues
         self.recording_issues.create_index("recording_id")
@@ -1858,6 +1876,73 @@ class Database:
 
         results = self.website_users.aggregate(pipeline)
         return [doc["_id"] for doc in results]
+
+    # Project user operations (test users at project level)
+
+    def create_project_user(self, user: ProjectUser) -> str:
+        """Create a new project user for authenticated testing"""
+        result = self.project_users.insert_one(user.to_dict())
+        user._id = result.inserted_id
+        logger.info(f"Created project user: {user.username} for project {user.project_id}")
+        return str(result.inserted_id)
+
+    def get_project_user(self, user_id: str) -> Optional[ProjectUser]:
+        """Get a project user by ID"""
+        from auto_a11y.models import ProjectUser
+        doc = self.project_users.find_one({"_id": ObjectId(user_id)})
+        return ProjectUser.from_dict(doc) if doc else None
+
+    def get_project_users(self, project_id: str, enabled_only: bool = False, role: Optional[str] = None) -> List[ProjectUser]:
+        """Get all users for a project"""
+        from auto_a11y.models import ProjectUser
+        query = {"project_id": project_id}
+        if enabled_only:
+            query["enabled"] = True
+        if role:
+            query["roles"] = role
+        docs = self.project_users.find(query).sort("display_name", 1)
+        return [ProjectUser.from_dict(doc) for doc in docs]
+
+    def get_project_user_by_username(self, project_id: str, username: str) -> Optional[ProjectUser]:
+        """Get a project user by username"""
+        from auto_a11y.models import ProjectUser
+        doc = self.project_users.find_one({"project_id": project_id, "username": username})
+        return ProjectUser.from_dict(doc) if doc else None
+
+    def update_project_user(self, user: ProjectUser) -> bool:
+        """Update a project user"""
+        if not user._id:
+            logger.error("Cannot update user without _id")
+            return False
+        user.update_timestamp()
+        update_data = user.to_dict()
+        if '_id' in update_data:
+            del update_data['_id']
+        result = self.project_users.update_one({"_id": user._id}, {"$set": update_data})
+        if result.modified_count > 0:
+            logger.info(f"Updated project user: {user.username}")
+            return True
+        return False
+
+    def delete_project_user(self, user_id: str) -> bool:
+        """Delete a project user"""
+        result = self.project_users.delete_one({"_id": ObjectId(user_id)})
+        if result.deleted_count > 0:
+            logger.info(f"Deleted project user: {user_id}")
+            return True
+        return False
+
+    def get_user_roles_for_project(self, project_id: str) -> List[str]:
+        """Get all unique roles used by users in a project"""
+        pipeline = [
+            {"$match": {"project_id": project_id}},
+            {"$unwind": "$roles"},
+            {"$group": {"_id": "$roles"}},
+            {"$sort": {"_id": 1}}
+        ]
+        results = self.project_users.aggregate(pipeline)
+        return [doc["_id"] for doc in results]
+
     # Recording operations (Manual audits from Dictaphone)
 
     def create_recording(self, recording: Recording) -> str:

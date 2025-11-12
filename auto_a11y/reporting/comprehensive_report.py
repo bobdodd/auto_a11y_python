@@ -1670,7 +1670,17 @@ class ComprehensiveReportGenerator:
                 <p class="text-muted">Color contrast violations organized by responsive breakpoint and instance</p>
         """
 
-        for breakpoint in sorted(contrast_by_breakpoint.keys()):
+        # Sort breakpoints with custom key to handle mixed string/int types
+        def breakpoint_sort_key(bp):
+            """Sort breakpoints: 'default' first, then numeric breakpoints in ascending order"""
+            if bp == 'default':
+                return (-1, '')  # Sort 'default' first
+            try:
+                return (0, int(bp))  # Numeric breakpoints
+            except (ValueError, TypeError):
+                return (1, str(bp))  # Other string breakpoints last
+
+        for breakpoint in sorted(contrast_by_breakpoint.keys(), key=breakpoint_sort_key):
             issues = contrast_by_breakpoint[breakpoint]
             breakpoint_display = f"{breakpoint}px" if breakpoint != 'default' else 'Default (no breakpoint)'
 

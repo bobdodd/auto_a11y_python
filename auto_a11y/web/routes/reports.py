@@ -581,3 +581,52 @@ def generate_deduplicated_report():
         logger.error(f"Failed to generate deduplicated report: {e}", exc_info=True)
         flash(f'Failed to generate report: {str(e)}', 'error')
         return redirect(url_for('reports.reports_dashboard'))
+
+
+@reports_bp.route('/generate/recordings/<project_id>', methods=['POST'])
+def generate_recordings_report(project_id):
+    """Generate report for recordings in a project"""
+    format = request.form.get('format', 'html')
+    include_summary = request.form.get('include_summary', 'true') in ['true', 'True', '1', 'on']
+    include_timecodes = request.form.get('include_timecodes', 'true') in ['true', 'True', '1', 'on']
+    include_wcag = request.form.get('include_wcag', 'true') in ['true', 'True', '1', 'on']
+    group_by_touchpoint = request.form.get('group_by_touchpoint', 'true') in ['true', 'True', '1', 'on']
+
+    try:
+        # Get project
+        project = current_app.db.get_project(project_id)
+        if not project:
+            flash('Project not found', 'error')
+            return redirect(url_for('reports.reports_dashboard'))
+
+        # Get all recordings for this project
+        recordings = current_app.db.get_recordings(project_id=project_id)
+        if not recordings:
+            flash('No recordings found for this project', 'warning')
+            return redirect(url_for('reports.reports_dashboard'))
+
+        # Initialize recordings report generator
+        from auto_a11y.reporting.recordings_report import RecordingsReportGenerator
+        generator = RecordingsReportGenerator(
+            current_app.db,
+            current_app.app_config.__dict__
+        )
+
+        # Generate report
+        report_path = generator.generate_project_recordings_report(
+            project_id=project_id,
+            format=format,
+            include_summary=include_summary,
+            include_timecodes=include_timecodes,
+            include_wcag=include_wcag,
+            group_by_touchpoint=group_by_touchpoint
+        )
+
+        # Flash success message and redirect to dashboard
+        flash(f'Recordings report generated successfully!', 'success')
+        return redirect(url_for('reports.reports_dashboard'))
+
+    except Exception as e:
+        logger.error(f"Failed to generate recordings report: {e}", exc_info=True)
+        flash(f'Failed to generate report: {str(e)}', 'error')
+        return redirect(url_for('reports.reports_dashboard'))

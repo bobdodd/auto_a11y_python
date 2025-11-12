@@ -28,6 +28,49 @@
                             </div>
                         </div>
 
+                        <!-- Recording Content Files (HTML) -->
+                        <div class="card mb-4 bg-light">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-file-earmark-text"></i> Recording Content (Optional)</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted mb-3">
+                                    Upload HTML or JSON files for key takeaways, user painpoints, and user assertions.
+                                    Both formats are supported.
+                                </p>
+
+                                <!-- Key Takeaways HTML or JSON Upload -->
+                                <div class="mb-3">
+                                    <label for="key_takeaways_file" class="form-label">Key Takeaways (HTML or JSON)</label>
+                                    <input type="file" class="form-control" id="key_takeaways_file" name="key_takeaways_file"
+                                           accept=".html,.htm,.json">
+                                    <div class="form-text">
+                                        Numbered list of the most important accessibility issues found. Accepts HTML or JSON format.
+                                    </div>
+                                </div>
+
+                                <!-- User Painpoints HTML or JSON Upload -->
+                                <div class="mb-3">
+                                    <label for="user_painpoints_file" class="form-label">User Painpoints (HTML or JSON)</label>
+                                    <input type="file" class="form-control" id="user_painpoints_file" name="user_painpoints_file"
+                                           accept=".html,.htm,.json">
+                                    <div class="form-text">
+                                        User-focused description of difficulties experienced during testing. Accepts HTML or JSON format.
+                                    </div>
+                                </div>
+
+                                <!-- User Assertions HTML or JSON Upload -->
+                                <div class="mb-0">
+                                    <label for="user_assertions_file" class="form-label">User Assertions (HTML or JSON)</label>
+                                    <input type="file" class="form-control" id="user_assertions_file" name="user_assertions_file"
+                                           accept=".html,.htm,.json">
+                                    <div class="form-text">
+                                        Direct quotes and observations from the tester with timecodes. Accepts HTML or JSON format.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Project Selection -->
                         <div class="mb-4">
                             <label for="project_id" class="form-label">Project *</label>
@@ -39,6 +82,39 @@
                             </select>
                             <div class="form-text">
                                 Which project should this recording be associated with?
+                            </div>
+                        </div>
+
+                        <!-- Test User Account Used -->
+                        <div class="mb-4">
+                            <label for="test_user_account" class="form-label">Test User Account Used</label>
+                            <select class="form-select" id="test_user_account" name="test_user_account">
+                                <option value="">Select a test user...</option>
+                            </select>
+                            <div class="form-text" id="test-user-help">
+                                Optional: Select the test account used during this audit. Choose a project first to see available test users.
+                            </div>
+                        </div>
+
+                        <!-- Lived Experience Tester (for lived experience recordings) -->
+                        <div class="mb-4" id="tester-field" style="display: none;">
+                            <label for="lived_experience_tester_id" class="form-label">Lived Experience Tester</label>
+                            <select class="form-select" id="lived_experience_tester_id" name="lived_experience_tester_id">
+                                <option value="">Select a tester...</option>
+                            </select>
+                            <div class="form-text" id="tester-help">
+                                Select the lived experience tester who performed this test. Choose a project first to see available testers.
+                            </div>
+                        </div>
+
+                        <!-- Test Supervisor (for lived experience recordings) -->
+                        <div class="mb-4" id="supervisor-field" style="display: none;">
+                            <label for="test_supervisor_id" class="form-label">Test Supervisor</label>
+                            <select class="form-select" id="test_supervisor_id" name="test_supervisor_id">
+                                <option value="">Select a supervisor...</option>
+                            </select>
+                            <div class="form-text" id="supervisor-help">
+                                Select the supervisor who oversaw this test. Choose a project first to see available supervisors.
                             </div>
                         </div>
 
@@ -58,8 +134,8 @@
                                       rows="3" placeholder="Brief description of what was tested and key findings..."></textarea>
                         </div>
 
-                        <!-- Auditor Information -->
-                        <div class="row mb-4">
+                        <!-- Auditor Information (for audit recordings) -->
+                        <div class="row mb-4" id="auditor-fields">
                             <div class="col-md-6">
                                 <label for="auditor_name" class="form-label">Auditor Name</label>
                                 <input type="text" class="form-control" id="auditor_name" name="auditor_name"
@@ -91,6 +167,17 @@
                                       placeholder="https://example.com/&#10;https://example.com/about&#10;https://example.com/contact"></textarea>
                             <div class="form-text">
                                 Optional: Enter one URL per line for specific pages discussed in this recording.
+                            </div>
+                        </div>
+
+                        <!-- Discovered Pages -->
+                        <div class="mb-4">
+                            <label class="form-label">Discovered Pages</label>
+                            <div class="form-text mb-2" id="discovered-pages-help">
+                                Optional: Select discovered pages related to this recording. Choose a project first to see available pages.
+                            </div>
+                            <div id="discovered-pages-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem;">
+                                <p class="text-muted small mb-0">Select a project to see discovered pages.</p>
                             </div>
                         </div>
 
@@ -131,6 +218,74 @@
                                       placeholder="Complete checkout process"></textarea>
                             <div class="form-text">
                                 Optional: Describe the specific task being performed (e.g., "Complete checkout", "Navigate to settings").
+                            </div>
+                        </div>
+
+                        <!-- Testing Scope -->
+                        <div class="mb-4">
+                            <label class="form-label">Testing Scope</label>
+                            <div class="form-text mb-2">
+                                Select the content types covered in this recording to determine applicable WCAG criteria for compliance scoring.
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="scope_forms" name="scope_forms">
+                                        <label class="form-check-label" for="scope_forms">
+                                            Forms
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="scope_video" name="scope_video">
+                                        <label class="form-check-label" for="scope_video">
+                                            Video (prerecorded)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="scope_live_multimedia" name="scope_live_multimedia">
+                                        <label class="form-check-label" for="scope_live_multimedia">
+                                            Live Multimedia
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="scope_multilingual" name="scope_multilingual">
+                                        <label class="form-check-label" for="scope_multilingual">
+                                            Multilingual Content
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="scope_orientation" name="scope_orientation">
+                                        <label class="form-check-label" for="scope_orientation">
+                                            Orientation Changes
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="scope_zoom" name="scope_zoom">
+                                        <label class="form-check-label" for="scope_zoom">
+                                            Zoom / Text Resize
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="scope_timeouts" name="scope_timeouts">
+                                        <label class="form-check-label" for="scope_timeouts">
+                                            Timeouts / Re-authentication
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="scope_motion_actuation" name="scope_motion_actuation">
+                                        <label class="form-check-label" for="scope_motion_actuation">
+                                            Motion Actuation
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="scope_drag_drop" name="scope_drag_drop">
+                                        <label class="form-check-label" for="scope_drag_drop">
+                                            Drag and Drop
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -194,4 +349,164 @@
         </div>
     </div>
 </div>
+
+<script>
+// Show/hide fields based on recording type
+document.getElementById('recording_type').addEventListener('change', function() {
+    const recordingType = this.value;
+    const auditorFields = document.getElementById('auditor-fields');
+    const testerField = document.getElementById('tester-field');
+    const supervisorField = document.getElementById('supervisor-field');
+
+    const isLivedExperience = recordingType.startsWith('lived_experience_');
+
+    // Show auditor fields only for audit recordings
+    auditorFields.style.display = isLivedExperience ? 'none' : 'flex';
+
+    // Show tester/supervisor fields only for lived experience recordings
+    testerField.style.display = isLivedExperience ? 'block' : 'none';
+    supervisorField.style.display = isLivedExperience ? 'block' : 'none';
+});
+
+// Load project users, testers, and supervisors when project is selected
+document.getElementById('project_id').addEventListener('change', function() {
+    const projectId = this.value;
+    const testUserSelect = document.getElementById('test_user_account');
+    const testUserHelp = document.getElementById('test-user-help');
+    const testerSelect = document.getElementById('lived_experience_tester_id');
+    const testerHelp = document.getElementById('tester-help');
+    const supervisorSelect = document.getElementById('test_supervisor_id');
+    const supervisorHelp = document.getElementById('supervisor-help');
+    const discoveredPagesContainer = document.getElementById('discovered-pages-container');
+    const discoveredPagesHelp = document.getElementById('discovered-pages-help');
+
+    // Reset all dropdowns
+    testUserSelect.innerHTML = '<option value="">Select a test user...</option>';
+    testerSelect.innerHTML = '<option value="">Select a tester...</option>';
+    supervisorSelect.innerHTML = '<option value="">Select a supervisor...</option>';
+    discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">Loading discovered pages...</p>';
+
+    if (!projectId) {
+        testUserHelp.textContent = 'Optional: Select the test account used during this audit. Choose a project first to see available test users.';
+        testerHelp.textContent = 'Select the lived experience tester who performed this test. Choose a project first to see available testers.';
+        supervisorHelp.textContent = 'Select the supervisor who oversaw this test. Choose a project first to see available supervisors.';
+        discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">Select a project to see discovered pages.</p>';
+        return;
+    }
+
+    // Fetch project users
+    fetch(`/projects/api/${projectId}/users`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.users && data.users.length > 0) {
+                data.users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.display_name || user.username;
+                    option.textContent = user.display_name || user.username;
+                    if (user.roles && user.roles.length > 0) {
+                        option.textContent += ` (${user.roles.join(', ')})`;
+                    }
+                    testUserSelect.appendChild(option);
+                });
+                testUserHelp.innerHTML = `Optional: Select which test account was used during this audit. <a href="/projects/${projectId}/users">Manage project users</a>`;
+            } else {
+                testUserHelp.innerHTML = `No test users configured for this project. <a href="/projects/${projectId}/users">Add test users</a>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching project users:', error);
+            testUserHelp.textContent = 'Optional: Select the test account used during this audit.';
+        });
+
+    // Fetch project data to get testers and supervisors
+    fetch(`/projects/api/${projectId}/details`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.project) {
+                const project = data.project;
+
+                // Populate testers
+                if (project.lived_experience_testers && project.lived_experience_testers.length > 0) {
+                    project.lived_experience_testers.forEach(tester => {
+                        const option = document.createElement('option');
+                        option.value = tester._id;
+                        option.textContent = tester.name;
+                        if (tester.disability_type) {
+                            option.textContent += ` (${tester.disability_type})`;
+                        }
+                        testerSelect.appendChild(option);
+                    });
+                    testerHelp.textContent = 'Select the lived experience tester who performed this test.';
+                } else {
+                    testerHelp.textContent = 'No lived experience testers configured for this project. Add testers in project settings.';
+                }
+
+                // Populate supervisors
+                if (project.test_supervisors && project.test_supervisors.length > 0) {
+                    project.test_supervisors.forEach(supervisor => {
+                        const option = document.createElement('option');
+                        option.value = supervisor._id;
+                        option.textContent = supervisor.name;
+                        if (supervisor.role) {
+                            option.textContent += ` (${supervisor.role})`;
+                        }
+                        supervisorSelect.appendChild(option);
+                    });
+                    supervisorHelp.textContent = 'Select the supervisor who oversaw this test.';
+                } else {
+                    supervisorHelp.textContent = 'No test supervisors configured for this project. Add supervisors in project settings.';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching project data:', error);
+            testerHelp.textContent = 'Error loading testers.';
+            supervisorHelp.textContent = 'Error loading supervisors.';
+        });
+
+    // Fetch discovered pages for this project
+    fetch(`/projects/api/${projectId}/discovered-pages`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.discovered_pages && data.discovered_pages.length > 0) {
+                discoveredPagesContainer.innerHTML = '';
+                data.discovered_pages.forEach(page => {
+                    const div = document.createElement('div');
+                    div.className = 'form-check';
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'form-check-input';
+                    checkbox.name = 'discovered_page_ids';
+                    checkbox.value = page._id;
+                    checkbox.id = `dp_${page._id}`;
+
+                    const label = document.createElement('label');
+                    label.className = 'form-check-label';
+                    label.htmlFor = `dp_${page._id}`;
+                    label.textContent = page.title;
+
+                    if (page.url) {
+                        const urlSmall = document.createElement('small');
+                        urlSmall.className = 'text-muted d-block';
+                        urlSmall.textContent = page.url;
+                        label.appendChild(urlSmall);
+                    }
+
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    discoveredPagesContainer.appendChild(div);
+                });
+                discoveredPagesHelp.textContent = 'Optional: Select discovered pages related to this recording.';
+            } else {
+                discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">No discovered pages found for this project.</p>';
+                discoveredPagesHelp.textContent = 'Optional: No discovered pages available for this project.';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching discovered pages:', error);
+            discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">Error loading discovered pages.</p>';
+        });
+});
+</script>
 {% endblock %}

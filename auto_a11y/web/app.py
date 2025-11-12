@@ -16,7 +16,11 @@ from auto_a11y.web.routes import (
     api_bp,
     scripts_bp,
     website_users_bp,
-    recordings_bp
+    project_users_bp,
+    project_participants_bp,
+    recordings_bp,
+    drupal_sync_bp,
+    discovered_pages_bp
 )
 
 logger = logging.getLogger(__name__)
@@ -69,7 +73,11 @@ def create_app(config):
     app.register_blueprint(api_bp, url_prefix='/api/v1')
     app.register_blueprint(scripts_bp, url_prefix='/scripts')
     app.register_blueprint(website_users_bp, url_prefix='/users')
+    app.register_blueprint(project_users_bp, url_prefix='')
+    app.register_blueprint(project_participants_bp, url_prefix='')
     app.register_blueprint(recordings_bp, url_prefix='/recordings')
+    app.register_blueprint(drupal_sync_bp, url_prefix='/drupal')
+    app.register_blueprint(discovered_pages_bp, url_prefix='')
 
     # Custom Jinja filters
     @app.template_filter('error_code_only')

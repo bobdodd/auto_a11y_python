@@ -228,6 +228,7 @@ def create_project():
         app_identifier = request.form.get('app_identifier', '').strip() or None
         device_model = request.form.get('device_model', '').strip() or None
         location = request.form.get('location', '').strip() or None
+        drupal_audit_name = request.form.get('drupal_audit_name', '').strip() or None
 
         if not name:
             flash('Project name is required', 'error')
@@ -298,6 +299,7 @@ def create_project():
             app_identifier=app_identifier,
             device_model=device_model,
             location=location,
+            drupal_audit_name=drupal_audit_name,
             config={
                 'wcag_level': wcag_level,
                 'page_load_strategy': page_load_strategy,
@@ -461,14 +463,39 @@ def view_project(project_id):
     if not project:
         flash('Project not found', 'error')
         return redirect(url_for('projects.list_projects'))
-    
+
     websites = current_app.db.get_websites(project_id)
     stats = current_app.db.get_project_stats(project_id)
-    
-    return render_template('projects/view.html', 
-                         project=project, 
+
+    # Calculate stats for each website (violations and warnings)
+    website_stats = {}
+    for website in websites:
+        pages = current_app.db.get_pages(website.id)
+        violations = sum(page.violation_count for page in pages)
+        warnings = sum(page.warning_count for page in pages)
+        website_stats[website.id] = {
+            'violations': violations,
+            'warnings': warnings
+        }
+
+    # Get available test users for this project (for discovery modal)
+    project_users = current_app.db.get_project_users(project_id, enabled_only=True)
+
+    # Get recordings for this project
+    recordings = current_app.db.get_recordings(project_id=project_id)
+
+    # Get discovered pages for this project
+    discovered_pages_cursor = current_app.db.discovered_pages.find({'project_id': project_id}).sort('created_at', -1)
+    discovered_pages = list(discovered_pages_cursor)
+
+    return render_template('projects/view.html',
+                         project=project,
                          websites=websites,
-                         stats=stats)
+                         stats=stats,
+                         website_stats=website_stats,
+                         project_users=project_users,
+                         recordings=recordings,
+                         discovered_pages=discovered_pages)
 
 
 @projects_bp.route('/<project_id>/edit', methods=['GET', 'POST'])
@@ -519,7 +546,11 @@ def edit_project(project_id):
         project.description = request.form.get('description', project.description)
         status = request.form.get('status', project.status.value)
         project.status = ProjectStatus(status)
-        
+
+        # Update Drupal audit name
+        drupal_audit_name = request.form.get('drupal_audit_name', '').strip() or None
+        project.drupal_audit_name = drupal_audit_name
+
         # Update WCAG level in config
         wcag_level = request.form.get('wcag_level', 'AA')
         if not project.config:
@@ -801,3 +832,78 @@ def generate_project_report(project_id):
         logger.error(f"Failed to generate project report: {e}")
         flash(f'Failed to generate report: {str(e)}', 'error')
         return redirect(url_for('projects.view_project', project_id=project_id))
+
+
+@projects_bp.route('/api/<project_id>/users')
+def api_get_project_users(project_id):
+    """API endpoint to get project users"""
+    try:
+        project_users = current_app.db.get_project_users(project_id, enabled_only=True)
+
+        return jsonify({
+            'success': True,
+            'users': [
+                {
+                    'id': user.id,
+                    'username': user.username,
+                    'display_name': user.display_name,
+                    'roles': user.roles
+                } for user in project_users
+            ]
+        })
+    except Exception as e:
+        logger.error(f"Error fetching project users: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@projects_bp.route('/api/<project_id>/details')
+def api_get_project(project_id):
+    """API endpoint to get project details including testers and supervisors"""
+    try:
+        project = current_app.db.get_project(project_id)
+        if not project:
+            return jsonify({'success': False, 'error': 'Project not found'}), 404
+
+        return jsonify({
+            'success': True,
+            'project': {
+                'id': project.id,
+                'name': project.name,
+                'description': project.description,
+                'project_type': project.project_type.value,
+                'lived_experience_testers': [t.to_dict() for t in project.lived_experience_testers],
+                'test_supervisors': [s.to_dict() for s in project.test_supervisors]
+            }
+        })
+    except Exception as e:
+        logger.error(f"Error fetching project: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@projects_bp.route('/api/<project_id>/discovered-pages')
+def api_get_discovered_pages(project_id):
+    """API endpoint to get discovered pages for a project"""
+    try:
+        db = current_app.db
+
+        # Query discovered pages for this project
+        discovered_pages_docs = db.discovered_pages.find({'project_id': project_id})
+
+        # Convert to list of dicts
+        pages = []
+        for doc in discovered_pages_docs:
+            pages.append({
+                '_id': str(doc['_id']),
+                'title': doc.get('title', ''),
+                'url': doc.get('url', ''),
+                'interested_because': doc.get('interested_because', []),
+                'page_elements': doc.get('page_elements', [])
+            })
+
+        return jsonify({
+            'success': True,
+            'discovered_pages': pages
+        })
+    except Exception as e:
+        logger.error(f"Error fetching discovered pages: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500

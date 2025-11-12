@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any
 from enum import Enum
 from bson import ObjectId
+from .page import DrupalSyncStatus
 
 
 class RecordingType(Enum):
@@ -35,7 +36,15 @@ class Recording:
     # Audit context
     auditor_name: Optional[str] = None
     auditor_role: Optional[str] = None  # e.g., "Screen Reader User", "Expert Auditor"
+    test_user_account: Optional[str] = None  # Test account used (e.g., "Premium User", "Admin")
     recording_type: RecordingType = RecordingType.AUDIT
+
+    # Lived experience testing participants (IDs referencing project testers/supervisors)
+    lived_experience_tester_id: Optional[str] = None  # ID of tester from project.lived_experience_testers
+    test_supervisor_id: Optional[str] = None  # ID of supervisor from project.test_supervisors
+
+    # Testing scope - what content/features were tested
+    testing_scope: Dict[str, bool] = field(default_factory=dict)  # e.g., {"forms": True, "video": False, ...}
 
     # Relationships
     project_id: Optional[str] = None  # Link to AutoA11y project
@@ -44,6 +53,7 @@ class Recording:
     website_ids: List[str] = field(default_factory=list)  # Specific websites (for WEBSITE projects)
     page_urls: List[str] = field(default_factory=list)  # Specific page URLs
     page_ids: List[str] = field(default_factory=list)  # Specific page IDs (from database)
+    discovered_page_ids: List[str] = field(default_factory=list)  # Discovered page IDs (from database)
     component_names: List[str] = field(default_factory=list)  # Common components (header, nav, footer, etc.)
     app_screens: List[str] = field(default_factory=list)  # Specific screens/views (for APP projects)
     device_sections: List[str] = field(default_factory=list)  # Device sections (for TANGIBLE_DEVICE projects)
@@ -57,11 +67,23 @@ class Recording:
     medium_impact_count: int = 0
     low_impact_count: int = 0
 
+    # Recording Content (Structured data)
+    key_takeaways: List[Dict[str, Any]] = field(default_factory=list)  # List of {number, topic, description}
+    user_painpoints: List[Dict[str, Any]] = field(default_factory=list)  # List of {title, user_quote, timecodes: [{start, end, duration}]}
+    user_assertions: List[Dict[str, Any]] = field(default_factory=list)  # List of {number, assertion, user_quote, timecodes, context}
+
     # Metadata
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
     tags: List[str] = field(default_factory=list)
     notes: Optional[str] = None
+
+    # Drupal sync (audit_video export)
+    drupal_video_uuid: Optional[str] = None  # UUID of audit_video node in Drupal
+    drupal_video_nid: Optional[int] = None  # Drupal node ID
+    drupal_sync_status: DrupalSyncStatus = DrupalSyncStatus.NOT_SYNCED
+    drupal_last_synced: Optional[datetime] = None
+    drupal_error_message: Optional[str] = None
 
     _id: Optional[ObjectId] = None
 
@@ -69,6 +91,16 @@ class Recording:
     def id(self) -> str:
         """Get recording ID as string"""
         return str(self._id) if self._id else None
+
+    @property
+    def is_synced(self) -> bool:
+        """Check if recording is synced with Drupal"""
+        return self.drupal_sync_status == DrupalSyncStatus.SYNCED and self.drupal_video_uuid is not None
+
+    @property
+    def needs_sync(self) -> bool:
+        """Check if recording needs to be synced to Drupal"""
+        return self.drupal_sync_status in [DrupalSyncStatus.NOT_SYNCED, DrupalSyncStatus.SYNC_FAILED]
 
     def to_dict(self) -> dict:
         """Convert to dictionary for MongoDB"""
@@ -81,15 +113,23 @@ class Recording:
             'recorded_date': self.recorded_date,
             'auditor_name': self.auditor_name,
             'auditor_role': self.auditor_role,
+            'test_user_account': self.test_user_account,
             'recording_type': self.recording_type.value,
+            'lived_experience_tester_id': self.lived_experience_tester_id,
+            'test_supervisor_id': self.test_supervisor_id,
+            'testing_scope': self.testing_scope,
             'project_id': self.project_id,
             'website_ids': self.website_ids,
             'page_urls': self.page_urls,
             'page_ids': self.page_ids,
+            'discovered_page_ids': self.discovered_page_ids,
             'component_names': self.component_names,
             'app_screens': self.app_screens,
             'device_sections': self.device_sections,
             'task_description': self.task_description,
+            'key_takeaways': self.key_takeaways,
+            'user_painpoints': self.user_painpoints,
+            'user_assertions': self.user_assertions,
             'total_issues': self.total_issues,
             'high_impact_count': self.high_impact_count,
             'medium_impact_count': self.medium_impact_count,
@@ -97,7 +137,12 @@ class Recording:
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'tags': self.tags,
-            'notes': self.notes
+            'notes': self.notes,
+            'drupal_video_uuid': self.drupal_video_uuid,
+            'drupal_video_nid': self.drupal_video_nid,
+            'drupal_sync_status': self.drupal_sync_status.value,
+            'drupal_last_synced': self.drupal_last_synced,
+            'drupal_error_message': self.drupal_error_message
         }
         if self._id:
             data['_id'] = self._id
@@ -122,15 +167,23 @@ class Recording:
             recorded_date=data.get('recorded_date'),
             auditor_name=data.get('auditor_name'),
             auditor_role=data.get('auditor_role'),
+            test_user_account=data.get('test_user_account'),
             recording_type=recording_type,
+            lived_experience_tester_id=data.get('lived_experience_tester_id'),
+            test_supervisor_id=data.get('test_supervisor_id'),
+            testing_scope=data.get('testing_scope', {}),
             project_id=data.get('project_id'),
             website_ids=data.get('website_ids', []),
             page_urls=data.get('page_urls', []),
             page_ids=data.get('page_ids', []),
+            discovered_page_ids=data.get('discovered_page_ids', []),
             component_names=data.get('component_names', []),
             app_screens=data.get('app_screens', []),
             device_sections=data.get('device_sections', []),
             task_description=data.get('task_description'),
+            key_takeaways=data.get('key_takeaways', []),
+            user_painpoints=data.get('user_painpoints', []),
+            user_assertions=data.get('user_assertions', []),
             total_issues=data.get('total_issues', 0),
             high_impact_count=data.get('high_impact_count', 0),
             medium_impact_count=data.get('medium_impact_count', 0),
@@ -139,6 +192,11 @@ class Recording:
             updated_at=data.get('updated_at', datetime.now()),
             tags=data.get('tags', []),
             notes=data.get('notes'),
+            drupal_video_uuid=data.get('drupal_video_uuid'),
+            drupal_video_nid=data.get('drupal_video_nid'),
+            drupal_sync_status=DrupalSyncStatus(data.get('drupal_sync_status', 'not_synced')),
+            drupal_last_synced=data.get('drupal_last_synced'),
+            drupal_error_message=data.get('drupal_error_message'),
             _id=obj_id
         )
 

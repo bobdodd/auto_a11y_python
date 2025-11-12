@@ -264,7 +264,8 @@ class IssueExporter:
         # Build attributes
         attributes = {
             'title': title,
-            'field_impact': impact
+            'field_impact': impact,
+            'field_ticket_status': 'open'  # Plain text field, not taxonomy
         }
 
         # Add description/body if provided
@@ -321,21 +322,8 @@ class IssueExporter:
             }
         }
 
-        # Add ticket_status taxonomy term (required field)
-        if self.taxonomy_cache:
-            try:
-                status_uuid = self.taxonomy_cache.get_uuid_by_name('ticket_status', 'open')
-                if status_uuid:
-                    relationships['field_ticket_status'] = {
-                        'data': {
-                            'type': 'taxonomy_term--ticket_status',
-                            'id': status_uuid
-                        }
-                    }
-                else:
-                    logger.warning("Could not find 'open' term in ticket_status vocabulary")
-            except Exception as e:
-                logger.error(f"Error looking up ticket_status taxonomy: {e}")
+        # Note: field_ticket_status is a plain text attribute, not a taxonomy reference
+        # It's already set in the attributes section above
 
         # TODO: Add taxonomy term relationships for issue_type and location_on_page
         # This would require looking up taxonomy term UUIDs by name

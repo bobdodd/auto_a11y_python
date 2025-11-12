@@ -11,6 +11,8 @@ from .taxonomy import TaxonomyCache, DiscoveredPageTaxonomies
 from .discovered_page_exporter import DiscoveredPageExporter
 from .discovered_page_importer import DiscoveredPageImporter
 from .recording_exporter import RecordingExporter
+from .issue_importer import IssueImporter
+from .issue_exporter import IssueExporter
 
 __all__ = [
     'DrupalJSONAPIClient',
@@ -20,5 +22,7 @@ __all__ = [
     'DiscoveredPageTaxonomies',
     'DiscoveredPageExporter',
     'DiscoveredPageImporter',
-    'RecordingExporter'
+    'RecordingExporter',
+    'IssueImporter',
+    'IssueExporter'
 ]

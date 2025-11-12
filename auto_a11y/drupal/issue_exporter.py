@@ -364,6 +364,46 @@ class IssueExporter:
         else:
             relationships['field_video'] = {'data': None}
 
+        # Add Issue Type taxonomy relationship (WCAG vs NOT WCAG)
+        if self.taxonomy_cache:
+            # Determine issue type based on WCAG criteria
+            if wcag_criteria:
+                issue_type_term = 'WCAG'
+            else:
+                # Default to 'Note' for non-WCAG issues
+                issue_type_term = 'Note'
+
+            issue_type_uuid = self.taxonomy_cache.get_uuid_by_name('issue_type', issue_type_term)
+            if issue_type_uuid:
+                relationships['field_issue_type'] = {
+                    'data': {
+                        'type': 'taxonomy_term--issue_type',
+                        'id': issue_type_uuid
+                    }
+                }
+            else:
+                logger.warning(f"Could not find issue_type term '{issue_type_term}'")
+                relationships['field_issue_type'] = {'data': None}
+        else:
+            relationships['field_issue_type'] = {'data': None}
+
+        # Add Issue Category taxonomy relationship (from touchpoint/issue_type)
+        if self.taxonomy_cache and issue_type:
+            # Try to find matching category term (touchpoint maps to issue_category)
+            category_uuid = self.taxonomy_cache.get_uuid_by_name('issue_category', issue_type)
+            if category_uuid:
+                relationships['field_issue_category'] = {
+                    'data': {
+                        'type': 'taxonomy_term--issue_category',
+                        'id': category_uuid
+                    }
+                }
+            else:
+                logger.warning(f"Could not find issue_category term '{issue_type}'")
+                relationships['field_issue_category'] = {'data': None}
+        else:
+            relationships['field_issue_category'] = {'data': None}
+
         # Note: field_ticket_status has been removed from the staging Issue content type
         # (test-audits.pantheonsite.io) to allow issue creation via JSON:API.
         # The production site (audits.frontier-cnib.ca) still has the workflow field requirement.
@@ -372,10 +412,6 @@ class IssueExporter:
         # - Investigate Drupal Workflow module's JSON:API integration
         # - Determine correct SID value format for field_ticket_status
         # - Add workflow state handling as optional parameter
-
-        # TODO: Add taxonomy term relationships for issue_type and location_on_page
-        # This would require looking up taxonomy term UUIDs by name
-        # For now, we'll skip these and they can be added later
 
         # TODO: Add WCAG chapter relationships
         # This would require looking up WCAG node UUIDs by criteria

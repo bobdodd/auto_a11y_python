@@ -42,7 +42,8 @@ class IssueExporter:
         url: Optional[str] = None,
         video_timecode: Optional[str] = None,
         issue_id: Optional[int] = None,
-        existing_uuid: Optional[str] = None
+        existing_uuid: Optional[str] = None,
+        video_uuid: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Export an issue to Drupal.
@@ -60,6 +61,7 @@ class IssueExporter:
             video_timecode: Video timecode string
             issue_id: Numeric issue ID (field_id)
             existing_uuid: If provided, UPDATE existing issue instead of creating new
+            video_uuid: Optional Drupal audit_video UUID to link to
 
         Returns:
             Dict with 'success', 'uuid', 'nid', and optional 'error' keys
@@ -78,7 +80,8 @@ class IssueExporter:
                 url=url,
                 video_timecode=video_timecode,
                 issue_id=issue_id,
-                existing_uuid=existing_uuid
+                existing_uuid=existing_uuid,
+                video_uuid=video_uuid
             )
 
             # Create or update
@@ -223,7 +226,8 @@ class IssueExporter:
             url=url,
             video_timecode=video_timecode,
             issue_id=None,
-            existing_uuid=None  # RecordingIssues don't track Drupal UUIDs currently
+            existing_uuid=None,  # RecordingIssues don't track Drupal UUIDs currently
+            video_uuid=video_uuid
         )
 
     def _build_payload(
@@ -239,7 +243,8 @@ class IssueExporter:
         url: Optional[str],
         video_timecode: Optional[str],
         issue_id: Optional[int],
-        existing_uuid: Optional[str] = None
+        existing_uuid: Optional[str] = None,
+        video_uuid: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Build JSON:API payload for issue.
@@ -264,7 +269,8 @@ class IssueExporter:
         # Build attributes
         attributes = {
             'title': title,
-            'field_impact': impact
+            'field_impact': impact,
+            'status': True  # Publish the issue by default
         }
         # Note: field_ticket_status omitted - all existing issues have null for this field
 
@@ -274,6 +280,20 @@ class IssueExporter:
                 'value': description,
                 'format': 'formatted_text'
             }
+
+        # Add issue type text field - "WCAG" if WCAG criteria present, "NOT WCAG" otherwise
+        if wcag_criteria:
+            attributes['field_txt_issue_type'] = 'WCAG'
+        else:
+            attributes['field_txt_issue_type'] = 'NOT WCAG'
+
+        # Add relevant test criteria text field
+        if wcag_criteria:
+            attributes['field_txt_relevant_test_criteria'] = ', '.join(wcag_criteria)
+
+        # Add issue category text field from issue_type (touchpoint)
+        if issue_type:
+            attributes['field_txt_issue_category'] = issue_type
 
         # Add optional fields
         if xpath:
@@ -321,6 +341,15 @@ class IssueExporter:
                 }
             }
         }
+
+        # Add video relationship if provided
+        if video_uuid:
+            relationships['field_video'] = {
+                'data': {
+                    'type': 'node--audit_video',
+                    'id': video_uuid
+                }
+            }
 
         # Note: field_ticket_status has been removed from the staging Issue content type
         # (test-audits.pantheonsite.io) to allow issue creation via JSON:API.

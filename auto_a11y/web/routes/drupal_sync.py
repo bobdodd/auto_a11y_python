@@ -287,6 +287,11 @@ def upload_to_drupal(project_id):
 
             # Initialize exporters
             taxonomies = DiscoveredPageTaxonomies(client)
+
+            # Preload issue taxonomies for issue exporter
+            taxonomies.cache.get_terms('issue_type')
+            taxonomies.cache.get_terms('issue_category')
+
             page_exporter = DiscoveredPageExporter(client, taxonomies)
             recording_exporter = RecordingExporter(client)
             issue_exporter = IssueExporter(client, taxonomies.cache)

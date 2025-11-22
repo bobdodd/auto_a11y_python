@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Auto A11y{% endblock %}
+{% block title %}{{ _('Dashboard') }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h2 mb-4">Dashboard</h1>
+    <h1 class="h2 mb-4">{{ _('Dashboard') }}</h1>
 
     <!-- Statistics Cards -->
     <div class="row mb-4 g-3">
@@ -14,7 +14,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 fs-7">Projects</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">{{ _('Projects') }}</h6>
                             <h3 class="card-title mb-0">{{ stats.projects }}</h3>
                         </div>
                         <i class="bi bi-folder display-6 opacity-50 d-none d-sm-block"></i>
@@ -27,7 +27,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 fs-7">Total Pages</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">{{ _('Total Pages') }}</h6>
                             <h3 class="card-title mb-0">{{ stats.total_pages }}</h3>
                         </div>
                         <i class="bi bi-file-text display-6 opacity-50 d-none d-sm-block"></i>
@@ -40,7 +40,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 fs-7">Tested Pages</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">{{ _('Tested Pages') }}</h6>
                             <h3 class="card-title mb-0">{{ stats.tested_pages }}</h3>
                         </div>
                         <i class="bi bi-check-circle display-6 opacity-50 d-none d-sm-block"></i>
@@ -53,7 +53,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 fs-7">Total Issues</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">{{ _('Total Issues') }}</h6>
                             <h3 class="card-title mb-0">{{ stats.total_violations + stats.total_warnings + stats.total_info + stats.total_discovery }}</h3>
                         </div>
                         <i class="bi bi-list-check display-6 opacity-50 d-none d-sm-block"></i>
@@ -70,7 +70,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 fs-7">Errors</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">{{ _('Errors') }}</h6>
                             <h3 class="card-title mb-0">{{ stats.total_violations }}</h3>
                         </div>
                         <i class="bi bi-x-circle display-6 opacity-50 d-none d-sm-block"></i>
@@ -83,7 +83,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 fs-7">Warnings</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">{{ _('Warnings') }}</h6>
                             <h3 class="card-title mb-0">{{ stats.total_warnings }}</h3>
                         </div>
                         <i class="bi bi-exclamation-triangle display-6 opacity-50 d-none d-sm-block"></i>
@@ -96,7 +96,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 fs-7">Info Notes</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">{{ _('Info Notes') }}</h6>
                             <h3 class="card-title mb-0">{{ stats.total_info }}</h3>
                         </div>
                         <i class="bi bi-info-circle display-6 opacity-50 d-none d-sm-block"></i>
@@ -109,7 +109,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 fs-7">Discovery</h6>
+                            <h6 class="card-subtitle mb-2 fs-7">{{ _('Discovery') }}</h6>
                             <h3 class="card-title mb-0">{{ stats.total_discovery }}</h3>
                         </div>
                         <i class="bi bi-search display-6 opacity-50 d-none d-sm-block"></i>
@@ -124,18 +124,18 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">Quick Actions</h5>
+                    <h5 class="card-title mb-0">{{ _('Quick Actions') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2">
                         <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> New Project
+                            <i class="bi bi-plus-circle"></i> {{ _('New Project') }}
                         </a>
                         <a href="{{ url_for('testing.testing_dashboard') }}" class="btn btn-success">
-                            <i class="bi bi-play-circle"></i> Run Tests
+                            <i class="bi bi-play-circle"></i> {{ _('Run Tests') }}
                         </a>
                         <a href="{{ url_for('reports.reports_dashboard') }}" class="btn btn-info">
-                            <i class="bi bi-download"></i> Generate Report
+                            <i class="bi bi-download"></i> {{ _('Generate Report') }}
                         </a>
                     </div>
                 </div>
@@ -148,17 +148,17 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">Test Coverage</h5>
+                    <h5 class="card-title mb-0">{{ _('Test Coverage') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="progress" style="height: 30px;">
                         {% set coverage = (stats.tested_pages / stats.total_pages * 100) if stats.total_pages > 0 else 0 %}
                         <div class="progress-bar bg-success" style="width: {{ coverage }}%">
-                            {{ "%.1f"|format(coverage) }}% Tested
+                            {{ "%.1f"|format(coverage) }}% {{ _('Tested') }}
                         </div>
                     </div>
                     <p class="text-muted mt-2">
-                        {{ stats.tested_pages }} of {{ stats.total_pages }} pages tested
+                        {{ stats.tested_pages }} {{ _('of') }} {{ stats.total_pages }} {{ _('pages tested') }}
                     </p>
                 </div>
             </div>
@@ -166,21 +166,21 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">System Status</h5>
+                    <h5 class="card-title mb-0">{{ _('System Status') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Database</span>
-                        <span class="badge bg-success">Connected</span>
+                        <span>{{ _('Database') }}</span>
+                        <span class="badge bg-success">{{ _('Connected') }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Browser Engine</span>
-                        <span class="badge bg-success">Ready</span>
+                        <span>{{ _('Browser Engine') }}</span>
+                        <span class="badge bg-success">{{ _('Ready') }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>AI Analysis</span>
+                        <span>{{ _('AI Analysis') }}</span>
                         <span class="badge bg-{{ 'success' if config.RUN_AI_ANALYSIS else 'secondary' }}">
-                            {{ 'Enabled' if config.RUN_AI_ANALYSIS else 'Disabled' }}
+                            {{ _('Enabled') if config.RUN_AI_ANALYSIS else _('Disabled') }}
                         </span>
                     </div>
                 </div>

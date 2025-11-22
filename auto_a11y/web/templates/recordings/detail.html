@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}{{ recording.title }} - Recordings{% endblock %}
+{% block title %}{{ recording.title }} - {{ _('Recordings') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <nav aria-label="breadcrumb">
+            <nav aria-label="{{ _('breadcrumb') }}">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url_for('recordings.list_recordings') }}">Recordings</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('recordings.list_recordings') }}">{{ _('Recordings') }}</a></li>
                     <li class="breadcrumb-item active">{{ recording.recording_id }}</li>
                 </ol>
             </nav>
@@ -17,18 +17,18 @@
         </div>
         <div>
             <button type="button" class="btn btn-outline-primary" id="editBtn" onclick="toggleEditMode()">
-                <i class="bi bi-pencil"></i> Edit
+                <i class="bi bi-pencil"></i> {{ _('Edit') }}
             </button>
             <button type="button" class="btn btn-success" id="saveBtn" style="display: none;" onclick="saveRecording()">
-                <i class="bi bi-check-lg"></i> Save
+                <i class="bi bi-check-lg"></i> {{ _('Save') }}
             </button>
             <button type="button" class="btn btn-outline-secondary" id="cancelBtn" style="display: none;" onclick="cancelEdit()">
-                Cancel
+                {{ _('Cancel') }}
             </button>
             <form method="post" action="{{ url_for('recordings.delete_recording', recording_id=recording.id) }}"
-                  onsubmit="return confirm('Are you sure you want to delete this recording?')" class="d-inline">
+                  onsubmit="return confirm('{{ _('Are you sure you want to delete this recording?') }}')" class="d-inline">
                 <button type="submit" class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i> Delete
+                    <i class="bi bi-trash"></i> {{ _('Delete') }}
                 </button>
             </form>
         </div>
@@ -41,13 +41,13 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <h6 class="text-muted mb-1">Recording ID</h6>
+                            <h6 class="text-muted mb-1">{{ _('Recording ID') }}</h6>
                             <p class="mb-0">{{ recording.recording_id }}</p>
                         </div>
                         {% if recording.recording_type.value == 'audit' %}
                             {% if recording.auditor_name %}
                             <div class="col-md-6 mb-3">
-                                <h6 class="text-muted mb-1">Auditor</h6>
+                                <h6 class="text-muted mb-1">{{ _('Auditor') }}</h6>
                                 <p class="mb-0">
                                     {{ recording.auditor_name }}
                                     {% if recording.auditor_role %}
@@ -60,7 +60,7 @@
                             {# Lived Experience Recording - Show Tester and Supervisor #}
                             {% if recording.auditor_name %}
                             <div class="col-md-6 mb-3">
-                                <h6 class="text-muted mb-1">Tester</h6>
+                                <h6 class="text-muted mb-1">{{ _('Tester') }}</h6>
                                 <p class="mb-0">{{ recording.auditor_name }}</p>
                             </div>
                             {% endif %}
@@ -68,7 +68,7 @@
                                 {% for supervisor in project.test_supervisors %}
                                     {% if supervisor._id == recording.test_supervisor_id %}
                                     <div class="col-md-6 mb-3">
-                                        <h6 class="text-muted mb-1">Test Supervisor</h6>
+                                        <h6 class="text-muted mb-1">{{ _('Test Supervisor') }}</h6>
                                         <p class="mb-0">{{ supervisor.name }}</p>
                                     </div>
                                     {% endif %}
@@ -77,7 +77,7 @@
                         {% endif %}
                         {% if recording.test_user_account %}
                         <div class="col-md-6 mb-3">
-                            <h6 class="text-muted mb-1">Test User Account</h6>
+                            <h6 class="text-muted mb-1">{{ _('Test User Account') }}</h6>
                             <p class="mb-0">
                                 <i class="bi bi-person-circle"></i> {{ recording.test_user_account }}
                             </p>
@@ -85,25 +85,25 @@
                         {% endif %}
                         {% if recording.recorded_date %}
                         <div class="col-md-6 mb-3">
-                            <h6 class="text-muted mb-1">Recording Date</h6>
+                            <h6 class="text-muted mb-1">{{ _('Recording Date') }}</h6>
                             <p class="mb-0">{{ recording.recorded_date.strftime('%B %d, %Y') }}</p>
                         </div>
                         {% endif %}
                         {% if recording.duration %}
                         <div class="col-md-6 mb-3">
-                            <h6 class="text-muted mb-1">Duration</h6>
+                            <h6 class="text-muted mb-1">{{ _('Duration') }}</h6>
                             <p class="mb-0">{{ recording.duration }}</p>
                         </div>
                         {% endif %}
                         <div class="col-md-6 mb-3">
-                            <h6 class="text-muted mb-1">Recording Type</h6>
+                            <h6 class="text-muted mb-1">{{ _('Recording Type') }}</h6>
                             <span class="badge bg-info">
                                 {{ recording.recording_type.value|replace('_', ' ')|title }}
                             </span>
                         </div>
                         {% if project %}
                         <div class="col-md-6 mb-3">
-                            <h6 class="text-muted mb-1">Project</h6>
+                            <h6 class="text-muted mb-1">{{ _('Project') }}</h6>
                             <p class="mb-0">
                                 <a href="{{ url_for('projects.view_project', project_id=project.id) }}">
                                     {{ project.name }}
@@ -115,14 +115,14 @@
 
                     {% if recording.description %}
                     <div class="mt-3 pt-3 border-top">
-                        <h6 class="text-muted mb-1">Description</h6>
+                        <h6 class="text-muted mb-1">{{ _('Description') }}</h6>
                         <p class="mb-0">{{ recording.description }}</p>
                     </div>
                     {% endif %}
 
                     <!-- Page URLs - View and Edit Mode -->
                     <div class="mt-3 pt-3 border-top">
-                        <h6 class="text-muted mb-2">Pages Covered</h6>
+                        <h6 class="text-muted mb-2">{{ _('Pages Covered') }}</h6>
 
                         <!-- View Mode -->
                         <div id="pageUrlsViewMode">
@@ -133,20 +133,20 @@
                                 {% endfor %}
                             </ul>
                             {% else %}
-                            <p class="text-muted small mb-0">No pages specified</p>
+                            <p class="text-muted small mb-0">{{ _('No pages specified') }}</p>
                             {% endif %}
                         </div>
 
                         <!-- Edit Mode -->
                         <div id="pageUrlsEditMode" style="display: none;">
-                            <textarea class="form-control" id="editPageUrls" rows="3" placeholder="Enter one URL per line">{{ recording.page_urls|join('\n') }}</textarea>
-                            <small class="form-text text-muted">Enter one URL per line</small>
+                            <textarea class="form-control" id="editPageUrls" rows="3" placeholder="{{ _('Enter one URL per line') }}">{{ recording.page_urls|join('\n') }}</textarea>
+                            <small class="form-text text-muted">{{ _('Enter one URL per line') }}</small>
                         </div>
                     </div>
 
                     <!-- Discovered Pages - View and Edit Mode -->
                     <div class="mt-3 pt-3 border-top">
-                        <h6 class="text-muted mb-2">Discovered Pages</h6>
+                        <h6 class="text-muted mb-2">{{ _('Discovered Pages') }}</h6>
 
                         <!-- View Mode -->
                         <div id="discoveredPagesViewMode">
@@ -165,22 +165,22 @@
                                 {% endfor %}
                             </ul>
                             {% else %}
-                            <p class="text-muted small mb-0">No discovered pages selected</p>
+                            <p class="text-muted small mb-0">{{ _('No discovered pages selected') }}</p>
                             {% endif %}
                         </div>
 
                         <!-- Edit Mode -->
                         <div id="discoveredPagesEditMode" style="display: none;">
                             <div id="discoveredPagesCheckboxContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem;">
-                                <p class="text-muted small mb-0">Loading discovered pages...</p>
+                                <p class="text-muted small mb-0">{{ _('Loading discovered pages...') }}</p>
                             </div>
-                            <small class="form-text text-muted">Select discovered pages related to this recording</small>
+                            <small class="form-text text-muted">{{ _('Select discovered pages related to this recording') }}</small>
                         </div>
                     </div>
 
                     {% if recording.component_names %}
                     <div class="mt-3 pt-3 border-top">
-                        <h6 class="text-muted mb-2">Common Components</h6>
+                        <h6 class="text-muted mb-2">{{ _('Common Components') }}</h6>
                         <div class="d-flex flex-wrap gap-2">
                             {% for component in recording.component_names %}
                             <span class="badge bg-secondary">{{ component }}</span>
@@ -191,7 +191,7 @@
 
                     {% if recording.app_screens %}
                     <div class="mt-3 pt-3 border-top">
-                        <h6 class="text-muted mb-2">App Screens / Views</h6>
+                        <h6 class="text-muted mb-2">{{ _('App Screens / Views') }}</h6>
                         <div class="d-flex flex-wrap gap-2">
                             {% for screen in recording.app_screens %}
                             <span class="badge bg-primary">{{ screen }}</span>
@@ -202,7 +202,7 @@
 
                     {% if recording.device_sections %}
                     <div class="mt-3 pt-3 border-top">
-                        <h6 class="text-muted mb-2">Device Sections</h6>
+                        <h6 class="text-muted mb-2">{{ _('Device Sections') }}</h6>
                         <div class="d-flex flex-wrap gap-2">
                             {% for section in recording.device_sections %}
                             <span class="badge bg-warning">{{ section }}</span>
@@ -213,14 +213,14 @@
 
                     {% if recording.task_description %}
                     <div class="mt-3 pt-3 border-top">
-                        <h6 class="text-muted mb-2">Task Context</h6>
+                        <h6 class="text-muted mb-2">{{ _('Task Context') }}</h6>
                         <p class="mb-0"><i class="bi bi-clipboard-check"></i> {{ recording.task_description }}</p>
                     </div>
                     {% endif %}
 
                     {% if recording.media_file_path %}
                     <div class="mt-3 pt-3 border-top">
-                        <h6 class="text-muted mb-2">Media File</h6>
+                        <h6 class="text-muted mb-2">{{ _('Media File') }}</h6>
                         <p class="mb-0">
                             <i class="bi bi-film"></i> {{ recording.media_file_path }}
                         </p>
@@ -234,15 +234,15 @@
             <!-- Statistics Card -->
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Issue Summary</h5>
+                    <h5 class="card-title">{{ _('Issue Summary') }}</h5>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="h3 mb-0">{{ recording.total_issues }}</span>
-                        <span class="text-muted">Total Issues</span>
+                        <span class="text-muted">{{ _('Total Issues') }}</span>
                     </div>
 
                     <div class="mb-2">
                         <div class="d-flex justify-content-between mb-1">
-                            <span>High Impact</span>
+                            <span>{{ _('High Impact') }}</span>
                             <span class="badge bg-danger">{{ recording.high_impact_count }}</span>
                         </div>
                         {% if recording.total_issues > 0 %}
@@ -255,7 +255,7 @@
 
                     <div class="mb-2">
                         <div class="d-flex justify-content-between mb-1">
-                            <span>Medium Impact</span>
+                            <span>{{ _('Medium Impact') }}</span>
                             <span class="badge bg-warning text-dark">{{ recording.medium_impact_count }}</span>
                         </div>
                         {% if recording.total_issues > 0 %}
@@ -268,7 +268,7 @@
 
                     <div class="mb-2">
                         <div class="d-flex justify-content-between mb-1">
-                            <span>Low Impact</span>
+                            <span>{{ _('Low Impact') }}</span>
                             <span class="badge bg-secondary">{{ recording.low_impact_count }}</span>
                         </div>
                         {% if recording.total_issues > 0 %}
@@ -286,13 +286,13 @@
             <div class="card mt-3">
                 <div class="card-body">
                     <h5 class="card-title mb-3">
-                        <i class="bi bi-person-check"></i> Manual Testing Scores
+                        <i class="bi bi-person-check"></i> {{ _('Manual Testing Scores') }}
                     </h5>
 
                     <!-- Manual Accessibility Score -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold">Manual Accessibility Score</span>
+                            <span class="fw-bold">{{ _('Manual Accessibility Score') }}</span>
                             <span class="badge {% if scores.accessibility_score >= 90 %}bg-success{% elif scores.accessibility_score >= 70 %}bg-warning text-dark{% else %}bg-danger{% endif %} fs-6">
                                 {{ scores.accessibility_score|round(1) }}%
                             </span>
@@ -306,14 +306,14 @@
                                  aria-valuemax="100">
                             </div>
                         </div>
-                        <small class="text-muted">Based on manually identified issue severity and impact</small>
+                        <small class="text-muted">{{ _('Based on manually identified issue severity and impact') }}</small>
                     </div>
 
                     <!-- Manual Compliance Score -->
                     {% if scores.compliance_score is not none %}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold">Manual WCAG Compliance Score</span>
+                            <span class="fw-bold">{{ _('Manual WCAG Compliance Score') }}</span>
                             <span class="badge {% if scores.compliance_score >= 90 %}bg-success{% elif scores.compliance_score >= 70 %}bg-warning text-dark{% else %}bg-danger{% endif %} fs-6">
                                 {{ scores.compliance_score|round(1) }}%
                             </span>
@@ -327,28 +327,28 @@
                                  aria-valuemax="100">
                             </div>
                         </div>
-                        <small class="text-muted">Level AA conformance based on manual testing scope</small>
+                        <small class="text-muted">{{ _('Level AA conformance based on manual testing scope') }}</small>
                     </div>
 
                     <!-- WCAG Criteria Breakdown -->
                     <div class="mt-3 pt-3 border-top">
                         <div class="row g-2 text-center">
                             <div class="col-4">
-                                <div class="small text-muted">Applicable</div>
+                                <div class="small text-muted">{{ _('Applicable') }}</div>
                                 <div class="fw-bold">{{ scores.total_applicable_criteria }}</div>
                             </div>
                             <div class="col-4">
-                                <div class="small text-muted">Passed</div>
+                                <div class="small text-muted">{{ _('Passed') }}</div>
                                 <div class="fw-bold text-success">{{ scores.passed_criteria }}</div>
                             </div>
                             <div class="col-4">
-                                <div class="small text-muted">Failed</div>
+                                <div class="small text-muted">{{ _('Failed') }}</div>
                                 <div class="fw-bold text-danger">{{ scores.failed_criteria }}</div>
                             </div>
                         </div>
                         <div class="text-center mt-3">
                             <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#criteriaBreakdownModal">
-                                <i class="bi bi-list-check"></i> View Criteria Details
+                                <i class="bi bi-list-check"></i> {{ _('View Criteria Details') }}
                             </button>
                         </div>
                     </div>
@@ -356,7 +356,7 @@
                     <div class="alert alert-info mb-0">
                         <small>
                             <i class="bi bi-info-circle"></i>
-                            Manual compliance score requires testing scope to be defined during upload.
+                            {{ _('Manual compliance score requires testing scope to be defined during upload.') }}
                         </small>
                     </div>
                     {% endif %}
@@ -374,7 +374,7 @@
             <h2 class="accordion-header" id="headingKeyTakeaways">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseKeyTakeaways" aria-expanded="false" aria-controls="collapseKeyTakeaways">
-                    <i class="bi bi-list-ol me-2"></i> <strong>Key Takeaways ({{ recording.key_takeaways|length }})</strong>
+                    <i class="bi bi-list-ol me-2"></i> <strong>{{ _('Key Takeaways') }} ({{ recording.key_takeaways|length }})</strong>
                 </button>
             </h2>
             <div id="collapseKeyTakeaways" class="accordion-collapse collapse"
@@ -407,7 +407,7 @@
             <h2 class="accordion-header" id="headingPainpoints">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapsePainpoints" aria-expanded="false" aria-controls="collapsePainpoints">
-                    <i class="bi bi-exclamation-triangle me-2"></i> <strong>User Painpoints ({{ recording.user_painpoints|length }})</strong>
+                    <i class="bi bi-exclamation-triangle me-2"></i> <strong>{{ _('User Painpoints') }} ({{ recording.user_painpoints|length }})</strong>
                 </button>
             </h2>
             <div id="collapsePainpoints" class="accordion-collapse collapse"
@@ -426,20 +426,20 @@
                             </h4>
                             {% if painpoint.user_quote %}
                             <div class="mb-3">
-                                <strong class="text-primary">User Quote:</strong>
+                                <strong class="text-primary">{{ _('User Quote:') }}</strong>
                                 <p class="fst-italic ms-3">"{{ painpoint.user_quote }}"</p>
                             </div>
                             {% endif %}
                             {% if painpoint.timecodes %}
                             <div>
-                                <strong class="text-primary">Timecode{% if painpoint.timecodes|length > 1 %}s{% endif %}:</strong>
+                                <strong class="text-primary">{{ _('Timecode') }}{% if painpoint.timecodes|length > 1 %}{{ _('s') }}{% endif %}:</strong>
                                 {% for timecode in painpoint.timecodes %}
                                 <div class="ms-3 mb-2">
                                     <i class="bi bi-clock"></i>
                                     <span class="text-muted small">
-                                        Start: <code>{{ timecode.start }}</code> |
-                                        End: <code>{{ timecode.end }}</code> |
-                                        Duration: <code>{{ timecode.duration }}</code>
+                                        {{ _('Start:') }} <code>{{ timecode.start }}</code> |
+                                        {{ _('End:') }} <code>{{ timecode.end }}</code> |
+                                        {{ _('Duration:') }} <code>{{ timecode.duration }}</code>
                                     </span>
                                 </div>
                                 {% endfor %}
@@ -459,7 +459,7 @@
             <h2 class="accordion-header" id="headingAssertions">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseAssertions" aria-expanded="false" aria-controls="collapseAssertions">
-                    <i class="bi bi-chat-quote me-2"></i> <strong>User Assertions ({{ recording.user_assertions|length }})</strong>
+                    <i class="bi bi-chat-quote me-2"></i> <strong>{{ _('User Assertions') }} ({{ recording.user_assertions|length }})</strong>
                 </button>
             </h2>
             <div id="collapseAssertions" class="accordion-collapse collapse"
@@ -471,19 +471,19 @@
                             <h4>{{ assertion.number }}. {{ assertion.assertion }}</h4>
                             {% if assertion.user_quote %}
                             <div class="mb-3">
-                                <strong class="text-primary">User Quote:</strong>
+                                <strong class="text-primary">{{ _('User Quote:') }}</strong>
                                 <p class="fst-italic ms-3">"{{ assertion.user_quote }}"</p>
                             </div>
                             {% endif %}
                             {% if assertion.timecodes %}
                             <div>
-                                <strong class="text-primary">Timecode{% if assertion.timecodes|length > 1 %}s{% endif %}:</strong>
+                                <strong class="text-primary">{{ _('Timecode') }}{% if assertion.timecodes|length > 1 %}{{ _('s') }}{% endif %}:</strong>
                                 {% for timecode in assertion.timecodes %}
                                 <div class="ms-3 mb-2">
                                     <i class="bi bi-clock"></i>
                                     <span class="text-muted small">
                                         <code>{{ timecode.start }}</code> - <code>{{ timecode.end }}</code>
-                                        (Duration: <code>{{ timecode.duration }}</code>)
+                                        ({{ _('Duration:') }} <code>{{ timecode.duration }}</code>)
                                     </span>
                                 </div>
                                 {% endfor %}
@@ -491,7 +491,7 @@
                             {% endif %}
                             {% if assertion.context %}
                             <div class="mt-2">
-                                <strong class="text-primary">Context:</strong>
+                                <strong class="text-primary">{{ _('Context:') }}</strong>
                                 <p class="ms-3">{{ assertion.context }}</p>
                             </div>
                             {% endif %}
@@ -508,7 +508,7 @@
             <h2 class="accordion-header" id="headingIssues">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseIssues" aria-expanded="true" aria-controls="collapseIssues">
-                    <i class="bi bi-bug me-2"></i> <strong>Accessibility Issues ({{ recording.total_issues }})</strong>
+                    <i class="bi bi-bug me-2"></i> <strong>{{ _('Accessibility Issues') }} ({{ recording.total_issues }})</strong>
                 </button>
             </h2>
             <div id="collapseIssues" class="accordion-collapse collapse show"
@@ -537,7 +537,7 @@
                                         </span>
                                         {% if issue.timecodes %}
                                         <span class="badge bg-info">
-                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} timecode(s)
+                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} {{ _('timecode(s)') }}
                                         </span>
                                         {% endif %}
                                     </div>
@@ -552,7 +552,7 @@
 
                                     {% if issue.timecodes %}
                                     <div class="mb-3">
-                                        <strong>Timecodes:</strong>
+                                        <strong>{{ _('Timecodes:') }}</strong>
                                         <div class="mt-1">
                                             {% for tc in issue.timecodes %}
                                             <span class="badge bg-secondary me-2">
@@ -565,39 +565,39 @@
 
                                     {% if issue.what %}
                                     <div class="mb-3">
-                                        <strong>What:</strong>
+                                        <strong>{{ _('What:') }}</strong>
                                         <p class="mb-0">{{ issue.what }}</p>
                                     </div>
                                     {% endif %}
 
                                     {% if issue.why %}
                                     <div class="mb-3">
-                                        <strong>Why:</strong>
+                                        <strong>{{ _('Why:') }}</strong>
                                         <p class="mb-0">{{ issue.why }}</p>
                                     </div>
                                     {% endif %}
 
                                     {% if issue.who %}
                                     <div class="mb-3">
-                                        <strong>Who is affected:</strong>
+                                        <strong>{{ _('Who is affected:') }}</strong>
                                         <p class="mb-0">{{ issue.who }}</p>
                                     </div>
                                     {% endif %}
 
                                     {% if issue.remediation %}
                                     <div class="mb-3">
-                                        <strong>How to fix:</strong>
+                                        <strong>{{ _('How to fix:') }}</strong>
                                         <p class="mb-0">{{ issue.remediation }}</p>
                                     </div>
                                     {% endif %}
 
                                     {% if issue.wcag %}
                                     <div class="mb-3">
-                                        <strong>WCAG:</strong>
+                                        <strong>{{ _('WCAG:') }}</strong>
                                         <div class="mt-1">
                                             {% for wcag_ref in issue.wcag %}
                                             <span class="badge bg-primary me-1">
-                                                {{ wcag_ref.criteria }} (Level {{ wcag_ref.level }})
+                                                {{ wcag_ref.criteria }} ({{ _('Level') }} {{ wcag_ref.level }})
                                             </span>
                                             {% endfor %}
                                         </div>
@@ -605,13 +605,13 @@
                                     {% endif %}
 
                                     <div class="mt-3">
-                                        <strong>Status:</strong>
+                                        <strong>{{ _('Status:') }}</strong>
                                         <select class="form-select form-select-sm d-inline-block w-auto"
                                                 onchange="updateIssueStatus('{{ issue.id }}', this.value)">
-                                            <option value="open" {{ 'selected' if issue.status == 'open' }}>Open</option>
-                                            <option value="in_progress" {{ 'selected' if issue.status == 'in_progress' }}>In Progress</option>
-                                            <option value="resolved" {{ 'selected' if issue.status == 'resolved' }}>Resolved</option>
-                                            <option value="verified" {{ 'selected' if issue.status == 'verified' }}>Verified</option>
+                                            <option value="open" {{ 'selected' if issue.status == 'open' }}>{{ _('Open') }}</option>
+                                            <option value="in_progress" {{ 'selected' if issue.status == 'in_progress' }}>{{ _('In Progress') }}</option>
+                                            <option value="resolved" {{ 'selected' if issue.status == 'resolved' }}>{{ _('Resolved') }}</option>
+                                            <option value="verified" {{ 'selected' if issue.status == 'verified' }}>{{ _('Verified') }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -622,7 +622,7 @@
                 </div>
                 {% endfor %}
             {% else %}
-            <p class="text-muted">No issues found in this recording.</p>
+            <p class="text-muted">{{ _('No issues found in this recording.') }}</p>
             {% endif %}
                 </div> <!-- Close accordion-body -->
             </div> <!-- Close accordion-collapse -->
@@ -643,14 +643,14 @@ function updateIssueStatus(issueId, status) {
     .then(data => {
         if (data.success) {
             // Show success message (optional)
-            console.log('Status updated successfully');
+            console.log('{{ _('Status updated successfully') }}');
         } else {
-            alert('Failed to update status');
+            alert('{{ _('Failed to update status') }}');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error updating status');
+        alert('{{ _('Error updating status') }}');
     });
 }
 </script>
@@ -662,25 +662,24 @@ function updateIssueStatus(issueId, status) {
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="criteriaBreakdownModalLabel">
-                    <i class="bi bi-list-check"></i> WCAG Success Criteria Breakdown
+                    <i class="bi bi-list-check"></i> {{ _('WCAG Success Criteria Breakdown') }}
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body">
                 <!-- Summary -->
                 <div class="alert alert-info mb-4">
-                    <h6 class="alert-heading"><i class="bi bi-info-circle"></i> How Criteria Are Determined</h6>
+                    <h6 class="alert-heading"><i class="bi bi-info-circle"></i> {{ _('How Criteria Are Determined') }}</h6>
                     <p class="mb-0">
-                        The compliance score is calculated based on WCAG 2.2 Level AA criteria ({{ all_criteria|length }} total).
-                        Criteria are excluded based on the testing scope selected during upload. Only criteria relevant to the
-                        tested content types remain applicable ({{ applicable_criteria|length }} criteria).
+                        {{ _('The compliance score is calculated based on WCAG 2.2 Level AA criteria') }} ({{ all_criteria|length }} {{ _('total') }}).
+                        {{ _('Criteria are excluded based on the testing scope selected during upload. Only criteria relevant to the tested content types remain applicable') }} ({{ applicable_criteria|length }} {{ _('criteria') }}).
                     </p>
                 </div>
 
                 <!-- Testing Scope Summary -->
                 <div class="card mb-4">
                     <div class="card-header bg-light">
-                        <h6 class="mb-0"><i class="bi bi-check-circle"></i> Testing Scope</h6>
+                        <h6 class="mb-0"><i class="bi bi-check-circle"></i> {{ _('Testing Scope') }}</h6>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -700,12 +699,12 @@ function updateIssueStatus(issueId, status) {
                 <ul class="nav nav-tabs mb-3" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="applicable-tab" data-bs-toggle="tab" data-bs-target="#applicable-criteria" type="button" role="tab">
-                            <i class="bi bi-check-circle text-success"></i> Applicable Criteria ({{ applicable_criteria|length }})
+                            <i class="bi bi-check-circle text-success"></i> {{ _('Applicable Criteria') }} ({{ applicable_criteria|length }})
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="removed-tab" data-bs-toggle="tab" data-bs-target="#removed-criteria" type="button" role="tab">
-                            <i class="bi bi-x-circle text-secondary"></i> Excluded Criteria ({{ removed_criteria|length }})
+                            <i class="bi bi-x-circle text-secondary"></i> {{ _('Excluded Criteria') }} ({{ removed_criteria|length }})
                         </button>
                     </li>
                 </ul>
@@ -713,14 +712,14 @@ function updateIssueStatus(issueId, status) {
                 <div class="tab-content">
                     <!-- Applicable Criteria Tab -->
                     <div class="tab-pane fade show active" id="applicable-criteria" role="tabpanel">
-                        <p class="text-muted">These {{ applicable_criteria|length }} criteria are applicable based on your testing scope and are used to calculate the compliance score.</p>
+                        <p class="text-muted">{{ _('These') }} {{ applicable_criteria|length }} {{ _('criteria are applicable based on your testing scope and are used to calculate the compliance score.') }}</p>
                         <div class="table-responsive">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="width: 10%;">Number</th>
-                                        <th style="width: 10%;">Level</th>
-                                        <th>Success Criterion</th>
+                                        <th style="width: 10%;">{{ _('Number') }}</th>
+                                        <th style="width: 10%;">{{ _('Level') }}</th>
+                                        <th>{{ _('Success Criterion') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -749,14 +748,14 @@ function updateIssueStatus(issueId, status) {
 
                     <!-- Removed Criteria Tab -->
                     <div class="tab-pane fade" id="removed-criteria" role="tabpanel">
-                        <p class="text-muted">These {{ removed_criteria|length }} criteria were excluded because they relate only to content types that were not tested.</p>
+                        <p class="text-muted">{{ _('These') }} {{ removed_criteria|length }} {{ _('criteria were excluded because they relate only to content types that were not tested.') }}</p>
                         <div class="table-responsive">
                             <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="width: 10%;">Number</th>
-                                        <th style="width: 10%;">Level</th>
-                                        <th>Success Criterion</th>
+                                        <th style="width: 10%;">{{ _('Number') }}</th>
+                                        <th style="width: 10%;">{{ _('Level') }}</th>
+                                        <th>{{ _('Success Criterion') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -782,9 +781,9 @@ function updateIssueStatus(issueId, status) {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
                 <a href="https://www.w3.org/WAI/WCAG22/quickref/" target="_blank" class="btn btn-primary">
-                    <i class="bi bi-box-arrow-up-right"></i> View WCAG Quick Reference
+                    <i class="bi bi-box-arrow-up-right"></i> {{ _('View WCAG Quick Reference') }}
                 </a>
             </div>
         </div>
@@ -910,11 +909,11 @@ async function saveRecording() {
             // Reload the page to show updated data
             window.location.reload();
         } else {
-            alert('Error saving recording: ' + (result.error || 'Unknown error'));
+            alert('{{ _('Error saving recording:') }} ' + (result.error || '{{ _('Unknown error') }}'));
         }
     } catch (error) {
         console.error('Error saving recording:', error);
-        alert('Error saving recording: ' + error.message);
+        alert('{{ _('Error saving recording:') }} ' + error.message);
     }
 }
 
@@ -923,7 +922,7 @@ function loadDiscoveredPagesForEdit() {
     const container = document.getElementById('discoveredPagesCheckboxContainer');
 
     if (!projectId) {
-        container.innerHTML = '<p class="text-muted small mb-0">No project associated with this recording.</p>';
+        container.innerHTML = '<p class="text-muted small mb-0">{{ _('No project associated with this recording.') }}</p>';
         return;
     }
 
@@ -966,12 +965,12 @@ function loadDiscoveredPagesForEdit() {
                     container.appendChild(div);
                 });
             } else {
-                container.innerHTML = '<p class="text-muted small mb-0">No discovered pages found for this project.</p>';
+                container.innerHTML = '<p class="text-muted small mb-0">{{ _('No discovered pages found for this project.') }}</p>';
             }
         })
         .catch(error => {
             console.error('Error fetching discovered pages:', error);
-            container.innerHTML = '<p class="text-muted small mb-0">Error loading discovered pages.</p>';
+            container.innerHTML = '<p class="text-muted small mb-0">{{ _('Error loading discovered pages.') }}</p>';
         });
 }
 

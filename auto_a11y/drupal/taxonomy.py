@@ -194,12 +194,13 @@ class TaxonomyCache:
             offset = 0
 
             while True:
+                # Use client.get() which now properly handles bracket encoding
                 response = self.client.get(
                     f'taxonomy_term/{vocabulary}',
                     params={
                         'page[limit]': page_limit,
                         'page[offset]': offset,
-                        'sort': 'weight,name'  # Sort by weight first, then name
+                        'sort': 'weight,name'
                     }
                 )
 
@@ -526,6 +527,7 @@ class WCAGChapterCache:
             offset = 0
 
             while True:
+                # Use client.get() which now properly handles bracket encoding
                 response = self.client.get(
                     'node/wcag_chapter',
                     params={

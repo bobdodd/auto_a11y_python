@@ -3,7 +3,7 @@
 {# NOTE: Due to template complexity, instance HTML rendering is duplicated in two places below.
    Search for "INSTANCE_HTML_START" to find both locations. Keep them in sync. #}
 
-{% block title %}{{ page.title or page.url }} - Auto A11y{% endblock %}
+{% block title %}{{ page.title or page.url }} - {{ _('Auto A11y') }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/help-system.css') }}">
@@ -62,13 +62,13 @@
             <li class="breadcrumb-item">
                 <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ page.title or 'Page' }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ page.title or _('Page') }}</li>
         </ol>
     </nav>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">{{ page.title or 'Untitled Page' }}</h1>
+            <h1 class="h2">{{ page.title or _('Untitled Page') }}</h1>
             <p class="text-muted">
                 <a href="{{ page.url }}" target="_blank">
                     {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
@@ -78,26 +78,26 @@
         <div id="page-actions">
             {% if page.status.value in ['queued', 'testing'] %}
             <button class="btn btn-danger" onclick="cancelPageTest('{{ page.id }}')" id="cancel-test-btn">
-                <i class="bi bi-x-circle"></i> Cancel Test
+                <i class="bi bi-x-circle"></i> {{ _('Cancel Test') }}
             </button>
             {% else %}
             {% if website_users %}
             <select class="form-select form-select-sm d-inline-block me-2" id="test-user-select" style="width: auto;">
-                <option value="">Test as guest (no login)</option>
+                <option value="">{{ _('Test as guest (no login)') }}</option>
                 {% for user in website_users %}
                 <option value="{{ user.id }}">{{ user.name_display }} {% if user.roles %}({{ user.roles|join(', ') }}){% endif %}</option>
                 {% endfor %}
             </select>
             {% endif %}
             <button class="btn btn-primary" onclick="testPage('{{ page.id }}')" id="run-test-btn">
-                <i class="bi bi-play"></i> Run Test
+                <i class="bi bi-play"></i> {{ _('Run Test') }}
             </button>
             {% endif %}
             <a href="{{ url_for('pages.edit_page', page_id=page.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-pencil"></i> Edit
+                <i class="bi bi-pencil"></i> {{ _('Edit') }}
             </a>
             <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-success">
-                <i class="bi bi-code-square"></i> Scripts
+                <i class="bi bi-code-square"></i> {{ _('Scripts') }}
             </a>
         </div>
     </div>
@@ -107,7 +107,7 @@
         <div class="d-flex align-items-center">
             <div class="spinner-border spinner-border-sm me-2" role="status"></div>
             <div>
-                <strong>Test in Progress</strong> - The page will automatically refresh when testing completes.
+                <strong>{{ _('Test in Progress') }}</strong> - {{ _('The page will automatically refresh when testing completes.') }}
             </div>
         </div>
     </div>
@@ -117,24 +117,24 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Status</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Status') }}</h6>
                     <p class="mb-0" id="page-status-container">
                         {% if page.status.value == 'discovered' %}
-                            <span class="badge bg-secondary">Discovered</span>
+                            <span class="badge bg-secondary">{{ _('Discovered') }}</span>
                         {% elif page.status.value == 'queued' %}
                             <span class="badge bg-warning">
                                 <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                                Queued
+                                {{ _('Queued') }}
                             </span>
                         {% elif page.status.value == 'testing' %}
                             <span class="badge bg-info">
                                 <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                                Testing
+                                {{ _('Testing') }}
                             </span>
                         {% elif page.status.value == 'tested' %}
-                            <span class="badge bg-success">Tested</span>
+                            <span class="badge bg-success">{{ _('Tested') }}</span>
                         {% elif page.status.value == 'error' %}
-                            <span class="badge bg-danger">Error</span>
+                            <span class="badge bg-danger">{{ _('Error') }}</span>
                         {% else %}
                             <span class="badge bg-secondary">{{ page.status.value|title }}</span>
                         {% endif %}
@@ -145,16 +145,16 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Priority</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Priority') }}</h6>
                     <p class="mb-0">
                         {% if page.priority == 'critical' %}
-                            <span class="badge bg-danger">Critical</span>
+                            <span class="badge bg-danger">{{ _('Critical') }}</span>
                         {% elif page.priority == 'high' %}
-                            <span class="badge bg-warning">High</span>
+                            <span class="badge bg-warning">{{ _('High') }}</span>
                         {% elif page.priority == 'normal' %}
-                            <span class="badge bg-info">Normal</span>
+                            <span class="badge bg-info">{{ _('Normal') }}</span>
                         {% elif page.priority == 'low' %}
-                            <span class="badge bg-secondary">Low</span>
+                            <span class="badge bg-secondary">{{ _('Low') }}</span>
                         {% else %}
                             <span class="badge bg-secondary">{{ page.priority|title }}</span>
                         {% endif %}
@@ -165,9 +165,9 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Last Tested</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Last Tested') }}</h6>
                     <p class="mb-0">
-                        {{ page.last_tested.strftime('%Y-%m-%d %H:%M') if page.last_tested else 'Never' }}
+                        {{ page.last_tested.strftime('%Y-%m-%d %H:%M') if page.last_tested else _('Never') }}
                     </p>
                 </div>
             </div>
@@ -175,12 +175,12 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Test Duration</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Test Duration') }}</h6>
                     <p class="mb-0">
                         {% if page.test_duration_ms %}
                             {{ "%.2f"|format(page.test_duration_ms / 1000) }}s
                         {% else %}
-                            N/A
+                            {{ _('N/A') }}
                         {% endif %}
                     </p>
                 </div>
@@ -189,18 +189,18 @@
         <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Page Screenshot</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Page Screenshot') }}</h6>
                     {% if page.screenshot_path %}
                     {% set page_screenshot_filename = page.screenshot_path.split('/')[-1] %}
                     <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=page_screenshot_filename) }}', '{{ page.url }}'); return false;">
                         <img src="{{ url_for('serve_screenshot', filename=page_screenshot_filename) }}"
-                             alt="Screenshot of {{ page.url }}"
+                             alt="{{ _('Screenshot of') }} {{ page.url }}"
                              style="width: 120px; height: auto; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <span style="display: none; font-size: 0.9em; color: #999;">No screenshot available</span>
+                        <span style="display: none; font-size: 0.9em; color: #999;">{{ _('No screenshot available') }}</span>
                     </a>
                     {% else %}
-                    <span style="font-size: 0.9em; color: #999;">No screenshot available</span>
+                    <span style="font-size: 0.9em; color: #999;">{{ _('No screenshot available') }}</span>
                     {% endif %}
                 </div>
             </div>
@@ -216,8 +216,8 @@
                 <div class="card-body text-center">
                     {% set score = score_data.score|default(0) %}
                     <h6 class="card-title">
-                        <i class="bi bi-robot"></i> Automated Accessibility Score
-                        <button class="help-icon" data-help="scoring.accessibility_score" aria-label="Get help about accessibility score">?</button>
+                        <i class="bi bi-robot"></i> {{ _('Automated Accessibility Score') }}
+                        <button class="help-icon" data-help="scoring.accessibility_score" aria-label="{{ _('Get help about accessibility score') }}">?</button>
                     </h6>
                     <div class="display-4 fw-bold
                         {% if score >= 90 %}text-success
@@ -225,7 +225,7 @@
                         {% else %}text-danger{% endif %}">
                         {{ score|round(1) }}%
                     </div>
-                    <p class="text-muted small mb-0">{{ score_data.passed_checks|default(0) }} / {{ score_data.applicable_checks|default(0) }} automated checks passed</p>
+                    <p class="text-muted small mb-0">{{ score_data.passed_checks|default(0) }} / {{ score_data.applicable_checks|default(0) }} {{ _('automated checks passed') }}</p>
                 </div>
             </div>
         </div>
@@ -235,8 +235,8 @@
             <div class="card">
                 <div class="card-body text-center">
                     <h6 class="card-title">
-                        <i class="bi bi-robot"></i> Automated WCAG Compliance Score
-                        <button class="help-icon" data-help="scoring.compliance_score" aria-label="Get help about compliance score">?</button>
+                        <i class="bi bi-robot"></i> {{ _('Automated WCAG Compliance Score') }}
+                        <button class="help-icon" data-help="scoring.compliance_score" aria-label="{{ _('Get help about compliance score') }}">?</button>
                     </h6>
                     {% if compliance_score %}
                     <div class="display-4 fw-bold
@@ -245,10 +245,10 @@
                         {% else %}text-danger{% endif %}">
                         {{ compliance_score.score|round(1) }}%
                     </div>
-                    <p class="text-muted small mb-0">{{ compliance_score.passed_tests }} / {{ compliance_score.total_tests }} automated tests passed</p>
+                    <p class="text-muted small mb-0">{{ compliance_score.passed_tests }} / {{ compliance_score.total_tests }} {{ _('automated tests passed') }}</p>
                     {% else %}
-                    <div class="display-4 fw-bold text-muted">N/A</div>
-                    <p class="text-muted small mb-0">No data available</p>
+                    <div class="display-4 fw-bold text-muted">{{ _('N/A') }}</div>
+                    <p class="text-muted small mb-0">{{ _('No data available') }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -264,9 +264,9 @@
         <div class="card mb-3">
             <div class="card-header bg-light">
                 <h5 class="mb-0">
-                    <i class="bi bi-bug"></i> Accessibility Issues Found
+                    <i class="bi bi-bug"></i> {{ _('Accessibility Issues Found') }}
                     <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="Number of unique issue types discovered. Each type may have multiple instances throughout the page.">
+                            title="{{ _('Number of unique issue types discovered. Each type may have multiple instances throughout the page.') }}">
                         <i class="bi bi-question-circle"></i>
                     </button>
                 </h5>
@@ -276,37 +276,37 @@
                     <div class="col-6 col-md-3">
                         <div class="text-center">
                             <h6 class="text-danger mb-1">
-                                <i class="bi bi-x-circle"></i> Errors
+                                <i class="bi bi-x-circle"></i> {{ _('Errors') }}
                             </h6>
                             <p class="display-6 mb-0 text-danger">{{ page.violation_count }}</p>
-                            <small class="text-muted">types found</small>
+                            <small class="text-muted">{{ _('types found') }}</small>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="text-center">
                             <h6 class="text-warning mb-1">
-                                <i class="bi bi-exclamation-triangle"></i> Warnings
+                                <i class="bi bi-exclamation-triangle"></i> {{ _('Warnings') }}
                             </h6>
                             <p class="display-6 mb-0 text-warning">{{ page.warning_count }}</p>
-                            <small class="text-muted">types found</small>
+                            <small class="text-muted">{{ _('types found') }}</small>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="text-center">
                             <h6 class="text-info mb-1">
-                                <i class="bi bi-info-circle"></i> Info
+                                <i class="bi bi-info-circle"></i> {{ _('Info') }}
                             </h6>
                             <p class="display-6 mb-0 text-info">{{ page.info_count|default(0) }}</p>
-                            <small class="text-muted">types found</small>
+                            <small class="text-muted">{{ _('types found') }}</small>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="text-center">
                             <h6 class="mb-1" style="color: #6f42c1;">
-                                <i class="bi bi-search"></i> Discovery
+                                <i class="bi bi-search"></i> {{ _('Discovery') }}
                             </h6>
                             <p class="display-6 mb-0" style="color: #6f42c1;">{{ page.discovery_count|default(0) }}</p>
-                            <small class="text-muted">types found</small>
+                            <small class="text-muted">{{ _('types found') }}</small>
                         </div>
                     </div>
                 </div>
@@ -317,9 +317,9 @@
         <div class="card">
             <div class="card-header bg-light">
                 <h5 class="mb-0">
-                    <i class="bi bi-check2-square"></i> Accessibility Checks Performance
+                    <i class="bi bi-check2-square"></i> {{ _('Accessibility Checks Performance') }}
                     <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="Total individual checks performed on all page elements. High pass rate is good but doesn't guarantee full compliance if critical issues exist.">
+                            title="{{ _('Total individual checks performed on all page elements. High pass rate is good but doesn\'t guarantee full compliance if critical issues exist.') }}">
                         <i class="bi bi-question-circle"></i>
                     </button>
                 </h5>
@@ -366,20 +366,20 @@
                         <!-- Progress bar visualization -->
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span><strong>Overall Pass Rate</strong> <button class="help-icon" data-help="scoring.accessibility_score" aria-label="Get help about overall pass rate">?</button></span>
+                                <span><strong>{{ _('Overall Pass Rate') }}</strong> <button class="help-icon" data-help="scoring.accessibility_score" aria-label="{{ _('Get help about overall pass rate') }}">?</button></span>
                                 <span class="{% if pass_rate >= 90 %}text-success{% elif pass_rate >= 70 %}text-warning{% else %}text-danger{% endif %}">
                                     <strong>{{ "%.1f"|format(pass_rate) }}%</strong>
                                 </span>
                             </div>
                             <div class="progress" style="height: 25px;">
-                                <div class="progress-bar {% if pass_rate >= 90 %}bg-success{% elif pass_rate >= 70 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                <div class="progress-bar {% if pass_rate >= 90 %}bg-success{% elif pass_rate >= 70 %}bg-warning{% else %}bg-danger{% endif %}"
                                      role="progressbar" style="width: {{ pass_rate }}%">
-                                    {{ actual_passed }} passed
+                                    {{ actual_passed }} {{ _('passed') }}
                                 </div>
                                 {% if actual_failed > 0 %}
-                                <div class="progress-bar bg-secondary" role="progressbar" 
+                                <div class="progress-bar bg-secondary" role="progressbar"
                                      style="width: {{ 100 - pass_rate }}%">
-                                    {{ actual_failed }} failed
+                                    {{ actual_failed }} {{ _('failed') }}
                                 </div>
                                 {% endif %}
                             </div>
@@ -387,32 +387,31 @@
                         
                         <div class="row text-center">
                             <div class="col">
-                                <h6 class="text-success">✓ Passed</h6>
+                                <h6 class="text-success">✓ {{ _('Passed') }}</h6>
                                 <p class="mb-0 fs-4">{{ actual_passed }}</p>
                             </div>
                             <div class="col">
-                                <h6 class="text-danger">✗ Failed</h6>
+                                <h6 class="text-danger">✗ {{ _('Failed') }}</h6>
                                 <p class="mb-0 fs-4">{{ actual_failed }}</p>
                             </div>
                             {% if actual_na > 0 %}
                             <div class="col">
-                                <h6 class="text-secondary">N/A</h6>
+                                <h6 class="text-secondary">{{ _('N/A') }}</h6>
                                 <p class="mb-0 fs-4">{{ actual_na }}</p>
-                                <small class="text-muted">tests</small>
+                                <small class="text-muted">{{ _('tests') }}</small>
                             </div>
                             {% endif %}
                             <div class="col">
-                                <h6 class="text-muted">Total Tested</h6>
+                                <h6 class="text-muted">{{ _('Total Tested') }}</h6>
                                 <p class="mb-0 fs-4">{{ total_tested }}</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="alert alert-info mb-0">
-                            <h6 class="alert-heading"><i class="bi bi-lightbulb"></i> Understanding the Numbers</h6>
+                            <h6 class="alert-heading"><i class="bi bi-lightbulb"></i> {{ _('Understanding the Numbers') }}</h6>
                             <small>
-                                <strong>Example:</strong> 95% pass rate (475/500 passed) might still mean critical issues exist. 
-                                Those 25 failed checks could all be "missing alt text" affecting every image on the page.
+                                <strong>{{ _('Example:') }}</strong> {{ _('95% pass rate (475/500 passed) might still mean critical issues exist. Those 25 failed checks could all be "missing alt text" affecting every image on the page.') }}
                             </small>
                         </div>
                     </div>
@@ -426,20 +425,20 @@
     {% if latest_result and latest_result.metadata and latest_result.metadata.checks %}
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">Test Check Details</h5>
+            <h5 class="mb-0">{{ _('Test Check Details') }}</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-sm">
                     <thead>
                         <tr>
-                            <th>Test</th>
-                            <th>Check</th>
-                            <th>WCAG</th>
-                            <th class="text-center">Tested</th>
-                            <th class="text-center">Passed</th>
-                            <th class="text-center">Failed</th>
-                            <th class="text-end">Pass Rate</th>
+                            <th>{{ _('Test') }}</th>
+                            <th>{{ _('Check') }}</th>
+                            <th>{{ _('WCAG') }}</th>
+                            <th class="text-center">{{ _('Tested') }}</th>
+                            <th class="text-center">{{ _('Passed') }}</th>
+                            <th class="text-center">{{ _('Failed') }}</th>
+                            <th class="text-end">{{ _('Pass Rate') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -458,14 +457,14 @@
                             <td class="text-end">
                                 {% if check.total > 0 %}
                                     {% set pass_rate = (check.passed / check.total * 100)|round(1) %}
-                                    <span class="badge 
+                                    <span class="badge
                                         {% if pass_rate == 100 %}bg-success
                                         {% elif pass_rate >= 80 %}bg-warning
                                         {% else %}bg-danger{% endif %}">
                                         {{ pass_rate }}%
                                     </span>
                                 {% else %}
-                                    <span class="badge bg-secondary">N/A</span>
+                                    <span class="badge bg-secondary">{{ _('N/A') }}</span>
                                 {% endif %}
                             </td>
                         </tr>
@@ -473,7 +472,7 @@
                     </tbody>
                     <tfoot class="table-light">
                         <tr>
-                            <th colspan="3">Totals</th>
+                            <th colspan="3">{{ _('Totals') }}</th>
                             {% set total_passed = latest_result.metadata.checks | map(attribute='passed') | map('default', 0) | sum %}
                             {% set total_failed = latest_result.metadata.checks | map(attribute='failed') | map('default', 0) | sum %}
                             {% set total_na = latest_result.metadata.checks | selectattr('total', 'equalto', 0) | list | length %}
@@ -482,10 +481,10 @@
                             <th class="text-center">
                                 {{ total_tested }}
                                 {% if total_na > 0 %}
-                                    <br><small class="text-muted">({{ total_na }} N/A checks)</small>
+                                    <br><small class="text-muted">({{ total_na }} {{ _('N/A checks') }})</small>
                                 {% endif %}
                                 {% if total_elements != total_tested %}
-                                    <br><small class="text-muted">({{ total_elements - total_tested }} skipped)</small>
+                                    <br><small class="text-muted">({{ total_elements - total_tested }} {{ _('skipped') }})</small>
                                 {% endif %}
                             </th>
                             <th class="text-center text-success">{{ total_passed }}</th>
@@ -493,14 +492,14 @@
                             <th class="text-end">
                                 {% if total_tested > 0 %}
                                     {% set overall_rate = (total_passed / total_tested * 100)|round(1) %}
-                                    <span class="badge 
+                                    <span class="badge
                                         {% if overall_rate >= 90 %}bg-success
                                         {% elif overall_rate >= 70 %}bg-warning
                                         {% else %}bg-danger{% endif %}">
                                         {{ overall_rate }}%
                                     </span>
                                 {% else %}
-                                    <span class="badge bg-secondary">N/A</span>
+                                    <span class="badge bg-secondary">{{ _('N/A') }}</span>
                                 {% endif %}
                             </th>
                         </tr>
@@ -516,20 +515,20 @@
     {% set screenshot_filename = latest_result.screenshot_path.split('/')[-1] if latest_result.screenshot_path else none %}
     <div class="card test-results-card" data-filterable="true">
         <div class="card-header">
-            <h5 class="mb-0">Latest Test Results</h5>
+            <h5 class="mb-0">{{ _('Latest Test Results') }}</h5>
             <small class="text-muted">
-                Tested on {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
+                {{ _('Tested on') }} {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
             </small>
         </div>
 
         <!-- Multi-State Selector -->
         {% if state_results and state_results|length > 1 %}
         <div class="card-body border-bottom bg-light">
-            <h6 class="mb-3"><i class="bi bi-layers"></i> Page States Tested</h6>
+            <h6 class="mb-3"><i class="bi bi-layers"></i> {{ _('Page States Tested') }}</h6>
             <p class="text-muted small mb-3">
-                This page was tested in multiple states. Select a state below to view its test results.
+                {{ _('This page was tested in multiple states. Select a state below to view its test results.') }}
             </p>
-            <div class="btn-group" role="group" aria-label="Page states">
+            <div class="btn-group" role="group" aria-label="{{ _('Page states') }}">
                 {% for state_result in state_results %}
                     {% set state_desc = state_result.page_state.description if state_result.page_state else ("State " ~ state_result.state_sequence) %}
                     {% set is_active = (loop.index0 == selected_state_index) %}
@@ -541,7 +540,7 @@
                         {{ state_desc }}
                         <br>
                         <small class="{% if is_active %}text-white{% else %}text-muted{% endif %}">
-                            Errors: {{ state_result.violations|length }} | Warnings: {{ state_result.warnings|length }}
+                            {{ _('Errors:') }} {{ state_result.violations|length }} | {{ _('Warnings:') }} {{ state_result.warnings|length }}
                         </small>
                     </button>
                 {% endfor %}
@@ -553,7 +552,7 @@
             <!-- Errors (Violations) -->
             {% if latest_result.violations %}
             <h6 class="text-danger mb-3">
-                <i class="bi bi-x-circle"></i> Errors ({{ latest_result.violations|length }})
+                <i class="bi bi-x-circle"></i> {{ _('Errors') }} ({{ latest_result.violations|length }})
             </h6>
             <div class="accordion mb-4" id="violationsAccordion">
                 {% set viol_counter = namespace(value=0) %}
@@ -611,7 +610,7 @@
                                                                 data-bs-toggle="collapse"
                                                                 data-bs-target="#viol-breakpoint-{{ breakpoint_id }}">
                                                             <span class="badge bg-info me-2">{{ breakpoint_list|length }}</span>
-                                                            <strong>Breakpoint: {{ breakpoint }}px width</strong>
+                                                            <strong>{{ _('Breakpoint:') }} {{ breakpoint }}{{ _('px width') }}</strong>
                                                         </button>
                                                     </h2>
                                                     <div id="viol-breakpoint-{{ breakpoint_id }}"
@@ -627,7 +626,7 @@
                                                     <button class="accordion-button collapsed" type="button"
                                                             data-bs-toggle="collapse"
                                                             data-bs-target="#viol-instance-{{ instance_id }}">
-                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                         {% if violation.metadata and violation.metadata.authenticated_user %}
                                                             <span class="badge bg-secondary ms-2">
                                                                 <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
@@ -637,7 +636,7 @@
                                                             </span>
                                                         {% else %}
                                                             <span class="badge bg-secondary ms-2">
-                                                                <i class="bi bi-person"></i> Guest
+                                                                <i class="bi bi-person"></i> {{ _('Guest') }}
                                                             </span>
                                                         {% endif %}
                                                         {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
@@ -660,10 +659,10 @@
                                                             <h6 class="alert-heading">{{ violation.description }}</h6>
                                                         </div>
                                                         
-                                                        <h6 class="text-danger mb-2">About this issue:</h6>
-                                                        
+                                                        <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
+
                                                         <div class="mb-3">
-                                                            <strong>What the issue is:</strong>
+                                                            <strong>{{ _('What the issue is:') }}</strong>
                                                             {% if 'ErrLinkAccessibleNameMismatch' in violation.id and violation.description %}
                                                             <p>{{ violation.description }}</p>
                                                             {% else %}
@@ -672,32 +671,32 @@
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Why this is important:</strong>
+                                                            <strong>{{ _('Why this is important:') }}</strong>
                                                             <p>{{ violation.metadata.why }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Who it affects:</strong>
+                                                            <strong>{{ _('Who it affects:') }}</strong>
                                                             <p>{{ violation.metadata.who }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>How to remediate:</strong>
+                                                            <strong>{{ _('How to remediate:') }}</strong>
                                                             <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
                                                         </div>
 
                                                         {% if violation.metadata.wcag_full or violation.wcag_criteria %}
-                                                        <h6 class="text-danger mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <h6 class="text-danger mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
                                                         <div class="mb-3">
                                                             {% if violation.metadata.wcag_full %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in violation.metadata.wcag_full %}
                                                                 <li>{{ criterion|safe }}</li>
                                                             {% endfor %}
                                                             </ul>
                                                             {% elif violation.wcag_criteria %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in violation.wcag_criteria %}
                                                                 <li>
@@ -712,18 +711,18 @@
                                                         {% endif %}
                                                         {% else %}
                                                         <!-- Standard description -->
-                                                        <p><strong>Rule:</strong> {{ violation.rule_id|default(violation.id) }}</p>
-                                                        <p><strong>Help:</strong> {{ violation.help_text|default(violation.description) }}</p>
+                                                        <p><strong>{{ _('Rule:') }}</strong> {{ violation.rule_id|default(violation.id) }}</p>
+                                                        <p><strong>{{ _('Help:') }}</strong> {{ violation.help_text|default(violation.description) }}</p>
                                                         {% if violation.failure_summary %}
-                                                        <p><strong>How to fix:</strong> {{ violation.failure_summary }}</p>
+                                                        <p><strong>{{ _('How to fix:') }}</strong> {{ violation.failure_summary }}</p>
                                                         {% endif %}
                                                         {% endif %}
                                                         
                                                         <hr>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <p><strong>Touchpoint:</strong> {{ violation.touchpoint|default('General') }}</p>
-                                                                <p><strong>Impact:</strong> 
+                                                                <p><strong>{{ _('Touchpoint:') }}</strong> {{ violation.touchpoint|default(_('General')) }}</p>
+                                                                <p><strong>{{ _('Impact:') }}</strong> 
                                                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
                                                                         {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
                                                                     </span>
@@ -739,12 +738,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -759,12 +758,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -776,8 +775,8 @@
                                                         
                                                         {% if (violation.selector or violation.xpath) and 'ErrDuplicateNavNames' not in violation.id %}
                                                         <p>
-                                                            <strong>Location:</strong> <code>{{ violation.selector|default(violation.xpath) }}</code>
-                                                            <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{ violation.selector|default(violation.xpath)|e }}', this)" title="Copy XPath to clipboard">
+                                                            <strong>{{ _('Location:') }}</strong> <code>{{ violation.selector|default(violation.xpath) }}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{ violation.selector|default(violation.xpath)|e }}', this)" title="{{ _('Copy XPath to clipboard') }}">
                                                                 <i class="bi bi-clipboard"></i>
                                                             </button>
                                                         </p>
@@ -785,7 +784,7 @@
 
                                                         {% if violation.metadata and violation.metadata.pseudoclass %}
                                                         <p>
-                                                            <strong>CSS State:</strong>
+                                                            <strong>{{ _('CSS State:') }}</strong>
                                                             {% if '@' in violation.metadata.pseudoclass %}
                                                                 {% set parts = violation.metadata.pseudoclass.split('@') %}
                                                                 <span class="badge bg-warning">{{ parts[0] }}</span>
@@ -797,7 +796,7 @@
                                                         {% endif %}
 
                                                         {% if violation.html %}
-                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
                                                         {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
                                                         <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
@@ -927,24 +926,24 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                                                         <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                                             <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
                                                                  class="img-thumbnail"
                                                                  style="max-width: 300px; height: auto; cursor: pointer;"
                                                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">{{ _('Thumbnail not available') }}</span>
                                                         </a>
-                                                        <p class="text-muted small mt-1">Click to view full size</p>
+                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                                                         {% endif %}
 
                                                         {% if violation.metadata.ai_detected %}
                                                         <div class="alert alert-info mt-3">
-                                                            <i class="bi bi-robot"></i> <strong>AI Detection Note:</strong>
-                                                            <p class="mb-0">This issue was detected through visual analysis.</p>
+                                                            <i class="bi bi-robot"></i> <strong>{{ _('AI Detection Note:') }}</strong>
+                                                            <p class="mb-0">{{ _('This issue was detected through visual analysis.') }}</p>
                                                             {% if violation.metadata.ai_confidence %}
-                                                            <p><strong>Confidence:</strong> {{ (violation.metadata.ai_confidence * 100)|round }}%</p>
+                                                            <p><strong>{{ _('Confidence:') }}</strong> {{ (violation.metadata.ai_confidence * 100)|round }}%</p>
                                                             {% endif %}
                                                         </div>
                                                         {% endif %}
@@ -970,7 +969,7 @@
                                                     <button class="accordion-button collapsed" type="button"
                                                             data-bs-toggle="collapse"
                                                             data-bs-target="#viol-instance-{{ instance_id }}">
-                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                         {% if violation.metadata and violation.metadata.authenticated_user %}
                                                             <span class="badge bg-secondary ms-2">
                                                                 <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
@@ -980,7 +979,7 @@
                                                             </span>
                                                         {% else %}
                                                             <span class="badge bg-secondary ms-2">
-                                                                <i class="bi bi-person"></i> Guest
+                                                                <i class="bi bi-person"></i> {{ _('Guest') }}
                                                             </span>
                                                         {% endif %}
                                                         {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
@@ -1003,10 +1002,10 @@
                                                             <h6 class="alert-heading">{{ violation.description }}</h6>
                                                         </div>
                                                         
-                                                        <h6 class="text-danger mb-2">About this issue:</h6>
-                                                        
+                                                        <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
+
                                                         <div class="mb-3">
-                                                            <strong>What the issue is:</strong>
+                                                            <strong>{{ _('What the issue is:') }}</strong>
                                                             {% if 'ErrLinkAccessibleNameMismatch' in violation.id and violation.description %}
                                                             <p>{{ violation.description }}</p>
                                                             {% else %}
@@ -1015,32 +1014,32 @@
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Why this is important:</strong>
+                                                            <strong>{{ _('Why this is important:') }}</strong>
                                                             <p>{{ violation.metadata.why }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Who it affects:</strong>
+                                                            <strong>{{ _('Who it affects:') }}</strong>
                                                             <p>{{ violation.metadata.who }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>How to remediate:</strong>
+                                                            <strong>{{ _('How to remediate:') }}</strong>
                                                             <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
                                                         </div>
 
                                                         {% if violation.metadata.wcag_full or violation.wcag_criteria %}
-                                                        <h6 class="text-danger mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <h6 class="text-danger mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
                                                         <div class="mb-3">
                                                             {% if violation.metadata.wcag_full %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in violation.metadata.wcag_full %}
                                                                 <li>{{ criterion|safe }}</li>
                                                             {% endfor %}
                                                             </ul>
                                                             {% elif violation.wcag_criteria %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in violation.wcag_criteria %}
                                                                 <li>
@@ -1055,18 +1054,18 @@
                                                         {% endif %}
                                                         {% else %}
                                                         <!-- Standard description -->
-                                                        <p><strong>Rule:</strong> {{ violation.rule_id|default(violation.id) }}</p>
-                                                        <p><strong>Help:</strong> {{ violation.help_text|default(violation.description) }}</p>
+                                                        <p><strong>{{ _('Rule:') }}</strong> {{ violation.rule_id|default(violation.id) }}</p>
+                                                        <p><strong>{{ _('Help:') }}</strong> {{ violation.help_text|default(violation.description) }}</p>
                                                         {% if violation.failure_summary %}
-                                                        <p><strong>How to fix:</strong> {{ violation.failure_summary }}</p>
+                                                        <p><strong>{{ _('How to fix:') }}</strong> {{ violation.failure_summary }}</p>
                                                         {% endif %}
                                                         {% endif %}
                                                         
                                                         <hr>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <p><strong>Touchpoint:</strong> {{ violation.touchpoint|default('General') }}</p>
-                                                                <p><strong>Impact:</strong> 
+                                                                <p><strong>{{ _('Touchpoint:') }}</strong> {{ violation.touchpoint|default(_('General')) }}</p>
+                                                                <p><strong>{{ _('Impact:') }}</strong> 
                                                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
                                                                         {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
                                                                     </span>
@@ -1082,12 +1081,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -1102,12 +1101,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -1119,8 +1118,8 @@
                                                         
                                                         {% if (violation.selector or violation.xpath) and 'ErrDuplicateNavNames' not in violation.id %}
                                                         <p>
-                                                            <strong>Location:</strong> <code>{{ violation.selector|default(violation.xpath) }}</code>
-                                                            <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{ violation.selector|default(violation.xpath)|e }}', this)" title="Copy XPath to clipboard">
+                                                            <strong>{{ _('Location:') }}</strong> <code>{{ violation.selector|default(violation.xpath) }}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{ violation.selector|default(violation.xpath)|e }}', this)" title="{{ _('Copy XPath to clipboard') }}">
                                                                 <i class="bi bi-clipboard"></i>
                                                             </button>
                                                         </p>
@@ -1128,7 +1127,7 @@
 
                                                         {% if violation.metadata and violation.metadata.pseudoclass %}
                                                         <p>
-                                                            <strong>CSS State:</strong>
+                                                            <strong>{{ _('CSS State:') }}</strong>
                                                             {% if '@' in violation.metadata.pseudoclass %}
                                                                 {% set parts = violation.metadata.pseudoclass.split('@') %}
                                                                 <span class="badge bg-warning">{{ parts[0] }}</span>
@@ -1140,7 +1139,7 @@
                                                         {% endif %}
 
                                                         {% if violation.html %}
-                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
                                                         {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
                                                         <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
@@ -1270,24 +1269,24 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                                                         <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                                             <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
                                                                  class="img-thumbnail"
                                                                  style="max-width: 300px; height: auto; cursor: pointer;"
                                                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">{{ _('Thumbnail not available') }}</span>
                                                         </a>
-                                                        <p class="text-muted small mt-1">Click to view full size</p>
+                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                                                         {% endif %}
 
                                                         {% if violation.metadata.ai_detected %}
                                                         <div class="alert alert-info mt-3">
-                                                            <i class="bi bi-robot"></i> <strong>AI Detection Note:</strong>
-                                                            <p class="mb-0">This issue was detected through visual analysis.</p>
+                                                            <i class="bi bi-robot"></i> <strong>{{ _('AI Detection Note:') }}</strong>
+                                                            <p class="mb-0">{{ _('This issue was detected through visual analysis.') }}</p>
                                                             {% if violation.metadata.ai_confidence %}
-                                                            <p><strong>Confidence:</strong> {{ (violation.metadata.ai_confidence * 100)|round }}%</p>
+                                                            <p><strong>{{ _('Confidence:') }}</strong> {{ (violation.metadata.ai_confidence * 100)|round }}%</p>
                                                             {% endif %}
                                                         </div>
                                                         {% endif %}
@@ -1382,14 +1381,14 @@
                             <h6 class="text-danger mb-2 mt-4">Relevant test criteria:</h6>
                             <div class="mb-3">
                                 {% if violation.metadata.wcag_full %}
-                                <strong>WCAG Success Criteria:</strong>
+                                <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                 <ul>
                                 {% for criterion in violation.metadata.wcag_full %}
                                     <li>{{ criterion|safe }}</li>
                                 {% endfor %}
                                 </ul>
                                 {% elif violation.wcag_criteria %}
-                                <strong>WCAG Success Criteria:</strong>
+                                <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                 <ul>
                                 {% for criterion in violation.wcag_criteria %}
                                     <li>
@@ -1496,7 +1495,7 @@
 
                             {% if violation.html %}
                             <div class="mt-3">
-                                <h6>Code Snippet</h6>
+                                <h6>{{ _('Code Snippet') }}</h6>
                                 {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
                                 <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
@@ -1671,7 +1670,7 @@
             <!-- Warnings -->
             {% if latest_result.warnings %}
             <h6 class="text-warning mb-3">
-                <i class="bi bi-exclamation-triangle"></i> Warnings ({{ latest_result.warnings|length }})
+                <i class="bi bi-exclamation-triangle"></i> {{ _('Warnings') }} ({{ latest_result.warnings|length }})
             </h6>
             <div class="accordion mb-4" id="warningsAccordion">
                 {% set warn_counter = namespace(value=0) %}
@@ -1722,7 +1721,7 @@
                                                     <button class="accordion-button collapsed" type="button" 
                                                             data-bs-toggle="collapse" 
                                                             data-bs-target="#warn-instance-{{ warn_instance_id }}">
-                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                         {% if warning.xpath %}
                                                         <code class="ms-2">{{ warning.xpath }}</code>
                                                         {% endif %}
@@ -1739,40 +1738,40 @@
                                                             <h6 class="alert-heading">{{ warning.description }}</h6>
                                                         </div>
                                                         
-                                                        <h6 class="text-warning mb-2">About this issue:</h6>
-                                                        
+                                                        <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
+
                                                         <div class="mb-3">
-                                                            <strong>What the issue is:</strong>
+                                                            <strong>{{ _('What the issue is:') }}</strong>
                                                             <p>{{ warning.metadata.what|default(warning.description) }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Why this is important:</strong>
+                                                            <strong>{{ _('Why this is important:') }}</strong>
                                                             <p>{{ warning.metadata.why }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Who it affects:</strong>
+                                                            <strong>{{ _('Who it affects:') }}</strong>
                                                             <p>{{ warning.metadata.who }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>How to remediate:</strong>
+                                                            <strong>{{ _('How to remediate:') }}</strong>
                                                             <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</div>
                                                         </div>
 
                                                         {% if warning.metadata.wcag_full or warning.wcag_criteria %}
-                                                        <h6 class="text-warning mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <h6 class="text-warning mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
                                                         <div class="mb-3">
                                                             {% if warning.metadata.wcag_full %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in warning.metadata.wcag_full %}
                                                                 <li>{{ criterion|safe }}</li>
                                                             {% endfor %}
                                                             </ul>
                                                             {% elif warning.wcag_criteria %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in warning.wcag_criteria %}
                                                                 <li>
@@ -1787,10 +1786,10 @@
                                                         {% endif %}
                                                         {% else %}
                                                         <!-- Standard description -->
-                                                        <p><strong>Rule:</strong> {{ warning.rule_id|default(warning.id) }}</p>
-                                                        <p><strong>Help:</strong> {{ warning.help_text|default(warning.description) }}</p>
+                                                        <p><strong>{{ _('Rule:') }}</strong> {{ warning.rule_id|default(warning.id) }}</p>
+                                                        <p><strong>{{ _('Help:') }}</strong> {{ warning.help_text|default(warning.description) }}</p>
                                                         {% if warning.failure_summary %}
-                                                        <p><strong>How to fix:</strong> {{ warning.failure_summary }}</p>
+                                                        <p><strong>{{ _('How to fix:') }}</strong> {{ warning.failure_summary }}</p>
                                                         {% endif %}
                                                         {% endif %}
 
@@ -1814,12 +1813,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -1834,12 +1833,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                                                More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                                                Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -1858,7 +1857,7 @@
                             </p>
                                                         {% endif %}
                                                         {% if warning.html %}
-                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
                                                         {% if 'ErrSkippedHeadingLevel' in warning.id and warning.metadata and 'previousHeadingHtml' in warning.metadata %}
                                                         <p class="mb-2"><strong>Previous heading (h{{ warning.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
@@ -1897,16 +1896,16 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                                                         <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                                             <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
                                                                  class="img-thumbnail"
                                                                  style="max-width: 300px; height: auto; cursor: pointer;"
                                                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">{{ _('Thumbnail not available') }}</span>
                                                         </a>
-                                                        <p class="text-muted small mt-1">Click to view full size</p>
+                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -1981,14 +1980,14 @@
                             <h6 class="text-warning mb-2 mt-4">Relevant test criteria:</h6>
                             <div class="mb-3">
                                 {% if warning.metadata.wcag_full %}
-                                <strong>WCAG Success Criteria:</strong>
+                                <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                 <ul>
                                 {% for criterion in warning.metadata.wcag_full %}
                                     <li>{{ criterion|safe }}</li>
                                 {% endfor %}
                                 </ul>
                                 {% elif warning.wcag_criteria %}
-                                <strong>WCAG Success Criteria:</strong>
+                                <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                 <ul>
                                 {% for criterion in warning.wcag_criteria %}
                                     <li>
@@ -2067,7 +2066,7 @@
                             {% endif %}
                             {% if warning.html %}
                             <div class="mt-3">
-                                <h6>Code Snippet</h6>
+                                <h6>{{ _('Code Snippet') }}</h6>
                                 {% if 'ErrSkippedHeadingLevel' in warning.id and warning.metadata and 'previousHeadingHtml' in warning.metadata %}
                                 <p class="mb-2"><strong>Previous heading (h{{ warning.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
@@ -2156,7 +2155,7 @@
                             </div>
 
                             {% if warning.xpath %}
-                            <p><strong>XPath:</strong> <code>{{ warning.xpath }}</code></p>
+                            <p><strong>{{ _('XPath:') }}</strong> <code>{{ warning.xpath }}</code></p>
                             {% endif %}
                             {% if warning.html %}
                             <pre><code>{{ warning.html|e }}</code></pre>
@@ -2189,7 +2188,7 @@
             <!-- Info Notes -->
             {% if latest_result.info %}
             <h6 class="text-info mb-3">
-                <i class="bi bi-info-circle"></i> Info Notes ({{ latest_result.info|length }})
+                <i class="bi bi-info-circle"></i> {{ _('Info Notes') }} ({{ latest_result.info|length }})
             </h6>
             <div class="accordion mb-4" id="infoAccordion">
                 {% set info_counter = namespace(value=0) %}
@@ -2231,7 +2230,7 @@
                                                     <button class="accordion-button collapsed" type="button" 
                                                             data-bs-toggle="collapse" 
                                                             data-bs-target="#info-instance-{{ info_instance_id }}">
-                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                         {% if info.xpath %}
                                                         <code class="ms-2">{{ info.xpath }}</code>
                                                         {% endif %}
@@ -2248,40 +2247,40 @@
                                                             <h6 class="alert-heading">{{ info.description }}</h6>
                                                         </div>
                                                         
-                                                        <h6 class="text-info mb-2">About this issue:</h6>
-                                                        
+                                                        <h6 class="text-info mb-2">{{ _('About this issue:') }}</h6>
+
                                                         <div class="mb-3">
-                                                            <strong>What the issue is:</strong>
+                                                            <strong>{{ _('What the issue is:') }}</strong>
                                                             <p>{{ info.metadata.what|default(info.description) }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Why this is important:</strong>
+                                                            <strong>{{ _('Why this is important:') }}</strong>
                                                             <p>{{ info.metadata.why }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Who it affects:</strong>
+                                                            <strong>{{ _('Who it affects:') }}</strong>
                                                             <p>{{ info.metadata.who }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>How to remediate:</strong>
+                                                            <strong>{{ _('How to remediate:') }}</strong>
                                                             <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation|default(info.failure_summary) }}</div>
                                                         </div>
 
                                                         {% if info.metadata.wcag_full or info.wcag_criteria %}
-                                                        <h6 class="text-info mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <h6 class="text-info mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
                                                         <div class="mb-3">
                                                             {% if info.metadata.wcag_full %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in info.metadata.wcag_full %}
                                                                 <li>{{ criterion|safe }}</li>
                                                             {% endfor %}
                                                             </ul>
                                                             {% elif info.wcag_criteria %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in info.wcag_criteria %}
                                                                 <li>
@@ -2296,9 +2295,9 @@
                                                         {% endif %}
                                                         {% else %}
                                                         <!-- Standard description -->
-                                                        <p><strong>Touchpoint:</strong> {{ info.touchpoint|default('General') }}</p>
+                                                        <p><strong>{{ _('Touchpoint:') }}</strong> {{ info.touchpoint|default(_('General')) }}</p>
                                                         <p class="text-muted">
-                                                            <i class="bi bi-info-circle"></i> This is an informational note.
+                                                            <i class="bi bi-info-circle"></i> {{ _('This is an informational note.') }}
                                                         </p>
                                                         {% endif %}
                                                         
@@ -2311,7 +2310,7 @@
                             </p>
                                                         {% endif %}
                                                         {% if info.html %}
-                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
                                                         {% if 'ErrSkippedHeadingLevel' in info.id and info.metadata and 'previousHeadingHtml' in info.metadata %}
                                                         <p class="mb-2"><strong>Previous heading (h{{ info.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
@@ -2350,16 +2349,16 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                                                         <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                                             <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
                                                                  class="img-thumbnail"
                                                                  style="max-width: 300px; height: auto; cursor: pointer;"
                                                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">{{ _('Thumbnail not available') }}</span>
                                                         </a>
-                                                        <p class="text-muted small mt-1">Click to view full size</p>
+                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -2426,14 +2425,14 @@
                             <h6 class="text-info mb-2 mt-4">Relevant test criteria:</h6>
                             <div class="mb-3">
                                 {% if info.metadata.wcag_full %}
-                                <strong>WCAG Success Criteria:</strong>
+                                <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                 <ul>
                                 {% for criterion in info.metadata.wcag_full %}
                                     <li>{{ criterion|safe }}</li>
                                 {% endfor %}
                                 </ul>
                                 {% elif info.wcag_criteria %}
-                                <strong>WCAG Success Criteria:</strong>
+                                <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                 <ul>
                                 {% for criterion in info.wcag_criteria %}
                                     <li>
@@ -2459,7 +2458,7 @@
                             {% endif %}
                             {% if info.html %}
                             <div class="mt-3">
-                                <h6>Code Snippet</h6>
+                                <h6>{{ _('Code Snippet') }}</h6>
                                 {% if 'ErrSkippedHeadingLevel' in info.id and info.metadata and 'previousHeadingHtml' in info.metadata %}
                                 <p class="mb-2"><strong>Previous heading (h{{ info.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
@@ -2497,16 +2496,16 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                                                         <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                                             <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
                                                                  class="img-thumbnail"
                                                                  style="max-width: 300px; height: auto; cursor: pointer;"
                                                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">{{ _('Thumbnail not available') }}</span>
                                                         </a>
-                                                        <p class="text-muted small mt-1">Click to view full size</p>
+                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                                                         {% endif %}
                             </div>
                             {% endif %}
@@ -2568,7 +2567,7 @@
             <!-- Discovery Items -->
             {% if latest_result.discovery %}
             <h6 class="mb-3" style="color: #6f42c1;">
-                <i class="bi bi-search"></i> Discovery Items ({{ latest_result.discovery|length }})
+                <i class="bi bi-search"></i> {{ _('Discovery Items') }} ({{ latest_result.discovery|length }})
             </h6>
             <div class="accordion mb-4" id="discoveryAccordion">
                 {% set disc_counter = namespace(value=0) %}
@@ -2610,7 +2609,7 @@
                                                     <button class="accordion-button collapsed" type="button" 
                                                             data-bs-toggle="collapse" 
                                                             data-bs-target="#disc-instance-{{ disc_instance_id }}">
-                                                        <strong>Instance {{ loop.index }}:</strong>
+                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                         {% if discovery.xpath %}
                                                         <code class="ms-2">{{ discovery.xpath }}</code>
                                                         {% endif %}
@@ -2632,40 +2631,40 @@
                                                             <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.description }}</h6>
                                                         </div>
                                                         
-                                                        <h6 style="color: #6f42c1;" class="mb-2">About this discovery item:</h6>
-                                                        
+                                                        <h6 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h6>
+
                                                         <div class="mb-3">
-                                                            <strong>What was found:</strong>
+                                                            <strong>{{ _('What was found:') }}</strong>
                                                             <p>{{ discovery.metadata.what|default(discovery.description) }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Why manual review is needed:</strong>
+                                                            <strong>{{ _('Why manual review is needed:') }}</strong>
                                                             <p>{{ discovery.metadata.why }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>Who could be affected:</strong>
+                                                            <strong>{{ _('Who could be affected:') }}</strong>
                                                             <p>{{ discovery.metadata.who }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <strong>What to check manually:</strong>
+                                                            <strong>{{ _('What to check manually:') }}</strong>
                                                             <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation|default(discovery.failure_summary) }}</div>
                                                         </div>
 
                                                         {% if discovery.metadata.wcag_full or discovery.wcag_criteria %}
-                                                        <h6 style="color: #6f42c1;" class="mb-2 mt-4">Relevant test criteria:</h6>
+                                                        <h6 style="color: #6f42c1;" class="mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
                                                         <div class="mb-3">
                                                             {% if discovery.metadata.wcag_full %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in discovery.metadata.wcag_full %}
                                                                 <li>{{ criterion|safe }}</li>
                                                             {% endfor %}
                                                             </ul>
                                                             {% elif discovery.wcag_criteria %}
-                                                            <strong>WCAG Success Criteria:</strong>
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                                             <ul>
                                                             {% for criterion in discovery.wcag_criteria %}
                                                                 <li>
@@ -2682,7 +2681,7 @@
                                                         <!-- Standard description -->
                                                         <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
                                                         <p class="text-muted">
-                                                            <i class="bi bi-info-circle"></i> This item requires manual inspection.
+                                                            <i class="bi bi-info-circle"></i> {{ _('This item requires manual inspection.') }}
                                                         </p>
                                                         {% endif %}
                                                         
@@ -2697,7 +2696,7 @@
                             </p>
                                                         {% endif %}
                                                         {% if discovery.html %}
-                                                        <h6 class="mt-3">Code Snippet</h6>
+                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
                                                         {% if 'ErrSkippedHeadingLevel' in discovery.id and discovery.metadata and 'previousHeadingHtml' in discovery.metadata %}
                                                         <p class="mb-2"><strong>Previous heading (h{{ discovery.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
@@ -2752,16 +2751,16 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                                                         <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                                             <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="Thumbnail of {{ page.url }}"
+                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
                                                                  class="img-thumbnail"
                                                                  style="max-width: 300px; height: auto; cursor: pointer;"
                                                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
+                                                            <span style="display: none; font-size: 0.9em; color: #999;">{{ _('Thumbnail not available') }}</span>
                                                         </a>
-                                                        <p class="text-muted small mt-1">Click to view full size</p>
+                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -2830,14 +2829,14 @@
                             <h6 style="color: #6f42c1;" class="mb-2 mt-4">Relevant test criteria:</h6>
                             <div class="mb-3">
                                 {% if discovery.metadata.wcag_full %}
-                                <strong>WCAG Success Criteria:</strong>
+                                <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                 <ul>
                                 {% for criterion in discovery.metadata.wcag_full %}
                                     <li>{{ criterion|safe }}</li>
                                 {% endfor %}
                                 </ul>
                                 {% elif discovery.wcag_criteria %}
-                                <strong>WCAG Success Criteria:</strong>
+                                <strong>{{ _('WCAG Success Criteria:') }}</strong>
                                 <ul>
                                 {% for criterion in discovery.wcag_criteria %}
                                     <li>
@@ -2866,7 +2865,7 @@
                             {% endif %}
                             {% if discovery.html %}
                             <div class="mt-3">
-                                <h6>Code Snippet</h6>
+                                <h6>{{ _('Code Snippet') }}</h6>
                                 {% if 'ErrSkippedHeadingLevel' in discovery.id and discovery.metadata and 'previousHeadingHtml' in discovery.metadata %}
                                 <p class="mb-2"><strong>Previous heading (h{{ discovery.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
@@ -3000,7 +2999,7 @@
                         Test completed in {{ "%.2f"|format(latest_result.duration_ms / 1000) }} seconds
                         {% if latest_result.screenshot_path %}
                         | <a href="{{ url_for('serve_screenshot', filename=latest_result.screenshot_path.replace('screenshots/', '')) }}" target="_blank">
-                            View Screenshot <i class="bi bi-image"></i>
+                            {{ _('View Screenshot') }} <i class="bi bi-image"></i>
                         </a>
                         {% endif %}
                     </small>
@@ -3010,7 +3009,7 @@
     </div>
     {% elif page.status.value != 'tested' %}
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i> This page has not been tested yet. Click "Run Test" to start accessibility testing.
+        <i class="bi bi-info-circle"></i> {{ _('This page has not been tested yet. Click "Run Test" to start accessibility testing.') }}
     </div>
     {% endif %}
 
@@ -3018,22 +3017,22 @@
     {% if test_history %}
     <div class="card mt-4">
         <div class="card-header">
-            <h5 class="mb-0">Test History</h5>
+            <h5 class="mb-0">{{ _('Test History') }}</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>User</th>
-                            <th>Errors</th>
-                            <th>Warnings</th>
-                            <th>Info</th>
-                            <th>Discovery</th>
-                            <th>Passed</th>
-                            <th>Duration</th>
-                            <th>Actions</th>
+                            <th>{{ _('Date') }}</th>
+                            <th>{{ _('User') }}</th>
+                            <th>{{ _('Errors') }}</th>
+                            <th>{{ _('Warnings') }}</th>
+                            <th>{{ _('Info') }}</th>
+                            <th>{{ _('Discovery') }}</th>
+                            <th>{{ _('Passed') }}</th>
+                            <th>{{ _('Duration') }}</th>
+                            <th>{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -3047,7 +3046,7 @@
                                         <br><small class="text-muted">{{ result.metadata.authenticated_user.roles|join(', ') }}</small>
                                     {% endif %}
                                 {% else %}
-                                    <i class="bi bi-person"></i> Guest
+                                    <i class="bi bi-person"></i> {{ _('Guest') }}
                                 {% endif %}
                             </td>
                             <td><span class="badge bg-danger">{{ result.violation_count }}</span></td>
@@ -3059,7 +3058,7 @@
                             <td>
                                 <a href="{{ url_for('testing.view_result', result_id=result.id) }}"
                                    class="btn btn-sm btn-primary">
-                                    <i class="bi bi-eye"></i> View
+                                    <i class="bi bi-eye"></i> {{ _('View') }}
                                 </a>
                             </td>
                         </tr>
@@ -3077,17 +3076,17 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="screenshotModalTitle">Page Screenshot</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="screenshotModalTitle">{{ _('Page Screenshot') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body text-center">
-                <img id="screenshotModalImage" src="" alt="Screenshot" style="max-width: 100%; height: auto;">
+                <img id="screenshotModalImage" src="" alt="{{ _('Screenshot') }}" style="max-width: 100%; height: auto;">
             </div>
             <div class="modal-footer">
                 <a id="screenshotModalLink" href="" target="_blank" class="btn btn-primary">
-                    <i class="bi bi-box-arrow-up-right"></i> Open in New Tab
+                    <i class="bi bi-box-arrow-up-right"></i> {{ _('Open in New Tab') }}
                 </a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
             </div>
         </div>
     </div>
@@ -3098,15 +3097,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Running Test</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">{{ _('Running Test') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body text-center">
                 <div class="spinner-border text-primary mb-3" role="status">
-                    <span class="visually-hidden">Testing...</span>
+                    <span class="visually-hidden">{{ _('Testing...') }}</span>
                 </div>
-                <p>Running accessibility tests on this page...</p>
-                <p class="text-muted">This may take a moment.</p>
+                <p>{{ _('Running accessibility tests on this page...') }}</p>
+                <p class="text-muted">{{ _('This may take a moment.') }}</p>
             </div>
         </div>
     </div>
@@ -3115,8 +3114,33 @@
 
 {% block extra_js %}
 <script>
+// Translation strings for JavaScript
+const i18n = {
+    'screenshot': '{{ _('Screenshot:') }}',
+    'discovered': '{{ _('Discovered') }}',
+    'queued': '{{ _('Queued') }}',
+    'testing': '{{ _('Testing') }}',
+    'tested': '{{ _('Tested') }}',
+    'error': '{{ _('Error') }}',
+    'cancelTest': '{{ _('Cancel Test') }}',
+    'runTest': '{{ _('Run Test') }}',
+    'testComplete': '{{ _('Test Complete') }}',
+    'refreshingResults': '{{ _('Refreshing page to show results...') }}',
+    'testCancelled': '{{ _('Test Cancelled') }}',
+    'testCancelledMsg': '{{ _('The page test has been cancelled.') }}',
+    'failedToCancel': '{{ _('Failed to cancel test') }}',
+    'failedToCancelMsg': '{{ _('Failed to cancel test:') }}',
+    'unknownError': '{{ _('Unknown error') }}',
+    'testStarted': '{{ _('Test started') }}',
+    'testStartedMsg': '{{ _('The accessibility test is running. The page will refresh when complete.') }}',
+    'testFailed': '{{ _('Test failed:') }}',
+    'failedToStart': '{{ _('Failed to start test') }}',
+    'startingTest': '{{ _('Starting Test...') }}',
+    'cancelling': '{{ _('Cancelling...') }}'
+};
+
 function showScreenshot(screenshotUrl, pageUrl) {
-    $('#screenshotModalTitle').text('Screenshot: ' + pageUrl);
+    $('#screenshotModalTitle').text(i18n.screenshot + ' ' + pageUrl);
     $('#screenshotModalImage').attr('src', screenshotUrl);
     $('#screenshotModalLink').attr('href', screenshotUrl);
     $('#screenshotModal').modal('show');
@@ -3132,23 +3156,23 @@ function updateStatusBadge(status) {
     
     switch(status) {
         case 'discovered':
-            badgeHtml = '<span class="badge bg-secondary">Discovered</span>';
+            badgeHtml = `<span class="badge bg-secondary">${i18n.discovered}</span>`;
             progressAlert.classList.add('d-none');
             break;
         case 'queued':
-            badgeHtml = '<span class="badge bg-warning"><span class="spinner-border spinner-border-sm me-1" role="status"></span>Queued</span>';
+            badgeHtml = `<span class="badge bg-warning"><span class="spinner-border spinner-border-sm me-1" role="status"></span>${i18n.queued}</span>`;
             progressAlert.classList.remove('d-none');
             break;
         case 'testing':
-            badgeHtml = '<span class="badge bg-info"><span class="spinner-border spinner-border-sm me-1" role="status"></span>Testing</span>';
+            badgeHtml = `<span class="badge bg-info"><span class="spinner-border spinner-border-sm me-1" role="status"></span>${i18n.testing}</span>`;
             progressAlert.classList.remove('d-none');
             break;
         case 'tested':
-            badgeHtml = '<span class="badge bg-success">Tested</span>';
+            badgeHtml = `<span class="badge bg-success">${i18n.tested}</span>`;
             progressAlert.classList.add('d-none');
             break;
         case 'error':
-            badgeHtml = '<span class="badge bg-danger">Error</span>';
+            badgeHtml = `<span class="badge bg-danger">${i18n.error}</span>`;
             progressAlert.classList.add('d-none');
             break;
         default:
@@ -3178,7 +3202,7 @@ function startStatusPolling(pageId) {
                 
                 // Show notification before reload
                 if (window.showNotification) {
-                    showNotification('Test Complete', 'Refreshing page to show results...', 'success');
+                    showNotification(i18n.testComplete, i18n.refreshingResults, 'success');
                 }
                 
                 // Reload after a short delay to show the notification
@@ -3214,7 +3238,7 @@ function updateActionButtons(mode) {
         // Replace with cancel button
         actionsDiv.innerHTML = `
             <button class="btn btn-danger" onclick="cancelPageTest('{{ page.id }}')" id="cancel-test-btn">
-                <i class="bi bi-x-circle"></i> Cancel Test
+                <i class="bi bi-x-circle"></i> ${i18n.cancelTest}
             </button>
             ${editBtn ? editBtn.outerHTML : ''}
         `;
@@ -3222,7 +3246,7 @@ function updateActionButtons(mode) {
         // Replace with run test button
         actionsDiv.innerHTML = `
             <button class="btn btn-primary" onclick="testPage('{{ page.id }}')" id="run-test-btn">
-                <i class="bi bi-play"></i> Run Test
+                <i class="bi bi-play"></i> ${i18n.runTest}
             </button>
             ${editBtn ? editBtn.outerHTML : ''}
         `;
@@ -3233,7 +3257,7 @@ function cancelPageTest(pageId) {
     const cancelBtn = document.getElementById('cancel-test-btn');
     if (cancelBtn) {
         cancelBtn.disabled = true;
-        cancelBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Cancelling...';
+        cancelBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> ${i18n.cancelling}`;
     }
     
     const postData = {};
@@ -3262,22 +3286,22 @@ function cancelPageTest(pageId) {
             
             // Show notification
             if (window.showNotification) {
-                showNotification('Test Cancelled', 'The page test has been cancelled.', 'warning');
+                showNotification(i18n.testCancelled, i18n.testCancelledMsg, 'warning');
             }
         } else {
-            alert('Failed to cancel test: ' + (data.message || 'Unknown error'));
-            
+            alert(i18n.failedToCancelMsg + ' ' + (data.message || i18n.unknownError));
+
             // Re-enable button
             if (cancelBtn) {
                 cancelBtn.disabled = false;
-                cancelBtn.innerHTML = '<i class="bi bi-x-circle"></i> Cancel Test';
+                cancelBtn.innerHTML = `<i class="bi bi-x-circle"></i> ${i18n.cancelTest}`;
             }
         }
     }).fail(function() {
-        alert('Failed to cancel test');
+        alert(i18n.failedToCancel);
         if (cancelBtn) {
             cancelBtn.disabled = false;
-            cancelBtn.innerHTML = '<i class="bi bi-x-circle"></i> Cancel Test';
+            cancelBtn.innerHTML = `<i class="bi bi-x-circle"></i> ${i18n.cancelTest}`;
         }
     });
 }
@@ -3287,7 +3311,7 @@ function testPage(pageId) {
     const testBtn = document.getElementById('run-test-btn');
     if (testBtn) {
         testBtn.disabled = true;
-        testBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Starting Test...';
+        testBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> ${i18n.startingTest}`;
     }
 
     // Show modal
@@ -3337,27 +3361,27 @@ function testPage(pageId) {
 
                 // Show progress notification
                 if (window.showNotification) {
-                    showNotification('Test started', 'The accessibility test is running. The page will refresh when complete.', 'info');
+                    showNotification(i18n.testStarted, i18n.testStartedMsg, 'info');
                 }
             } else {
                 modal.hide();
-                alert('Test failed: ' + (data.error || 'Unknown error'));
+                alert(i18n.testFailed + ' ' + (data.error || i18n.unknownError));
 
                 // Re-enable button
                 if (testBtn) {
                     testBtn.disabled = false;
-                    testBtn.innerHTML = '<i class="bi bi-play"></i> Run Test';
+                    testBtn.innerHTML = `<i class="bi bi-play"></i> ${i18n.runTest}`;
                 }
             }
         }
     }).fail(function() {
         modal.hide();
-        alert('Failed to start test');
-        
+        alert(i18n.failedToStart);
+
         // Re-enable button
         if (testBtn) {
             testBtn.disabled = false;
-            testBtn.innerHTML = '<i class="bi bi-play"></i> Run Test';
+            testBtn.innerHTML = `<i class="bi bi-play"></i> ${i18n.runTest}`;
         }
     });
 }

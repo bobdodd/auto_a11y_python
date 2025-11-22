@@ -90,7 +90,8 @@ class DrupalJSONAPIClient:
         url = urljoin(self.base_url, endpoint)
 
         if params:
-            query_string = urlencode(params)
+            # Use safe parameter to prevent encoding of brackets for Drupal JSON:API
+            query_string = urlencode(params, safe='[]')
             url = f"{url}?{query_string}"
 
         return url

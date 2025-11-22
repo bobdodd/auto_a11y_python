@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Edit {{ project.name }} - Auto A11y{% endblock %}
+{% block title %}{{ _('Edit') }} {{ project.name }} - {{ _('Auto A11y') }}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -48,82 +48,82 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-lg-6 mx-auto">
-            <h1 class="h2 mb-4">Edit Project</h1>
+            <h1 class="h2 mb-4">{{ _('Edit Project') }}</h1>
             
             <div class="card">
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('projects.edit_project', project_id=project.id) }}">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Project Name *</label>
-                            <input type="text" class="form-control" id="name" name="name" 
+                            <label for="name" class="form-label">{{ _('Project Name') }} *</label>
+                            <input type="text" class="form-control" id="name" name="name"
                                    value="{{ project.name }}" required maxlength="100">
                         </div>
                         
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" name="description" 
+                            <label for="description" class="form-label">{{ _('Description') }}</label>
+                            <textarea class="form-control" id="description" name="description"
                                       rows="3" maxlength="500">{{ project.description or '' }}</textarea>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
+                            <label for="status" class="form-label">{{ _('Status') }}</label>
                             <select class="form-select" id="status" name="status">
-                                <option value="active" {% if project.status.value == 'active' %}selected{% endif %}>Active</option>
-                                <option value="paused" {% if project.status.value == 'paused' %}selected{% endif %}>Paused</option>
-                                <option value="completed" {% if project.status.value == 'completed' %}selected{% endif %}>Completed</option>
-                                <option value="archived" {% if project.status.value == 'archived' %}selected{% endif %}>Archived</option>
+                                <option value="active" {% if project.status.value == 'active' %}selected{% endif %}>{{ _('Active') }}</option>
+                                <option value="paused" {% if project.status.value == 'paused' %}selected{% endif %}>{{ _('Paused') }}</option>
+                                <option value="completed" {% if project.status.value == 'completed' %}selected{% endif %}>{{ _('Completed') }}</option>
+                                <option value="archived" {% if project.status.value == 'archived' %}selected{% endif %}>{{ _('Archived') }}</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="drupal_audit_name" class="form-label">Drupal Audit (Optional)</label>
+                            <label for="drupal_audit_name" class="form-label">{{ _('Drupal Audit (Optional)') }}</label>
                             <select class="form-select" id="drupal_audit_name" name="drupal_audit_name">
-                                <option value="">Auto-match by project name</option>
-                                <option value="" disabled>Loading audits...</option>
+                                <option value="">{{ _('Auto-match by project name') }}</option>
+                                <option value="" disabled>{{ _('Loading audits...') }}</option>
                             </select>
                             <div class="form-text">
-                                Select the corresponding audit in Drupal for synchronization. Leave as "Auto-match" to use the project name.
+                                {{ _('Select the corresponding audit in Drupal for synchronization. Leave as "Auto-match" to use the project name.') }}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="wcag_level" class="form-label">WCAG Compliance Level</label>
+                            <label for="wcag_level" class="form-label">{{ _('WCAG Compliance Level') }}</label>
                             <select class="form-select" id="wcag_level" name="wcag_level">
-                                <option value="AA" {% if project.config.get('wcag_level', 'AA') == 'AA' %}selected{% endif %}>Level AA (Recommended)</option>
-                                <option value="AAA" {% if project.config.get('wcag_level', 'AA') == 'AAA' %}selected{% endif %}>Level AAA (Enhanced)</option>
+                                <option value="AA" {% if project.config.get('wcag_level', 'AA') == 'AA' %}selected{% endif %}>{{ _('Level AA (Recommended)') }}</option>
+                                <option value="AAA" {% if project.config.get('wcag_level', 'AA') == 'AAA' %}selected{% endif %}>{{ _('Level AAA (Enhanced)') }}</option>
                             </select>
                             <div class="form-text">
-                                <strong>Level AA:</strong> Standard compliance (4.5:1 contrast for normal text, 3:1 for large text)<br>
-                                <strong>Level AAA:</strong> Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)
+                                <strong>{{ _('Level AA:') }}</strong> {{ _('Standard compliance (4.5:1 contrast for normal text, 3:1 for large text)') }}<br>
+                                <strong>{{ _('Level AAA:') }}</strong> {{ _('Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)') }}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="page_load_strategy" class="form-label">Page Load Strategy</label>
+                            <label for="page_load_strategy" class="form-label">{{ _('Page Load Strategy') }}</label>
                             <select class="form-select" id="page_load_strategy" name="page_load_strategy">
-                                <option value="networkidle2" {% if project.config.get('page_load_strategy', 'networkidle2') == 'networkidle2' %}selected{% endif %}>Network Idle 2 (Default - Best for most sites)</option>
-                                <option value="networkidle0" {% if project.config.get('page_load_strategy', 'networkidle2') == 'networkidle0' %}selected{% endif %}>Network Idle 0 (Very thorough, slowest)</option>
-                                <option value="domcontentloaded" {% if project.config.get('page_load_strategy', 'networkidle2') == 'domcontentloaded' %}selected{% endif %}>DOM Content Loaded (Fast, for sites with heavy background activity)</option>
-                                <option value="load" {% if project.config.get('page_load_strategy', 'networkidle2') == 'load' %}selected{% endif %}>Load Event (Middle ground)</option>
+                                <option value="networkidle2" {% if project.config.get('page_load_strategy', 'networkidle2') == 'networkidle2' %}selected{% endif %}>{{ _('Network Idle 2 (Default - Best for most sites)') }}</option>
+                                <option value="networkidle0" {% if project.config.get('page_load_strategy', 'networkidle2') == 'networkidle0' %}selected{% endif %}>{{ _('Network Idle 0 (Very thorough, slowest)') }}</option>
+                                <option value="domcontentloaded" {% if project.config.get('page_load_strategy', 'networkidle2') == 'domcontentloaded' %}selected{% endif %}>{{ _('DOM Content Loaded (Fast, for sites with heavy background activity)') }}</option>
+                                <option value="load" {% if project.config.get('page_load_strategy', 'networkidle2') == 'load' %}selected{% endif %}>{{ _('Load Event (Middle ground)') }}</option>
                             </select>
                             <div class="form-text">
-                                Controls when testing begins after navigating to a page:<br>
-                                • <strong>Network Idle 2</strong>: Wait until network has ≤2 connections (best for dynamic sites)<br>
-                                • <strong>Network Idle 0</strong>: Wait until network is completely idle (very thorough but slow)<br>
-                                • <strong>DOM Content Loaded</strong>: Test as soon as DOM is ready (use for BBC News, sites with continuous ads/analytics)<br>
-                                • <strong>Load Event</strong>: Wait for load event (faster than network idle)
+                                {{ _('Controls when testing begins after navigating to a page:') }}<br>
+                                • <strong>{{ _('Network Idle 2') }}</strong>: {{ _('Wait until network has ≤2 connections (best for dynamic sites)') }}<br>
+                                • <strong>{{ _('Network Idle 0') }}</strong>: {{ _('Wait until network is completely idle (very thorough but slow)') }}<br>
+                                • <strong>{{ _('DOM Content Loaded') }}</strong>: {{ _('Test as soon as DOM is ready (use for BBC News, sites with continuous ads/analytics)') }}<br>
+                                • <strong>{{ _('Load Event') }}</strong>: {{ _('Wait for load event (faster than network idle)') }}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="headless_browser" class="form-label">Browser Display Mode</label>
+                            <label for="headless_browser" class="form-label">{{ _('Browser Display Mode') }}</label>
                             <select class="form-select" id="headless_browser" name="headless_browser">
-                                <option value="true" {% if project.config.get('headless_browser', 'true') == 'true' %}selected{% endif %}>Headless (No visible browser)</option>
-                                <option value="false" {% if project.config.get('headless_browser', 'true') == 'false' %}selected{% endif %}>Visible Browser (Show Chrome window)</option>
+                                <option value="true" {% if project.config.get('headless_browser', 'true') == 'true' %}selected{% endif %}>{{ _('Headless (No visible browser)') }}</option>
+                                <option value="false" {% if project.config.get('headless_browser', 'true') == 'false' %}selected{% endif %}>{{ _('Visible Browser (Show Chrome window)') }}</option>
                             </select>
                             <div class="form-text">
-                                • <strong>Headless</strong>: Run browser invisibly (faster, less resource intensive)<br>
-                                • <strong>Visible Browser</strong>: Show the Chrome window (useful for debugging)
+                                • <strong>{{ _('Headless') }}</strong>: {{ _('Run browser invisibly (faster, less resource intensive)') }}<br>
+                                • <strong>{{ _('Visible Browser') }}</strong>: {{ _('Show the Chrome window (useful for debugging)') }}
                             </div>
                         </div>
 
@@ -132,70 +132,69 @@
                                 <input class="form-check-input" type="checkbox" id="stealth_mode" name="stealth_mode" value="true"
                                        {% if project.config.get('stealth_mode', False) %}checked{% endif %}>
                                 <label class="form-check-label" for="stealth_mode">
-                                    Enable Stealth Mode (for Cloudflare-protected sites)
+                                    {{ _('Enable Stealth Mode (for Cloudflare-protected sites)') }}
                                 </label>
                             </div>
                             <div class="form-text">
-                                Enables advanced bot detection bypass techniques. Use for sites protected by Cloudflare or similar services.
-                                <strong>Note:</strong> Stealth mode significantly slows down page discovery and testing (~5-15 seconds per page).
+                                {{ _('Enables advanced bot detection bypass techniques. Use for sites protected by Cloudflare or similar services.') }}
+                                <strong>{{ _('Note:') }}</strong> {{ _('Stealth mode significantly slows down page discovery and testing (~5-15 seconds per page).') }}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="title_length_limit" class="form-label">Page Title Length Limit</label>
+                            <label for="title_length_limit" class="form-label">{{ _('Page Title Length Limit') }}</label>
                             <input type="number" class="form-control" id="title_length_limit" name="title_length_limit"
                                    value="{{ project.config.get('titleLengthLimit', 60) }}" min="30" max="120">
                             <div class="form-text">
-                                Maximum recommended characters for page titles. Default is 60. Titles longer than this will generate a warning.
-                                Browser tabs typically show ~30 characters, search results show ~50-60 characters.
+                                {{ _('Maximum recommended characters for page titles. Default is 60. Titles longer than this will generate a warning.') }}
+                                {{ _('Browser tabs typically show ~30 characters, search results show ~50-60 characters.') }}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="heading_length_limit" class="form-label">Heading Length Limit</label>
+                            <label for="heading_length_limit" class="form-label">{{ _('Heading Length Limit') }}</label>
                             <input type="number" class="form-control" id="heading_length_limit" name="heading_length_limit"
                                    value="{{ project.config.get('headingLengthLimit', 60) }}" min="30" max="120">
                             <div class="form-text">
-                                Maximum recommended characters for headings (h1-h6). Default is 60. Headings longer than this will generate a warning.
-                                Headings approaching this limit (above 67% of the limit) will generate an info message.
+                                {{ _('Maximum recommended characters for headings (h1-h6). Default is 60. Headings longer than this will generate a warning.') }}
+                                {{ _('Headings approaching this limit (above 67% of the limit) will generate an info message.') }}
                             </div>
                         </div>
 
                         <!-- Font Accessibility Configuration -->
                         <div class="mb-3">
-                            <label class="form-label">Inaccessible Fonts Configuration</label>
+                            <label class="form-label">{{ _('Inaccessible Fonts Configuration') }}</label>
                             <div class="form-text mb-2">
-                                Configure which fonts should be flagged as inaccessible for this project.
-                                The system includes a research-backed default list of 50+ problematic fonts.
+                                {{ _('Configure which fonts should be flagged as inaccessible for this project.') }}
+                                {{ _('The system includes a research-backed default list of 50+ problematic fonts.') }}
                             </div>
 
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" id="use_default_fonts" name="use_default_fonts"
                                        {% if project.config.get('font_accessibility', {}).get('use_defaults', True) %}checked{% endif %}>
                                 <label class="form-check-label" for="use_default_fonts">
-                                    Use system default inaccessible fonts list
+                                    {{ _('Use system default inaccessible fonts list') }}
                                 </label>
                             </div>
                             <div class="form-text mb-3">
-                                Includes script/cursive fonts (Comic Sans, Papyrus), decorative fonts (Curlz, Jokerman),
-                                narrow fonts (Arial Narrow, Impact), and blackletter fonts (Old English).
+                                {{ _('Includes script/cursive fonts (Comic Sans, Papyrus), decorative fonts (Curlz, Jokerman), narrow fonts (Arial Narrow, Impact), and blackletter fonts (Old English).') }}
                             </div>
 
                             <div class="mb-3">
-                                <label for="additional_inaccessible_fonts" class="form-label">Additional Fonts to Flag</label>
+                                <label for="additional_inaccessible_fonts" class="form-label">{{ _('Additional Fonts to Flag') }}</label>
                                 <textarea class="form-control font-monospace" id="additional_inaccessible_fonts" name="additional_inaccessible_fonts"
-                                          rows="3" placeholder="Enter font names, one per line (e.g., 'Custom Font Name')">{% if project.config.get('font_accessibility', {}).get('additional_inaccessible_fonts') %}{{ project.config.get('font_accessibility', {}).get('additional_inaccessible_fonts', [])|join('\n') }}{% endif %}</textarea>
+                                          rows="3" placeholder="{{ _('Enter font names, one per line (e.g., \'Custom Font Name\')') }}">{% if project.config.get('font_accessibility', {}).get('additional_inaccessible_fonts') %}{{ project.config.get('font_accessibility', {}).get('additional_inaccessible_fonts', [])|join('\n') }}{% endif %}</textarea>
                                 <div class="form-text">
-                                    Add project-specific fonts that should be flagged as inaccessible. One font name per line, lowercase.
+                                    {{ _('Add project-specific fonts that should be flagged as inaccessible. One font name per line, lowercase.') }}
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="excluded_fonts" class="form-label">Fonts to Exclude from Checking</label>
+                                <label for="excluded_fonts" class="form-label">{{ _('Fonts to Exclude from Checking') }}</label>
                                 <textarea class="form-control font-monospace" id="excluded_fonts" name="excluded_fonts"
-                                          rows="3" placeholder="Enter font names, one per line (e.g., 'comic sans ms')">{% if project.config.get('font_accessibility', {}).get('excluded_fonts') %}{{ project.config.get('font_accessibility', {}).get('excluded_fonts', [])|join('\n') }}{% endif %}</textarea>
+                                          rows="3" placeholder="{{ _('Enter font names, one per line (e.g., \'comic sans ms\')') }}">{% if project.config.get('font_accessibility', {}).get('excluded_fonts') %}{{ project.config.get('font_accessibility', {}).get('excluded_fonts', [])|join('\n') }}{% endif %}</textarea>
                                 <div class="form-text">
-                                    Remove specific fonts from the default list if your project requires them. One font name per line, lowercase.
+                                    {{ _('Remove specific fonts from the default list if your project requires them. One font name per line, lowercase.') }}
                                 </div>
                             </div>
 
@@ -204,14 +203,14 @@
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                                 data-bs-target="#fontDefaultsList" aria-expanded="false">
-                                            View System Default Inaccessible Fonts List
+                                            {{ _('View System Default Inaccessible Fonts List') }}
                                         </button>
                                     </h2>
                                     <div id="fontDefaultsList" class="accordion-collapse collapse" data-bs-parent="#fontDefaultsAccordion">
                                         <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <h6>Script/Cursive Fonts (17 fonts)</h6>
+                                                    <h6>{{ _('Script/Cursive Fonts (17 fonts)') }}</h6>
                                                     <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
                                                         <li>• Brush Script, Brush Script MT, Brushscript</li>
                                                         <li>• Lucida Handwriting, Lucida Calligraphy</li>
@@ -221,7 +220,7 @@
                                                         <li>• Edwardian Script, Mistral</li>
                                                         <li>
                                                             <details class="mt-1">
-                                                                <summary style="cursor: pointer; color: #0d6efd;">Show all 17 fonts...</summary>
+                                                                <summary style="cursor: pointer; color: #0d6efd;">{{ _('Show all 17 fonts...') }}</summary>
                                                                 <ul class="small mt-2" style="list-style-type: none; padding-left: 1em;">
                                                                     <li>• Script MT Bold</li>
                                                                     <li>• Vivaldi</li>
@@ -232,7 +231,7 @@
                                                         </li>
                                                     </ul>
 
-                                                    <h6>Decorative Fonts (16 fonts)</h6>
+                                                    <h6>{{ _('Decorative Fonts (16 fonts)') }}</h6>
                                                     <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
                                                         <li>• Curlz, Curlz MT</li>
                                                         <li>• Jokerman, Papyrus</li>
@@ -240,7 +239,7 @@
                                                         <li>• Magneto, Algerian</li>
                                                         <li>
                                                             <details class="mt-1">
-                                                                <summary style="cursor: pointer; color: #0d6efd;">Show all 16 fonts...</summary>
+                                                                <summary style="cursor: pointer; color: #0d6efd;">{{ _('Show all 16 fonts...') }}</summary>
                                                                 <ul class="small mt-2" style="list-style-type: none; padding-left: 1em;">
                                                                     <li>• Showcard Gothic</li>
                                                                     <li>• Broadway</li>
@@ -255,13 +254,13 @@
                                                     </ul>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <h6>Narrow/Condensed Fonts (2 fonts)</h6>
+                                                    <h6>{{ _('Narrow/Condensed Fonts (2 fonts)') }}</h6>
                                                     <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
                                                         <li>• Arial Narrow</li>
                                                         <li>• Impact</li>
                                                     </ul>
 
-                                                    <h6>Blackletter/Gothic Fonts (5 fonts)</h6>
+                                                    <h6>{{ _('Blackletter/Gothic Fonts (5 fonts)') }}</h6>
                                                     <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
                                                         <li>• Old English, Old English Text MT</li>
                                                         <li>• Blackletter</li>
@@ -270,13 +269,12 @@
                                                     </ul>
 
                                                     <div class="alert alert-info small mb-0">
-                                                        <strong>Total:</strong> 40 fonts across 4 categories
+                                                        <strong>{{ _('Total:') }}</strong> {{ _('40 fonts across 4 categories') }}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="alert alert-warning small mt-3 mb-0">
-                                                <strong>Note:</strong> This list is based on accessibility research from dyslexichelp.org, section508.gov, and webaim.org.
-                                                These fonts are difficult to read for users with dyslexia, low vision, or reading disabilities.
+                                                <strong>{{ _('Note:') }}</strong> {{ _('This list is based on accessibility research from dyslexichelp.org, section508.gov, and webaim.org. These fonts are difficult to read for users with dyslexia, low vision, or reading disabilities.') }}
                                             </div>
                                         </div>
                                     </div>
@@ -286,17 +284,17 @@
 
                         <!-- Touchpoint Testing Configuration -->
                         <div class="mb-3">
-                            <label class="form-label">Touchpoint Tests Configuration</label>
+                            <label class="form-label">{{ _('Touchpoint Tests Configuration') }}</label>
                             <div class="form-text mb-2">
-                                Configure which accessibility tests to run. Tests are organized by touchpoint (testing category).
+                                {{ _('Configure which accessibility tests to run. Tests are organized by touchpoint (testing category).') }}
                             </div>
-                            
+
                             <!-- Global Controls -->
                             <div class="btn-group mb-3" role="group">
-                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllTests(true)">Enable All</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAllTests(false)">Disable All</button>
-                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('minimal')">Minimal</button>
-                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('wcag-aa')">WCAG AA</button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllTests(true)">{{ _('Enable All') }}</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAllTests(false)">{{ _('Disable All') }}</button>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('minimal')">{{ _('Minimal') }}</button>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('wcag-aa')">{{ _('WCAG AA') }}</button>
                             </div>
                             
                             <!-- Touchpoint Tree -->
@@ -353,85 +351,85 @@
                         
                         <!-- AI Testing Configuration -->
                         <div class="mb-3">
-                            <label class="form-label">AI-Assisted Testing</label>
+                            <label class="form-label">{{ _('AI-Assisted Testing') }}</label>
                             <div class="form-check form-switch mb-2">
-                                <input class="form-check-input" type="checkbox" id="enable_ai_testing" name="enable_ai_testing" 
+                                <input class="form-check-input" type="checkbox" id="enable_ai_testing" name="enable_ai_testing"
                                        {% if project.config.get('enable_ai_testing', False) %}checked{% endif %} onchange="toggleAITests()">
                                 <label class="form-check-label" for="enable_ai_testing">
-                                    Enable AI-assisted accessibility testing
+                                    {{ _('Enable AI-assisted accessibility testing') }}
                                 </label>
                             </div>
                             <div class="form-text mb-3">
-                                AI testing uses Claude to analyze screenshots and HTML for issues that automated tests might miss.
-                                <strong>Note:</strong> AI testing incurs API costs based on usage.
+                                {{ _('AI testing uses Claude to analyze screenshots and HTML for issues that automated tests might miss.') }}
+                                <strong>{{ _('Note:') }}</strong> {{ _('AI testing incurs API costs based on usage.') }}
                             </div>
                             
                             <div id="ai_tests_selection" style="display: {% if project.config.get('enable_ai_testing', False) %}block{% else %}none{% endif %};">
-                                <label class="form-label">Select AI Tests to Run:</label>
+                                <label class="form-label">{{ _('Select AI Tests to Run:') }}</label>
                                 <div class="ms-3">
                                     <div class="form-check">
-                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_headings" 
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_headings"
                                                name="ai_test_headings" value="headings"
                                                {% if 'headings' in project.config.get('ai_tests', []) %}checked{% endif %}>
                                         <label class="form-check-label" for="ai_test_headings">
-                                            <strong>Heading Analysis</strong> - Detects visual headings not properly marked up
+                                            <strong>{{ _('Heading Analysis') }}</strong> - {{ _('Detects visual headings not properly marked up') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_reading_order" 
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_reading_order"
                                                name="ai_test_reading_order" value="reading_order"
                                                {% if 'reading_order' in project.config.get('ai_tests', []) %}checked{% endif %}>
                                         <label class="form-check-label" for="ai_test_reading_order">
-                                            <strong>Reading Order</strong> - Verifies logical reading sequence matches visual layout
+                                            <strong>{{ _('Reading Order') }}</strong> - {{ _('Verifies logical reading sequence matches visual layout') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_modals" 
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_modals"
                                                name="ai_test_modals" value="modals"
                                                {% if 'modals' in project.config.get('ai_tests', []) %}checked{% endif %}>
                                         <label class="form-check-label" for="ai_test_modals">
-                                            <strong>Modal Dialogs</strong> - Analyzes popup and overlay accessibility
+                                            <strong>{{ _('Modal Dialogs') }}</strong> - {{ _('Analyzes popup and overlay accessibility') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_language" 
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_language"
                                                name="ai_test_language" value="language"
                                                {% if 'language' in project.config.get('ai_tests', []) %}checked{% endif %}>
                                         <label class="form-check-label" for="ai_test_language">
-                                            <strong>Language Detection</strong> - Identifies mixed languages and missing declarations
+                                            <strong>{{ _('Language Detection') }}</strong> - {{ _('Identifies mixed languages and missing declarations') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_animations" 
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_animations"
                                                name="ai_test_animations" value="animations"
                                                {% if 'animations' in project.config.get('ai_tests', []) %}checked{% endif %}>
                                         <label class="form-check-label" for="ai_test_animations">
-                                            <strong>Animations</strong> - Detects potentially problematic motion
+                                            <strong>{{ _('Animations') }}</strong> - {{ _('Detects potentially problematic motion') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_interactive" 
+                                        <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_interactive"
                                                name="ai_test_interactive" value="interactive"
                                                {% if 'interactive' in project.config.get('ai_tests', []) %}checked{% endif %}>
                                         <label class="form-check-label" for="ai_test_interactive">
-                                            <strong>Interactive Elements</strong> - Analyzes buttons, links, and form controls
+                                            <strong>{{ _('Interactive Elements') }}</strong> - {{ _('Analyzes buttons, links, and form controls') }}
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-text mt-2">
-                                    <a href="#" onclick="selectAllAITests(event)">Select All</a> | 
-                                    <a href="#" onclick="deselectAllAITests(event)">Deselect All</a>
+                                    <a href="#" onclick="selectAllAITests(event)">{{ _('Select All') }}</a> |
+                                    <a href="#" onclick="deselectAllAITests(event)">{{ _('Deselect All') }}</a>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> Update Project
+                                <i class="bi bi-check-circle"></i> {{ _('Update Project') }}
                             </button>
-                            <a href="{{ url_for('projects.view_project', project_id=project.id) }}" 
+                            <a href="{{ url_for('projects.view_project', project_id=project.id) }}"
                                class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle"></i> Cancel
+                                <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
                             </a>
                         </div>
                     </form>
@@ -448,20 +446,20 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="testDetailsModalLabel">
                     <i class="bi bi-info-circle me-2"></i>
-                    <span id="testDetailsTitle">Test Details</span>
+                    <span id="testDetailsTitle">{{ _('Test Details') }}</span>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body" id="testDetailsBody">
                 <div class="text-center py-4">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">{{ _('Loading...') }}</span>
                     </div>
-                    <p class="mt-2 text-muted">Loading test details...</p>
+                    <p class="mt-2 text-muted">{{ _('Loading test details...') }}</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
             </div>
         </div>
     </div>
@@ -610,9 +608,9 @@ function showTestDetails(testId) {
     bodyEl.innerHTML = `
         <div class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ _('Loading...') }}</span>
             </div>
-            <p class="mt-2 text-muted">Loading test details...</p>
+            <p class="mt-2 text-muted">{{ _('Loading test details...') }}</p>
         </div>
     `;
 
@@ -679,8 +677,8 @@ function showTestDetails(testId) {
                 bodyEl.innerHTML = `
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle me-2"></i>
-                        <strong>Test Information Not Available</strong>
-                        <p class="mb-0 mt-2">Details for test <code>${testId}</code> are not available in the catalog.</p>
+                        <strong>{{ _('Test Information Not Available') }}</strong>
+                        <p class="mb-0 mt-2">{{ _('Details for test') }} <code>${testId}</code> {{ _('are not available in the catalog.') }}</p>
                     </div>
                 `;
             }
@@ -690,8 +688,8 @@ function showTestDetails(testId) {
             bodyEl.innerHTML = `
                 <div class="alert alert-danger">
                     <i class="bi bi-x-circle me-2"></i>
-                    <strong>Error Loading Test Details</strong>
-                    <p class="mb-0 mt-2">An error occurred while loading the test details. Please try again.</p>
+                    <strong>{{ _('Error Loading Test Details') }}</strong>
+                    <p class="mb-0 mt-2">{{ _('An error occurred while loading the test details. Please try again.') }}</p>
                 </div>
             `;
         });
@@ -746,10 +744,10 @@ async function loadDrupalAudits() {
     } catch (error) {
         console.error('Error loading Drupal audits:', error);
         // Keep the auto-match option on error
-        select.innerHTML = '<option value="">Auto-match by project name</option>';
+        select.innerHTML = '<option value="">{{ _('Auto-match by project name') }}</option>';
         const option = document.createElement('option');
         option.disabled = true;
-        option.textContent = 'Could not load audits (Drupal may not be configured)';
+        option.textContent = '{{ _('Could not load audits (Drupal may not be configured)') }}';
         select.appendChild(option);
     }
 }

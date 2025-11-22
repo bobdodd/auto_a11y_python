@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block title %}Automated Tests - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('projects.list_projects') }}">Projects</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Automated Tests</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Automated Tests</h1>
+        <button id="uploadBtn" class="btn btn-primary" disabled>
+            <i class="bi bi-cloud-upload"></i> Upload to Drupal
+        </button>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-funnel"></i> Filters
+            </h5>
+        </div>
+        <div class="card-body">
+            <form id="filterForm">
+                <div class="row">
+                    <!-- Page URL Filter -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Page URLs</label>
+                        <select id="pageUrlsFilter" class="form-select" multiple size="5">
+                            <option value="">All Pages</option>
+                            {% for result in test_results_data %}
+                            <option value="{{ result.page.url }}">{{ result.page.title or result.page.url }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
+                    </div>
+
+                    <!-- Touchpoint Filter -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Touchpoints</label>
+                        <select id="touchpointsFilter" class="form-select" multiple size="5">
+                            <option value="">All Touchpoints</option>
+                            {% for touchpoint in touchpoints %}
+                            <option value="{{ touchpoint }}">{{ touchpoint }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
+                    </div>
+
+                    <!-- WCAG Criteria Filter -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">WCAG Success Criteria</label>
+                        <select id="wcagFilter" class="form-select" multiple size="5">
+                            <option value="">All WCAG Criteria</option>
+                            {% for criterion in wcag_criteria %}
+                            <option value="{{ criterion }}">{{ criterion }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
+                    </div>
+
+                    <!-- Impact Level Filter -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Impact Level</label>
+                        <select id="impactFilter" class="form-select" multiple size="5">
+                            <option value="">All Impact Levels</option>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="med">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
+                    </div>
+                </div>
+
+                <!-- Filter Actions -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Apply Filters
+                    </button>
+                    <button type="button" id="clearFiltersBtn" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Clear Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Summary -->
+    <div id="resultsSummary" class="alert alert-info">
+        <strong>Total:</strong> {{ test_results_data|length }} pages with {{ test_results_data|sum(attribute='total_issues') }} issues
+    </div>
+
+    <!-- Test Results Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Test Results</h5>
+        </div>
+        <div class="card-body">
+            <div id="resultsContainer">
+                <table class="table table-striped" id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Page</th>
+                            <th>Website</th>
+                            <th class="text-center">Violations</th>
+                            <th class="text-center">Warnings</th>
+                            <th class="text-center">Info</th>
+                            <th class="text-center">Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in test_results_data %}
+                        <tr data-page-url="{{ result.page.url }}">
+                            <td>
+                                <a href="{{ url_for('pages.view_page', page_id=result.page.id) }}">
+                                    {{ result.page.title or result.page.url }}
+                                </a>
+                            </td>
+                            <td>{{ result.website.name }}</td>
+                            <td class="text-center">
+                                <span class="badge bg-danger">{{ result.violation_count }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-warning text-dark">{{ result.warning_count }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-info">{{ result.info_count }}</span>
+                            </td>
+                            <td class="text-center">
+                                <strong>{{ result.total_issues }}</strong>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('testing.view_test_result', result_id=result.test_result.id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    View Details
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="loadingSpinner" class="text-center d-none">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading filtered results...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Progress Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Uploading to Drupal</h5>
+            </div>
+            <div class="modal-body">
+                <div id="uploadProgress">
+                    <div class="text-center mb-3">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Uploading...</span>
+                        </div>
+                    </div>
+                    <p id="uploadStatus">Preparing upload...</p>
+                    <div class="progress">
+                        <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                             role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div id="uploadComplete" class="d-none">
+                    <div class="alert alert-success">
+                        <h6>Upload Complete!</h6>
+                        <ul id="uploadResultsList" class="mb-0"></ul>
+                    </div>
+                </div>
+                <div id="uploadError" class="d-none">
+                    <div class="alert alert-danger">
+                        <h6>Upload Failed</h6>
+                        <p id="uploadErrorMessage"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const projectId = "{{ project.id }}";
+    let currentFilters = {};
+
+    // Filter form submission
+    document.getElementById('filterForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await applyFilters();
+    });
+
+    // Clear filters button
+    document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+        document.getElementById('filterForm').reset();
+        currentFilters = {};
+        location.reload();
+    });
+
+    // Upload button
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+        await uploadToDrupal();
+    });
+
+    async function applyFilters() {
+        // Get selected values from filters
+        const pageUrls = Array.from(document.getElementById('pageUrlsFilter').selectedOptions)
+            .map(opt => opt.value)
+            .filter(v => v !== '');
+        const touchpoints = Array.from(document.getElementById('touchpointsFilter').selectedOptions)
+            .map(opt => opt.value)
+            .filter(v => v !== '');
+        const wcagCriteria = Array.from(document.getElementById('wcagFilter').selectedOptions)
+            .map(opt => opt.value)
+            .filter(v => v !== '');
+        const impactLevels = Array.from(document.getElementById('impactFilter').selectedOptions)
+            .map(opt => opt.value)
+            .filter(v => v !== '');
+
+        currentFilters = {
+            page_urls: pageUrls,
+            touchpoints: touchpoints,
+            wcag_criteria: wcagCriteria,
+            impact_levels: impactLevels
+        };
+
+        // Show loading spinner
+        document.getElementById('resultsContainer').classList.add('d-none');
+        document.getElementById('loadingSpinner').classList.remove('d-none');
+
+        try {
+            const response = await fetch(`/automated_tests/projects/${projectId}/filter`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(currentFilters)
+            });
+
+            const data = await response.json();
+
+            // Update results summary
+            document.getElementById('resultsSummary').innerHTML = `
+                <strong>Filtered Results:</strong> ${data.total_pages} pages with ${data.total_violations} issues
+            `;
+
+            // Update table
+            updateResultsTable(data.results);
+
+            // Enable upload button if there are results
+            document.getElementById('uploadBtn').disabled = data.total_pages === 0;
+
+        } catch (error) {
+            console.error('Error filtering results:', error);
+            alert('Error filtering results. Please try again.');
+        } finally {
+            // Hide loading spinner
+            document.getElementById('loadingSpinner').classList.add('d-none');
+            document.getElementById('resultsContainer').classList.remove('d-none');
+        }
+    }
+
+    function updateResultsTable(results) {
+        const tbody = document.querySelector('#resultsTable tbody');
+        tbody.innerHTML = '';
+
+        if (results.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center">No results match the current filters</td></tr>';
+            return;
+        }
+
+        results.forEach(result => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${result.page_title}</td>
+                <td>${result.website_name}</td>
+                <td class="text-center"><span class="badge bg-danger">${result.violation_count}</span></td>
+                <td class="text-center"><span class="badge bg-warning text-dark">0</span></td>
+                <td class="text-center"><span class="badge bg-info">0</span></td>
+                <td class="text-center"><strong>${result.violation_count}</strong></td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewViolations('${result.page_url}')">
+                        View Details
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    async function uploadToDrupal() {
+        // Show upload modal
+        const modal = new bootstrap.Modal(document.getElementById('uploadModal'));
+        modal.show();
+
+        // Reset modal state
+        document.getElementById('uploadProgress').classList.remove('d-none');
+        document.getElementById('uploadComplete').classList.add('d-none');
+        document.getElementById('uploadError').classList.add('d-none');
+        document.getElementById('uploadProgressBar').style.width = '0%';
+
+        try {
+            // Update status
+            document.getElementById('uploadStatus').textContent = 'Deduplicating test results...';
+            document.getElementById('uploadProgressBar').style.width = '20%';
+
+            const response = await fetch(`/automated_tests/projects/${projectId}/upload`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(currentFilters)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Upload failed');
+            }
+
+            // Update progress
+            document.getElementById('uploadProgressBar').style.width = '100%';
+            document.getElementById('uploadProgress').classList.add('d-none');
+            document.getElementById('uploadComplete').classList.remove('d-none');
+
+            // Show results
+            const resultsList = document.getElementById('uploadResultsList');
+            resultsList.innerHTML = `
+                <li>Common Components: ${data.common_components}</li>
+                <li>Component Discovered Pages: ${data.component_discovered_pages}</li>
+                <li>URL Discovered Pages: ${data.url_discovered_pages}</li>
+                <li>Violations Linked: ${data.violations_linked}</li>
+                <li>Discovered Pages Synced: ${data.discovered_pages_synced}</li>
+                <li>Issues Created: ${data.issues_created}</li>
+                <li>Issues Updated: ${data.issues_updated}</li>
+                ${data.issues_failed > 0 ? `<li class="text-danger">Issues Failed: ${data.issues_failed}</li>` : ''}
+            `;
+
+        } catch (error) {
+            console.error('Error uploading to Drupal:', error);
+            document.getElementById('uploadProgress').classList.add('d-none');
+            document.getElementById('uploadError').classList.remove('d-none');
+            document.getElementById('uploadErrorMessage').textContent = error.message;
+        }
+    }
+
+    function viewViolations(pageUrl) {
+        // TODO: Implement violation details view
+        alert('View violations for: ' + pageUrl);
+    }
+</script>
+{% endblock %}

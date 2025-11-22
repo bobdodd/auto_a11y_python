@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Testing Participants - {{ project.name }} - Auto A11y{% endblock %}
+{% block title %}{{ _('Testing Participants') }} - {{ project.name }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -10,16 +10,16 @@
             <li class="breadcrumb-item">
                 <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">Testing Participants</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Testing Participants') }}</li>
         </ol>
     </nav>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h2">
-                <i class="bi bi-people"></i> Testing Participants
+                <i class="bi bi-people"></i> {{ _('Testing Participants') }}
             </h1>
-            <p class="text-muted">Manage lived experience testers and test supervisors for {{ project.name }}</p>
+            <p class="text-muted">{{ _('Manage lived experience testers and test supervisors for %s') % project.name }}</p>
         </div>
     </div>
 
@@ -37,8 +37,8 @@
     <!-- Info Box -->
     <div class="alert alert-info">
         <i class="bi bi-info-circle"></i>
-        <strong>Testing Participants:</strong>
-        These are the actual people involved in lived experience testing - the testers who have disabilities and use assistive technologies, and the supervisors who oversee the testing process. These participants are referenced in lived experience recordings.
+        <strong>{{ _('Testing Participants:') }}</strong>
+        {{ _('These are the actual people involved in lived experience testing - the testers who have disabilities and use assistive technologies, and the supervisors who oversee the testing process. These participants are referenced in lived experience recordings.') }}
     </div>
 
     <!-- Lived Experience Testers -->
@@ -46,11 +46,11 @@
         <div class="card-header bg-primary text-white">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    <i class="bi bi-person-badge"></i> Lived Experience Testers
+                    <i class="bi bi-person-badge"></i> {{ _('Lived Experience Testers') }}
                     <span class="badge bg-light text-dark">{{ testers|length }}</span>
                 </h5>
                 <a href="{{ url_for('project_participants.create_tester', project_id=project.id) }}" class="btn btn-light btn-sm">
-                    <i class="bi bi-plus-circle"></i> Add Tester
+                    <i class="bi bi-plus-circle"></i> {{ _('Add Tester') }}
                 </a>
             </div>
         </div>
@@ -60,11 +60,11 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Disability Type</th>
-                            <th>Assistive Technologies</th>
-                            <th>Email</th>
-                            <th>Actions</th>
+                            <th>{{ _('Name') }}</th>
+                            <th>{{ _('Disability Type') }}</th>
+                            <th>{{ _('Assistive Technologies') }}</th>
+                            <th>{{ _('Email') }}</th>
+                            <th>{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,7 +80,7 @@
                                 {% if tester.disability_type %}
                                 <span class="badge bg-info">{{ tester.disability_type }}</span>
                                 {% else %}
-                                <span class="text-muted">Not specified</span>
+                                <span class="text-muted">{{ _('Not specified') }}</span>
                                 {% endif %}
                             </td>
                             <td>
@@ -89,24 +89,24 @@
                                     <span class="badge bg-secondary">{{ tech }}</span>
                                     {% endfor %}
                                 {% else %}
-                                <span class="text-muted">None specified</span>
+                                <span class="text-muted">{{ _('None specified') }}</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if tester.email %}
                                 <a href="mailto:{{ tester.email }}">{{ tester.email }}</a>
                                 {% else %}
-                                <span class="text-muted">No email</span>
+                                <span class="text-muted">{{ _('No email') }}</span>
                                 {% endif %}
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a href="{{ url_for('project_participants.edit_tester', project_id=project.id, tester_id=tester.id) }}"
-                                       class="btn btn-outline-secondary" title="Edit">
+                                       class="btn btn-outline-secondary" title="{{ _('Edit') }}">
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <button type="button" class="btn btn-outline-danger"
-                                            onclick="deleteTester('{{ tester.id }}')" title="Delete">
+                                            onclick="deleteTester('{{ tester.id }}')" title="{{ _('Delete') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
@@ -119,9 +119,9 @@
             {% else %}
             <div class="text-center py-4">
                 <i class="bi bi-person-badge" style="font-size: 3rem; color: #ddd;"></i>
-                <p class="text-muted mt-3">No lived experience testers yet</p>
+                <p class="text-muted mt-3">{{ _('No lived experience testers yet') }}</p>
                 <a href="{{ url_for('project_participants.create_tester', project_id=project.id) }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Add Your First Tester
+                    <i class="bi bi-plus-circle"></i> {{ _('Add Your First Tester') }}
                 </a>
             </div>
             {% endif %}
@@ -133,11 +133,11 @@
         <div class="card-header bg-success text-white">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    <i class="bi bi-person-check"></i> Test Supervisors
+                    <i class="bi bi-person-check"></i> {{ _('Test Supervisors') }}
                     <span class="badge bg-light text-dark">{{ supervisors|length }}</span>
                 </h5>
                 <a href="{{ url_for('project_participants.create_supervisor', project_id=project.id) }}" class="btn btn-light btn-sm">
-                    <i class="bi bi-plus-circle"></i> Add Supervisor
+                    <i class="bi bi-plus-circle"></i> {{ _('Add Supervisor') }}
                 </a>
             </div>
         </div>
@@ -147,11 +147,11 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Organization</th>
-                            <th>Email</th>
-                            <th>Actions</th>
+                            <th>{{ _('Name') }}</th>
+                            <th>{{ _('Role') }}</th>
+                            <th>{{ _('Organization') }}</th>
+                            <th>{{ _('Email') }}</th>
+                            <th>{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -167,31 +167,31 @@
                                 {% if supervisor.role %}
                                 <span class="badge bg-primary">{{ supervisor.role }}</span>
                                 {% else %}
-                                <span class="text-muted">Not specified</span>
+                                <span class="text-muted">{{ _('Not specified') }}</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if supervisor.organization %}
                                 {{ supervisor.organization }}
                                 {% else %}
-                                <span class="text-muted">Not specified</span>
+                                <span class="text-muted">{{ _('Not specified') }}</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if supervisor.email %}
                                 <a href="mailto:{{ supervisor.email }}">{{ supervisor.email }}</a>
                                 {% else %}
-                                <span class="text-muted">No email</span>
+                                <span class="text-muted">{{ _('No email') }}</span>
                                 {% endif %}
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a href="{{ url_for('project_participants.edit_supervisor', project_id=project.id, supervisor_id=supervisor.id) }}"
-                                       class="btn btn-outline-secondary" title="Edit">
+                                       class="btn btn-outline-secondary" title="{{ _('Edit') }}">
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <button type="button" class="btn btn-outline-danger"
-                                            onclick="deleteSupervisor('{{ supervisor.id }}')" title="Delete">
+                                            onclick="deleteSupervisor('{{ supervisor.id }}')" title="{{ _('Delete') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
@@ -204,9 +204,9 @@
             {% else %}
             <div class="text-center py-4">
                 <i class="bi bi-person-check" style="font-size: 3rem; color: #ddd;"></i>
-                <p class="text-muted mt-3">No test supervisors yet</p>
+                <p class="text-muted mt-3">{{ _('No test supervisors yet') }}</p>
                 <a href="{{ url_for('project_participants.create_supervisor', project_id=project.id) }}" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> Add Your First Supervisor
+                    <i class="bi bi-plus-circle"></i> {{ _('Add Your First Supervisor') }}
                 </a>
             </div>
             {% endif %}
@@ -219,7 +219,7 @@
 {% block extra_js %}
 <script>
 function deleteTester(testerId) {
-    if (!confirm('Are you sure you want to delete this tester? This action cannot be undone.')) return;
+    if (!confirm("{{ _('Are you sure you want to delete this tester? This action cannot be undone.') }}")) return;
 
     fetch(`/projects/{{ project.id }}/participants/testers/${testerId}/delete`, {
         method: 'POST',
@@ -232,16 +232,16 @@ function deleteTester(testerId) {
         if (data.success) {
             window.location.href = data.redirect;
         } else {
-            alert('Error: ' + (data.error || 'Unknown error'));
+            alert("{{ _('Error: %s') }}".replace('%s', data.error || "{{ _('Unknown error') }}"));
         }
     })
     .catch(err => {
-        alert('Error deleting tester: ' + err);
+        alert("{{ _('Error deleting tester: %s') }}".replace('%s', err));
     });
 }
 
 function deleteSupervisor(supervisorId) {
-    if (!confirm('Are you sure you want to delete this supervisor? This action cannot be undone.')) return;
+    if (!confirm("{{ _('Are you sure you want to delete this supervisor? This action cannot be undone.') }}")) return;
 
     fetch(`/projects/{{ project.id }}/participants/supervisors/${supervisorId}/delete`, {
         method: 'POST',
@@ -254,11 +254,11 @@ function deleteSupervisor(supervisorId) {
         if (data.success) {
             window.location.href = data.redirect;
         } else {
-            alert('Error: ' + (data.error || 'Unknown error'));
+            alert("{{ _('Error: %s') }}".replace('%s', data.error || "{{ _('Unknown error') }}"));
         }
     })
     .catch(err => {
-        alert('Error deleting supervisor: ' + err);
+        alert("{{ _('Error deleting supervisor: %s') }}".replace('%s', err));
     });
 }
 </script>

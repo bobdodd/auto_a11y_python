@@ -2567,6 +2567,26 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.4.6'],
             'remediation': "Current contrast is {ratio}:1, but WCAG Level AAA requires at least 7:1 for normal text ({fontSize}px). To fix, use high contrast combinations like #333333 or darker on white background, or white text on backgrounds darker than #565656."
         },
+        'ErrPartialTextContrastAA': {
+            'title': "Text contrast fails {ratio}:1 inside container, plus text overflows where contrast cannot be tested",
+            'what': "Text fails WCAG AA contrast ({ratio}:1, required: {required}) within container, and additional text extends outside container boundaries where background is undefined",
+            'why': "This text has two problems: (1) The text inside the container fails WCAG AA contrast requirements with a ratio of {ratio}:1 against background {bg}, and (2) Some text overflows the container boundaries where there is no defined background, making it impossible for this testing tool to calculate contrast for the overflow portion. Both issues must be addressed.",
+            'what_generic': "Text fails contrast and overflows container boundaries",
+            'who': "Users with low vision who need higher contrast, users with color blindness, and anyone viewing the content in challenging lighting conditions",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.4.3'],
+            'remediation': "Fix both issues: (1) Increase contrast inside container from {ratio}:1 to at least {required} by adjusting foreground {fg} or background {bg} colors, and (2) Ensure all text stays within its background container by fixing overflow (adjust container size, font size, or use overflow: hidden/auto). For normal text, aim for 4.5:1 contrast; for large text (18pt+), aim for 3:1."
+        },
+        'ErrPartialTextContrastAAA': {
+            'title': "Text contrast fails {ratio}:1 inside container, plus text overflows where contrast cannot be tested",
+            'what': "Text fails WCAG AAA contrast ({ratio}:1, required: {required}) within container, and additional text extends outside container boundaries where background is undefined",
+            'why': "This text has two problems: (1) The text inside the container fails WCAG AAA contrast requirements with a ratio of {ratio}:1 against background {bg}, and (2) Some text overflows the container boundaries where there is no defined background, making it impossible for this testing tool to calculate contrast for the overflow portion. Both issues must be addressed.",
+            'what_generic': "Text fails enhanced contrast and overflows container boundaries",
+            'who': "Users with low vision who need higher contrast, users with color blindness, and anyone viewing the content in challenging lighting conditions. AAA compliance provides enhanced accessibility.",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.4.6'],
+            'remediation': "Fix both issues: (1) Increase contrast inside container from {ratio}:1 to at least {required} by adjusting foreground {fg} or background {bg} colors, and (2) Ensure all text stays within its background container by fixing overflow (adjust container size, font size, or use overflow: hidden/auto). For normal text, aim for 7:1 contrast; for large text (18pt+), aim for 4.5:1."
+        },
         'WarnTextContrastCannotCalculate': {
             'title': "Text contrast cannot be automatically calculated - manual inspection required",
             'what': "Text contrast cannot be automatically verified due to complex background (gradient, image, z-index floating, or text overflow)",

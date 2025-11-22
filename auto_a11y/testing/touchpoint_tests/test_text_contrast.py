@@ -273,8 +273,26 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     const lower = bgStr.toLowerCase();
                     return {
                         hasGradient: lower.includes('gradient'),
-                        hasImage: lower.includes('url(') && !lower.includes('data:')
+                        hasImage: lower.includes('url(')
                     };
+                }
+
+                // Check if element has CSS animations
+                function hasAnimation(element) {
+                    const style = window.getComputedStyle(element);
+                    const animationName = style.animationName || style.webkitAnimationName || '';
+                    const transition = style.transition || style.webkitTransition || '';
+
+                    // Check if animation-name is not 'none' or transition affects color/opacity/position
+                    const hasAnim = animationName && animationName !== 'none';
+                    const hasColorTransition = transition && (
+                        transition.includes('color') ||
+                        transition.includes('background') ||
+                        transition.includes('opacity') ||
+                        transition.includes('all')
+                    );
+
+                    return hasAnim || hasColorTransition;
                 }
 
                 // Get effective background color by walking up the DOM
@@ -573,9 +591,16 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     // Check for text overflow
                     const hasOverflow = checkTextOverflow(element);
 
+                    // Check for animations
+                    const hasAnim = hasAnimation(element);
+
                     // Calculate contrast ratio for default state
+                    // We CAN calculate if text is inside container, even if it also overflows
+                    // We CANNOT calculate if background is gradient/image/transparent
                     let contrastRatio = null;
-                    if (bgColor.a > 0 && !bgInfo.hasGradient && !bgInfo.hasImage && !hasOverflow) {
+                    let canCalculateInsideContrast = bgColor.a > 0 && !bgInfo.hasGradient && !bgInfo.hasImage;
+
+                    if (canCalculateInsideContrast) {
                         contrastRatio = getContrastRatio(textColor, bgColor);
                     }
 
@@ -615,6 +640,8 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         hasGradient: bgInfo.hasGradient,
                         hasImage: bgInfo.hasImage,
                         hasOverflow: hasOverflow,
+                        hasAnimation: hasAnim,
+                        canCalculateInsideContrast: canCalculateInsideContrast,
                         tag: element.tagName.toLowerCase(),
                         pseudoclassStates: pseudoclassStates,
                         wcagLevel: wcagLevel  // Add WCAG level to each element
@@ -629,48 +656,12 @@ async def test_text_contrast(page) -> Dict[str, Any]:
             for text_elem in text_data:
                 results['elements_tested'] += 1
 
-                # If we can't calculate contrast, issue a warning
-                if text_elem['contrastRatio'] is None:
-                    warning_reasons = []
-                    if text_elem['hasGradient']:
-                        warning_reasons.append('gradient background')
-                    if text_elem['hasImage']:
-                        warning_reasons.append('image background')
-                    if text_elem['hasOverflow']:
-                        warning_reasons.append('text overflows container')
-                    if text_elem['stoppedAtZIndex']:
-                        warning_reasons.append('floating element with z-index')
-
-                    if warning_reasons:
-                        results['warnings'].append({
-                            'err': 'WarnTextContrastCannotCalculate',
-                            'type': 'warn',
-                            'cat': 'colors_contrast',
-                            'element': text_elem['tag'],
-                            'xpath': text_elem['xpath'],
-                            'html': text_elem['html'],
-                            'description': f'Cannot automatically calculate text contrast due to: {", ".join(warning_reasons)}. Manual inspection required. (Breakpoint: {breakpoint}px)',
-                            'text': text_elem['text'],
-                            'textColor': text_elem['textColor'],
-                            'backgroundColor': text_elem['backgroundColor'],
-                            'fontSize': text_elem['fontSize'],
-                            'isLargeText': text_elem['isLargeText'],
-                            'breakpoint': breakpoint,
-                            'wcag': '1.4.3'
-                        })
-                    continue
-
                 contrast = text_elem['contrastRatio']
                 is_large = text_elem['isLargeText']
                 wcag_level = text_elem.get('wcagLevel', 'AA')
-
-                # Skip if foreground and background are identical (data error)
-                if text_elem.get('textColor') == text_elem.get('backgroundColor'):
-                    continue
+                can_calculate_inside = text_elem.get('canCalculateInsideContrast', False)
 
                 # Determine required ratio based on project's WCAG level
-                # AA: 4.5:1 normal, 3:1 large
-                # AAA: 7:1 normal, 4.5:1 large
                 if wcag_level == 'AAA':
                     required_ratio = 4.5 if is_large else 7.0
                     wcag_criterion = '1.4.6'
@@ -680,12 +671,104 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     wcag_criterion = '1.4.3'
                     error_code = 'ErrLargeTextContrastAA' if is_large else 'ErrTextContrastAA'
 
+                # Determine if we have complex conditions that require manual testing
+                has_complex_conditions = (
+                    text_elem['hasGradient'] or
+                    text_elem['hasImage'] or
+                    text_elem['hasAnimation'] or
+                    text_elem['hasOverflow'] or
+                    text_elem['stoppedAtZIndex']
+                )
+
+                # Case 1: Text inside FAILS contrast AND has overflow/complex conditions
+                # Result: ErrPartialTextContrastAA or ErrPartialTextContrastAAA (partial failure)
+                if can_calculate_inside and contrast is not None and contrast < required_ratio and text_elem['hasOverflow']:
+                    partial_error_code = 'ErrPartialTextContrastAAA' if wcag_level == 'AAA' else 'ErrPartialTextContrastAA'
+                    results['errors'].append({
+                        'err': partial_error_code,
+                        'type': 'err',
+                        'cat': 'color_contrast',
+                        'element': text_elem['tag'],
+                        'xpath': text_elem['xpath'],
+                        'html': text_elem['html'],
+                        'description': f'{"Large" if is_large else "Normal"} text contrast {contrast:.2f}:1 fails WCAG {wcag_level} requirement ({required_ratio}:1) inside container. Additionally, text overflows container where contrast cannot be determined. Text color {text_elem["textColor"]} on background {text_elem["backgroundColor"]}. (Breakpoint: {breakpoint}px)',
+                        'text': text_elem['text'],
+                        'textColor': text_elem['textColor'],
+                        'backgroundColor': text_elem['backgroundColor'],
+                        'contrastRatio': f'{contrast:.2f}:1',
+                        'required': f'{required_ratio}:1',
+                        'fontSize': text_elem['fontSize'],
+                        'isLargeText': is_large,
+                        'breakpoint': breakpoint,
+                        'wcag': wcag_criterion,
+                        'partialReason': 'Text overflows container'
+                    })
+                    results['elements_failed'] += 1
+                    continue
+
+                # Case 2: Cannot calculate contrast inside OR has complex conditions with passing/unknown contrast
+                # Result: WarnTextContrastCannotCalculate (manual testing required)
+                # Only warn for truly problematic cases: gradients, images, animations, overflow
+                should_warn = False
+                warning_reasons = []
+
+                # Cannot calculate inside at all (gradient, image, or transparent background)
+                if not can_calculate_inside:
+                    should_warn = True
+                    if text_elem['hasGradient']:
+                        warning_reasons.append('gradient background')
+                    if text_elem['hasImage']:
+                        warning_reasons.append('image background')
+                    if not warning_reasons:
+                        warning_reasons.append('transparent or undefined background')
+
+                # Can calculate inside and contrast passes, but has truly complex conditions
+                # that make automated testing unreliable (NOT just z-index)
+                elif can_calculate_inside and contrast is not None and contrast >= required_ratio:
+                    if text_elem['hasGradient']:
+                        should_warn = True
+                        warning_reasons.append('gradient background')
+                    if text_elem['hasImage']:
+                        should_warn = True
+                        warning_reasons.append('image background')
+                    if text_elem['hasAnimation']:
+                        should_warn = True
+                        warning_reasons.append('CSS animation present')
+                    if text_elem['hasOverflow']:
+                        should_warn = True
+                        warning_reasons.append('text overflows container')
+                    # Note: We do NOT warn for stoppedAtZIndex alone - only if combined with other issues
+
+                if should_warn and warning_reasons:
+                    results['warnings'].append({
+                        'err': 'WarnTextContrastCannotCalculate',
+                        'type': 'warn',
+                        'cat': 'color_contrast',
+                        'element': text_elem['tag'],
+                        'xpath': text_elem['xpath'],
+                        'html': text_elem['html'],
+                        'description': f'Cannot automatically calculate text contrast due to: {", ".join(warning_reasons)}. Manual inspection required. (Breakpoint: {breakpoint}px)',
+                        'text': text_elem['text'],
+                        'textColor': text_elem['textColor'],
+                        'backgroundColor': text_elem['backgroundColor'],
+                        'fontSize': text_elem['fontSize'],
+                        'isLargeText': text_elem['isLargeText'],
+                        'breakpoint': breakpoint,
+                        'wcag': wcag_criterion
+                    })
+                    continue
+
+                # Case 3: Can calculate and no overflow - proceed with normal contrast check
+                # Skip if foreground and background are identical (data error)
+                if text_elem.get('textColor') == text_elem.get('backgroundColor'):
+                    continue
+
                 # Check contrast against the project's required level ONLY
                 if contrast < required_ratio:
                     results['errors'].append({
                         'err': error_code,
                         'type': 'err',
-                        'cat': 'colors_contrast',
+                        'cat': 'color_contrast',
                         'element': text_elem['tag'],
                         'xpath': text_elem['xpath'],
                         'html': text_elem['html'],
@@ -721,7 +804,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         results['errors'].append({
                             'err': error_code,
                             'type': 'err',
-                            'cat': 'colors_contrast',
+                            'cat': 'color_contrast',
                             'element': text_elem['tag'],
                             'xpath': text_elem['xpath'],
                             'html': text_elem['html'],

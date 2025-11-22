@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Create Test User - {{ website.display_name }} - Auto A11y{% endblock %}
+{% block title %}{{ _('Create Test User') }} - {{ website.display_name }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -14,14 +14,14 @@
                 <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{{ url_for('website_users.list_users', website_id=website.id) }}">Test Users</a>
+                <a href="{{ url_for('website_users.list_users', website_id=website.id) }}">{{ _('Test Users') }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">Create</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Create') }}</li>
         </ol>
     </nav>
 
     <h1 class="h2 mb-4">
-        <i class="bi bi-person-plus"></i> Create Test User
+        <i class="bi bi-person-plus"></i> {{ _('Create Test User') }}
     </h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -41,53 +41,53 @@
                 <!-- Basic Information -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-person"></i> User Information</h5>
+                        <h5 class="mb-0"><i class="bi bi-person"></i> {{ _('User Information') }}</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="display_name" class="form-label">Display Name</label>
+                            <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
                             <input type="text" class="form-control" id="display_name" name="display_name"
-                                   placeholder="e.g., Student User, John Doe">
-                            <div class="form-text">Friendly name for this test user (optional)</div>
+                                   placeholder="{{ _('e.g., Student User, John Doe') }}">
+                            <div class="form-text">{{ _('Friendly name for this test user (optional)') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                            <label for="username" class="form-label">{{ _('Username') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="username" name="username" required
-                                   placeholder="e.g., student123">
-                            <div class="form-text">Username for login</div>
+                                   placeholder="{{ _('e.g., student123') }}">
+                            <div class="form-text">{{ _('Username for login') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                            <label for="password" class="form-label">{{ _('Password') }} <span class="text-danger">*</span></label>
                             <input type="password" class="form-control" id="password" name="password" required>
-                            <div class="form-text">Password for login (stored securely)</div>
+                            <div class="form-text">{{ _('Password for login (stored securely)') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="roles" class="form-label">Roles</label>
+                            <label for="roles" class="form-label">{{ _('Roles') }}</label>
                             <input type="text" class="form-control" id="roles" name="roles"
-                                   placeholder="e.g., student, premium, member"
+                                   placeholder="{{ _('e.g., student, premium, member') }}"
                                    list="existing-roles">
                             <datalist id="existing-roles">
                                 {% for role in existing_roles %}
                                 <option value="{{ role }}">
                                 {% endfor %}
                             </datalist>
-                            <div class="form-text">Comma-separated list of user roles for testing role-based content</div>
+                            <div class="form-text">{{ _('Comma-separated list of user roles for testing role-based content') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">{{ _('Description') }}</label>
                             <textarea class="form-control" id="description" name="description" rows="2"
-                                      placeholder="Notes about this user..."></textarea>
-                            <div class="form-text">Optional notes about this test user</div>
+                                      placeholder="{{ _('Notes about this user...') }}"></textarea>
+                            <div class="form-text">{{ _('Optional notes about this test user') }}</div>
                         </div>
 
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="enabled" name="enabled" checked>
                             <label class="form-check-label" for="enabled">
-                                <strong>Enabled</strong> - User is active and can be used for testing
+                                <strong>{{ _('Enabled') }}</strong> {{ _('- User is active and can be used for testing') }}
                             </label>
                         </div>
                     </div>
@@ -96,11 +96,11 @@
                 <!-- Login Configuration -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-key"></i> Login Configuration</h5>
+                        <h5 class="mb-0"><i class="bi bi-key"></i> {{ _('Login Configuration') }}</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="authentication_method" class="form-label">Authentication Method</label>
+                            <label for="authentication_method" class="form-label">{{ _('Authentication Method') }}</label>
                             <select class="form-select" id="authentication_method" name="authentication_method">
                                 {% for method in auth_methods %}
                                 <option value="{{ method.value }}" {% if method.value == 'form_login' %}selected{% endif %}>
@@ -112,82 +112,82 @@
 
                         <div id="form-login-config">
                             <div class="mb-3">
-                                <label for="login_url" class="form-label">Login Page URL</label>
+                                <label for="login_url" class="form-label">{{ _('Login Page URL') }}</label>
                                 <input type="url" class="form-control" id="login_url" name="login_url"
                                        placeholder="https://example.com/login">
-                                <div class="form-text">Full URL of the login page</div>
+                                <div class="form-text">{{ _('Full URL of the login page') }}</div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="username_field_selector" class="form-label">Username Field Selector</label>
+                                    <label for="username_field_selector" class="form-label">{{ _('Username Field Selector') }}</label>
                                     <input type="text" class="form-control" id="username_field_selector"
                                            name="username_field_selector"
                                            placeholder="#username, input[name='user']">
-                                    <div class="form-text">CSS selector for username input</div>
+                                    <div class="form-text">{{ _('CSS selector for username input') }}</div>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="password_field_selector" class="form-label">Password Field Selector</label>
+                                    <label for="password_field_selector" class="form-label">{{ _('Password Field Selector') }}</label>
                                     <input type="text" class="form-control" id="password_field_selector"
                                            name="password_field_selector"
                                            placeholder="#password, input[type='password']">
-                                    <div class="form-text">CSS selector for password input</div>
+                                    <div class="form-text">{{ _('CSS selector for password input') }}</div>
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="submit_button_selector" class="form-label">Submit Button Selector</label>
+                                <label for="submit_button_selector" class="form-label">{{ _('Submit Button Selector') }}</label>
                                 <input type="text" class="form-control" id="submit_button_selector"
                                        name="submit_button_selector"
                                        placeholder="button[type='submit'], #login-btn">
-                                <div class="form-text">CSS selector for login button</div>
+                                <div class="form-text">{{ _('CSS selector for login button') }}</div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="success_indicator_selector" class="form-label">Success Indicator Selector</label>
+                                <label for="success_indicator_selector" class="form-label">{{ _('Success Indicator Selector') }}</label>
                                 <input type="text" class="form-control" id="success_indicator_selector"
                                        name="success_indicator_selector"
                                        placeholder=".user-profile, #logout-btn">
-                                <div class="form-text">CSS selector that appears after successful login</div>
+                                <div class="form-text">{{ _('CSS selector that appears after successful login') }}</div>
                             </div>
                         </div>
 
-                        <h6 class="mt-4 mb-3"><i class="bi bi-box-arrow-right"></i> Logout Configuration</h6>
+                        <h6 class="mt-4 mb-3"><i class="bi bi-box-arrow-right"></i> {{ _('Logout Configuration') }}</h6>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="logout_url" class="form-label">Logout URL</label>
+                                    <label for="logout_url" class="form-label">{{ _('Logout URL') }}</label>
                                     <input type="text" class="form-control" id="logout_url"
                                            name="logout_url"
                                            placeholder="/logout, /auth/logout">
-                                    <div class="form-text">URL to visit for logout (optional if using button)</div>
+                                    <div class="form-text">{{ _('URL to visit for logout (optional if using button)') }}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="logout_button_selector" class="form-label">Logout Button Selector</label>
+                                    <label for="logout_button_selector" class="form-label">{{ _('Logout Button Selector') }}</label>
                                     <input type="text" class="form-control" id="logout_button_selector"
                                            name="logout_button_selector"
                                            placeholder="#logout-btn, .logout-link">
-                                    <div class="form-text">CSS selector for logout button/link (optional)</div>
+                                    <div class="form-text">{{ _('CSS selector for logout button/link (optional)') }}</div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="logout_success_indicator_selector" class="form-label">Logout Success Indicator Selector</label>
+                            <label for="logout_success_indicator_selector" class="form-label">{{ _('Logout Success Indicator Selector') }}</label>
                             <input type="text" class="form-control" id="logout_success_indicator_selector"
                                    name="logout_success_indicator_selector"
                                    placeholder=".login-form, #login-btn">
-                            <div class="form-text">CSS selector that appears after successful logout (e.g., login button visible again)</div>
+                            <div class="form-text">{{ _('CSS selector that appears after successful logout (e.g., login button visible again)') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="session_timeout_minutes" class="form-label">Session Timeout (minutes)</label>
+                            <label for="session_timeout_minutes" class="form-label">{{ _('Session Timeout (minutes)') }}</label>
                             <input type="number" class="form-control" id="session_timeout_minutes"
                                    name="session_timeout_minutes" value="30" min="1" max="480">
-                            <div class="form-text">How long the session stays valid</div>
+                            <div class="form-text">{{ _('How long the session stays valid') }}</div>
                         </div>
                     </div>
                 </div>
@@ -197,38 +197,38 @@
             <div class="col-md-4">
                 <div class="card sticky-top" style="top: 20px;">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> Help</h5>
+                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> {{ _('Help') }}</h5>
                     </div>
                     <div class="card-body">
-                        <h6>User Roles</h6>
-                        <p class="small">Roles help you test content that varies based on user permissions. Examples:</p>
+                        <h6>{{ _('User Roles') }}</h6>
+                        <p class="small">{{ _('Roles help you test content that varies based on user permissions. Examples:') }}</p>
                         <ul class="small">
-                            <li><code>student</code> - Student account</li>
-                            <li><code>teacher</code> - Teacher/instructor</li>
-                            <li><code>admin</code> - Administrator</li>
-                            <li><code>premium</code> - Paid member</li>
-                            <li><code>free</code> - Free tier user</li>
+                            <li><code>student</code> - {{ _('Student account') }}</li>
+                            <li><code>teacher</code> - {{ _('Teacher/instructor') }}</li>
+                            <li><code>admin</code> - {{ _('Administrator') }}</li>
+                            <li><code>premium</code> - {{ _('Paid member') }}</li>
+                            <li><code>free</code> - {{ _('Free tier user') }}</li>
                         </ul>
 
                         <hr>
 
-                        <h6>CSS Selectors</h6>
-                        <p class="small">Use browser DevTools to find selectors:</p>
+                        <h6>{{ _('CSS Selectors') }}</h6>
+                        <p class="small">{{ _('Use browser DevTools to find selectors:') }}</p>
                         <ol class="small">
-                            <li>Right-click the element</li>
-                            <li>Select "Inspect"</li>
-                            <li>Right-click in the HTML panel</li>
-                            <li>Copy → Copy selector</li>
+                            <li>{{ _('Right-click the element') }}</li>
+                            <li>{{ _('Select "Inspect"') }}</li>
+                            <li>{{ _('Right-click in the HTML panel') }}</li>
+                            <li>{{ _('Copy → Copy selector') }}</li>
                         </ol>
 
                         <hr>
 
-                        <h6>Common Patterns</h6>
+                        <h6>{{ _('Common Patterns') }}</h6>
                         <ul class="small">
-                            <li>By ID: <code>#login-form</code></li>
-                            <li>By name: <code>input[name="username"]</code></li>
-                            <li>By type: <code>input[type="password"]</code></li>
-                            <li>By class: <code>.btn-primary</code></li>
+                            <li>{{ _('By ID:') }} <code>#login-form</code></li>
+                            <li>{{ _('By name:') }} <code>input[name="username"]</code></li>
+                            <li>{{ _('By type:') }} <code>input[type="password"]</code></li>
+                            <li>{{ _('By class:') }} <code>.btn-primary</code></li>
                         </ul>
                     </div>
                 </div>
@@ -239,10 +239,10 @@
             <div class="col-md-8">
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> Create Test User
+                        <i class="bi bi-check-circle"></i> {{ _('Create Test User') }}
                     </button>
                     <a href="{{ url_for('website_users.list_users', website_id=website.id) }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Cancel
+                        <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
                     </a>
                 </div>
             </div>

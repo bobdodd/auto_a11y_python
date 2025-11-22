@@ -182,13 +182,22 @@ class FixtureTestRunner:
         }
 
         try:
+            # Infer WCAG level from fixture filename
+            # If fixture has 'AAA' in error code (e.g., ErrPartialTextContrastAAA), test at AAA level
+            # Otherwise default to AA level
+            wcag_level = 'AAA' if 'AAA' in expected_code else 'AA'
+
             # Create a temporary project and website for testing
             project = Project(
                 name=f"Fixture Test - {datetime.now().isoformat()}",
                 description=f"Testing fixture: {expected_code}",
-                status=ProjectStatus.ACTIVE
+                status=ProjectStatus.ACTIVE,
+                config={'wcag_level': wcag_level}
             )
             project_id = self.db.create_project(project)
+
+            if wcag_level == 'AAA':
+                print(f"   Testing at WCAG {wcag_level} level (inferred from fixture name)")
             
             # Create website entry
             website = Website(

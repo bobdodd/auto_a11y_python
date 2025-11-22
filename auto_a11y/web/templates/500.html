@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Server Error - Auto A11y{% endblock %}
+{% block title %}{{ _('Server Error') }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row mt-5">
         <div class="col-md-6 mx-auto text-center">
             <h1 class="display-1">500</h1>
-            <h2>Internal Server Error</h2>
-            <p class="lead">Something went wrong on our end.</p>
+            <h2>{{ _('Internal Server Error') }}</h2>
+            <p class="lead">{{ _('Something went wrong on our end.') }}</p>
             <a href="{{ url_for('index') }}" class="btn btn-primary">
-                <i class="bi bi-house"></i> Go Home
+                <i class="bi bi-house"></i> {{ _('Go Home') }}
             </a>
         </div>
     </div>

@@ -20,6 +20,8 @@ from auto_a11y.drupal import (
     IssueExporter
 )
 from auto_a11y.drupal.config import get_drupal_config
+from auto_a11y.reporting.deduplication_service import AutomatedTestDeduplicationService
+from auto_a11y.reporting.report_generator import ReportGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -239,6 +241,15 @@ def sync_status(project_id):
 def upload_to_drupal(project_id):
     """Upload discovered pages and recordings to Drupal"""
 
+    # IMPORTANT: Read request data BEFORE creating generator
+    # Cannot call request.get_json() inside generator function
+    data = request.get_json()
+    discovered_page_ids = data.get('discovered_page_ids', [])
+    recording_ids = data.get('recording_ids', [])
+    issue_ids = data.get('issue_ids', [])
+    automated_test_filters = data.get('automated_test_filters')  # Will be None if not included
+    options = data.get('options', {})
+
     def generate():
         try:
             db = current_app.db
@@ -250,13 +261,6 @@ def upload_to_drupal(project_id):
                 return
 
             project = Project.from_dict(project_doc)
-
-            # Get selected items from request
-            data = request.get_json()
-            discovered_page_ids = data.get('discovered_page_ids', [])
-            recording_ids = data.get('recording_ids', [])
-            issue_ids = data.get('issue_ids', [])
-            options = data.get('options', {})
 
             yield json.dumps({
                 'type': 'info',
@@ -638,6 +642,304 @@ def upload_to_drupal(project_id):
                         'error': str(e)
                     }) + '\n'
                     failure_count += 1
+
+            # Process automated test results if filters provided
+            if automated_test_filters:
+                yield json.dumps({
+                    'type': 'info',
+                    'message': 'Processing automated test results...'
+                }) + '\n'
+
+                try:
+                    # Import models and services
+                    from auto_a11y.reporting.report_generator import ReportGenerator
+                    from auto_a11y.reporting.deduplication_service import AutomatedTestDeduplicationService
+
+                    # Extract filter parameters
+                    page_urls = automated_test_filters.get('page_urls', [])
+                    touchpoints = automated_test_filters.get('touchpoints', [])
+                    wcag_criteria = automated_test_filters.get('wcag_criteria', [])
+                    impact_levels = automated_test_filters.get('impact_levels', [])
+                    min_component_pages = automated_test_filters.get('min_component_pages', 2)
+
+                    # Step 1: Generate comprehensive report data (with filtering)
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': 'Preparing test results with filters...'
+                    }) + '\n'
+
+                    report_gen = ReportGenerator(db, config={})
+                    websites = db.get_websites(project_id)
+
+                    # Prepare website data with test results
+                    website_data = []
+                    for website in websites:
+                        pages = db.get_pages(website.id)
+                        page_results = []
+
+                        for page in pages:
+                            # Apply page URL filter
+                            if page_urls and page.url not in page_urls:
+                                continue
+
+                            test_result = db.get_latest_test_result(page.id)
+                            if test_result:
+                                # Apply violation-level filters
+                                if touchpoints or wcag_criteria or impact_levels:
+                                    filtered_violations = []
+                                    filtered_warnings = []
+                                    filtered_info = []
+
+                                    for v_list, target_list in [
+                                        (test_result.violations, filtered_violations),
+                                        (test_result.warnings, filtered_warnings),
+                                        (test_result.info, filtered_info)
+                                    ]:
+                                        for violation in v_list:
+                                            # Filter by touchpoint
+                                            if touchpoints and violation.touchpoint not in touchpoints:
+                                                continue
+
+                                            # Filter by WCAG criteria
+                                            if wcag_criteria:
+                                                if not violation.wcag_criteria:
+                                                    continue
+                                                if not any(wc in wcag_criteria for wc in violation.wcag_criteria):
+                                                    continue
+
+                                            # Filter by impact level
+                                            if impact_levels and violation.impact.value not in impact_levels:
+                                                continue
+
+                                            target_list.append(violation)
+
+                                    # Replace test result violations with filtered ones
+                                    test_result.violations = filtered_violations
+                                    test_result.warnings = filtered_warnings
+                                    test_result.info = filtered_info
+
+                                # Only include if there are violations after filtering
+                                if test_result.violations or test_result.warnings or test_result.info:
+                                    page_results.append({
+                                        'page': page,
+                                        'test_result': test_result
+                                    })
+
+                        if page_results:
+                            website_data.append({
+                                'website': website,
+                                'pages': page_results
+                            })
+
+                    # Prepare full project report data
+                    report_data = report_gen._prepare_project_report_data(project, website_data)
+
+                    # Step 2: Process automated test results with deduplication
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': 'Deduplicating test results and creating Discovered Pages...'
+                    }) + '\n'
+
+                    dedup_service = AutomatedTestDeduplicationService(db)
+                    dedup_results = dedup_service.process_automated_test_results(
+                        project_id=project_id,
+                        project_data=report_data,
+                        min_component_pages=min_component_pages,
+                        mark_pages_for_inspection=False
+                    )
+
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': f'Found {len(dedup_results["common_components"])} common components'
+                    }) + '\n'
+
+                    # Step 3: Link violations to discovered pages
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': 'Linking violations to discovered pages...'
+                    }) + '\n'
+
+                    linked_count = dedup_service.link_violations_to_discovered_pages(
+                        project_id=project_id,
+                        project_data=report_data,
+                        common_components=dedup_results['common_components']
+                    )
+
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': f'Linked {linked_count} violations to discovered pages'
+                    }) + '\n'
+
+                    # Step 4: Upload Discovered Pages to Drupal
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': 'Uploading Discovered Pages to Drupal...'
+                    }) + '\n'
+
+                    all_page_ids = dedup_results['component_page_ids'] + dedup_results['page_url_ids']
+                    pages_synced = 0
+                    pages_failed = 0
+
+                    for page_id in all_page_ids:
+                        try:
+                            page_doc = db.discovered_pages.find_one({'_id': ObjectId(page_id)})
+                            if not page_doc:
+                                pages_failed += 1
+                                continue
+
+                            disc_page = DiscoveredPage.from_dict(page_doc)
+
+                            # Export page
+                            result = page_exporter.export_from_discovered_page_model(disc_page, audit_uuid)
+
+                            if result.get('success'):
+                                # Update database with Drupal UUID
+                                db.discovered_pages.update_one(
+                                    {'_id': ObjectId(page_id)},
+                                    {
+                                        '$set': {
+                                            'drupal_uuid': result['uuid'],
+                                            'drupal_sync_status': DrupalSyncStatus.SYNCED.value,
+                                            'drupal_last_synced': datetime.now(),
+                                            'drupal_error_message': None
+                                        }
+                                    }
+                                )
+                                pages_synced += 1
+                            else:
+                                db.discovered_pages.update_one(
+                                    {'_id': ObjectId(page_id)},
+                                    {
+                                        '$set': {
+                                            'drupal_sync_status': DrupalSyncStatus.SYNC_FAILED.value,
+                                            'drupal_error_message': result.get('error', 'Unknown error')
+                                        }
+                                    }
+                                )
+                                pages_failed += 1
+                        except Exception as e:
+                            logger.error(f"Error syncing discovered page {page_id}: {e}")
+                            pages_failed += 1
+
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': f'Discovered Pages synced: {pages_synced}, failed: {pages_failed}'
+                    }) + '\n'
+
+                    # Step 5: Upload Issues to Drupal with discovered page references
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': 'Uploading issues to Drupal...'
+                    }) + '\n'
+
+                    issues_created = 0
+                    issues_updated = 0
+                    issues_failed = 0
+
+                    # Process all test results and upload violations as issues
+                    for website_data_item in report_data.get('websites', []):
+                        for page_result in website_data_item.get('pages', []):
+                            page = page_result.get('page')
+                            test_result = page_result.get('test_result')
+
+                            if not test_result:
+                                continue
+
+                            # Process all violation types
+                            all_violations = (
+                                test_result.violations +
+                                test_result.warnings +
+                                test_result.info
+                            )
+
+                            for violation in all_violations:
+                                # Get discovered page UUID for this violation
+                                discovered_page_uuid = None
+                                if violation.discovered_page_id:
+                                    disc_page = db.get_discovered_page_by_id(violation.discovered_page_id)
+                                    if disc_page and disc_page.drupal_uuid:
+                                        discovered_page_uuid = disc_page.drupal_uuid
+
+                                # Check if issue already exists using unique_id
+                                existing_issue = db.drupal_issues.find_one({
+                                    'unique_id': violation.unique_id,
+                                    'project_id': project_id
+                                })
+
+                                existing_uuid = existing_issue.get('drupal_uuid') if existing_issue else None
+
+                                try:
+                                    # Handle WCAG criteria - check if already UUIDs or need conversion
+                                    wcag_uuids = None
+                                    if violation.wcag_criteria:
+                                        # Check if first item looks like a UUID (contains dashes and is 36 chars)
+                                        first_crit = violation.wcag_criteria[0]
+                                        if len(first_crit) == 36 and first_crit.count('-') == 4:
+                                            # Already UUIDs, use as-is
+                                            wcag_uuids = violation.wcag_criteria
+                                        else:
+                                            # WCAG criteria numbers, convert to UUIDs
+                                            wcag_uuids = wcag_cache.lookup_uuids(violation.wcag_criteria)
+
+                                    # Upload issue to Drupal
+                                    result = issue_exporter.export_issue(
+                                        title=violation.description[:255],
+                                        description=violation.description,
+                                        audit_uuid=audit_uuid,
+                                        impact=violation.impact.value,
+                                        issue_type=violation.touchpoint,
+                                        location_on_page=violation.metadata.get('location_on_page', ''),
+                                        wcag_criteria=wcag_uuids,
+                                        xpath=violation.xpath or violation.metadata.get('xpath'),
+                                        url=page.url if hasattr(page, 'url') else page.get('url'),
+                                        existing_uuid=existing_uuid,
+                                        discovered_page_uuid=discovered_page_uuid
+                                    )
+
+                                    if result.get('success'):
+                                        # Store/update issue reference in database using unique_id
+                                        db.drupal_issues.update_one(
+                                            {'unique_id': violation.unique_id, 'project_id': project_id},
+                                            {
+                                                '$set': {
+                                                    'drupal_uuid': result['uuid'],
+                                                    'drupal_id': result.get('id'),
+                                                    'updated_at': datetime.now(),
+                                                    'discovered_page_id': violation.discovered_page_id
+                                                },
+                                                '$setOnInsert': {
+                                                    'unique_id': violation.unique_id,
+                                                    'violation_id': violation.id,  # Keep for reference
+                                                    'project_id': project_id,
+                                                    'created_at': datetime.now()
+                                                }
+                                            },
+                                            upsert=True
+                                        )
+
+                                        if existing_uuid:
+                                            issues_updated += 1
+                                        else:
+                                            issues_created += 1
+                                    else:
+                                        issues_failed += 1
+                                        logger.error(f"Failed to upload issue: {result.get('error')}")
+
+                                except Exception as e:
+                                    issues_failed += 1
+                                    logger.error(f"Error uploading issue: {e}")
+
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': f'Issues created: {issues_created}, updated: {issues_updated}, failed: {issues_failed}'
+                    }) + '\n'
+
+                except Exception as e:
+                    logger.error(f"Error processing automated tests: {e}", exc_info=True)
+                    yield json.dumps({
+                        'type': 'error',
+                        'message': f'Error processing automated tests: {str(e)}'
+                    }) + '\n'
 
             # Send completion message
             yield json.dumps({
@@ -1027,6 +1329,269 @@ def import_issues(project_id):
 
         except Exception as e:
             logger.error(f"Error importing issues: {e}")
+            yield json.dumps({'type': 'error', 'error': str(e)}) + '\n'
+
+    return Response(stream_with_context(generate()), content_type='application/x-ndjson')
+
+
+@drupal_sync_bp.route('/projects/<project_id>/sync/upload_automated_results', methods=['POST'])
+def upload_automated_results_to_drupal(project_id):
+    """
+    Process and upload automated test results to Drupal.
+
+    This route:
+    1. Generates a comprehensive report from the project's test results
+    2. Deduplicates issues by common components
+    3. Creates Discovered Pages for:
+       - Common components (appearing on 2+ pages)
+       - Individual page URLs with issues
+    4. Uploads the created Discovered Pages to Drupal
+
+    Request body (JSON):
+    {
+        "options": {
+            "min_component_pages": 2,  // Minimum pages for component to be "common"
+            "mark_pages_for_inspection": false  // Mark page URLs for manual inspection
+        }
+    }
+    """
+
+    def generate():
+        try:
+            db = current_app.db
+
+            # Get project
+            project_doc = db.projects.find_one({'_id': ObjectId(project_id)})
+            if not project_doc:
+                yield json.dumps({'type': 'error', 'error': 'Project not found'}) + '\n'
+                return
+
+            project = Project.from_dict(project_doc)
+
+            # Get options from request
+            data = request.get_json() or {}
+            options = data.get('options', {})
+            min_component_pages = options.get('min_component_pages', 2)
+            mark_pages_for_inspection = options.get('mark_pages_for_inspection', False)
+
+            yield json.dumps({
+                'type': 'info',
+                'message': f'Processing automated test results for project: {project.name}'
+            }) + '\n'
+
+            # Step 1: Generate comprehensive report data
+            yield json.dumps({
+                'type': 'info',
+                'message': 'Generating comprehensive report data...'
+            }) + '\n'
+
+            try:
+                # Use ReportGenerator to prepare project data
+                report_gen = ReportGenerator(db, config={})
+                websites = db.get_websites(project_id)
+
+                # Prepare website data with test results
+                website_data = []
+                for website in websites:
+                    pages = db.get_pages(website.id)
+                    page_results = []
+
+                    for page in pages:
+                        test_result = db.get_latest_test_result(page.id)
+                        if test_result:
+                            page_results.append({
+                                'page': page,
+                                'test_result': test_result
+                            })
+
+                    website_data.append({
+                        'website': website,
+                        'pages': page_results
+                    })
+
+                # Prepare full project report data
+                report_data = report_gen._prepare_project_report_data(project, website_data)
+
+            except Exception as e:
+                logger.error(f"Failed to generate report data: {e}")
+                yield json.dumps({
+                    'type': 'error',
+                    'error': f'Failed to generate report data: {str(e)}'
+                }) + '\n'
+                return
+
+            # Step 2: Process automated test results with deduplication
+            yield json.dumps({
+                'type': 'info',
+                'message': 'Deduplicating test results and extracting common components...'
+            }) + '\n'
+
+            dedup_service = AutomatedTestDeduplicationService(db)
+
+            try:
+                results = dedup_service.process_automated_test_results(
+                    project_id=project_id,
+                    project_data=report_data,
+                    min_component_pages=min_component_pages,
+                    mark_pages_for_inspection=mark_pages_for_inspection
+                )
+            except Exception as e:
+                logger.error(f"Failed to process automated results: {e}")
+                yield json.dumps({
+                    'type': 'error',
+                    'error': f'Failed to process results: {str(e)}'
+                }) + '\n'
+                return
+
+            upload_id = results['upload_id']
+            component_page_ids = results['component_page_ids']
+            page_url_ids = results['page_url_ids']
+            total_discovered_pages = len(component_page_ids) + len(page_url_ids)
+
+            yield json.dumps({
+                'type': 'info',
+                'message': f'Created {len(component_page_ids)} common components and {len(page_url_ids)} page URLs (upload_id: {upload_id})'
+            }) + '\n'
+
+            # Step 3: Initialize Drupal client and exporters
+            yield json.dumps({
+                'type': 'info',
+                'message': 'Initializing Drupal client...'
+            }) + '\n'
+
+            client = _get_drupal_client()
+            if not client:
+                yield json.dumps({'type': 'error', 'error': 'Failed to initialize Drupal client'}) + '\n'
+                return
+
+            # Lookup audit UUID
+            yield json.dumps({'type': 'info', 'message': 'Looking up Drupal audit...'}) + '\n'
+            audit_uuid = _lookup_audit_uuid(client, project)
+
+            if not audit_uuid:
+                audit_name = project.drupal_audit_name or project.name
+                yield json.dumps({
+                    'type': 'error',
+                    'error': f'Audit not found in Drupal: {audit_name}'
+                }) + '\n'
+                return
+
+            yield json.dumps({
+                'type': 'info',
+                'message': f'Found audit UUID: {audit_uuid}'
+            }) + '\n'
+
+            # Initialize exporters
+            taxonomies = DiscoveredPageTaxonomies(client)
+            page_exporter = DiscoveredPageExporter(client, taxonomies)
+
+            # Step 4: Upload Discovered Pages to Drupal
+            yield json.dumps({
+                'type': 'info',
+                'message': f'Uploading {total_discovered_pages} Discovered Pages to Drupal...'
+            }) + '\n'
+
+            all_page_ids = component_page_ids + page_url_ids
+            current_item = 0
+            success_count = 0
+            failure_count = 0
+
+            for page_id in all_page_ids:
+                current_item += 1
+
+                try:
+                    page_doc = db.discovered_pages.find_one({'_id': ObjectId(page_id)})
+                    if not page_doc:
+                        yield json.dumps({
+                            'type': 'error',
+                            'current': current_item,
+                            'total': total_discovered_pages,
+                            'item': page_id,
+                            'error': 'Page not found'
+                        }) + '\n'
+                        failure_count += 1
+                        continue
+
+                    page = DiscoveredPage.from_dict(page_doc)
+
+                    yield json.dumps({
+                        'type': 'progress',
+                        'current': current_item,
+                        'total': total_discovered_pages,
+                        'item': page.title,
+                        'status': 'exporting'
+                    }) + '\n'
+
+                    # Export page
+                    result = page_exporter.export_from_discovered_page_model(page, audit_uuid)
+
+                    if result.get('success'):
+                        # Update database with Drupal UUID
+                        db.discovered_pages.update_one(
+                            {'_id': ObjectId(page_id)},
+                            {
+                                '$set': {
+                                    'drupal_uuid': result['uuid'],
+                                    'drupal_sync_status': 'synced',
+                                    'drupal_last_synced': datetime.now(),
+                                    'drupal_error_message': None
+                                }
+                            }
+                        )
+
+                        yield json.dumps({
+                            'type': 'success',
+                            'current': current_item,
+                            'total': total_discovered_pages,
+                            'item': page.title,
+                            'uuid': result['uuid'],
+                            'nid': result.get('nid')
+                        }) + '\n'
+                        success_count += 1
+                    else:
+                        # Update database with error
+                        db.discovered_pages.update_one(
+                            {'_id': ObjectId(page_id)},
+                            {
+                                '$set': {
+                                    'drupal_sync_status': 'sync_failed',
+                                    'drupal_error_message': result.get('error')
+                                }
+                            }
+                        )
+
+                        yield json.dumps({
+                            'type': 'error',
+                            'current': current_item,
+                            'total': total_discovered_pages,
+                            'item': page.title,
+                            'error': result.get('error')
+                        }) + '\n'
+                        failure_count += 1
+
+                except Exception as e:
+                    logger.error(f"Error exporting page {page_id}: {e}")
+                    yield json.dumps({
+                        'type': 'error',
+                        'current': current_item,
+                        'total': total_discovered_pages,
+                        'item': str(page_id),
+                        'error': str(e)
+                    }) + '\n'
+                    failure_count += 1
+
+            # Send completion
+            yield json.dumps({
+                'type': 'complete',
+                'message': f'Upload complete: {success_count} succeeded, {failure_count} failed',
+                'success': success_count,
+                'failure': failure_count,
+                'total': total_discovered_pages,
+                'upload_id': upload_id
+            }) + '\n'
+
+        except Exception as e:
+            logger.error(f"Error uploading automated results: {e}")
             yield json.dumps({'type': 'error', 'error': str(e)}) + '\n'
 
     return Response(stream_with_context(generate()), content_type='application/x-ndjson')

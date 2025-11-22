@@ -16,7 +16,7 @@ from auto_a11y.models import (
     Recording, RecordingIssue, RecordingType,
     DocumentReference, DiscoveryRun,
     PageSetupScript, ScriptExecutionSession,
-    WebsiteUser, ProjectUser
+    WebsiteUser, ProjectUser, DiscoveredPage
 )
 
 logger = logging.getLogger(__name__)
@@ -52,6 +52,7 @@ class Database:
         self.recordings: Collection = self.db.recordings  # Manual audit recordings from Dictaphone
         self.recording_issues: Collection = self.db.recording_issues  # Issues from manual audits
         self.discovered_pages: Collection = self.db.discovered_pages  # Discovered pages for Drupal export
+        self.drupal_issues: Collection = self.db.drupal_issues  # Track Drupal issue uploads by violation ID
 
         # Create indexes
         self._create_indexes()
@@ -165,6 +166,14 @@ class Database:
         self.recording_issues.create_index("component_names")  # For component-specific queries
         self.recording_issues.create_index([("recording_id", 1), ("impact", 1)])
         self.recording_issues.create_index([("project_id", 1), ("status", 1)])
+
+        # Drupal issues (track issue uploads by unique_id)
+        self.drupal_issues.create_index("unique_id")
+        self.drupal_issues.create_index("violation_id")  # Keep for reference
+        self.drupal_issues.create_index("project_id")
+        self.drupal_issues.create_index([("unique_id", 1), ("project_id", 1)], unique=True)
+        self.drupal_issues.create_index("drupal_uuid")
+        self.drupal_issues.create_index("discovered_page_id")
     
     def test_connection(self) -> bool:
         """Test database connection"""
@@ -2105,3 +2114,118 @@ class Database:
             }
         )
         return result.modified_count > 0
+
+    # ===== Discovered Pages =====
+
+    def create_discovered_page(self, discovered_page: DiscoveredPage) -> str:
+        """
+        Create a new discovered page or return existing if duplicate.
+        Uses unique index on (project_id, url) to prevent duplicates.
+
+        Args:
+            discovered_page: DiscoveredPage instance to create
+
+        Returns:
+            Discovered page ID (str)
+        """
+        discovered_page.created_at = datetime.now()
+        discovered_page.updated_at = datetime.now()
+
+        try:
+            result = self.discovered_pages.insert_one(discovered_page.to_dict())
+            discovered_page._id = result.inserted_id
+            return str(result.inserted_id)
+        except Exception as e:
+            # If duplicate key error, find and return existing
+            if "duplicate key" in str(e).lower() or "E11000" in str(e):
+                existing = self.discovered_pages.find_one({
+                    "project_id": discovered_page.project_id,
+                    "url": discovered_page.url
+                })
+                if existing:
+                    logger.info(f"Discovered page already exists for URL: {discovered_page.url}")
+                    return str(existing["_id"])
+            logger.error(f"Failed to create discovered page: {e}")
+            raise
+
+    def get_discovered_page_by_id(self, page_id: str) -> Optional[DiscoveredPage]:
+        """Get discovered page by ID"""
+        doc = self.discovered_pages.find_one({"_id": ObjectId(page_id)})
+        return DiscoveredPage.from_dict(doc) if doc else None
+
+    def get_discovered_page_by_url(self, project_id: str, url: str) -> Optional[DiscoveredPage]:
+        """
+        Get discovered page by project ID and URL.
+        Used for deduplication check before creating new pages.
+
+        Args:
+            project_id: Project ID
+            url: Page URL or component identifier
+
+        Returns:
+            DiscoveredPage if found, None otherwise
+        """
+        doc = self.discovered_pages.find_one({
+            "project_id": project_id,
+            "url": url
+        })
+        return DiscoveredPage.from_dict(doc) if doc else None
+
+    def get_discovered_pages_for_project(
+        self,
+        project_id: str,
+        source_type: Optional[str] = None,
+        include_in_report: Optional[bool] = None
+    ) -> List[DiscoveredPage]:
+        """
+        Get all discovered pages for a project with optional filtering.
+
+        Args:
+            project_id: Project ID
+            source_type: Optional filter by source type
+            include_in_report: Optional filter by include_in_report flag
+
+        Returns:
+            List of DiscoveredPage instances
+        """
+        query = {"project_id": project_id}
+        if source_type:
+            query["source_type"] = source_type
+        if include_in_report is not None:
+            query["include_in_report"] = include_in_report
+
+        docs = self.discovered_pages.find(query)
+        return [DiscoveredPage.from_dict(doc) for doc in docs]
+
+    def update_discovered_page(self, discovered_page: DiscoveredPage) -> bool:
+        """Update existing discovered page"""
+        discovered_page.updated_at = datetime.now()
+        result = self.discovered_pages.replace_one(
+            {"_id": discovered_page._id},
+            discovered_page.to_dict()
+        )
+        return result.modified_count > 0
+
+    def delete_discovered_page(self, page_id: str) -> bool:
+        """Delete discovered page"""
+        result = self.discovered_pages.delete_one({"_id": ObjectId(page_id)})
+        return result.deleted_count > 0
+
+    def get_discovered_pages_needing_sync(self, project_id: Optional[str] = None) -> List[DiscoveredPage]:
+        """
+        Get discovered pages that need to be synced to Drupal.
+
+        Args:
+            project_id: Optional project ID filter
+
+        Returns:
+            List of DiscoveredPage instances that need sync
+        """
+        query = {
+            "drupal_sync_status": {"$in": ["not_synced", "sync_failed"]}
+        }
+        if project_id:
+            query["project_id"] = project_id
+
+        docs = self.discovered_pages.find(query)
+        return [DiscoveredPage.from_dict(doc) for doc in docs]

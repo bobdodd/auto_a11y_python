@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Help & Documentation - Auto A11y{% endblock %}
+{% block title %}{{ _('Help & Documentation - Auto A11y') }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/help-system.css') }}">
@@ -66,34 +66,34 @@
         <!-- Navigation Sidebar -->
         <div class="col-md-3">
             <div class="help-nav">
-                <h5 class="mb-3">Documentation</h5>
+                <h5 class="mb-3">{{ _('Documentation') }}</h5>
                 <nav class="nav flex-column">
-                    <a class="nav-link active" href="#scoring">Understanding Scores</a>
-                    <a class="nav-link" href="#wcag">WCAG Standards</a>
-                    <a class="nav-link" href="#impact">Impact Levels</a>
-                    <a class="nav-link" href="#testing">Testing Process</a>
-                    <a class="nav-link" href="#reports">Reports & Exports</a>
-                    <a class="nav-link" href="#faq">FAQ</a>
-                    <a class="nav-link" href="#about">About Auto A11y</a>
+                    <a class="nav-link active" href="#scoring">{{ _('Understanding Scores') }}</a>
+                    <a class="nav-link" href="#wcag">{{ _('WCAG Standards') }}</a>
+                    <a class="nav-link" href="#impact">{{ _('Impact Levels') }}</a>
+                    <a class="nav-link" href="#testing">{{ _('Testing Process') }}</a>
+                    <a class="nav-link" href="#reports">{{ _('Reports & Exports') }}</a>
+                    <a class="nav-link" href="#faq">{{ _('FAQ') }}</a>
+                    <a class="nav-link" href="#about">{{ _('About Auto A11y') }}</a>
                 </nav>
             </div>
         </div>
         
         <!-- Main Content -->
         <div class="col-md-9">
-            <h1 class="mb-4">Help & Documentation</h1>
-            
+            <h1 class="mb-4">{{ _('Help & Documentation') }}</h1>
+
             <!-- Scoring Section -->
             <section id="scoring" class="help-section">
-                <h2 class="mb-4">Understanding Your Scores</h2>
+                <h2 class="mb-4">{{ _('Understanding Your Scores') }}</h2>
 
                 <div class="alert alert-info">
-                    <h5 class="alert-heading"><i class="bi bi-info-circle"></i> Automated vs Manual Testing Scores</h5>
+                    <h5 class="alert-heading"><i class="bi bi-info-circle"></i> {{ _('Automated vs Manual Testing Scores') }}</h5>
                     <p class="mb-0">
-                        Auto A11y provides two types of scores based on your testing approach:
-                        <strong>Automated Testing Scores</strong> (from automated scans) and
-                        <strong>Manual Testing Scores</strong> (from expert audits and lived experience testing).
-                        Each uses similar scoring models but are calculated independently based on their respective test results.
+                        {{ _('Auto A11y provides two types of scores based on your testing approach:') }}
+                        <strong>{{ _('Automated Testing Scores') }}</strong> {{ _('(from automated scans) and') }}
+                        <strong>{{ _('Manual Testing Scores') }}</strong> {{ _('(from expert audits and lived experience testing).') }}
+                        {{ _('Each uses similar scoring models but are calculated independently based on their respective test results.') }}
                     </p>
                 </div>
 
@@ -101,15 +101,15 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="bi bi-robot"></i> Automated Testing Scores</h5>
+                                <h5 class="mb-0"><i class="bi bi-robot"></i> {{ _('Automated Testing Scores') }}</h5>
                             </div>
                             <div class="card-body">
-                                <p>Generated from automated scanning tools that check pages for technical accessibility issues.</p>
+                                <p>{{ _('Generated from automated scanning tools that check pages for technical accessibility issues.') }}</p>
                                 <ul class="small">
-                                    <li>Fast, consistent, repeatable</li>
-                                    <li>Checks code-level issues</li>
-                                    <li>Can catch 30-40% of accessibility issues</li>
-                                    <li>Available for tested pages</li>
+                                    <li>{{ _('Fast, consistent, repeatable') }}</li>
+                                    <li>{{ _('Checks code-level issues') }}</li>
+                                    <li>{{ _('Can catch 30-40%% of accessibility issues') }}</li>
+                                    <li>{{ _('Available for tested pages') }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -117,15 +117,15 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header bg-success text-white">
-                                <h5 class="mb-0"><i class="bi bi-person-check"></i> Manual Testing Scores</h5>
+                                <h5 class="mb-0"><i class="bi bi-person-check"></i> {{ _('Manual Testing Scores') }}</h5>
                             </div>
                             <div class="card-body">
-                                <p>Generated from human expert audits and lived experience testing with real users.</p>
+                                <p>{{ _('Generated from human expert audits and lived experience testing with real users.') }}</p>
                                 <ul class="small">
-                                    <li>Subjective, context-aware testing</li>
-                                    <li>Tests user experience and workflows</li>
-                                    <li>Catches issues automation misses</li>
-                                    <li>Available for manual recordings</li>
+                                    <li>{{ _('Subjective, context-aware testing') }}</li>
+                                    <li>{{ _('Tests user experience and workflows') }}</li>
+                                    <li>{{ _('Catches issues automation misses') }}</li>
+                                    <li>{{ _('Available for manual recordings') }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -133,47 +133,47 @@
                 </div>
 
                 <div class="score-comparison">
-                    <h3>Why Do I Have Two Different Scores?</h3>
-                    <p class="text-muted">Within each testing type (automated or manual), you'll see two scores:</p>
+                    <h3>{{ _('Why Do I Have Two Different Scores?') }}</h3>
+                    <p class="text-muted">{{ _('Within each testing type (automated or manual), you\'ll see two scores:') }}</p>
                     <div class="row mt-4">
                         <div class="col-md-6">
-                            <h4>📊 Accessibility Score</h4>
-                            <p>Measures the percentage of individual checks/issues that passed</p>
+                            <h4>{{ _('📊 Accessibility Score') }}</h4>
+                            <p>{{ _('Measures the percentage of individual checks/issues that passed') }}</p>
                             <ul>
-                                <li>Shows progress toward compliance</li>
-                                <li>Counts partial successes</li>
-                                <li>Good for tracking improvements</li>
+                                <li>{{ _('Shows progress toward compliance') }}</li>
+                                <li>{{ _('Counts partial successes') }}</li>
+                                <li>{{ _('Good for tracking improvements') }}</li>
                             </ul>
                         </div>
                         <div class="col-md-6">
-                            <h4>✅ WCAG Compliance Score</h4>
-                            <p>Measures the percentage of WCAG Success Criteria passed</p>
+                            <h4>{{ _('✅ WCAG Compliance Score') }}</h4>
+                            <p>{{ _('Measures the percentage of WCAG Success Criteria passed') }}</p>
                             <ul>
-                                <li>Shows true WCAG conformance</li>
-                                <li>Based on applicable Success Criteria</li>
-                                <li>Used for legal compliance</li>
+                                <li>{{ _('Shows true WCAG conformance') }}</li>
+                                <li>{{ _('Based on applicable Success Criteria') }}</li>
+                                <li>{{ _('Used for legal compliance') }}</li>
                             </ul>
                         </div>
                     </div>
                     
                     <div class="score-example">
-                        <h5>Real Example:</h5>
+                        <h5>{{ _('Real Example:') }}</h5>
                         <div class="row">
                             <div class="col-md-4">
-                                <strong>Test Results:</strong><br>
-                                10 form fields tested<br>
-                                9 have proper labels ✓<br>
-                                1 missing label ✗
+                                <strong>{{ _('Test Results:') }}</strong><br>
+                                {{ _('10 form fields tested') }}<br>
+                                {{ _('9 have proper labels ✓') }}<br>
+                                {{ _('1 missing label ✗') }}
                             </div>
                             <div class="col-md-4">
-                                <strong>Accessibility Score:</strong><br>
-                                90% (9/10 passed)<br>
-                                <span class="text-success">Good progress!</span>
+                                <strong>{{ _('Accessibility Score:') }}</strong><br>
+                                {{ _('90%% (9/10 passed)') }}<br>
+                                <span class="text-success">{{ _('Good progress!') }}</span>
                             </div>
                             <div class="col-md-4">
-                                <strong>Compliance Score:</strong><br>
-                                0% (test has violations)<br>
-                                <span class="text-danger">Not compliant</span>
+                                <strong>{{ _('Compliance Score:') }}</strong><br>
+                                {{ _('0%% (test has violations)') }}<br>
+                                <span class="text-danger">{{ _('Not compliant') }}</span>
                             </div>
                         </div>
                     </div>
@@ -181,27 +181,27 @@
                 
                 <div class="card help-card">
                     <div class="card-body">
-                        <h4 class="card-title">Accessibility Score Formula</h4>
-                        <code class="d-block p-3 bg-light mb-3">(Passed Checks / Applicable Checks) × 100</code>
-                        <p>This score helps you track progress. Each successful check counts toward your score, even if the overall test fails.</p>
+                        <h4 class="card-title">{{ _('Accessibility Score Formula') }}</h4>
+                        <code class="d-block p-3 bg-light mb-3">{{ _('(Passed Checks / Applicable Checks) × 100') }}</code>
+                        <p>{{ _('This score helps you track progress. Each successful check counts toward your score, even if the overall test fails.') }}</p>
                         <ul>
-                            <li><strong>90-100%:</strong> Excellent - Minor issues only</li>
-                            <li><strong>70-89%:</strong> Good - Some barriers remain</li>
-                            <li><strong>50-69%:</strong> Fair - Significant issues</li>
-                            <li><strong>Below 50%:</strong> Poor - Major accessibility problems</li>
+                            <li><strong>{{ _('90-100%%:') }}</strong> {{ _('Excellent - Minor issues only') }}</li>
+                            <li><strong>{{ _('70-89%%:') }}</strong> {{ _('Good - Some barriers remain') }}</li>
+                            <li><strong>{{ _('50-69%%:') }}</strong> {{ _('Fair - Significant issues') }}</li>
+                            <li><strong>{{ _('Below 50%%:') }}</strong> {{ _('Poor - Major accessibility problems') }}</li>
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="card help-card">
                     <div class="card-body">
-                        <h4 class="card-title">Compliance Score Formula</h4>
-                        <code class="d-block p-3 bg-light mb-3">(Tests with Zero Violations / Total Tests) × 100</code>
-                        <p>This score reflects true WCAG compliance. A test passes only if it has zero violations.</p>
+                        <h4 class="card-title">{{ _('Compliance Score Formula') }}</h4>
+                        <code class="d-block p-3 bg-light mb-3">{{ _('(Tests with Zero Violations / Total Tests) × 100') }}</code>
+                        <p>{{ _('This score reflects true WCAG compliance. A test passes only if it has zero violations.') }}</p>
                         <ul>
-                            <li><strong>100%:</strong> Fully compliant</li>
-                            <li><strong>90-99%:</strong> Nearly compliant</li>
-                            <li><strong>Below 90%:</strong> Not compliant</li>
+                            <li><strong>{{ _('100%%:') }}</strong> {{ _('Fully compliant') }}</li>
+                            <li><strong>{{ _('90-99%%:') }}</strong> {{ _('Nearly compliant') }}</li>
+                            <li><strong>{{ _('Below 90%%:') }}</strong> {{ _('Not compliant') }}</li>
                         </ul>
                     </div>
                 </div>
@@ -209,37 +209,37 @@
             
             <!-- WCAG Section -->
             <section id="wcag" class="help-section">
-                <h2 class="mb-4">WCAG Standards</h2>
-                
+                <h2 class="mb-4">{{ _('WCAG Standards') }}</h2>
+
                 <div class="card help-card">
                     <div class="card-body">
-                        <h4 class="card-title">Conformance Levels</h4>
+                        <h4 class="card-title">{{ _('Conformance Levels') }}</h4>
                         <div class="row mt-3">
                             <div class="col-md-4">
-                                <h5>Level A</h5>
-                                <span class="badge bg-warning text-dark">Minimum</span>
+                                <h5>{{ _('Level A') }}</h5>
+                                <span class="badge bg-warning text-dark">{{ _('Minimum') }}</span>
                                 <ul class="mt-2">
-                                    <li>Basic features</li>
-                                    <li>Essential for any site</li>
-                                    <li>Alt text, page titles</li>
+                                    <li>{{ _('Basic features') }}</li>
+                                    <li>{{ _('Essential for any site') }}</li>
+                                    <li>{{ _('Alt text, page titles') }}</li>
                                 </ul>
                             </div>
                             <div class="col-md-4">
-                                <h5>Level AA</h5>
-                                <span class="badge bg-success">Recommended</span>
+                                <h5>{{ _('Level AA') }}</h5>
+                                <span class="badge bg-success">{{ _('Recommended') }}</span>
                                 <ul class="mt-2">
-                                    <li>Legal standard</li>
-                                    <li>Removes major barriers</li>
-                                    <li>4.5:1 contrast ratio</li>
+                                    <li>{{ _('Legal standard') }}</li>
+                                    <li>{{ _('Removes major barriers') }}</li>
+                                    <li>{{ _('4.5:1 contrast ratio') }}</li>
                                 </ul>
                             </div>
                             <div class="col-md-4">
-                                <h5>Level AAA</h5>
-                                <span class="badge bg-info">Enhanced</span>
+                                <h5>{{ _('Level AAA') }}</h5>
+                                <span class="badge bg-info">{{ _('Enhanced') }}</span>
                                 <ul class="mt-2">
-                                    <li>Highest level</li>
-                                    <li>Not always required</li>
-                                    <li>7:1 contrast ratio</li>
+                                    <li>{{ _('Highest level') }}</li>
+                                    <li>{{ _('Not always required') }}</li>
+                                    <li>{{ _('7:1 contrast ratio') }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -249,65 +249,65 @@
             
             <!-- Impact Levels Section -->
             <section id="impact" class="help-section">
-                <h2 class="mb-4">Issue Impact Levels</h2>
-                
+                <h2 class="mb-4">{{ _('Issue Impact Levels') }}</h2>
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card help-card border-danger">
                             <div class="card-body">
-                                <h4 class="card-title text-danger">🔴 High Impact</h4>
-                                <p>Completely blocks access for some users</p>
+                                <h4 class="card-title text-danger">{{ _('🔴 High Impact') }}</h4>
+                                <p>{{ _('Completely blocks access for some users') }}</p>
                                 <ul>
-                                    <li>Missing alt text on images</li>
-                                    <li>No keyboard navigation</li>
-                                    <li>Missing form labels</li>
+                                    <li>{{ _('Missing alt text on images') }}</li>
+                                    <li>{{ _('No keyboard navigation') }}</li>
+                                    <li>{{ _('Missing form labels') }}</li>
                                 </ul>
-                                <p class="mb-0"><strong>Action:</strong> Fix immediately</p>
+                                <p class="mb-0"><strong>{{ _('Action:') }}</strong> {{ _('Fix immediately') }}</p>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="card help-card border-warning">
                             <div class="card-body">
-                                <h4 class="card-title text-warning">🟡 Medium Impact</h4>
-                                <p>Significantly degrades experience</p>
+                                <h4 class="card-title text-warning">{{ _('🟡 Medium Impact') }}</h4>
+                                <p>{{ _('Significantly degrades experience') }}</p>
                                 <ul>
-                                    <li>Poor color contrast</li>
-                                    <li>Missing landmarks</li>
-                                    <li>Unclear link text</li>
+                                    <li>{{ _('Poor color contrast') }}</li>
+                                    <li>{{ _('Missing landmarks') }}</li>
+                                    <li>{{ _('Unclear link text') }}</li>
                                 </ul>
-                                <p class="mb-0"><strong>Action:</strong> Fix soon</p>
+                                <p class="mb-0"><strong>{{ _('Action:') }}</strong> {{ _('Fix soon') }}</p>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6 mt-3">
                         <div class="card help-card border-success">
                             <div class="card-body">
-                                <h4 class="card-title text-success">🟢 Low Impact</h4>
-                                <p>Minor inconvenience</p>
+                                <h4 class="card-title text-success">{{ _('🟢 Low Impact') }}</h4>
+                                <p>{{ _('Minor inconvenience') }}</p>
                                 <ul>
-                                    <li>Redundant alt text</li>
-                                    <li>Decorative issues</li>
-                                    <li>Minor labeling issues</li>
+                                    <li>{{ _('Redundant alt text') }}</li>
+                                    <li>{{ _('Decorative issues') }}</li>
+                                    <li>{{ _('Minor labeling issues') }}</li>
                                 </ul>
-                                <p class="mb-0"><strong>Action:</strong> Fix when convenient</p>
+                                <p class="mb-0"><strong>{{ _('Action:') }}</strong> {{ _('Fix when convenient') }}</p>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6 mt-3">
                         <div class="card help-card border-info">
                             <div class="card-body">
-                                <h4 class="card-title text-info">ℹ️ Info/Discovery</h4>
-                                <p>Best practices and recommendations</p>
+                                <h4 class="card-title text-info">{{ _('ℹ️ Info/Discovery') }}</h4>
+                                <p>{{ _('Best practices and recommendations') }}</p>
                                 <ul>
-                                    <li>Optimization opportunities</li>
-                                    <li>Manual review items</li>
-                                    <li>Not counted in scoring</li>
+                                    <li>{{ _('Optimization opportunities') }}</li>
+                                    <li>{{ _('Manual review items') }}</li>
+                                    <li>{{ _('Not counted in scoring') }}</li>
                                 </ul>
-                                <p class="mb-0"><strong>Action:</strong> Review for improvements</p>
+                                <p class="mb-0"><strong>{{ _('Action:') }}</strong> {{ _('Review for improvements') }}</p>
                             </div>
                         </div>
                     </div>
@@ -316,54 +316,54 @@
             
             <!-- Testing Section -->
             <section id="testing" class="help-section">
-                <h2 class="mb-4">Testing Process</h2>
-                
+                <h2 class="mb-4">{{ _('Testing Process') }}</h2>
+
                 <div class="card help-card">
                     <div class="card-body">
-                        <h4 class="card-title">Test Applicability</h4>
-                        <p>Tests are marked "Not Applicable" when there are no relevant elements on the page.</p>
-                        
+                        <h4 class="card-title">{{ _('Test Applicability') }}</h4>
+                        <p>{{ _('Tests are marked "Not Applicable" when there are no relevant elements on the page.') }}</p>
+
                         <div class="alert alert-info">
-                            <strong>Example:</strong> If a page has no images, the images test will be marked as not applicable and won't affect your score.
+                            <strong>{{ _('Example:') }}</strong> {{ _('If a page has no images, the images test will be marked as not applicable and won\'t affect your score.') }}
                         </div>
-                        
-                        <p><strong>Benefits:</strong></p>
+
+                        <p><strong>{{ _('Benefits:') }}</strong></p>
                         <ul>
-                            <li>More accurate scoring</li>
-                            <li>No penalties for missing elements</li>
-                            <li>Focus on actual issues</li>
+                            <li>{{ _('More accurate scoring') }}</li>
+                            <li>{{ _('No penalties for missing elements') }}</li>
+                            <li>{{ _('Focus on actual issues') }}</li>
                         </ul>
                     </div>
                 </div>
                 
                 <div class="card help-card">
                     <div class="card-body">
-                        <h4 class="card-title">Pass Tracking</h4>
-                        <p>Our tests track both failures and successes to provide comprehensive feedback.</p>
-                        
+                        <h4 class="card-title">{{ _('Pass Tracking') }}</h4>
+                        <p>{{ _('Our tests track both failures and successes to provide comprehensive feedback.') }}</p>
+
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Test Component</th>
-                                    <th>What It Tracks</th>
+                                    <th>{{ _('Test Component') }}</th>
+                                    <th>{{ _('What It Tracks') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Elements Found</td>
-                                    <td>Total elements that could be tested</td>
+                                    <td>{{ _('Elements Found') }}</td>
+                                    <td>{{ _('Total elements that could be tested') }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Elements Passed</td>
-                                    <td>Elements meeting accessibility standards</td>
+                                    <td>{{ _('Elements Passed') }}</td>
+                                    <td>{{ _('Elements meeting accessibility standards') }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Elements Failed</td>
-                                    <td>Elements with violations</td>
+                                    <td>{{ _('Elements Failed') }}</td>
+                                    <td>{{ _('Elements with violations') }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Checks Performed</td>
-                                    <td>Individual accessibility criteria tested</td>
+                                    <td>{{ _('Checks Performed') }}</td>
+                                    <td>{{ _('Individual accessibility criteria tested') }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -373,57 +373,57 @@
             
             <!-- FAQ Section -->
             <section id="faq" class="help-section">
-                <h2 class="mb-4">Frequently Asked Questions</h2>
-                
+                <h2 class="mb-4">{{ _('Frequently Asked Questions') }}</h2>
+
                 <div class="accordion" id="faqAccordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                                Why is my compliance score so much lower than my accessibility score?
+                                {{ _('Why is my compliance score so much lower than my accessibility score?') }}
                             </button>
                         </h2>
                         <div id="faq1" class="accordion-collapse collapse show">
                             <div class="accordion-body">
-                                The compliance score requires perfect passes (zero violations) for each test, while the accessibility score gives credit for partial passes. Even if 90% of your checks pass, a single violation makes that test non-compliant.
+                                {{ _('The compliance score requires perfect passes (zero violations) for each test, while the accessibility score gives credit for partial passes. Even if 90%% of your checks pass, a single violation makes that test non-compliant.') }}
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                What WCAG level should I aim for?
+                                {{ _('What WCAG level should I aim for?') }}
                             </button>
                         </h2>
                         <div id="faq2" class="accordion-collapse collapse">
                             <div class="accordion-body">
-                                Level AA is the recommended target and legal requirement in many jurisdictions. Level A is the absolute minimum, while Level AAA is typically only required for specific content or specialized applications.
+                                {{ _('Level AA is the recommended target and legal requirement in many jurisdictions. Level A is the absolute minimum, while Level AAA is typically only required for specific content or specialized applications.') }}
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                How often should I run accessibility tests?
+                                {{ _('How often should I run accessibility tests?') }}
                             </button>
                         </h2>
                         <div id="faq3" class="accordion-collapse collapse">
                             <div class="accordion-body">
-                                Test after every significant change to your site. Set up automated testing in your CI/CD pipeline to catch issues early. Run comprehensive tests at least monthly for active sites.
+                                {{ _('Test after every significant change to your site. Set up automated testing in your CI/CD pipeline to catch issues early. Run comprehensive tests at least monthly for active sites.') }}
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                                What's the difference between automated and manual testing?
+                                {{ _('What\'s the difference between automated and manual testing?') }}
                             </button>
                         </h2>
                         <div id="faq4" class="accordion-collapse collapse">
                             <div class="accordion-body">
-                                Automated testing (like Auto A11y) can catch about 30-40% of accessibility issues quickly and consistently. Manual testing is needed for subjective criteria like whether alt text is meaningful or if the reading order makes sense. Use both for comprehensive coverage.
+                                {{ _('Automated testing (like Auto A11y) can catch about 30-40%% of accessibility issues quickly and consistently. Manual testing is needed for subjective criteria like whether alt text is meaningful or if the reading order makes sense. Use both for comprehensive coverage.') }}
                             </div>
                         </div>
                     </div>
@@ -432,47 +432,47 @@
 
             <!-- About Section -->
             <section id="about" class="help-section">
-                <h2 class="mb-4">About Auto A11y</h2>
+                <h2 class="mb-4">{{ _('About Auto A11y') }}</h2>
 
                 <div class="card help-card">
                     <div class="card-body">
-                        <p class="lead">Auto A11y is an automated web accessibility testing tool designed to help developers and testers identify and fix accessibility issues in web applications.</p>
+                        <p class="lead">{{ _('Auto A11y is an automated web accessibility testing tool designed to help developers and testers identify and fix accessibility issues in web applications.') }}</p>
 
-                        <h5 class="mt-4">Features</h5>
+                        <h5 class="mt-4">{{ _('Features') }}</h5>
                         <ul>
-                            <li>Automated WCAG 2.2 compliance testing</li>
-                            <li>Lived experience testing with real users</li>
-                            <li>Manual accessibility audits and recordings</li>
-                            <li>Comprehensive reporting and issue tracking</li>
-                            <li>Project and test user management</li>
+                            <li>{{ _('Automated WCAG 2.2 compliance testing') }}</li>
+                            <li>{{ _('Lived experience testing with real users') }}</li>
+                            <li>{{ _('Manual accessibility audits and recordings') }}</li>
+                            <li>{{ _('Comprehensive reporting and issue tracking') }}</li>
+                            <li>{{ _('Project and test user management') }}</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="card help-card border-info">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-file-text"></i> WCAG Data Attribution</h5>
+                        <h5 class="mb-0"><i class="bi bi-file-text"></i> {{ _('WCAG Data Attribution') }}</h5>
                     </div>
                     <div class="card-body">
-                        <p>This application uses official WCAG (Web Content Accessibility Guidelines) data from the World Wide Web Consortium (W3C).</p>
+                        <p>{{ _('This application uses official WCAG (Web Content Accessibility Guidelines) data from the World Wide Web Consortium (W3C).') }}</p>
 
-                        <h6 class="mt-3">Source</h6>
-                        <p>The WCAG Success Criteria data used in this application is sourced from:</p>
+                        <h6 class="mt-3">{{ _('Source') }}</h6>
+                        <p>{{ _('The WCAG Success Criteria data used in this application is sourced from:') }}</p>
                         <ul>
                             <li>
-                                <strong>Web Content Accessibility Guidelines (WCAG) 2.2</strong><br>
+                                <strong>{{ _('Web Content Accessibility Guidelines (WCAG) 2.2') }}</strong><br>
                                 <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">
                                     https://www.w3.org/TR/WCAG22/
                                 </a>
                             </li>
                             <li>
-                                <strong>Techniques for WCAG 2.2</strong><br>
+                                <strong>{{ _('Techniques for WCAG 2.2') }}</strong><br>
                                 <a href="https://www.w3.org/WAI/WCAG22/Techniques/" target="_blank" rel="noopener noreferrer">
                                     https://www.w3.org/WAI/WCAG22/Techniques/
                                 </a>
                             </li>
                             <li>
-                                <strong>WCAG 2.2 JSON Data</strong><br>
+                                <strong>{{ _('WCAG 2.2 JSON Data') }}</strong><br>
                                 <a href="https://www.w3.org/WAI/WCAG22/wcag.json" target="_blank" rel="noopener noreferrer">
                                     https://www.w3.org/WAI/WCAG22/wcag.json
                                 </a>
@@ -480,38 +480,38 @@
                         </ul>
 
                         <div class="alert alert-warning mt-3" role="alert">
-                            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Important Notice</h6>
-                            <p class="mb-0">The WCAG content is used with attribution as permitted by W3C. The content has not been modified. All additional content, analysis, and features provided by Auto A11y are clearly distinguished from the original W3C WCAG content.</p>
+                            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> {{ _('Important Notice') }}</h6>
+                            <p class="mb-0">{{ _('The WCAG content is used with attribution as permitted by W3C. The content has not been modified. All additional content, analysis, and features provided by Auto A11y are clearly distinguished from the original W3C WCAG content.') }}</p>
                         </div>
 
-                        <h6 class="mt-3">Copyright</h6>
+                        <h6 class="mt-3">{{ _('Copyright') }}</h6>
                         <p class="small text-muted">
-                            Copyright (c) 2008-2023 World Wide Web Consortium.
+                            {{ _('Copyright (c) 2008-2023 World Wide Web Consortium.') }}
                             <a href="https://www.w3.org/Consortium/Legal/2015/doc-license" target="_blank" rel="noopener noreferrer">
-                                W3C Document License
-                            </a> applies to the WCAG content.
+                                {{ _('W3C Document License') }}
+                            </a> {{ _('applies to the WCAG content.') }}
                         </p>
 
-                        <h6 class="mt-3">Additional Resources</h6>
+                        <h6 class="mt-3">{{ _('Additional Resources') }}</h6>
                         <ul>
                             <li>
                                 <a href="https://www.w3.org/WAI/" target="_blank" rel="noopener noreferrer">
-                                    W3C Web Accessibility Initiative
+                                    {{ _('W3C Web Accessibility Initiative') }}
                                 </a>
                             </li>
                             <li>
                                 <a href="https://www.w3.org/WAI/WCAG22/quickref/" target="_blank" rel="noopener noreferrer">
-                                    How to Meet WCAG (Quick Reference)
+                                    {{ _('How to Meet WCAG (Quick Reference)') }}
                                 </a>
                             </li>
                             <li>
                                 <a href="https://www.w3.org/WAI/WCAG22/Understanding/" target="_blank" rel="noopener noreferrer">
-                                    Understanding WCAG 2.2
+                                    {{ _('Understanding WCAG 2.2') }}
                                 </a>
                             </li>
                             <li>
                                 <a href="https://www.w3.org/WAI/test-evaluate/" target="_blank" rel="noopener noreferrer">
-                                    Evaluating Web Accessibility Overview
+                                    {{ _('Evaluating Web Accessibility Overview') }}
                                 </a>
                             </li>
                         </ul>

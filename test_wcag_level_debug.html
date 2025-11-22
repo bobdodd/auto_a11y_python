@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WCAG Level Debug</title>
+    <script>
+        window.WCAG_LEVEL = 'AAA';
+        console.log('Set WCAG_LEVEL to:', window.WCAG_LEVEL);
+
+        // Log it again after a delay
+        setTimeout(() => {
+            console.log('WCAG_LEVEL after delay:', window.WCAG_LEVEL);
+        }, 100);
+    </script>
+    <style>
+        .test {
+            width: 150px;
+            background: #888888;
+            color: #aaaaaa;
+            overflow: visible;
+            white-space: nowrap;
+            font-size: 16px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test">This text overflows the container width</div>
+    <script>
+        console.log('DOM loaded, WCAG_LEVEL is:', window.WCAG_LEVEL);
+    </script>
+</body>
+</html>

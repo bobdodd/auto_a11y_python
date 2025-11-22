@@ -294,7 +294,7 @@ class RecordingExporter:
         if description:
             attributes['body'] = {
                 'value': description,
-                'format': 'formatted_text'
+                'format': 'unfiltered'
             }
 
         # Note: The following fields are NOT in the current Drupal audit_video schema:

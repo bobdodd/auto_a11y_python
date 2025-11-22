@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Create Project - Auto A11y{% endblock %}
+{% block title %}{{ _('Create Project') }} - {{ _('Auto A11y') }}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -67,20 +67,20 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-lg-9 mx-auto">
-            <h1 class="h2 mb-4">Create New Project</h1>
+            <h1 class="h2 mb-4">{{ _('Create New Project') }}</h1>
             
             <!-- Fixture Status Notice -->
             {% if debug_mode %}
             <div class="alert alert-warning mb-3">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <strong>Debug Mode Active:</strong> All tests are available regardless of fixture status.
-                <a href="{{ url_for('testing.fixture_status') }}" class="alert-link float-end">View Fixture Status</a>
+                <strong>{{ _('Debug Mode Active:') }}</strong> {{ _('All tests are available regardless of fixture status.') }}
+                <a href="{{ url_for('testing.fixture_status') }}" class="alert-link float-end">{{ _('View Fixture Status') }}</a>
             </div>
             {% else %}
             <div class="alert alert-info mb-3">
                 <i class="bi bi-info-circle-fill me-2"></i>
-                <strong>Test Availability:</strong> Only tests that passed fixture validation are enabled.
-                <a href="{{ url_for('testing.fixture_status') }}" class="alert-link float-end">View Fixture Status</a>
+                <strong>{{ _('Test Availability:') }}</strong> {{ _('Only tests that passed fixture validation are enabled.') }}
+                <a href="{{ url_for('testing.fixture_status') }}" class="alert-link float-end">{{ _('View Fixture Status') }}</a>
             </div>
             {% endif %}
             
@@ -88,101 +88,101 @@
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('projects.create_project') }}">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Project Name *</label>
-                            <input type="text" class="form-control" id="name" name="name" 
+                            <label for="name" class="form-label">{{ _('Project Name') }} *</label>
+                            <input type="text" class="form-control" id="name" name="name"
                                    required autofocus maxlength="100">
-                            <div class="form-text">Choose a unique name for your project</div>
+                            <div class="form-text">{{ _('Choose a unique name for your project') }}</div>
                         </div>
-                        
+
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">{{ _('Description') }}</label>
                             <textarea class="form-control" id="description" name="description"
                                       rows="3" maxlength="500"></textarea>
-                            <div class="form-text">Optional description of the project goals</div>
+                            <div class="form-text">{{ _('Optional description of the project goals') }}</div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="project_type" class="form-label">Project Type *</label>
+                            <label for="project_type" class="form-label">{{ _('Project Type') }} *</label>
                             <select class="form-select" id="project_type" name="project_type" required onchange="updateProjectTypeFields()">
-                                <option value="website" selected>Website</option>
-                                <option value="app">App</option>
-                                <option value="tangible_device">Tangible Device</option>
-                                <option value="nav_and_wayfinding">Nav and Wayfinding</option>
+                                <option value="website" selected>{{ _('Website') }}</option>
+                                <option value="app">{{ _('App') }}</option>
+                                <option value="tangible_device">{{ _('Tangible Device') }}</option>
+                                <option value="nav_and_wayfinding">{{ _('Nav and Wayfinding') }}</option>
                             </select>
-                            <div class="form-text">Select the type of project you're testing</div>
+                            <div class="form-text">{{ _('Select the type of project you\'re testing') }}</div>
                         </div>
 
                         <!-- Type-specific fields -->
                         <div id="app_fields" class="mb-3" style="display: none;">
-                            <label for="app_identifier" class="form-label">App Identifier</label>
+                            <label for="app_identifier" class="form-label">{{ _('App Identifier') }}</label>
                             <input type="text" class="form-control" id="app_identifier" name="app_identifier"
-                                   placeholder="e.g., com.example.myapp or Bundle ID">
-                            <div class="form-text">Optional: Package name (Android) or Bundle ID (iOS)</div>
+                                   placeholder="{{ _('e.g., com.example.myapp or Bundle ID') }}">
+                            <div class="form-text">{{ _('Optional: Package name (Android) or Bundle ID (iOS)') }}</div>
                         </div>
 
                         <div id="device_fields" class="mb-3" style="display: none;">
-                            <label for="device_model" class="form-label">Device Model</label>
+                            <label for="device_model" class="form-label">{{ _('Device Model') }}</label>
                             <input type="text" class="form-control" id="device_model" name="device_model"
-                                   placeholder="e.g., NCR SelfServ 84, Diebold ATM">
-                            <div class="form-text">Optional: Manufacturer and model of the device</div>
+                                   placeholder="{{ _('e.g., NCR SelfServ 84, Diebold ATM') }}">
+                            <div class="form-text">{{ _('Optional: Manufacturer and model of the device') }}</div>
                         </div>
 
                         <div id="location_fields" class="mb-3" style="display: none;">
-                            <label for="location" class="form-label">Location</label>
+                            <label for="location" class="form-label">{{ _('Location') }}</label>
                             <input type="text" class="form-control" id="location" name="location"
-                                   placeholder="e.g., Building A, Floor 2 or Downtown Campus">
-                            <div class="form-text">Optional: Physical location of the navigation system</div>
+                                   placeholder="{{ _('e.g., Building A, Floor 2 or Downtown Campus') }}">
+                            <div class="form-text">{{ _('Optional: Physical location of the navigation system') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="drupal_audit_name" class="form-label">Drupal Audit (Optional)</label>
+                            <label for="drupal_audit_name" class="form-label">{{ _('Drupal Audit (Optional)') }}</label>
                             <select class="form-select" id="drupal_audit_name" name="drupal_audit_name">
-                                <option value="">Auto-match by project name</option>
-                                <option value="" disabled>Loading audits...</option>
+                                <option value="">{{ _('Auto-match by project name') }}</option>
+                                <option value="" disabled>{{ _('Loading audits...') }}</option>
                             </select>
                             <div class="form-text">
-                                Select the corresponding audit in Drupal for synchronization. Leave as "Auto-match" to use the project name.
+                                {{ _('Select the corresponding audit in Drupal for synchronization. Leave as "Auto-match" to use the project name.') }}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="wcag_level" class="form-label">WCAG Compliance Level *</label>
+                            <label for="wcag_level" class="form-label">{{ _('WCAG Compliance Level') }} *</label>
                             <select class="form-select" id="wcag_level" name="wcag_level" required>
-                                <option value="AA" selected>Level AA (Recommended)</option>
-                                <option value="AAA">Level AAA (Enhanced)</option>
+                                <option value="AA" selected>{{ _('Level AA (Recommended)') }}</option>
+                                <option value="AAA">{{ _('Level AAA (Enhanced)') }}</option>
                             </select>
                             <div class="form-text">
-                                <strong>Level AA:</strong> Standard compliance (4.5:1 contrast for normal text, 3:1 for large text)<br>
-                                <strong>Level AAA:</strong> Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)
+                                <strong>{{ _('Level AA:') }}</strong> {{ _('Standard compliance (4.5:1 contrast for normal text, 3:1 for large text)') }}<br>
+                                <strong>{{ _('Level AAA:') }}</strong> {{ _('Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)') }}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="page_load_strategy" class="form-label">Page Load Strategy</label>
+                            <label for="page_load_strategy" class="form-label">{{ _('Page Load Strategy') }}</label>
                             <select class="form-select" id="page_load_strategy" name="page_load_strategy">
-                                <option value="networkidle2" selected>Network Idle 2 (Default - Best for most sites)</option>
-                                <option value="networkidle0">Network Idle 0 (Very thorough, slowest)</option>
-                                <option value="domcontentloaded">DOM Content Loaded (Fast, for sites with heavy background activity)</option>
-                                <option value="load">Load Event (Middle ground)</option>
+                                <option value="networkidle2" selected>{{ _('Network Idle 2 (Default - Best for most sites)') }}</option>
+                                <option value="networkidle0">{{ _('Network Idle 0 (Very thorough, slowest)') }}</option>
+                                <option value="domcontentloaded">{{ _('DOM Content Loaded (Fast, for sites with heavy background activity)') }}</option>
+                                <option value="load">{{ _('Load Event (Middle ground)') }}</option>
                             </select>
                             <div class="form-text">
-                                Controls when testing begins after navigating to a page:<br>
-                                • <strong>Network Idle 2</strong>: Wait until network has ≤2 connections (best for dynamic sites)<br>
-                                • <strong>Network Idle 0</strong>: Wait until network is completely idle (very thorough but slow)<br>
-                                • <strong>DOM Content Loaded</strong>: Test as soon as DOM is ready (use for BBC News, sites with continuous ads/analytics)<br>
-                                • <strong>Load Event</strong>: Wait for load event (faster than network idle)
+                                {{ _('Controls when testing begins after navigating to a page:') }}<br>
+                                • <strong>{{ _('Network Idle 2') }}</strong>: {{ _('Wait until network has ≤2 connections (best for dynamic sites)') }}<br>
+                                • <strong>{{ _('Network Idle 0') }}</strong>: {{ _('Wait until network is completely idle (very thorough but slow)') }}<br>
+                                • <strong>{{ _('DOM Content Loaded') }}</strong>: {{ _('Test as soon as DOM is ready (use for BBC News, sites with continuous ads/analytics)') }}<br>
+                                • <strong>{{ _('Load Event') }}</strong>: {{ _('Wait for load event (faster than network idle)') }}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="headless_browser" class="form-label">Browser Display Mode</label>
+                            <label for="headless_browser" class="form-label">{{ _('Browser Display Mode') }}</label>
                             <select class="form-select" id="headless_browser" name="headless_browser">
-                                <option value="true" selected>Headless (No visible browser)</option>
-                                <option value="false">Visible Browser (Show Chrome window)</option>
+                                <option value="true" selected>{{ _('Headless (No visible browser)') }}</option>
+                                <option value="false">{{ _('Visible Browser (Show Chrome window)') }}</option>
                             </select>
                             <div class="form-text">
-                                • <strong>Headless</strong>: Run browser invisibly (faster, less resource intensive)<br>
-                                • <strong>Visible Browser</strong>: Show the Chrome window (useful for debugging)
+                                • <strong>{{ _('Headless') }}</strong>: {{ _('Run browser invisibly (faster, less resource intensive)') }}<br>
+                                • <strong>{{ _('Visible Browser') }}</strong>: {{ _('Show the Chrome window (useful for debugging)') }}
                             </div>
                         </div>
 
@@ -190,28 +190,28 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="stealth_mode" name="stealth_mode" value="true">
                                 <label class="form-check-label" for="stealth_mode">
-                                    Enable Stealth Mode (for Cloudflare-protected sites)
+                                    {{ _('Enable Stealth Mode (for Cloudflare-protected sites)') }}
                                 </label>
                             </div>
                             <div class="form-text">
-                                Enables advanced bot detection bypass techniques. Use for sites protected by Cloudflare or similar services.
-                                <strong>Note:</strong> Stealth mode significantly slows down page discovery and testing (~5-15 seconds per page).
+                                {{ _('Enables advanced bot detection bypass techniques. Use for sites protected by Cloudflare or similar services.') }}
+                                <strong>{{ _('Note:') }}</strong> {{ _('Stealth mode significantly slows down page discovery and testing (~5-15 seconds per page).') }}
                             </div>
                         </div>
 
                         <!-- Touchpoint Testing Configuration -->
                         <div class="mb-3">
-                            <label class="form-label">Touchpoint Tests Configuration</label>
+                            <label class="form-label">{{ _('Touchpoint Tests Configuration') }}</label>
                             <div class="form-text mb-2">
-                                Configure which accessibility tests to run. Tests are organized by touchpoint (testing category).
+                                {{ _('Configure which accessibility tests to run. Tests are organized by touchpoint (testing category).') }}
                             </div>
-                            
+
                             <!-- Global Controls -->
                             <div class="btn-group mb-3" role="group">
-                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllTests(true)">Enable All</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAllTests(false)">Disable All</button>
-                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('minimal')">Minimal</button>
-                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('wcag-aa')">WCAG AA</button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllTests(true)">{{ _('Enable All') }}</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAllTests(false)">{{ _('Disable All') }}</button>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('minimal')">{{ _('Minimal') }}</button>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyPreset('wcag-aa')">{{ _('WCAG AA') }}</button>
                             </div>
                             
                             <!-- Touchpoint Tree -->
@@ -310,71 +310,71 @@
                         
                         <!-- AI Testing Configuration -->
                         <div class="mb-3">
-                            <label class="form-label">AI-Assisted Testing</label>
+                            <label class="form-label">{{ _('AI-Assisted Testing') }}</label>
                             <div class="form-check form-switch mb-2">
                                 <input class="form-check-input" type="checkbox" id="enable_ai_testing" name="enable_ai_testing" onchange="toggleAITests()">
                                 <label class="form-check-label" for="enable_ai_testing">
-                                    Enable AI-assisted accessibility testing
+                                    {{ _('Enable AI-assisted accessibility testing') }}
                                 </label>
                             </div>
                             <div class="form-text mb-3">
-                                AI testing uses Claude to analyze screenshots and HTML for issues that automated tests might miss.
-                                <strong>Note:</strong> AI testing incurs API costs based on usage.
+                                {{ _('AI testing uses Claude to analyze screenshots and HTML for issues that automated tests might miss.') }}
+                                <strong>{{ _('Note:') }}</strong> {{ _('AI testing incurs API costs based on usage.') }}
                             </div>
-                            
+
                             <div id="ai_tests_selection" style="display: none;">
-                                <label class="form-label">Select AI Tests to Run:</label>
+                                <label class="form-label">{{ _('Select AI Tests to Run:') }}</label>
                                 <div class="ms-3">
                                     <div class="form-check">
                                         <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_headings" name="ai_test_headings" value="headings">
                                         <label class="form-check-label" for="ai_test_headings">
-                                            <strong>Heading Analysis</strong> - Detects visual headings not properly marked up
+                                            <strong>{{ _('Heading Analysis') }}</strong> - {{ _('Detects visual headings not properly marked up') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_reading_order" name="ai_test_reading_order" value="reading_order">
                                         <label class="form-check-label" for="ai_test_reading_order">
-                                            <strong>Reading Order</strong> - Verifies logical reading sequence matches visual layout
+                                            <strong>{{ _('Reading Order') }}</strong> - {{ _('Verifies logical reading sequence matches visual layout') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_modals" name="ai_test_modals" value="modals">
                                         <label class="form-check-label" for="ai_test_modals">
-                                            <strong>Modal Dialogs</strong> - Analyzes popup and overlay accessibility
+                                            <strong>{{ _('Modal Dialogs') }}</strong> - {{ _('Analyzes popup and overlay accessibility') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_language" name="ai_test_language" value="language">
                                         <label class="form-check-label" for="ai_test_language">
-                                            <strong>Language Detection</strong> - Identifies mixed languages and missing declarations
+                                            <strong>{{ _('Language Detection') }}</strong> - {{ _('Identifies mixed languages and missing declarations') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_animations" name="ai_test_animations" value="animations">
                                         <label class="form-check-label" for="ai_test_animations">
-                                            <strong>Animations</strong> - Detects potentially problematic motion
+                                            <strong>{{ _('Animations') }}</strong> - {{ _('Detects potentially problematic motion') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input ai-test-checkbox" type="checkbox" id="ai_test_interactive" name="ai_test_interactive" value="interactive">
                                         <label class="form-check-label" for="ai_test_interactive">
-                                            <strong>Interactive Elements</strong> - Analyzes buttons, links, and form controls
+                                            <strong>{{ _('Interactive Elements') }}</strong> - {{ _('Analyzes buttons, links, and form controls') }}
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-text mt-2">
-                                    <a href="#" onclick="selectAllAITests(event)">Select All</a> | 
-                                    <a href="#" onclick="deselectAllAITests(event)">Deselect All</a>
+                                    <a href="#" onclick="selectAllAITests(event)">{{ _('Select All') }}</a> |
+                                    <a href="#" onclick="deselectAllAITests(event)">{{ _('Deselect All') }}</a>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> Create Project
+                                <i class="bi bi-check-circle"></i> {{ _('Create Project') }}
                             </button>
                             <a href="{{ url_for('projects.list_projects') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle"></i> Cancel
+                                <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
                             </a>
                         </div>
                     </form>
@@ -391,20 +391,20 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="testDetailsModalLabel">
                     <i class="bi bi-info-circle me-2"></i>
-                    <span id="testDetailsTitle">Test Details</span>
+                    <span id="testDetailsTitle">{{ _('Test Details') }}</span>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body" id="testDetailsBody">
                 <div class="text-center py-4">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">{{ _('Loading...') }}</span>
                     </div>
-                    <p class="mt-2 text-muted">Loading test details...</p>
+                    <p class="mt-2 text-muted">{{ _('Loading test details...') }}</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
             </div>
         </div>
     </div>
@@ -514,9 +514,9 @@ function showTestDetails(testId) {
     bodyEl.innerHTML = `
         <div class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ _('Loading...') }}</span>
             </div>
-            <p class="mt-2 text-muted">Loading test details...</p>
+            <p class="mt-2 text-muted">{{ _('Loading test details...') }}</p>
         </div>
     `;
 
@@ -545,8 +545,8 @@ function showTestDetails(testId) {
                 // Build modal content
                 // Build production ready toggle
                 const productionReadyBadge = test.production_ready ?
-                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1"></i>Production Ready</span>' :
-                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1"></i>Pending Review</span>';
+                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1"></i>{{ _("Production Ready") }}</span>' :
+                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1"></i>{{ _("Pending Review") }}</span>';
 
                 bodyEl.innerHTML = `
                     <div class="mb-3">
@@ -566,75 +566,75 @@ function showTestDetails(testId) {
                     <div class="alert alert-${test.production_ready ? 'success' : 'warning'} alert-dismissible fade show" role="alert">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="flex-grow-1">
-                                <strong>Documentation Status:</strong>
+                                <strong>{{ _('Documentation Status:') }}</strong>
                                 ${test.production_ready ?
-                                    'This test has production-ready documentation.' :
-                                    'This test documentation is pending review and may be incomplete.'}
+                                    '{{ _("This test has production-ready documentation.") }}' :
+                                    '{{ _("This test documentation is pending review and may be incomplete.") }}'}
                             </div>
                             <button type="button" class="btn btn-sm btn-${test.production_ready ? 'outline-warning' : 'outline-success'} ms-3"
                                     onclick="toggleProductionReady('${test.id}', ${!test.production_ready})"
                                     id="productionReadyToggle">
                                 <i class="bi bi-${test.production_ready ? 'x-circle' : 'check-circle'} me-1"></i>
-                                Mark as ${test.production_ready ? 'Pending' : 'Ready'}
+                                {{ _('Mark as') }} ${test.production_ready ? '{{ _("Pending") }}' : '{{ _("Ready") }}'}
                             </button>
                         </div>
                     </div>
 
                     <div class="test-details-section">
-                        <h6><i class="bi bi-info-circle me-2"></i>What This Test Detects</h6>
+                        <h6><i class="bi bi-info-circle me-2"></i>{{ _('What This Test Detects') }}</h6>
                         <p>${test.description}</p>
                     </div>
 
                     ${test.why_it_matters ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-exclamation-triangle me-2"></i>Why It Matters</h6>
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>{{ _('Why It Matters') }}</h6>
                         <p>${test.why_it_matters}</p>
                     </div>
                     ` : ''}
 
                     ${test.who_it_affects ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-people me-2"></i>Who It Affects</h6>
+                        <h6><i class="bi bi-people me-2"></i>{{ _('Who It Affects') }}</h6>
                         <p>${test.who_it_affects}</p>
                     </div>
                     ` : ''}
 
                     ${test.how_to_fix ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-wrench me-2"></i>How to Fix</h6>
+                        <h6><i class="bi bi-wrench me-2"></i>{{ _('How to Fix') }}</h6>
                         <p>${test.how_to_fix}</p>
                     </div>
                     ` : ''}
 
                     ${test.message_template && (test.message_template.title || test.message_template.what) ? `
                     <div class="test-details-section bg-light border rounded p-3">
-                        <h6><i class="bi bi-chat-square-text me-2"></i>Violation Message Templates</h6>
-                        <p class="text-muted small mb-3">These are the actual message templates shown to users when violations are detected. Placeholders like <code>{totalCount}</code>, <code>{role}</code>, <code>{element}</code>, etc. are filled in dynamically.</p>
+                        <h6><i class="bi bi-chat-square-text me-2"></i>{{ _('Violation Message Templates') }}</h6>
+                        <p class="text-muted small mb-3">{{ _('These are the actual message templates shown to users when violations are detected. Placeholders like {totalCount}, {role}, {element}, etc. are filled in dynamically.') }}</p>
 
                         ${test.message_template.title ? `
                         <div class="mb-2">
-                            <strong class="d-block mb-1">Title Template:</strong>
+                            <strong class="d-block mb-1">{{ _('Title Template:') }}</strong>
                             <code class="d-block bg-white p-2 rounded">${test.message_template.title}</code>
                         </div>
                         ` : ''}
 
                         ${test.message_template.what ? `
                         <div class="mb-2">
-                            <strong class="d-block mb-1">What (Description) Template:</strong>
+                            <strong class="d-block mb-1">{{ _('What (Description) Template:') }}</strong>
                             <code class="d-block bg-white p-2 rounded">${test.message_template.what}</code>
                         </div>
                         ` : ''}
 
                         ${test.message_template.why ? `
                         <div class="mb-2">
-                            <strong class="d-block mb-1">Why (Rationale) Template:</strong>
+                            <strong class="d-block mb-1">{{ _('Why (Rationale) Template:') }}</strong>
                             <code class="d-block bg-white p-2 rounded">${test.message_template.why}</code>
                         </div>
                         ` : ''}
 
                         ${test.message_template.remediation ? `
                         <div>
-                            <strong class="d-block mb-1">Remediation Template:</strong>
+                            <strong class="d-block mb-1">{{ _('Remediation Template:') }}</strong>
                             <code class="d-block bg-white p-2 rounded">${test.message_template.remediation}</code>
                         </div>
                         ` : ''}
@@ -645,8 +645,8 @@ function showTestDetails(testId) {
                 bodyEl.innerHTML = `
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle me-2"></i>
-                        <strong>Test Information Not Available</strong>
-                        <p class="mb-0 mt-2">Details for test <code>${testId}</code> are not available in the catalog.</p>
+                        <strong>{{ _('Test Information Not Available') }}</strong>
+                        <p class="mb-0 mt-2">{{ _('Details for test') }} <code>${testId}</code> {{ _('are not available in the catalog.') }}</p>
                     </div>
                 `;
             }
@@ -656,8 +656,8 @@ function showTestDetails(testId) {
             bodyEl.innerHTML = `
                 <div class="alert alert-danger">
                     <i class="bi bi-x-circle me-2"></i>
-                    <strong>Error Loading Test Details</strong>
-                    <p class="mb-0 mt-2">An error occurred while loading the test details. Please try again.</p>
+                    <strong>{{ _('Error Loading Test Details') }}</strong>
+                    <p class="mb-0 mt-2">{{ _('An error occurred while loading the test details. Please try again.') }}</p>
                 </div>
             `;
         });
@@ -671,7 +671,7 @@ function toggleProductionReady(testId, newValue) {
     // Disable button during update
     button.disabled = true;
     const originalHTML = button.innerHTML;
-    button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Updating...';
+    button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>{{ _("Updating...") }}';
 
     // Make API call to update status
     fetch(`/projects/api/test-details/${testId}/production-ready`, {
@@ -717,9 +717,9 @@ function refreshTestDetailsContent(testId) {
     bodyEl.innerHTML = `
         <div class="text-center py-4">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ _('Loading...') }}</span>
             </div>
-            <p class="mt-2 text-muted">Refreshing...</p>
+            <p class="mt-2 text-muted">{{ _('Refreshing...') }}</p>
         </div>
     `;
 
@@ -744,8 +744,8 @@ function refreshTestDetailsContent(testId) {
 
                 // Build production ready toggle
                 const productionReadyBadge = test.production_ready ?
-                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1"></i>Production Ready</span>' :
-                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1"></i>Pending Review</span>';
+                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1"></i>{{ _("Production Ready") }}</span>' :
+                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1"></i>{{ _("Pending Review") }}</span>';
 
                 bodyEl.innerHTML = `
                     <div class="mb-3">
@@ -765,75 +765,75 @@ function refreshTestDetailsContent(testId) {
                     <div class="alert alert-${test.production_ready ? 'success' : 'warning'} alert-dismissible fade show" role="alert">
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="flex-grow-1">
-                                <strong>Documentation Status:</strong>
+                                <strong>{{ _('Documentation Status:') }}</strong>
                                 ${test.production_ready ?
-                                    'This test has production-ready documentation.' :
-                                    'This test documentation is pending review and may be incomplete.'}
+                                    '{{ _("This test has production-ready documentation.") }}' :
+                                    '{{ _("This test documentation is pending review and may be incomplete.") }}'}
                             </div>
                             <button type="button" class="btn btn-sm btn-${test.production_ready ? 'outline-warning' : 'outline-success'} ms-3"
                                     onclick="toggleProductionReady('${test.id}', ${!test.production_ready})"
                                     id="productionReadyToggle">
                                 <i class="bi bi-${test.production_ready ? 'x-circle' : 'check-circle'} me-1"></i>
-                                Mark as ${test.production_ready ? 'Pending' : 'Ready'}
+                                {{ _('Mark as') }} ${test.production_ready ? '{{ _("Pending") }}' : '{{ _("Ready") }}'}
                             </button>
                         </div>
                     </div>
 
                     <div class="test-details-section">
-                        <h6><i class="bi bi-info-circle me-2"></i>What This Test Detects</h6>
+                        <h6><i class="bi bi-info-circle me-2"></i>{{ _('What This Test Detects') }}</h6>
                         <p>${test.description}</p>
                     </div>
 
                     ${test.why_it_matters ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-exclamation-triangle me-2"></i>Why It Matters</h6>
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>{{ _('Why It Matters') }}</h6>
                         <p>${test.why_it_matters}</p>
                     </div>
                     ` : ''}
 
                     ${test.who_it_affects ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-people me-2"></i>Who It Affects</h6>
+                        <h6><i class="bi bi-people me-2"></i>{{ _('Who It Affects') }}</h6>
                         <p>${test.who_it_affects}</p>
                     </div>
                     ` : ''}
 
                     ${test.how_to_fix ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-wrench me-2"></i>How to Fix</h6>
+                        <h6><i class="bi bi-wrench me-2"></i>{{ _('How to Fix') }}</h6>
                         <p>${test.how_to_fix}</p>
                     </div>
                     ` : ''}
 
                     ${test.message_template && (test.message_template.title || test.message_template.what) ? `
                     <div class="test-details-section bg-light border rounded p-3">
-                        <h6><i class="bi bi-chat-square-text me-2"></i>Violation Message Templates</h6>
-                        <p class="text-muted small mb-3">These are the actual message templates shown to users when violations are detected. Placeholders like <code>{totalCount}</code>, <code>{role}</code>, <code>{element}</code>, etc. are filled in dynamically.</p>
+                        <h6><i class="bi bi-chat-square-text me-2"></i>{{ _('Violation Message Templates') }}</h6>
+                        <p class="text-muted small mb-3">{{ _('These are the actual message templates shown to users when violations are detected. Placeholders like {totalCount}, {role}, {element}, etc. are filled in dynamically.') }}</p>
 
                         ${test.message_template.title ? `
                         <div class="mb-2">
-                            <strong class="d-block mb-1">Title Template:</strong>
+                            <strong class="d-block mb-1">{{ _('Title Template:') }}</strong>
                             <code class="d-block bg-white p-2 rounded">${test.message_template.title}</code>
                         </div>
                         ` : ''}
 
                         ${test.message_template.what ? `
                         <div class="mb-2">
-                            <strong class="d-block mb-1">What (Description) Template:</strong>
+                            <strong class="d-block mb-1">{{ _('What (Description) Template:') }}</strong>
                             <code class="d-block bg-white p-2 rounded">${test.message_template.what}</code>
                         </div>
                         ` : ''}
 
                         ${test.message_template.why ? `
                         <div class="mb-2">
-                            <strong class="d-block mb-1">Why (Rationale) Template:</strong>
+                            <strong class="d-block mb-1">{{ _('Why (Rationale) Template:') }}</strong>
                             <code class="d-block bg-white p-2 rounded">${test.message_template.why}</code>
                         </div>
                         ` : ''}
 
                         ${test.message_template.remediation ? `
                         <div>
-                            <strong class="d-block mb-1">Remediation Template:</strong>
+                            <strong class="d-block mb-1">{{ _('Remediation Template:') }}</strong>
                             <code class="d-block bg-white p-2 rounded">${test.message_template.remediation}</code>
                         </div>
                         ` : ''}
@@ -844,8 +844,8 @@ function refreshTestDetailsContent(testId) {
                 bodyEl.innerHTML = `
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle me-2"></i>
-                        <strong>Test Information Not Available</strong>
-                        <p class="mb-0 mt-2">Details for test <code>${testId}</code> are not available in the catalog.</p>
+                        <strong>{{ _('Test Information Not Available') }}</strong>
+                        <p class="mb-0 mt-2">{{ _('Details for test') }} <code>${testId}</code> {{ _('are not available in the catalog.') }}</p>
                     </div>
                 `;
             }
@@ -855,8 +855,8 @@ function refreshTestDetailsContent(testId) {
             bodyEl.innerHTML = `
                 <div class="alert alert-danger">
                     <i class="bi bi-x-circle me-2"></i>
-                    <strong>Error Loading Test Details</strong>
-                    <p class="mb-0 mt-2">An error occurred while loading the test details. Please try again.</p>
+                    <strong>{{ _('Error Loading Test Details') }}</strong>
+                    <p class="mb-0 mt-2">{{ _('An error occurred while loading the test details. Please try again.') }}</p>
                 </div>
             `;
         });
@@ -939,7 +939,7 @@ async function loadDrupalAudits() {
 
         if (data.success && data.audits && data.audits.length > 0) {
             // Clear loading option
-            select.innerHTML = '<option value="">Auto-match by project name</option>';
+            select.innerHTML = '<option value="">{{ _("Auto-match by project name") }}</option>';
 
             // Add audit options
             data.audits.forEach(audit => {
@@ -950,26 +950,26 @@ async function loadDrupalAudits() {
             });
         } else if (!data.success && data.error) {
             // Show error but keep the auto-match option
-            select.innerHTML = '<option value="">Auto-match by project name</option>';
+            select.innerHTML = '<option value="">{{ _("Auto-match by project name") }}</option>';
             const option = document.createElement('option');
             option.disabled = true;
-            option.textContent = `Error: ${data.error}`;
+            option.textContent = `{{ _('Error:') }} ${data.error}`;
             select.appendChild(option);
         } else {
             // No audits available
-            select.innerHTML = '<option value="">Auto-match by project name</option>';
+            select.innerHTML = '<option value="">{{ _("Auto-match by project name") }}</option>';
             const option = document.createElement('option');
             option.disabled = true;
-            option.textContent = 'No Drupal audits found';
+            option.textContent = '{{ _("No Drupal audits found") }}';
             select.appendChild(option);
         }
     } catch (error) {
         console.error('Error loading Drupal audits:', error);
         // Keep the auto-match option on error
-        select.innerHTML = '<option value="">Auto-match by project name</option>';
+        select.innerHTML = '<option value="">{{ _("Auto-match by project name") }}</option>';
         const option = document.createElement('option');
         option.disabled = true;
-        option.textContent = 'Could not load audits (Drupal may not be configured)';
+        option.textContent = '{{ _("Could not load audits (Drupal may not be configured)") }}';
         select.appendChild(option);
     }
 }

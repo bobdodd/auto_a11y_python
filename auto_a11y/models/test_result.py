@@ -24,10 +24,13 @@ class Violation:
     """
 
     # Core fields (required for all violations)
-    id: str  # Error code or unique identifier
+    id: str  # Error code (e.g., "color-contrast") - NOT unique per instance
     impact: ImpactLevel
     touchpoint: str  # Accessibility category (e.g., "Images", "Forms")
     description: str
+
+    # Unique identifier for this specific violation instance
+    unique_id: Optional[str] = None  # UUID for this specific instance (generated if not provided)
 
     # Source tracking (NEW)
     source_type: str = "automated"  # "automated", "manual", "hybrid"
@@ -53,11 +56,20 @@ class Violation:
     recording_id: Optional[str] = None
     timecodes: List[Dict[str, str]] = field(default_factory=list)
     # timecode format: [{"start": "00:00:56.085", "end": "00:01:19.265", "duration": "00:00:23.180"}]
-    
+
+    # Discovered Page reference (for linking to Drupal discovered pages)
+    discovered_page_id: Optional[str] = None  # Local MongoDB discovered_page ID
+
     def to_dict(self) -> dict:
         """Convert to dictionary"""
+        import uuid
+        # Generate unique_id if not set
+        if not self.unique_id:
+            self.unique_id = str(uuid.uuid4())
+
         return {
             'id': self.id,
+            'unique_id': self.unique_id,
             'impact': self.impact.value,
             'touchpoint': self.touchpoint,
             'description': self.description,
@@ -76,7 +88,8 @@ class Violation:
             'who': self.who,
             'remediation': self.remediation,
             'recording_id': self.recording_id,
-            'timecodes': self.timecodes
+            'timecodes': self.timecodes,
+            'discovered_page_id': self.discovered_page_id
         }
     
     @classmethod
@@ -98,8 +111,15 @@ class Violation:
         # Handle both old 'category' and new 'touchpoint' field names
         touchpoint = data.get('touchpoint', data.get('category', ''))
 
+        import uuid
+        # Generate unique_id if not present (for backward compatibility with old data)
+        unique_id = data.get('unique_id')
+        if not unique_id:
+            unique_id = str(uuid.uuid4())
+
         return cls(
             id=data['id'],
+            unique_id=unique_id,
             impact=ImpactLevel(impact_value),
             touchpoint=touchpoint,
             description=data['description'],
@@ -118,7 +138,8 @@ class Violation:
             who=data.get('who'),
             remediation=data.get('remediation'),
             recording_id=data.get('recording_id'),
-            timecodes=data.get('timecodes', [])
+            timecodes=data.get('timecodes', []),
+            discovered_page_id=data.get('discovered_page_id')
         )
 
 

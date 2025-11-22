@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error: Partial Text Contrast - Some Text Cannot Be Tested</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .case {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+
+        .case-label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            background: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        .note {
+            color: #d32f2f;
+            font-style: italic;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Horizontal Overflow - Failing contrast inside */
+        .overflow-horizontal-fail {
+            width: 200px;
+            background: #999999; /* Gray - fails with light gray text */
+            overflow: visible;
+            white-space: nowrap;
+            padding: 15px;
+            color: #cccccc; /* Light gray - fails 4.5:1 on #999999 (ratio: 1.77:1) */
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Vertical Overflow - Failing contrast inside */
+        .overflow-vertical-fail {
+            height: 25px;
+            background: #888888; /* Medium gray */
+            overflow: visible;
+            padding: 8px;
+            color: #aaaaaa; /* Light gray - fails 4.5:1 on #888888 (ratio: 1.53:1) */
+            font-weight: bold;
+            line-height: 1.3;
+            font-size: 16px;
+        }
+
+        /* Absolute Positioning - Failing contrast inside */
+        .overflow-absolute-parent-fail {
+            position: relative;
+            height: 100px;
+            background: #777777; /* Dark gray */
+            padding: 15px;
+        }
+
+        .overflow-absolute-fail {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #999999; /* Medium gray - fails 4.5:1 on #777777 (ratio: 1.57:1) */
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Negative Margin - Failing contrast inside */
+        .overflow-negative-margin-fail {
+            background: #666666; /* Dark gray */
+            color: #888888; /* Medium gray - fails 4.5:1 on #666666 (ratio: 1.62:1) */
+            padding: 15px;
+            margin-left: -50px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Transform Translation - Failing contrast inside */
+        .overflow-transform-fail {
+            background: #555555; /* Dark gray */
+            color: #777777; /* Medium gray - fails 4.5:1 on #555555 (ratio: 1.66:1) */
+            padding: 15px;
+            transform: translateX(-30px);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Rotated Text - Failing contrast inside */
+        .overflow-rotated-fail {
+            background: #888888; /* Medium gray */
+            color: #aaaaaa; /* Light gray - fails 4.5:1 on #888888 (ratio: 1.53:1) */
+            padding: 15px;
+            transform: rotate(-5deg);
+            font-weight: bold;
+            font-size: 18px;
+            width: 200px;
+        }
+
+        /* Floated Element - Failing contrast inside */
+        .overflow-float-fail {
+            float: left;
+            background: #777777; /* Dark gray */
+            color: #999999; /* Medium gray - fails 4.5:1 on #777777 (ratio: 1.57:1) */
+            padding: 15px;
+            width: 150px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Mixed scenarios with images/gradients - Failing contrast inside */
+        .overflow-on-gradient-fail {
+            width: 250px;
+            background: linear-gradient(to right, #888888, #999999); /* Medium grays */
+            overflow: visible;
+            white-space: nowrap;
+            padding: 15px;
+            color: #aaaaaa; /* Light gray - fails across entire gradient */
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .overflow-on-image-fail {
+            width: 200px;
+            background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22100%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22200%22%20height%3D%22100%22%20fill%3D%22%23888888%22%2F%3E%3C%2Fsvg%3E');
+            overflow: visible;
+            white-space: nowrap;
+            padding: 15px;
+            color: #aaaaaa; /* Light gray - fails on gray image (ratio: 2.0:1) */
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Transparent background with overflow - Failing contrast inside */
+        .overflow-transparent-parent-fail {
+            background: #999999; /* Gray background */
+            padding: 10px;
+        }
+
+        .overflow-transparent-fail {
+            background: transparent;
+            color: #cccccc; /* Light gray - fails on #999999 parent (ratio: 2.85:1) */
+            font-weight: bold;
+            font-size: 18px;
+            padding: 10px;
+            width: 200px;
+            overflow: visible;
+            white-space: nowrap;
+        }
+
+        /* Animation with failing contrast inside */
+        @keyframes movePositionFail {
+            0% { transform: translateX(0px); }
+            50% { transform: translateX(300px); }
+            100% { transform: translateX(0px); }
+        }
+
+        .anim-overflow-parent-fail {
+            position: relative;
+            height: 80px;
+            background: #888888; /* Medium gray */
+            overflow: visible;
+        }
+
+        .anim-overflow-fail {
+            position: absolute;
+            color: #aaaaaa; /* Light gray - fails 4.5:1 on #888888 (ratio: 1.53:1) */
+            font-weight: bold;
+            font-size: 18px;
+            animation: movePositionFail 4s infinite;
+        }
+    </style>
+</head>
+<body>
+    <h1>Error: Partial Text Contrast - Some Text Cannot Be Tested</h1>
+    <p><strong>Purpose:</strong> These cases have FAILING CONTRAST for text inside the container (less than 4.5:1), AND some text extends outside the container. Result: <code>ErrPartialTextContrastAA</code> with note that some text couldn't be tested.</p>
+
+    <div class="section">
+        <h2>Section 1: Horizontal Overflow with Failing Contrast Inside</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast AND text extends beyond container horizontally.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-1: Horizontal Overflow (nowrap) - Failing Inside</span>
+            <div class="overflow-horizontal-fail">
+                Light gray on gray inside (fails 2.85:1), and this text extends beyond the gray container with no background.
+            </div>
+            <div class="note">✗ Text inside FAILS contrast (2.85:1). ⚠ Text outside cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 2: Vertical Overflow with Failing Contrast Inside</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast AND text extends below container.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-2: Vertical Overflow - Failing Inside</span>
+            <div class="overflow-vertical-fail">
+                Fails inside (2.0:1).<br>
+                Line 2 overflows.<br>
+                Line 3 overflows.<br>
+                Line 4 overflows.
+            </div>
+            <div class="note">✗ Text inside FAILS contrast (2.0:1). ⚠ Lines 2-4 overflow, cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 3: Absolute Positioning with Failing Contrast Inside</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast AND position: absolute extends text outside.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-3: Absolute Positioning - Failing Inside</span>
+            <div class="overflow-absolute-parent-fail">
+                <div class="overflow-absolute-fail">
+                    Medium gray on dark gray fails (1.55:1) and extends beyond the container using position: absolute with large dimensions.
+                </div>
+            </div>
+            <div class="note">✗ Text inside FAILS contrast (1.55:1). ⚠ Positioned text outside cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 4: Negative Margin with Failing Contrast Inside</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast AND negative margin pushes text outside.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-4: Negative Margin - Failing Inside</span>
+            <div class="overflow-negative-margin-fail">
+                Medium gray on dark gray fails (1.55:1) with negative left margin. Part extends left with no background.
+            </div>
+            <div class="note">✗ Text inside FAILS contrast (1.55:1). ⚠ Text in negative margin cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 5: Transform Translation with Failing Contrast Inside</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast AND transform pushes text outside.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-5: Transform Translation - Failing Inside</span>
+            <div class="overflow-transform-fail">
+                Medium gray on dark gray fails (1.55:1) with transform translateX. Part extends left with no background.
+            </div>
+            <div class="note">✗ Text inside FAILS contrast (1.55:1). ⚠ Transformed text outside cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 6: Rotated Text with Failing Contrast Inside</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast AND rotation extends text outside.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-6: Rotated Text - Failing Inside</span>
+            <div class="overflow-rotated-fail">
+                Light gray on medium gray fails (2.0:1), rotated -5deg. Corners extend beyond container.
+            </div>
+            <div class="note">✗ Text inside FAILS contrast (2.0:1). ⚠ Rotated corners outside cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 7: Floated Element with Failing Contrast Inside</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast AND float may extend outside.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-7: Floated Element - Failing Inside</span>
+            <div class="overflow-float-fail">
+                Medium gray on dark gray fails (1.55:1) with float. May extend beyond container in float context.
+            </div>
+            <div style="clear: both;"></div>
+            <div class="note">✗ Text inside FAILS contrast (1.55:1). ⚠ Floated text outside cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 8: Overflow on Gradient with Failing Contrast Inside</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast on gradient AND text overflows.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-8: Overflow on Gradient - Failing Inside</span>
+            <div class="overflow-on-gradient-fail">
+                Light gray on gray gradient fails across entire gradient (1.8:1 to 2.3:1), and text extends beyond container with no background.
+            </div>
+            <div class="note">✗ Text inside FAILS contrast on gradient. ⚠ Overflow text cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 9: Overflow on Image with Failing Contrast Inside</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast on background image AND text overflows.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-9: Overflow on Image - Failing Inside</span>
+            <div class="overflow-on-image-fail">
+                Light gray on gray SVG image fails (2.0:1), and text extends beyond the image container with no background.
+            </div>
+            <div class="note">✗ Text inside FAILS contrast on image. ⚠ Overflow text cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 10: Transparent Background with Overflow and Failing Contrast</h2>
+        <p><strong>Detection:</strong> Text with transparent background fails contrast on parent AND overflows.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-10: Transparent with Overflow - Failing Inside</span>
+            <div class="overflow-transparent-parent-fail">
+                <div class="overflow-transparent-fail">
+                    Light gray on transparent (gray parent) fails (2.85:1), and text extends beyond parent with potentially different background.
+                </div>
+            </div>
+            <div class="note">✗ Text inside FAILS contrast on parent (2.85:1). ⚠ Overflow text on unknown background cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Section 11: Animation with Overflow and Failing Contrast</h2>
+        <p><strong>Detection:</strong> Text inside fails contrast AND animation moves text outside container.</p>
+
+        <div class="case">
+            <span class="case-label">PARTIAL-11: Animated Overflow - Failing Inside</span>
+            <div class="anim-overflow-parent-fail">
+                <div class="anim-overflow-fail">
+                    Light gray on medium gray fails (2.0:1) and moves outside the container during animation.
+                </div>
+            </div>
+            <div class="note">✗ Text inside FAILS contrast (2.0:1). ⚠ Animated text outside cannot be tested. Result: ErrPartialTextContrastAA.</div>
+        </div>
+    </div>
+
+    <p style="margin-top: 40px; padding: 20px; background: #ffebee; border: 2px solid #f44336; border-radius: 8px;">
+        <strong>Summary:</strong> All test cases in this fixture demonstrate <strong>PARTIAL FAILURES</strong>:
+        <ul>
+            <li><strong>Text inside container:</strong> FAILS contrast requirements (less than 4.5:1 for normal text)</li>
+            <li><strong>Text outside container:</strong> Cannot be tested due to undefined or unknown background</li>
+        </ul>
+        <strong>Expected Result:</strong> <code>ErrPartialTextContrastAA</code> - Text inside fails contrast, and some text extends outside container where contrast cannot be determined.
+        <br><br>
+        <strong>Contrast Ratios Used:</strong>
+        <ul>
+            <li>#cccccc on #999999 = 2.85:1 (fails 4.5:1)</li>
+            <li>#aaaaaa on #888888 = 2.0:1 (fails 4.5:1)</li>
+            <li>#999999 on #777777 = 1.55:1 (fails 4.5:1)</li>
+            <li>#888888 on #666666 = 1.55:1 (fails 4.5:1)</li>
+            <li>#777777 on #555555 = 1.55:1 (fails 4.5:1)</li>
+        </ul>
+    </p>
+</body>
+</html>

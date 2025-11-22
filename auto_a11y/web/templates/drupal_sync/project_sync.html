@@ -191,6 +191,58 @@
                         </div>
                     </div>
 
+                    <!-- Automated Test Results -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <input type="checkbox" id="includeAutomatedTests" checked>
+                            <strong class="ms-2"><i class="bi bi-lightning-charge"></i> Automated Test Results</strong>
+                        </div>
+                        <div class="card-body">
+                            <!-- Filters -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Filter by Page</label>
+                                    <select id="automatedTestPageFilter" class="form-select" multiple size="4">
+                                        <option value="">All Pages</option>
+                                    </select>
+                                    <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Filter by Touchpoint</label>
+                                    <select id="automatedTestTouchpointFilter" class="form-select" multiple size="4">
+                                        <option value="">All Touchpoints</option>
+                                    </select>
+                                    <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Filter by WCAG SC</label>
+                                    <select id="automatedTestWcagFilter" class="form-select" multiple size="4">
+                                        <option value="">All WCAG Criteria</option>
+                                    </select>
+                                    <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple</small>
+                                </div>
+                            </div>
+
+                            <!-- Filter Actions -->
+                            <div class="d-flex gap-2 mb-3">
+                                <button type="button" class="btn btn-primary btn-sm" onclick="applyAutomatedTestFilters()">
+                                    <i class="bi bi-funnel"></i> Apply Filters
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="clearAutomatedTestFilters()">
+                                    <i class="bi bi-x-circle"></i> Clear Filters
+                                </button>
+                            </div>
+
+                            <!-- Summary -->
+                            <div id="automatedTestSummary" class="alert alert-info">
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <span class="ms-2">Loading automated test results...</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <button type="button" class="btn btn-success btn-lg" onclick="startPush()">
                         <i class="bi bi-cloud-arrow-up"></i> Push Selected Items to Drupal
                     </button>
@@ -378,8 +430,9 @@ async function startPush() {
         .map(cb => cb.value);
     const selectedRecordingIds = Array.from(document.querySelectorAll('.recording-checkbox:checked'))
         .map(cb => cb.value);
+    const includeAutomatedTests = document.getElementById('includeAutomatedTests').checked;
 
-    if (selectedPageIds.length === 0 && selectedRecordingIds.length === 0) {
+    if (selectedPageIds.length === 0 && selectedRecordingIds.length === 0 && !includeAutomatedTests) {
         alert('Please select at least one item to upload.');
         return;
     }
@@ -388,17 +441,25 @@ async function startPush() {
     document.getElementById('pushProgressCard').style.display = 'block';
     document.getElementById('pushLog').innerHTML = '';
 
+    // Build payload
+    const payload = {
+        discovered_page_ids: selectedPageIds,
+        recording_ids: selectedRecordingIds,
+        options: {}
+    };
+
+    // Include automated test filters if checked
+    if (includeAutomatedTests) {
+        payload.automated_test_filters = automatedTestFilters;
+    }
+
     try {
         const response = await fetch(`/drupal/projects/${projectId}/sync/upload`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                discovered_page_ids: selectedPageIds,
-                recording_ids: selectedRecordingIds,
-                options: {}
-            })
+            body: JSON.stringify(payload)
         });
 
         const reader = response.body.getReader();
@@ -570,5 +631,154 @@ async function importDiscoveredPages() {
         btn.innerHTML = '<i class="bi bi-cloud-arrow-down"></i> Pull Discovered Pages';
     }
 }
+
+// ============================================================================
+// Automated Test Results Functions
+// ============================================================================
+
+let automatedTestFilters = {
+    page_urls: [],
+    touchpoints: [],
+    wcag_criteria: [],
+    impact_levels: []
+};
+
+let automatedTestStats = {
+    totalPages: 0,
+    totalIssues: 0,
+    filteredPages: 0,
+    filteredIssues: 0
+};
+
+async function loadAutomatedTestFilters() {
+    const pageFilter = document.getElementById('automatedTestPageFilter');
+    const touchpointFilter = document.getElementById('automatedTestTouchpointFilter');
+    const wcagFilter = document.getElementById('automatedTestWcagFilter');
+    const summaryDiv = document.getElementById('automatedTestSummary');
+
+    try {
+        const response = await fetch(`/automated_tests/projects/${projectId}/filter-options`);
+        const data = await response.json();
+
+        // Populate page filter
+        pageFilter.innerHTML = '<option value="">All Pages</option>';
+        data.pages.forEach(page => {
+            const option = document.createElement('option');
+            option.value = page.url;
+            option.textContent = page.title || page.url;
+            pageFilter.appendChild(option);
+        });
+
+        // Populate touchpoint filter
+        touchpointFilter.innerHTML = '<option value="">All Touchpoints</option>';
+        data.touchpoints.forEach(tp => {
+            const option = document.createElement('option');
+            option.value = tp;
+            option.textContent = tp;
+            touchpointFilter.appendChild(option);
+        });
+
+        // Populate WCAG filter
+        wcagFilter.innerHTML = '<option value="">All WCAG Criteria</option>';
+        data.wcag_criteria.forEach(wc => {
+            const option = document.createElement('option');
+            option.value = wc;
+            option.textContent = wc;
+            wcagFilter.appendChild(option);
+        });
+
+        // Update summary with total counts
+        automatedTestStats.totalPages = data.total_pages;
+        automatedTestStats.totalIssues = data.total_issues;
+        automatedTestStats.filteredPages = data.total_pages;
+        automatedTestStats.filteredIssues = data.total_issues;
+
+        summaryDiv.innerHTML = `
+            <strong>Total:</strong> ${data.total_pages} pages with ${data.total_issues} issues
+            <br>
+            <strong>Filtered:</strong> <span id="filteredCount">${data.total_pages} pages with ${data.total_issues} issues</span>
+        `;
+
+    } catch (error) {
+        console.error('Error loading automated test filters:', error);
+        summaryDiv.innerHTML = `<span class="text-danger">Error loading test results: ${error.message}</span>`;
+    }
+}
+
+async function applyAutomatedTestFilters() {
+    const pageFilter = document.getElementById('automatedTestPageFilter');
+    const touchpointFilter = document.getElementById('automatedTestTouchpointFilter');
+    const wcagFilter = document.getElementById('automatedTestWcagFilter');
+    const summaryDiv = document.getElementById('automatedTestSummary');
+
+    // Get selected values
+    automatedTestFilters.page_urls = Array.from(pageFilter.selectedOptions)
+        .map(opt => opt.value)
+        .filter(v => v !== '');
+    automatedTestFilters.touchpoints = Array.from(touchpointFilter.selectedOptions)
+        .map(opt => opt.value)
+        .filter(v => v !== '');
+    automatedTestFilters.wcag_criteria = Array.from(wcagFilter.selectedOptions)
+        .map(opt => opt.value)
+        .filter(v => v !== '');
+
+    // Show loading
+    summaryDiv.innerHTML = `
+        <div class="spinner-border spinner-border-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="ms-2">Applying filters...</span>
+    `;
+
+    try {
+        const response = await fetch(`/automated_tests/projects/${projectId}/filter`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(automatedTestFilters)
+        });
+
+        const data = await response.json();
+
+        automatedTestStats.filteredPages = data.total_pages;
+        automatedTestStats.filteredIssues = data.total_violations;
+
+        summaryDiv.innerHTML = `
+            <strong>Total:</strong> ${automatedTestStats.totalPages} pages with ${automatedTestStats.totalIssues} issues
+            <br>
+            <strong>Filtered:</strong> <span class="text-primary">${data.total_pages} pages with ${data.total_violations} issues</span>
+        `;
+
+    } catch (error) {
+        console.error('Error applying filters:', error);
+        summaryDiv.innerHTML = `<span class="text-danger">Error applying filters: ${error.message}</span>`;
+    }
+}
+
+function clearAutomatedTestFilters() {
+    document.getElementById('automatedTestPageFilter').selectedIndex = -1;
+    document.getElementById('automatedTestTouchpointFilter').selectedIndex = -1;
+    document.getElementById('automatedTestWcagFilter').selectedIndex = -1;
+
+    automatedTestFilters = {
+        page_urls: [],
+        touchpoints: [],
+        wcag_criteria: [],
+        impact_levels: []
+    };
+
+    const summaryDiv = document.getElementById('automatedTestSummary');
+    summaryDiv.innerHTML = `
+        <strong>Total:</strong> ${automatedTestStats.totalPages} pages with ${automatedTestStats.totalIssues} issues
+        <br>
+        <strong>Filtered:</strong> ${automatedTestStats.totalPages} pages with ${automatedTestStats.totalIssues} issues
+    `;
+}
+
+// Load automated test filters when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadAutomatedTestFilters();
+});
 </script>
 {% endblock %}

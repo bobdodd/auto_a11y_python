@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Add Lived Experience Tester - {{ project.name }} - Auto A11y{% endblock %}
+{% block title %}{{ _('Add Lived Experience Tester') }} - {{ project.name }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -11,14 +11,14 @@
                 <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}">Testing Participants</a>
+                <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}">{{ _('Testing Participants') }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">Add Tester</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Add Tester') }}</li>
         </ol>
     </nav>
 
     <h1 class="h2 mb-4">
-        <i class="bi bi-person-badge"></i> Add Lived Experience Tester
+        <i class="bi bi-person-badge"></i> {{ _('Add Lived Experience Tester') }}
     </h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -37,44 +37,44 @@
             <div class="col-md-8">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-person"></i> Tester Information</h5>
+                        <h5 class="mb-0"><i class="bi bi-person"></i> {{ _('Tester Information') }}</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">{{ _('Name') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name" name="name" required
-                                   placeholder="e.g., Jane Smith">
-                            <div class="form-text">Full name of the lived experience tester</div>
+                                   placeholder="{{ _('e.g., Jane Smith') }}">
+                            <div class="form-text">{{ _('Full name of the lived experience tester') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">{{ _('Email') }}</label>
                             <input type="email" class="form-control" id="email" name="email"
-                                   placeholder="e.g., jane.smith@example.com">
-                            <div class="form-text">Contact email for the tester (optional)</div>
+                                   placeholder="{{ _('e.g., jane.smith@example.com') }}">
+                            <div class="form-text">{{ _('Contact email for the tester (optional)') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="disability_type" class="form-label">Disability Type</label>
+                            <label for="disability_type" class="form-label">{{ _('Disability Type') }}</label>
                             <input type="text" class="form-control" id="disability_type" name="disability_type"
-                                   placeholder="e.g., Blind, Low Vision, Deaf, Motor Disability"
+                                   placeholder="{{ _('e.g., Blind, Low Vision, Deaf, Motor Disability') }}"
                                    list="common-disabilities">
                             <datalist id="common-disabilities">
-                                <option value="Blind">
-                                <option value="Low Vision">
-                                <option value="Deaf">
-                                <option value="Hard of Hearing">
-                                <option value="Motor Disability">
-                                <option value="Cognitive Disability">
-                                <option value="Multiple Disabilities">
+                                <option value="{{ _('Blind') }}">
+                                <option value="{{ _('Low Vision') }}">
+                                <option value="{{ _('Deaf') }}">
+                                <option value="{{ _('Hard of Hearing') }}">
+                                <option value="{{ _('Motor Disability') }}">
+                                <option value="{{ _('Cognitive Disability') }}">
+                                <option value="{{ _('Multiple Disabilities') }}">
                             </datalist>
-                            <div class="form-text">Type of disability (optional)</div>
+                            <div class="form-text">{{ _('Type of disability (optional)') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="assistive_tech" class="form-label">Assistive Technologies</label>
+                            <label for="assistive_tech" class="form-label">{{ _('Assistive Technologies') }}</label>
                             <input type="text" class="form-control" id="assistive_tech" name="assistive_tech"
-                                   placeholder="e.g., JAWS, ZoomText, Dragon NaturallySpeaking"
+                                   placeholder="{{ _('e.g., JAWS, ZoomText, Dragon NaturallySpeaking') }}"
                                    list="common-tech">
                             <datalist id="common-tech">
                                 <option value="JAWS">
@@ -86,14 +86,14 @@
                                 <option value="Switch Control">
                                 <option value="Eye Tracking">
                             </datalist>
-                            <div class="form-text">Comma-separated list of assistive technologies used</div>
+                            <div class="form-text">{{ _('Comma-separated list of assistive technologies used') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="notes" class="form-label">Notes</label>
+                            <label for="notes" class="form-label">{{ _('Notes') }}</label>
                             <textarea class="form-control" id="notes" name="notes" rows="3"
-                                      placeholder="Additional information about this tester..."></textarea>
-                            <div class="form-text">Optional notes (e.g., availability, special requirements)</div>
+                                      placeholder="{{ _('Additional information about this tester...') }}"></textarea>
+                            <div class="form-text">{{ _('Optional notes (e.g., availability, special requirements)') }}</div>
                         </div>
                     </div>
                 </div>
@@ -103,31 +103,31 @@
             <div class="col-md-4">
                 <div class="card sticky-top" style="top: 20px;">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> Help</h5>
+                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> {{ _('Help') }}</h5>
                     </div>
                     <div class="card-body">
-                        <h6>About Lived Experience Testers</h6>
-                        <p class="small">Lived experience testers are individuals with disabilities who test your products using assistive technologies.</p>
+                        <h6>{{ _('About Lived Experience Testers') }}</h6>
+                        <p class="small">{{ _('Lived experience testers are individuals with disabilities who test your products using assistive technologies.') }}</p>
 
                         <hr>
 
-                        <h6>Common Disability Types</h6>
+                        <h6>{{ _('Common Disability Types') }}</h6>
                         <ul class="small">
-                            <li>Blind</li>
-                            <li>Low Vision</li>
-                            <li>Deaf / Hard of Hearing</li>
-                            <li>Motor Disability</li>
-                            <li>Cognitive Disability</li>
+                            <li>{{ _('Blind') }}</li>
+                            <li>{{ _('Low Vision') }}</li>
+                            <li>{{ _('Deaf / Hard of Hearing') }}</li>
+                            <li>{{ _('Motor Disability') }}</li>
+                            <li>{{ _('Cognitive Disability') }}</li>
                         </ul>
 
                         <hr>
 
-                        <h6>Common Assistive Technologies</h6>
+                        <h6>{{ _('Common Assistive Technologies') }}</h6>
                         <ul class="small">
-                            <li><strong>Screen Readers:</strong> JAWS, NVDA, VoiceOver, TalkBack</li>
-                            <li><strong>Magnification:</strong> ZoomText, built-in magnifiers</li>
-                            <li><strong>Voice Control:</strong> Dragon NaturallySpeaking, Voice Control</li>
-                            <li><strong>Alternative Input:</strong> Switch Control, Eye Tracking</li>
+                            <li><strong>{{ _('Screen Readers:') }}</strong> JAWS, NVDA, VoiceOver, TalkBack</li>
+                            <li><strong>{{ _('Magnification:') }}</strong> ZoomText, {{ _('built-in magnifiers') }}</li>
+                            <li><strong>{{ _('Voice Control:') }}</strong> Dragon NaturallySpeaking, Voice Control</li>
+                            <li><strong>{{ _('Alternative Input:') }}</strong> Switch Control, Eye Tracking</li>
                         </ul>
                     </div>
                 </div>
@@ -138,10 +138,10 @@
             <div class="col-md-8">
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> Add Tester
+                        <i class="bi bi-check-circle"></i> {{ _('Add Tester') }}
                     </button>
                     <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Cancel
+                        <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
                     </a>
                 </div>
             </div>

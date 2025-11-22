@@ -1,6 +1,6 @@
 {% extends "scripts/create.html" %}
 
-{% block title %}Edit Script: {{ script.name }} - Auto A11y{% endblock %}
+{% block title %}{{ _('Edit Script: %(name)s - Auto A11y', name=script.name) }}{% endblock %}
 
 {% block extra_js %}
 {{ super() }}
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Change button text
-document.querySelector('form button[type="submit"]').innerHTML = '<i class="bi bi-save"></i> Update Script';
-document.querySelector('h1.h2').innerHTML = '<i class="bi bi-pencil-square"></i> Edit Page Setup Script';
+document.querySelector('form button[type="submit"]').innerHTML = '<i class="bi bi-save"></i> {{ _('Update Script') }}';
+document.querySelector('h1.h2').innerHTML = '<i class="bi bi-pencil-square"></i> {{ _('Edit Page Setup Script') }}';
 </script>
 {% endblock %}

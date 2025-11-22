@@ -1,21 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %}Recordings - Auto A11y{% endblock %}
+{% block title %}{{ _('Recordings') }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2">
-            <i class="bi bi-mic"></i> Manual Audit Recordings
+            <i class="bi bi-mic"></i> {{ _('Manual Audit Recordings') }}
         </h1>
         <a href="{{ url_for('recordings.upload_recording') }}" class="btn btn-primary">
-            <i class="bi bi-upload"></i> Upload Recording
+            <i class="bi bi-upload"></i> {{ _('Upload Recording') }}
         </a>
     </div>
 
     <p class="text-muted">
-        Manual audit recordings from Dictaphone and expert reviews. These complement automated test results
-        with human observations and lived experience findings.
+        {{ _('Manual audit recordings from Dictaphone and expert reviews. These complement automated test results with human observations and lived experience findings.') }}
     </p>
 
     <!-- Filters -->
@@ -23,9 +22,9 @@
         <div class="card-body">
             <form method="get" action="{{ url_for('recordings.list_recordings') }}" class="row g-3">
                 <div class="col-md-6">
-                    <label for="project_id" class="form-label">Project</label>
+                    <label for="project_id" class="form-label">{{ _('Project') }}</label>
                     <select name="project_id" id="project_id" class="form-select" onchange="this.form.submit()">
-                        <option value="">All Projects</option>
+                        <option value="">{{ _('All Projects') }}</option>
                         {% for project in projects %}
                         <option value="{{ project.id }}" {{ 'selected' if selected_project_id == project.id }}>
                             {{ project.name }}
@@ -34,14 +33,14 @@
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label for="recording_type" class="form-label">Recording Type</label>
+                    <label for="recording_type" class="form-label">{{ _('Recording Type') }}</label>
                     <select name="recording_type" id="recording_type" class="form-select" onchange="this.form.submit()">
-                        <option value="">All Types</option>
-                        <option value="audit" {{ 'selected' if selected_recording_type == 'audit' }}>Audit</option>
-                        <option value="lived_experience_website" {{ 'selected' if selected_recording_type == 'lived_experience_website' }}>Lived Experience Website</option>
-                        <option value="lived_experience_app" {{ 'selected' if selected_recording_type == 'lived_experience_app' }}>Lived Experience App</option>
-                        <option value="lived_experience_tangible_device" {{ 'selected' if selected_recording_type == 'lived_experience_tangible_device' }}>Lived Experience Tangible Device</option>
-                        <option value="lived_experience_nav_and_wayfinding" {{ 'selected' if selected_recording_type == 'lived_experience_nav_and_wayfinding' }}>Lived Experience Nav and Wayfinding</option>
+                        <option value="">{{ _('All Types') }}</option>
+                        <option value="audit" {{ 'selected' if selected_recording_type == 'audit' }}>{{ _('Audit') }}</option>
+                        <option value="lived_experience_website" {{ 'selected' if selected_recording_type == 'lived_experience_website' }}>{{ _('Lived Experience Website') }}</option>
+                        <option value="lived_experience_app" {{ 'selected' if selected_recording_type == 'lived_experience_app' }}>{{ _('Lived Experience App') }}</option>
+                        <option value="lived_experience_tangible_device" {{ 'selected' if selected_recording_type == 'lived_experience_tangible_device' }}>{{ _('Lived Experience Tangible Device') }}</option>
+                        <option value="lived_experience_nav_and_wayfinding" {{ 'selected' if selected_recording_type == 'lived_experience_nav_and_wayfinding' }}>{{ _('Lived Experience Nav and Wayfinding') }}</option>
                     </select>
                 </div>
             </form>
@@ -74,7 +73,7 @@
 
                     {% if recording.test_user_account %}
                     <p class="mb-2">
-                        <i class="bi bi-person-circle"></i> Test Account: {{ recording.test_user_account }}
+                        <i class="bi bi-person-circle"></i> {{ _('Test Account') }}: {{ recording.test_user_account }}
                     </p>
                     {% endif %}
 
@@ -91,16 +90,16 @@
                     {% endif %}
 
                     <div class="mb-3">
-                        <strong>Issues: {{ recording.total_issues }}</strong>
+                        <strong>{{ _('Issues') }}: {{ recording.total_issues }}</strong>
                         <div class="mt-1">
                             {% if recording.high_impact_count > 0 %}
-                            <span class="badge bg-danger">{{ recording.high_impact_count }} High</span>
+                            <span class="badge bg-danger">{{ recording.high_impact_count }} {{ _('High') }}</span>
                             {% endif %}
                             {% if recording.medium_impact_count > 0 %}
-                            <span class="badge bg-warning text-dark">{{ recording.medium_impact_count }} Medium</span>
+                            <span class="badge bg-warning text-dark">{{ recording.medium_impact_count }} {{ _('Medium') }}</span>
                             {% endif %}
                             {% if recording.low_impact_count > 0 %}
-                            <span class="badge bg-secondary">{{ recording.low_impact_count }} Low</span>
+                            <span class="badge bg-secondary">{{ recording.low_impact_count }} {{ _('Low') }}</span>
                             {% endif %}
                         </div>
                     </div>
@@ -108,10 +107,10 @@
                     <div class="d-flex gap-2">
                         <a href="{{ url_for('recordings.view_recording', recording_id=recording.id) }}"
                            class="btn btn-sm btn-primary flex-grow-1">
-                            <i class="bi bi-eye"></i> View Details
+                            <i class="bi bi-eye"></i> {{ _('View Details') }}
                         </a>
                         <form method="post" action="{{ url_for('recordings.delete_recording', recording_id=recording.id) }}"
-                              onsubmit="return confirm('Are you sure you want to delete this recording?')" class="d-inline">
+                              onsubmit="return confirm('{{ _('Are you sure you want to delete this recording?') }}')" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -124,8 +123,8 @@
     </div>
     {% else %}
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i> No recordings found.
-        <a href="{{ url_for('recordings.upload_recording') }}">Upload your first recording</a> to get started.
+        <i class="bi bi-info-circle"></i> {{ _('No recordings found.') }}
+        <a href="{{ url_for('recordings.upload_recording') }}">{{ _('Upload your first recording') }}</a> {{ _('to get started.') }}
     </div>
     {% endif %}
 </div>

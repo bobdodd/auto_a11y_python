@@ -45,7 +45,8 @@ class IssueExporter:
         video_timecode: Optional[str] = None,
         issue_id: Optional[int] = None,
         existing_uuid: Optional[str] = None,
-        video_uuid: Optional[str] = None
+        video_uuid: Optional[str] = None,
+        discovered_page_uuid: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Export an issue to Drupal.
@@ -64,6 +65,7 @@ class IssueExporter:
             issue_id: Numeric issue ID (field_id)
             existing_uuid: If provided, UPDATE existing issue instead of creating new
             video_uuid: Optional Drupal audit_video UUID to link to
+            discovered_page_uuid: Optional Drupal discovered_page UUID to link to
 
         Returns:
             Dict with 'success', 'uuid', 'nid', and optional 'error' keys
@@ -83,7 +85,8 @@ class IssueExporter:
                 video_timecode=video_timecode,
                 issue_id=issue_id,
                 existing_uuid=existing_uuid,
-                video_uuid=video_uuid
+                video_uuid=video_uuid,
+                discovered_page_uuid=discovered_page_uuid
             )
 
             # Create or update
@@ -194,13 +197,13 @@ class IssueExporter:
         # Build description HTML from what/why/who/remediation
         description_parts = []
         if recording_issue.what:
-            description_parts.append(f"<h3>What</h3><p>{html.escape(recording_issue.what)}</p>")
+            description_parts.append(f"<h3>What the issue is</h3>\n<p>{html.escape(recording_issue.what)}</p>")
         if recording_issue.why:
-            description_parts.append(f"<h3>Why</h3><p>{html.escape(recording_issue.why)}</p>")
+            description_parts.append(f"<h3>Why it is important</h3>\n<p>{html.escape(recording_issue.why)}</p>")
         if recording_issue.who:
-            description_parts.append(f"<h3>Who</h3><p>{html.escape(recording_issue.who)}</p>")
+            description_parts.append(f"<h3>Who it affects</h3>\n<p>{html.escape(recording_issue.who)}</p>")
         if recording_issue.remediation:
-            description_parts.append(f"<h3>Remediation</h3><p>{html.escape(recording_issue.remediation)}</p>")
+            description_parts.append(f"<h3>How to remediate</h3>\n<p>{html.escape(recording_issue.remediation)}</p>")
 
         description = "\n".join(description_parts) if description_parts else recording_issue.what or ""
 
@@ -246,7 +249,8 @@ class IssueExporter:
         video_timecode: Optional[str],
         issue_id: Optional[int],
         existing_uuid: Optional[str] = None,
-        video_uuid: Optional[str] = None
+        video_uuid: Optional[str] = None,
+        discovered_page_uuid: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Build JSON:API payload for issue.
@@ -271,16 +275,29 @@ class IssueExporter:
         # Build attributes
         attributes = {
             'title': title,
-            'field_impact': impact,
             'status': True  # Publish the issue by default
         }
         # Note: field_ticket_status omitted - all existing issues have null for this field
+
+        # Add impact as simple string field (not a taxonomy reference)
+        # Map internal values to Drupal values: "medium" → "med"
+        if impact:
+            impact_mapping = {
+                'low': 'low',
+                'medium': 'med',  # Drupal uses "med" not "medium"
+                'high': 'high',
+                'critical': 'critical'
+            }
+            drupal_impact = impact_mapping.get(impact.lower(), 'med')
+            attributes['field_impact'] = drupal_impact
+        else:
+            attributes['field_impact'] = 'med'  # Default to medium
 
         # Add description/body (only include if present - body field accepts null but format is required)
         if description:
             attributes['body'] = {
                 'value': description,
-                'format': 'formatted_text'
+                'format': 'unfiltered'  # Use unfiltered format to preserve all HTML
             }
 
         # Add issue type text field - "WCAG" if WCAG criteria present, "NOT WCAG" otherwise
@@ -410,6 +427,7 @@ class IssueExporter:
                 'html': 'HTML or Attribute',
                 'language': 'Language',
                 'labels': 'Label or Name',
+                'accessible_names': 'Label or Name',
                 'sequence': 'Sequence or Order',
                 'modal': 'Modal Dialog',
                 'status messages': 'Status Messages, Errors or Instructions',
@@ -451,28 +469,56 @@ class IssueExporter:
             relationships['field_issue_category'] = {'data': None}
 
         # Add WCAG chapter relationships (field_wcag_chapter - multi-value reference to WCAG chapter nodes)
-        if self.wcag_cache and wcag_criteria:
-            # Filter out non-standard criteria like "best practice"
-            valid_criteria = [c for c in wcag_criteria if c and c[0].isdigit()]
+        if wcag_criteria:
+            # Check if wcag_criteria are already UUIDs or need conversion
+            # UUIDs are 36 chars with 4 dashes (e.g., "6d1519a5-730a-478d-99cf-97692df1d0bc")
+            # WCAG criteria numbers are like "1.3.1", "2.4.6"
+            if wcag_criteria and len(wcag_criteria[0]) == 36 and wcag_criteria[0].count('-') == 4:
+                # Already UUIDs, use directly
+                chapter_uuids = wcag_criteria
+                logger.info(f"Using provided WCAG chapter UUIDs: {len(chapter_uuids)} chapters")
+                relationships['field_wcag_chapter'] = {
+                    'data': [
+                        {'type': 'node--wcag_chapter', 'id': uuid}
+                        for uuid in chapter_uuids
+                    ]
+                }
+            elif self.wcag_cache:
+                # WCAG criteria numbers, need to convert to UUIDs
+                # Filter out non-standard criteria like "best practice"
+                valid_criteria = [c for c in wcag_criteria if c and c[0].isdigit()]
 
-            if valid_criteria:
-                chapter_uuids = self.wcag_cache.lookup_uuids(valid_criteria)
-                if chapter_uuids:
-                    # Build multi-value relationship
-                    relationships['field_wcag_chapter'] = {
-                        'data': [
-                            {'type': 'node--wcag_chapter', 'id': uuid}
-                            for uuid in chapter_uuids
-                        ]
-                    }
-                    logger.info(f"Linked {len(chapter_uuids)} WCAG chapters: {', '.join(valid_criteria)}")
+                if valid_criteria:
+                    chapter_uuids = self.wcag_cache.lookup_uuids(valid_criteria)
+                    if chapter_uuids:
+                        # Build multi-value relationship
+                        relationships['field_wcag_chapter'] = {
+                            'data': [
+                                {'type': 'node--wcag_chapter', 'id': uuid}
+                                for uuid in chapter_uuids
+                            ]
+                        }
+                        logger.info(f"Linked {len(chapter_uuids)} WCAG chapters: {', '.join(valid_criteria)}")
+                    else:
+                        logger.warning(f"No WCAG chapter UUIDs found for criteria: {valid_criteria}")
+                        relationships['field_wcag_chapter'] = {'data': []}
                 else:
-                    logger.warning(f"No WCAG chapter UUIDs found for criteria: {valid_criteria}")
                     relationships['field_wcag_chapter'] = {'data': []}
             else:
                 relationships['field_wcag_chapter'] = {'data': []}
         else:
             relationships['field_wcag_chapter'] = {'data': []}
+
+        # Add Discovered Page relationship (for linking issues to discovered pages/components)
+        if discovered_page_uuid:
+            relationships['field_discovered_page_issue'] = {
+                'data': {
+                    'type': 'node--discovered_page',
+                    'id': discovered_page_uuid
+                }
+            }
+        else:
+            relationships['field_discovered_page_issue'] = {'data': None}
 
         # Note: field_ticket_status has been removed from the staging Issue content type
         # (test-audits.pantheonsite.io) to allow issue creation via JSON:API.

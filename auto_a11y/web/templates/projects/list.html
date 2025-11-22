@@ -1,37 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}Projects - Auto A11y{% endblock %}
+{% block title %}{{ _('Projects') }} - {{ _('Auto A11y') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">Projects</h1>
+        <h1 class="h2">{{ _('Projects') }}</h1>
         <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> New Project
+            <i class="bi bi-plus-circle"></i> {{ _('New Project') }}
         </a>
     </div>
 
     <!-- Filter Buttons -->
     <div class="btn-group mb-3" role="group">
-        <a href="{{ url_for('projects.list_projects') }}" 
+        <a href="{{ url_for('projects.list_projects') }}"
            class="btn btn-outline-secondary {{ 'active' if not request.args.get('status') }}">
-            All
+            {{ _('All') }}
         </a>
-        <a href="{{ url_for('projects.list_projects', status='active') }}" 
+        <a href="{{ url_for('projects.list_projects', status='active') }}"
            class="btn btn-outline-success {{ 'active' if request.args.get('status') == 'active' }}">
-            Active
+            {{ _('Active') }}
         </a>
-        <a href="{{ url_for('projects.list_projects', status='paused') }}" 
+        <a href="{{ url_for('projects.list_projects', status='paused') }}"
            class="btn btn-outline-warning {{ 'active' if request.args.get('status') == 'paused' }}">
-            Paused
+            {{ _('Paused') }}
         </a>
-        <a href="{{ url_for('projects.list_projects', status='completed') }}" 
+        <a href="{{ url_for('projects.list_projects', status='completed') }}"
            class="btn btn-outline-info {{ 'active' if request.args.get('status') == 'completed' }}">
-            Completed
+            {{ _('Completed') }}
         </a>
-        <a href="{{ url_for('projects.list_projects', status='archived') }}" 
+        <a href="{{ url_for('projects.list_projects', status='archived') }}"
            class="btn btn-outline-secondary {{ 'active' if request.args.get('status') == 'archived' }}">
-            Archived
+            {{ _('Archived') }}
         </a>
     </div>
 
@@ -53,23 +53,23 @@
                             </span>
                         </div>
                     </div>
-                    <p class="card-text text-muted">{{ project.description or 'No description' }}</p>
-                    
+                    <p class="card-text text-muted">{{ project.description or _('No description') }}</p>
+
                     <div class="mb-3">
                         <small class="text-muted">
-                            <i class="bi bi-calendar"></i> Created: {{ project.created_at.strftime('%Y-%m-%d') }}<br>
-                            <i class="bi bi-clock"></i> Updated: {{ project.updated_at.strftime('%Y-%m-%d') }}
+                            <i class="bi bi-calendar"></i> {{ _('Created:') }} {{ project.created_at.strftime('%Y-%m-%d') }}<br>
+                            <i class="bi bi-clock"></i> {{ _('Updated:') }} {{ project.updated_at.strftime('%Y-%m-%d') }}
                         </small>
                     </div>
-                    
+
                     <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('projects.view_project', project_id=project.id) }}" 
+                        <a href="{{ url_for('projects.view_project', project_id=project.id) }}"
                            class="btn btn-sm btn-primary">
-                            <i class="bi bi-eye"></i> View
+                            <i class="bi bi-eye"></i> {{ _('View') }}
                         </a>
-                        <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" 
+                        <a href="{{ url_for('projects.edit_project', project_id=project.id) }}"
                            class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-pencil"></i> Edit
+                            <i class="bi bi-pencil"></i> {{ _('Edit') }}
                         </a>
                     </div>
                 </div>
@@ -79,8 +79,8 @@
     </div>
     {% else %}
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i> No projects found. 
-        <a href="{{ url_for('projects.create_project') }}">Create your first project</a>
+        <i class="bi bi-info-circle"></i> {{ _('No projects found.') }}
+        <a href="{{ url_for('projects.create_project') }}">{{ _('Create your first project') }}</a>
     </div>
     {% endif %}
 </div>

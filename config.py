@@ -39,7 +39,7 @@ class Config:
     
     # Claude AI
     CLAUDE_API_KEY: str = os.getenv('CLAUDE_API_KEY', '')
-    CLAUDE_MODEL: str = os.getenv('CLAUDE_MODEL', 'claude-opus-4-1-20250805')
+    CLAUDE_MODEL: str = os.getenv('CLAUDE_MODEL', 'claude-sonnet-4-5-20250929')
     CLAUDE_MAX_TOKENS: int = int(os.getenv('CLAUDE_MAX_TOKENS', 8192))
     CLAUDE_TEMPERATURE: float = float(os.getenv('CLAUDE_TEMPERATURE', 0.5))
     

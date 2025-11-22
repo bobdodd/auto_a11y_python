@@ -27,9 +27,11 @@ class DiscoveredPage:
     project_id: str  # Link to parent project/audit
 
     # Source information
-    source_type: str = "manual"  # "manual", "scraped_page", "app_screen", "device_display"
+    source_type: str = "manual"  # "manual", "scraped_page", "automated_test", "common_component", "app_screen", "device_display"
     source_page_id: Optional[str] = None  # If created from scraped Page, reference to Page._id
     source_website_id: Optional[str] = None  # If from scraped page, reference to Website._id
+    source_component_signature: Optional[str] = None  # If common_component, the component signature
+    source_upload_id: Optional[str] = None  # If automated_test or common_component, reference to upload/dedup run
 
     # Taxonomy tags (from Drupal taxonomies)
     interested_because: List[str] = field(default_factory=list)  # Why is this page interesting? (taxonomy term names)
@@ -85,6 +87,8 @@ class DiscoveredPage:
             'source_type': self.source_type,
             'source_page_id': self.source_page_id,
             'source_website_id': self.source_website_id,
+            'source_component_signature': self.source_component_signature,
+            'source_upload_id': self.source_upload_id,
             'interested_because': self.interested_because,
             'page_elements': self.page_elements,
             'private_notes': self.private_notes,
@@ -116,6 +120,8 @@ class DiscoveredPage:
             source_type=data.get('source_type', 'manual'),
             source_page_id=data.get('source_page_id'),
             source_website_id=data.get('source_website_id'),
+            source_component_signature=data.get('source_component_signature'),
+            source_upload_id=data.get('source_upload_id'),
             interested_because=data.get('interested_because', []),
             page_elements=data.get('page_elements', []),
             private_notes=data.get('private_notes'),

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Edit Supervisor - {{ project.name }} - Auto A11y{% endblock %}
+{% block title %}{{ _('Edit Supervisor') }} - {{ project.name }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -11,14 +11,14 @@
                 <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}">Testing Participants</a>
+                <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}">{{ _('Testing Participants') }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">Edit Supervisor</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Edit Supervisor') }}</li>
         </ol>
     </nav>
 
     <h1 class="h2 mb-4">
-        <i class="bi bi-person-check"></i> Edit Test Supervisor
+        <i class="bi bi-person-check"></i> {{ _('Edit Test Supervisor') }}
     </h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -37,55 +37,55 @@
             <div class="col-md-8">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-person"></i> Supervisor Information</h5>
+                        <h5 class="mb-0"><i class="bi bi-person"></i> {{ _('Supervisor Information') }}</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">{{ _('Name') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name" name="name" required
                                    value="{{ supervisor.name }}"
-                                   placeholder="e.g., Dr. Sarah Johnson">
-                            <div class="form-text">Full name of the test supervisor</div>
+                                   placeholder="{{ _('e.g., Dr. Sarah Johnson') }}">
+                            <div class="form-text">{{ _('Full name of the test supervisor') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">{{ _('Email') }}</label>
                             <input type="email" class="form-control" id="email" name="email"
                                    value="{{ supervisor.email or '' }}"
-                                   placeholder="e.g., sarah.johnson@example.com">
-                            <div class="form-text">Contact email for the supervisor (optional)</div>
+                                   placeholder="{{ _('e.g., sarah.johnson@example.com') }}">
+                            <div class="form-text">{{ _('Contact email for the supervisor (optional)') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="role" class="form-label">Role</label>
+                            <label for="role" class="form-label">{{ _('Role') }}</label>
                             <input type="text" class="form-control" id="role" name="role"
                                    value="{{ supervisor.role or '' }}"
-                                   placeholder="e.g., Accessibility Specialist, Research Lead"
+                                   placeholder="{{ _('e.g., Accessibility Specialist, Research Lead') }}"
                                    list="common-roles">
                             <datalist id="common-roles">
-                                <option value="Accessibility Specialist">
-                                <option value="Research Lead">
-                                <option value="UX Researcher">
-                                <option value="Accessibility Consultant">
-                                <option value="Project Manager">
-                                <option value="Quality Assurance Lead">
+                                <option value="{{ _('Accessibility Specialist') }}">
+                                <option value="{{ _('Research Lead') }}">
+                                <option value="{{ _('UX Researcher') }}">
+                                <option value="{{ _('Accessibility Consultant') }}">
+                                <option value="{{ _('Project Manager') }}">
+                                <option value="{{ _('Quality Assurance Lead') }}">
                             </datalist>
-                            <div class="form-text">Job title or role (optional)</div>
+                            <div class="form-text">{{ _('Job title or role (optional)') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="organization" class="form-label">Organization</label>
+                            <label for="organization" class="form-label">{{ _('Organization') }}</label>
                             <input type="text" class="form-control" id="organization" name="organization"
                                    value="{{ supervisor.organization or '' }}"
-                                   placeholder="e.g., Accessibility Research Institute">
-                            <div class="form-text">Organization or company name (optional)</div>
+                                   placeholder="{{ _('e.g., Accessibility Research Institute') }}">
+                            <div class="form-text">{{ _('Organization or company name (optional)') }}</div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="notes" class="form-label">Notes</label>
+                            <label for="notes" class="form-label">{{ _('Notes') }}</label>
                             <textarea class="form-control" id="notes" name="notes" rows="3"
-                                      placeholder="Additional information about this supervisor...">{{ supervisor.notes or '' }}</textarea>
-                            <div class="form-text">Optional notes (e.g., areas of expertise, contact preferences)</div>
+                                      placeholder="{{ _('Additional information about this supervisor...') }}">{{ supervisor.notes or '' }}</textarea>
+                            <div class="form-text">{{ _('Optional notes (e.g., areas of expertise, contact preferences)') }}</div>
                         </div>
                     </div>
                 </div>
@@ -95,34 +95,34 @@
             <div class="col-md-4">
                 <div class="card sticky-top" style="top: 20px;">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> Help</h5>
+                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> {{ _('Help') }}</h5>
                     </div>
                     <div class="card-body">
-                        <h6>About Test Supervisors</h6>
-                        <p class="small">Test supervisors are accessibility experts who oversee and coordinate lived experience testing sessions.</p>
+                        <h6>{{ _('About Test Supervisors') }}</h6>
+                        <p class="small">{{ _('Test supervisors are accessibility experts who oversee and coordinate lived experience testing sessions.') }}</p>
 
                         <hr>
 
-                        <h6>Common Supervisor Roles</h6>
+                        <h6>{{ _('Common Supervisor Roles') }}</h6>
                         <ul class="small">
-                            <li>Accessibility Specialist</li>
-                            <li>Research Lead</li>
-                            <li>UX Researcher</li>
-                            <li>Accessibility Consultant</li>
-                            <li>Project Manager</li>
-                            <li>Quality Assurance Lead</li>
+                            <li>{{ _('Accessibility Specialist') }}</li>
+                            <li>{{ _('Research Lead') }}</li>
+                            <li>{{ _('UX Researcher') }}</li>
+                            <li>{{ _('Accessibility Consultant') }}</li>
+                            <li>{{ _('Project Manager') }}</li>
+                            <li>{{ _('Quality Assurance Lead') }}</li>
                         </ul>
 
                         <hr>
 
-                        <h6>Supervisor Responsibilities</h6>
-                        <p class="small">Test supervisors typically:</p>
+                        <h6>{{ _('Supervisor Responsibilities') }}</h6>
+                        <p class="small">{{ _('Test supervisors typically:') }}</p>
                         <ul class="small">
-                            <li>Coordinate testing sessions</li>
-                            <li>Ensure ethical testing practices</li>
-                            <li>Provide technical support</li>
-                            <li>Document findings</li>
-                            <li>Communicate with stakeholders</li>
+                            <li>{{ _('Coordinate testing sessions') }}</li>
+                            <li>{{ _('Ensure ethical testing practices') }}</li>
+                            <li>{{ _('Provide technical support') }}</li>
+                            <li>{{ _('Document findings') }}</li>
+                            <li>{{ _('Communicate with stakeholders') }}</li>
                         </ul>
                     </div>
                 </div>
@@ -133,10 +133,10 @@
             <div class="col-md-8">
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-circle"></i> Update Supervisor
+                        <i class="bi bi-check-circle"></i> {{ _('Update Supervisor') }}
                     </button>
                     <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Cancel
+                        <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
                     </a>
                 </div>
             </div>

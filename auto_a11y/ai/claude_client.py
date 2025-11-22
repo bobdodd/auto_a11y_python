@@ -17,18 +17,18 @@ logger = logging.getLogger(__name__)
 class ClaudeConfig:
     """Claude AI configuration"""
     api_key: str
-    model: str = "claude-3-5-sonnet-20241022"  # Updated to latest model
+    model: str = "claude-sonnet-4-5-20250929"  # Updated to latest Sonnet 4.5 model
     max_tokens: int = 4096
     temperature: float = 1.0
     timeout: int = 60
-    
+
     # Available models (updated to latest versions)
     MODELS = {
-        'opus-4.1': 'claude-opus-4-1-20250805',           # Latest Opus 4.1
-        'sonnet-3.5': 'claude-3-5-sonnet-20241022',       # Latest Sonnet 3.5
-        'haiku-3.5': 'claude-3-5-haiku-20241022',         # Latest Haiku 3.5
+        'sonnet-4.5': 'claude-sonnet-4-5-20250929',       # Latest Sonnet 4.5 (recommended)
+        'sonnet-3.5': 'claude-3-5-sonnet-20241022',       # Sonnet 3.5
+        'haiku-3.5': 'claude-3-5-haiku-20241022',         # Haiku 3.5 (fastest)
         # Legacy models
-        'opus-3': 'claude-3-opus-20240229',               # Older Opus
+        'opus-3': 'claude-3-opus-20240229',               # Opus 3
         'sonnet-3': 'claude-3-sonnet-20240229',           # Older Sonnet
         'haiku-3': 'claude-3-haiku-20240307'              # Older Haiku
     }

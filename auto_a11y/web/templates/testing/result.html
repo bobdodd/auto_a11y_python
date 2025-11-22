@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Test Result - {{ page.title if page else 'Unknown Page' }} - Auto A11y{% endblock %}
+{% block title %}{{ _('Test Result') }} - {{ page.title if page else _('Unknown Page') }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -15,18 +15,18 @@
                 <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{{ url_for('pages.view_page', page_id=page.id) }}">{{ page.title or 'Page' }}</a>
+                <a href="{{ url_for('pages.view_page', page_id=page.id) }}">{{ page.title or _('Page') }}</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">Test Result</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Test Result') }}</li>
         </ol>
     </nav>
     {% endif %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">Test Result</h1>
+            <h1 class="h2">{{ _('Test Result') }}</h1>
             <p class="text-muted">
-                Tested on {{ result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
+                {{ _('Tested on') }} {{ result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
                 {% if page %}
                 | <a href="{{ page.url }}" target="_blank">
                     {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
@@ -37,7 +37,7 @@
         <div>
             {% if page %}
             <a href="{{ url_for('pages.view_page', page_id=page.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Back to Page
+                <i class="bi bi-arrow-left"></i> {{ _('Back to Page') }}
             </a>
             {% endif %}
         </div>
@@ -48,7 +48,7 @@
         <div class="col-md-3">
             <div class="card border-danger h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-danger">Violations</h5>
+                    <h5 class="card-title text-danger">{{ _('Violations') }}</h5>
                     <p class="display-6 mb-0">{{ result.violation_count }}</p>
                 </div>
             </div>
@@ -56,7 +56,7 @@
         <div class="col-md-3">
             <div class="card border-warning h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-warning">Warnings</h5>
+                    <h5 class="card-title text-warning">{{ _('Warnings') }}</h5>
                     <p class="display-6 mb-0">{{ result.warning_count }}</p>
                 </div>
             </div>
@@ -64,7 +64,7 @@
         <div class="col-md-3">
             <div class="card border-success h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-success">Passed</h5>
+                    <h5 class="card-title text-success">{{ _('Passed') }}</h5>
                     <p class="display-6 mb-0">{{ result.pass_count }}</p>
                 </div>
             </div>
@@ -72,7 +72,7 @@
         <div class="col-md-3">
             <div class="card border-info h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-info">Duration</h5>
+                    <h5 class="card-title text-info">{{ _('Duration') }}</h5>
                     <p class="display-6 mb-0">{{ "%.2f"|format(result.duration_ms / 1000) }}s</p>
                 </div>
             </div>
@@ -85,12 +85,12 @@
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#violations-tab" role="tab">
-                        Violations ({{ result.violations|length if result.violations else 0 }})
+                        {{ _('Violations') }} ({{ result.violations|length if result.violations else 0 }})
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#metadata-tab" role="tab">
-                        Metadata
+                        {{ _('Metadata') }}
                     </a>
                 </li>
             </ul>
@@ -120,20 +120,20 @@
                                 <div class="accordion-body">
                                     <div class="row">
                                         <div class="col-md-8">
-                                            <p><strong>Help:</strong> {{ violation.help_text }}</p>
+                                            <p><strong>{{ _('Help:') }}</strong> {{ violation.help_text }}</p>
                                             {% if violation.help_url %}
-                                            <p><strong>Learn More:</strong> 
+                                            <p><strong>{{ _('Learn More:') }}</strong>
                                                 <a href="{{ violation.help_url }}" target="_blank">
                                                     {{ violation.help_url }} <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </p>
                                             {% endif %}
                                             {% if violation.selector %}
-                                            <p><strong>Selector:</strong> <code>{{ violation.selector }}</code></p>
+                                            <p><strong>{{ _('Selector:') }}</strong> <code>{{ violation.selector }}</code></p>
                                             {% endif %}
                                             {% if violation.html %}
                                             <div class="mt-3">
-                                                <strong>HTML:</strong>
+                                                <strong>{{ _('HTML:') }}</strong>
                                                 <pre class="bg-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                             </div>
                                             {% endif %}
@@ -141,27 +141,27 @@
                                         <div class="col-md-4">
                                             <div class="card bg-light">
                                                 <div class="card-body">
-                                                    <h6 class="card-title">Details</h6>
+                                                    <h6 class="card-title">{{ _('Details') }}</h6>
                                                     <dl class="row mb-0">
-                                                        <dt class="col-sm-5">Impact:</dt>
+                                                        <dt class="col-sm-5">{{ _('Impact:') }}</dt>
                                                         <dd class="col-sm-7">{{ violation.impact|title }}</dd>
-                                                        
-                                                        <dt class="col-sm-5">Rule:</dt>
+
+                                                        <dt class="col-sm-5">{{ _('Rule:') }}</dt>
                                                         <dd class="col-sm-7">{{ violation.rule_id }}</dd>
-                                                        
+
                                                         {% if violation.wcag_criteria %}
-                                                        <dt class="col-sm-5">WCAG:</dt>
+                                                        <dt class="col-sm-5">{{ _('WCAG:') }}</dt>
                                                         <dd class="col-sm-7">{{ violation.wcag_criteria|join(', ') }}</dd>
                                                         {% endif %}
 
                                                         {% if violation.metadata %}
                                                             {% if violation.metadata.breakpoint %}
-                                                            <dt class="col-sm-5">Breakpoint:</dt>
+                                                            <dt class="col-sm-5">{{ _('Breakpoint:') }}</dt>
                                                             <dd class="col-sm-7">{{ violation.metadata.breakpoint }}px</dd>
                                                             {% endif %}
 
                                                             {% if violation.metadata.pseudoclass %}
-                                                            <dt class="col-sm-5">Pseudoclass:</dt>
+                                                            <dt class="col-sm-5">{{ _('Pseudoclass:') }}</dt>
                                                             <dd class="col-sm-7"><code>{{ violation.metadata.pseudoclass }}</code></dd>
                                                             {% endif %}
                                                         {% endif %}
@@ -177,7 +177,7 @@
                     </div>
                     {% else %}
                     <div class="alert alert-success">
-                        <i class="bi bi-check-circle"></i> No violations found! The page passes all automated accessibility checks.
+                        <i class="bi bi-check-circle"></i> {{ _('No violations found! The page passes all automated accessibility checks.') }}
                     </div>
                     {% endif %}
                 </div>
@@ -187,54 +187,54 @@
                 <div class="tab-pane fade" id="metadata-tab" role="tabpanel">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6>Test Information</h6>
+                            <h6>{{ _('Test Information') }}</h6>
                             <dl class="row">
-                                <dt class="col-sm-4">Test ID:</dt>
+                                <dt class="col-sm-4">{{ _('Test ID:') }}</dt>
                                 <dd class="col-sm-8"><code>{{ result.id }}</code></dd>
-                                
-                                <dt class="col-sm-4">Test Date:</dt>
+
+                                <dt class="col-sm-4">{{ _('Test Date:') }}</dt>
                                 <dd class="col-sm-8">{{ result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}</dd>
-                                
-                                <dt class="col-sm-4">Duration:</dt>
-                                <dd class="col-sm-8">{{ "%.3f"|format(result.duration_ms / 1000) }} seconds</dd>
-                                
-                                <dt class="col-sm-4">Test Suite:</dt>
+
+                                <dt class="col-sm-4">{{ _('Duration:') }}</dt>
+                                <dd class="col-sm-8">{{ "%.3f"|format(result.duration_ms / 1000) }} {{ _('seconds') }}</dd>
+
+                                <dt class="col-sm-4">{{ _('Test Suite:') }}</dt>
                                 <dd class="col-sm-8">{{ result.test_suite or 'axe-core' }}</dd>
-                                
+
                                 {% if result.screenshot_path %}
-                                <dt class="col-sm-4">Screenshot:</dt>
+                                <dt class="col-sm-4">{{ _('Screenshot:') }}</dt>
                                 <dd class="col-sm-8">
                                     <a href="{{ url_for('serve_screenshot', filename=result.screenshot_path.replace('screenshots/', '')) }}" target="_blank">
-                                        View Screenshot <i class="bi bi-image"></i>
+                                        {{ _('View Screenshot') }} <i class="bi bi-image"></i>
                                     </a>
                                 </dd>
                                 {% endif %}
                             </dl>
                         </div>
                         <div class="col-md-6">
-                            <h6>Test Configuration</h6>
+                            <h6>{{ _('Test Configuration') }}</h6>
                             <dl class="row">
-                                <dt class="col-sm-4">AI Analysis:</dt>
+                                <dt class="col-sm-4">{{ _('AI Analysis:') }}</dt>
                                 <dd class="col-sm-8">
                                     {% if result.ai_analysis_results %}
-                                        <span class="badge bg-success">Enabled</span>
+                                        <span class="badge bg-success">{{ _('Enabled') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">Disabled</span>
+                                        <span class="badge bg-secondary">{{ _('Disabled') }}</span>
                                     {% endif %}
                                 </dd>
-                                
-                                <dt class="col-sm-4">Rules Run:</dt>
-                                <dd class="col-sm-8">{{ result.rules_run or 'Standard' }}</dd>
-                                
-                                <dt class="col-sm-4">Viewport:</dt>
+
+                                <dt class="col-sm-4">{{ _('Rules Run:') }}</dt>
+                                <dd class="col-sm-8">{{ result.rules_run or _('Standard') }}</dd>
+
+                                <dt class="col-sm-4">{{ _('Viewport:') }}</dt>
                                 <dd class="col-sm-8">{{ result.viewport_width or 1920 }} x {{ result.viewport_height or 1080 }}</dd>
                             </dl>
                         </div>
                     </div>
-                    
+
                     {% if result.metadata %}
                     <hr>
-                    <h6>Additional Metadata</h6>
+                    <h6>{{ _('Additional Metadata') }}</h6>
                     <pre class="bg-light p-3 rounded">{{ result.metadata|tojson(indent=2) }}</pre>
                     {% endif %}
                 </div>

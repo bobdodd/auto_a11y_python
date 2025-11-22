@@ -15,6 +15,7 @@ from .project_participants import project_participants_bp
 from .recordings import recordings_bp
 from .drupal_sync import drupal_sync_bp
 from .discovered_pages import discovered_pages_bp
+from .automated_tests import bp as automated_tests_bp
 
 __all__ = [
     'projects_bp',
@@ -29,5 +30,6 @@ __all__ = [
     'project_participants_bp',
     'recordings_bp',
     'drupal_sync_bp',
-    'discovered_pages_bp'
+    'discovered_pages_bp',
+    'automated_tests_bp'
 ]

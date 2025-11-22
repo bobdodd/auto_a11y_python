@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Edit {{ website.display_name }} - Auto A11y{% endblock %}
+{% block title %}{{ _('Edit') }} {{ website.display_name }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -9,58 +9,58 @@
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url_for('projects.list_projects') }}">Projects</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('projects.list_projects') }}">{{ _('Projects') }}</a></li>
                     <li class="breadcrumb-item"><a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a></li>
                     <li class="breadcrumb-item"><a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a></li>
-                    <li class="breadcrumb-item active">Edit</li>
+                    <li class="breadcrumb-item active">{{ _('Edit') }}</li>
                 </ol>
             </nav>
 
-            <h1 class="h2 mb-4">Edit Website</h1>
+            <h1 class="h2 mb-4">{{ _('Edit Website') }}</h1>
             
             <div class="card">
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('websites.edit_website', website_id=website.id) }}">
-                        <h5 class="card-title mb-3">Basic Information</h5>
+                        <h5 class="card-title mb-3">{{ _('Basic Information') }}</h5>
                         
                         <div class="mb-3">
-                            <label for="name" class="form-label">Website Name</label>
-                            <input type="text" class="form-control" id="name" name="name" 
-                                   value="{{ website.name or '' }}" placeholder="Optional display name">
+                            <label for="name" class="form-label">{{ _('Website Name') }}</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   value="{{ website.name or '' }}" placeholder="{{ _('Optional display name') }}">
                         </div>
                         
                         <div class="mb-3">
-                            <label for="url" class="form-label">Website URL *</label>
+                            <label for="url" class="form-label">{{ _('Website URL') }} *</label>
                             <input type="url" class="form-control" id="url" name="url" 
                                    value="{{ website.url }}" required>
                         </div>
                         
                         <hr class="my-4">
                         
-                        <h5 class="card-title mb-3">Scraping Configuration</h5>
+                        <h5 class="card-title mb-3">{{ _('Scraping Configuration') }}</h5>
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="max_pages" class="form-label">Max Pages</label>
-                                <input type="number" class="form-control" id="max_pages" name="max_pages" 
+                                <label for="max_pages" class="form-label">{{ _('Max Pages') }}</label>
+                                <input type="number" class="form-control" id="max_pages" name="max_pages"
                                        value="{{ website.scraping_config.max_pages }}" min="1" max="9999999">
-                                <div class="form-text">Maximum number of pages to discover (default: unlimited)</div>
+                                <div class="form-text">{{ _('Maximum number of pages to discover (default: unlimited)') }}</div>
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="max_depth" class="form-label">Max Depth</label>
-                                <input type="number" class="form-control" id="max_depth" name="max_depth" 
+                                <label for="max_depth" class="form-label">{{ _('Max Depth') }}</label>
+                                <input type="number" class="form-control" id="max_depth" name="max_depth"
                                        value="{{ website.scraping_config.max_depth }}" min="1" max="50">
-                                <div class="form-text">How many clicks away from the starting page (default: 10)</div>
+                                <div class="form-text">{{ _('How many clicks away from the starting page (default: 10)') }}</div>
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="request_delay" class="form-label">Request Delay (seconds)</label>
-                                <input type="number" class="form-control" id="request_delay" name="request_delay" 
+                                <label for="request_delay" class="form-label">{{ _('Request Delay (seconds)') }}</label>
+                                <input type="number" class="form-control" id="request_delay" name="request_delay"
                                        value="{{ website.scraping_config.request_delay }}" min="0" max="10" step="0.1">
-                                <div class="form-text">Delay between requests</div>
+                                <div class="form-text">{{ _('Delay between requests') }}</div>
                             </div>
                         </div>
                         
@@ -69,7 +69,7 @@
                                 <input class="form-check-input" type="checkbox" id="follow_external" 
                                        name="follow_external" {% if website.scraping_config.follow_external %}checked{% endif %}>
                                 <label class="form-check-label" for="follow_external">
-                                    Follow external links
+                                    {{ _('Follow external links') }}
                                 </label>
                             </div>
                             
@@ -77,7 +77,7 @@
                                 <input class="form-check-input" type="checkbox" id="include_subdomains" 
                                        name="include_subdomains" {% if website.scraping_config.include_subdomains %}checked{% endif %}>
                                 <label class="form-check-label" for="include_subdomains">
-                                    Include subdomains
+                                    {{ _('Include subdomains') }}
                                 </label>
                             </div>
                             
@@ -85,18 +85,18 @@
                                 <input class="form-check-input" type="checkbox" id="respect_robots" 
                                        name="respect_robots" {% if website.scraping_config.respect_robots %}checked{% endif %}>
                                 <label class="form-check-label" for="respect_robots">
-                                    Respect robots.txt
+                                    {{ _('Respect robots.txt') }}
                                 </label>
                             </div>
                         </div>
                         
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> Update Website
+                                <i class="bi bi-check-circle"></i> {{ _('Update Website') }}
                             </button>
-                            <a href="{{ url_for('websites.view_website', website_id=website.id) }}" 
+                            <a href="{{ url_for('websites.view_website', website_id=website.id) }}"
                                class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle"></i> Cancel
+                                <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
                             </a>
                         </div>
                     </form>

@@ -2,8 +2,9 @@
 Flask application factory
 """
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, session, g
 from flask_cors import CORS
+from flask_babel import Babel
 import logging
 
 from auto_a11y.core import Database
@@ -20,7 +21,8 @@ from auto_a11y.web.routes import (
     project_participants_bp,
     recordings_bp,
     drupal_sync_bp,
-    discovered_pages_bp
+    discovered_pages_bp,
+    automated_tests_bp
 )
 
 logger = logging.getLogger(__name__)
@@ -46,7 +48,39 @@ def create_app(config):
     
     # Enable CORS for API routes
     CORS(app, resources={r"/api/*": {"origins": "*"}})
-    
+
+    # Configure Flask-Babel for internationalization
+    import os
+    app.config['BABEL_DEFAULT_LOCALE'] = 'en'
+    app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'fr']
+    # Use absolute path to translations directory
+    translations_dir = os.path.join(os.path.dirname(__file__), 'translations')
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = translations_dir
+
+    logger.info(f"Translations directory: {translations_dir}")
+    logger.info(f"Translations directory exists: {os.path.exists(translations_dir)}")
+    if os.path.exists(translations_dir):
+        logger.info(f"Contents: {os.listdir(translations_dir)}")
+
+    def get_locale():
+        """Determine the best locale to use for the request"""
+        # Check if user explicitly set language
+        if 'language' in session:
+            locale = session['language']
+            logger.debug(f"Locale from session: {locale}")
+            return locale
+        # Otherwise, try to match browser language preferences
+        locale = request.accept_languages.best_match(['en', 'fr']) or 'en'
+        logger.debug(f"Locale from browser: {locale}")
+        return locale
+
+    babel = Babel(app, locale_selector=get_locale)
+
+    # Make get_locale available to all templates
+    @app.context_processor
+    def inject_locale():
+        return dict(get_locale=get_locale)
+
     # Initialize database connection
     app.db = Database(config.MONGODB_URI, config.DATABASE_NAME)
     
@@ -64,6 +98,14 @@ def create_app(config):
     from auto_a11y.core.task_runner import task_runner
     task_runner.start()
     
+    # Language switching route
+    @app.route('/set-language/<language>')
+    def set_language(language):
+        """Set the user's preferred language"""
+        if language in ['en', 'fr']:
+            session['language'] = language
+        return jsonify({'status': 'success', 'language': language})
+
     # Register blueprints
     app.register_blueprint(projects_bp, url_prefix='/projects')
     app.register_blueprint(websites_bp, url_prefix='/websites')
@@ -78,6 +120,7 @@ def create_app(config):
     app.register_blueprint(recordings_bp, url_prefix='/recordings')
     app.register_blueprint(drupal_sync_bp, url_prefix='/drupal')
     app.register_blueprint(discovered_pages_bp, url_prefix='')
+    app.register_blueprint(automated_tests_bp, url_prefix='/automated_tests')
 
     # Custom Jinja filters
     @app.template_filter('error_code_only')

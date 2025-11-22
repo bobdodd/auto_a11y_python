@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-11-21 13:33-0500\n"
+"POT-Creation-Date: 2025-11-22 17:25-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,34 +17,305 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: auto_a11y/web/templates/base.html:6
-#: auto_a11y/web/templates/projects/view.html:3
-msgid "Auto A11y"
+#: auto_a11y/web/templates/404.html:3 auto_a11y/web/templates/404.html:10
+msgid "Page Not Found"
 msgstr ""
 
-#: auto_a11y/web/templates/base.html:31
+#: auto_a11y/web/templates/404.html:11
+msgid "The page you're looking for doesn't exist."
+msgstr ""
+
+#: auto_a11y/web/templates/404.html:13 auto_a11y/web/templates/500.html:13
+msgid "Go Home"
+msgstr ""
+
+#: auto_a11y/web/templates/500.html:3
+msgid "Server Error"
+msgstr ""
+
+#: auto_a11y/web/templates/500.html:10
+msgid "Internal Server Error"
+msgstr ""
+
+#: auto_a11y/web/templates/500.html:11
+msgid "Something went wrong on our end."
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:3
+msgid "About - Auto A11y"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:8 auto_a11y/web/templates/about.html:16
+#: auto_a11y/web/templates/help.html:77 auto_a11y/web/templates/help.html:435
+msgid "About Auto A11y"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:19 auto_a11y/web/templates/help.html:439
+msgid ""
+"Auto A11y is an automated web accessibility testing tool designed to help"
+" developers and testers identify and fix accessibility issues in web "
+"applications."
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:21 auto_a11y/web/templates/help.html:441
+msgid "Features"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:23 auto_a11y/web/templates/help.html:443
+msgid "Automated WCAG 2.2 compliance testing"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:24 auto_a11y/web/templates/help.html:444
+msgid "Lived experience testing with real users"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:25 auto_a11y/web/templates/help.html:445
+msgid "Manual accessibility audits and recordings"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:26 auto_a11y/web/templates/help.html:446
+msgid "Comprehensive reporting and issue tracking"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:27 auto_a11y/web/templates/help.html:447
+msgid "Project and test user management"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:35 auto_a11y/web/templates/help.html:454
+msgid "WCAG Data Attribution"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:38 auto_a11y/web/templates/help.html:457
+msgid ""
+"This application uses official WCAG (Web Content Accessibility "
+"Guidelines) data from the World Wide Web Consortium (W3C)."
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:40 auto_a11y/web/templates/help.html:459
+msgid "Source"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:41 auto_a11y/web/templates/help.html:460
+msgid "The WCAG Success Criteria data used in this application is sourced from:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:44 auto_a11y/web/templates/help.html:463
+msgid "Web Content Accessibility Guidelines (WCAG) 2.2"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:50 auto_a11y/web/templates/help.html:469
+msgid "Techniques for WCAG 2.2"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:56 auto_a11y/web/templates/help.html:475
+msgid "WCAG 2.2 JSON Data"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:64 auto_a11y/web/templates/help.html:483
+msgid "Important Notice"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:65 auto_a11y/web/templates/help.html:484
+msgid ""
+"The WCAG content is used with attribution as permitted by W3C. The "
+"content has not been modified. All additional content, analysis, and "
+"features provided by Auto A11y are clearly distinguished from the "
+"original W3C WCAG content."
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:68 auto_a11y/web/templates/help.html:487
+msgid "Copyright"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:70
+msgid "Copyright © 2008-2023 World Wide Web Consortium."
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:72 auto_a11y/web/templates/help.html:491
+msgid "W3C Document License"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:73 auto_a11y/web/templates/help.html:492
+msgid "applies to the WCAG content."
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:81 auto_a11y/web/templates/help.html:495
+msgid "Additional Resources"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:84
+msgid "W3C Web Accessibility Initiative (WAI)"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:88 auto_a11y/web/templates/help.html:499
+msgid "W3C Web Accessibility Initiative"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:93 auto_a11y/web/templates/help.html:504
+msgid "How to Meet WCAG (Quick Reference)"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:98 auto_a11y/web/templates/help.html:509
+msgid "Understanding WCAG 2.2"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:103 auto_a11y/web/templates/help.html:514
+msgid "Evaluating Web Accessibility Overview"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:116
+msgid "Quick Info"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:119
+msgid "Version Information"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:121
+msgid "WCAG Version:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:122
+#: auto_a11y/web/templates/website_users/view.html:82
+msgid "Last Updated:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:122
+msgid "October 2023"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:127 auto_a11y/web/templates/help.html:216
+msgid "Conformance Levels"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:128
+msgid "Auto A11y tests against all three WCAG conformance levels:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:130
+msgid "Level A:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:130
+msgid "Minimum level of conformance"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:131
+#: auto_a11y/web/templates/projects/create.html:155
+#: auto_a11y/web/templates/projects/edit.html:96
+msgid "Level AA:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:131
+msgid "Standard level (most common target)"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:132
+#: auto_a11y/web/templates/projects/create.html:156
+#: auto_a11y/web/templates/projects/edit.html:97
+msgid "Level AAA:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:132
+msgid "Highest level of conformance"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:137
+msgid "Testing Approaches"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:138
+msgid "Auto A11y supports multiple testing approaches:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:140
+msgid "Automated Testing:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:140
+msgid "Using axe-core engine"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:141
+msgid "Manual Audits:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:141
+msgid "Human expert evaluation"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:142
+msgid "Lived Experience:"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:142
+msgid "Testing by people with disabilities"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:149
+msgid "View Help"
+msgstr ""
+
+#: auto_a11y/web/templates/about.html:152 auto_a11y/web/templates/base.html:31
+#: auto_a11y/web/templates/dashboard.html:3
+#: auto_a11y/web/templates/dashboard.html:7
 msgid "Dashboard"
 msgstr ""
 
+#: auto_a11y/web/templates/base.html:6 auto_a11y/web/templates/base.html:126
+#: auto_a11y/web/templates/index.html:3 auto_a11y/web/templates/index.html:11
+#: auto_a11y/web/templates/pages/view.html:6
+#: auto_a11y/web/templates/project_users/create.html:3
+#: auto_a11y/web/templates/project_users/list.html:3
+#: auto_a11y/web/templates/projects/create.html:3
+#: auto_a11y/web/templates/projects/edit.html:3
+#: auto_a11y/web/templates/projects/list.html:3
+#: auto_a11y/web/templates/projects/view.html:3
+#: auto_a11y/web/templates/scripts/list.html:3
+msgid "Auto A11y"
+msgstr ""
+
 #: auto_a11y/web/templates/base.html:36
+#: auto_a11y/web/templates/dashboard.html:17
+#: auto_a11y/web/templates/projects/list.html:3
+#: auto_a11y/web/templates/projects/list.html:8
+#: auto_a11y/web/templates/websites/edit.html:12
+#: auto_a11y/web/templates/websites/view.html:10
 msgid "Projects"
 msgstr ""
 
 #: auto_a11y/web/templates/base.html:41
+#: auto_a11y/web/templates/pages/edit.html:82
+#: auto_a11y/web/templates/pages/view.html:132
+#: auto_a11y/web/templates/pages/view.html:3122
 #: auto_a11y/web/templates/projects/view.html:558
+#: auto_a11y/web/templates/websites/view.html:1139
+#: auto_a11y/web/templates/websites/view.html:1496
 msgid "Testing"
 msgstr ""
 
 #: auto_a11y/web/templates/base.html:46
 #: auto_a11y/web/templates/projects/view.html:255
+#: auto_a11y/web/templates/recordings/detail.html:3
+#: auto_a11y/web/templates/recordings/detail.html:12
+#: auto_a11y/web/templates/recordings/list.html:3
 msgid "Recordings"
 msgstr ""
 
 #: auto_a11y/web/templates/base.html:51
+#: auto_a11y/web/templates/websites/view.html:129
 msgid "Reports"
 msgstr ""
 
 #: auto_a11y/web/templates/base.html:67
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:94
+#: auto_a11y/web/templates/project_participants/create_tester.html:106
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:98
+#: auto_a11y/web/templates/project_participants/edit_tester.html:110
+#: auto_a11y/web/templates/project_users/create.html:197
+#: auto_a11y/web/templates/project_users/edit.html:246
+#: auto_a11y/web/templates/website_users/create.html:200
+#: auto_a11y/web/templates/website_users/edit.html:249
 msgid "Help"
 msgstr ""
 
@@ -60,12 +331,3552 @@ msgstr ""
 msgid "Fixture Status"
 msgstr ""
 
+#: auto_a11y/web/templates/base.html:126
+msgid "Canadian National Institute for the Blind"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:30
+#: auto_a11y/web/templates/websites/view.html:158
+msgid "Total Pages"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:43
+msgid "Tested Pages"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:56
+#: auto_a11y/web/templates/recordings/detail.html:240
+msgid "Total Issues"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:73
+#: auto_a11y/web/templates/pages/view.html:279
+#: auto_a11y/web/templates/pages/view.html:555
+#: auto_a11y/web/templates/pages/view.html:3029
+#: auto_a11y/web/templates/testing/dashboard.html:83
+msgid "Errors"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:86
+#: auto_a11y/web/templates/pages/view.html:288
+#: auto_a11y/web/templates/pages/view.html:1673
+#: auto_a11y/web/templates/pages/view.html:3030
+#: auto_a11y/web/templates/testing/dashboard.html:84
+#: auto_a11y/web/templates/testing/result.html:59
+#: auto_a11y/web/templates/websites/view.html:182
+#: auto_a11y/web/templates/websites/view.html:348
+msgid "Warnings"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:99
+#: auto_a11y/web/templates/pages/view.html:2191
+msgid "Info Notes"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:112
+#: auto_a11y/web/templates/pages/view.html:306
+#: auto_a11y/web/templates/pages/view.html:3032
+#: auto_a11y/web/templates/testing/dashboard.html:86
+msgid "Discovery"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:127
+msgid "Quick Actions"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:132
+#: auto_a11y/web/templates/index.html:20
+#: auto_a11y/web/templates/projects/list.html:10
+msgid "New Project"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:135
+msgid "Run Tests"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:138
+msgid "Generate Report"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:151
+msgid "Test Coverage"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:157
+#: auto_a11y/web/templates/pages/edit.html:84
+#: auto_a11y/web/templates/pages/view.html:135
+#: auto_a11y/web/templates/pages/view.html:438
+#: auto_a11y/web/templates/pages/view.html:3123
+#: auto_a11y/web/templates/projects/view.html:63
+#: auto_a11y/web/templates/websites/view.html:166
+#: auto_a11y/web/templates/websites/view.html:1516
+msgid "Tested"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:161
+#: auto_a11y/web/templates/websites/view.html:287
+msgid "of"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:161
+msgid "pages tested"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:169
+msgid "System Status"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:173
+msgid "Database"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:174
+msgid "Connected"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:177
+msgid "Browser Engine"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:178
+#: auto_a11y/web/templates/projects/create.html:578
+#: auto_a11y/web/templates/projects/create.html:777
+msgid "Ready"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:181
+msgid "AI Analysis"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:183
+#: auto_a11y/web/templates/project_users/create.html:87
+#: auto_a11y/web/templates/project_users/edit.html:92
+#: auto_a11y/web/templates/project_users/list.html:96
+#: auto_a11y/web/templates/scripts/list.html:112
+#: auto_a11y/web/templates/scripts/list.html:208
+#: auto_a11y/web/templates/scripts/view.html:58
+#: auto_a11y/web/templates/testing/result.html:220
+#: auto_a11y/web/templates/website_users/create.html:90
+#: auto_a11y/web/templates/website_users/edit.html:95
+#: auto_a11y/web/templates/website_users/list.html:99
+#: auto_a11y/web/templates/website_users/view.html:30
+msgid "Enabled"
+msgstr ""
+
+#: auto_a11y/web/templates/dashboard.html:183
+#: auto_a11y/web/templates/project_users/list.html:100
+#: auto_a11y/web/templates/scripts/list.html:116
+#: auto_a11y/web/templates/scripts/list.html:210
+#: auto_a11y/web/templates/scripts/view.html:62
+#: auto_a11y/web/templates/testing/result.html:222
+#: auto_a11y/web/templates/website_users/list.html:103
+#: auto_a11y/web/templates/website_users/view.html:34
+msgid "Disabled"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:3
+msgid "Help & Documentation - Auto A11y"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:69
+msgid "Documentation"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:71
+msgid "Understanding Scores"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:72 auto_a11y/web/templates/help.html:212
+msgid "WCAG Standards"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:73
+msgid "Impact Levels"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:74 auto_a11y/web/templates/help.html:319
+msgid "Testing Process"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:75
+msgid "Reports & Exports"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:76
+msgid "FAQ"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:84
+msgid "Help & Documentation"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:88
+msgid "Understanding Your Scores"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:91
+msgid "Automated vs Manual Testing Scores"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:93
+msgid "Auto A11y provides two types of scores based on your testing approach:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:94 auto_a11y/web/templates/help.html:104
+msgid "Automated Testing Scores"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:94
+msgid "(from automated scans) and"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:95 auto_a11y/web/templates/help.html:120
+#: auto_a11y/web/templates/recordings/detail.html:289
+msgid "Manual Testing Scores"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:95
+msgid "(from expert audits and lived experience testing)."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:96
+msgid ""
+"Each uses similar scoring models but are calculated independently based "
+"on their respective test results."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:107
+msgid ""
+"Generated from automated scanning tools that check pages for technical "
+"accessibility issues."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:109
+msgid "Fast, consistent, repeatable"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:110
+msgid "Checks code-level issues"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:111
+#, python-format
+msgid "Can catch 30-40%% of accessibility issues"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:112
+msgid "Available for tested pages"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:123
+msgid ""
+"Generated from human expert audits and lived experience testing with real"
+" users."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:125
+msgid "Subjective, context-aware testing"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:126
+msgid "Tests user experience and workflows"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:127
+msgid "Catches issues automation misses"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:128
+msgid "Available for manual recordings"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:136
+msgid "Why Do I Have Two Different Scores?"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:137
+msgid "Within each testing type (automated or manual), you'll see two scores:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:140
+msgid "📊 Accessibility Score"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:141
+msgid "Measures the percentage of individual checks/issues that passed"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:143
+msgid "Shows progress toward compliance"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:144
+msgid "Counts partial successes"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:145
+msgid "Good for tracking improvements"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:149
+msgid "✅ WCAG Compliance Score"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:150
+msgid "Measures the percentage of WCAG Success Criteria passed"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:152
+msgid "Shows true WCAG conformance"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:153
+msgid "Based on applicable Success Criteria"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:154
+msgid "Used for legal compliance"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:160
+msgid "Real Example:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:163
+msgid "Test Results:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:164
+msgid "10 form fields tested"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:165
+msgid "9 have proper labels ✓"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:166
+msgid "1 missing label ✗"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:169
+msgid "Accessibility Score:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:170
+#, python-format
+msgid "90%% (9/10 passed)"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:171
+msgid "Good progress!"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:174
+msgid "Compliance Score:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:175
+#, python-format
+msgid "0%% (test has violations)"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:176 auto_a11y/web/templates/help.html:204
+msgid "Not compliant"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:184
+msgid "Accessibility Score Formula"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:185
+msgid "(Passed Checks / Applicable Checks) × 100"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:186
+msgid ""
+"This score helps you track progress. Each successful check counts toward "
+"your score, even if the overall test fails."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:188
+#, python-format
+msgid "90-100%%:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:188
+msgid "Excellent - Minor issues only"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:189
+#, python-format
+msgid "70-89%%:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:189
+msgid "Good - Some barriers remain"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:190
+#, python-format
+msgid "50-69%%:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:190
+msgid "Fair - Significant issues"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:191
+#, python-format
+msgid "Below 50%%:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:191
+msgid "Poor - Major accessibility problems"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:198
+msgid "Compliance Score Formula"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:199
+msgid "(Tests with Zero Violations / Total Tests) × 100"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:200
+msgid ""
+"This score reflects true WCAG compliance. A test passes only if it has "
+"zero violations."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:202
+#, python-format
+msgid "100%%:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:202
+msgid "Fully compliant"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:203
+#, python-format
+msgid "90-99%%:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:203
+msgid "Nearly compliant"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:204
+#, python-format
+msgid "Below 90%%:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:219
+msgid "Level A"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:220
+msgid "Minimum"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:222
+msgid "Basic features"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:223
+msgid "Essential for any site"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:224
+msgid "Alt text, page titles"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:228
+msgid "Level AA"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:229
+msgid "Recommended"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:231
+msgid "Legal standard"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:232
+msgid "Removes major barriers"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:233
+msgid "4.5:1 contrast ratio"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:237
+msgid "Level AAA"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:238
+msgid "Enhanced"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:240
+msgid "Highest level"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:241
+msgid "Not always required"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:242
+msgid "7:1 contrast ratio"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:252
+msgid "Issue Impact Levels"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:258
+msgid "🔴 High Impact"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:259
+msgid "Completely blocks access for some users"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:261
+msgid "Missing alt text on images"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:262
+msgid "No keyboard navigation"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:263
+msgid "Missing form labels"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:265 auto_a11y/web/templates/help.html:280
+#: auto_a11y/web/templates/help.html:295 auto_a11y/web/templates/help.html:310
+msgid "Action:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:265
+msgid "Fix immediately"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:273
+msgid "🟡 Medium Impact"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:274
+msgid "Significantly degrades experience"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:276
+msgid "Poor color contrast"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:277
+msgid "Missing landmarks"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:278
+msgid "Unclear link text"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:280
+msgid "Fix soon"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:288
+msgid "🟢 Low Impact"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:289
+msgid "Minor inconvenience"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:291
+msgid "Redundant alt text"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:292
+msgid "Decorative issues"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:293
+msgid "Minor labeling issues"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:295
+msgid "Fix when convenient"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:303
+msgid "ℹ️ Info/Discovery"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:304
+msgid "Best practices and recommendations"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:306
+msgid "Optimization opportunities"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:307
+msgid "Manual review items"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:308
+msgid "Not counted in scoring"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:310
+msgid "Review for improvements"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:323
+msgid "Test Applicability"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:324
+msgid ""
+"Tests are marked \"Not Applicable\" when there are no relevant elements "
+"on the page."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:327
+#: auto_a11y/web/templates/pages/view.html:414
+#: auto_a11y/web/templates/scripts/create.html:119
+msgid "Example:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:327
+msgid ""
+"If a page has no images, the images test will be marked as not applicable"
+" and won't affect your score."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:330
+msgid "Benefits:"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:332
+msgid "More accurate scoring"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:333
+msgid "No penalties for missing elements"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:334
+msgid "Focus on actual issues"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:341
+msgid "Pass Tracking"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:342
+msgid ""
+"Our tests track both failures and successes to provide comprehensive "
+"feedback."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:347
+msgid "Test Component"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:348
+msgid "What It Tracks"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:353
+msgid "Elements Found"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:354
+msgid "Total elements that could be tested"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:357
+msgid "Elements Passed"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:358
+msgid "Elements meeting accessibility standards"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:361
+msgid "Elements Failed"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:362
+msgid "Elements with violations"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:365
+msgid "Checks Performed"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:366
+msgid "Individual accessibility criteria tested"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:376
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:382
+msgid "Why is my compliance score so much lower than my accessibility score?"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:387
+#, python-format
+msgid ""
+"The compliance score requires perfect passes (zero violations) for each "
+"test, while the accessibility score gives credit for partial passes. Even"
+" if 90%% of your checks pass, a single violation makes that test non-"
+"compliant."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:395
+msgid "What WCAG level should I aim for?"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:400
+msgid ""
+"Level AA is the recommended target and legal requirement in many "
+"jurisdictions. Level A is the absolute minimum, while Level AAA is "
+"typically only required for specific content or specialized applications."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:408
+msgid "How often should I run accessibility tests?"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:413
+msgid ""
+"Test after every significant change to your site. Set up automated "
+"testing in your CI/CD pipeline to catch issues early. Run comprehensive "
+"tests at least monthly for active sites."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:421
+msgid "What's the difference between automated and manual testing?"
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:426
+#, python-format
+msgid ""
+"Automated testing (like Auto A11y) can catch about 30-40%% of "
+"accessibility issues quickly and consistently. Manual testing is needed "
+"for subjective criteria like whether alt text is meaningful or if the "
+"reading order makes sense. Use both for comprehensive coverage."
+msgstr ""
+
+#: auto_a11y/web/templates/help.html:489
+msgid "Copyright (c) 2008-2023 World Wide Web Consortium."
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:3
+msgid "Home"
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:13
+msgid "Automated Accessibility Testing Platform"
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:15
+msgid ""
+"Comprehensive web accessibility testing combining browser automation, AI-"
+"powered analysis, and detailed reporting."
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:23
+msgid "View Projects"
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:34
+msgid "AI-Powered Analysis"
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:36
+msgid ""
+"Claude AI detects complex accessibility issues that require visual "
+"understanding"
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:45
+msgid "Browser Testing"
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:47
+msgid "Real browser testing with Puppeteer ensures accurate DOM-based results"
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:56
+msgid "WCAG Compliance"
+msgstr ""
+
+#: auto_a11y/web/templates/index.html:58
+msgid "Comprehensive testing against WCAG 2.1 Level A, AA, and AAA guidelines"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:3
+#: auto_a11y/web/templates/pages/edit.html:19
+#: auto_a11y/web/templates/pages/view.html:97
+#: auto_a11y/web/templates/project_participants/list.html:105
+#: auto_a11y/web/templates/project_participants/list.html:190
+#: auto_a11y/web/templates/project_users/edit.html:16
+#: auto_a11y/web/templates/project_users/list.html:128
+#: auto_a11y/web/templates/projects/edit.html:3
+#: auto_a11y/web/templates/projects/list.html:72
+#: auto_a11y/web/templates/projects/view.html:33
+#: auto_a11y/web/templates/recordings/detail.html:20
+#: auto_a11y/web/templates/scripts/list.html:127
+#: auto_a11y/web/templates/website_users/edit.html:19
+#: auto_a11y/web/templates/website_users/list.html:131
+#: auto_a11y/web/templates/websites/edit.html:3
+#: auto_a11y/web/templates/websites/edit.html:15
+#: auto_a11y/web/templates/websites/view.html:148
+msgid "Edit"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:17
+#: auto_a11y/web/templates/pages/view.html:65
+#: auto_a11y/web/templates/scripts/create.html:60
+#: auto_a11y/web/templates/scripts/create.html:63
+#: auto_a11y/web/templates/scripts/list.html:17
+#: auto_a11y/web/templates/scripts/view.html:18
+#: auto_a11y/web/templates/testing/dashboard.html:80
+#: auto_a11y/web/templates/testing/dashboard.html:97
+#: auto_a11y/web/templates/testing/result.html:18
+msgid "Page"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:23
+msgid "Edit Page"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:31
+msgid "Page Title"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:33
+msgid "Enter page title"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:37
+#: auto_a11y/web/templates/projects/view.html:95
+#: auto_a11y/web/templates/projects/view.html:171
+msgid "URL"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:40
+msgid "URL cannot be changed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:44
+#: auto_a11y/web/templates/pages/view.html:148
+#: auto_a11y/web/templates/websites/view.html:570
+msgid "Priority"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:46
+#: auto_a11y/web/templates/pages/view.html:151
+msgid "Critical"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:47
+#: auto_a11y/web/templates/pages/view.html:153
+#: auto_a11y/web/templates/recordings/list.html:96
+#: auto_a11y/web/templates/websites/view.html:573
+msgid "High"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:48
+#: auto_a11y/web/templates/pages/view.html:155
+#: auto_a11y/web/templates/websites/view.html:572
+msgid "Normal"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:49
+#: auto_a11y/web/templates/pages/view.html:157
+#: auto_a11y/web/templates/recordings/list.html:102
+#: auto_a11y/web/templates/websites/view.html:574
+msgid "Low"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:54
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:81
+#: auto_a11y/web/templates/project_participants/create_tester.html:93
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:85
+#: auto_a11y/web/templates/project_participants/edit_tester.html:97
+msgid "Notes"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:56
+msgid "Add any notes about this page"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:60
+#: auto_a11y/web/templates/project_users/edit.html:276
+#: auto_a11y/web/templates/website_users/edit.html:279
+msgid "Save Changes"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:63
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:135
+#: auto_a11y/web/templates/project_participants/create_tester.html:144
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:139
+#: auto_a11y/web/templates/project_participants/edit_tester.html:148
+#: auto_a11y/web/templates/project_users/create.html:242
+#: auto_a11y/web/templates/project_users/edit.html:279
+#: auto_a11y/web/templates/projects/create.html:377
+#: auto_a11y/web/templates/projects/edit.html:432
+#: auto_a11y/web/templates/projects/view.html:368
+#: auto_a11y/web/templates/projects/view.html:432
+#: auto_a11y/web/templates/projects/view.html:481
+#: auto_a11y/web/templates/projects/view.html:504
+#: auto_a11y/web/templates/projects/view.html:738
+#: auto_a11y/web/templates/recordings/detail.html:26
+#: auto_a11y/web/templates/scripts/create.html:292
+#: auto_a11y/web/templates/website_users/create.html:245
+#: auto_a11y/web/templates/website_users/edit.html:282
+#: auto_a11y/web/templates/websites/edit.html:99
+#: auto_a11y/web/templates/websites/view.html:544
+#: auto_a11y/web/templates/websites/view.html:579
+#: auto_a11y/web/templates/websites/view.html:635
+msgid "Cancel"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:73
+msgid "Page Information"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:77
+#: auto_a11y/web/templates/recordings/detail.html:608
+msgid "Status:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:80
+#: auto_a11y/web/templates/pages/view.html:123
+#: auto_a11y/web/templates/pages/view.html:3120
+msgid "Discovered"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:86
+#: auto_a11y/web/templates/pages/view.html:137
+#: auto_a11y/web/templates/pages/view.html:3124
+#: auto_a11y/web/templates/testing/dashboard.html:132
+#: auto_a11y/web/templates/websites/view.html:264
+msgid "Error"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:92
+msgid "Discovered:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:93
+#: auto_a11y/web/templates/websites/view.html:246
+msgid "Unknown"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:95
+msgid "Last Tested:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:96
+#: auto_a11y/web/templates/pages/view.html:170
+#: auto_a11y/web/templates/project_users/list.html:118
+#: auto_a11y/web/templates/projects/view.html:114
+#: auto_a11y/web/templates/website_users/list.html:121
+#: auto_a11y/web/templates/websites/view.html:410
+msgid "Never"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:98
+msgid "Violations:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/edit.html:103
+#: auto_a11y/web/templates/pages/view.html:543
+msgid "Warnings:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:71
+msgid "Untitled Page"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:81
+#: auto_a11y/web/templates/pages/view.html:3125
+#: auto_a11y/web/templates/websites/view.html:420
+msgid "Cancel Test"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:86
+msgid "Test as guest (no login)"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:93
+#: auto_a11y/web/templates/pages/view.html:3126
+#: auto_a11y/web/templates/testing/dashboard.html:59
+#: auto_a11y/web/templates/websites/view.html:425
+msgid "Run Test"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:100
+#: auto_a11y/web/templates/scripts/list.html:19
+#: auto_a11y/web/templates/scripts/view.html:21
+msgid "Scripts"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:110
+msgid "Test in Progress"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:110
+msgid "The page will automatically refresh when testing completes."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:120
+#: auto_a11y/web/templates/project_users/list.html:66
+#: auto_a11y/web/templates/projects/edit.html:69
+#: auto_a11y/web/templates/projects/view.html:174
+#: auto_a11y/web/templates/scripts/list.html:73
+#: auto_a11y/web/templates/scripts/list.html:179
+#: auto_a11y/web/templates/scripts/view.html:54
+#: auto_a11y/web/templates/testing/dashboard.html:87
+#: auto_a11y/web/templates/website_users/list.html:69
+#: auto_a11y/web/templates/websites/view.html:236
+#: auto_a11y/web/templates/websites/view.html:346
+msgid "Status"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:127
+#: auto_a11y/web/templates/pages/view.html:3121
+#: auto_a11y/web/templates/websites/view.html:1133
+msgid "Queued"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:168
+#: auto_a11y/web/templates/projects/view.html:97
+#: auto_a11y/web/templates/websites/view.html:349
+msgid "Last Tested"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:178
+msgid "Test Duration"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:183
+#: auto_a11y/web/templates/pages/view.html:250
+#: auto_a11y/web/templates/pages/view.html:399
+#: auto_a11y/web/templates/pages/view.html:467
+#: auto_a11y/web/templates/pages/view.html:502
+#: auto_a11y/web/templates/scripts/view.html:208
+#: auto_a11y/web/templates/scripts/view.html:212
+msgid "N/A"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:192
+#: auto_a11y/web/templates/pages/view.html:3079
+msgid "Page Screenshot"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:197
+#: auto_a11y/web/templates/websites/view.html:360
+msgid "Screenshot of"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:200
+#: auto_a11y/web/templates/pages/view.html:203
+msgid "No screenshot available"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:219
+msgid "Automated Accessibility Score"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:220
+msgid "Get help about accessibility score"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:228
+msgid "automated checks passed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:238
+msgid "Automated WCAG Compliance Score"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:239
+msgid "Get help about compliance score"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:248
+msgid "automated tests passed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:251
+msgid "No data available"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:267
+msgid "Accessibility Issues Found"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:269
+msgid ""
+"Number of unique issue types discovered. Each type may have multiple "
+"instances throughout the page."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:282
+#: auto_a11y/web/templates/pages/view.html:291
+#: auto_a11y/web/templates/pages/view.html:300
+#: auto_a11y/web/templates/pages/view.html:309
+msgid "types found"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:297
+#: auto_a11y/web/templates/pages/view.html:3031
+#: auto_a11y/web/templates/testing/dashboard.html:85
+msgid "Info"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:320
+msgid "Accessibility Checks Performance"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:322
+msgid ""
+"Total individual checks performed on all page elements. High pass rate is"
+" good but doesn't guarantee full compliance if critical issues exist."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:369
+msgid "Overall Pass Rate"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:369
+msgid "Get help about overall pass rate"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:377
+#: auto_a11y/web/templates/websites/view.html:1516
+msgid "passed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:382
+#: auto_a11y/web/templates/websites/view.html:1516
+msgid "failed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:390
+#: auto_a11y/web/templates/pages/view.html:439
+#: auto_a11y/web/templates/pages/view.html:3033
+#: auto_a11y/web/templates/recordings/detail.html:341
+#: auto_a11y/web/templates/testing/result.html:67
+msgid "Passed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:394
+#: auto_a11y/web/templates/pages/view.html:440
+#: auto_a11y/web/templates/project_users/edit.html:224
+#: auto_a11y/web/templates/projects/view.html:217
+#: auto_a11y/web/templates/projects/view.html:786
+#: auto_a11y/web/templates/recordings/detail.html:345
+#: auto_a11y/web/templates/website_users/edit.html:227
+#: auto_a11y/web/templates/websites/view.html:238
+msgid "Failed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:401
+msgid "tests"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:405
+msgid "Total Tested"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:412
+msgid "Understanding the Numbers"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:414
+msgid ""
+"95% pass rate (475/500 passed) might still mean critical issues exist. "
+"Those 25 failed checks could all be \"missing alt text\" affecting every "
+"image on the page."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:428
+msgid "Test Check Details"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:435
+#: auto_a11y/web/templates/projects/view.html:141
+msgid "Test"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:436
+msgid "Check"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:437
+msgid "WCAG"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:441
+msgid "Pass Rate"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:475
+msgid "Totals"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:484
+msgid "N/A checks"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:487
+msgid "skipped"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:518
+msgid "Latest Test Results"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:520
+#: auto_a11y/web/templates/testing/result.html:29
+msgid "Tested on"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:527
+msgid "Page States Tested"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:529
+msgid ""
+"This page was tested in multiple states. Select a state below to view its"
+" test results."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:531
+msgid "Page states"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:543
+msgid "Errors:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:613
+#: auto_a11y/web/templates/testing/result.html:159
+msgid "Breakpoint:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:613
+msgid "px width"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:629
+#: auto_a11y/web/templates/pages/view.html:972
+#: auto_a11y/web/templates/pages/view.html:1724
+#: auto_a11y/web/templates/pages/view.html:2233
+#: auto_a11y/web/templates/pages/view.html:2612
+msgid "Instance"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:639
+#: auto_a11y/web/templates/pages/view.html:982
+#: auto_a11y/web/templates/pages/view.html:3049
+#: auto_a11y/web/templates/projects/view.html:394
+#: auto_a11y/web/templates/websites/view.html:30
+#: auto_a11y/web/templates/websites/view.html:41
+#: auto_a11y/web/templates/websites/view.html:74
+#: auto_a11y/web/templates/websites/view.html:85
+#: auto_a11y/web/templates/websites/view.html:506
+#: auto_a11y/web/templates/websites/view.html:603
+#: auto_a11y/web/templates/websites/view.html:703
+#: auto_a11y/web/templates/websites/view.html:744
+msgid "Guest"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:662
+#: auto_a11y/web/templates/pages/view.html:1005
+#: auto_a11y/web/templates/pages/view.html:1741
+#: auto_a11y/web/templates/pages/view.html:2250
+msgid "About this issue:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:665
+#: auto_a11y/web/templates/pages/view.html:1008
+#: auto_a11y/web/templates/pages/view.html:1744
+#: auto_a11y/web/templates/pages/view.html:2253
+msgid "What the issue is:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:674
+#: auto_a11y/web/templates/pages/view.html:1017
+#: auto_a11y/web/templates/pages/view.html:1749
+#: auto_a11y/web/templates/pages/view.html:2258
+msgid "Why this is important:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:679
+#: auto_a11y/web/templates/pages/view.html:1022
+#: auto_a11y/web/templates/pages/view.html:1754
+#: auto_a11y/web/templates/pages/view.html:2263
+msgid "Who it affects:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:684
+#: auto_a11y/web/templates/pages/view.html:1027
+#: auto_a11y/web/templates/pages/view.html:1759
+#: auto_a11y/web/templates/pages/view.html:2268
+msgid "How to remediate:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:689
+#: auto_a11y/web/templates/pages/view.html:1032
+#: auto_a11y/web/templates/pages/view.html:1764
+#: auto_a11y/web/templates/pages/view.html:2273
+#: auto_a11y/web/templates/pages/view.html:2657
+msgid "Relevant test criteria:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:692
+#: auto_a11y/web/templates/pages/view.html:699
+#: auto_a11y/web/templates/pages/view.html:1035
+#: auto_a11y/web/templates/pages/view.html:1042
+#: auto_a11y/web/templates/pages/view.html:1384
+#: auto_a11y/web/templates/pages/view.html:1391
+#: auto_a11y/web/templates/pages/view.html:1767
+#: auto_a11y/web/templates/pages/view.html:1774
+#: auto_a11y/web/templates/pages/view.html:1983
+#: auto_a11y/web/templates/pages/view.html:1990
+#: auto_a11y/web/templates/pages/view.html:2276
+#: auto_a11y/web/templates/pages/view.html:2283
+#: auto_a11y/web/templates/pages/view.html:2428
+#: auto_a11y/web/templates/pages/view.html:2435
+#: auto_a11y/web/templates/pages/view.html:2660
+#: auto_a11y/web/templates/pages/view.html:2667
+#: auto_a11y/web/templates/pages/view.html:2832
+#: auto_a11y/web/templates/pages/view.html:2839
+msgid "WCAG Success Criteria:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:714
+#: auto_a11y/web/templates/pages/view.html:1057
+#: auto_a11y/web/templates/pages/view.html:1789
+#: auto_a11y/web/templates/testing/result.html:149
+msgid "Rule:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:715
+#: auto_a11y/web/templates/pages/view.html:1058
+#: auto_a11y/web/templates/pages/view.html:1790
+#: auto_a11y/web/templates/testing/result.html:123
+msgid "Help:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:717
+#: auto_a11y/web/templates/pages/view.html:1060
+#: auto_a11y/web/templates/pages/view.html:1792
+#: auto_a11y/web/templates/recordings/detail.html:589
+msgid "How to fix:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:724
+#: auto_a11y/web/templates/pages/view.html:1067
+#: auto_a11y/web/templates/pages/view.html:2298
+msgid "Touchpoint:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:724
+#: auto_a11y/web/templates/pages/view.html:1067
+#: auto_a11y/web/templates/pages/view.html:2298
+msgid "General"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:725
+#: auto_a11y/web/templates/pages/view.html:1068
+#: auto_a11y/web/templates/testing/result.html:146
+msgid "Impact:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:741
+#: auto_a11y/web/templates/pages/view.html:761
+#: auto_a11y/web/templates/pages/view.html:1084
+#: auto_a11y/web/templates/pages/view.html:1104
+#: auto_a11y/web/templates/pages/view.html:1816
+#: auto_a11y/web/templates/pages/view.html:1836
+msgid "More about"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:746
+#: auto_a11y/web/templates/pages/view.html:766
+#: auto_a11y/web/templates/pages/view.html:1089
+#: auto_a11y/web/templates/pages/view.html:1109
+#: auto_a11y/web/templates/pages/view.html:1821
+#: auto_a11y/web/templates/pages/view.html:1841
+msgid "Ways to meet"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:778
+#: auto_a11y/web/templates/pages/view.html:1121
+msgid "Location:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:779
+#: auto_a11y/web/templates/pages/view.html:1122
+msgid "Copy XPath to clipboard"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:787
+#: auto_a11y/web/templates/pages/view.html:1130
+msgid "CSS State:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:799
+#: auto_a11y/web/templates/pages/view.html:1142
+#: auto_a11y/web/templates/pages/view.html:1498
+#: auto_a11y/web/templates/pages/view.html:1860
+#: auto_a11y/web/templates/pages/view.html:2069
+#: auto_a11y/web/templates/pages/view.html:2313
+#: auto_a11y/web/templates/pages/view.html:2461
+#: auto_a11y/web/templates/pages/view.html:2699
+#: auto_a11y/web/templates/pages/view.html:2868
+msgid "Code Snippet"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:929
+#: auto_a11y/web/templates/pages/view.html:1272
+#: auto_a11y/web/templates/pages/view.html:1899
+#: auto_a11y/web/templates/pages/view.html:2352
+#: auto_a11y/web/templates/pages/view.html:2499
+#: auto_a11y/web/templates/pages/view.html:2754
+msgid "Page Thumbnail (at time of test)"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:932
+#: auto_a11y/web/templates/pages/view.html:1275
+#: auto_a11y/web/templates/pages/view.html:1902
+#: auto_a11y/web/templates/pages/view.html:2355
+#: auto_a11y/web/templates/pages/view.html:2502
+#: auto_a11y/web/templates/pages/view.html:2757
+msgid "Thumbnail of"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:936
+#: auto_a11y/web/templates/pages/view.html:1279
+#: auto_a11y/web/templates/pages/view.html:1906
+#: auto_a11y/web/templates/pages/view.html:2359
+#: auto_a11y/web/templates/pages/view.html:2506
+#: auto_a11y/web/templates/pages/view.html:2761
+msgid "Thumbnail not available"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:938
+#: auto_a11y/web/templates/pages/view.html:1281
+#: auto_a11y/web/templates/pages/view.html:1908
+#: auto_a11y/web/templates/pages/view.html:2361
+#: auto_a11y/web/templates/pages/view.html:2508
+#: auto_a11y/web/templates/pages/view.html:2763
+msgid "Click to view full size"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:943
+#: auto_a11y/web/templates/pages/view.html:1286
+msgid "AI Detection Note:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:944
+#: auto_a11y/web/templates/pages/view.html:1287
+msgid "This issue was detected through visual analysis."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:946
+#: auto_a11y/web/templates/pages/view.html:1289
+msgid "Confidence:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2158
+msgid "XPath:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2300
+msgid "This is an informational note."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2570
+msgid "Discovery Items"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2634
+msgid "About this discovery item:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2637
+msgid "What was found:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2642
+msgid "Why manual review is needed:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2647
+msgid "Who could be affected:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2652
+msgid "What to check manually:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2684
+msgid "This item requires manual inspection."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3002
+#: auto_a11y/web/templates/testing/result.html:208
+msgid "View Screenshot"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3012
+msgid ""
+"This page has not been tested yet. Click \"Run Test\" to start "
+"accessibility testing."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3020
+msgid "Test History"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3027
+#: auto_a11y/web/templates/projects/view.html:271
+#: auto_a11y/web/templates/websites/view.html:235
+msgid "Date"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3028
+msgid "User"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3034
+#: auto_a11y/web/templates/recordings/detail.html:94
+#: auto_a11y/web/templates/testing/dashboard.html:82
+#: auto_a11y/web/templates/testing/result.html:75
+#: auto_a11y/web/templates/websites/view.html:239
+msgid "Duration"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3035
+#: auto_a11y/web/templates/project_participants/list.html:67
+#: auto_a11y/web/templates/project_participants/list.html:154
+#: auto_a11y/web/templates/project_users/list.html:68
+#: auto_a11y/web/templates/projects/view.html:99
+#: auto_a11y/web/templates/projects/view.html:176
+#: auto_a11y/web/templates/projects/view.html:273
+#: auto_a11y/web/templates/scripts/list.html:74
+#: auto_a11y/web/templates/scripts/list.html:180
+#: auto_a11y/web/templates/scripts/view.html:183
+#: auto_a11y/web/templates/testing/dashboard.html:88
+#: auto_a11y/web/templates/website_users/list.html:71
+#: auto_a11y/web/templates/websites/view.html:350
+msgid "Actions"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3061
+#: auto_a11y/web/templates/project_users/list.html:124
+#: auto_a11y/web/templates/projects/list.html:68
+#: auto_a11y/web/templates/projects/view.html:133
+#: auto_a11y/web/templates/projects/view.html:302
+#: auto_a11y/web/templates/scripts/list.html:123
+#: auto_a11y/web/templates/scripts/list.html:216
+#: auto_a11y/web/templates/testing/dashboard.html:140
+#: auto_a11y/web/templates/website_users/list.html:127
+msgid "View"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3080
+#: auto_a11y/web/templates/pages/view.html:3089
+#: auto_a11y/web/templates/pages/view.html:3101
+#: auto_a11y/web/templates/projects/create.html:396
+#: auto_a11y/web/templates/projects/create.html:407
+#: auto_a11y/web/templates/projects/edit.html:451
+#: auto_a11y/web/templates/projects/edit.html:462
+#: auto_a11y/web/templates/recordings/detail.html:667
+#: auto_a11y/web/templates/recordings/detail.html:784
+#: auto_a11y/web/templates/websites/view.html:660
+msgid "Close"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3083
+#: auto_a11y/web/templates/websites/view.html:344
+#: auto_a11y/web/templates/websites/view.html:650
+#: auto_a11y/web/templates/websites/view.html:654
+#: auto_a11y/web/templates/websites/view.html:671
+msgid "Screenshot"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3087
+#: auto_a11y/web/templates/websites/view.html:658
+msgid "Open in New Tab"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3100
+msgid "Running Test"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3105
+#: auto_a11y/web/templates/projects/view.html:536
+#: auto_a11y/web/templates/projects/view.html:566
+#: auto_a11y/web/templates/websites/view.html:1623
+#: auto_a11y/web/templates/websites/view.html:1630
+msgid "Testing..."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3107
+msgid "Running accessibility tests on this page..."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3108
+msgid "This may take a moment."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3119
+#: auto_a11y/web/templates/testing/result.html:205
+msgid "Screenshot:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3127
+msgid "Test Complete"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3128
+msgid "Refreshing page to show results..."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3129
+#: auto_a11y/web/templates/websites/view.html:1266
+msgid "Test Cancelled"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3130
+msgid "The page test has been cancelled."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3131
+#: auto_a11y/web/templates/websites/view.html:1269
+#: auto_a11y/web/templates/websites/view.html:1276
+msgid "Failed to cancel test"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3132
+msgid "Failed to cancel test:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3133
+#: auto_a11y/web/templates/project_participants/list.html:235
+#: auto_a11y/web/templates/project_participants/list.html:257
+#: auto_a11y/web/templates/project_users/list.html:189
+#: auto_a11y/web/templates/project_users/list.html:211
+#: auto_a11y/web/templates/projects/view.html:719
+#: auto_a11y/web/templates/projects/view.html:797
+#: auto_a11y/web/templates/recordings/detail.html:912
+#: auto_a11y/web/templates/scripts/list.html:263
+#: auto_a11y/web/templates/scripts/list.html:286
+#: auto_a11y/web/templates/scripts/view.html:245
+#: auto_a11y/web/templates/scripts/view.html:265
+#: auto_a11y/web/templates/website_users/list.html:192
+#: auto_a11y/web/templates/website_users/list.html:214
+#: auto_a11y/web/templates/website_users/view.html:211
+#: auto_a11y/web/templates/websites/view.html:1269
+#: auto_a11y/web/templates/websites/view.html:1306
+#: auto_a11y/web/templates/websites/view.html:1347
+#: auto_a11y/web/templates/websites/view.html:1441
+#: auto_a11y/web/templates/websites/view.html:1556
+#: auto_a11y/web/templates/websites/view.html:1624
+msgid "Unknown error"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3134
+msgid "Test started"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3135
+msgid "The accessibility test is running. The page will refresh when complete."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3136
+msgid "Test failed:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3137
+#: auto_a11y/web/templates/websites/view.html:1220
+#: auto_a11y/web/templates/websites/view.html:1225
+msgid "Failed to start test"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3138
+msgid "Starting Test..."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3139
+#: auto_a11y/web/templates/projects/view.html:700
+#: auto_a11y/web/templates/websites/view.html:1321
+#: auto_a11y/web/templates/websites/view.html:1598
+msgid "Cancelling..."
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:3
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:21
+msgid "Add Test Supervisor"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:14
+#: auto_a11y/web/templates/project_participants/create_tester.html:14
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:14
+#: auto_a11y/web/templates/project_participants/edit_tester.html:14
+#: auto_a11y/web/templates/project_participants/list.html:3
+#: auto_a11y/web/templates/project_participants/list.html:13
+#: auto_a11y/web/templates/project_participants/list.html:20
+msgid "Testing Participants"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:16
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:132
+#: auto_a11y/web/templates/project_participants/list.html:140
+msgid "Add Supervisor"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:40
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:40
+msgid "Supervisor Information"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:44
+#: auto_a11y/web/templates/project_participants/create_tester.html:44
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:44
+#: auto_a11y/web/templates/project_participants/edit_tester.html:44
+#: auto_a11y/web/templates/project_participants/list.html:63
+#: auto_a11y/web/templates/project_participants/list.html:150
+#: auto_a11y/web/templates/project_users/list.html:62
+#: auto_a11y/web/templates/projects/view.html:94
+#: auto_a11y/web/templates/scripts/list.html:69
+#: auto_a11y/web/templates/scripts/list.html:176
+#: auto_a11y/web/templates/website_users/list.html:65
+msgid "Name"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:46
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:47
+msgid "e.g., Dr. Sarah Johnson"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:47
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:48
+msgid "Full name of the test supervisor"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:51
+#: auto_a11y/web/templates/project_participants/create_tester.html:51
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:52
+#: auto_a11y/web/templates/project_participants/edit_tester.html:52
+#: auto_a11y/web/templates/project_participants/list.html:66
+#: auto_a11y/web/templates/project_participants/list.html:153
+msgid "Email"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:53
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:55
+msgid "e.g., sarah.johnson@example.com"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:54
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:56
+msgid "Contact email for the supervisor (optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:58
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:60
+#: auto_a11y/web/templates/project_participants/list.html:151
+msgid "Role"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:60
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:63
+msgid "e.g., Accessibility Specialist, Research Lead"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:63
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:104
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:66
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:108
+msgid "Accessibility Specialist"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:64
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:105
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:67
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:109
+msgid "Research Lead"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:65
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:106
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:68
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:110
+msgid "UX Researcher"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:66
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:107
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:69
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:111
+msgid "Accessibility Consultant"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:67
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:108
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:70
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:112
+msgid "Project Manager"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:68
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:109
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:71
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:113
+msgid "Quality Assurance Lead"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:70
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:73
+msgid "Job title or role (optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:74
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:77
+#: auto_a11y/web/templates/project_participants/list.html:152
+msgid "Organization"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:76
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:80
+msgid "e.g., Accessibility Research Institute"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:77
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:81
+msgid "Organization or company name (optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:83
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:87
+msgid "Additional information about this supervisor..."
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:84
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:88
+msgid "Optional notes (e.g., areas of expertise, contact preferences)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:97
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:101
+msgid "About Test Supervisors"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:98
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:102
+msgid ""
+"Test supervisors are accessibility experts who oversee and coordinate "
+"lived experience testing sessions."
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:102
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:106
+msgid "Common Supervisor Roles"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:114
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:118
+msgid "Supervisor Responsibilities"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:115
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:119
+msgid "Test supervisors typically:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:117
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:121
+msgid "Coordinate testing sessions"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:118
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:122
+msgid "Ensure ethical testing practices"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:119
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:123
+msgid "Provide technical support"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:120
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:124
+msgid "Document findings"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:121
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:125
+msgid "Communicate with stakeholders"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:3
+#: auto_a11y/web/templates/project_participants/create_tester.html:21
+msgid "Add Lived Experience Tester"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:16
+#: auto_a11y/web/templates/project_participants/create_tester.html:141
+#: auto_a11y/web/templates/project_participants/list.html:53
+msgid "Add Tester"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:40
+#: auto_a11y/web/templates/project_participants/edit_tester.html:40
+msgid "Tester Information"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:46
+#: auto_a11y/web/templates/project_participants/edit_tester.html:47
+msgid "e.g., Jane Smith"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:47
+#: auto_a11y/web/templates/project_participants/edit_tester.html:48
+msgid "Full name of the lived experience tester"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:53
+#: auto_a11y/web/templates/project_participants/edit_tester.html:55
+msgid "e.g., jane.smith@example.com"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:54
+#: auto_a11y/web/templates/project_participants/edit_tester.html:56
+msgid "Contact email for the tester (optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:58
+#: auto_a11y/web/templates/project_participants/edit_tester.html:60
+#: auto_a11y/web/templates/project_participants/list.html:64
+msgid "Disability Type"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:60
+#: auto_a11y/web/templates/project_participants/edit_tester.html:63
+msgid "e.g., Blind, Low Vision, Deaf, Motor Disability"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:63
+#: auto_a11y/web/templates/project_participants/create_tester.html:116
+#: auto_a11y/web/templates/project_participants/edit_tester.html:66
+#: auto_a11y/web/templates/project_participants/edit_tester.html:120
+msgid "Blind"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:64
+#: auto_a11y/web/templates/project_participants/create_tester.html:117
+#: auto_a11y/web/templates/project_participants/edit_tester.html:67
+#: auto_a11y/web/templates/project_participants/edit_tester.html:121
+msgid "Low Vision"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:65
+#: auto_a11y/web/templates/project_participants/edit_tester.html:68
+msgid "Deaf"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:66
+#: auto_a11y/web/templates/project_participants/edit_tester.html:69
+msgid "Hard of Hearing"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:67
+#: auto_a11y/web/templates/project_participants/create_tester.html:119
+#: auto_a11y/web/templates/project_participants/edit_tester.html:70
+#: auto_a11y/web/templates/project_participants/edit_tester.html:123
+msgid "Motor Disability"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:68
+#: auto_a11y/web/templates/project_participants/create_tester.html:120
+#: auto_a11y/web/templates/project_participants/edit_tester.html:71
+#: auto_a11y/web/templates/project_participants/edit_tester.html:124
+msgid "Cognitive Disability"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:69
+#: auto_a11y/web/templates/project_participants/edit_tester.html:72
+msgid "Multiple Disabilities"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:71
+#: auto_a11y/web/templates/project_participants/edit_tester.html:74
+msgid "Type of disability (optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:75
+#: auto_a11y/web/templates/project_participants/edit_tester.html:78
+#: auto_a11y/web/templates/project_participants/list.html:65
+msgid "Assistive Technologies"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:77
+#: auto_a11y/web/templates/project_participants/edit_tester.html:81
+msgid "e.g., JAWS, ZoomText, Dragon NaturallySpeaking"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:89
+#: auto_a11y/web/templates/project_participants/edit_tester.html:93
+msgid "Comma-separated list of assistive technologies used"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:95
+#: auto_a11y/web/templates/project_participants/edit_tester.html:99
+msgid "Additional information about this tester..."
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:96
+#: auto_a11y/web/templates/project_participants/edit_tester.html:100
+msgid "Optional notes (e.g., availability, special requirements)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:109
+#: auto_a11y/web/templates/project_participants/edit_tester.html:113
+msgid "About Lived Experience Testers"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:110
+#: auto_a11y/web/templates/project_participants/edit_tester.html:114
+msgid ""
+"Lived experience testers are individuals with disabilities who test your "
+"products using assistive technologies."
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:114
+#: auto_a11y/web/templates/project_participants/edit_tester.html:118
+msgid "Common Disability Types"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:118
+#: auto_a11y/web/templates/project_participants/edit_tester.html:122
+msgid "Deaf / Hard of Hearing"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:125
+#: auto_a11y/web/templates/project_participants/edit_tester.html:129
+msgid "Common Assistive Technologies"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:127
+#: auto_a11y/web/templates/project_participants/edit_tester.html:131
+msgid "Screen Readers:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:128
+#: auto_a11y/web/templates/project_participants/edit_tester.html:132
+msgid "Magnification:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:128
+#: auto_a11y/web/templates/project_participants/edit_tester.html:132
+msgid "built-in magnifiers"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:129
+#: auto_a11y/web/templates/project_participants/edit_tester.html:133
+msgid "Voice Control:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/create_tester.html:130
+#: auto_a11y/web/templates/project_participants/edit_tester.html:134
+msgid "Alternative Input:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:3
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:16
+msgid "Edit Supervisor"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:21
+msgid "Edit Test Supervisor"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:136
+msgid "Update Supervisor"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/edit_tester.html:3
+#: auto_a11y/web/templates/project_participants/edit_tester.html:16
+msgid "Edit Tester"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/edit_tester.html:21
+msgid "Edit Lived Experience Tester"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/edit_tester.html:145
+msgid "Update Tester"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:22
+#, python-format
+msgid "Manage lived experience testers and test supervisors for %s"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:40
+msgid "Testing Participants:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:41
+msgid ""
+"These are the actual people involved in lived experience testing - the "
+"testers who have disabilities and use assistive technologies, and the "
+"supervisors who oversee the testing process. These participants are "
+"referenced in lived experience recordings."
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:49
+msgid "Lived Experience Testers"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:83
+#: auto_a11y/web/templates/project_participants/list.html:170
+#: auto_a11y/web/templates/project_participants/list.html:177
+msgid "Not specified"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:92
+msgid "None specified"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:99
+#: auto_a11y/web/templates/project_participants/list.html:184
+msgid "No email"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:109
+#: auto_a11y/web/templates/project_participants/list.html:194
+#: auto_a11y/web/templates/project_users/list.html:136
+#: auto_a11y/web/templates/projects/view.html:36
+#: auto_a11y/web/templates/recordings/detail.html:31
+#: auto_a11y/web/templates/scripts/list.html:135
+#: auto_a11y/web/templates/website_users/list.html:139
+msgid "Delete"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:122
+msgid "No lived experience testers yet"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:124
+msgid "Add Your First Tester"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:136
+msgid "Test Supervisors"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:207
+msgid "No test supervisors yet"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:209
+msgid "Add Your First Supervisor"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:222
+msgid "Are you sure you want to delete this tester? This action cannot be undone."
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:235
+#: auto_a11y/web/templates/project_participants/list.html:257
+#, python-format
+msgid "Error: %s"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:239
+#, python-format
+msgid "Error deleting tester: %s"
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:244
+msgid ""
+"Are you sure you want to delete this supervisor? This action cannot be "
+"undone."
+msgstr ""
+
+#: auto_a11y/web/templates/project_participants/list.html:261
+#, python-format
+msgid "Error deleting supervisor: %s"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:3
+#: auto_a11y/web/templates/project_users/create.html:21
+#: auto_a11y/web/templates/project_users/create.html:239
+#: auto_a11y/web/templates/project_users/list.html:26
+#: auto_a11y/web/templates/website_users/create.html:3
+#: auto_a11y/web/templates/website_users/create.html:24
+#: auto_a11y/web/templates/website_users/create.html:242
+#: auto_a11y/web/templates/website_users/list.html:29
+msgid "Create Test User"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:14
+#: auto_a11y/web/templates/project_users/edit.html:14
+#: auto_a11y/web/templates/project_users/list.html:3
+#: auto_a11y/web/templates/project_users/list.html:13
+#: auto_a11y/web/templates/project_users/list.html:20
+#: auto_a11y/web/templates/project_users/list.html:53
+#: auto_a11y/web/templates/projects/view.html:21
+#: auto_a11y/web/templates/website_users/create.html:17
+#: auto_a11y/web/templates/website_users/edit.html:17
+#: auto_a11y/web/templates/website_users/list.html:3
+#: auto_a11y/web/templates/website_users/list.html:16
+#: auto_a11y/web/templates/website_users/list.html:23
+#: auto_a11y/web/templates/website_users/list.html:56
+#: auto_a11y/web/templates/website_users/view.html:17
+#: auto_a11y/web/templates/websites/view.html:74
+#: auto_a11y/web/templates/websites/view.html:125
+msgid "Test Users"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:16
+#: auto_a11y/web/templates/website_users/create.html:19
+msgid "Create"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:41
+#: auto_a11y/web/templates/project_users/edit.html:41
+#: auto_a11y/web/templates/website_users/create.html:44
+#: auto_a11y/web/templates/website_users/edit.html:44
+#: auto_a11y/web/templates/website_users/view.html:50
+msgid "User Information"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:45
+#: auto_a11y/web/templates/project_users/edit.html:45
+#: auto_a11y/web/templates/website_users/create.html:48
+#: auto_a11y/web/templates/website_users/edit.html:48
+msgid "Display Name"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:47
+#: auto_a11y/web/templates/project_users/edit.html:48
+#: auto_a11y/web/templates/website_users/create.html:50
+#: auto_a11y/web/templates/website_users/edit.html:51
+msgid "e.g., Student User, John Doe"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:48
+#: auto_a11y/web/templates/project_users/edit.html:49
+#: auto_a11y/web/templates/website_users/create.html:51
+#: auto_a11y/web/templates/website_users/edit.html:52
+msgid "Friendly name for this test user (optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:52
+#: auto_a11y/web/templates/project_users/edit.html:53
+#: auto_a11y/web/templates/project_users/list.html:63
+#: auto_a11y/web/templates/website_users/create.html:55
+#: auto_a11y/web/templates/website_users/edit.html:56
+#: auto_a11y/web/templates/website_users/list.html:66
+msgid "Username"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:54
+#: auto_a11y/web/templates/project_users/edit.html:56
+#: auto_a11y/web/templates/website_users/create.html:57
+#: auto_a11y/web/templates/website_users/edit.html:59
+msgid "e.g., student123"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:55
+#: auto_a11y/web/templates/project_users/edit.html:57
+#: auto_a11y/web/templates/website_users/create.html:58
+#: auto_a11y/web/templates/website_users/edit.html:60
+msgid "Username for login"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:59
+#: auto_a11y/web/templates/project_users/edit.html:61
+#: auto_a11y/web/templates/website_users/create.html:62
+#: auto_a11y/web/templates/website_users/edit.html:64
+msgid "Password"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:61
+#: auto_a11y/web/templates/website_users/create.html:64
+msgid "Password for login (stored securely)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:65
+#: auto_a11y/web/templates/project_users/edit.html:68
+#: auto_a11y/web/templates/project_users/list.html:64
+#: auto_a11y/web/templates/website_users/create.html:68
+#: auto_a11y/web/templates/website_users/edit.html:71
+#: auto_a11y/web/templates/website_users/list.html:67
+msgid "Roles"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:67
+#: auto_a11y/web/templates/project_users/edit.html:71
+#: auto_a11y/web/templates/website_users/create.html:70
+#: auto_a11y/web/templates/website_users/edit.html:74
+msgid "e.g., student, premium, member"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:74
+#: auto_a11y/web/templates/project_users/edit.html:78
+#: auto_a11y/web/templates/website_users/create.html:77
+#: auto_a11y/web/templates/website_users/edit.html:81
+msgid "Comma-separated list of user roles for testing role-based content"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:78
+#: auto_a11y/web/templates/project_users/edit.html:82
+#: auto_a11y/web/templates/projects/create.html:98
+#: auto_a11y/web/templates/projects/edit.html:63
+#: auto_a11y/web/templates/recordings/detail.html:118
+#: auto_a11y/web/templates/scripts/create.html:99
+#: auto_a11y/web/templates/website_users/create.html:81
+#: auto_a11y/web/templates/website_users/edit.html:85
+msgid "Description"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:80
+#: auto_a11y/web/templates/project_users/edit.html:84
+#: auto_a11y/web/templates/website_users/create.html:83
+#: auto_a11y/web/templates/website_users/edit.html:87
+msgid "Notes about this user..."
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:81
+#: auto_a11y/web/templates/project_users/edit.html:85
+#: auto_a11y/web/templates/website_users/create.html:84
+#: auto_a11y/web/templates/website_users/edit.html:88
+msgid "Optional notes about this test user"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:87
+#: auto_a11y/web/templates/project_users/edit.html:92
+msgid "User is active and can be used for testing"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:96
+#: auto_a11y/web/templates/project_users/edit.html:101
+#: auto_a11y/web/templates/website_users/create.html:99
+#: auto_a11y/web/templates/website_users/edit.html:104
+#: auto_a11y/web/templates/website_users/view.html:93
+msgid "Login Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:100
+#: auto_a11y/web/templates/project_users/edit.html:105
+#: auto_a11y/web/templates/website_users/create.html:103
+#: auto_a11y/web/templates/website_users/edit.html:108
+msgid "Authentication Method"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:112
+#: auto_a11y/web/templates/project_users/edit.html:118
+#: auto_a11y/web/templates/website_users/create.html:115
+#: auto_a11y/web/templates/website_users/edit.html:121
+msgid "Login Page URL"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:115
+#: auto_a11y/web/templates/project_users/edit.html:122
+#: auto_a11y/web/templates/website_users/create.html:118
+#: auto_a11y/web/templates/website_users/edit.html:125
+msgid "Full URL of the login page"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:120
+#: auto_a11y/web/templates/project_users/edit.html:127
+#: auto_a11y/web/templates/website_users/create.html:123
+#: auto_a11y/web/templates/website_users/edit.html:130
+msgid "Username Field Selector"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:124
+#: auto_a11y/web/templates/project_users/edit.html:132
+#: auto_a11y/web/templates/website_users/create.html:127
+#: auto_a11y/web/templates/website_users/edit.html:135
+msgid "CSS selector for username input"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:128
+#: auto_a11y/web/templates/project_users/edit.html:136
+#: auto_a11y/web/templates/website_users/create.html:131
+#: auto_a11y/web/templates/website_users/edit.html:139
+msgid "Password Field Selector"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:132
+#: auto_a11y/web/templates/project_users/edit.html:141
+#: auto_a11y/web/templates/website_users/create.html:135
+#: auto_a11y/web/templates/website_users/edit.html:144
+msgid "CSS selector for password input"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:137
+#: auto_a11y/web/templates/project_users/edit.html:146
+#: auto_a11y/web/templates/website_users/create.html:140
+#: auto_a11y/web/templates/website_users/edit.html:149
+msgid "Submit Button Selector"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:141
+#: auto_a11y/web/templates/project_users/edit.html:151
+#: auto_a11y/web/templates/website_users/create.html:144
+#: auto_a11y/web/templates/website_users/edit.html:154
+msgid "CSS selector for login button"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:145
+#: auto_a11y/web/templates/project_users/edit.html:155
+#: auto_a11y/web/templates/website_users/create.html:148
+#: auto_a11y/web/templates/website_users/edit.html:158
+msgid "Success Indicator Selector"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:149
+#: auto_a11y/web/templates/project_users/edit.html:160
+#: auto_a11y/web/templates/website_users/create.html:152
+#: auto_a11y/web/templates/website_users/edit.html:163
+msgid "CSS selector that appears after successful login"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:153
+#: auto_a11y/web/templates/project_users/edit.html:164
+#: auto_a11y/web/templates/website_users/create.html:156
+#: auto_a11y/web/templates/website_users/edit.html:167
+msgid "Logout Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:157
+#: auto_a11y/web/templates/project_users/edit.html:168
+#: auto_a11y/web/templates/website_users/create.html:160
+#: auto_a11y/web/templates/website_users/edit.html:171
+msgid "Logout URL"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:161
+#: auto_a11y/web/templates/project_users/edit.html:173
+#: auto_a11y/web/templates/website_users/create.html:164
+#: auto_a11y/web/templates/website_users/edit.html:176
+msgid "URL to visit for logout (optional if using button)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:166
+#: auto_a11y/web/templates/project_users/edit.html:178
+#: auto_a11y/web/templates/website_users/create.html:169
+#: auto_a11y/web/templates/website_users/edit.html:181
+msgid "Logout Button Selector"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:170
+#: auto_a11y/web/templates/project_users/edit.html:183
+#: auto_a11y/web/templates/website_users/create.html:173
+#: auto_a11y/web/templates/website_users/edit.html:186
+msgid "CSS selector for logout button/link (optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:176
+#: auto_a11y/web/templates/project_users/edit.html:189
+#: auto_a11y/web/templates/website_users/create.html:179
+#: auto_a11y/web/templates/website_users/edit.html:192
+msgid "Logout Success Indicator Selector"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:180
+#: auto_a11y/web/templates/project_users/edit.html:194
+#: auto_a11y/web/templates/website_users/create.html:183
+#: auto_a11y/web/templates/website_users/edit.html:197
+msgid ""
+"CSS selector that appears after successful logout (e.g., login button "
+"visible again)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:184
+#: auto_a11y/web/templates/project_users/edit.html:198
+#: auto_a11y/web/templates/website_users/create.html:187
+#: auto_a11y/web/templates/website_users/edit.html:201
+msgid "Session Timeout (minutes)"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:187
+#: auto_a11y/web/templates/project_users/edit.html:203
+#: auto_a11y/web/templates/website_users/create.html:190
+#: auto_a11y/web/templates/website_users/edit.html:206
+msgid "How long the session stays valid"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:200
+#: auto_a11y/web/templates/project_users/edit.html:249
+#: auto_a11y/web/templates/website_users/create.html:203
+#: auto_a11y/web/templates/website_users/edit.html:252
+msgid "User Roles"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:201
+#: auto_a11y/web/templates/website_users/create.html:204
+msgid ""
+"Roles help you test content that varies based on user permissions. "
+"Examples:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:203
+#: auto_a11y/web/templates/website_users/create.html:206
+msgid "Student account"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:204
+#: auto_a11y/web/templates/website_users/create.html:207
+msgid "Teacher/instructor"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:205
+#: auto_a11y/web/templates/website_users/create.html:208
+msgid "Administrator"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:206
+#: auto_a11y/web/templates/website_users/create.html:209
+msgid "Paid member"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:207
+#: auto_a11y/web/templates/website_users/create.html:210
+msgid "Free tier user"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:212
+#: auto_a11y/web/templates/project_users/edit.html:254
+#: auto_a11y/web/templates/website_users/create.html:215
+#: auto_a11y/web/templates/website_users/edit.html:257
+msgid "CSS Selectors"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:213
+#: auto_a11y/web/templates/project_users/edit.html:255
+#: auto_a11y/web/templates/website_users/create.html:216
+#: auto_a11y/web/templates/website_users/edit.html:258
+msgid "Use browser DevTools to find selectors:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:215
+#: auto_a11y/web/templates/project_users/edit.html:257
+#: auto_a11y/web/templates/website_users/create.html:218
+#: auto_a11y/web/templates/website_users/edit.html:260
+msgid "Right-click the element"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:216
+#: auto_a11y/web/templates/project_users/edit.html:258
+#: auto_a11y/web/templates/website_users/create.html:219
+#: auto_a11y/web/templates/website_users/edit.html:261
+msgid "Select \"Inspect\""
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:217
+#: auto_a11y/web/templates/project_users/edit.html:259
+#: auto_a11y/web/templates/website_users/create.html:220
+#: auto_a11y/web/templates/website_users/edit.html:262
+msgid "Right-click in the HTML panel"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:218
+#: auto_a11y/web/templates/project_users/edit.html:260
+#: auto_a11y/web/templates/website_users/create.html:221
+#: auto_a11y/web/templates/website_users/edit.html:263
+msgid "Copy → Copy selector"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:223
+#: auto_a11y/web/templates/website_users/create.html:226
+msgid "Common Patterns"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:225
+#: auto_a11y/web/templates/website_users/create.html:228
+msgid "By ID:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:226
+#: auto_a11y/web/templates/website_users/create.html:229
+msgid "By name:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:227
+#: auto_a11y/web/templates/website_users/create.html:230
+msgid "By type:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/create.html:228
+#: auto_a11y/web/templates/website_users/create.html:231
+msgid "By class:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:3
+#: auto_a11y/web/templates/project_users/edit.html:21
+#: auto_a11y/web/templates/website_users/edit.html:3
+#: auto_a11y/web/templates/website_users/edit.html:24
+msgid "Edit Test User"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:63
+#: auto_a11y/web/templates/website_users/edit.html:66
+msgid "Leave blank to keep current password"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:64
+#: auto_a11y/web/templates/website_users/edit.html:67
+msgid "Only enter a password if you want to change it"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:212
+#: auto_a11y/web/templates/website_users/edit.html:215
+#: auto_a11y/web/templates/website_users/view.html:148
+msgid "Usage History"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:216
+#: auto_a11y/web/templates/website_users/edit.html:219
+#: auto_a11y/web/templates/website_users/view.html:152
+msgid "Last Used:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:219
+#: auto_a11y/web/templates/website_users/edit.html:222
+#: auto_a11y/web/templates/website_users/view.html:155
+msgid "Last Login Status:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:222
+#: auto_a11y/web/templates/website_users/edit.html:225
+msgid "Success"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:226
+#: auto_a11y/web/templates/website_users/edit.html:229
+msgid "Not attempted yet"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:231
+#: auto_a11y/web/templates/website_users/edit.html:234
+msgid "Last Error:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:250
+#: auto_a11y/web/templates/website_users/edit.html:253
+msgid "Roles help you test content that varies based on user permissions."
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:265
+#: auto_a11y/web/templates/website_users/edit.html:268
+msgid "Password Update"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/edit.html:266
+#: auto_a11y/web/templates/website_users/edit.html:269
+msgid "Leave the password field blank to keep the current password unchanged."
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:8
+#: auto_a11y/web/templates/recordings/detail.html:10
+#: auto_a11y/web/templates/scripts/view.html:8
+msgid "breadcrumb"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:22
+#: auto_a11y/web/templates/website_users/list.html:25
+#, python-format
+msgid "Manage authenticated test users for %s"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:45
+msgid "Project-Level Test Users:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:46
+msgid ""
+"Test users allow you to test pages that require login. These users are "
+"available across all websites in this project. Each user can have "
+"different roles (e.g., student, teacher, admin) to test role-based "
+"content accessibility."
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:65
+#: auto_a11y/web/templates/website_users/list.html:68
+msgid "Auth Method"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:67
+#: auto_a11y/web/templates/website_users/list.html:70
+msgid "Last Used"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:87
+#: auto_a11y/web/templates/website_users/list.html:90
+#: auto_a11y/web/templates/website_users/view.html:70
+msgid "No roles"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:106
+#: auto_a11y/web/templates/website_users/list.html:109
+#: auto_a11y/web/templates/website_users/view.html:164
+msgid "Login Failed"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:110
+#: auto_a11y/web/templates/website_users/list.html:113
+msgid "Login OK"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:132
+#: auto_a11y/web/templates/scripts/list.html:131
+#: auto_a11y/web/templates/scripts/view.html:191
+#: auto_a11y/web/templates/website_users/list.html:135
+msgid "Disable"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:132
+#: auto_a11y/web/templates/scripts/list.html:131
+#: auto_a11y/web/templates/scripts/view.html:191
+#: auto_a11y/web/templates/website_users/list.html:135
+msgid "Enable"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:152
+#: auto_a11y/web/templates/website_users/list.html:155
+msgid "User Roles in Use"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:165
+#: auto_a11y/web/templates/website_users/list.html:168
+msgid "No test users yet"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:167
+#: auto_a11y/web/templates/website_users/list.html:170
+msgid "Create Your First Test User"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:189
+#: auto_a11y/web/templates/project_users/list.html:211
+msgid "Error: "
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:193
+msgid "Error toggling user: "
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:198
+#: auto_a11y/web/templates/website_users/list.html:201
+#: auto_a11y/web/templates/website_users/view.html:198
+msgid ""
+"Are you sure you want to delete this test user? This action cannot be "
+"undone."
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/list.html:215
+msgid "Error deleting user: "
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:3
+#: auto_a11y/web/templates/projects/create.html:374
+msgid "Create Project"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:70
+msgid "Create New Project"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:76
+msgid "Debug Mode Active:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:76
+msgid "All tests are available regardless of fixture status."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:77
+#: auto_a11y/web/templates/projects/create.html:83
+msgid "View Fixture Status"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:82
+msgid "Test Availability:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:82
+msgid "Only tests that passed fixture validation are enabled."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:91
+#: auto_a11y/web/templates/projects/edit.html:57
+msgid "Project Name"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:94
+msgid "Choose a unique name for your project"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:101
+msgid "Optional description of the project goals"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:105
+msgid "Project Type"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:107
+#: auto_a11y/web/templates/scripts/create.html:63
+msgid "Website"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:108
+msgid "App"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:109
+msgid "Tangible Device"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:110
+msgid "Nav and Wayfinding"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:112
+msgid "Select the type of project you're testing"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:117
+msgid "App Identifier"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:119
+msgid "e.g., com.example.myapp or Bundle ID"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:120
+msgid "Optional: Package name (Android) or Bundle ID (iOS)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:124
+msgid "Device Model"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:126
+msgid "e.g., NCR SelfServ 84, Diebold ATM"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:127
+msgid "Optional: Manufacturer and model of the device"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:131
+msgid "Location"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:133
+msgid "e.g., Building A, Floor 2 or Downtown Campus"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:134
+msgid "Optional: Physical location of the navigation system"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:138
+#: auto_a11y/web/templates/projects/edit.html:79
+msgid "Drupal Audit (Optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:140
+#: auto_a11y/web/templates/projects/create.html:942
+#: auto_a11y/web/templates/projects/create.html:953
+#: auto_a11y/web/templates/projects/create.html:960
+#: auto_a11y/web/templates/projects/create.html:969
+#: auto_a11y/web/templates/projects/edit.html:81
+#: auto_a11y/web/templates/projects/edit.html:747
+msgid "Auto-match by project name"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:141
+#: auto_a11y/web/templates/projects/edit.html:82
+msgid "Loading audits..."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:144
+#: auto_a11y/web/templates/projects/edit.html:85
+msgid ""
+"Select the corresponding audit in Drupal for synchronization. Leave as "
+"\"Auto-match\" to use the project name."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:149
+#: auto_a11y/web/templates/projects/edit.html:90
+msgid "WCAG Compliance Level"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:151
+#: auto_a11y/web/templates/projects/edit.html:92
+msgid "Level AA (Recommended)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:152
+#: auto_a11y/web/templates/projects/edit.html:93
+msgid "Level AAA (Enhanced)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:155
+#: auto_a11y/web/templates/projects/edit.html:96
+msgid "Standard compliance (4.5:1 contrast for normal text, 3:1 for large text)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:156
+#: auto_a11y/web/templates/projects/edit.html:97
+msgid "Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:161
+#: auto_a11y/web/templates/projects/edit.html:102
+msgid "Page Load Strategy"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:163
+#: auto_a11y/web/templates/projects/edit.html:104
+msgid "Network Idle 2 (Default - Best for most sites)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:164
+#: auto_a11y/web/templates/projects/edit.html:105
+msgid "Network Idle 0 (Very thorough, slowest)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:165
+#: auto_a11y/web/templates/projects/edit.html:106
+msgid "DOM Content Loaded (Fast, for sites with heavy background activity)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:166
+#: auto_a11y/web/templates/projects/edit.html:107
+msgid "Load Event (Middle ground)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:169
+#: auto_a11y/web/templates/projects/edit.html:110
+msgid "Controls when testing begins after navigating to a page:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:170
+#: auto_a11y/web/templates/projects/edit.html:111
+msgid "Network Idle 2"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:170
+#: auto_a11y/web/templates/projects/edit.html:111
+msgid "Wait until network has ≤2 connections (best for dynamic sites)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:171
+#: auto_a11y/web/templates/projects/edit.html:112
+msgid "Network Idle 0"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:171
+#: auto_a11y/web/templates/projects/edit.html:112
+msgid "Wait until network is completely idle (very thorough but slow)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:172
+#: auto_a11y/web/templates/projects/edit.html:113
+msgid "DOM Content Loaded"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:172
+#: auto_a11y/web/templates/projects/edit.html:113
+msgid ""
+"Test as soon as DOM is ready (use for BBC News, sites with continuous "
+"ads/analytics)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:173
+#: auto_a11y/web/templates/projects/edit.html:114
+msgid "Load Event"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:173
+#: auto_a11y/web/templates/projects/edit.html:114
+msgid "Wait for load event (faster than network idle)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:178
+#: auto_a11y/web/templates/projects/edit.html:119
+msgid "Browser Display Mode"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:180
+#: auto_a11y/web/templates/projects/edit.html:121
+msgid "Headless (No visible browser)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:181
+#: auto_a11y/web/templates/projects/edit.html:122
+msgid "Visible Browser (Show Chrome window)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:184
+#: auto_a11y/web/templates/projects/edit.html:125
+msgid "Headless"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:184
+#: auto_a11y/web/templates/projects/edit.html:125
+msgid "Run browser invisibly (faster, less resource intensive)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:185
+#: auto_a11y/web/templates/projects/edit.html:126
+msgid "Visible Browser"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:185
+#: auto_a11y/web/templates/projects/edit.html:126
+msgid "Show the Chrome window (useful for debugging)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:193
+#: auto_a11y/web/templates/projects/edit.html:135
+msgid "Enable Stealth Mode (for Cloudflare-protected sites)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:197
+#: auto_a11y/web/templates/projects/edit.html:139
+msgid ""
+"Enables advanced bot detection bypass techniques. Use for sites protected"
+" by Cloudflare or similar services."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:198
+#: auto_a11y/web/templates/projects/create.html:322
+#: auto_a11y/web/templates/projects/edit.html:140
+#: auto_a11y/web/templates/projects/edit.html:277
+#: auto_a11y/web/templates/projects/edit.html:364
+msgid "Note:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:198
+#: auto_a11y/web/templates/projects/edit.html:140
+msgid ""
+"Stealth mode significantly slows down page discovery and testing (~5-15 "
+"seconds per page)."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:204
+#: auto_a11y/web/templates/projects/edit.html:287
+msgid "Touchpoint Tests Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:206
+#: auto_a11y/web/templates/projects/edit.html:289
+msgid ""
+"Configure which accessibility tests to run. Tests are organized by "
+"touchpoint (testing category)."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:211
+#: auto_a11y/web/templates/projects/edit.html:294
+msgid "Enable All"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:212
+#: auto_a11y/web/templates/projects/edit.html:295
+msgid "Disable All"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:213
+#: auto_a11y/web/templates/projects/edit.html:296
+msgid "Minimal"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:214
+#: auto_a11y/web/templates/projects/edit.html:297
+msgid "WCAG AA"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:313
+#: auto_a11y/web/templates/projects/edit.html:354
+msgid "AI-Assisted Testing"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:317
+#: auto_a11y/web/templates/projects/edit.html:359
+msgid "Enable AI-assisted accessibility testing"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:321
+#: auto_a11y/web/templates/projects/edit.html:363
+msgid ""
+"AI testing uses Claude to analyze screenshots and HTML for issues that "
+"automated tests might miss."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:322
+#: auto_a11y/web/templates/projects/edit.html:364
+msgid "AI testing incurs API costs based on usage."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:326
+#: auto_a11y/web/templates/projects/edit.html:368
+msgid "Select AI Tests to Run:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:331
+#: auto_a11y/web/templates/projects/edit.html:375
+msgid "Heading Analysis"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:331
+#: auto_a11y/web/templates/projects/edit.html:375
+msgid "Detects visual headings not properly marked up"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:337
+#: auto_a11y/web/templates/projects/edit.html:383
+msgid "Reading Order"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:337
+#: auto_a11y/web/templates/projects/edit.html:383
+msgid "Verifies logical reading sequence matches visual layout"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:343
+#: auto_a11y/web/templates/projects/edit.html:391
+msgid "Modal Dialogs"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:343
+#: auto_a11y/web/templates/projects/edit.html:391
+msgid "Analyzes popup and overlay accessibility"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:349
+#: auto_a11y/web/templates/projects/edit.html:399
+msgid "Language Detection"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:349
+#: auto_a11y/web/templates/projects/edit.html:399
+msgid "Identifies mixed languages and missing declarations"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:355
+#: auto_a11y/web/templates/projects/edit.html:407
+msgid "Animations"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:355
+#: auto_a11y/web/templates/projects/edit.html:407
+msgid "Detects potentially problematic motion"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:361
+#: auto_a11y/web/templates/projects/edit.html:415
+msgid "Interactive Elements"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:361
+#: auto_a11y/web/templates/projects/edit.html:415
+msgid "Analyzes buttons, links, and form controls"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:366
+#: auto_a11y/web/templates/projects/edit.html:420
+#: auto_a11y/web/templates/websites/view.html:58
+#: auto_a11y/web/templates/websites/view.html:102
+#: auto_a11y/web/templates/websites/view.html:523
+#: auto_a11y/web/templates/websites/view.html:620
+msgid "Select All"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:367
+#: auto_a11y/web/templates/projects/edit.html:421
+msgid "Deselect All"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:394
+#: auto_a11y/web/templates/projects/edit.html:449
+msgid "Test Details"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:401
+#: auto_a11y/web/templates/projects/create.html:517
+#: auto_a11y/web/templates/projects/create.html:720
+#: auto_a11y/web/templates/projects/edit.html:456
+#: auto_a11y/web/templates/projects/edit.html:611
+msgid "Loading..."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:403
+#: auto_a11y/web/templates/projects/create.html:519
+#: auto_a11y/web/templates/projects/edit.html:458
+#: auto_a11y/web/templates/projects/edit.html:613
+msgid "Loading test details..."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:548
+#: auto_a11y/web/templates/projects/create.html:747
+msgid "Production Ready"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:549
+#: auto_a11y/web/templates/projects/create.html:748
+msgid "Pending Review"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:569
+#: auto_a11y/web/templates/projects/create.html:768
+msgid "Documentation Status:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:571
+#: auto_a11y/web/templates/projects/create.html:770
+msgid "This test has production-ready documentation."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:572
+#: auto_a11y/web/templates/projects/create.html:771
+msgid "This test documentation is pending review and may be incomplete."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:578
+#: auto_a11y/web/templates/projects/create.html:777
+msgid "Mark as"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:578
+#: auto_a11y/web/templates/projects/create.html:777
+#: auto_a11y/web/templates/projects/view.html:219
+msgid "Pending"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:584
+#: auto_a11y/web/templates/projects/create.html:783
+msgid "What This Test Detects"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:590
+#: auto_a11y/web/templates/projects/create.html:789
+msgid "Why It Matters"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:597
+#: auto_a11y/web/templates/projects/create.html:796
+msgid "Who It Affects"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:604
+#: auto_a11y/web/templates/projects/create.html:803
+msgid "How to Fix"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:611
+#: auto_a11y/web/templates/projects/create.html:810
+msgid "Violation Message Templates"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:612
+#: auto_a11y/web/templates/projects/create.html:811
+#, python-brace-format
+msgid ""
+"These are the actual message templates shown to users when violations are"
+" detected. Placeholders like {totalCount}, {role}, {element}, etc. are "
+"filled in dynamically."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:616
+#: auto_a11y/web/templates/projects/create.html:815
+msgid "Title Template:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:623
+#: auto_a11y/web/templates/projects/create.html:822
+msgid "What (Description) Template:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:630
+#: auto_a11y/web/templates/projects/create.html:829
+msgid "Why (Rationale) Template:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:637
+#: auto_a11y/web/templates/projects/create.html:836
+msgid "Remediation Template:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:648
+#: auto_a11y/web/templates/projects/create.html:847
+#: auto_a11y/web/templates/projects/edit.html:680
+msgid "Test Information Not Available"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:649
+#: auto_a11y/web/templates/projects/create.html:848
+#: auto_a11y/web/templates/projects/edit.html:681
+msgid "Details for test"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:649
+#: auto_a11y/web/templates/projects/create.html:848
+#: auto_a11y/web/templates/projects/edit.html:681
+msgid "are not available in the catalog."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:659
+#: auto_a11y/web/templates/projects/create.html:858
+#: auto_a11y/web/templates/projects/edit.html:691
+msgid "Error Loading Test Details"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:660
+#: auto_a11y/web/templates/projects/create.html:859
+#: auto_a11y/web/templates/projects/edit.html:692
+msgid "An error occurred while loading the test details. Please try again."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:674
+msgid "Updating..."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:722
+#: auto_a11y/web/templates/projects/view.html:776
+msgid "Refreshing..."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:956
+#: auto_a11y/web/templates/scripts/list.html:263
+#: auto_a11y/web/templates/scripts/list.html:286
+#: auto_a11y/web/templates/scripts/view.html:245
+#: auto_a11y/web/templates/scripts/view.html:265
+#: auto_a11y/web/templates/website_users/list.html:192
+#: auto_a11y/web/templates/website_users/list.html:214
+#: auto_a11y/web/templates/website_users/view.html:211
+msgid "Error:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:963
+msgid "No Drupal audits found"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/create.html:972
+#: auto_a11y/web/templates/projects/edit.html:750
+msgid "Could not load audits (Drupal may not be configured)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:51
+msgid "Edit Project"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:71
+#: auto_a11y/web/templates/projects/list.html:22
+msgid "Active"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:72
+#: auto_a11y/web/templates/projects/list.html:26
+msgid "Paused"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:73
+#: auto_a11y/web/templates/projects/list.html:30
+msgid "Completed"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:74
+#: auto_a11y/web/templates/projects/list.html:34
+msgid "Archived"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:145
+msgid "Page Title Length Limit"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:149
+msgid ""
+"Maximum recommended characters for page titles. Default is 60. Titles "
+"longer than this will generate a warning."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:150
+msgid ""
+"Browser tabs typically show ~30 characters, search results show ~50-60 "
+"characters."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:155
+msgid "Heading Length Limit"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:159
+msgid ""
+"Maximum recommended characters for headings (h1-h6). Default is 60. "
+"Headings longer than this will generate a warning."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:160
+#, python-format
+msgid ""
+"Headings approaching this limit (above 67% of the limit) will generate an"
+" info message."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:166
+msgid "Inaccessible Fonts Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:168
+msgid "Configure which fonts should be flagged as inaccessible for this project."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:169
+msgid ""
+"The system includes a research-backed default list of 50+ problematic "
+"fonts."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:176
+msgid "Use system default inaccessible fonts list"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:180
+msgid ""
+"Includes script/cursive fonts (Comic Sans, Papyrus), decorative fonts "
+"(Curlz, Jokerman), narrow fonts (Arial Narrow, Impact), and blackletter "
+"fonts (Old English)."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:184
+msgid "Additional Fonts to Flag"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:186
+msgid "Enter font names, one per line (e.g., 'Custom Font Name')"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:188
+msgid ""
+"Add project-specific fonts that should be flagged as inaccessible. One "
+"font name per line, lowercase."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:193
+msgid "Fonts to Exclude from Checking"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:195
+msgid "Enter font names, one per line (e.g., 'comic sans ms')"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:197
+msgid ""
+"Remove specific fonts from the default list if your project requires "
+"them. One font name per line, lowercase."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:206
+msgid "View System Default Inaccessible Fonts List"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:213
+msgid "Script/Cursive Fonts (17 fonts)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:223
+msgid "Show all 17 fonts..."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:234
+msgid "Decorative Fonts (16 fonts)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:242
+msgid "Show all 16 fonts..."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:257
+msgid "Narrow/Condensed Fonts (2 fonts)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:263
+msgid "Blackletter/Gothic Fonts (5 fonts)"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:272
+msgid "Total:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:272
+msgid "40 fonts across 4 categories"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:277
+msgid ""
+"This list is based on accessibility research from dyslexichelp.org, "
+"section508.gov, and webaim.org. These fonts are difficult to read for "
+"users with dyslexia, low vision, or reading disabilities."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/edit.html:428
+msgid "Update Project"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/list.html:18
+msgid "All"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/list.html:56
 #: auto_a11y/web/templates/projects/view.html:16
 msgid "No description"
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:21
-msgid "Test Users"
+#: auto_a11y/web/templates/projects/list.html:60
+#: auto_a11y/web/templates/scripts/view.html:207
+#: auto_a11y/web/templates/website_users/view.html:79
+msgid "Created:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/list.html:61
+#: auto_a11y/web/templates/scripts/view.html:211
+msgid "Updated:"
+msgstr ""
+
+#: auto_a11y/web/templates/projects/list.html:82
+msgid "No projects found."
+msgstr ""
+
+#: auto_a11y/web/templates/projects/list.html:83
+msgid "Create your first project"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:24
@@ -80,14 +3891,6 @@ msgstr ""
 msgid "Test All Websites"
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:33
-msgid "Edit"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:36
-msgid "Delete"
-msgstr ""
-
 #: auto_a11y/web/templates/projects/view.html:47
 #: auto_a11y/web/templates/projects/view.html:83
 msgid "Websites"
@@ -95,11 +3898,8 @@ msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:55
 #: auto_a11y/web/templates/projects/view.html:96
+#: auto_a11y/web/templates/websites/view.html:283
 msgid "Pages"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:63
-msgid "Tested"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:65
@@ -109,6 +3909,7 @@ msgstr ""
 #: auto_a11y/web/templates/projects/view.html:72
 #: auto_a11y/web/templates/projects/view.html:98
 #: auto_a11y/web/templates/projects/view.html:272
+#: auto_a11y/web/templates/recordings/list.html:93
 msgid "Issues"
 msgstr ""
 
@@ -123,36 +3924,8 @@ msgstr ""
 msgid "Add Website"
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:94
-msgid "Name"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:95
-#: auto_a11y/web/templates/projects/view.html:171
-msgid "URL"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:97
-msgid "Last Tested"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:99
-#: auto_a11y/web/templates/projects/view.html:176
-#: auto_a11y/web/templates/projects/view.html:273
-msgid "Actions"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:114
-msgid "Never"
-msgstr ""
-
 #: auto_a11y/web/templates/projects/view.html:131
 msgid "View website"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:133
-#: auto_a11y/web/templates/projects/view.html:302
-msgid "View"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:135
@@ -170,15 +3943,12 @@ msgstr ""
 msgid "Test website"
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:141
-msgid "Test"
-msgstr ""
-
 #: auto_a11y/web/templates/projects/view.html:151
 msgid "No websites added yet. Add a website to start testing."
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:160
+#: auto_a11y/web/templates/recordings/detail.html:149
 msgid "Discovered Pages"
 msgstr ""
 
@@ -193,10 +3963,6 @@ msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:173
 msgid "Page Elements"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:174
-msgid "Status"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:175
@@ -227,15 +3993,6 @@ msgstr ""
 msgid "Synced"
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:217
-#: auto_a11y/web/templates/projects/view.html:786
-msgid "Failed"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:219
-msgid "Pending"
-msgstr ""
-
 #: auto_a11y/web/templates/projects/view.html:221
 msgid "Not Synced"
 msgstr ""
@@ -251,6 +4008,7 @@ msgid "Add Recording"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:267
+#: auto_a11y/web/templates/scripts/create.html:312
 msgid "ID"
 msgstr ""
 
@@ -260,10 +4018,6 @@ msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:270
 msgid "Auditor/Tester"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:271
-msgid "Date"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:311
@@ -291,6 +4045,7 @@ msgid "to track manual accessibility audits."
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:357
+#: auto_a11y/web/templates/websites/edit.html:33
 msgid "Website URL"
 msgstr ""
 
@@ -306,27 +4061,22 @@ msgstr ""
 msgid "Main Website"
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:368
-#: auto_a11y/web/templates/projects/view.html:432
-#: auto_a11y/web/templates/projects/view.html:481
-#: auto_a11y/web/templates/projects/view.html:504
-#: auto_a11y/web/templates/projects/view.html:738
-msgid "Cancel"
-msgstr ""
-
 #: auto_a11y/web/templates/projects/view.html:381
+#: auto_a11y/web/templates/websites/view.html:495
 msgid "Discovery Options"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:389
+#: auto_a11y/web/templates/websites/view.html:34
+#: auto_a11y/web/templates/websites/view.html:501
 msgid "Select users for discovery:"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:394
-msgid "Guest"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:394
+#: auto_a11y/web/templates/websites/view.html:41
+#: auto_a11y/web/templates/websites/view.html:85
+#: auto_a11y/web/templates/websites/view.html:506
+#: auto_a11y/web/templates/websites/view.html:603
 msgid "no login"
 msgstr ""
 
@@ -339,6 +4089,8 @@ msgid "Manage test users"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:417
+#: auto_a11y/web/templates/websites/view.html:529
+#: auto_a11y/web/templates/websites/view.html:626
 msgid "Add test users"
 msgstr ""
 
@@ -347,6 +4099,7 @@ msgid "to discover pages requiring authentication."
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:422
+#: auto_a11y/web/templates/websites/view.html:534
 msgid "Maximum Pages to Discover"
 msgstr ""
 
@@ -365,6 +4118,7 @@ msgid ""
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:434
+#: auto_a11y/web/templates/websites/view.html:546
 msgid "Start Discovery"
 msgstr ""
 
@@ -415,11 +4169,6 @@ msgid ""
 "associated with this project."
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:536
-#: auto_a11y/web/templates/projects/view.html:566
-msgid "Testing..."
-msgstr ""
-
 #: auto_a11y/web/templates/projects/view.html:551
 msgid "Just completed"
 msgstr ""
@@ -429,6 +4178,8 @@ msgstr ""
 #: auto_a11y/web/templates/projects/view.html:754
 #: auto_a11y/web/templates/projects/view.html:763
 #: auto_a11y/web/templates/projects/view.html:776
+#: auto_a11y/web/templates/websites/view.html:267
+#: auto_a11y/web/templates/websites/view.html:1516
 msgid "pages"
 msgstr ""
 
@@ -437,10 +4188,12 @@ msgid "Discovery is already running for this website. Do you want to cancel it?"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:622
+#: auto_a11y/web/templates/websites/view.html:997
 msgid "Please select at least one user for discovery (or Guest)."
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:643
+#: auto_a11y/web/templates/websites/view.html:1102
 msgid "Starting..."
 msgstr ""
 
@@ -453,26 +4206,27 @@ msgid "max"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:666
+#: auto_a11y/web/templates/websites/view.html:1046
 msgid "Discovery Started"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:680
+#: auto_a11y/web/templates/websites/view.html:1056
 msgid "Failed to start discovery"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:688
+#: auto_a11y/web/templates/websites/view.html:1062
 msgid "Failed to start page discovery"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:695
+#: auto_a11y/web/templates/websites/view.html:1312
 msgid "No discovery job to cancel"
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:700
-msgid "Cancelling..."
-msgstr ""
-
 #: auto_a11y/web/templates/projects/view.html:714
+#: auto_a11y/web/templates/websites/view.html:1339
 msgid "Discovery Cancelled"
 msgstr ""
 
@@ -480,12 +4234,9 @@ msgstr ""
 msgid "Failed to cancel discovery:"
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:719
-#: auto_a11y/web/templates/projects/view.html:797
-msgid "Unknown error"
-msgstr ""
-
 #: auto_a11y/web/templates/projects/view.html:722
+#: auto_a11y/web/templates/websites/view.html:1347
+#: auto_a11y/web/templates/websites/view.html:1358
 msgid "Failed to cancel discovery"
 msgstr ""
 
@@ -496,18 +4247,2137 @@ msgstr ""
 #: auto_a11y/web/templates/projects/view.html:754
 #: auto_a11y/web/templates/projects/view.html:763
 #: auto_a11y/web/templates/projects/view.html:776
+#: auto_a11y/web/templates/websites/view.html:1397
+#: auto_a11y/web/templates/websites/view.html:1421
 msgid "Found"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:776
+#: auto_a11y/web/templates/websites/view.html:932
+#: auto_a11y/web/templates/websites/view.html:1412
+#: auto_a11y/web/templates/websites/view.html:1421
 msgid "Discovery Complete"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:776
-msgid "Refreshing..."
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:797
 msgid "Discovery failed:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:23
+msgid "Save"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:29
+#: auto_a11y/web/templates/recordings/list.html:113
+msgid "Are you sure you want to delete this recording?"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:44
+msgid "Recording ID"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:50
+msgid "Auditor"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:63
+msgid "Tester"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:71
+msgid "Test Supervisor"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:80
+msgid "Test User Account"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:88
+msgid "Recording Date"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:99
+#: auto_a11y/web/templates/recordings/list.html:36
+msgid "Recording Type"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:106
+#: auto_a11y/web/templates/recordings/list.html:25
+msgid "Project"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:125
+msgid "Pages Covered"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:136
+msgid "No pages specified"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:142
+#: auto_a11y/web/templates/recordings/detail.html:143
+msgid "Enter one URL per line"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:168
+msgid "No discovered pages selected"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:175
+msgid "Loading discovered pages..."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:177
+msgid "Select discovered pages related to this recording"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:183
+msgid "Common Components"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:194
+msgid "App Screens / Views"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:205
+msgid "Device Sections"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:216
+msgid "Task Context"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:223
+msgid "Media File"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:237
+msgid "Issue Summary"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:245
+msgid "High Impact"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:258
+msgid "Medium Impact"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:271
+msgid "Low Impact"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:295
+msgid "Manual Accessibility Score"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:309
+msgid "Based on manually identified issue severity and impact"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:316
+msgid "Manual WCAG Compliance Score"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:330
+msgid "Level AA conformance based on manual testing scope"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:337
+msgid "Applicable"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:351
+msgid "View Criteria Details"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:359
+msgid ""
+"Manual compliance score requires testing scope to be defined during "
+"upload."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:377
+msgid "Key Takeaways"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:410
+msgid "User Painpoints"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:429
+#: auto_a11y/web/templates/recordings/detail.html:474
+msgid "User Quote:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:435
+#: auto_a11y/web/templates/recordings/detail.html:480
+msgid "Timecode"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:435
+#: auto_a11y/web/templates/recordings/detail.html:480
+msgid "s"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:440
+msgid "Start:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:441
+msgid "End:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:442
+#: auto_a11y/web/templates/recordings/detail.html:486
+#: auto_a11y/web/templates/testing/result.html:198
+msgid "Duration:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:462
+msgid "User Assertions"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:494
+msgid "Context:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:511
+msgid "Accessibility Issues"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:540
+msgid "timecode(s)"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:555
+msgid "Timecodes:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:568
+msgid "What:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:575
+msgid "Why:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:582
+msgid "Who is affected:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:596
+#: auto_a11y/web/templates/testing/result.html:153
+msgid "WCAG:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:600
+#: auto_a11y/web/templates/recordings/detail.html:721
+#: auto_a11y/web/templates/recordings/detail.html:757
+msgid "Level"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:611
+msgid "Open"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:612
+msgid "In Progress"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:613
+msgid "Resolved"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:614
+msgid "Verified"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:625
+msgid "No issues found in this recording."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:646
+msgid "Status updated successfully"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:648
+msgid "Failed to update status"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:653
+msgid "Error updating status"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:665
+msgid "WCAG Success Criteria Breakdown"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:672
+msgid "How Criteria Are Determined"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:674
+msgid "The compliance score is calculated based on WCAG 2.2 Level AA criteria"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:674
+msgid "total"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:675
+msgid ""
+"Criteria are excluded based on the testing scope selected during upload. "
+"Only criteria relevant to the tested content types remain applicable"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:675
+msgid "criteria"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:682
+msgid "Testing Scope"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:702
+msgid "Applicable Criteria"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:707
+msgid "Excluded Criteria"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:715
+#: auto_a11y/web/templates/recordings/detail.html:751
+msgid "These"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:715
+msgid ""
+"criteria are applicable based on your testing scope and are used to "
+"calculate the compliance score."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:720
+#: auto_a11y/web/templates/recordings/detail.html:756
+msgid "Number"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:722
+#: auto_a11y/web/templates/recordings/detail.html:758
+msgid "Success Criterion"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:751
+msgid ""
+"criteria were excluded because they relate only to content types that "
+"were not tested."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:786
+msgid "View WCAG Quick Reference"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:912
+#: auto_a11y/web/templates/recordings/detail.html:916
+msgid "Error saving recording:"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:925
+msgid "No project associated with this recording."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:968
+msgid "No discovered pages found for this project."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:973
+msgid "Error loading discovered pages."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:9
+msgid "Manual Audit Recordings"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:12
+msgid "Upload Recording"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:17
+msgid ""
+"Manual audit recordings from Dictaphone and expert reviews. These "
+"complement automated test results with human observations and lived "
+"experience findings."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:27
+msgid "All Projects"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:38
+msgid "All Types"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:39
+msgid "Audit"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:40
+msgid "Lived Experience Website"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:41
+msgid "Lived Experience App"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:42
+msgid "Lived Experience Tangible Device"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:43
+msgid "Lived Experience Nav and Wayfinding"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:76
+msgid "Test Account"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:99
+msgid "Medium"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:110
+#: auto_a11y/web/templates/websites/view.html:415
+msgid "View Details"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:126
+msgid "No recordings found."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:127
+msgid "Upload your first recording"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/list.html:127
+msgid "to get started."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:3
+msgid "Create Page Setup Script - Auto A11y"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:63
+#, python-format
+msgid "Create %s Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:70
+#, python-format
+msgid "Create %s Setup Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:70
+msgid "Website-Level"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:70
+#: auto_a11y/web/templates/scripts/view.html:71
+msgid "Page-Level"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:76
+msgid "What are Website-Level Scripts?"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:77
+msgid ""
+"Scripts that run for <strong>all pages</strong> in this website (e.g., "
+"dismiss cookie banners, handle login). Perfect for cookie notices that "
+"appear across the entire site!"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:79
+msgid "What are Page-Level Scripts?"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:80
+msgid ""
+"Scripts that prepare a <strong>specific page</strong> for testing (e.g., "
+"open modals, navigate tabs)."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:82
+msgid ""
+"With <strong>multi-state testing</strong>, you can test pages both before"
+" and after the script runs."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:89
+#: auto_a11y/web/templates/websites/edit.html:24
+msgid "Basic Information"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:92
+msgid "Script Name"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:94
+msgid "e.g., Dismiss Cookie Banner"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:95
+msgid "A descriptive name for this script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:101
+msgid "Optional: Describe what this script does"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:107
+msgid "Script Enabled"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:109
+msgid "Uncheck to disable this script without deleting it"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:115
+#: auto_a11y/web/templates/scripts/view.html:82
+msgid "Multi-State Testing"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:119
+msgid ""
+"For a cookie banner, check both boxes to test the page WITH the banner "
+"(before), then dismiss it, then test WITHOUT the banner (after). This "
+"creates 2 test results showing the difference."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:125
+msgid "Test BEFORE executing script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:129
+msgid ""
+"Recommended for cookie banners, modals, and any element you want to test "
+"before dismissing"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:136
+msgid "Test AFTER executing script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:140
+msgid "Usually checked - test the page in its final state after setup"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:148
+msgid "Script Scope"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:151
+msgid "Script Applies To:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:161
+msgid "Website-Level:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:161
+msgid "This script will run for all pages in the website"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:163
+msgid "Page-Level:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:163
+msgid "This script only runs on this specific page"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:172
+#: auto_a11y/web/templates/scripts/view.html:78
+msgid "Execution Trigger"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:175
+msgid "When should this script run?"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:186
+msgid "Select when this script should execute during testing"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:192
+msgid "Conditional Selector"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:195
+msgid "Script will only run if this element exists on the page"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:200
+msgid "Wait for element to appear"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:205
+msgid "Wait Timeout (ms)"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:207
+msgid "Maximum time to wait for element (milliseconds)"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:215
+msgid "Clean State Options"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:219
+msgid "Clear cookies and storage before testing to ensure a clean starting state"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:225
+msgid "Clear Cookies Before Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:229
+msgid "Recommended for cookie banner testing - ensures banner appears"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:236
+msgid "Clear Local Storage Before Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:239
+msgid "Clear localStorage and sessionStorage before running"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:247
+msgid "State Validation (Optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:250
+msgid ""
+"Specify elements that should be visible or hidden after the script runs. "
+"The system will report violations if expectations aren't met."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:255
+msgid "Elements That Should Be <strong>Visible</strong> After Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:259
+msgid ""
+"CSS selectors or XPath, one per line. Example: After opening a modal, "
+"you'd expect \".modal-dialog\" to be visible"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:264
+msgid "Elements That Should Be <strong>Hidden</strong> After Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:268
+msgid ""
+"CSS selectors or XPath, one per line. Example: After dismissing cookies, "
+"you'd expect \".cookie-banner\" to be hidden"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:274
+#: auto_a11y/web/templates/scripts/view.html:107
+msgid "Script Steps"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:277
+msgid "Define the actions to perform. Steps execute in order from top to bottom."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:285
+msgid "Add Step"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:295
+msgid "Create Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:306
+msgid "Quick Help"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:309
+msgid "Common Selectors"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:311
+msgid "Class name"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:313
+msgid "Attribute"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:314
+msgid "Nested"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:317
+msgid "Step Types"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:319
+#: auto_a11y/web/templates/scripts/create.html:329
+#: auto_a11y/web/templates/scripts/create.html:334
+msgid "Click:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:319
+msgid "Click a button/link"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:320
+msgid "Type:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:320
+msgid "Enter text in field"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:321
+msgid "Wait for Element:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:321
+msgid "Wait until element appears"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:322
+msgid "Wait (Fixed):"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:322
+msgid "Pause for X milliseconds"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:325
+msgid "Examples"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:326
+msgid "Cookie Banner:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:328
+#: auto_a11y/web/templates/scripts/create.html:335
+msgid "Wait for:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:332
+msgid "Modal:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:359
+#: auto_a11y/web/templates/scripts/create.html:460
+msgid "Step"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:363
+msgid "Remove"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:370
+msgid "Action Type"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:373
+msgid "-- Select Action --"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:383
+msgid "Selector (CSS or XPath)"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:388
+msgid "CSS selector or XPath (XPath must start with / or //)"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:395
+#: auto_a11y/web/templates/scripts/view.html:127
+msgid "Value"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:398
+msgid "Text to type or value to set"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:404
+msgid "Description (Optional)"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:407
+msgid "e.g., Wait for cookie banner to appear"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:411
+msgid "Timeout (ms)"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:417
+msgid "Wait After (ms)"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/create.html:540
+msgid "Please add at least one step to the script."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/edit.html:3
+#, python-format
+msgid "Edit Script: %(name)s - Auto A11y"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/edit.html:44
+msgid "Update Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/edit.html:45
+msgid "Edit Page Setup Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:3
+#: auto_a11y/web/templates/scripts/list.html:26
+msgid "Page Setup Scripts"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:32
+msgid "Create New Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:51
+msgid "Multi-State Testing:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:52
+msgid ""
+"Scripts with \"Test Before\" enabled will create multiple test results - "
+"one before the script runs and one after. This is perfect for testing "
+"cookie banners, modals, and other interactive elements."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:59
+msgid "Page-Specific Scripts"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:70
+#: auto_a11y/web/templates/scripts/list.html:177
+msgid "Steps"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:71
+#: auto_a11y/web/templates/scripts/list.html:178
+msgid "Multi-State"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:72
+msgid "Trigger"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:87
+#, python-format
+msgid "%(count)s steps"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:91
+msgid "Tests both before and after script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:92
+msgid "Before & After"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:95
+msgid "Tests before script only"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:96
+msgid "Before Only"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:99
+msgid "Tests after script only"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:100
+msgid "After Only"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:103
+msgid "No Testing"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:148
+msgid "No page-specific scripts yet"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:150
+msgid "Create Your First Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:162
+msgid "Website-Wide Scripts"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:169
+msgid ""
+"These scripts run on ALL pages of this website. They are typically used "
+"for common elements like cookie banners or login prompts."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:198
+msgid "Both"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:201
+msgid "Before"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:203
+msgid "After"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:236
+#: auto_a11y/web/templates/scripts/view.html:229
+msgid "Toggle this script (enable/disable)?"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:268
+#: auto_a11y/web/templates/scripts/view.html:250
+msgid "Error toggling script:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:273
+#: auto_a11y/web/templates/scripts/view.html:255
+msgid "Are you sure you want to delete this script? This action cannot be undone."
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:290
+msgid "Error deleting script:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:39
+#: auto_a11y/web/templates/scripts/view.html:188
+msgid "Edit Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:49
+msgid "Script Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:68
+msgid "Scope"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:73
+msgid "Website-Wide"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:86
+msgid "Test Before Execution"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:91
+msgid "Test After Execution"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:95
+msgid "No testing configured"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:121
+msgid "Selector"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:136
+msgid "Timeout"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:137
+msgid "Wait"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:145
+msgid "No steps configured"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:154
+msgid "State Validation"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:158
+msgid "Expected Visible Elements:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:167
+msgid "Expected Hidden Elements:"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:191
+msgid "Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:194
+msgid "Delete Script"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:202
+#: auto_a11y/web/templates/testing/result.html:93
+msgid "Metadata"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/view.html:215
+msgid "Script ID:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:3
+msgid "Testing Dashboard - Auto A11y"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:7
+msgid "Testing Dashboard"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:14
+msgid "Active Tests"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:22
+msgid "Queued Tests"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:30
+msgid "Completed Today"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:38
+msgid "Failed Tests"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:48
+msgid "Quick Test"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:53
+msgid "URL to test"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:55
+msgid "Enter URL to test (e.g., https://example.com)"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:69
+msgid "Recent Test Results"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:71
+msgid "Configure"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:81
+msgid "Test Date"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:96
+msgid "View page details"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:134
+msgid "Complete"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:149
+msgid "No recent test results"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:164
+msgid "Please enter a URL to test"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/dashboard.html:169
+msgid "Quick test functionality will be implemented"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:3
+#: auto_a11y/web/templates/testing/result.html:20
+#: auto_a11y/web/templates/testing/result.html:27
+msgid "Test Result"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:3
+msgid "Unknown Page"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:40
+msgid "Back to Page"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:51
+#: auto_a11y/web/templates/testing/result.html:88
+#: auto_a11y/web/templates/websites/view.html:174
+#: auto_a11y/web/templates/websites/view.html:347
+msgid "Violations"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:125
+msgid "Learn More:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:132
+msgid "Selector:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:136
+msgid "HTML:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:144
+#: auto_a11y/web/templates/websites/view.html:240
+msgid "Details"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:164
+msgid "Pseudoclass:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:180
+msgid "No violations found! The page passes all automated accessibility checks."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:190
+msgid "Test Information"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:192
+msgid "Test ID:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:195
+msgid "Test Date:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:199
+msgid "seconds"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:201
+msgid "Test Suite:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:215
+msgid "Test Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:217
+msgid "AI Analysis:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:226
+msgid "Rules Run:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:227
+msgid "Standard"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:229
+msgid "Viewport:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/result.html:237
+msgid "Additional Metadata"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/create.html:90
+#: auto_a11y/web/templates/website_users/edit.html:95
+msgid "- User is active and can be used for testing"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/list.html:48
+msgid "Authenticated Testing:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/list.html:49
+msgid ""
+"Test users allow you to test pages that require login. Each user can have"
+" different roles (e.g., student, teacher, admin) to test role-based "
+"content accessibility."
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/list.html:196
+msgid "Error toggling user:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/list.html:218
+#: auto_a11y/web/templates/website_users/view.html:215
+msgid "Error deleting user:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:3
+msgid "Test User"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:40
+#: auto_a11y/web/templates/website_users/view.html:183
+msgid "Edit User"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:54
+msgid "Display Name:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:57
+msgid "Username:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:60
+msgid "Password:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:63
+msgid "Roles:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:75
+msgid "Description:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:97
+msgid "Auth Method:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:105
+msgid "Login URL:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:115
+msgid "Username Selector:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:120
+msgid "Password Selector:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:125
+msgid "Submit Selector:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:130
+msgid "Success Indicator:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:134
+msgid "Session Timeout:"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:135
+#, python-format
+msgid "%s minutes"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:159
+msgid "Login Successful"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:161
+msgid "- User authenticated successfully"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:170
+msgid "Not used yet"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:186
+msgid "Back to List"
+msgstr ""
+
+#: auto_a11y/web/templates/website_users/view.html:189
+msgid "Delete User"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:19
+msgid "Edit Website"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:27
+msgid "Website Name"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:29
+msgid "Optional display name"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:40
+msgid "Scraping Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:44
+msgid "Max Pages"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:47
+msgid "Maximum number of pages to discover (default: unlimited)"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:51
+msgid "Max Depth"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:54
+msgid "How many clicks away from the starting page (default: 10)"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:60
+msgid "Request Delay (seconds)"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:63
+msgid "Delay between requests"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:72
+msgid "Follow external links"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:80
+msgid "Include subdomains"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:88
+msgid "Respect robots.txt"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/edit.html:95
+msgid "Update Website"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:30
+msgid "Discovery Users"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:59
+#: auto_a11y/web/templates/websites/view.html:103
+#: auto_a11y/web/templates/websites/view.html:524
+#: auto_a11y/web/templates/websites/view.html:621
+msgid "Clear All"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:65
+#: auto_a11y/web/templates/websites/view.html:1054
+#: auto_a11y/web/templates/websites/view.html:1060
+#: auto_a11y/web/templates/websites/view.html:1331
+#: auto_a11y/web/templates/websites/view.html:1447
+#: auto_a11y/web/templates/websites/view.html:1472
+msgid "Discover Pages"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:69
+msgid "ABORT DISCOVERY"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:78
+msgid "Select users to test:"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:109
+#: auto_a11y/web/templates/websites/view.html:895
+#: auto_a11y/web/templates/websites/view.html:1147
+#: auto_a11y/web/templates/websites/view.html:1153
+#: auto_a11y/web/templates/websites/view.html:1541
+#: auto_a11y/web/templates/websites/view.html:1560
+#: auto_a11y/web/templates/websites/view.html:1608
+msgid "Test All Pages"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:113
+msgid "Cancel Testing"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:116
+#: auto_a11y/web/templates/websites/view.html:224
+msgid "Discovery History"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:119
+msgid "Documents"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:122
+msgid "Setup Scripts"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:132
+msgid "Site Structure"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:140
+msgid "Accessibility Report"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:193
+msgid "Discovery Issues"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:194
+msgid "page(s) could not be discovered:"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:208
+msgid "Show"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:208
+msgid "more failed pages..."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:225
+msgid "attempts"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:237
+msgid "Pages Found"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:267
+msgid "Max"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:267
+msgid "depth"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:287
+msgid "Showing"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:291
+#: auto_a11y/web/templates/websites/view.html:580
+msgid "Add Page"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:298
+#: auto_a11y/web/templates/websites/view.html:442
+msgid "Page navigation"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:301
+#: auto_a11y/web/templates/websites/view.html:445
+msgid "First"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:306
+#: auto_a11y/web/templates/websites/view.html:450
+msgid "Previous"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:326
+#: auto_a11y/web/templates/websites/view.html:470
+msgid "Next"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:331
+#: auto_a11y/web/templates/websites/view.html:475
+msgid "Last"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:363
+msgid "No image"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:430
+msgid "Delete Page"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:484
+msgid ""
+"No pages discovered yet. Click \"Discover Pages\" to find pages "
+"automatically."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:528
+msgid "No test users configured. Discovery will run as guest."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:536
+msgid "Leave empty for unlimited discovery"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:537
+msgid ""
+"Limit the number of pages to discover. Default is unlimited (up to 1 "
+"million pages)."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:540
+msgid ""
+"Discovery will crawl your website starting from the home page, following "
+"links to find all accessible pages."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:559
+msgid "Add Page Manually"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:565
+msgid "Page URL"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:592
+msgid "Test All Pages Options"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:598
+msgid "Select users for testing:"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:625
+msgid "No test users configured. Testing will run as guest."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:631
+msgid ""
+"This will run accessibility tests on all pages with the selected user(s)."
+" Testing multiple users will increase the total test time."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:637
+msgid "Start Testing"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:699
+#: auto_a11y/web/templates/websites/view.html:740
+msgid "None"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:709
+#: auto_a11y/web/templates/websites/view.html:750
+msgid "users"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:873
+#: auto_a11y/web/templates/websites/view.html:1507
+#: auto_a11y/web/templates/websites/view.html:1517
+msgid "Testing Complete"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:873
+msgid "All pages have been tested. Refreshing..."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:932
+msgid "The discovery process has finished."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:959
+msgid "Are you sure you want to abort the discovery process?"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:968
+msgid "Discovery is already running. Do you want to cancel it?"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1012
+msgid "Starting discovery..."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1087
+msgid "Please select at least one test user (or Guest) to continue."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1133
+msgid "Testing Started"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1133
+msgid "pages for testing"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1146
+msgid "Failed to queue tests"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1152
+msgid "Failed to start testing"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1159
+msgid "Are you sure you want to cancel the testing process?"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1175
+msgid "Failed to add page"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1210
+msgid "Test Started"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1210
+msgid "Page queued for testing"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1266
+msgid "Page test has been cancelled"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1285
+msgid "Are you sure you want to delete this page?"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1285
+msgid "This will also delete all test results for this page."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1297
+msgid "Page Deleted"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1297
+msgid "Page has been deleted successfully"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1306
+msgid "Failed to delete page"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1346
+#: auto_a11y/web/templates/websites/view.html:1353
+#: auto_a11y/web/templates/websites/view.html:1385
+msgid "Discovery Running..."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1397
+msgid "pages..."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1421
+msgid "pages. Refreshing..."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1433
+msgid "Discovery Failed"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1441
+msgid "Discovery failed"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1500
+msgid "Currently testing"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1527
+#: auto_a11y/web/templates/websites/view.html:1536
+#: auto_a11y/web/templates/websites/view.html:1616
+msgid "Testing Cancelled"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1536
+msgid "Testing was cancelled"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1548
+msgid "Testing Failed"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1556
+msgid "Testing failed"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1589
+msgid "No testing job to cancel"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1624
+#: auto_a11y/web/templates/websites/view.html:1632
+msgid "Failed to cancel testing"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1654
+#: auto_a11y/web/templates/websites/view.html:1675
+msgid "Report Generation"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1654
+msgid "Generating site structure report in"
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1654
+#: auto_a11y/web/templates/websites/view.html:1675
+msgid "format..."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:1675
+msgid "Generating accessibility report in"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:319
+msgid "usage: "
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:827
+msgid ".__call__() not defined"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1122
+#, python-format
+msgid "unknown parser %r (choices: %s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1163
+#, python-format
+msgid "argument \"-\" with mode %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1174
+#, python-format
+msgid "can't open '%s': %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1371
+#, python-format
+msgid "cannot merge actions - two groups are named %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1409
+msgid "'required' is an invalid argument for positionals"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1429
+#, python-format
+msgid "invalid option string %r: must start with a character %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1450
+#, python-format
+msgid "dest= is required for options like %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1467
+#, python-format
+msgid "invalid conflict_resolution value: %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1485
+#, python-format
+msgid "conflicting option string(s): %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1548
+msgid "mutually exclusive arguments must be optional"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1618
+msgid "positional arguments"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1619
+msgid "optional arguments"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1637
+msgid "show this help message and exit"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1643
+msgid "show program's version number and exit"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1675
+msgid "cannot have multiple subparser arguments"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1727
+#, python-format
+msgid "unrecognized arguments: %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1821
+#, python-format
+msgid "not allowed with argument %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1867
+#: venv/lib/python3.13/site-packages/argparse.py:1881
+#, python-format
+msgid "ignored explicit argument %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1971
+msgid "too few arguments"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1978
+#, python-format
+msgid "argument %s is required"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2003
+#, python-format
+msgid "one of the arguments %s is required"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2049
+msgid "expected one argument"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2050
+msgid "expected at most one argument"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2051
+msgid "expected at least one argument"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2053
+#, python-format
+msgid "expected %s argument(s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2110
+#, python-format
+msgid "ambiguous option: %s could match %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2172
+#, python-format
+msgid "unexpected option string: %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2273
+#, python-format
+msgid "%r is not callable"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2289
+#, python-format
+msgid "invalid %s value: %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2299
+#, python-format
+msgid "invalid choice: %r (choose from %s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2392
+#, python-format
+msgid "%s: error: %s\n"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/_termui_impl.py:600
+#, python-brace-format
+msgid "{editor}: Editing failed"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/_termui_impl.py:604
+#, python-brace-format
+msgid "{editor}: Editing failed: {e}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1084
+#: venv/lib/python3.13/site-packages/click/core.py:1121
+#, python-brace-format
+msgid "{text} {deprecated_message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1140
+msgid "Options"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1202
+#, python-brace-format
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1221
+#, python-brace-format
+msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1405
+msgid "Aborted!"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1779
+msgid "Commands"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1810
+msgid "Missing command."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1888
+#, python-brace-format
+msgid "No such command {name!r}."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2303
+msgid "Value must be an iterable."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2324
+#, python-brace-format
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2404
+#, python-brace-format
+msgid ""
+"DeprecationWarning: The {param_type} {name!r} is "
+"deprecated.{extra_message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2807
+#, python-brace-format
+msgid "env var: {var}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2810
+#, python-brace-format
+msgid "default: {default}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2814
+msgid "required"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2870
+msgid "(dynamic)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/decorators.py:465
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/decorators.py:522
+msgid "Show the version and exit."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/decorators.py:548
+msgid "Show this message and exit."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:50
+#: venv/lib/python3.13/site-packages/click/exceptions.py:89
+#, python-brace-format
+msgid "Error: {message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:81
+#, python-brace-format
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:130
+#, python-brace-format
+msgid "Invalid value: {message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:132
+#, python-brace-format
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:190
+msgid "Missing argument"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:192
+msgid "Missing option"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:194
+msgid "Missing parameter"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:196
+#, python-brace-format
+msgid "Missing {param_type}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:203
+#, python-brace-format
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:223
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:235
+#, python-brace-format
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:282
+msgid "unknown error"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:289
+#, python-brace-format
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/formatting.py:156
+msgid "Usage:"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/parser.py:200
+#, python-brace-format
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/parser.py:383
+#, python-brace-format
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/parser.py:444
+#, python-brace-format
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/shell_completion.py:326
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/shell_completion.py:333
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:162
+msgid "Repeat for confirmation"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:178
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:180
+#, python-brace-format
+msgid "Error: {e.message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:191
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:247
+msgid "Error: invalid input"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:866
+msgid "Press any key to continue..."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:332
+#, python-brace-format
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:369
+#, python-brace-format
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:460
+#, python-brace-format
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:482
+#, python-brace-format
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:538
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:679
+#, python-brace-format
+msgid "{value!r} is not a valid boolean."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:703
+#, python-brace-format
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:893
+msgid "file"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:895
+msgid "directory"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:897
+msgid "path"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:944
+#, python-brace-format
+msgid "{name} {filename!r} does not exist."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:953
+#, python-brace-format
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:961
+#, python-brace-format
+msgid "{name} {filename!r} is a directory."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:970
+#, python-brace-format
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:979
+#, python-brace-format
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:988
+#, python-brace-format
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:1055
+#, python-brace-format
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/mypy/main.py:423
+#, python-format
+msgid "%(prog)s: error: %(message)s\n"
 msgstr ""
 

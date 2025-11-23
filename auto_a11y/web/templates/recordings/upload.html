@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}Upload Recording - Auto A11y{% endblock %}
+{% block title %}{{ _('Upload Recording - Auto A11y') }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="mb-4">
         <h1 class="h2">
-            <i class="bi bi-upload"></i> Upload Manual Audit Recording
+            <i class="bi bi-upload"></i> {{ _('Upload Manual Audit Recording') }}
         </h1>
         <p class="text-muted">
-            Upload a Dictaphone JSON file containing accessibility findings from manual audits or lived experience testing.
+            {{ _('Upload a Dictaphone JSON file containing accessibility findings from manual audits or lived experience testing.') }}
         </p>
     </div>
 
@@ -20,52 +20,51 @@
                     <form method="post" action="{{ url_for('recordings.upload_recording') }}" enctype="multipart/form-data">
                         <!-- JSON File Upload -->
                         <div class="mb-4">
-                            <label for="json_file" class="form-label">Dictaphone JSON File *</label>
+                            <label for="json_file" class="form-label">{{ _('Dictaphone JSON File *') }}</label>
                             <input type="file" class="form-control" id="json_file" name="json_file"
                                    accept=".json" required>
                             <div class="form-text">
-                                Select the JSON file exported from Dictaphone containing accessibility issues and timecodes.
+                                {{ _('Select the JSON file exported from Dictaphone containing accessibility issues and timecodes.') }}
                             </div>
                         </div>
 
                         <!-- Recording Content Files (HTML) -->
                         <div class="card mb-4 bg-light">
                             <div class="card-header">
-                                <h6 class="mb-0"><i class="bi bi-file-earmark-text"></i> Recording Content (Optional)</h6>
+                                <h6 class="mb-0"><i class="bi bi-file-earmark-text"></i> {{ _('Recording Content (Optional)') }}</h6>
                             </div>
                             <div class="card-body">
                                 <p class="small text-muted mb-3">
-                                    Upload HTML or JSON files for key takeaways, user painpoints, and user assertions.
-                                    Both formats are supported.
+                                    {{ _('Upload HTML or JSON files for key takeaways, user painpoints, and user assertions. Both formats are supported.') }}
                                 </p>
 
                                 <!-- Key Takeaways HTML or JSON Upload -->
                                 <div class="mb-3">
-                                    <label for="key_takeaways_file" class="form-label">Key Takeaways (HTML or JSON)</label>
+                                    <label for="key_takeaways_file" class="form-label">{{ _('Key Takeaways (HTML or JSON)') }}</label>
                                     <input type="file" class="form-control" id="key_takeaways_file" name="key_takeaways_file"
                                            accept=".html,.htm,.json">
                                     <div class="form-text">
-                                        Numbered list of the most important accessibility issues found. Accepts HTML or JSON format.
+                                        {{ _('Numbered list of the most important accessibility issues found. Accepts HTML or JSON format.') }}
                                     </div>
                                 </div>
 
                                 <!-- User Painpoints HTML or JSON Upload -->
                                 <div class="mb-3">
-                                    <label for="user_painpoints_file" class="form-label">User Painpoints (HTML or JSON)</label>
+                                    <label for="user_painpoints_file" class="form-label">{{ _('User Painpoints (HTML or JSON)') }}</label>
                                     <input type="file" class="form-control" id="user_painpoints_file" name="user_painpoints_file"
                                            accept=".html,.htm,.json">
                                     <div class="form-text">
-                                        User-focused description of difficulties experienced during testing. Accepts HTML or JSON format.
+                                        {{ _('User-focused description of difficulties experienced during testing. Accepts HTML or JSON format.') }}
                                     </div>
                                 </div>
 
                                 <!-- User Assertions HTML or JSON Upload -->
                                 <div class="mb-0">
-                                    <label for="user_assertions_file" class="form-label">User Assertions (HTML or JSON)</label>
+                                    <label for="user_assertions_file" class="form-label">{{ _('User Assertions (HTML or JSON)') }}</label>
                                     <input type="file" class="form-control" id="user_assertions_file" name="user_assertions_file"
                                            accept=".html,.htm,.json">
                                     <div class="form-text">
-                                        Direct quotes and observations from the tester with timecodes. Accepts HTML or JSON format.
+                                        {{ _('Direct quotes and observations from the tester with timecodes. Accepts HTML or JSON format.') }}
                                     </div>
                                 </div>
                             </div>
@@ -73,190 +72,190 @@
 
                         <!-- Project Selection -->
                         <div class="mb-4">
-                            <label for="project_id" class="form-label">Project *</label>
+                            <label for="project_id" class="form-label">{{ _('Project *') }}</label>
                             <select class="form-select" id="project_id" name="project_id" required>
-                                <option value="">Select a project...</option>
+                                <option value="">{{ _('Select a project...') }}</option>
                                 {% for project in projects %}
                                 <option value="{{ project.id }}">{{ project.name }}</option>
                                 {% endfor %}
                             </select>
                             <div class="form-text">
-                                Which project should this recording be associated with?
+                                {{ _('Which project should this recording be associated with?') }}
                             </div>
                         </div>
 
                         <!-- Test User Account Used -->
                         <div class="mb-4">
-                            <label for="test_user_account" class="form-label">Test User Account Used</label>
+                            <label for="test_user_account" class="form-label">{{ _('Test User Account Used') }}</label>
                             <select class="form-select" id="test_user_account" name="test_user_account">
-                                <option value="">Select a test user...</option>
+                                <option value="">{{ _('Select a test user...') }}</option>
                             </select>
                             <div class="form-text" id="test-user-help">
-                                Optional: Select the test account used during this audit. Choose a project first to see available test users.
+                                {{ _('Optional: Select the test account used during this audit. Choose a project first to see available test users.') }}
                             </div>
                         </div>
 
                         <!-- Lived Experience Tester (for lived experience recordings) -->
                         <div class="mb-4" id="tester-field" style="display: none;">
-                            <label for="lived_experience_tester_id" class="form-label">Lived Experience Tester</label>
+                            <label for="lived_experience_tester_id" class="form-label">{{ _('Lived Experience Tester') }}</label>
                             <select class="form-select" id="lived_experience_tester_id" name="lived_experience_tester_id">
-                                <option value="">Select a tester...</option>
+                                <option value="">{{ _('Select a tester...') }}</option>
                             </select>
                             <div class="form-text" id="tester-help">
-                                Select the lived experience tester who performed this test. Choose a project first to see available testers.
+                                {{ _('Select the lived experience tester who performed this test. Choose a project first to see available testers.') }}
                             </div>
                         </div>
 
                         <!-- Test Supervisor (for lived experience recordings) -->
                         <div class="mb-4" id="supervisor-field" style="display: none;">
-                            <label for="test_supervisor_id" class="form-label">Test Supervisor</label>
+                            <label for="test_supervisor_id" class="form-label">{{ _('Test Supervisor') }}</label>
                             <select class="form-select" id="test_supervisor_id" name="test_supervisor_id">
-                                <option value="">Select a supervisor...</option>
+                                <option value="">{{ _('Select a supervisor...') }}</option>
                             </select>
                             <div class="form-text" id="supervisor-help">
-                                Select the supervisor who oversaw this test. Choose a project first to see available supervisors.
+                                {{ _('Select the supervisor who oversaw this test. Choose a project first to see available supervisors.') }}
                             </div>
                         </div>
 
                         <!-- Recording Metadata -->
                         <div class="mb-4">
-                            <label for="title" class="form-label">Recording Title</label>
+                            <label for="title" class="form-label">{{ _('Recording Title') }}</label>
                             <input type="text" class="form-control" id="title" name="title"
-                                   placeholder="e.g., Main Website Screen Reader Audit">
+                                   placeholder="{{ _('e.g., Main Website Screen Reader Audit') }}">
                             <div class="form-text">
-                                Optional: A descriptive title for this recording.
+                                {{ _('Optional: A descriptive title for this recording.') }}
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">{{ _('Description') }}</label>
                             <textarea class="form-control" id="description" name="description"
-                                      rows="3" placeholder="Brief description of what was tested and key findings..."></textarea>
+                                      rows="3" placeholder="{{ _('Brief description of what was tested and key findings...') }}"></textarea>
                         </div>
 
                         <!-- Auditor Information (for audit recordings) -->
                         <div class="row mb-4" id="auditor-fields">
                             <div class="col-md-6">
-                                <label for="auditor_name" class="form-label">Auditor Name</label>
+                                <label for="auditor_name" class="form-label">{{ _('Auditor Name') }}</label>
                                 <input type="text" class="form-control" id="auditor_name" name="auditor_name"
-                                       placeholder="e.g., Jane Smith">
+                                       placeholder="{{ _('e.g., Jane Smith') }}">
                             </div>
                             <div class="col-md-6">
-                                <label for="auditor_role" class="form-label">Auditor Role</label>
+                                <label for="auditor_role" class="form-label">{{ _('Auditor Role') }}</label>
                                 <input type="text" class="form-control" id="auditor_role" name="auditor_role"
-                                       placeholder="e.g., Screen Reader User, Expert Auditor">
+                                       placeholder="{{ _('e.g., Screen Reader User, Expert Auditor') }}">
                             </div>
                         </div>
 
                         <!-- Recording Type -->
                         <div class="mb-4">
-                            <label for="recording_type" class="form-label">Recording Type</label>
+                            <label for="recording_type" class="form-label">{{ _('Recording Type') }}</label>
                             <select class="form-select" id="recording_type" name="recording_type">
-                                <option value="audit" selected>Audit</option>
-                                <option value="lived_experience_website">Lived Experience Website</option>
-                                <option value="lived_experience_app">Lived Experience App</option>
-                                <option value="lived_experience_tangible_device">Lived Experience Tangible Device</option>
-                                <option value="lived_experience_nav_and_wayfinding">Lived Experience Nav and Wayfinding</option>
+                                <option value="audit" selected>{{ _('Audit') }}</option>
+                                <option value="lived_experience_website">{{ _('Lived Experience Website') }}</option>
+                                <option value="lived_experience_app">{{ _('Lived Experience App') }}</option>
+                                <option value="lived_experience_tangible_device">{{ _('Lived Experience Tangible Device') }}</option>
+                                <option value="lived_experience_nav_and_wayfinding">{{ _('Lived Experience Nav and Wayfinding') }}</option>
                             </select>
                         </div>
 
                         <!-- Page URLs -->
                         <div class="mb-4">
-                            <label for="page_urls" class="form-label">Page URLs Covered</label>
+                            <label for="page_urls" class="form-label">{{ _('Page URLs Covered') }}</label>
                             <textarea class="form-control" id="page_urls" name="page_urls" rows="3"
                                       placeholder="https://example.com/&#10;https://example.com/about&#10;https://example.com/contact"></textarea>
                             <div class="form-text">
-                                Optional: Enter one URL per line for specific pages discussed in this recording.
+                                {{ _('Optional: Enter one URL per line for specific pages discussed in this recording.') }}
                             </div>
                         </div>
 
                         <!-- Discovered Pages -->
                         <div class="mb-4">
-                            <label class="form-label">Discovered Pages</label>
+                            <label class="form-label">{{ _('Discovered Pages') }}</label>
                             <div class="form-text mb-2" id="discovered-pages-help">
-                                Optional: Select discovered pages related to this recording. Choose a project first to see available pages.
+                                {{ _('Optional: Select discovered pages related to this recording. Choose a project first to see available pages.') }}
                             </div>
                             <div id="discovered-pages-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem;">
-                                <p class="text-muted small mb-0">Select a project to see discovered pages.</p>
+                                <p class="text-muted small mb-0">{{ _('Select a project to see discovered pages.') }}</p>
                             </div>
                         </div>
 
                         <!-- Common Components -->
                         <div class="mb-4">
-                            <label for="component_names" class="form-label">Common Components</label>
+                            <label for="component_names" class="form-label">{{ _('Common Components') }}</label>
                             <textarea class="form-control" id="component_names" name="component_names" rows="3"
                                       placeholder="header&#10;navigation&#10;footer&#10;search bar"></textarea>
                             <div class="form-text">
-                                Optional: Enter one component name per line (e.g., header, nav, footer, modal, carousel).
+                                {{ _('Optional: Enter one component name per line (e.g., header, nav, footer, modal, carousel).') }}
                             </div>
                         </div>
 
                         <!-- App Screens (for APP projects) -->
                         <div class="mb-4">
-                            <label for="app_screens" class="form-label">App Screens / Views</label>
+                            <label for="app_screens" class="form-label">{{ _('App Screens / Views') }}</label>
                             <textarea class="form-control" id="app_screens" name="app_screens" rows="3"
                                       placeholder="Login screen&#10;Home dashboard&#10;Settings page"></textarea>
                             <div class="form-text">
-                                Optional: For app projects - enter one screen/view name per line.
+                                {{ _('Optional: For app projects - enter one screen/view name per line.') }}
                             </div>
                         </div>
 
                         <!-- Device Sections (for TANGIBLE_DEVICE projects) -->
                         <div class="mb-4">
-                            <label for="device_sections" class="form-label">Device Sections</label>
+                            <label for="device_sections" class="form-label">{{ _('Device Sections') }}</label>
                             <textarea class="form-control" id="device_sections" name="device_sections" rows="3"
                                       placeholder="Main screen&#10;Keypad&#10;Card reader"></textarea>
                             <div class="form-text">
-                                Optional: For tangible devices - enter one section name per line.
+                                {{ _('Optional: For tangible devices - enter one section name per line.') }}
                             </div>
                         </div>
 
                         <!-- Task Description -->
                         <div class="mb-4">
-                            <label for="task_description" class="form-label">Task Description</label>
+                            <label for="task_description" class="form-label">{{ _('Task Description') }}</label>
                             <textarea class="form-control" id="task_description" name="task_description" rows="2"
-                                      placeholder="Complete checkout process"></textarea>
+                                      placeholder="{{ _('Complete checkout process') }}"></textarea>
                             <div class="form-text">
-                                Optional: Describe the specific task being performed (e.g., "Complete checkout", "Navigate to settings").
+                                {{ _('Optional: Describe the specific task being performed (e.g., "Complete checkout", "Navigate to settings").') }}
                             </div>
                         </div>
 
                         <!-- Testing Scope -->
                         <div class="mb-4">
-                            <label class="form-label">Testing Scope</label>
+                            <label class="form-label">{{ _('Testing Scope') }}</label>
                             <div class="form-text mb-2">
-                                Select the content types covered in this recording to determine applicable WCAG criteria for compliance scoring.
+                                {{ _('Select the content types covered in this recording to determine applicable WCAG criteria for compliance scoring.') }}
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="scope_forms" name="scope_forms">
                                         <label class="form-check-label" for="scope_forms">
-                                            Forms
+                                            {{ _('Forms') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="scope_video" name="scope_video">
                                         <label class="form-check-label" for="scope_video">
-                                            Video (prerecorded)
+                                            {{ _('Video (prerecorded)') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="scope_live_multimedia" name="scope_live_multimedia">
                                         <label class="form-check-label" for="scope_live_multimedia">
-                                            Live Multimedia
+                                            {{ _('Live Multimedia') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="scope_multilingual" name="scope_multilingual">
                                         <label class="form-check-label" for="scope_multilingual">
-                                            Multilingual Content
+                                            {{ _('Multilingual Content') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="scope_orientation" name="scope_orientation">
                                         <label class="form-check-label" for="scope_orientation">
-                                            Orientation Changes
+                                            {{ _('Orientation Changes') }}
                                         </label>
                                     </div>
                                 </div>
@@ -264,25 +263,25 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="scope_zoom" name="scope_zoom">
                                         <label class="form-check-label" for="scope_zoom">
-                                            Zoom / Text Resize
+                                            {{ _('Zoom / Text Resize') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="scope_timeouts" name="scope_timeouts">
                                         <label class="form-check-label" for="scope_timeouts">
-                                            Timeouts / Re-authentication
+                                            {{ _('Timeouts / Re-authentication') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="scope_motion_actuation" name="scope_motion_actuation">
                                         <label class="form-check-label" for="scope_motion_actuation">
-                                            Motion Actuation
+                                            {{ _('Motion Actuation') }}
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="scope_drag_drop" name="scope_drag_drop">
                                         <label class="form-check-label" for="scope_drag_drop">
-                                            Drag and Drop
+                                            {{ _('Drag and Drop') }}
                                         </label>
                                     </div>
                                 </div>
@@ -291,21 +290,21 @@
 
                         <!-- Media File Path -->
                         <div class="mb-4">
-                            <label for="media_file_path" class="form-label">Media File Path</label>
+                            <label for="media_file_path" class="form-label">{{ _('Media File Path') }}</label>
                             <input type="text" class="form-control" id="media_file_path" name="media_file_path"
                                    placeholder="/path/to/recording.mp4 or https://videos.example.com/audit.mp4">
                             <div class="form-text">
-                                Optional: Path or URL to the actual video/audio recording file for reference.
+                                {{ _('Optional: Path or URL to the actual video/audio recording file for reference.') }}
                             </div>
                         </div>
 
                         <!-- Action Buttons -->
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-upload"></i> Upload Recording
+                                <i class="bi bi-upload"></i> {{ _('Upload Recording') }}
                             </button>
                             <a href="{{ url_for('recordings.list_recordings') }}" class="btn btn-outline-secondary">
-                                Cancel
+                                {{ _('Cancel') }}
                             </a>
                         </div>
                     </form>
@@ -316,23 +315,22 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">About Dictaphone Format</h5>
+                    <h5 class="mb-0">{{ _('About Dictaphone Format') }}</h5>
                 </div>
                 <div class="card-body">
                     <p class="small">
-                        Dictaphone generates accessibility findings from audio/video recordings of manual audits.
-                        The JSON format includes:
+                        {{ _('Dictaphone generates accessibility findings from audio/video recordings of manual audits. The JSON format includes:') }}
                     </p>
                     <ul class="small">
-                        <li><strong>Recording ID:</strong> Unique identifier</li>
-                        <li><strong>Issues:</strong> List of accessibility problems found</li>
-                        <li><strong>Timecodes:</strong> Start/end times in the recording</li>
-                        <li><strong>Impact Levels:</strong> High, Medium, Low</li>
-                        <li><strong>WCAG Criteria:</strong> Relevant guidelines</li>
-                        <li><strong>Detailed Descriptions:</strong> What, why, who, and how to fix</li>
+                        <li><strong>{{ _('Recording ID:') }}</strong> {{ _('Unique identifier') }}</li>
+                        <li><strong>{{ _('Issues:') }}</strong> {{ _('List of accessibility problems found') }}</li>
+                        <li><strong>{{ _('Timecodes:') }}</strong> {{ _('Start/end times in the recording') }}</li>
+                        <li><strong>{{ _('Impact Levels:') }}</strong> {{ _('High, Medium, Low') }}</li>
+                        <li><strong>{{ _('WCAG Criteria:') }}</strong> {{ _('Relevant guidelines') }}</li>
+                        <li><strong>{{ _('Detailed Descriptions:') }}</strong> {{ _('What, why, who, and how to fix') }}</li>
                     </ul>
 
-                    <h6 class="mt-4">Example JSON Structure</h6>
+                    <h6 class="mt-4">{{ _('Example JSON Structure') }}</h6>
                     <pre class="small bg-light p-2" style="font-size: 0.75rem;"><code>{
   "recording": "NED-A",
   "issues": [
@@ -381,16 +379,16 @@ document.getElementById('project_id').addEventListener('change', function() {
     const discoveredPagesHelp = document.getElementById('discovered-pages-help');
 
     // Reset all dropdowns
-    testUserSelect.innerHTML = '<option value="">Select a test user...</option>';
-    testerSelect.innerHTML = '<option value="">Select a tester...</option>';
-    supervisorSelect.innerHTML = '<option value="">Select a supervisor...</option>';
-    discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">Loading discovered pages...</p>';
+    testUserSelect.innerHTML = '<option value="">' + {{ _('Select a test user...') | tojson }} + '</option>';
+    testerSelect.innerHTML = '<option value="">' + {{ _('Select a tester...') | tojson }} + '</option>';
+    supervisorSelect.innerHTML = '<option value="">' + {{ _('Select a supervisor...') | tojson }} + '</option>';
+    discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">' + {{ _('Loading discovered pages...') | tojson }} + '</p>';
 
     if (!projectId) {
-        testUserHelp.textContent = 'Optional: Select the test account used during this audit. Choose a project first to see available test users.';
-        testerHelp.textContent = 'Select the lived experience tester who performed this test. Choose a project first to see available testers.';
-        supervisorHelp.textContent = 'Select the supervisor who oversaw this test. Choose a project first to see available supervisors.';
-        discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">Select a project to see discovered pages.</p>';
+        testUserHelp.textContent = {{ _('Optional: Select the test account used during this audit. Choose a project first to see available test users.') | tojson }};
+        testerHelp.textContent = {{ _('Select the lived experience tester who performed this test. Choose a project first to see available testers.') | tojson }};
+        supervisorHelp.textContent = {{ _('Select the supervisor who oversaw this test. Choose a project first to see available supervisors.') | tojson }};
+        discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">' + {{ _('Select a project to see discovered pages.') | tojson }} + '</p>';
         return;
     }
 
@@ -408,14 +406,14 @@ document.getElementById('project_id').addEventListener('change', function() {
                     }
                     testUserSelect.appendChild(option);
                 });
-                testUserHelp.innerHTML = `Optional: Select which test account was used during this audit. <a href="/projects/${projectId}/users">Manage project users</a>`;
+                testUserHelp.innerHTML = {{ _('Optional: Select which test account was used during this audit.') | tojson }} + ` <a href="/projects/${projectId}/users">{{ _('Manage project users') }}</a>`;
             } else {
-                testUserHelp.innerHTML = `No test users configured for this project. <a href="/projects/${projectId}/users">Add test users</a>`;
+                testUserHelp.innerHTML = {{ _('No test users configured for this project.') | tojson }} + ` <a href="/projects/${projectId}/users">{{ _('Add test users') }}</a>`;
             }
         })
         .catch(error => {
             console.error('Error fetching project users:', error);
-            testUserHelp.textContent = 'Optional: Select the test account used during this audit.';
+            testUserHelp.textContent = {{ _('Optional: Select the test account used during this audit.') | tojson }};
         });
 
     // Fetch project data to get testers and supervisors
@@ -436,9 +434,9 @@ document.getElementById('project_id').addEventListener('change', function() {
                         }
                         testerSelect.appendChild(option);
                     });
-                    testerHelp.textContent = 'Select the lived experience tester who performed this test.';
+                    testerHelp.textContent = {{ _('Select the lived experience tester who performed this test.') | tojson }};
                 } else {
-                    testerHelp.textContent = 'No lived experience testers configured for this project. Add testers in project settings.';
+                    testerHelp.textContent = {{ _('No lived experience testers configured for this project. Add testers in project settings.') | tojson }};
                 }
 
                 // Populate supervisors
@@ -452,16 +450,16 @@ document.getElementById('project_id').addEventListener('change', function() {
                         }
                         supervisorSelect.appendChild(option);
                     });
-                    supervisorHelp.textContent = 'Select the supervisor who oversaw this test.';
+                    supervisorHelp.textContent = {{ _('Select the supervisor who oversaw this test.') | tojson }};
                 } else {
-                    supervisorHelp.textContent = 'No test supervisors configured for this project. Add supervisors in project settings.';
+                    supervisorHelp.textContent = {{ _('No test supervisors configured for this project. Add supervisors in project settings.') | tojson }};
                 }
             }
         })
         .catch(error => {
             console.error('Error fetching project data:', error);
-            testerHelp.textContent = 'Error loading testers.';
-            supervisorHelp.textContent = 'Error loading supervisors.';
+            testerHelp.textContent = {{ _('Error loading testers.') | tojson }};
+            supervisorHelp.textContent = {{ _('Error loading supervisors.') | tojson }};
         });
 
     // Fetch discovered pages for this project
@@ -497,15 +495,15 @@ document.getElementById('project_id').addEventListener('change', function() {
                     div.appendChild(label);
                     discoveredPagesContainer.appendChild(div);
                 });
-                discoveredPagesHelp.textContent = 'Optional: Select discovered pages related to this recording.';
+                discoveredPagesHelp.textContent = {{ _('Optional: Select discovered pages related to this recording.') | tojson }};
             } else {
-                discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">No discovered pages found for this project.</p>';
-                discoveredPagesHelp.textContent = 'Optional: No discovered pages available for this project.';
+                discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">' + {{ _('No discovered pages found for this project.') | tojson }} + '</p>';
+                discoveredPagesHelp.textContent = {{ _('Optional: No discovered pages available for this project.') | tojson }};
             }
         })
         .catch(error => {
             console.error('Error fetching discovered pages:', error);
-            discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">Error loading discovered pages.</p>';
+            discoveredPagesContainer.innerHTML = '<p class="text-muted small mb-0">' + {{ _('Error loading discovered pages.') | tojson }} + '</p>';
         });
 });
 </script>

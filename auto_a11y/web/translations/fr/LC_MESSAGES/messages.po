@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-11-22 17:25-0500\n"
+"POT-Creation-Date: 2025-11-22 18:22-0500\n"
 "PO-Revision-Date: 2025-11-21 13:16-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -1262,6 +1262,7 @@ msgstr "Découvrir les pages"
 #: auto_a11y/web/templates/projects/view.html:504
 #: auto_a11y/web/templates/projects/view.html:738
 #: auto_a11y/web/templates/recordings/detail.html:26
+#: auto_a11y/web/templates/recordings/upload.html:307
 #: auto_a11y/web/templates/scripts/create.html:292
 #: auto_a11y/web/templates/website_users/create.html:245
 #: auto_a11y/web/templates/website_users/edit.html:282
@@ -2280,8 +2281,9 @@ msgstr "Configuration"
 
 #: auto_a11y/web/templates/project_participants/create_tester.html:46
 #: auto_a11y/web/templates/project_participants/edit_tester.html:47
+#: auto_a11y/web/templates/recordings/upload.html:141
 msgid "e.g., Jane Smith"
-msgstr "par ex., Jane Dupont"
+msgstr "p. ex., Jane Dupont"
 
 #: auto_a11y/web/templates/project_participants/create_tester.html:47
 #: auto_a11y/web/templates/project_participants/edit_tester.html:48
@@ -2683,11 +2685,12 @@ msgstr ""
 #: auto_a11y/web/templates/projects/create.html:98
 #: auto_a11y/web/templates/projects/edit.html:63
 #: auto_a11y/web/templates/recordings/detail.html:118
+#: auto_a11y/web/templates/recordings/upload.html:131
 #: auto_a11y/web/templates/scripts/create.html:99
 #: auto_a11y/web/templates/website_users/create.html:81
 #: auto_a11y/web/templates/website_users/edit.html:85
 msgid "Description"
-msgstr "Aucune description"
+msgstr "Description"
 
 #: auto_a11y/web/templates/project_users/create.html:80
 #: auto_a11y/web/templates/project_users/edit.html:84
@@ -3804,7 +3807,7 @@ msgstr "Impossible de charger les audits (Drupal n'est peut-être pas configuré
 
 #: auto_a11y/web/templates/projects/edit.html:51
 msgid "Edit Project"
-msgstr "Nouveau projet"
+msgstr "Modifier le projet"
 
 #: auto_a11y/web/templates/projects/edit.html:71
 #: auto_a11y/web/templates/projects/list.html:22
@@ -3855,9 +3858,11 @@ msgstr ""
 #: auto_a11y/web/templates/projects/edit.html:160
 #, python-format
 msgid ""
-"Headings approaching this limit (above 67% of the limit) will generate an"
-" info message."
+"Headings approaching this limit (above 67%% of the limit) will generate "
+"an info message."
 msgstr ""
+"Les titres approchant cette limite (au-dessus de 67%% de la limite) "
+"génèreront un message d'information."
 
 #: auto_a11y/web/templates/projects/edit.html:166
 msgid "Inaccessible Fonts Configuration"
@@ -4069,6 +4074,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:160
 #: auto_a11y/web/templates/recordings/detail.html:149
+#: auto_a11y/web/templates/recordings/upload.html:174
 msgid "Discovered Pages"
 msgstr "Pages découvertes"
 
@@ -4211,6 +4217,7 @@ msgid "Manage test users"
 msgstr "Gérer les utilisateurs de test"
 
 #: auto_a11y/web/templates/projects/view.html:417
+#: auto_a11y/web/templates/recordings/upload.html:411
 #: auto_a11y/web/templates/websites/view.html:529
 #: auto_a11y/web/templates/websites/view.html:626
 msgid "Add test users"
@@ -4417,8 +4424,9 @@ msgid "Tester"
 msgstr "Testées"
 
 #: auto_a11y/web/templates/recordings/detail.html:71
+#: auto_a11y/web/templates/recordings/upload.html:111
 msgid "Test Supervisor"
-msgstr "Utilisateurs de test"
+msgstr "Superviseur de test"
 
 #: auto_a11y/web/templates/recordings/detail.html:80
 msgid "Test User Account"
@@ -4430,8 +4438,9 @@ msgstr "enregistrements"
 
 #: auto_a11y/web/templates/recordings/detail.html:99
 #: auto_a11y/web/templates/recordings/list.html:36
+#: auto_a11y/web/templates/recordings/upload.html:152
 msgid "Recording Type"
-msgstr "enregistrements"
+msgstr "Type d'enregistrement"
 
 #: auto_a11y/web/templates/recordings/detail.html:106
 #: auto_a11y/web/templates/recordings/list.html:25
@@ -4456,24 +4465,28 @@ msgid "No discovered pages selected"
 msgstr "Pages découvertes"
 
 #: auto_a11y/web/templates/recordings/detail.html:175
+#: auto_a11y/web/templates/recordings/upload.html:385
 msgid "Loading discovered pages..."
-msgstr "Pages découvertes"
+msgstr "Chargement des pages découvertes..."
 
 #: auto_a11y/web/templates/recordings/detail.html:177
 msgid "Select discovered pages related to this recording"
 msgstr "Sélectionner les pages découvertes liées à cet enregistrement"
 
 #: auto_a11y/web/templates/recordings/detail.html:183
+#: auto_a11y/web/templates/recordings/upload.html:185
 msgid "Common Components"
 msgstr "Composants communs"
 
 #: auto_a11y/web/templates/recordings/detail.html:194
+#: auto_a11y/web/templates/recordings/upload.html:195
 msgid "App Screens / Views"
-msgstr "Écrans/Vues d'application"
+msgstr "Écrans / Vues de l'application"
 
 #: auto_a11y/web/templates/recordings/detail.html:205
+#: auto_a11y/web/templates/recordings/upload.html:205
 msgid "Device Sections"
-msgstr "Aucune description"
+msgstr "Sections de l'appareil"
 
 #: auto_a11y/web/templates/recordings/detail.html:216
 msgid "Task Context"
@@ -4583,6 +4596,7 @@ msgid "timecode(s)"
 msgstr "code(s) temporel(s)"
 
 #: auto_a11y/web/templates/recordings/detail.html:555
+#: auto_a11y/web/templates/recordings/upload.html:327
 msgid "Timecodes:"
 msgstr "Codes temporels :"
 
@@ -4673,8 +4687,9 @@ msgid "criteria"
 msgstr "Critique"
 
 #: auto_a11y/web/templates/recordings/detail.html:682
+#: auto_a11y/web/templates/recordings/upload.html:225
 msgid "Testing Scope"
-msgstr "Vient de se terminer"
+msgstr "Portée des tests"
 
 #: auto_a11y/web/templates/recordings/detail.html:702
 msgid "Applicable Criteria"
@@ -4725,20 +4740,23 @@ msgid "No project associated with this recording."
 msgstr "Aucun projet associé à cet enregistrement."
 
 #: auto_a11y/web/templates/recordings/detail.html:968
+#: auto_a11y/web/templates/recordings/upload.html:500
 msgid "No discovered pages found for this project."
 msgstr "Aucune page découverte trouvée pour ce projet."
 
 #: auto_a11y/web/templates/recordings/detail.html:973
+#: auto_a11y/web/templates/recordings/upload.html:506
 msgid "Error loading discovered pages."
-msgstr "Pages découvertes"
+msgstr "Erreur lors du chargement des pages découvertes."
 
 #: auto_a11y/web/templates/recordings/list.html:9
 msgid "Manual Audit Recordings"
 msgstr "Télécharger un enregistrement"
 
 #: auto_a11y/web/templates/recordings/list.html:12
+#: auto_a11y/web/templates/recordings/upload.html:304
 msgid "Upload Recording"
-msgstr "Télécharger un enregistrement"
+msgstr "Télécharger l'enregistrement"
 
 #: auto_a11y/web/templates/recordings/list.html:17
 msgid ""
@@ -4759,24 +4777,29 @@ msgid "All Types"
 msgstr "Type"
 
 #: auto_a11y/web/templates/recordings/list.html:39
+#: auto_a11y/web/templates/recordings/upload.html:154
 msgid "Audit"
-msgstr "Audité"
+msgstr "Audit"
 
 #: auto_a11y/web/templates/recordings/list.html:40
+#: auto_a11y/web/templates/recordings/upload.html:155
 msgid "Lived Experience Website"
-msgstr "Voir le site web"
+msgstr "Site Web d'expérience vécue"
 
 #: auto_a11y/web/templates/recordings/list.html:41
+#: auto_a11y/web/templates/recordings/upload.html:156
 msgid "Lived Experience App"
-msgstr "Expérience vécue - Application"
+msgstr "Application d'expérience vécue"
 
 #: auto_a11y/web/templates/recordings/list.html:42
+#: auto_a11y/web/templates/recordings/upload.html:157
 msgid "Lived Experience Tangible Device"
-msgstr "Appareil tangible"
+msgstr "Appareil tangible d'expérience vécue"
 
 #: auto_a11y/web/templates/recordings/list.html:43
+#: auto_a11y/web/templates/recordings/upload.html:158
 msgid "Lived Experience Nav and Wayfinding"
-msgstr "Navigation et orientation"
+msgstr "Navigation et orientation d'expérience vécue"
 
 #: auto_a11y/web/templates/recordings/list.html:76
 msgid "Test Account"
@@ -4802,6 +4825,421 @@ msgstr "Télécharger un enregistrement"
 #: auto_a11y/web/templates/recordings/list.html:127
 msgid "to get started."
 msgstr "pour commencer."
+
+#: auto_a11y/web/templates/recordings/upload.html:3
+msgid "Upload Recording - Auto A11y"
+msgstr "Télécharger un enregistrement - Auto A11y"
+
+#: auto_a11y/web/templates/recordings/upload.html:9
+msgid "Upload Manual Audit Recording"
+msgstr "Télécharger un enregistrement d'audit manuel"
+
+#: auto_a11y/web/templates/recordings/upload.html:12
+msgid ""
+"Upload a Dictaphone JSON file containing accessibility findings from "
+"manual audits or lived experience testing."
+msgstr ""
+"Téléchargez un fichier JSON Dictaphone contenant les constatations "
+"d'accessibilité provenant d'audits manuels ou de tests d'expérience "
+"vécue."
+
+#: auto_a11y/web/templates/recordings/upload.html:23
+msgid "Dictaphone JSON File *"
+msgstr "Fichier JSON Dictaphone *"
+
+#: auto_a11y/web/templates/recordings/upload.html:27
+msgid ""
+"Select the JSON file exported from Dictaphone containing accessibility "
+"issues and timecodes."
+msgstr ""
+"Sélectionnez le fichier JSON exporté de Dictaphone contenant les "
+"problèmes d'accessibilité et les codes temporels."
+
+#: auto_a11y/web/templates/recordings/upload.html:34
+msgid "Recording Content (Optional)"
+msgstr "Contenu de l'enregistrement (facultatif)"
+
+#: auto_a11y/web/templates/recordings/upload.html:38
+msgid ""
+"Upload HTML or JSON files for key takeaways, user painpoints, and user "
+"assertions. Both formats are supported."
+msgstr ""
+"Téléchargez des fichiers HTML ou JSON pour les points clés, les points "
+"douloureux de l'utilisateur et les affirmations de l'utilisateur. Les "
+"deux formats sont pris en charge."
+
+#: auto_a11y/web/templates/recordings/upload.html:43
+msgid "Key Takeaways (HTML or JSON)"
+msgstr "Points clés (HTML ou JSON)"
+
+#: auto_a11y/web/templates/recordings/upload.html:47
+msgid ""
+"Numbered list of the most important accessibility issues found. Accepts "
+"HTML or JSON format."
+msgstr ""
+"Liste numérotée des problèmes d'accessibilité les plus importants "
+"trouvés. Accepte le format HTML ou JSON."
+
+#: auto_a11y/web/templates/recordings/upload.html:53
+msgid "User Painpoints (HTML or JSON)"
+msgstr "Points douloureux de l'utilisateur (HTML ou JSON)"
+
+#: auto_a11y/web/templates/recordings/upload.html:57
+msgid ""
+"User-focused description of difficulties experienced during testing. "
+"Accepts HTML or JSON format."
+msgstr ""
+"Description centrée sur l'utilisateur des difficultés rencontrées pendant"
+" les tests. Accepte le format HTML ou JSON."
+
+#: auto_a11y/web/templates/recordings/upload.html:63
+msgid "User Assertions (HTML or JSON)"
+msgstr "Affirmations de l'utilisateur (HTML ou JSON)"
+
+#: auto_a11y/web/templates/recordings/upload.html:67
+msgid ""
+"Direct quotes and observations from the tester with timecodes. Accepts "
+"HTML or JSON format."
+msgstr ""
+"Citations directes et observations du testeur avec codes temporels. "
+"Accepte le format HTML ou JSON."
+
+#: auto_a11y/web/templates/recordings/upload.html:75
+msgid "Project *"
+msgstr "Projet *"
+
+#: auto_a11y/web/templates/recordings/upload.html:77
+msgid "Select a project..."
+msgstr "Sélectionnez un projet..."
+
+#: auto_a11y/web/templates/recordings/upload.html:83
+msgid "Which project should this recording be associated with?"
+msgstr "À quel projet cet enregistrement devrait-il être associé?"
+
+#: auto_a11y/web/templates/recordings/upload.html:89
+msgid "Test User Account Used"
+msgstr "Compte utilisateur de test utilisé"
+
+#: auto_a11y/web/templates/recordings/upload.html:91
+#: auto_a11y/web/templates/recordings/upload.html:382
+msgid "Select a test user..."
+msgstr "Sélectionnez un utilisateur de test..."
+
+#: auto_a11y/web/templates/recordings/upload.html:94
+#: auto_a11y/web/templates/recordings/upload.html:388
+msgid ""
+"Optional: Select the test account used during this audit. Choose a "
+"project first to see available test users."
+msgstr ""
+"Facultatif : Sélectionnez le compte de test utilisé lors de cet audit. "
+"Choisissez d'abord un projet pour voir les utilisateurs de test "
+"disponibles."
+
+#: auto_a11y/web/templates/recordings/upload.html:100
+msgid "Lived Experience Tester"
+msgstr "Testeur d'expérience vécue"
+
+#: auto_a11y/web/templates/recordings/upload.html:102
+#: auto_a11y/web/templates/recordings/upload.html:383
+msgid "Select a tester..."
+msgstr "Sélectionnez un testeur..."
+
+#: auto_a11y/web/templates/recordings/upload.html:105
+#: auto_a11y/web/templates/recordings/upload.html:389
+msgid ""
+"Select the lived experience tester who performed this test. Choose a "
+"project first to see available testers."
+msgstr ""
+"Sélectionnez le testeur d'expérience vécue qui a effectué ce test. "
+"Choisissez d'abord un projet pour voir les testeurs disponibles."
+
+#: auto_a11y/web/templates/recordings/upload.html:113
+#: auto_a11y/web/templates/recordings/upload.html:384
+msgid "Select a supervisor..."
+msgstr "Sélectionnez un superviseur..."
+
+#: auto_a11y/web/templates/recordings/upload.html:116
+#: auto_a11y/web/templates/recordings/upload.html:390
+msgid ""
+"Select the supervisor who oversaw this test. Choose a project first to "
+"see available supervisors."
+msgstr ""
+"Sélectionnez le superviseur qui a supervisé ce test. Choisissez d'abord "
+"un projet pour voir les superviseurs disponibles."
+
+#: auto_a11y/web/templates/recordings/upload.html:122
+msgid "Recording Title"
+msgstr "Titre de l'enregistrement"
+
+#: auto_a11y/web/templates/recordings/upload.html:124
+msgid "e.g., Main Website Screen Reader Audit"
+msgstr "p. ex., Audit du lecteur d'écran du site Web principal"
+
+#: auto_a11y/web/templates/recordings/upload.html:126
+msgid "Optional: A descriptive title for this recording."
+msgstr "Facultatif : Un titre descriptif pour cet enregistrement."
+
+#: auto_a11y/web/templates/recordings/upload.html:133
+msgid "Brief description of what was tested and key findings..."
+msgstr ""
+"Brève description de ce qui a été testé et des principales "
+"constatations..."
+
+#: auto_a11y/web/templates/recordings/upload.html:139
+msgid "Auditor Name"
+msgstr "Nom de l'auditeur"
+
+#: auto_a11y/web/templates/recordings/upload.html:144
+msgid "Auditor Role"
+msgstr "Rôle de l'auditeur"
+
+#: auto_a11y/web/templates/recordings/upload.html:146
+msgid "e.g., Screen Reader User, Expert Auditor"
+msgstr "p. ex., Utilisateur de lecteur d'écran, Auditeur expert"
+
+#: auto_a11y/web/templates/recordings/upload.html:164
+msgid "Page URLs Covered"
+msgstr "URLs des pages couvertes"
+
+#: auto_a11y/web/templates/recordings/upload.html:168
+msgid ""
+"Optional: Enter one URL per line for specific pages discussed in this "
+"recording."
+msgstr ""
+"Facultatif : Entrez une URL par ligne pour les pages spécifiques "
+"discutées dans cet enregistrement."
+
+#: auto_a11y/web/templates/recordings/upload.html:176
+msgid ""
+"Optional: Select discovered pages related to this recording. Choose a "
+"project first to see available pages."
+msgstr "Sélectionner les pages découvertes liées à cet enregistrement"
+
+#: auto_a11y/web/templates/recordings/upload.html:179
+#: auto_a11y/web/templates/recordings/upload.html:391
+msgid "Select a project to see discovered pages."
+msgstr "Sélectionnez un projet pour voir les pages découvertes."
+
+#: auto_a11y/web/templates/recordings/upload.html:189
+msgid ""
+"Optional: Enter one component name per line (e.g., header, nav, footer, "
+"modal, carousel)."
+msgstr ""
+"Facultatif : Entrez un nom de composant par ligne (p. ex., en-tête, nav, "
+"pied de page, modal, carrousel)."
+
+#: auto_a11y/web/templates/recordings/upload.html:199
+msgid "Optional: For app projects - enter one screen/view name per line."
+msgstr ""
+"Facultatif : Pour les projets d'application - entrez un nom d'écran/vue "
+"par ligne."
+
+#: auto_a11y/web/templates/recordings/upload.html:209
+msgid "Optional: For tangible devices - enter one section name per line."
+msgstr ""
+"Facultatif : Pour les appareils tangibles - entrez un nom de section par "
+"ligne."
+
+#: auto_a11y/web/templates/recordings/upload.html:215
+msgid "Task Description"
+msgstr "Description de la tâche"
+
+#: auto_a11y/web/templates/recordings/upload.html:217
+msgid "Complete checkout process"
+msgstr "Terminer le processus de commande"
+
+#: auto_a11y/web/templates/recordings/upload.html:219
+msgid ""
+"Optional: Describe the specific task being performed (e.g., \"Complete "
+"checkout\", \"Navigate to settings\")."
+msgstr ""
+"Facultatif : Décrivez la tâche spécifique effectuée (p. ex., « Terminer "
+"la commande », « Naviguer vers les paramètres »)."
+
+#: auto_a11y/web/templates/recordings/upload.html:227
+msgid ""
+"Select the content types covered in this recording to determine "
+"applicable WCAG criteria for compliance scoring."
+msgstr ""
+"Sélectionnez les types de contenu couverts dans cet enregistrement pour "
+"déterminer les critères WCAG applicables pour le score de conformité."
+
+#: auto_a11y/web/templates/recordings/upload.html:234
+msgid "Forms"
+msgstr "Formulaires"
+
+#: auto_a11y/web/templates/recordings/upload.html:240
+msgid "Video (prerecorded)"
+msgstr "Vidéo (préenregistrée)"
+
+#: auto_a11y/web/templates/recordings/upload.html:246
+msgid "Live Multimedia"
+msgstr "Multimédia en direct"
+
+#: auto_a11y/web/templates/recordings/upload.html:252
+msgid "Multilingual Content"
+msgstr "Contenu multilingue"
+
+#: auto_a11y/web/templates/recordings/upload.html:258
+msgid "Orientation Changes"
+msgstr "Changements d'orientation"
+
+#: auto_a11y/web/templates/recordings/upload.html:266
+msgid "Zoom / Text Resize"
+msgstr "Zoom / Redimensionnement du texte"
+
+#: auto_a11y/web/templates/recordings/upload.html:272
+msgid "Timeouts / Re-authentication"
+msgstr "Délais d'expiration / Réauthentification"
+
+#: auto_a11y/web/templates/recordings/upload.html:278
+msgid "Motion Actuation"
+msgstr "Actionnement par mouvement"
+
+#: auto_a11y/web/templates/recordings/upload.html:284
+msgid "Drag and Drop"
+msgstr "Glisser-déposer"
+
+#: auto_a11y/web/templates/recordings/upload.html:293
+msgid "Media File Path"
+msgstr "Chemin du fichier média"
+
+#: auto_a11y/web/templates/recordings/upload.html:297
+msgid ""
+"Optional: Path or URL to the actual video/audio recording file for "
+"reference."
+msgstr ""
+"Facultatif : Chemin ou URL vers le fichier d'enregistrement vidéo/audio "
+"réel pour référence."
+
+#: auto_a11y/web/templates/recordings/upload.html:318
+msgid "About Dictaphone Format"
+msgstr "À propos du format Dictaphone"
+
+#: auto_a11y/web/templates/recordings/upload.html:322
+msgid ""
+"Dictaphone generates accessibility findings from audio/video recordings "
+"of manual audits. The JSON format includes:"
+msgstr ""
+"Dictaphone génère des constatations d'accessibilité à partir "
+"d'enregistrements audio/vidéo d'audits manuels. Le format JSON comprend :"
+
+#: auto_a11y/web/templates/recordings/upload.html:325
+msgid "Recording ID:"
+msgstr "ID d'enregistrement :"
+
+#: auto_a11y/web/templates/recordings/upload.html:325
+msgid "Unique identifier"
+msgstr "Identifiant unique"
+
+#: auto_a11y/web/templates/recordings/upload.html:326
+msgid "Issues:"
+msgstr "Problèmes :"
+
+#: auto_a11y/web/templates/recordings/upload.html:326
+msgid "List of accessibility problems found"
+msgstr "Liste des problèmes d'accessibilité trouvés"
+
+#: auto_a11y/web/templates/recordings/upload.html:327
+msgid "Start/end times in the recording"
+msgstr "Heures de début/fin dans l'enregistrement"
+
+#: auto_a11y/web/templates/recordings/upload.html:328
+msgid "Impact Levels:"
+msgstr "Niveaux d'impact :"
+
+#: auto_a11y/web/templates/recordings/upload.html:328
+msgid "High, Medium, Low"
+msgstr "Élevé, Moyen, Faible"
+
+#: auto_a11y/web/templates/recordings/upload.html:329
+msgid "WCAG Criteria:"
+msgstr "Critères WCAG :"
+
+#: auto_a11y/web/templates/recordings/upload.html:329
+msgid "Relevant guidelines"
+msgstr "Directives pertinentes"
+
+#: auto_a11y/web/templates/recordings/upload.html:330
+msgid "Detailed Descriptions:"
+msgstr "Descriptions détaillées :"
+
+#: auto_a11y/web/templates/recordings/upload.html:330
+msgid "What, why, who, and how to fix"
+msgstr "Quoi, pourquoi, qui et comment réparer"
+
+#: auto_a11y/web/templates/recordings/upload.html:333
+msgid "Example JSON Structure"
+msgstr "Exemple de structure JSON"
+
+#: auto_a11y/web/templates/recordings/upload.html:409
+msgid "Optional: Select which test account was used during this audit."
+msgstr ""
+"Facultatif : Sélectionnez quel compte de test a été utilisé lors de cet "
+"audit."
+
+#: auto_a11y/web/templates/recordings/upload.html:409
+msgid "Manage project users"
+msgstr "Gérer les utilisateurs du projet"
+
+#: auto_a11y/web/templates/recordings/upload.html:411
+msgid "No test users configured for this project."
+msgstr ""
+"Aucun utilisateur de test configuré pour ce projet.Aucun utilisateur de "
+"test configuré. Les tests s'exécuteront en tant qu'invité.Aucun "
+"utilisateur de test configuré. Les tests s'exécuteront en tant "
+"qu'invité.Aucun utilisateur de test configuré. Les tests s'exécuteront en"
+" tant qu'invité.Aucun utilisateur de test configuré. Les tests "
+"s'exécuteront en tant qu'invité."
+
+#: auto_a11y/web/templates/recordings/upload.html:416
+msgid "Optional: Select the test account used during this audit."
+msgstr ""
+"Facultatif : Sélectionnez le compte de test utilisé lors de cet audit. "
+"Choisissez d'abord un projet pour voir les utilisateurs de test "
+"disponibles."
+
+#: auto_a11y/web/templates/recordings/upload.html:437
+msgid "Select the lived experience tester who performed this test."
+msgstr "Voir le site web"
+
+#: auto_a11y/web/templates/recordings/upload.html:439
+msgid ""
+"No lived experience testers configured for this project. Add testers in "
+"project settings."
+msgstr ""
+"Aucun testeur d'expérience vécue configuré pour ce projet. Ajoutez des "
+"testeurs dans les paramètres du projet."
+
+#: auto_a11y/web/templates/recordings/upload.html:453
+msgid "Select the supervisor who oversaw this test."
+msgstr ""
+"Sélectionnez le superviseur qui a supervisé ce test. Choisissez d'abord "
+"un projet pour voir les superviseurs disponibles."
+
+#: auto_a11y/web/templates/recordings/upload.html:455
+msgid ""
+"No test supervisors configured for this project. Add supervisors in "
+"project settings."
+msgstr ""
+"Aucun superviseur de test configuré pour ce projet. Ajoutez des "
+"superviseurs dans les paramètres du projet."
+
+#: auto_a11y/web/templates/recordings/upload.html:461
+msgid "Error loading testers."
+msgstr "Erreur lors du chargement des testeurs."
+
+#: auto_a11y/web/templates/recordings/upload.html:462
+msgid "Error loading supervisors."
+msgstr "Erreur lors du chargement des superviseurs."
+
+#: auto_a11y/web/templates/recordings/upload.html:498
+msgid "Optional: Select discovered pages related to this recording."
+msgstr "Sélectionner les pages découvertes liées à cet enregistrement"
+
+#: auto_a11y/web/templates/recordings/upload.html:501
+msgid "Optional: No discovered pages available for this project."
+msgstr "Facultatif : Aucune page découverte disponible pour ce projet."
 
 #: auto_a11y/web/templates/scripts/create.html:3
 msgid "Create Page Setup Script - Auto A11y"
@@ -6106,472 +6544,8 @@ msgstr "format..."
 msgid "Generating accessibility report in"
 msgstr "Génération du rapport d'accessibilité en"
 
-#: venv/lib/python3.13/site-packages/argparse.py:319
-msgid "usage: "
-msgstr "Audité"
-
-#: venv/lib/python3.13/site-packages/argparse.py:827
-msgid ".__call__() not defined"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1122
-#, python-format
-msgid "unknown parser %r (choices: %s)"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1163
-#, python-format
-msgid "argument \"-\" with mode %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1174
-#, python-format
-msgid "can't open '%s': %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1371
-#, python-format
-msgid "cannot merge actions - two groups are named %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1409
-msgid "'required' is an invalid argument for positionals"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1429
-#, python-format
-msgid "invalid option string %r: must start with a character %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1450
-#, python-format
-msgid "dest= is required for options like %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1467
-#, python-format
-msgid "invalid conflict_resolution value: %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1485
-#, python-format
-msgid "conflicting option string(s): %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1548
-msgid "mutually exclusive arguments must be optional"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1618
-msgid "positional arguments"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1619
-msgid "optional arguments"
-msgstr "pages"
-
-#: venv/lib/python3.13/site-packages/argparse.py:1637
-msgid "show this help message and exit"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1643
-msgid "show program's version number and exit"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1675
-msgid "cannot have multiple subparser arguments"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1727
-#, python-format
-msgid "unrecognized arguments: %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1821
-#, python-format
-msgid "not allowed with argument %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1867
-#: venv/lib/python3.13/site-packages/argparse.py:1881
-#, python-format
-msgid "ignored explicit argument %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1971
-msgid "too few arguments"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1978
-#, python-format
-msgid "argument %s is required"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2003
-#, python-format
-msgid "one of the arguments %s is required"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2049
-msgid "expected one argument"
-msgstr "Éléments cachés attendus :"
-
-#: venv/lib/python3.13/site-packages/argparse.py:2050
-msgid "expected at most one argument"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2051
-msgid "expected at least one argument"
-msgstr "Éléments visibles attendus :"
-
-#: venv/lib/python3.13/site-packages/argparse.py:2053
-#, python-format
-msgid "expected %s argument(s)"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2110
-#, python-format
-msgid "ambiguous option: %s could match %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2172
-#, python-format
-msgid "unexpected option string: %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2273
-#, python-format
-msgid "%r is not callable"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2289
-#, python-format
-msgid "invalid %s value: %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2299
-#, python-format
-msgid "invalid choice: %r (choose from %s)"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2392
-#, python-format
-msgid "%s: error: %s\n"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/_termui_impl.py:600
-#, python-brace-format
-msgid "{editor}: Editing failed"
-msgstr "Tests"
-
-#: venv/lib/python3.13/site-packages/click/_termui_impl.py:604
-#, python-brace-format
-msgid "{editor}: Editing failed: {e}"
-msgstr "Tests"
-
-#: venv/lib/python3.13/site-packages/click/core.py:1084
-#: venv/lib/python3.13/site-packages/click/core.py:1121
-#, python-brace-format
-msgid "{text} {deprecated_message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1140
-msgid "Options"
-msgstr "Actions"
-
-#: venv/lib/python3.13/site-packages/click/core.py:1202
-#, python-brace-format
-msgid "Got unexpected extra argument ({args})"
-msgid_plural "Got unexpected extra arguments ({args})"
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1221
-#, python-brace-format
-msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1405
-msgid "Aborted!"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1779
-msgid "Commands"
-msgstr "secondes"
-
-#: venv/lib/python3.13/site-packages/click/core.py:1810
-msgid "Missing command."
-msgstr "Points de repère manquants"
-
-#: venv/lib/python3.13/site-packages/click/core.py:1888
-#, python-brace-format
-msgid "No such command {name!r}."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2303
-msgid "Value must be an iterable."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2324
-#, python-brace-format
-msgid "Takes {nargs} values but 1 was given."
-msgid_plural "Takes {nargs} values but {len} were given."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2404
-#, python-brace-format
-msgid ""
-"DeprecationWarning: The {param_type} {name!r} is "
-"deprecated.{extra_message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2807
-#, python-brace-format
-msgid "env var: {var}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2810
-#, python-brace-format
-msgid "default: {default}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2814
-msgid "required"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2870
-msgid "(dynamic)"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/decorators.py:465
-#, python-format
-msgid "%(prog)s, version %(version)s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/decorators.py:522
-msgid "Show the version and exit."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/decorators.py:548
-msgid "Show this message and exit."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:50
-#: venv/lib/python3.13/site-packages/click/exceptions.py:89
-#, python-brace-format
-msgid "Error: {message}"
-msgstr "Erreur : %s"
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:81
-#, python-brace-format
-msgid "Try '{command} {option}' for help."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:130
-#, python-brace-format
-msgid "Invalid value: {message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:132
-#, python-brace-format
-msgid "Invalid value for {param_hint}: {message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:190
-msgid "Missing argument"
-msgstr "Étiquettes de formulaire manquantes"
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:192
-msgid "Missing option"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:194
-msgid "Missing parameter"
-msgstr "Étiquettes de formulaire manquantes"
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:196
-#, python-brace-format
-msgid "Missing {param_type}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:203
-#, python-brace-format
-msgid "Missing parameter: {param_name}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:223
-#, python-brace-format
-msgid "No such option: {name}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:235
-#, python-brace-format
-msgid "Did you mean {possibility}?"
-msgid_plural "(Possible options: {possibilities})"
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:282
-msgid "unknown error"
-msgstr "Erreur inconnue"
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:289
-#, python-brace-format
-msgid "Could not open file {filename!r}: {message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/formatting.py:156
-msgid "Usage:"
-msgstr "Audité"
-
-#: venv/lib/python3.13/site-packages/click/parser.py:200
-#, python-brace-format
-msgid "Argument {name!r} takes {nargs} values."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/parser.py:383
-#, python-brace-format
-msgid "Option {name!r} does not take a value."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/parser.py:444
-#, python-brace-format
-msgid "Option {name!r} requires an argument."
-msgid_plural "Option {name!r} requires {nargs} arguments."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/shell_completion.py:326
-msgid "Shell completion is not supported for Bash versions older than 4.4."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/shell_completion.py:333
-msgid "Couldn't detect Bash version, shell completion is not supported."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:162
-msgid "Repeat for confirmation"
-msgstr "Configuration"
-
-#: venv/lib/python3.13/site-packages/click/termui.py:178
-msgid "Error: The value you entered was invalid."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:180
-#, python-brace-format
-msgid "Error: {e.message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:191
-msgid "Error: The two entered values do not match."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:247
-msgid "Error: invalid input"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:866
-msgid "Press any key to continue..."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:332
-#, python-brace-format
-msgid ""
-"Choose from:\n"
-"\t{choices}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:369
-#, python-brace-format
-msgid "{value!r} is not {choice}."
-msgid_plural "{value!r} is not one of {choices}."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:460
-#, python-brace-format
-msgid "{value!r} does not match the format {format}."
-msgid_plural "{value!r} does not match the formats {formats}."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:482
-#, python-brace-format
-msgid "{value!r} is not a valid {number_type}."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:538
-#, python-brace-format
-msgid "{value} is not in the range {range}."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:679
-#, python-brace-format
-msgid "{value!r} is not a valid boolean."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:703
-#, python-brace-format
-msgid "{value!r} is not a valid UUID."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:893
-msgid "file"
-msgstr "Échoué"
-
-#: venv/lib/python3.13/site-packages/click/types.py:895
-msgid "directory"
-msgstr "Découvrir"
-
-#: venv/lib/python3.13/site-packages/click/types.py:897
-msgid "path"
-msgstr "XPath :"
-
-#: venv/lib/python3.13/site-packages/click/types.py:944
-#, python-brace-format
-msgid "{name} {filename!r} does not exist."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:953
-#, python-brace-format
-msgid "{name} {filename!r} is a file."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:961
-#, python-brace-format
-msgid "{name} {filename!r} is a directory."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:970
-#, python-brace-format
-msgid "{name} {filename!r} is not readable."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:979
-#, python-brace-format
-msgid "{name} {filename!r} is not writable."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:988
-#, python-brace-format
-msgid "{name} {filename!r} is not executable."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:1055
-#, python-brace-format
-msgid "{len_type} values are required, but {len_value} was given."
-msgid_plural "{len_type} values are required, but {len_value} were given."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/mypy/main.py:423
-#, python-format
-msgid "%(prog)s: error: %(message)s\n"
-msgstr ""
-
 #~ msgid "usage: "
-#~ msgstr ""
+#~ msgstr "Audité"
 
 #~ msgid ".__call__() not defined"
 #~ msgstr ""
@@ -6610,7 +6584,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "optional arguments"
-#~ msgstr ""
+#~ msgstr "pages"
 
 #~ msgid "show this help message and exit"
 #~ msgstr ""
@@ -6640,13 +6614,13 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "expected one argument"
-#~ msgstr ""
+#~ msgstr "Éléments cachés attendus :"
 
 #~ msgid "expected at most one argument"
 #~ msgstr ""
 
 #~ msgid "expected at least one argument"
-#~ msgstr ""
+#~ msgstr "Éléments visibles attendus :"
 
 #~ msgid "expected %s argument(s)"
 #~ msgstr ""
@@ -6670,10 +6644,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "{editor}: Editing failed"
-#~ msgstr ""
+#~ msgstr "Tests"
 
 #~ msgid "{editor}: Editing failed: {e}"
-#~ msgstr ""
+#~ msgstr "Tests"
 
 #~ msgid "{text} {deprecated_message}"
 #~ msgstr ""
@@ -6690,10 +6664,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Commands"
-#~ msgstr ""
+#~ msgstr "secondes"
 
 #~ msgid "Missing command."
-#~ msgstr ""
+#~ msgstr "Points de repère manquants"
 
 #~ msgid "No such command {name!r}."
 #~ msgstr ""
@@ -6733,7 +6707,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Error: {message}"
-#~ msgstr ""
+#~ msgstr "Erreur : %s"
 
 #~ msgid "Try '{command} {option}' for help."
 #~ msgstr ""
@@ -6745,13 +6719,13 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Missing argument"
-#~ msgstr ""
+#~ msgstr "Étiquettes de formulaire manquantes"
 
 #~ msgid "Missing option"
 #~ msgstr ""
 
 #~ msgid "Missing parameter"
-#~ msgstr ""
+#~ msgstr "Étiquettes de formulaire manquantes"
 
 #~ msgid "Missing {param_type}"
 #~ msgstr ""
@@ -6771,7 +6745,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Usage:"
-#~ msgstr ""
+#~ msgstr "Audité"
 
 #~ msgid "Argument {name!r} takes {nargs} values."
 #~ msgstr ""
@@ -6836,10 +6810,10 @@ msgstr ""
 #~ msgstr "Échoué"
 
 #~ msgid "directory"
-#~ msgstr ""
+#~ msgstr "Découvrir"
 
 #~ msgid "path"
-#~ msgstr ""
+#~ msgstr "XPath :"
 
 #~ msgid "{name} {filename!r} does not exist."
 #~ msgstr ""
@@ -6887,4 +6861,19 @@ msgstr ""
 #~ "makes sense. Use both for comprehensive"
 #~ " coverage."
 #~ msgstr ""
+
+#~ msgid ""
+#~ "Headings approaching this limit (above "
+#~ "67% of the limit) will generate an"
+#~ " info message."
+#~ msgstr ""
+
+#~ msgid "Options"
+#~ msgstr "Actions"
+
+#~ msgid "unknown error"
+#~ msgstr "Erreur inconnue"
+
+#~ msgid "Repeat for confirmation"
+#~ msgstr "Configuration"
 

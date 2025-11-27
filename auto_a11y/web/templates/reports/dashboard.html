@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Reports - Auto A11y{% endblock %}
+{% block title %}{{ _('Reports') }} - Auto A11y{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">Reports</h1>
+        <h1 class="h2">{{ _('Reports') }}</h1>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateReportModal">
-            <i class="bi bi-plus-circle"></i> Generate Report
+            <i class="bi bi-plus-circle"></i> {{ _('Generate Report') }}
         </button>
     </div>
 
@@ -127,12 +127,12 @@
                         <i class="bi bi-file-earmark-check display-3 icon-summary"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">Accessibility Report</h5>
-                        <p class="card-text text-muted">Comprehensive accessibility testing results</p>
+                        <h5 class="card-title mt-3">{{ _('Accessibility Report') }}</h5>
+                        <p class="card-text text-muted">{{ _('Comprehensive accessibility testing results') }}</p>
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-summary" data-bs-toggle="modal" data-bs-target="#generateReportModal">
-                            <i class="bi bi-download me-2"></i>Generate Report
+                            <i class="bi bi-download me-2"></i>{{ _('Generate Report') }}
                         </button>
                     </div>
                 </div>
@@ -145,12 +145,12 @@
                         <i class="bi bi-search display-3 icon-html"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">Discovery Report</h5>
-                        <p class="card-text text-muted">Discover content requiring manual inspection</p>
+                        <h5 class="card-title mt-3">{{ _('Discovery Report') }}</h5>
+                        <p class="card-text text-muted">{{ _('Discover content requiring manual inspection') }}</p>
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-html" data-bs-toggle="modal" data-bs-target="#discoveryModal">
-                            <i class="bi bi-search me-2"></i>Generate Discovery Report
+                            <i class="bi bi-search me-2"></i>{{ _('Generate Discovery Report') }}
                         </button>
                     </div>
                 </div>
@@ -163,12 +163,12 @@
                         <i class="bi bi-diagram-3 display-3 icon-summary"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">Site Structure</h5>
-                        <p class="card-text text-muted">Hierarchical view of website organization</p>
+                        <h5 class="card-title mt-3">{{ _('Site Structure') }}</h5>
+                        <p class="card-text text-muted">{{ _('Hierarchical view of website organization') }}</p>
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-summary" data-bs-toggle="modal" data-bs-target="#siteStructureModal">
-                            <i class="bi bi-diagram-3 me-2"></i>Generate Structure
+                            <i class="bi bi-diagram-3 me-2"></i>{{ _('Generate Structure') }}
                         </button>
                     </div>
                 </div>
@@ -185,12 +185,12 @@
                         <i class="bi bi-file-earmark-zip display-3 icon-html"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">Offline Report (Static HTML)</h5>
-                        <p class="card-text text-muted">Multi-page offline report with filters, scores, and full issue details (ZIP download)</p>
+                        <h5 class="card-title mt-3">{{ _('Offline Report (Static HTML)') }}</h5>
+                        <p class="card-text text-muted">{{ _('Multi-page offline report with filters, scores, and full issue details (ZIP download)') }}</p>
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-html" data-bs-toggle="modal" data-bs-target="#staticHtmlModal">
-                            <i class="bi bi-download me-2"></i>Generate Offline Report
+                            <i class="bi bi-download me-2"></i>{{ _('Generate Offline Report') }}
                         </button>
                     </div>
                 </div>
@@ -203,12 +203,12 @@
                         <i class="bi bi-file-earmark-zip display-3 icon-summary"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">Deduplicated Offline Report</h5>
-                        <p class="card-text text-muted">Single-page offline report with issues grouped by common components (ZIP download)</p>
+                        <h5 class="card-title mt-3">{{ _('Deduplicated Offline Report') }}</h5>
+                        <p class="card-text text-muted">{{ _('Single-page offline report with issues grouped by common components (ZIP download)') }}</p>
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-summary" data-bs-toggle="modal" data-bs-target="#deduplicatedModal">
-                            <i class="bi bi-file-earmark-zip me-2"></i>Generate Deduplicated Report
+                            <i class="bi bi-file-earmark-zip me-2"></i>{{ _('Generate Deduplicated Report') }}
                         </button>
                     </div>
                 </div>
@@ -221,12 +221,12 @@
                         <i class="bi bi-mic display-3 icon-pdf"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">Recordings Report</h5>
-                        <p class="card-text text-muted">Manual accessibility audit findings from recorded testing sessions</p>
+                        <h5 class="card-title mt-3">{{ _('Recordings Report') }}</h5>
+                        <p class="card-text text-muted">{{ _('Manual accessibility audit findings from recorded testing sessions') }}</p>
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-pdf" data-bs-toggle="modal" data-bs-target="#recordingsModal">
-                            <i class="bi bi-mic me-2"></i>Generate Recordings Report
+                            <i class="bi bi-mic me-2"></i>{{ _('Generate Recordings Report') }}
                         </button>
                     </div>
                 </div>
@@ -237,7 +237,7 @@
     <!-- Recent Reports -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Recent Reports</h5>
+            <h5 class="mb-0">{{ _('Recent Reports') }}</h5>
         </div>
         <div class="card-body">
             {% if reports %}
@@ -245,12 +245,12 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Report Name</th>
-                            <th>Type</th>
-                            <th>Project</th>
-                            <th>Generated</th>
-                            <th>Size</th>
-                            <th>Actions</th>
+                            <th>{{ _('Report Name') }}</th>
+                            <th>{{ _('Type') }}</th>
+                            <th>{{ _('Project') }}</th>
+                            <th>{{ _('Generated') }}</th>
+                            <th>{{ _('Size') }}</th>
+                            <th>{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -275,17 +275,17 @@
                                     {{ report.type|upper }}
                                 </span>
                             </td>
-                            <td>{{ report.project_name or 'All Projects' }}</td>
-                            <td>{{ report.created_at.strftime('%Y-%m-%d %H:%M') if report.created_at else 'Unknown' }}</td>
-                            <td>{{ report.size_kb|filesizeformat if report.size_kb else 'N/A' }}</td>
+                            <td>{{ report.project_name or _('All Projects') }}</td>
+                            <td>{{ report.created_at.strftime('%Y-%m-%d %H:%M') if report.created_at else _('Unknown') }}</td>
+                            <td>{{ report.size_kb|filesizeformat if report.size_kb else _('N/A') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ url_for('reports.download_report', filename=report.filename) }}" 
-                                       class="btn btn-sm btn-primary" title="Download">
+                                    <a href="{{ url_for('reports.download_report', filename=report.filename) }}"
+                                       class="btn btn-sm btn-primary" title="{{ _('Download') }}">
                                         <i class="bi bi-download"></i>
                                     </a>
-                                    <button class="btn btn-sm btn-danger" 
-                                            onclick="deleteReport('{{ report.filename }}')" title="Delete">
+                                    <button class="btn btn-sm btn-danger"
+                                            onclick="deleteReport('{{ report.filename }}')" title="{{ _('Delete') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
@@ -297,7 +297,7 @@
             </div>
             {% else %}
             <p class="text-muted text-center py-4">
-                No reports generated yet. Click "Generate Report" to create your first report.
+                {{ _('No reports generated yet. Click "Generate Report" to create your first report.') }}
             </p>
             {% endif %}
         </div>
@@ -309,7 +309,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Generate Report</h5>
+                <h5 class="modal-title">{{ _('Generate Report') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="generateReportForm">
@@ -317,19 +317,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="reportName" class="form-label">Report Name</label>
-                                <input type="text" class="form-control" id="reportName" 
-                                       placeholder="Accessibility Report">
+                                <label for="reportName" class="form-label">{{ _('Report Name') }}</label>
+                                <input type="text" class="form-control" id="reportName"
+                                       placeholder="{{ _('Accessibility Report') }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="reportType" class="form-label">Report Type</label>
+                                <label for="reportType" class="form-label">{{ _('Report Type') }}</label>
                                 <select class="form-control" id="reportType">
-                                    <option value="pdf">PDF Report</option>
-                                    <option value="excel">Excel Spreadsheet</option>
-                                    <option value="json">JSON Export</option>
-                                    <option value="html">HTML Report</option>
+                                    <option value="pdf">{{ _('PDF Report') }}</option>
+                                    <option value="excel">{{ _('Excel Spreadsheet') }}</option>
+                                    <option value="json">{{ _('JSON Export') }}</option>
+                                    <option value="html">{{ _('HTML Report') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -338,9 +338,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="projectSelect" class="form-label">Project</label>
+                                <label for="projectSelect" class="form-label">{{ _('Project') }}</label>
                                 <select class="form-control" id="projectSelect">
-                                    <option value="">All Projects</option>
+                                    <option value="">{{ _('All Projects') }}</option>
                                     {% for project in projects %}
                                     <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
@@ -349,16 +349,16 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="websiteSelect" class="form-label">Website</label>
+                                <label for="websiteSelect" class="form-label">{{ _('Website') }}</label>
                                 <select class="form-control" id="websiteSelect" disabled>
-                                    <option value="">Select a project first...</option>
+                                    <option value="">{{ _('Select a project first...') }}</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Date Range</label>
+                        <label class="form-label">{{ _('Date Range') }}</label>
                         <div class="row">
                             <div class="col-md-6">
                                 <input type="date" class="form-control" id="startDate">
@@ -370,43 +370,43 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Include in Report</label>
+                        <label class="form-label">{{ _('Include in Report') }}</label>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="includeViolations" checked>
                             <label class="form-check-label" for="includeViolations">
-                                Accessibility Violations
+                                {{ _('Accessibility Violations') }}
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="includeWarnings" checked>
                             <label class="form-check-label" for="includeWarnings">
-                                Warnings
+                                {{ _('Warnings') }}
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="includeAI" checked>
                             <label class="form-check-label" for="includeAI">
-                                AI Analysis Results
+                                {{ _('AI Analysis Results') }}
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="includeScreenshots">
                             <label class="form-check-label" for="includeScreenshots">
-                                Screenshots (increases file size)
+                                {{ _('Screenshots (increases file size)') }}
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="includeSummary" checked>
                             <label class="form-check-label" for="includeSummary">
-                                Executive Summary
+                                {{ _('Executive Summary') }}
                             </label>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-file-earmark-arrow-down"></i> Generate Report
+                        <i class="bi bi-file-earmark-arrow-down"></i> {{ _('Generate Report') }}
                     </button>
                 </div>
             </form>
@@ -425,7 +425,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set default report name with today's date
     const reportNameInput = document.getElementById('reportName');
     if (!reportNameInput.value) {
-        reportNameInput.value = `Accessibility Report ${todayStr}`;
+        reportNameInput.value = {{ _("Accessibility Report") | tojson }} + ' ' + todayStr;
     }
     
     // Set date range
@@ -446,13 +446,13 @@ document.getElementById('projectSelect').addEventListener('change', function() {
 
     if (selectedProjectId) {
         // Load websites for selected project
-        websiteSelect.innerHTML = '<option value="">Loading websites...</option>';
+        websiteSelect.innerHTML = <option value="">' +  _("Loading websites...") | tojson  + '</option>;
         websiteSelect.disabled = true;
 
         fetch(`/projects/api/${selectedProjectId}/websites`)
             .then(response => response.json())
             .then(data => {
-                websiteSelect.innerHTML = '<option value="">All Websites</option>';
+                websiteSelect.innerHTML = <option value="">' +  _("All Websites") | tojson  + '</option>;
 
                 if (data.websites && data.websites.length > 0) {
                     data.websites.forEach(website => {
@@ -463,16 +463,16 @@ document.getElementById('projectSelect').addEventListener('change', function() {
                     });
                     websiteSelect.disabled = false;
                 } else {
-                    websiteSelect.innerHTML = '<option value="">No websites in this project</option>';
+                    websiteSelect.innerHTML = <option value="">' +  _("No websites in this project") | tojson  + '</option>;
                 }
             })
             .catch(error => {
                 console.error('Error loading websites:', error);
-                websiteSelect.innerHTML = '<option value="">Error loading websites</option>';
+                websiteSelect.innerHTML = <option value="">' +  _("Error loading websites") | tojson  + '</option>;
             });
     } else {
         // Disable website select when "All Projects" is selected
-        websiteSelect.innerHTML = '<option value="">Select a project first...</option>';
+        websiteSelect.innerHTML = <option value="">' +  _("Select a project first...") | tojson  + '</option>;
         websiteSelect.disabled = true;
     }
 });
@@ -498,7 +498,7 @@ document.getElementById('generateReportForm').addEventListener('submit', functio
     // Show loading state
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+    submitBtn.innerHTML = <span class="spinner-border spinner-border-sm me-2"></span>' +  _("Generating...") | tojson ;
     submitBtn.disabled = true;
     
     // Submit request
@@ -516,11 +516,11 @@ document.getElementById('generateReportForm').addEventListener('submit', functio
             bootstrap.Modal.getInstance(document.getElementById('generateReportModal')).hide();
             location.reload();
         } else {
-            alert('Failed to generate report: ' + (data.error || 'Unknown error'));
+            alert({{ _("Failed to generate report: ") | tojson }} + (data.error || {{ _("Unknown error") | tojson }}));
         }
     })
     .catch(error => {
-        alert('Error generating report: ' + error);
+        alert({{ _("Error generating report: ") | tojson }} + error);
     })
     .finally(() => {
         submitBtn.innerHTML = originalText;
@@ -535,10 +535,10 @@ function generateReport(type) {
 }
 
 function deleteReport(reportId) {
-    if (!confirm('Are you sure you want to delete this report?')) {
+    if (!confirm({{ _('Are you sure you want to delete this report?') | tojson }})) {
         return;
     }
-    
+
     fetch(`/reports/${reportId}/delete`, {
         method: 'POST'
     })
@@ -547,7 +547,7 @@ function deleteReport(reportId) {
         if (data.success) {
             location.reload();
         } else {
-            alert('Failed to delete report');
+            alert({{ _('Failed to delete report') | tojson }});
         }
     });
 }
@@ -571,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadWebsitesForProject(projectId);
             } else {
                 const websiteSelect = document.getElementById('structureWebsite');
-                websiteSelect.innerHTML = '<option value="">First select a project...</option>';
+                websiteSelect.innerHTML = <option value="">' +  _("First select a project...") | tojson  + '</option>;
                 websiteSelect.disabled = true;
             }
         });
@@ -592,8 +592,8 @@ function loadProjectsForStructure() {
     .then(response => response.json())
     .then(data => {
         const select = document.getElementById('structureProject');
-        select.innerHTML = '<option value="">Choose a project...</option>';
-        
+        select.innerHTML = <option value="">' +  _("Choose a project...") | tojson  + '</option>;
+
         if (data.projects && data.projects.length > 0) {
             data.projects.forEach(project => {
                 const option = document.createElement('option');
@@ -602,26 +602,26 @@ function loadProjectsForStructure() {
                 select.appendChild(option);
             });
         } else {
-            select.innerHTML = '<option value="">No projects available</option>';
+            select.innerHTML = <option value="">' +  _("No projects available") | tojson  + '</option>;
         }
     })
     .catch(error => {
         console.error('Error loading projects:', error);
         const select = document.getElementById('structureProject');
-        select.innerHTML = '<option value="">Error loading projects</option>';
+        select.innerHTML = <option value="">' +  _("Error loading projects") | tojson  + '</option>;
     });
 }
 
 function loadWebsitesForProject(projectId) {
     const websiteSelect = document.getElementById('structureWebsite');
-    websiteSelect.innerHTML = '<option value="">Loading websites...</option>';
+    websiteSelect.innerHTML = <option value="">' +  _("Loading websites...") | tojson  + '</option>;
     websiteSelect.disabled = true;
-    
+
     fetch(`/projects/api/${projectId}/websites`)
     .then(response => response.json())
     .then(data => {
-        websiteSelect.innerHTML = '<option value="">Choose a website...</option>';
-        
+        websiteSelect.innerHTML = <option value="">' +  _("Choose a website...") | tojson  + '</option>;
+
         if (data.websites && data.websites.length > 0) {
             data.websites.forEach(website => {
                 const option = document.createElement('option');
@@ -631,21 +631,21 @@ function loadWebsitesForProject(projectId) {
             });
             websiteSelect.disabled = false;
         } else {
-            websiteSelect.innerHTML = '<option value="">No websites in this project</option>';
+            websiteSelect.innerHTML = <option value="">' +  _("No websites in this project") | tojson  + '</option>;
         }
     })
     .catch(error => {
         console.error('Error loading websites:', error);
-        websiteSelect.innerHTML = '<option value="">Error loading websites</option>';
+        websiteSelect.innerHTML = <option value="">' +  _("Error loading websites") | tojson  + '</option>;
     });
 }
 
 function generateSiteStructureReport() {
     const websiteId = document.getElementById('structureWebsite').value;
     const format = document.getElementById('structureFormat').value;
-    
+
     if (!websiteId) {
-        alert('Please select a project and website');
+        alert({{ _('Please select a project and website') | tojson }});
         return;
     }
     
@@ -692,13 +692,13 @@ function generateSiteStructureReport() {
                     projectGroup.style.display = 'block';
                     websiteGroup.style.display = 'block';
                     if (helpText) {
-                        helpText.textContent = 'Select a project first';
+                        helpText.textContent = {{ _('Select a project first') | tojson }};
                     }
                 } else {
                     projectGroup.style.display = 'block';
                     websiteGroup.style.display = 'none';
                     if (helpText) {
-                        helpText.textContent = 'All websites in the project will be included';
+                        helpText.textContent = {{ _('All websites in the project will be included') | tojson }};
                     }
                 }
             });
@@ -740,7 +740,7 @@ function loadProjectsForDiscovery() {
     .then(response => response.json())
     .then(data => {
         const select = document.getElementById('discoveryProject');
-        select.innerHTML = '<option value="">Choose a project...</option>';
+        select.innerHTML = <option value="">' +  _("Choose a project...") | tojson  + '</option>;
 
         if (data.projects && data.projects.length > 0) {
             data.projects.forEach(project => {
@@ -750,25 +750,25 @@ function loadProjectsForDiscovery() {
                 select.appendChild(option);
             });
         } else {
-            select.innerHTML = '<option value="">No projects available</option>';
+            select.innerHTML = <option value="">' +  _("No projects available") | tojson  + '</option>;
         }
     })
     .catch(error => {
         console.error('Error loading projects:', error);
         const select = document.getElementById('discoveryProject');
-        select.innerHTML = '<option value="">Error loading projects</option>';
+        select.innerHTML = <option value="">' +  _("Error loading projects") | tojson  + '</option>;
     });
 }
 
 function loadWebsitesForDiscovery(projectId) {
     const websiteSelect = document.getElementById('discoveryWebsite');
-    websiteSelect.innerHTML = '<option value="">Loading websites...</option>';
+    websiteSelect.innerHTML = <option value="">' +  _("Loading websites...") | tojson  + '</option>;
     websiteSelect.disabled = true;
 
     fetch(`/projects/api/${projectId}/websites`)
     .then(response => response.json())
     .then(data => {
-        websiteSelect.innerHTML = '<option value="">Choose a website...</option>';
+        websiteSelect.innerHTML = <option value="">' +  _("Choose a website...") | tojson  + '</option>;
 
         if (data.websites && data.websites.length > 0) {
             data.websites.forEach(website => {
@@ -779,12 +779,12 @@ function loadWebsitesForDiscovery(projectId) {
             });
             websiteSelect.disabled = false;
         } else {
-            websiteSelect.innerHTML = '<option value="">No websites in this project</option>';
+            websiteSelect.innerHTML = <option value="">' +  _("No websites in this project") | tojson  + '</option>;
         }
     })
     .catch(error => {
         console.error('Error loading websites:', error);
-        websiteSelect.innerHTML = '<option value="">Error loading websites</option>';
+        websiteSelect.innerHTML = <option value="">' +  _("Error loading websites") | tojson  + '</option>;
     });
 }
 
@@ -794,7 +794,7 @@ function generateDiscoveryReport() {
     const format = document.getElementById('discoveryFormat').value;
 
     if (!projectId) {
-        alert('Please select a project');
+        alert({{ _('Please select a project') | tojson }});
         return;
     }
 
@@ -802,7 +802,7 @@ function generateDiscoveryReport() {
     if (scope === 'website') {
         const websiteId = document.getElementById('discoveryWebsite').value;
         if (!websiteId) {
-            alert('Please select a website');
+            alert({{ _('Please select a website') | tojson }});
             return;
         }
         actionUrl = `/reports/generate/discovery/website/${websiteId}`;
@@ -837,41 +837,41 @@ function generateDiscoveryReport() {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Generate Site Structure Report</h5>
+                <h5 class="modal-title">{{ _('Generate Site Structure Report') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="siteStructureForm">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="structureProject" class="form-label">Select Project</label>
+                        <label for="structureProject" class="form-label">{{ _('Select Project') }}</label>
                         <select class="form-select" id="structureProject" required>
-                            <option value="">Choose a project...</option>
+                            <option value="">{{ _('Choose a project...') }}</option>
                         </select>
-                        <small class="text-muted">Select the project containing the website</small>
+                        <small class="text-muted">{{ _('Select the project containing the website') }}</small>
                     </div>
                     <div class="mb-3">
-                        <label for="structureWebsite" class="form-label">Select Website</label>
+                        <label for="structureWebsite" class="form-label">{{ _('Select Website') }}</label>
                         <select class="form-select" id="structureWebsite" required disabled>
-                            <option value="">First select a project...</option>
+                            <option value="">{{ _('First select a project...') }}</option>
                         </select>
-                        <small class="text-muted">Select the website to analyze its structure</small>
+                        <small class="text-muted">{{ _('Select the website to analyze its structure') }}</small>
                     </div>
                     <div class="mb-3">
-                        <label for="structureFormat" class="form-label">Export Format</label>
+                        <label for="structureFormat" class="form-label">{{ _('Export Format') }}</label>
                         <select class="form-select" id="structureFormat">
-                            <option value="html">HTML (Interactive)</option>
-                            <option value="json">JSON (Data)</option>
-                            <option value="csv">CSV (Spreadsheet)</option>
+                            <option value="html">{{ _('HTML (Interactive)') }}</option>
+                            <option value="json">{{ _('JSON (Data)') }}</option>
+                            <option value="csv">{{ _('CSV (Spreadsheet)') }}</option>
                         </select>
                     </div>
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i> This report will generate a hierarchical tree view of all pages in the selected website, organized by URL structure.
+                        <i class="bi bi-info-circle"></i> {{ _('This report will generate a hierarchical tree view of all pages in the selected website, organized by URL structure.') }}
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-diagram-3"></i> Generate Structure Report
+                        <i class="bi bi-diagram-3"></i> {{ _('Generate Structure Report') }}
                     </button>
                 </div>
             </form>
@@ -884,61 +884,61 @@ function generateDiscoveryReport() {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Generate Discovery Report</h5>
+                <h5 class="modal-title">{{ _('Generate Discovery Report') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="discoveryForm">
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="bi bi-info-circle"></i> This report discovers pages with content requiring manual accessibility inspection, including:
+                        <i class="bi bi-info-circle"></i> {{ _('This report discovers pages with content requiring manual accessibility inspection, including:') }}
                         <ul class="mt-2 mb-0">
-                            <li>Discovery issues (content requiring human judgment)</li>
-                            <li>Informational notices</li>
-                            <li>Accessible name issues (forms, links, buttons)</li>
-                            <li>Elements with poor or missing labels</li>
+                            <li>{{ _('Discovery issues (content requiring human judgment)') }}</li>
+                            <li>{{ _('Informational notices') }}</li>
+                            <li>{{ _('Accessible name issues (forms, links, buttons)') }}</li>
+                            <li>{{ _('Elements with poor or missing labels') }}</li>
                         </ul>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Scope</label>
+                        <label class="form-label">{{ _('Scope') }}</label>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="discoveryScope" id="discoveryScopeWebsite" value="website" checked>
                             <label class="form-check-label" for="discoveryScopeWebsite">
-                                Single Website
+                                {{ _('Single Website') }}
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="discoveryScope" id="discoveryScopeProject" value="project">
                             <label class="form-check-label" for="discoveryScopeProject">
-                                Entire Project
+                                {{ _('Entire Project') }}
                             </label>
                         </div>
                     </div>
                     <div class="mb-3" id="discoveryProjectGroup">
-                        <label for="discoveryProject" class="form-label">Select Project</label>
+                        <label for="discoveryProject" class="form-label">{{ _('Select Project') }}</label>
                         <select class="form-select" id="discoveryProject" required>
-                            <option value="">Choose a project...</option>
+                            <option value="">{{ _('Choose a project...') }}</option>
                         </select>
-                        <small class="text-muted" id="discoveryProjectHelpText">Select a project first</small>
+                        <small class="text-muted" id="discoveryProjectHelpText">{{ _('Select a project first') }}</small>
                     </div>
                     <div class="mb-3" id="discoveryWebsiteGroup">
-                        <label for="discoveryWebsite" class="form-label">Select Website</label>
+                        <label for="discoveryWebsite" class="form-label">{{ _('Select Website') }}</label>
                         <select class="form-select" id="discoveryWebsite" required disabled>
-                            <option value="">First select a project...</option>
+                            <option value="">{{ _('First select a project...') }}</option>
                         </select>
-                        <small class="text-muted">Select the specific website to analyze</small>
+                        <small class="text-muted">{{ _('Select the specific website to analyze') }}</small>
                     </div>
                     <div class="mb-3">
-                        <label for="discoveryFormat" class="form-label">Export Format</label>
+                        <label for="discoveryFormat" class="form-label">{{ _('Export Format') }}</label>
                         <select class="form-select" id="discoveryFormat">
-                            <option value="html">HTML (Recommended)</option>
-                            <option value="pdf">PDF</option>
+                            <option value="html">{{ _('HTML (Recommended)') }}</option>
+                            <option value="pdf">{{ _('PDF') }}</option>
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i> Generate Discovery Report
+                        <i class="bi bi-search"></i> {{ _('Generate Discovery Report') }}
                     </button>
                 </div>
             </form>
@@ -951,27 +951,27 @@ function generateDiscoveryReport() {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Generate Offline Report (Static HTML)</h5>
+                <h5 class="modal-title">{{ _('Generate Offline Report (Static HTML)') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="staticHtmlForm">
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="bi bi-info-circle"></i> This report generates a complete offline website with:
+                        <i class="bi bi-info-circle"></i> {{ _('This report generates a complete offline website with:') }}
                         <ul class="mt-2 mb-0">
-                            <li>Index page with all tested pages</li>
-                            <li>Summary page with statistics and charts</li>
-                            <li>Individual page detail reports with full issue accordions</li>
-                            <li>Client-side filters and search</li>
-                            <li>All CSS, JS, and images (ZIP download)</li>
+                            <li>{{ _('Index page with all tested pages') }}</li>
+                            <li>{{ _('Summary page with statistics and charts') }}</li>
+                            <li>{{ _('Individual page detail reports with full issue accordions') }}</li>
+                            <li>{{ _('Client-side filters and search') }}</li>
+                            <li>{{ _('All CSS, JS, and images (ZIP download)') }}</li>
                         </ul>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="staticHtmlProject" class="form-label">Project</label>
+                                <label for="staticHtmlProject" class="form-label">{{ _('Project') }}</label>
                                 <select class="form-select" id="staticHtmlProject">
-                                    <option value="">All Projects</option>
+                                    <option value="">{{ _('All Projects') }}</option>
                                     {% for project in projects %}
                                     <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
@@ -980,44 +980,44 @@ function generateDiscoveryReport() {
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="staticHtmlWebsite" class="form-label">Website</label>
+                                <label for="staticHtmlWebsite" class="form-label">{{ _('Website') }}</label>
                                 <select class="form-select" id="staticHtmlWebsite" disabled>
-                                    <option value="">Select a project first...</option>
+                                    <option value="">{{ _('Select a project first...') }}</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="staticHtmlWcagLevel" class="form-label">WCAG Level</label>
+                        <label for="staticHtmlWcagLevel" class="form-label">{{ _('WCAG Level') }}</label>
                         <select class="form-select" id="staticHtmlWcagLevel">
-                            <option value="A">Level A</option>
-                            <option value="AA" selected>Level AA (Recommended)</option>
-                            <option value="AAA">Level AAA</option>
+                            <option value="A">{{ _('Level A') }}</option>
+                            <option value="AA" selected>{{ _('Level AA (Recommended)') }}</option>
+                            <option value="AAA">{{ _('Level AAA') }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Options</label>
+                        <label class="form-label">{{ _('Options') }}</label>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="staticHtmlIncludeScreenshots" checked>
                             <label class="form-check-label" for="staticHtmlIncludeScreenshots">
-                                Include Screenshots
+                                {{ _('Include Screenshots') }}
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="staticHtmlIncludeDiscovery" checked>
                             <label class="form-check-label" for="staticHtmlIncludeDiscovery">
-                                Include Discovery Items
+                                {{ _('Include Discovery Items') }}
                             </label>
                         </div>
                     </div>
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle"></i> <strong>Note:</strong> Large reports may take several minutes to generate. The report will appear in the list below when complete.
+                        <i class="bi bi-exclamation-triangle"></i> <strong>{{ _('Note:') }}</strong> {{ _('Large reports may take several minutes to generate. The report will appear in the list below when complete.') }}
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-file-earmark-zip"></i> Generate Report
+                        <i class="bi bi-file-earmark-zip"></i> {{ _('Generate Report') }}
                     </button>
                 </div>
             </form>
@@ -1037,13 +1037,13 @@ if (staticHtmlModal) {
         websiteSelect.value = '';
 
         if (selectedProjectId) {
-            websiteSelect.innerHTML = '<option value="">Loading websites...</option>';
+            websiteSelect.innerHTML = '<option value="">' + {{ _("Loading websites...") | tojson }} + '</option>';
             websiteSelect.disabled = true;
 
             fetch(`/projects/api/${selectedProjectId}/websites`)
                 .then(response => response.json())
                 .then(data => {
-                    websiteSelect.innerHTML = '<option value="">All Websites</option>';
+                    websiteSelect.innerHTML = '<option value="">' + {{ _("All Websites") | tojson }} + '</option>';
 
                     if (data.websites && data.websites.length > 0) {
                         data.websites.forEach(website => {
@@ -1107,7 +1107,7 @@ if (staticHtmlModal) {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error generating report: ' + error.message);
+            alert({{ _('Error generating report: ') | tojson }} + error.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
         });
@@ -1120,28 +1120,28 @@ if (staticHtmlModal) {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Generate Deduplicated Report</h5>
+                <h5 class="modal-title">{{ _('Generate Deduplicated Report') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="deduplicatedForm">
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="bi bi-info-circle"></i> This report generates a single-page offline HTML report with:
+                        <i class="bi bi-info-circle"></i> {{ _('This report generates a single-page offline HTML report with:') }}
                         <ul class="mt-2 mb-0">
-                            <li>Issues deduplicated and grouped by common components</li>
-                            <li>Common components table (navigation, headers, footers, forms, etc.)</li>
-                            <li>Statistics dashboard with violation, warning, and info counts</li>
-                            <li>Client-side filters by component, type, and impact</li>
-                            <li>Test user information for authenticated testing</li>
-                            <li>All CSS, JS, and images (ZIP download)</li>
+                            <li>{{ _('Issues deduplicated and grouped by common components') }}</li>
+                            <li>{{ _('Common components table (navigation, headers, footers, forms, etc.)') }}</li>
+                            <li>{{ _('Statistics dashboard with violation, warning, and info counts') }}</li>
+                            <li>{{ _('Client-side filters by component, type, and impact') }}</li>
+                            <li>{{ _('Test user information for authenticated testing') }}</li>
+                            <li>{{ _('All CSS, JS, and images (ZIP download)') }}</li>
                         </ul>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="deduplicatedProject" class="form-label">Project</label>
+                                <label for="deduplicatedProject" class="form-label">{{ _('Project') }}</label>
                                 <select class="form-select" id="deduplicatedProject">
-                                    <option value="">All Projects</option>
+                                    <option value="">{{ _('All Projects') }}</option>
                                     {% for project in projects %}
                                     <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
@@ -1150,21 +1150,21 @@ if (staticHtmlModal) {
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="deduplicatedWebsite" class="form-label">Website</label>
+                                <label for="deduplicatedWebsite" class="form-label">{{ _('Website') }}</label>
                                 <select class="form-select" id="deduplicatedWebsite" disabled>
-                                    <option value="">Select a project first...</option>
+                                    <option value="">{{ _('Select a project first...') }}</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle"></i> <strong>Note:</strong> Large reports may take several minutes to generate. The report will appear in the list below when complete.
+                        <i class="bi bi-exclamation-triangle"></i> <strong>{{ _('Note:') }}</strong> {{ _('Large reports may take several minutes to generate. The report will appear in the list below when complete.') }}
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-layers"></i> Generate Report
+                        <i class="bi bi-layers"></i> {{ _('Generate Report') }}
                     </button>
                 </div>
             </form>
@@ -1184,13 +1184,13 @@ if (deduplicatedModal) {
         websiteSelect.value = '';
 
         if (selectedProjectId) {
-            websiteSelect.innerHTML = '<option value="">Loading websites...</option>';
+            websiteSelect.innerHTML = '<option value="">' + {{ _("Loading websites...") | tojson }} + '</option>';
             websiteSelect.disabled = true;
 
             fetch(`/projects/api/${selectedProjectId}/websites`)
                 .then(response => response.json())
                 .then(data => {
-                    websiteSelect.innerHTML = '<option value="">All Websites</option>';
+                    websiteSelect.innerHTML = '<option value="">' + {{ _("All Websites") | tojson }} + '</option>';
 
                     if (data.websites && data.websites.length > 0) {
                         data.websites.forEach(website => {
@@ -1247,7 +1247,7 @@ if (deduplicatedModal) {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error generating report: ' + error.message);
+            alert({{ _('Error generating report: ') | tojson }} + error.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
         });
@@ -1260,75 +1260,75 @@ if (deduplicatedModal) {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Generate Recordings Report</h5>
+                <h5 class="modal-title">{{ _('Generate Recordings Report') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="recordingsForm">
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="bi bi-info-circle"></i> This report includes manual accessibility findings from:
+                        <i class="bi bi-info-circle"></i> {{ _('This report includes manual accessibility findings from:') }}
                         <ul class="mt-2 mb-0">
-                            <li>Accessibility audit recordings</li>
-                            <li>Lived experience testing sessions</li>
-                            <li>All issues organized by touchpoint and impact</li>
-                            <li>Key takeaways and user painpoints</li>
-                            <li>WCAG criteria mappings and remediation guidance</li>
+                            <li>{{ _('Accessibility audit recordings') }}</li>
+                            <li>{{ _('Lived experience testing sessions') }}</li>
+                            <li>{{ _('All issues organized by touchpoint and impact') }}</li>
+                            <li>{{ _('Key takeaways and user painpoints') }}</li>
+                            <li>{{ _('WCAG criteria mappings and remediation guidance') }}</li>
                         </ul>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label for="recordingsProject" class="form-label">Project</label>
+                                <label for="recordingsProject" class="form-label">{{ _('Project') }}</label>
                                 <select class="form-select" id="recordingsProject" required>
-                                    <option value="">Choose a project...</option>
+                                    <option value="">{{ _('Choose a project...') }}</option>
                                     {% for project in projects %}
                                     <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
                                 </select>
-                                <small class="text-muted">All recordings from this project will be included</small>
+                                <small class="text-muted">{{ _('All recordings from this project will be included') }}</small>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="recordingsFormat" class="form-label">Export Format</label>
+                        <label for="recordingsFormat" class="form-label">{{ _('Export Format') }}</label>
                         <select class="form-select" id="recordingsFormat">
-                            <option value="html">HTML (Recommended)</option>
-                            <option value="pdf">PDF</option>
-                            <option value="xlsx">Excel Spreadsheet</option>
+                            <option value="html">{{ _('HTML (Recommended)') }}</option>
+                            <option value="pdf">{{ _('PDF') }}</option>
+                            <option value="xlsx">{{ _('Excel Spreadsheet') }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Include in Report</label>
+                        <label class="form-label">{{ _('Include in Report') }}</label>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="recordingsIncludeSummary" checked>
                             <label class="form-check-label" for="recordingsIncludeSummary">
-                                Executive Summary
+                                {{ _('Executive Summary') }}
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="recordingsIncludeTimecodes" checked>
                             <label class="form-check-label" for="recordingsIncludeTimecodes">
-                                Timecodes
+                                {{ _('Timecodes') }}
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="recordingsIncludeWCAG" checked>
                             <label class="form-check-label" for="recordingsIncludeWCAG">
-                                WCAG Criteria
+                                {{ _('WCAG Criteria') }}
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="recordingsGroupByTouchpoint" checked>
                             <label class="form-check-label" for="recordingsGroupByTouchpoint">
-                                Group Issues by Touchpoint
+                                {{ _('Group Issues by Touchpoint') }}
                             </label>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-mic"></i> Generate Recordings Report
+                        <i class="bi bi-mic"></i> {{ _('Generate Recordings Report') }}
                     </button>
                 </div>
             </form>
@@ -1347,7 +1347,7 @@ if (recordingsModal) {
         const projectId = document.getElementById('recordingsProject').value;
 
         if (!projectId) {
-            alert('Please select a project');
+            alert({{ _('Please select a project') | tojson }});
             return;
         }
 
@@ -1360,7 +1360,7 @@ if (recordingsModal) {
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+        submitBtn.innerHTML = <span class="spinner-border spinner-border-sm me-2"></span>' +  _("Generating...") | tojson ;
 
         // Use FormData to submit as regular form (not JSON)
         const formDataObj = new FormData();
@@ -1385,7 +1385,7 @@ if (recordingsModal) {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error generating report: ' + error.message);
+            alert({{ _('Error generating report: ') | tojson }} + error.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
         });

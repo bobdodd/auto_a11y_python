@@ -70,6 +70,11 @@ class IssueExporter:
         Returns:
             Dict with 'success', 'uuid', 'nid', and optional 'error' keys
         """
+        # Log what export_issue receives
+        logger.warning(f"📥 EXPORT_ISSUE RECEIVED for '{title}':")
+        logger.warning(f"   description parameter length: {len(description)} chars")
+        logger.warning(f"   description parameter preview (first 200 chars): {description[:200]}")
+
         try:
             # Build the JSON:API payload
             payload = self._build_payload(
@@ -89,26 +94,43 @@ class IssueExporter:
                 discovered_page_uuid=discovered_page_uuid
             )
 
+            # Log the payload body field for debugging
+            body_in_payload = payload.get('data', {}).get('attributes', {}).get('body')
+            if body_in_payload:
+                body_value = body_in_payload.get('value', '')
+                logger.warning(f"🔍 PAYLOAD CHECK for '{title}': body field IS PRESENT in payload, value length={len(body_value)}, format={body_in_payload.get('format')}")
+                logger.warning(f"📄 PAYLOAD BODY PREVIEW (first 500 chars):\n{body_value[:500]}")
+            else:
+                logger.warning(f"🔍 PAYLOAD CHECK for '{title}': body field is MISSING from payload!")
+
             # Create or update
             if existing_uuid:
                 # Verify the entity exists before attempting PATCH
                 try:
                     logger.info(f"Checking if issue exists (UUID: {existing_uuid})")
                     self.client.get(f"node/issue/{existing_uuid}")
-                    logger.info(f"Updating issue '{title}' (UUID: {existing_uuid})")
+                    logger.warning(f"🔧 Using PATCH to UPDATE issue '{title}' (UUID: {existing_uuid})")
                     response = self.client.patch("node/issue", existing_uuid, payload)
                 except Exception as e:
                     # Entity doesn't exist, create new instead
                     logger.warning(f"issue UUID {existing_uuid} not found in Drupal, creating new: {e}")
+                    logger.warning(f"🔧 Using POST to CREATE issue '{title}' (fallback from failed PATCH)")
                     response = self.client.post("node/issue", payload)
             else:
-                logger.info(f"Creating issue '{title}'")
+                logger.warning(f"🔧 Using POST to CREATE new issue '{title}'")
                 response = self.client.post("node/issue", payload)
 
             # Extract result
             data = response.get('data', {})
             uuid = data.get('id')
             nid = data.get('attributes', {}).get('drupal_internal__nid')
+
+            # Check if body field came back in the response
+            response_body = data.get('attributes', {}).get('body')
+            if response_body:
+                logger.warning(f"🔍 RESPONSE CHECK for '{title}': body field IS PRESENT in Drupal response, value length={len(response_body.get('value', ''))}")
+            else:
+                logger.warning(f"🔍 RESPONSE CHECK for '{title}': body field is MISSING from Drupal response!")
 
             logger.info(f"Successfully exported issue: UUID={uuid}, NID={nid}")
 
@@ -149,6 +171,8 @@ class IssueExporter:
         Returns:
             Dict with 'success', 'uuid', and optional 'error' keys
         """
+        import html
+
         # Map impact enum to Drupal format
         impact_mapping = {
             'low': 'low',
@@ -157,9 +181,49 @@ class IssueExporter:
         }
         impact = impact_mapping.get(issue.impact.value, 'med')
 
+        # Try to get enhanced descriptions if issue_code is available
+        description = issue.description
+        used_enhanced = False
+
+        if hasattr(issue, 'issue_code') and issue.issue_code:
+            try:
+                from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+
+                # Build metadata for contextual substitution
+                metadata = {}
+                if hasattr(issue, 'element') and issue.element:
+                    metadata['element_text'] = issue.element
+                if hasattr(issue, 'html') and issue.html:
+                    # Try to extract tag name from HTML
+                    import re
+                    tag_match = re.match(r'<(\w+)', issue.html)
+                    if tag_match:
+                        metadata['element_tag'] = tag_match.group(1)
+
+                enhanced = get_detailed_issue_description(issue.issue_code, metadata)
+
+                if enhanced:
+                    # Build enhanced description HTML
+                    description_parts = []
+                    if enhanced.get('what'):
+                        description_parts.append(f"<h3>What the issue is</h3>\n<p>{html.escape(enhanced['what'])}</p>")
+                    if enhanced.get('why'):
+                        description_parts.append(f"<h3>Why it is important</h3>\n<p>{html.escape(enhanced['why'])}</p>")
+                    if enhanced.get('who'):
+                        description_parts.append(f"<h3>Who it affects</h3>\n<p>{html.escape(enhanced['who'])}</p>")
+                    if enhanced.get('remediation'):
+                        description_parts.append(f"<h3>How to remediate</h3>\n<p>{html.escape(enhanced['remediation'])}</p>")
+
+                    if description_parts:
+                        description = "\n".join(description_parts)
+                        used_enhanced = True
+                        logger.info(f"Using enhanced description for issue code: {issue.issue_code}")
+            except Exception as e:
+                logger.warning(f"Failed to get enhanced description for {issue.issue_code}: {e}")
+
         return self.export_issue(
             title=issue.title,
-            description=issue.description,
+            description=description,
             audit_uuid=audit_uuid,
             impact=impact,
             issue_type=issue.issue_type,
@@ -194,8 +258,16 @@ class IssueExporter:
         }
         impact = impact_mapping.get(recording_issue.impact.value, 'med')
 
-        # Build description HTML from what/why/who/remediation
+        # For RecordingIssues, ALWAYS use the detailed descriptions from the recording itself
+        # These come from manual audits and lived experience testing with expert-crafted content
         description_parts = []
+
+        logger.warning(f"🔍 RECORDING ISSUE '{recording_issue.title}': Checking fields...")
+        logger.warning(f"   what: {'✓ Present' if recording_issue.what else '✗ Missing'} ({len(recording_issue.what) if recording_issue.what else 0} chars)")
+        logger.warning(f"   why: {'✓ Present' if recording_issue.why else '✗ Missing'} ({len(recording_issue.why) if recording_issue.why else 0} chars)")
+        logger.warning(f"   who: {'✓ Present' if recording_issue.who else '✗ Missing'} ({len(recording_issue.who) if recording_issue.who else 0} chars)")
+        logger.warning(f"   remediation: {'✓ Present' if recording_issue.remediation else '✗ Missing'} ({len(recording_issue.remediation) if recording_issue.remediation else 0} chars)")
+
         if recording_issue.what:
             description_parts.append(f"<h3>What the issue is</h3>\n<p>{html.escape(recording_issue.what)}</p>")
         if recording_issue.why:
@@ -206,6 +278,14 @@ class IssueExporter:
             description_parts.append(f"<h3>How to remediate</h3>\n<p>{html.escape(recording_issue.remediation)}</p>")
 
         description = "\n".join(description_parts) if description_parts else recording_issue.what or ""
+
+        # Debug logging at WARNING level so it appears in Flask logs
+        logger.warning(f"📦 Built description_parts list with {len(description_parts)} parts")
+        if description:
+            logger.warning(f"✓ RecordingIssue '{recording_issue.title}': Final description has {len(description)} chars")
+            logger.warning(f"📄 DESCRIPTION CONTENT PREVIEW (first 500 chars):\n{description[:500]}")
+        else:
+            logger.warning(f"✗ RecordingIssue '{recording_issue.title}': Description is EMPTY!")
 
         # Convert timecodes to video_timecode string
         video_timecode = None
@@ -218,6 +298,11 @@ class IssueExporter:
 
         # Get first page URL if available
         url = recording_issue.page_urls[0] if recording_issue.page_urls else None
+
+        # Log the exact value being passed to export_issue
+        logger.warning(f"🚀 CALLING export_issue() for '{recording_issue.title}':")
+        logger.warning(f"   description parameter length: {len(description)} chars")
+        logger.warning(f"   description parameter preview (first 200 chars): {description[:200]}")
 
         return self.export_issue(
             title=recording_issue.title,
@@ -297,8 +382,11 @@ class IssueExporter:
         if description:
             attributes['body'] = {
                 'value': description,
-                'format': 'unfiltered'  # Use unfiltered format to preserve all HTML
+                'format': 'unfiltered'  # Use unfiltered format to allow HTML
             }
+            logger.warning(f"✓ Issue '{title}': Setting body field with {len(description)} characters (format=unfiltered)")
+        else:
+            logger.warning(f"✗ Issue '{title}': NO DESCRIPTION - body field will be omitted!")
 
         # Add issue type text field - "WCAG" if WCAG criteria present, "NOT WCAG" otherwise
         if wcag_criteria:
@@ -411,6 +499,8 @@ class IssueExporter:
             # Map touchpoint names to Drupal issue_category term names
             touchpoint_to_category = {
                 'color contrast': 'Colour or Contrast',
+                'colors': 'Colour or Contrast',  # Manual recording touchpoint
+                'colour': 'Colour or Contrast',
                 'landmarks': 'Page Regions',
                 'navigation': 'Navigation or Multiple Ways',
                 'forms': 'Forms',
@@ -424,6 +514,7 @@ class IssueExporter:
                 'search': 'Search or Filters',
                 'text': 'Text or Font',
                 'font': 'Text or Font',
+                'typography': 'Text or Font',  # Manual recording touchpoint
                 'html': 'HTML or Attribute',
                 'language': 'Language',
                 'labels': 'Label or Name',

@@ -464,12 +464,12 @@ def upload_to_drupal(project_id):
                         }) + '\n'
                         success_count += 1
 
-                        # Export associated RecordingIssues for this recording
+                        # Export associated RecordingIssues for this recording (create new or update existing)
                         recording_issues = list(db.recording_issues.find({'recording_id': recording.recording_id}))
                         if recording_issues:
                             yield json.dumps({
                                 'type': 'info',
-                                'message': f'Exporting {len(recording_issues)} issues from recording "{recording.title}"'
+                                'message': f'Syncing {len(recording_issues)} issues from recording "{recording.title}"'
                             }) + '\n'
 
                             for issue_doc in recording_issues:
@@ -477,6 +477,7 @@ def upload_to_drupal(project_id):
                                     from auto_a11y.models import RecordingIssue
                                     rec_issue = RecordingIssue.from_dict(issue_doc)
 
+                                    # Pass existing UUID if available for update, otherwise create new
                                     issue_result = issue_exporter.export_from_recording_issue(
                                         rec_issue,
                                         audit_uuid,
@@ -498,7 +499,7 @@ def upload_to_drupal(project_id):
                                             }
                                         )
 
-                                        action = "Updated" if rec_issue.drupal_uuid else "Exported"
+                                        action = "Updated" if rec_issue.drupal_uuid else "Created"
                                         yield json.dumps({
                                             'type': 'info',
                                             'message': f'  ✓ {action} issue: {rec_issue.title}'
@@ -517,13 +518,13 @@ def upload_to_drupal(project_id):
 
                                         yield json.dumps({
                                             'type': 'warning',
-                                            'message': f'  ✗ Failed to export issue "{rec_issue.title}": {issue_result.get("error")}'
+                                            'message': f'  ✗ Failed to sync issue "{rec_issue.title}": {issue_result.get("error")}'
                                         }) + '\n'
                                 except Exception as issue_err:
-                                    logger.error(f"Error exporting recording issue: {issue_err}")
+                                    logger.error(f"Error syncing recording issue: {issue_err}")
                                     yield json.dumps({
                                         'type': 'warning',
-                                        'message': f'  ✗ Error exporting issue: {str(issue_err)}'
+                                        'message': f'  ✗ Error syncing issue: {str(issue_err)}'
                                     }) + '\n'
                     else:
                         # Update database with error
@@ -881,10 +882,51 @@ def upload_to_drupal(project_id):
                                             # WCAG criteria numbers, convert to UUIDs
                                             wcag_uuids = wcag_cache.lookup_uuids(violation.wcag_criteria)
 
+                                    # Try to build enhanced description from catalog
+                                    description = violation.description
+                                    try:
+                                        from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+                                        import html as html_module
+
+                                        # Build issue_code from touchpoint and id
+                                        # Format: "{touchpoint}_{id}" (e.g., "headings_ErrEmptyHeading")
+                                        issue_code = f"{violation.touchpoint}_{violation.id}"
+
+                                        # Build metadata for contextual substitution
+                                        metadata = {}
+                                        if violation.element:
+                                            metadata['element_text'] = violation.element
+                                        if violation.html:
+                                            # Try to extract tag name from HTML
+                                            import re
+                                            tag_match = re.match(r'<(\w+)', violation.html)
+                                            if tag_match:
+                                                metadata['element_tag'] = tag_match.group(1)
+
+                                        enhanced = get_detailed_issue_description(issue_code, metadata)
+
+                                        if enhanced:
+                                            # Build enhanced description HTML
+                                            description_parts = []
+                                            if enhanced.get('what'):
+                                                description_parts.append(f"<h3>What the issue is</h3>\n<p>{html_module.escape(enhanced['what'])}</p>")
+                                            if enhanced.get('why'):
+                                                description_parts.append(f"<h3>Why it is important</h3>\n<p>{html_module.escape(enhanced['why'])}</p>")
+                                            if enhanced.get('who'):
+                                                description_parts.append(f"<h3>Who it affects</h3>\n<p>{html_module.escape(enhanced['who'])}</p>")
+                                            if enhanced.get('remediation'):
+                                                description_parts.append(f"<h3>How to remediate</h3>\n<p>{html_module.escape(enhanced['remediation'])}</p>")
+
+                                            if description_parts:
+                                                description = "\n".join(description_parts)
+                                                logger.info(f"Using enhanced description for automated test violation: {issue_code}")
+                                    except Exception as e:
+                                        logger.warning(f"Failed to get enhanced description for {violation.touchpoint}_{violation.id}: {e}")
+
                                     # Upload issue to Drupal
                                     result = issue_exporter.export_issue(
                                         title=violation.description[:255],
-                                        description=violation.description,
+                                        description=description,
                                         audit_uuid=audit_uuid,
                                         impact=violation.impact.value,
                                         issue_type=violation.touchpoint,

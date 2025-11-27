@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-11-22 18:22-0500\n"
+"POT-Creation-Date: 2025-11-22 20:09-0500\n"
 "PO-Revision-Date: 2025-11-21 13:16-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -306,6 +306,8 @@ msgid "Recordings"
 msgstr "Enregistrements"
 
 #: auto_a11y/web/templates/base.html:51
+#: auto_a11y/web/templates/reports/dashboard.html:3
+#: auto_a11y/web/templates/reports/dashboard.html:8
 #: auto_a11y/web/templates/websites/view.html:129
 msgid "Reports"
 msgstr "Rapports"
@@ -364,6 +366,7 @@ msgstr "Erreurs"
 #: auto_a11y/web/templates/pages/view.html:288
 #: auto_a11y/web/templates/pages/view.html:1673
 #: auto_a11y/web/templates/pages/view.html:3030
+#: auto_a11y/web/templates/reports/dashboard.html:383
 #: auto_a11y/web/templates/testing/dashboard.html:84
 #: auto_a11y/web/templates/testing/result.html:59
 #: auto_a11y/web/templates/websites/view.html:182
@@ -398,6 +401,12 @@ msgid "Run Tests"
 msgstr "Exécuter les tests"
 
 #: auto_a11y/web/templates/dashboard.html:138
+#: auto_a11y/web/templates/reports/dashboard.html:10
+#: auto_a11y/web/templates/reports/dashboard.html:135
+#: auto_a11y/web/templates/reports/dashboard.html:312
+#: auto_a11y/web/templates/reports/dashboard.html:409
+#: auto_a11y/web/templates/reports/dashboard.html:1020
+#: auto_a11y/web/templates/reports/dashboard.html:1167
 msgid "Generate Report"
 msgstr "Générer un rapport"
 
@@ -779,8 +788,9 @@ msgid "Below 90%%:"
 msgstr "Moins de 90% :"
 
 #: auto_a11y/web/templates/help.html:219
+#: auto_a11y/web/templates/reports/dashboard.html:993
 msgid "Level A"
-msgstr "Niveau AA :"
+msgstr "Niveau A"
 
 #: auto_a11y/web/templates/help.html:220
 msgid "Minimum"
@@ -819,8 +829,9 @@ msgid "4.5:1 contrast ratio"
 msgstr "Ratio de contraste 4.5:1"
 
 #: auto_a11y/web/templates/help.html:237
+#: auto_a11y/web/templates/reports/dashboard.html:995
 msgid "Level AAA"
-msgstr "Niveau AAA :"
+msgstr "Niveau AAA"
 
 #: auto_a11y/web/templates/help.html:238
 msgid "Enhanced"
@@ -1263,6 +1274,12 @@ msgstr "Découvrir les pages"
 #: auto_a11y/web/templates/projects/view.html:738
 #: auto_a11y/web/templates/recordings/detail.html:26
 #: auto_a11y/web/templates/recordings/upload.html:307
+#: auto_a11y/web/templates/reports/dashboard.html:407
+#: auto_a11y/web/templates/reports/dashboard.html:872
+#: auto_a11y/web/templates/reports/dashboard.html:939
+#: auto_a11y/web/templates/reports/dashboard.html:1018
+#: auto_a11y/web/templates/reports/dashboard.html:1165
+#: auto_a11y/web/templates/reports/dashboard.html:1329
 #: auto_a11y/web/templates/scripts/create.html:292
 #: auto_a11y/web/templates/website_users/create.html:245
 #: auto_a11y/web/templates/website_users/edit.html:282
@@ -1301,9 +1318,10 @@ msgid "Discovered:"
 msgstr "Découvrir"
 
 #: auto_a11y/web/templates/pages/edit.html:93
+#: auto_a11y/web/templates/reports/dashboard.html:279
 #: auto_a11y/web/templates/websites/view.html:246
 msgid "Unknown"
-msgstr "Erreur inconnue"
+msgstr "Inconnu"
 
 #: auto_a11y/web/templates/pages/edit.html:95
 msgid "Last Tested:"
@@ -1397,10 +1415,11 @@ msgstr "Détails du test"
 #: auto_a11y/web/templates/pages/view.html:399
 #: auto_a11y/web/templates/pages/view.html:467
 #: auto_a11y/web/templates/pages/view.html:502
+#: auto_a11y/web/templates/reports/dashboard.html:280
 #: auto_a11y/web/templates/scripts/view.html:208
 #: auto_a11y/web/templates/scripts/view.html:212
 msgid "N/A"
-msgstr "N/A"
+msgstr "N/D"
 
 #: auto_a11y/web/templates/pages/view.html:192
 #: auto_a11y/web/templates/pages/view.html:3079
@@ -1901,6 +1920,7 @@ msgstr "Durée"
 #: auto_a11y/web/templates/projects/view.html:99
 #: auto_a11y/web/templates/projects/view.html:176
 #: auto_a11y/web/templates/projects/view.html:273
+#: auto_a11y/web/templates/reports/dashboard.html:253
 #: auto_a11y/web/templates/scripts/list.html:74
 #: auto_a11y/web/templates/scripts/list.html:180
 #: auto_a11y/web/templates/scripts/view.html:183
@@ -2008,6 +2028,7 @@ msgstr "Échec de l'annulation de la découverte :"
 #: auto_a11y/web/templates/projects/view.html:719
 #: auto_a11y/web/templates/projects/view.html:797
 #: auto_a11y/web/templates/recordings/detail.html:912
+#: auto_a11y/web/templates/reports/dashboard.html:519
 #: auto_a11y/web/templates/scripts/list.html:263
 #: auto_a11y/web/templates/scripts/list.html:286
 #: auto_a11y/web/templates/scripts/view.html:245
@@ -2504,6 +2525,7 @@ msgstr "Minimal"
 #: auto_a11y/web/templates/project_users/list.html:136
 #: auto_a11y/web/templates/projects/view.html:36
 #: auto_a11y/web/templates/recordings/detail.html:31
+#: auto_a11y/web/templates/reports/dashboard.html:288
 #: auto_a11y/web/templates/scripts/list.html:135
 #: auto_a11y/web/templates/website_users/list.html:139
 msgid "Delete"
@@ -3187,9 +3209,12 @@ msgid "Project Type"
 msgstr "Projets"
 
 #: auto_a11y/web/templates/projects/create.html:107
+#: auto_a11y/web/templates/reports/dashboard.html:352
+#: auto_a11y/web/templates/reports/dashboard.html:983
+#: auto_a11y/web/templates/reports/dashboard.html:1153
 #: auto_a11y/web/templates/scripts/create.html:63
 msgid "Website"
-msgstr "Sites web"
+msgstr "Site web"
 
 #: auto_a11y/web/templates/projects/create.html:108
 msgid "App"
@@ -3282,6 +3307,7 @@ msgstr "Conformité WCAG"
 
 #: auto_a11y/web/templates/projects/create.html:151
 #: auto_a11y/web/templates/projects/edit.html:92
+#: auto_a11y/web/templates/reports/dashboard.html:994
 msgid "Level AA (Recommended)"
 msgstr "Niveau AA (Recommandé)"
 
@@ -3467,8 +3493,10 @@ msgstr ""
 #: auto_a11y/web/templates/projects/edit.html:140
 #: auto_a11y/web/templates/projects/edit.html:277
 #: auto_a11y/web/templates/projects/edit.html:364
+#: auto_a11y/web/templates/reports/dashboard.html:1014
+#: auto_a11y/web/templates/reports/dashboard.html:1161
 msgid "Note:"
-msgstr "Remarque :"
+msgstr "Note :"
 
 #: auto_a11y/web/templates/projects/create.html:198
 #: auto_a11y/web/templates/projects/edit.html:140
@@ -4141,6 +4169,7 @@ msgid "ID"
 msgstr "ID"
 
 #: auto_a11y/web/templates/projects/view.html:269
+#: auto_a11y/web/templates/reports/dashboard.html:249
 msgid "Type"
 msgstr "Type"
 
@@ -4444,8 +4473,13 @@ msgstr "Type d'enregistrement"
 
 #: auto_a11y/web/templates/recordings/detail.html:106
 #: auto_a11y/web/templates/recordings/list.html:25
+#: auto_a11y/web/templates/reports/dashboard.html:250
+#: auto_a11y/web/templates/reports/dashboard.html:341
+#: auto_a11y/web/templates/reports/dashboard.html:972
+#: auto_a11y/web/templates/reports/dashboard.html:1142
+#: auto_a11y/web/templates/reports/dashboard.html:1281
 msgid "Project"
-msgstr "Projets"
+msgstr "Projet"
 
 #: auto_a11y/web/templates/recordings/detail.html:125
 msgid "Pages Covered"
@@ -4769,8 +4803,12 @@ msgstr ""
 "observations humaines et des constatations d'expérience vécue."
 
 #: auto_a11y/web/templates/recordings/list.html:27
+#: auto_a11y/web/templates/reports/dashboard.html:278
+#: auto_a11y/web/templates/reports/dashboard.html:343
+#: auto_a11y/web/templates/reports/dashboard.html:974
+#: auto_a11y/web/templates/reports/dashboard.html:1144
 msgid "All Projects"
-msgstr "Projets"
+msgstr "Tous les projets"
 
 #: auto_a11y/web/templates/recordings/list.html:38
 msgid "All Types"
@@ -5240,6 +5278,488 @@ msgstr "Sélectionner les pages découvertes liées à cet enregistrement"
 #: auto_a11y/web/templates/recordings/upload.html:501
 msgid "Optional: No discovered pages available for this project."
 msgstr "Facultatif : Aucune page découverte disponible pour ce projet."
+
+#: auto_a11y/web/templates/reports/dashboard.html:130
+#: auto_a11y/web/templates/reports/dashboard.html:322
+#: auto_a11y/web/templates/reports/dashboard.html:428
+#: auto_a11y/web/templates/websites/view.html:140
+msgid "Accessibility Report"
+msgstr "Rapport d'accessibilité"
+
+#: auto_a11y/web/templates/reports/dashboard.html:131
+msgid "Comprehensive accessibility testing results"
+msgstr "Résultats complets des tests d'accessibilité"
+
+#: auto_a11y/web/templates/reports/dashboard.html:148
+msgid "Discovery Report"
+msgstr "Rapport de découverte"
+
+#: auto_a11y/web/templates/reports/dashboard.html:149
+msgid "Discover content requiring manual inspection"
+msgstr "Découvrir le contenu nécessitant une inspection manuelle"
+
+#: auto_a11y/web/templates/reports/dashboard.html:153
+#: auto_a11y/web/templates/reports/dashboard.html:887
+#: auto_a11y/web/templates/reports/dashboard.html:941
+msgid "Generate Discovery Report"
+msgstr "Générer un rapport de découverte"
+
+#: auto_a11y/web/templates/reports/dashboard.html:166
+#: auto_a11y/web/templates/websites/view.html:132
+msgid "Site Structure"
+msgstr "Structure du site"
+
+#: auto_a11y/web/templates/reports/dashboard.html:167
+msgid "Hierarchical view of website organization"
+msgstr "Vue hiérarchique de l'organisation du site web"
+
+#: auto_a11y/web/templates/reports/dashboard.html:171
+msgid "Generate Structure"
+msgstr "Générer la structure"
+
+#: auto_a11y/web/templates/reports/dashboard.html:188
+msgid "Offline Report (Static HTML)"
+msgstr "Rapport hors ligne (HTML statique)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:189
+msgid ""
+"Multi-page offline report with filters, scores, and full issue details "
+"(ZIP download)"
+msgstr ""
+"Rapport hors ligne multi-pages avec filtres, scores et détails complets "
+"des problèmes (téléchargement ZIP)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:193
+msgid "Generate Offline Report"
+msgstr "Générer un rapport hors ligne"
+
+#: auto_a11y/web/templates/reports/dashboard.html:206
+msgid "Deduplicated Offline Report"
+msgstr "Rapport hors ligne dédupliqué"
+
+#: auto_a11y/web/templates/reports/dashboard.html:207
+msgid ""
+"Single-page offline report with issues grouped by common components (ZIP "
+"download)"
+msgstr ""
+"Rapport hors ligne d'une seule page avec les problèmes regroupés par "
+"composants communs (téléchargement ZIP)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:211
+#: auto_a11y/web/templates/reports/dashboard.html:1123
+msgid "Generate Deduplicated Report"
+msgstr "Générer un rapport dédupliqué"
+
+#: auto_a11y/web/templates/reports/dashboard.html:224
+msgid "Recordings Report"
+msgstr "Rapport d'enregistrements"
+
+#: auto_a11y/web/templates/reports/dashboard.html:225
+msgid "Manual accessibility audit findings from recorded testing sessions"
+msgstr ""
+"Constatations d'audits d'accessibilité manuels issues de sessions de test"
+" enregistrées"
+
+#: auto_a11y/web/templates/reports/dashboard.html:229
+#: auto_a11y/web/templates/reports/dashboard.html:1263
+#: auto_a11y/web/templates/reports/dashboard.html:1331
+msgid "Generate Recordings Report"
+msgstr "Générer un rapport d'enregistrements"
+
+#: auto_a11y/web/templates/reports/dashboard.html:240
+msgid "Recent Reports"
+msgstr "Rapports récents"
+
+#: auto_a11y/web/templates/reports/dashboard.html:248
+#: auto_a11y/web/templates/reports/dashboard.html:320
+msgid "Report Name"
+msgstr "Nom du rapport"
+
+#: auto_a11y/web/templates/reports/dashboard.html:251
+msgid "Generated"
+msgstr "Généré"
+
+#: auto_a11y/web/templates/reports/dashboard.html:252
+msgid "Size"
+msgstr "Taille"
+
+#: auto_a11y/web/templates/reports/dashboard.html:284
+msgid "Download"
+msgstr "Télécharger"
+
+#: auto_a11y/web/templates/reports/dashboard.html:300
+msgid ""
+"No reports generated yet. Click \"Generate Report\" to create your first "
+"report."
+msgstr ""
+"Aucun rapport généré pour le moment. Cliquez sur \"Générer un rapport\" "
+"pour créer votre premier rapport."
+
+#: auto_a11y/web/templates/reports/dashboard.html:327
+msgid "Report Type"
+msgstr "Type de rapport"
+
+#: auto_a11y/web/templates/reports/dashboard.html:329
+msgid "PDF Report"
+msgstr "Rapport PDF"
+
+#: auto_a11y/web/templates/reports/dashboard.html:330
+#: auto_a11y/web/templates/reports/dashboard.html:1297
+msgid "Excel Spreadsheet"
+msgstr "Feuille de calcul Excel"
+
+#: auto_a11y/web/templates/reports/dashboard.html:331
+msgid "JSON Export"
+msgstr "Export JSON"
+
+#: auto_a11y/web/templates/reports/dashboard.html:332
+#, fuzzy
+msgid "HTML Report"
+msgstr "Rapports"
+
+#: auto_a11y/web/templates/reports/dashboard.html:354
+#: auto_a11y/web/templates/reports/dashboard.html:985
+#: auto_a11y/web/templates/reports/dashboard.html:1155
+msgid "Select a project first..."
+msgstr "Sélectionnez d'abord un projet..."
+
+#: auto_a11y/web/templates/reports/dashboard.html:361
+msgid "Date Range"
+msgstr "Plage de dates"
+
+#: auto_a11y/web/templates/reports/dashboard.html:373
+#: auto_a11y/web/templates/reports/dashboard.html:1301
+msgid "Include in Report"
+msgstr "Inclure dans le rapport"
+
+#: auto_a11y/web/templates/reports/dashboard.html:377
+msgid "Accessibility Violations"
+msgstr "Violations d'accessibilité"
+
+#: auto_a11y/web/templates/reports/dashboard.html:389
+msgid "AI Analysis Results"
+msgstr "Résultats de l'analyse IA"
+
+#: auto_a11y/web/templates/reports/dashboard.html:395
+msgid "Screenshots (increases file size)"
+msgstr "Captures d'écran (augmente la taille du fichier)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:401
+#: auto_a11y/web/templates/reports/dashboard.html:1305
+msgid "Executive Summary"
+msgstr "Résumé exécutif"
+
+#: auto_a11y/web/templates/reports/dashboard.html:519
+msgid "Failed to generate report: "
+msgstr "Échec de la génération du rapport : "
+
+#: auto_a11y/web/templates/reports/dashboard.html:523
+#: auto_a11y/web/templates/reports/dashboard.html:1110
+#: auto_a11y/web/templates/reports/dashboard.html:1250
+#: auto_a11y/web/templates/reports/dashboard.html:1388
+#, fuzzy
+msgid "Error generating report: "
+msgstr "Chargement des détails du test..."
+
+#: auto_a11y/web/templates/reports/dashboard.html:538
+#, fuzzy
+msgid "Are you sure you want to delete this report?"
+msgstr "Êtes-vous sûr de vouloir supprimer le projet"
+
+#: auto_a11y/web/templates/reports/dashboard.html:550
+#, fuzzy
+msgid "Failed to delete report"
+msgstr "Échec du démarrage de la découverte des pages"
+
+#: auto_a11y/web/templates/reports/dashboard.html:648
+msgid "Please select a project and website"
+msgstr "Veuillez sélectionner un projet et un site web"
+
+#: auto_a11y/web/templates/reports/dashboard.html:695
+#: auto_a11y/web/templates/reports/dashboard.html:921
+#, fuzzy
+msgid "Select a project first"
+msgstr "Sélectionnez un projet..."
+
+#: auto_a11y/web/templates/reports/dashboard.html:701
+#, fuzzy
+msgid "All websites in the project will be included"
+msgstr "Tester tous les sites web du projet"
+
+#: auto_a11y/web/templates/reports/dashboard.html:797
+#: auto_a11y/web/templates/reports/dashboard.html:1350
+#, fuzzy
+msgid "Please select a project"
+msgstr "Sélectionnez un projet..."
+
+#: auto_a11y/web/templates/reports/dashboard.html:805
+#, fuzzy
+msgid "Please select a website"
+msgstr "Tester tous les sites"
+
+#: auto_a11y/web/templates/reports/dashboard.html:840
+#, fuzzy
+msgid "Generate Site Structure Report"
+msgstr "Génération du rapport de structure de site en"
+
+#: auto_a11y/web/templates/reports/dashboard.html:846
+#: auto_a11y/web/templates/reports/dashboard.html:917
+msgid "Select Project"
+msgstr "Sélectionner un projet"
+
+#: auto_a11y/web/templates/reports/dashboard.html:848
+#: auto_a11y/web/templates/reports/dashboard.html:919
+#: auto_a11y/web/templates/reports/dashboard.html:1283
+msgid "Choose a project..."
+msgstr "Choisir un projet..."
+
+#: auto_a11y/web/templates/reports/dashboard.html:850
+msgid "Select the project containing the website"
+msgstr "Sélectionnez le projet contenant le site web"
+
+#: auto_a11y/web/templates/reports/dashboard.html:853
+#: auto_a11y/web/templates/reports/dashboard.html:924
+msgid "Select Website"
+msgstr "Sélectionner un site web"
+
+#: auto_a11y/web/templates/reports/dashboard.html:855
+#: auto_a11y/web/templates/reports/dashboard.html:926
+msgid "First select a project..."
+msgstr "Sélectionnez d'abord un projet..."
+
+#: auto_a11y/web/templates/reports/dashboard.html:857
+msgid "Select the website to analyze its structure"
+msgstr "Sélectionnez le site web pour analyser sa structure"
+
+#: auto_a11y/web/templates/reports/dashboard.html:860
+#: auto_a11y/web/templates/reports/dashboard.html:931
+#: auto_a11y/web/templates/reports/dashboard.html:1293
+msgid "Export Format"
+msgstr "Format d'exportation"
+
+#: auto_a11y/web/templates/reports/dashboard.html:862
+msgid "HTML (Interactive)"
+msgstr "HTML (Interactif)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:863
+#, fuzzy
+msgid "JSON (Data)"
+msgstr "Données WCAG 2.2 JSON"
+
+#: auto_a11y/web/templates/reports/dashboard.html:864
+msgid "CSV (Spreadsheet)"
+msgstr "CSV (Feuille de calcul)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:868
+msgid ""
+"This report will generate a hierarchical tree view of all pages in the "
+"selected website, organized by URL structure."
+msgstr ""
+"Ce rapport génèrera une vue arborescente hiérarchique de toutes les pages"
+" du site web sélectionné, organisées par structure d'URL."
+
+#: auto_a11y/web/templates/reports/dashboard.html:874
+#, fuzzy
+msgid "Generate Structure Report"
+msgstr "Génération du rapport de structure de site en"
+
+#: auto_a11y/web/templates/reports/dashboard.html:893
+msgid ""
+"This report discovers pages with content requiring manual accessibility "
+"inspection, including:"
+msgstr ""
+"Ce rapport découvre les pages avec du contenu nécessitant une inspection "
+"manuelle d'accessibilité, notamment :"
+
+#: auto_a11y/web/templates/reports/dashboard.html:895
+msgid "Discovery issues (content requiring human judgment)"
+msgstr "Problèmes de découverte (contenu nécessitant un jugement humain)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:896
+msgid "Informational notices"
+msgstr "Avis informatifs"
+
+#: auto_a11y/web/templates/reports/dashboard.html:897
+msgid "Accessible name issues (forms, links, buttons)"
+msgstr "Problèmes de nom accessible (formulaires, liens, boutons)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:898
+msgid "Elements with poor or missing labels"
+msgstr "Éléments avec des étiquettes médiocres ou manquantes"
+
+#: auto_a11y/web/templates/reports/dashboard.html:902
+#: auto_a11y/web/templates/scripts/view.html:68
+msgid "Scope"
+msgstr "Portée"
+
+#: auto_a11y/web/templates/reports/dashboard.html:906
+msgid "Single Website"
+msgstr "Site web unique"
+
+#: auto_a11y/web/templates/reports/dashboard.html:912
+msgid "Entire Project"
+msgstr "Projet complet"
+
+#: auto_a11y/web/templates/reports/dashboard.html:928
+msgid "Select the specific website to analyze"
+msgstr "Sélectionnez le site web spécifique à analyser"
+
+#: auto_a11y/web/templates/reports/dashboard.html:933
+#: auto_a11y/web/templates/reports/dashboard.html:1295
+#, fuzzy
+msgid "HTML (Recommended)"
+msgstr "Niveau AA (Recommandé)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:934
+#: auto_a11y/web/templates/reports/dashboard.html:1296
+msgid "PDF"
+msgstr "PDF"
+
+#: auto_a11y/web/templates/reports/dashboard.html:954
+msgid "Generate Offline Report (Static HTML)"
+msgstr "Générer un rapport hors ligne (HTML statique)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:960
+msgid "This report generates a complete offline website with:"
+msgstr "Ce rapport génère un site web hors ligne complet avec :"
+
+#: auto_a11y/web/templates/reports/dashboard.html:962
+msgid "Index page with all tested pages"
+msgstr "Page d'index avec toutes les pages testées"
+
+#: auto_a11y/web/templates/reports/dashboard.html:963
+msgid "Summary page with statistics and charts"
+msgstr "Page de résumé avec statistiques et graphiques"
+
+#: auto_a11y/web/templates/reports/dashboard.html:964
+msgid "Individual page detail reports with full issue accordions"
+msgstr ""
+"Rapports détaillés de pages individuelles avec accordéons complets des "
+"problèmes"
+
+#: auto_a11y/web/templates/reports/dashboard.html:965
+msgid "Client-side filters and search"
+msgstr "Filtres et recherche côté client"
+
+#: auto_a11y/web/templates/reports/dashboard.html:966
+#: auto_a11y/web/templates/reports/dashboard.html:1136
+msgid "All CSS, JS, and images (ZIP download)"
+msgstr "Tous les CSS, JS et images (téléchargement ZIP)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:991
+#, fuzzy
+msgid "WCAG Level"
+msgstr "Niveau AA :"
+
+#: auto_a11y/web/templates/reports/dashboard.html:999
+msgid "Options"
+msgstr "Options"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1003
+#, fuzzy
+msgid "Include Screenshots"
+msgstr "Voir la capture d'écran"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1009
+#, fuzzy
+msgid "Include Discovery Items"
+msgstr "Découvrir les pages"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1014
+#: auto_a11y/web/templates/reports/dashboard.html:1161
+msgid ""
+"Large reports may take several minutes to generate. The report will "
+"appear in the list below when complete."
+msgstr ""
+"Les rapports volumineux peuvent prendre plusieurs minutes à générer. Le "
+"rapport apparaîtra dans la liste ci-dessous une fois terminé."
+
+#: auto_a11y/web/templates/reports/dashboard.html:1040
+#: auto_a11y/web/templates/reports/dashboard.html:1187
+#, fuzzy
+msgid "Loading websites..."
+msgstr "Chargement des audits..."
+
+#: auto_a11y/web/templates/reports/dashboard.html:1046
+#: auto_a11y/web/templates/reports/dashboard.html:1193
+msgid "All Websites"
+msgstr "Tous les sites Web"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1129
+msgid "This report generates a single-page offline HTML report with:"
+msgstr "Ce rapport génère un rapport HTML hors ligne d'une seule page avec :"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1131
+msgid "Issues deduplicated and grouped by common components"
+msgstr "Problèmes dédupliqués et regroupés par composants communs"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1132
+msgid "Common components table (navigation, headers, footers, forms, etc.)"
+msgstr ""
+"Tableau des composants communs (navigation, en-têtes, pieds de page, "
+"formulaires, etc.)"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1133
+msgid "Statistics dashboard with violation, warning, and info counts"
+msgstr ""
+"Tableau de bord des statistiques avec nombres de violations, "
+"d'avertissements et d'informations"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1134
+msgid "Client-side filters by component, type, and impact"
+msgstr "Filtres côté client par composant, type et impact"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1135
+#, fuzzy
+msgid "Test user information for authenticated testing"
+msgstr "Tests"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1269
+#, fuzzy
+msgid "This report includes manual accessibility findings from:"
+msgstr "pour suivre les audits d'accessibilité manuels."
+
+#: auto_a11y/web/templates/reports/dashboard.html:1271
+#, fuzzy
+msgid "Accessibility audit recordings"
+msgstr "Plateforme de tests d'accessibilité automatisés"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1272
+#, fuzzy
+msgid "Lived experience testing sessions"
+msgstr "Voir le site web"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1273
+msgid "All issues organized by touchpoint and impact"
+msgstr "Tous les problèmes organisés par point de contact et impact"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1274
+#, fuzzy
+msgid "Key takeaways and user painpoints"
+msgstr "Points de douleur de l'utilisateur"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1275
+msgid "WCAG criteria mappings and remediation guidance"
+msgstr "Correspondances des critères WCAG et conseils de remédiation"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1288
+#, fuzzy
+msgid "All recordings from this project will be included"
+msgstr "Tous les enregistrements combinés"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1311
+#, fuzzy
+msgid "Timecodes"
+msgstr "Codes temporels :"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1317
+#, fuzzy
+msgid "WCAG Criteria"
+msgstr "Critères WCAG :"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1323
+msgid "Group Issues by Touchpoint"
+msgstr "Regrouper les problèmes par point de contact"
 
 #: auto_a11y/web/templates/scripts/create.html:3
 msgid "Create Page Setup Script - Auto A11y"
@@ -5770,10 +6290,6 @@ msgstr "Scripts de configuration"
 msgid "Script Configuration"
 msgstr "Configuration"
 
-#: auto_a11y/web/templates/scripts/view.html:68
-msgid "Scope"
-msgstr "Ouvert"
-
 #: auto_a11y/web/templates/scripts/view.html:73
 msgid "Website-Wide"
 msgstr "Sites web"
@@ -6216,14 +6732,6 @@ msgstr "Documents"
 msgid "Setup Scripts"
 msgstr "Scripts de configuration"
 
-#: auto_a11y/web/templates/websites/view.html:132
-msgid "Site Structure"
-msgstr "Structure du site"
-
-#: auto_a11y/web/templates/websites/view.html:140
-msgid "Accessibility Report"
-msgstr "Plateforme de tests d'accessibilité automatisés"
-
 #: auto_a11y/web/templates/websites/view.html:193
 msgid "Discovery Issues"
 msgstr "Découvrir les pages"
@@ -6584,7 +7092,7 @@ msgstr "Génération du rapport d'accessibilité en"
 #~ msgstr ""
 
 #~ msgid "optional arguments"
-#~ msgstr "pages"
+#~ msgstr "Total des pages"
 
 #~ msgid "show this help message and exit"
 #~ msgstr ""
@@ -6608,7 +7116,7 @@ msgstr "Génération du rapport d'accessibilité en"
 #~ msgstr ""
 
 #~ msgid "argument %s is required"
-#~ msgstr ""
+#~ msgstr "Non audité"
 
 #~ msgid "one of the arguments %s is required"
 #~ msgstr ""
@@ -6623,7 +7131,7 @@ msgstr "Génération du rapport d'accessibilité en"
 #~ msgstr "Éléments visibles attendus :"
 
 #~ msgid "expected %s argument(s)"
-#~ msgstr ""
+#~ msgstr "Éléments visibles attendus :"
 
 #~ msgid "ambiguous option: %s could match %s"
 #~ msgstr ""
@@ -6641,7 +7149,7 @@ msgstr "Génération du rapport d'accessibilité en"
 #~ msgstr ""
 
 #~ msgid "%s: error: %s\n"
-#~ msgstr ""
+#~ msgstr "Erreur : %s"
 
 #~ msgid "{editor}: Editing failed"
 #~ msgstr "Tests"
@@ -6810,7 +7318,7 @@ msgstr "Génération du rapport d'accessibilité en"
 #~ msgstr "Échoué"
 
 #~ msgid "directory"
-#~ msgstr "Découvrir"
+#~ msgstr "Découverte"
 
 #~ msgid "path"
 #~ msgstr "XPath :"

@@ -32,6 +32,7 @@ class Issue:
     impact: ImpactLevel = ImpactLevel.MEDIUM  # Maps to field_impact (high/med/low)
     issue_type: Optional[str] = None  # Maps to field_issue_type taxonomy
     location_on_page: Optional[str] = None  # Maps to field_location_on_page taxonomy
+    issue_code: Optional[str] = None  # Issue code for enhanced descriptions (e.g., "headings_ErrEmptyHeading")
 
     # WCAG references
     wcag_criteria: List[str] = field(default_factory=list)  # Maps to field_wcag_chapter
@@ -104,6 +105,7 @@ class Issue:
             'impact': self.impact.value,
             'issue_type': self.issue_type,
             'location_on_page': self.location_on_page,
+            'issue_code': self.issue_code,
             'wcag_criteria': self.wcag_criteria,
             'xpath': self.xpath,
             'element': self.element,
@@ -162,6 +164,7 @@ class Issue:
             impact=impact,
             issue_type=data.get('issue_type'),
             location_on_page=data.get('location_on_page'),
+            issue_code=data.get('issue_code'),
             wcag_criteria=data.get('wcag_criteria', []),
             xpath=data.get('xpath'),
             element=data.get('element'),

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-12-01 13:48-0500\n"
+"POT-Creation-Date: 2025-12-01 14:53-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -322,6 +322,8 @@ msgid "Help"
 msgstr ""
 
 #: auto_a11y/web/templates/base.html:72
+#: auto_a11y/web/templates/testing/configure.html:3
+#: auto_a11y/web/templates/testing/configure.html:10
 msgid "Settings"
 msgstr ""
 
@@ -432,6 +434,7 @@ msgid "pages tested"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:169
+#: auto_a11y/web/templates/testing/configure.html:139
 msgid "System Status"
 msgstr ""
 
@@ -1261,6 +1264,7 @@ msgstr ""
 #: auto_a11y/web/templates/reports/dashboard.html:1183
 #: auto_a11y/web/templates/reports/dashboard.html:1347
 #: auto_a11y/web/templates/scripts/create.html:292
+#: auto_a11y/web/templates/testing/configure.html:165
 #: auto_a11y/web/templates/website_users/create.html:245
 #: auto_a11y/web/templates/website_users/edit.html:282
 #: auto_a11y/web/templates/websites/edit.html:99
@@ -3568,6 +3572,7 @@ msgstr ""
 #: auto_a11y/web/templates/projects/create.html:720
 #: auto_a11y/web/templates/projects/edit.html:456
 #: auto_a11y/web/templates/projects/edit.html:611
+#: auto_a11y/web/templates/testing/configure.html:142
 msgid "Loading..."
 msgstr ""
 
@@ -4214,6 +4219,7 @@ msgstr ""
 #: auto_a11y/web/templates/projects/view.html:754
 #: auto_a11y/web/templates/projects/view.html:763
 #: auto_a11y/web/templates/projects/view.html:776
+#: auto_a11y/web/templates/testing/configure.html:322
 #: auto_a11y/web/templates/websites/view.html:267
 #: auto_a11y/web/templates/websites/view.html:1516
 msgid "pages"
@@ -6132,6 +6138,232 @@ msgstr ""
 
 #: auto_a11y/web/templates/scripts/view.html:215
 msgid "Script ID:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:20
+msgid "Testing Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:26
+msgid "Parallel Tests"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:29
+msgid "Number of tests to run in parallel"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:32
+msgid "Test Timeout (seconds)"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:35
+msgid "Maximum time per page test"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:45
+msgid "Enable AI Analysis"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:48
+msgid "Use Claude AI for visual accessibility analysis"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:55
+msgid "Headless Browser"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:58
+msgid "Run browser in headless mode"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:64
+msgid "Viewport Width"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:69
+msgid "Viewport Height"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:76
+msgid "UI Pagination Settings"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:80
+msgid "Pages Per Page"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:83
+msgid "Default number of pages shown per view"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:86
+msgid "Maximum Pages Per Page"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:89
+msgid "Maximum allowed per page (for ?per_page parameter)"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:94
+msgid "Save Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:105
+msgid "System Maintenance"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:109
+msgid "Warning:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:109
+msgid "These actions cannot be undone."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:113
+msgid "Clear Outstanding Jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:114
+msgid ""
+"Reset all running and pending scrapes and tests. Use this if the system "
+"appears stuck."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:116
+msgid "Clear All Jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:121
+#: auto_a11y/web/templates/testing/configure.html:124
+msgid "Clear Stale Jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:122
+msgid "Remove jobs that have been running for more than 24 hours."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:129
+#: auto_a11y/web/templates/testing/configure.html:132
+msgid "Clean Page Data"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:130
+msgid ""
+"Reset violation counts for pages that haven't been tested yet. Fixes data"
+" inconsistencies."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:144
+msgid "Loading job statistics..."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:158
+msgid "Confirm Action"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:166
+msgid "Confirm"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:189
+msgid "Running:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:189
+#: auto_a11y/web/templates/testing/configure.html:190
+#: auto_a11y/web/templates/testing/configure.html:191
+#: auto_a11y/web/templates/testing/configure.html:192
+#: auto_a11y/web/templates/testing/configure.html:193
+#: auto_a11y/web/templates/testing/configure.html:222
+msgid "jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:190
+msgid "Pending:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:191
+msgid "Cancelling:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:192
+msgid "Completed (24h):"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:193
+msgid "Failed (24h):"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:199
+msgid "Failed to load statistics"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:207
+msgid ""
+"This will clear ALL running and pending jobs. This action cannot be "
+"undone. Are you sure?"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:222
+#: auto_a11y/web/templates/testing/configure.html:256
+msgid "Successfully cleared"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:225
+msgid "Failed to clear jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:230
+msgid "An error occurred while clearing jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:241
+msgid ""
+"This will clear all jobs that have been running for more than 24 hours. "
+"Are you sure?"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:256
+msgid "stale jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:259
+msgid "Failed to clear stale jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:264
+msgid "An error occurred while clearing stale jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:296
+msgid "Configuration saved successfully"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:298
+msgid "Failed to save configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:303
+msgid "An error occurred while saving configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:309
+msgid ""
+"This will reset violation counts for all pages that haven't been tested "
+"yet. Continue?"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:322
+msgid "Successfully cleaned"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:324
+msgid "Failed to clean page data"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:329
+msgid "An error occurred while cleaning page data"
 msgstr ""
 
 #: auto_a11y/web/templates/testing/dashboard.html:3

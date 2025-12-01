@@ -837,139 +837,200 @@ def upload_to_drupal(project_id):
                     issues_updated = 0
                     issues_failed = 0
 
-                    # Process all test results and upload violations as issues
-                    for website_data_item in report_data.get('websites', []):
-                        for page_result in website_data_item.get('pages', []):
-                            page = page_result.get('page')
-                            test_result = page_result.get('test_result')
+                    # Deduplicate violations before upload
+                    def deduplicate_violations_for_upload(report_data):
+                        """
+                        Deduplicate violations by component and issue type.
+                        Returns dict of unique violations with affected pages list.
+                        """
+                        deduped_violations = {}
 
-                            if not test_result:
-                                continue
+                        for website_data_item in report_data.get('websites', []):
+                            for page_result in website_data_item.get('pages', []):
+                                page = page_result.get('page')
+                                test_result = page_result.get('test_result')
 
-                            # Process all violation types
-                            all_violations = (
-                                test_result.violations +
-                                test_result.warnings +
-                                test_result.info
+                                if not test_result:
+                                    continue
+
+                                page_url = page.url if hasattr(page, 'url') else page.get('url')
+
+                                # Process all violation types
+                                all_violations = (
+                                    test_result.violations +
+                                    test_result.warnings +
+                                    test_result.info
+                                )
+
+                                for violation in all_violations:
+                                    # Create deduplication key
+                                    if violation.discovered_page_id:
+                                        # Group by component + violation type
+                                        dedup_key = (violation.discovered_page_id, violation.id, violation.impact.value)
+                                    else:
+                                        # Group by violation type + xpath (page-specific issues)
+                                        dedup_key = (violation.id, violation.xpath or '', violation.impact.value, page_url)
+
+                                    if dedup_key not in deduped_violations:
+                                        # Store first instance as representative
+                                        deduped_violations[dedup_key] = {
+                                            'violation': violation,
+                                            'affected_pages': set(),
+                                            'page_url': page_url  # Store first page URL for upload
+                                        }
+
+                                    # Add this page to affected pages list
+                                    deduped_violations[dedup_key]['affected_pages'].add(page_url)
+
+                        # Convert affected_pages sets to sorted lists
+                        for entry in deduped_violations.values():
+                            entry['affected_pages'] = sorted(list(entry['affected_pages']))
+
+                        return deduped_violations
+
+                    # Deduplicate violations
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': 'Deduplicating violations by component...'
+                    }) + '\n'
+
+                    deduped_violations = deduplicate_violations_for_upload(report_data)
+
+                    yield json.dumps({
+                        'type': 'info',
+                        'message': f'Deduplicated to {len(deduped_violations)} unique issues for upload'
+                    }) + '\n'
+
+                    # Process deduplicated violations and upload as issues
+                    for dedup_key, entry in deduped_violations.items():
+                        # Extract the representative violation and affected pages from dedup entry
+                        violation = entry['violation']
+                        affected_pages = entry['affected_pages']
+                        page_url = entry['page_url']
+
+                        # Get discovered page UUID for this violation
+                        discovered_page_uuid = None
+                        if violation.discovered_page_id:
+                            disc_page = db.get_discovered_page_by_id(violation.discovered_page_id)
+                            if disc_page and disc_page.drupal_uuid:
+                                discovered_page_uuid = disc_page.drupal_uuid
+
+                        # Check if issue already exists using unique_id
+                        existing_issue = db.drupal_issues.find_one({
+                            'unique_id': violation.unique_id,
+                            'project_id': project_id
+                        })
+
+                        existing_uuid = existing_issue.get('drupal_uuid') if existing_issue else None
+
+                        try:
+                            # Handle WCAG criteria - check if already UUIDs or need conversion
+                            wcag_uuids = None
+                            if violation.wcag_criteria:
+                                # Check if first item looks like a UUID (contains dashes and is 36 chars)
+                                first_crit = violation.wcag_criteria[0]
+                                if len(first_crit) == 36 and first_crit.count('-') == 4:
+                                    # Already UUIDs, use as-is
+                                    wcag_uuids = violation.wcag_criteria
+                                else:
+                                    # WCAG criteria numbers, convert to UUIDs
+                                    wcag_uuids = wcag_cache.lookup_uuids(violation.wcag_criteria)
+
+                            # Try to build enhanced description from catalog
+                            description = violation.description
+                            try:
+                                from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+                                import html as html_module
+
+                                # Build issue_code from touchpoint and id
+                                # Format: "{touchpoint}_{id}" (e.g., "headings_ErrEmptyHeading")
+                                issue_code = f"{violation.touchpoint}_{violation.id}"
+
+                                # Build metadata for contextual substitution
+                                metadata = {}
+                                if violation.element:
+                                    metadata['element_text'] = violation.element
+                                if violation.html:
+                                    # Try to extract tag name from HTML
+                                    import re
+                                    tag_match = re.match(r'<(\w+)', violation.html)
+                                    if tag_match:
+                                        metadata['element_tag'] = tag_match.group(1)
+
+                                enhanced = get_detailed_issue_description(issue_code, metadata)
+
+                                if enhanced:
+                                    # Build enhanced description HTML
+                                    description_parts = []
+                                    if enhanced.get('what'):
+                                        description_parts.append(f"<h3>What the issue is</h3>\n<p>{html_module.escape(enhanced['what'])}</p>")
+                                    if enhanced.get('why'):
+                                        description_parts.append(f"<h3>Why it is important</h3>\n<p>{html_module.escape(enhanced['why'])}</p>")
+                                    if enhanced.get('who'):
+                                        description_parts.append(f"<h3>Who it affects</h3>\n<p>{html_module.escape(enhanced['who'])}</p>")
+                                    if enhanced.get('remediation'):
+                                        description_parts.append(f"<h3>How to remediate</h3>\n<p>{html_module.escape(enhanced['remediation'])}</p>")
+
+                                    if description_parts:
+                                        description = "\n".join(description_parts)
+                                        logger.info(f"Using enhanced description for automated test violation: {issue_code}")
+                            except Exception as e:
+                                logger.warning(f"Failed to get enhanced description for {violation.touchpoint}_{violation.id}: {e}")
+
+                            # Add information about affected pages to description if this is a component issue
+                            if len(affected_pages) > 1:
+                                description += f"\n\n<h3>Affected Pages</h3>\n<p>This issue appears on {len(affected_pages)} pages:</p>\n<ul>\n"
+                                for page in affected_pages:
+                                    description += f"<li>{html_module.escape(page)}</li>\n"
+                                description += "</ul>"
+
+                            # Upload issue to Drupal
+                            result = issue_exporter.export_issue(
+                                title=violation.description[:255],
+                                description=description,
+                                audit_uuid=audit_uuid,
+                                impact=violation.impact.value,
+                                issue_type=violation.touchpoint,
+                                location_on_page=violation.metadata.get('location_on_page', ''),
+                                wcag_criteria=wcag_uuids,
+                                xpath=violation.xpath or violation.metadata.get('xpath'),
+                                url=page_url,
+                                existing_uuid=existing_uuid,
+                                discovered_page_uuid=discovered_page_uuid
                             )
 
-                            for violation in all_violations:
-                                # Get discovered page UUID for this violation
-                                discovered_page_uuid = None
-                                if violation.discovered_page_id:
-                                    disc_page = db.get_discovered_page_by_id(violation.discovered_page_id)
-                                    if disc_page and disc_page.drupal_uuid:
-                                        discovered_page_uuid = disc_page.drupal_uuid
+                            if result.get('success'):
+                                # Store/update issue reference in database using unique_id
+                                db.drupal_issues.update_one(
+                                    {'unique_id': violation.unique_id, 'project_id': project_id},
+                                    {
+                                        '$set': {
+                                            'drupal_uuid': result['uuid'],
+                                            'drupal_id': result.get('id'),
+                                            'updated_at': datetime.now(),
+                                            'discovered_page_id': violation.discovered_page_id
+                                        },
+                                        '$setOnInsert': {
+                                            'unique_id': violation.unique_id,
+                                            'violation_id': violation.id,  # Keep for reference
+                                            'project_id': project_id,
+                                            'created_at': datetime.now()
+                                        }
+                                    },
+                                    upsert=True
+                                )
 
-                                # Check if issue already exists using unique_id
-                                existing_issue = db.drupal_issues.find_one({
-                                    'unique_id': violation.unique_id,
-                                    'project_id': project_id
-                                })
+                                if existing_uuid:
+                                    issues_updated += 1
+                                else:
+                                    issues_created += 1
+                            else:
+                                issues_failed += 1
+                                logger.error(f"Failed to upload issue: {result.get('error')}")
 
-                                existing_uuid = existing_issue.get('drupal_uuid') if existing_issue else None
-
-                                try:
-                                    # Handle WCAG criteria - check if already UUIDs or need conversion
-                                    wcag_uuids = None
-                                    if violation.wcag_criteria:
-                                        # Check if first item looks like a UUID (contains dashes and is 36 chars)
-                                        first_crit = violation.wcag_criteria[0]
-                                        if len(first_crit) == 36 and first_crit.count('-') == 4:
-                                            # Already UUIDs, use as-is
-                                            wcag_uuids = violation.wcag_criteria
-                                        else:
-                                            # WCAG criteria numbers, convert to UUIDs
-                                            wcag_uuids = wcag_cache.lookup_uuids(violation.wcag_criteria)
-
-                                    # Try to build enhanced description from catalog
-                                    description = violation.description
-                                    try:
-                                        from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
-                                        import html as html_module
-
-                                        # Build issue_code from touchpoint and id
-                                        # Format: "{touchpoint}_{id}" (e.g., "headings_ErrEmptyHeading")
-                                        issue_code = f"{violation.touchpoint}_{violation.id}"
-
-                                        # Build metadata for contextual substitution
-                                        metadata = {}
-                                        if violation.element:
-                                            metadata['element_text'] = violation.element
-                                        if violation.html:
-                                            # Try to extract tag name from HTML
-                                            import re
-                                            tag_match = re.match(r'<(\w+)', violation.html)
-                                            if tag_match:
-                                                metadata['element_tag'] = tag_match.group(1)
-
-                                        enhanced = get_detailed_issue_description(issue_code, metadata)
-
-                                        if enhanced:
-                                            # Build enhanced description HTML
-                                            description_parts = []
-                                            if enhanced.get('what'):
-                                                description_parts.append(f"<h3>What the issue is</h3>\n<p>{html_module.escape(enhanced['what'])}</p>")
-                                            if enhanced.get('why'):
-                                                description_parts.append(f"<h3>Why it is important</h3>\n<p>{html_module.escape(enhanced['why'])}</p>")
-                                            if enhanced.get('who'):
-                                                description_parts.append(f"<h3>Who it affects</h3>\n<p>{html_module.escape(enhanced['who'])}</p>")
-                                            if enhanced.get('remediation'):
-                                                description_parts.append(f"<h3>How to remediate</h3>\n<p>{html_module.escape(enhanced['remediation'])}</p>")
-
-                                            if description_parts:
-                                                description = "\n".join(description_parts)
-                                                logger.info(f"Using enhanced description for automated test violation: {issue_code}")
-                                    except Exception as e:
-                                        logger.warning(f"Failed to get enhanced description for {violation.touchpoint}_{violation.id}: {e}")
-
-                                    # Upload issue to Drupal
-                                    result = issue_exporter.export_issue(
-                                        title=violation.description[:255],
-                                        description=description,
-                                        audit_uuid=audit_uuid,
-                                        impact=violation.impact.value,
-                                        issue_type=violation.touchpoint,
-                                        location_on_page=violation.metadata.get('location_on_page', ''),
-                                        wcag_criteria=wcag_uuids,
-                                        xpath=violation.xpath or violation.metadata.get('xpath'),
-                                        url=page.url if hasattr(page, 'url') else page.get('url'),
-                                        existing_uuid=existing_uuid,
-                                        discovered_page_uuid=discovered_page_uuid
-                                    )
-
-                                    if result.get('success'):
-                                        # Store/update issue reference in database using unique_id
-                                        db.drupal_issues.update_one(
-                                            {'unique_id': violation.unique_id, 'project_id': project_id},
-                                            {
-                                                '$set': {
-                                                    'drupal_uuid': result['uuid'],
-                                                    'drupal_id': result.get('id'),
-                                                    'updated_at': datetime.now(),
-                                                    'discovered_page_id': violation.discovered_page_id
-                                                },
-                                                '$setOnInsert': {
-                                                    'unique_id': violation.unique_id,
-                                                    'violation_id': violation.id,  # Keep for reference
-                                                    'project_id': project_id,
-                                                    'created_at': datetime.now()
-                                                }
-                                            },
-                                            upsert=True
-                                        )
-
-                                        if existing_uuid:
-                                            issues_updated += 1
-                                        else:
-                                            issues_created += 1
-                                    else:
-                                        issues_failed += 1
-                                        logger.error(f"Failed to upload issue: {result.get('error')}")
-
-                                except Exception as e:
-                                    issues_failed += 1
-                                    logger.error(f"Error uploading issue: {e}")
+                        except Exception as e:
+                            issues_failed += 1
+                            logger.error(f"Error uploading issue: {e}")
 
                     yield json.dumps({
                         'type': 'info',

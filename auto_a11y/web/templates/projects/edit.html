@@ -640,7 +640,7 @@ function showTestDetails(testId) {
                 bodyEl.innerHTML = `
                     <div class="mb-3">
                         <div class="d-flex align-items-center mb-2">
-                            <span class="badge bg-${impactClass} impact-badge me-2">${test.impact} Impact</span>
+                            <span class="badge bg-${impactClass} impact-badge me-2">${test.impact} {{ _('Impact') }}</span>
                             <span class="badge bg-secondary me-2">${test.type}</span>
                             ${wcagBadges}
                         </div>
@@ -648,27 +648,27 @@ function showTestDetails(testId) {
                     </div>
 
                     <div class="test-details-section">
-                        <h6><i class="bi bi-info-circle me-2"></i>What This Test Detects</h6>
+                        <h6><i class="bi bi-info-circle me-2"></i>{{ _('What This Test Detects') }}</h6>
                         <p>${test.description}</p>
                     </div>
 
                     ${test.why_it_matters ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-exclamation-triangle me-2"></i>Why It Matters</h6>
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>{{ _('Why It Matters') }}</h6>
                         <p>${test.why_it_matters}</p>
                     </div>
                     ` : ''}
 
                     ${test.who_it_affects ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-people me-2"></i>Who It Affects</h6>
+                        <h6><i class="bi bi-people me-2"></i>{{ _('Who It Affects') }}</h6>
                         <p>${test.who_it_affects}</p>
                     </div>
                     ` : ''}
 
                     ${test.how_to_fix ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-wrench me-2"></i>How to Fix</h6>
+                        <h6><i class="bi bi-wrench me-2"></i>{{ _('How to Fix') }}</h6>
                         <p>${test.how_to_fix}</p>
                     </div>
                     ` : ''}
@@ -714,7 +714,7 @@ async function loadDrupalAudits() {
 
         if (data.success && data.audits && data.audits.length > 0) {
             // Clear loading option
-            select.innerHTML = '<option value="">Auto-match by project name</option>';
+            select.innerHTML = '<option value="">{{ _("Auto-match by project name") }}</option>';
 
             // Add audit options
             data.audits.forEach(audit => {
@@ -728,17 +728,17 @@ async function loadDrupalAudits() {
             });
         } else if (!data.success && data.error) {
             // Show error but keep the auto-match option
-            select.innerHTML = '<option value="">Auto-match by project name</option>';
+            select.innerHTML = '<option value="">{{ _("Auto-match by project name") }}</option>';
             const option = document.createElement('option');
             option.disabled = true;
-            option.textContent = `Error: ${data.error}`;
+            option.textContent = `{{ _('Error:') }} ${data.error}`;
             select.appendChild(option);
         } else {
             // No audits available
-            select.innerHTML = '<option value="">Auto-match by project name</option>';
+            select.innerHTML = '<option value="">{{ _("Auto-match by project name") }}</option>';
             const option = document.createElement('option');
             option.disabled = true;
-            option.textContent = 'No Drupal audits found';
+            option.textContent = '{{ _("No Drupal audits found") }}';
             select.appendChild(option);
         }
     } catch (error) {

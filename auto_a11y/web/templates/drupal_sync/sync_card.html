@@ -2,11 +2,11 @@
 <div class="card mb-4" id="drupalSyncCard">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
-            <i class="bi bi-cloud-upload"></i> Drupal Sync
+            <i class="bi bi-cloud-upload"></i> {{ _('Drupal Sync') }}
         </h5>
         <div>
             <span class="badge bg-info" id="drupalAuditBadge">
-                <i class="bi bi-info-circle"></i> Loading...
+                <i class="bi bi-info-circle"></i> {{ _('Loading...') }}
             </span>
         </div>
     </div>
@@ -15,7 +15,7 @@
             <!-- Content loaded via JavaScript -->
             <div class="text-center py-4">
                 <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                    <span class="visually-hidden">{{ _('Loading...') }}</span>
                 </div>
             </div>
         </div>
@@ -27,19 +27,19 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Upload to Drupal</h5>
+                <h5 class="modal-title">{{ _('Upload to Drupal') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <!-- Step 1: Select Content -->
                 <div id="uploadStep1">
-                    <h6>Select Content to Upload</h6>
+                    <h6>{{ _('Select Content to Upload') }}</h6>
 
                     <!-- Discovered Pages -->
                     <div class="card mb-3">
                         <div class="card-header">
                             <input type="checkbox" id="selectAllPages" checked>
-                            <strong>Discovered Pages (<span id="discoveredPagesCount">0</span>)</strong>
+                            <strong>{{ _('Discovered Pages') }} (<span id="discoveredPagesCount">0</span>)</strong>
                         </div>
                         <div class="card-body" style="max-height: 300px; overflow-y: auto;">
                             <div id="discoveredPagesList">
@@ -52,7 +52,7 @@
                     <div class="card mb-3">
                         <div class="card-header">
                             <input type="checkbox" id="selectAllRecordings" checked>
-                            <strong>Recordings (<span id="recordingsCount">0</span>)</strong>
+                            <strong>{{ _('Recordings') }} (<span id="recordingsCount">0</span>)</strong>
                         </div>
                         <div class="card-body" style="max-height: 300px; overflow-y: auto;">
                             <div id="recordingsList">
@@ -64,7 +64,7 @@
 
                 <!-- Step 2: Upload Progress -->
                 <div id="uploadStep2" style="display:none;">
-                    <h6>Uploading to Drupal...</h6>
+                    <h6>{{ _('Uploading to Drupal...') }}</h6>
 
                     <div class="progress mb-3" style="height: 30px;">
                         <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
@@ -75,7 +75,7 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <strong>Upload Log</strong>
+                            <strong>{{ _('Upload Log') }}</strong>
                         </div>
                         <div class="card-body" style="max-height: 400px; overflow-y: auto;">
                             <div id="uploadLog" class="font-monospace small">
@@ -88,35 +88,35 @@
                 <!-- Step 3: Complete -->
                 <div id="uploadStep3" style="display:none;">
                     <div class="alert alert-success">
-                        <h4><i class="bi bi-check-circle"></i> Upload Complete!</h4>
-                        <p>Successfully uploaded <strong><span id="successCount">0</span></strong> items to Drupal.</p>
+                        <h4><i class="bi bi-check-circle"></i> {{ _('Upload Complete!') }}</h4>
+                        <p>{{ _('Successfully uploaded') }} <strong><span id="successCount">0</span></strong> {{ _('items to Drupal.') }}</p>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <div class="stat-card text-center p-3 border rounded">
                                 <h4 id="uploadedPages">0</h4>
-                                <small>Discovered Pages</small>
+                                <small>{{ _('Discovered Pages') }}</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="stat-card text-center p-3 border rounded">
                                 <h4 id="uploadedRecordings">0</h4>
-                                <small>Recordings</small>
+                                <small>{{ _('Recordings') }}</small>
                             </div>
                         </div>
                     </div>
 
                     <div id="uploadErrors" class="alert alert-danger" style="display:none;">
-                        <strong><i class="bi bi-exclamation-triangle"></i> Some items failed:</strong>
+                        <strong><i class="bi bi-exclamation-triangle"></i> {{ _('Some items failed:') }}</strong>
                         <ul id="uploadErrorsList"></ul>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalBtn">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalBtn">{{ _('Close') }}</button>
                 <button type="button" class="btn btn-primary" id="startUploadBtn" onclick="startUpload()">
-                    <i class="bi bi-cloud-upload"></i> Start Upload
+                    <i class="bi bi-cloud-upload"></i> {{ _('Start Upload') }}
                 </button>
             </div>
         </div>
@@ -145,7 +145,7 @@ async function loadSyncStatus() {
         console.error('Error loading sync status:', error);
         document.getElementById('drupalSyncContent').innerHTML = `
             <div class="alert alert-danger">
-                <strong>Error loading sync status:</strong> ${error.message}
+                <strong>{{ _('Error loading sync status:') }}</strong> ${error.message}
             </div>
         `;
     }
@@ -155,8 +155,8 @@ function renderSyncStatus() {
     if (!syncStatus.drupal_enabled) {
         document.getElementById('drupalSyncContent').innerHTML = `
             <div class="alert alert-warning">
-                <strong><i class="bi bi-exclamation-triangle"></i> Drupal Integration Not Configured</strong>
-                <p class="mb-0">Configure Drupal connection in <code>config/drupal.conf</code> to enable sync.</p>
+                <strong><i class="bi bi-exclamation-triangle"></i> {{ _('Drupal Integration Not Configured') }}</strong>
+                <p class="mb-0">{{ _('Configure Drupal connection in') }} <code>config/drupal.conf</code> {{ _('to enable sync.') }}</p>
             </div>
         `;
         return;
@@ -164,7 +164,7 @@ function renderSyncStatus() {
 
     // Update audit badge
     document.getElementById('drupalAuditBadge').innerHTML = `
-        <i class="bi bi-info-circle"></i> Audit: "${syncStatus.project_name}"
+        <i class="bi bi-info-circle"></i> {{ _('Audit:') }} "${syncStatus.project_name}"
     `;
 
     // Render status
@@ -172,27 +172,27 @@ function renderSyncStatus() {
         <div class="row mb-3">
             <div class="col-md-4">
                 <div class="stat-box text-center p-3 border rounded">
-                    <div class="stat-label">Discovered Pages</div>
+                    <div class="stat-label">{{ _('Discovered Pages') }}</div>
                     <div class="stat-value">
                         <span class="text-success">${syncStatus.discovered_pages.synced}</span> / ${syncStatus.discovered_pages.total}
                     </div>
-                    <small class="text-muted">${syncStatus.discovered_pages.pending} pending</small>
+                    <small class="text-muted">${syncStatus.discovered_pages.pending} {{ _('pending') }}</small>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="stat-box text-center p-3 border rounded">
-                    <div class="stat-label">Recordings</div>
+                    <div class="stat-label">{{ _('Recordings') }}</div>
                     <div class="stat-value">
                         <span class="text-success">${syncStatus.recordings.synced}</span> / ${syncStatus.recordings.total}
                     </div>
-                    <small class="text-muted">${syncStatus.recordings.pending} pending</small>
+                    <small class="text-muted">${syncStatus.recordings.pending} {{ _('pending') }}</small>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="stat-box text-center p-3 border rounded">
-                    <div class="stat-label">Last Sync</div>
+                    <div class="stat-label">{{ _('Last Sync') }}</div>
                     <div class="stat-value small">
-                        ${syncStatus.last_sync_time ? new Date(syncStatus.last_sync_time).toLocaleString() : 'Never'}
+                        ${syncStatus.last_sync_time ? new Date(syncStatus.last_sync_time).toLocaleString() : '{{ _("Never") }}'}
                     </div>
                 </div>
             </div>
@@ -200,19 +200,19 @@ function renderSyncStatus() {
 
         <div class="btn-toolbar mb-3">
             <a href="/drupal/projects/{{ project.id }}/sync" class="btn btn-primary me-2">
-                <i class="bi bi-cloud-arrow-up-down"></i> Synchronization Page
+                <i class="bi bi-cloud-arrow-up-down"></i> {{ _('Synchronization Page') }}
             </a>
             <button type="button" class="btn btn-outline-primary me-2" onclick="openUploadModal()">
-                <i class="bi bi-arrow-up-circle"></i> Quick Upload
+                <i class="bi bi-arrow-up-circle"></i> {{ _('Quick Upload') }}
             </button>
             <button type="button" class="btn btn-outline-secondary" onclick="loadSyncStatus()">
-                <i class="bi bi-arrow-clockwise"></i> Refresh
+                <i class="bi bi-arrow-clockwise"></i> {{ _('Refresh') }}
             </button>
         </div>
 
         ${syncStatus.sync_errors.length > 0 ? `
         <div class="alert alert-warning">
-            <strong><i class="bi bi-exclamation-triangle"></i> Sync Issues</strong>
+            <strong><i class="bi bi-exclamation-triangle"></i> {{ _('Sync Issues') }}</strong>
             <ul class="mb-0 mt-2">
                 ${syncStatus.sync_errors.map(err => `<li>${err}</li>`).join('')}
             </ul>
@@ -243,7 +243,7 @@ async function openUploadModal() {
         modal.show();
     } catch (error) {
         console.error('Error loading content:', error);
-        alert('Error loading content: ' + error.message);
+        alert({{ _('Error loading content:') | tojson }} + ' ' + error.message);
     }
 }
 
@@ -252,7 +252,7 @@ function renderDiscoveredPagesList() {
     document.getElementById('discoveredPagesCount').textContent = discoveredPages.length;
 
     if (discoveredPages.length === 0) {
-        container.innerHTML = '<p class="text-muted">No discovered pages found.</p>';
+        container.innerHTML = '<p class="text-muted">{{ _("No discovered pages found.") }}</p>';
         return;
     }
 
@@ -263,8 +263,8 @@ function renderDiscoveredPagesList() {
                    ${page.needs_sync ? 'checked' : ''}>
             <label class="form-check-label" for="page_${page.id}">
                 <strong>${page.title}</strong>
-                ${page.is_synced ? '<span class="badge bg-success ms-2">Synced</span>' : ''}
-                ${page.drupal_sync_status === 'sync_failed' ? '<span class="badge bg-danger ms-2">Failed</span>' : ''}
+                ${page.is_synced ? '<span class="badge bg-success ms-2">{{ _("Synced") }}</span>' : ''}
+                ${page.drupal_sync_status === 'sync_failed' ? '<span class="badge bg-danger ms-2">{{ _("Failed") }}</span>' : ''}
                 <br>
                 <small class="text-muted">${page.url}</small>
             </label>
@@ -284,7 +284,7 @@ function renderRecordingsList() {
     document.getElementById('recordingsCount').textContent = recordings.length;
 
     if (recordings.length === 0) {
-        container.innerHTML = '<p class="text-muted">No recordings found.</p>';
+        container.innerHTML = '<p class="text-muted">{{ _("No recordings found.") }}</p>';
         return;
     }
 
@@ -295,13 +295,13 @@ function renderRecordingsList() {
                    ${recording.needs_sync ? 'checked' : ''}>
             <label class="form-check-label" for="recording_${recording.id}">
                 <strong>${recording.title}</strong>
-                ${recording.is_synced ? '<span class="badge bg-success ms-2">Synced</span>' : ''}
-                ${recording.drupal_sync_status === 'sync_failed' ? '<span class="badge bg-danger ms-2">Failed</span>' : ''}
+                ${recording.is_synced ? '<span class="badge bg-success ms-2">{{ _("Synced") }}</span>' : ''}
+                ${recording.drupal_sync_status === 'sync_failed' ? '<span class="badge bg-danger ms-2">{{ _("Failed") }}</span>' : ''}
                 <br>
                 <small class="text-muted">
-                    ${recording.duration || 'Unknown duration'}
+                    ${recording.duration || '{{ _("Unknown duration") }}'}
                     ${recording.auditor_name ? `• ${recording.auditor_name}` : ''}
-                    ${recording.total_issues > 0 ? `• ${recording.total_issues} issues` : ''}
+                    ${recording.total_issues > 0 ? `• ${recording.total_issues} {{ _("issues") }}` : ''}
                 </small>
             </label>
         </div>
@@ -323,7 +323,7 @@ async function startUpload() {
         .map(cb => cb.value);
 
     if (selectedPageIds.length === 0 && selectedRecordingIds.length === 0) {
-        alert('Please select at least one item to upload.');
+        alert({{ _('Please select at least one item to upload.') | tojson }});
         return;
     }
 

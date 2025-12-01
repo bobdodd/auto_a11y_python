@@ -346,8 +346,8 @@ def generate_project_report(project_id):
 
 
 @reports_bp.route('/generate/page-structure/<website_id>', methods=['POST'])
-def generate_page_structure_report(website_id):
-    """Generate site structure tree report for website"""
+def generate_page_structure_report_download(website_id):
+    """Generate and immediately download site structure tree report for website (legacy endpoint)"""
     format = request.form.get('format', 'html')
 
     try:
@@ -389,6 +389,43 @@ def generate_page_structure_report(website_id):
     except Exception as e:
         logger.error(f"Failed to generate page structure report: {e}")
         return jsonify({'error': str(e)}), 500
+
+
+@reports_bp.route('/generate/page-structure', methods=['POST'])
+def generate_page_structure_report():
+    """Generate site structure tree report and add to reports list"""
+    data = request.get_json()
+    website_id = data.get('website_id')
+    format = data.get('format', 'html')
+
+    try:
+        # Get website and pages
+        website = current_app.db.get_website(website_id)
+        if not website:
+            return jsonify({'success': False, 'error': 'Website not found'}), 404
+
+        # Get project if available
+        project = None
+        if website.project_id:
+            project = current_app.db.get_project(website.project_id)
+
+        pages = current_app.db.get_pages(website_id)
+        if not pages:
+            return jsonify({'success': False, 'error': 'No pages found for website'}), 404
+
+        # Generate report with project information
+        report = PageStructureReport(current_app.db, website, pages, project)
+        report.generate()
+
+        # Save report in requested format (this saves to reports directory)
+        report_path = report.save(format)
+
+        logger.info(f"Site structure report generated successfully: {report_path}")
+        return jsonify({'success': True, 'path': str(report_path)})
+
+    except Exception as e:
+        logger.error(f"Failed to generate page structure report: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @reports_bp.route('/generate/discovery/website/<website_id>', methods=['POST'])

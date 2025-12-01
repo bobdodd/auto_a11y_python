@@ -40,6 +40,7 @@ class DiscoveredPageExporter:
         private_notes: Optional[str] = None,
         public_notes: Optional[str] = None,
         include_in_report: bool = True,
+        manual_audit: bool = True,
         document_links: List[Dict[str, str]] = None,
         existing_uuid: Optional[str] = None
     ) -> Dict[str, Any]:
@@ -55,6 +56,7 @@ class DiscoveredPageExporter:
             private_notes: Private notes HTML
             public_notes: Public notes HTML
             include_in_report: Whether to include in report
+            manual_audit: Whether to tag as requiring manual audit (default True)
             document_links: List of document link dicts with 'uri' and 'title'
             existing_uuid: If provided, UPDATE existing page instead of creating new
 
@@ -75,6 +77,7 @@ class DiscoveredPageExporter:
                 private_notes=private_notes,
                 public_notes=public_notes,
                 include_in_report=include_in_report,
+                manual_audit=manual_audit,
                 document_links=document_links or []
             )
 
@@ -251,6 +254,7 @@ class DiscoveredPageExporter:
         private_notes: Optional[str],
         public_notes: Optional[str],
         include_in_report: bool,
+        manual_audit: bool,
         document_links: List[Dict[str, str]]
     ) -> Dict[str, Any]:
         """
@@ -265,6 +269,7 @@ class DiscoveredPageExporter:
             private_notes: Private notes HTML
             public_notes: Public notes HTML
             include_in_report: Include in report flag
+            manual_audit: Whether to tag as requiring manual audit
             document_links: List of document link dicts
 
         Returns:
@@ -284,7 +289,7 @@ class DiscoveredPageExporter:
             },
             'field_include_in_report': include_in_report,
             'field_audited': False,  # Not audited yet by default
-            'field_manual_audit': False
+            'field_manual_audit': manual_audit
         }
 
         # Add private notes if provided

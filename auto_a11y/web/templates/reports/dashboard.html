@@ -446,13 +446,13 @@ document.getElementById('projectSelect').addEventListener('change', function() {
 
     if (selectedProjectId) {
         // Load websites for selected project
-        websiteSelect.innerHTML = <option value="">' +  _("Loading websites...") | tojson  + '</option>;
+        websiteSelect.innerHTML = '<option value="">' + {{ _("Loading websites...") | tojson }} + '</option>';
         websiteSelect.disabled = true;
 
         fetch(`/projects/api/${selectedProjectId}/websites`)
             .then(response => response.json())
             .then(data => {
-                websiteSelect.innerHTML = <option value="">' +  _("All Websites") | tojson  + '</option>;
+                websiteSelect.innerHTML = '<option value="">' + {{ _("All Websites") | tojson }} + '</option>';
 
                 if (data.websites && data.websites.length > 0) {
                     data.websites.forEach(website => {
@@ -463,16 +463,16 @@ document.getElementById('projectSelect').addEventListener('change', function() {
                     });
                     websiteSelect.disabled = false;
                 } else {
-                    websiteSelect.innerHTML = <option value="">' +  _("No websites in this project") | tojson  + '</option>;
+                    websiteSelect.innerHTML = '<option value="">' + {{ _("No websites in this project") | tojson }} + '</option>';
                 }
             })
             .catch(error => {
                 console.error('Error loading websites:', error);
-                websiteSelect.innerHTML = <option value="">' +  _("Error loading websites") | tojson  + '</option>;
+                websiteSelect.innerHTML = '<option value="">' + {{ _("Error loading websites") | tojson }} + '</option>';
             });
     } else {
         // Disable website select when "All Projects" is selected
-        websiteSelect.innerHTML = <option value="">' +  _("Select a project first...") | tojson  + '</option>;
+        websiteSelect.innerHTML = '<option value="">' + {{ _("Select a project first...") | tojson }} + '</option>';
         websiteSelect.disabled = true;
     }
 });
@@ -498,7 +498,7 @@ document.getElementById('generateReportForm').addEventListener('submit', functio
     // Show loading state
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = <span class="spinner-border spinner-border-sm me-2"></span>' +  _("Generating...") | tojson ;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + {{ _("Generating...") | tojson }};
     submitBtn.disabled = true;
     
     // Submit request
@@ -571,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadWebsitesForProject(projectId);
             } else {
                 const websiteSelect = document.getElementById('structureWebsite');
-                websiteSelect.innerHTML = <option value="">' +  _("First select a project...") | tojson  + '</option>;
+                websiteSelect.innerHTML = '<option value="">' + {{ _("First select a project...") | tojson }} + '</option>';
                 websiteSelect.disabled = true;
             }
         });
@@ -592,7 +592,7 @@ function loadProjectsForStructure() {
     .then(response => response.json())
     .then(data => {
         const select = document.getElementById('structureProject');
-        select.innerHTML = <option value="">' +  _("Choose a project...") | tojson  + '</option>;
+        select.innerHTML = '<option value="">' + {{ _("Choose a project...") | tojson }} + '</option>';
 
         if (data.projects && data.projects.length > 0) {
             data.projects.forEach(project => {
@@ -602,25 +602,25 @@ function loadProjectsForStructure() {
                 select.appendChild(option);
             });
         } else {
-            select.innerHTML = <option value="">' +  _("No projects available") | tojson  + '</option>;
+            select.innerHTML = '<option value="">' + {{ _("No projects available") | tojson }} + '</option>';
         }
     })
     .catch(error => {
         console.error('Error loading projects:', error);
         const select = document.getElementById('structureProject');
-        select.innerHTML = <option value="">' +  _("Error loading projects") | tojson  + '</option>;
+        select.innerHTML = '<option value="">' + {{ _("Error loading projects") | tojson }} + '</option>';
     });
 }
 
 function loadWebsitesForProject(projectId) {
     const websiteSelect = document.getElementById('structureWebsite');
-    websiteSelect.innerHTML = <option value="">' +  _("Loading websites...") | tojson  + '</option>;
+    websiteSelect.innerHTML = '<option value="">' + {{ _("Loading websites...") | tojson }} + '</option>';
     websiteSelect.disabled = true;
 
     fetch(`/projects/api/${projectId}/websites`)
     .then(response => response.json())
     .then(data => {
-        websiteSelect.innerHTML = <option value="">' +  _("Choose a website...") | tojson  + '</option>;
+        websiteSelect.innerHTML = '<option value="">' + {{ _("Choose a website...") | tojson }} + '</option>';
 
         if (data.websites && data.websites.length > 0) {
             data.websites.forEach(website => {
@@ -631,12 +631,12 @@ function loadWebsitesForProject(projectId) {
             });
             websiteSelect.disabled = false;
         } else {
-            websiteSelect.innerHTML = <option value="">' +  _("No websites in this project") | tojson  + '</option>;
+            websiteSelect.innerHTML = '<option value="">' + {{ _("No websites in this project") | tojson }} + '</option>';
         }
     })
     .catch(error => {
         console.error('Error loading websites:', error);
-        websiteSelect.innerHTML = <option value="">' +  _("Error loading websites") | tojson  + '</option>;
+        websiteSelect.innerHTML = '<option value="">' + {{ _("Error loading websites") | tojson }} + '</option>';
     });
 }
 
@@ -648,24 +648,42 @@ function generateSiteStructureReport() {
         alert({{ _('Please select a project and website') | tojson }});
         return;
     }
-    
-    // Create a form to submit the report request
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = `/reports/generate/page-structure/${websiteId}`;
-    
-    const formatInput = document.createElement('input');
-    formatInput.type = 'hidden';
-    formatInput.name = 'format';
-    formatInput.value = format;
-    form.appendChild(formatInput);
-    
-    document.body.appendChild(form);
-    form.submit();
-    
-    // Close the modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('siteStructureModal'));
-    modal.hide();
+
+    // Show loading state on submit button
+    const submitBtn = document.querySelector('#siteStructureForm button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + {{ _("Generating...") | tojson }};
+    submitBtn.disabled = true;
+
+    // Submit request via fetch to add to reports list
+    fetch('/reports/generate/page-structure', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            website_id: websiteId,
+            format: format
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Close modal and reload page to show new report
+            const modal = bootstrap.Modal.getInstance(document.getElementById('siteStructureModal'));
+            modal.hide();
+            location.reload();
+        } else {
+            alert({{ _("Failed to generate report: ") | tojson }} + (data.error || {{ _("Unknown error") | tojson }}));
+        }
+    })
+    .catch(error => {
+        alert({{ _("Error generating report: ") | tojson }} + error);
+    })
+    .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
 }
 
 // Discovery Report Functions - Initialize on DOMContentLoaded
@@ -740,7 +758,7 @@ function loadProjectsForDiscovery() {
     .then(response => response.json())
     .then(data => {
         const select = document.getElementById('discoveryProject');
-        select.innerHTML = <option value="">' +  _("Choose a project...") | tojson  + '</option>;
+        select.innerHTML = '<option value="">' + {{ _("Choose a project...") | tojson }} + '</option>';
 
         if (data.projects && data.projects.length > 0) {
             data.projects.forEach(project => {
@@ -750,25 +768,25 @@ function loadProjectsForDiscovery() {
                 select.appendChild(option);
             });
         } else {
-            select.innerHTML = <option value="">' +  _("No projects available") | tojson  + '</option>;
+            select.innerHTML = '<option value="">' + {{ _("No projects available") | tojson }} + '</option>';
         }
     })
     .catch(error => {
         console.error('Error loading projects:', error);
         const select = document.getElementById('discoveryProject');
-        select.innerHTML = <option value="">' +  _("Error loading projects") | tojson  + '</option>;
+        select.innerHTML = '<option value="">' + {{ _("Error loading projects") | tojson }} + '</option>';
     });
 }
 
 function loadWebsitesForDiscovery(projectId) {
     const websiteSelect = document.getElementById('discoveryWebsite');
-    websiteSelect.innerHTML = <option value="">' +  _("Loading websites...") | tojson  + '</option>;
+    websiteSelect.innerHTML = '<option value="">' + {{ _("Loading websites...") | tojson }} + '</option>';
     websiteSelect.disabled = true;
 
     fetch(`/projects/api/${projectId}/websites`)
     .then(response => response.json())
     .then(data => {
-        websiteSelect.innerHTML = <option value="">' +  _("Choose a website...") | tojson  + '</option>;
+        websiteSelect.innerHTML = '<option value="">' + {{ _("Choose a website...") | tojson }} + '</option>';
 
         if (data.websites && data.websites.length > 0) {
             data.websites.forEach(website => {
@@ -779,12 +797,12 @@ function loadWebsitesForDiscovery(projectId) {
             });
             websiteSelect.disabled = false;
         } else {
-            websiteSelect.innerHTML = <option value="">' +  _("No websites in this project") | tojson  + '</option>;
+            websiteSelect.innerHTML = '<option value="">' + {{ _("No websites in this project") | tojson }} + '</option>';
         }
     })
     .catch(error => {
         console.error('Error loading websites:', error);
-        websiteSelect.innerHTML = <option value="">' +  _("Error loading websites") | tojson  + '</option>;
+        websiteSelect.innerHTML = '<option value="">' + {{ _("Error loading websites") | tojson }} + '</option>';
     });
 }
 

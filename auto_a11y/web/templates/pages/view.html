@@ -577,7 +577,7 @@
                                         {% set first_violation = group_list[0] %}
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact.value|lower if first_violation.impact.value else first_violation.impact|lower] or 'secondary' }} me-2">{{ group_list|length }}</span>
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact.value|lower if first_violation.impact.value else first_violation.impact|lower] or 'secondary' }} me-2 impact-badge">
-                                            {{ first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper }}
+                                            {{ _(first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper) }}
                                         </span>
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if group_list|length > 1 %}
@@ -727,7 +727,7 @@
                                                                 <p><strong>{{ _('Touchpoint:') }}</strong> {{ violation.touchpoint|default(_('General')) }}</p>
                                                                 <p><strong>{{ _('Impact:') }}</strong> 
                                                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
-                                                                        {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
+                                                                        {{ _(violation.impact.value|upper if violation.impact.value else violation.impact|upper) }}
                                                                     </span>
                                                                 </p>
                                                             </div>
@@ -1070,7 +1070,7 @@
                                                                 <p><strong>{{ _('Touchpoint:') }}</strong> {{ violation.touchpoint|default(_('General')) }}</p>
                                                                 <p><strong>{{ _('Impact:') }}</strong> 
                                                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
-                                                                        {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
+                                                                        {{ _(violation.impact.value|upper if violation.impact.value else violation.impact|upper) }}
                                                                     </span>
                                                                 </p>
                                                             </div>
@@ -1311,7 +1311,7 @@
                                     <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#viol-single-{{ viol_counter.value }}">
-                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} me-2 impact-badge">{{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}</span>
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} me-2 impact-badge">{{ _(violation.impact.value|upper if violation.impact.value else violation.impact|upper) }}</span>
                                         {% if violation.metadata.ai_detected %}
                                         <span class="badge bg-info me-2" title="Detected by AI analysis">
                                             <i class="bi bi-robot"></i> AI
@@ -1695,7 +1695,7 @@
                                         {% set first_warning = group_list[0] %}
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact.value|lower if first_warning.impact.value else first_warning.impact|lower] or 'secondary' }} me-2">{{ group_list|length }}</span>
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact.value|lower if first_warning.impact.value else first_warning.impact|lower] or 'secondary' }} me-2 impact-badge">
-                                            {{ first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper }}
+                                            {{ _(first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper) }}
                                         </span>
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
                                         {% if group_list|length > 1 %}
@@ -1802,7 +1802,7 @@
                                                                 <p><strong>Touchpoint:</strong> {{ warning.touchpoint|default('General') }}</p>
                                                                 <p><strong>Impact:</strong>
                                                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'secondary' }} impact-badge">
-                                                                        {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
+                                                                        {{ _(warning.impact.value|upper if warning.impact.value else warning.impact|upper) }}
                                                                     </span>
                                                                 </p>
                                                             </div>
@@ -1927,7 +1927,7 @@
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#warn-single-{{ warn_counter.value }}">
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'warning' }} me-2 impact-badge">
-                                            {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
+                                            {{ _(warning.impact.value|upper if warning.impact.value else warning.impact|upper) }}
                                         </span>
                                         {% if warning.metadata.ai_detected %}
                                         <span class="badge bg-info me-2" title="Detected by AI analysis">
@@ -2214,7 +2214,7 @@
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_info.impact.value|lower if first_info.impact.value else first_info.impact|lower] or 'info' }} me-2">{{ group_list|length }}</span>
                                         {% if first_info.impact %}
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_info.impact.value|lower if first_info.impact.value else first_info.impact|lower] or 'info' }} me-2 impact-badge">
-                                            {{ first_info.impact.value|upper if first_info.impact.value else first_info.impact|upper }}
+                                            {{ _(first_info.impact.value|upper if first_info.impact.value else first_info.impact|upper) }}
                                         </span>
                                         {% endif %}
                                         <code class="me-2">{{ error_code|error_code_only }}</code>
@@ -2593,7 +2593,7 @@
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_discovery.impact.value|lower if first_discovery.impact.value else first_discovery.impact|lower] or 'secondary' }} me-2">{{ group_list|length }}</span>
                                         {% if first_discovery.impact %}
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_discovery.impact.value|lower if first_discovery.impact.value else first_discovery.impact|lower] or 'secondary' }} me-2 impact-badge">
-                                            {{ first_discovery.impact.value|upper if first_discovery.impact.value else first_discovery.impact|upper }}
+                                            {{ _(first_discovery.impact.value|upper if first_discovery.impact.value else first_discovery.impact|upper) }}
                                         </span>
                                         {% endif %}
                                         <code class="me-2">{{ error_code|error_code_only }}</code>

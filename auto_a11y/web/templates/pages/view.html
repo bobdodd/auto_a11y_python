@@ -558,7 +558,7 @@
                 {% set viol_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_violations in latest_result.violations|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #dc3545;">
-                        <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                        <strong>{{ touchpoint_names.get(touchpoint, touchpoint|replace('_', ' ')|title) }}</strong>
                     </div>
                     
                     {% for error_code, description_group in touchpoint_violations|groupby('id') %}
@@ -1676,7 +1676,7 @@
                 {% set warn_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_warnings in latest_result.warnings|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #ffc107;">
-                        <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                        <strong>{{ touchpoint_names.get(touchpoint, touchpoint|replace('_', ' ')|title) }}</strong>
                     </div>
                     
                     {% for error_code, description_group in touchpoint_warnings|groupby('id') %}
@@ -2194,7 +2194,7 @@
                 {% set info_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_infos in latest_result.info|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #0dcaf0;">
-                        <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                        <strong>{{ touchpoint_names.get(touchpoint, touchpoint|replace('_', ' ')|title) }}</strong>
                     </div>
                     
                     {% for error_code, description_group in touchpoint_infos|groupby('id') %}
@@ -3478,6 +3478,9 @@ window.i18n = {
     'Quick Search': {{ _('Quick Search') | tojson }},
     'Search in issue descriptions, IDs, or code...': {{ _('Search in issue descriptions, IDs, or code...') | tojson }}
 };
+
+// Pass touchpoint names for use in filters
+window.touchpointNames = {{ touchpoint_names | tojson }};
 </script>
 
 <!-- Include the issue filtering script -->

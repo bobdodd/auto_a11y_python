@@ -354,10 +354,14 @@ class IssueFilterManager {
             if (touchpoints.size === 0) {
                 touchpointSelect.innerHTML = '<option value="">No touchpoints found</option>';
             } else {
+                // Get touchpoint names mapping if available
+                const touchpointNames = window.touchpointNames || {};
+
                 [...touchpoints].sort().forEach(touchpoint => {
                     const option = document.createElement('option');
                     option.value = touchpoint;
-                    option.textContent = touchpoint.charAt(0).toUpperCase() + touchpoint.slice(1);
+                    // Use translated name if available, otherwise format the key
+                    option.textContent = touchpointNames[touchpoint] || touchpoint.charAt(0).toUpperCase() + touchpoint.slice(1);
                     touchpointSelect.appendChild(option);
                 });
             }

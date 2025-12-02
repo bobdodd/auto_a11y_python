@@ -3,7 +3,7 @@ Page management routes
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
-from flask_babel import gettext as _
+from flask_babel import gettext as _, lazy_gettext
 from auto_a11y.models import PageStatus
 from auto_a11y.reporting.issue_catalog import IssueCatalog
 from datetime import datetime
@@ -292,46 +292,46 @@ def view_page(page_id):
     # Touchpoint display names (translated)
     # Match actual touchpoint keys used in test results
     touchpoint_names = {
-        'accessible_names': _('Accessible Names'),
-        'animation': _('Animation'),
-        'aria': _('ARIA'),
-        'buttons': _('Buttons'),
-        'colors': _('Colors & Contrast'),
-        'colors_contrast': _('Colors & Contrast'),  # Legacy key
-        'dialogs': _('Dialogs & Modals'),
-        'document_links': _('Documents'),
-        'documents': _('Documents'),
-        'event_handlers': _('Event Handling'),
-        'event_handling': _('Event Handling'),
-        'floating_dialogs': _('Dialogs & Modals'),
-        'focus_management': _('Focus Management'),
-        'fonts': _('Fonts'),
-        'forms': _('Forms'),
-        'headings': _('Headings'),
-        'iframes': _('Iframes'),
-        'images': _('Images'),
-        'keyboard_navigation': _('Keyboard Navigation'),
-        'landmarks': _('Landmarks'),
-        'language': _('Language'),
-        'links': _('Links'),
-        'list': _('Lists'),
-        'lists': _('Lists'),
-        'maps': _('Maps'),
-        'media': _('Media'),
-        'modals': _('Dialogs & Modals'),
-        'navigation': _('Navigation'),
-        'page': _('Page'),
-        'reading_order': _('Reading Order'),
-        'responsive': _('Responsive Design'),
-        'semantic_structure': _('Semantic Structure'),
-        'styles': _('Inline Styles'),
-        'tabindex': _('Keyboard Navigation'),
-        'tables': _('Tables'),
-        'timers': _('Timing'),
-        'timing': _('Timing'),
-        'title_attributes': _('Title Attributes'),
-        'video': _('Media'),
-        'other': _('Other')
+        'accessible_names': lazy_gettext('Accessible Names'),
+        'animation': lazy_gettext('Animation'),
+        'aria': lazy_gettext('ARIA'),
+        'buttons': lazy_gettext('Buttons'),
+        'colors': lazy_gettext('Colors & Contrast'),
+        'colors_contrast': lazy_gettext('Colors & Contrast'),  # Legacy key
+        'dialogs': lazy_gettext('Dialogs & Modals'),
+        'document_links': lazy_gettext('Documents'),
+        'documents': lazy_gettext('Documents'),
+        'event_handlers': lazy_gettext('Event Handling'),
+        'event_handling': lazy_gettext('Event Handling'),
+        'floating_dialogs': lazy_gettext('Dialogs & Modals'),
+        'focus_management': lazy_gettext('Focus Management'),
+        'fonts': lazy_gettext('Fonts'),
+        'forms': lazy_gettext('Forms'),
+        'headings': lazy_gettext('Headings'),
+        'iframes': lazy_gettext('Iframes'),
+        'images': lazy_gettext('Images'),
+        'keyboard_navigation': lazy_gettext('Keyboard Navigation'),
+        'landmarks': lazy_gettext('Landmarks'),
+        'language': lazy_gettext('Language'),
+        'links': lazy_gettext('Links'),
+        'list': lazy_gettext('Lists'),
+        'lists': lazy_gettext('Lists'),
+        'maps': lazy_gettext('Maps'),
+        'media': lazy_gettext('Media'),
+        'modals': lazy_gettext('Dialogs & Modals'),
+        'navigation': lazy_gettext('Navigation'),
+        'page': lazy_gettext('Page'),
+        'reading_order': lazy_gettext('Reading Order'),
+        'responsive': lazy_gettext('Responsive Design'),
+        'semantic_structure': lazy_gettext('Semantic Structure'),
+        'styles': lazy_gettext('Inline Styles'),
+        'tabindex': lazy_gettext('Keyboard Navigation'),
+        'tables': lazy_gettext('Tables'),
+        'timers': lazy_gettext('Timing'),
+        'timing': lazy_gettext('Timing'),
+        'title_attributes': lazy_gettext('Title Attributes'),
+        'video': lazy_gettext('Media'),
+        'other': lazy_gettext('Other')
     }
 
     return render_template('pages/view.html',

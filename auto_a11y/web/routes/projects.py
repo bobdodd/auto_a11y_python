@@ -3,7 +3,7 @@ Project management routes
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
-from flask_babel import gettext as _
+from flask_babel import gettext as _, lazy_gettext
 from auto_a11y.models import Project, ProjectStatus, ProjectType
 import logging
 
@@ -383,36 +383,36 @@ def create_project():
 
     # Touchpoint display names (ordered)
     touchpoint_names = {
-        'accessible_names': _('Accessible Names'),
-        'animation': _('Animation'),
-        'aria': _('ARIA'),
-        'buttons': _('Buttons'),
-        'colors_contrast': _('Colors & Contrast'),
-        'dialogs': _('Dialogs & Modals'),
-        'documents': _('Documents'),
-        'event_handling': _('Event Handling'),
-        'focus_management': _('Focus Management'),
-        'forms': _('Forms'),
-        'headings': _('Headings'),
-        'iframes': _('Iframes'),
-        'styles': _('Inline Styles'),
-        'images': _('Images'),
-        'keyboard_navigation': _('Keyboard Navigation'),
-        'landmarks': _('Landmarks'),
-        'language': _('Language'),
-        'links': _('Links'),
-        'lists': _('Lists'),
-        'maps': _('Maps'),
-        'media': _('Media'),
-        'navigation': _('Navigation'),
-        'page': _('Page'),
-        'reading_order': _('Reading Order'),
-        'semantic_structure': _('Semantic Structure'),
-        'tables': _('Tables'),
-        'timing': _('Timing'),
-        'title_attributes': _('Title Attributes'),
-        'fonts': _('Fonts'),
-        'other': _('Other')
+        'accessible_names': lazy_gettext('Accessible Names'),
+        'animation': lazy_gettext('Animation'),
+        'aria': lazy_gettext('ARIA'),
+        'buttons': lazy_gettext('Buttons'),
+        'colors_contrast': lazy_gettext('Colors & Contrast'),
+        'dialogs': lazy_gettext('Dialogs & Modals'),
+        'documents': lazy_gettext('Documents'),
+        'event_handling': lazy_gettext('Event Handling'),
+        'focus_management': lazy_gettext('Focus Management'),
+        'forms': lazy_gettext('Forms'),
+        'headings': lazy_gettext('Headings'),
+        'iframes': lazy_gettext('Iframes'),
+        'styles': lazy_gettext('Inline Styles'),
+        'images': lazy_gettext('Images'),
+        'keyboard_navigation': lazy_gettext('Keyboard Navigation'),
+        'landmarks': lazy_gettext('Landmarks'),
+        'language': lazy_gettext('Language'),
+        'links': lazy_gettext('Links'),
+        'lists': lazy_gettext('Lists'),
+        'maps': lazy_gettext('Maps'),
+        'media': lazy_gettext('Media'),
+        'navigation': lazy_gettext('Navigation'),
+        'page': lazy_gettext('Page'),
+        'reading_order': lazy_gettext('Reading Order'),
+        'semantic_structure': lazy_gettext('Semantic Structure'),
+        'tables': lazy_gettext('Tables'),
+        'timing': lazy_gettext('Timing'),
+        'title_attributes': lazy_gettext('Title Attributes'),
+        'fonts': lazy_gettext('Fonts'),
+        'other': lazy_gettext('Other')
     }
 
     # Group all tests by touchpoint
@@ -512,34 +512,34 @@ def edit_project(project_id):
 
     # Build touchpoint data structure for the template
     touchpoint_names = {
-        'headings': _('Headings'),
-        'images': _('Images'),
-        'forms': _('Forms'),
-        'buttons': _('Buttons'),
-        'links': _('Links'),
-        'navigation': _('Navigation'),
-        'colors_contrast': _('Colors & Contrast'),
-        'keyboard_navigation': _('Keyboard Navigation'),
-        'landmarks': _('Landmarks'),
-        'language': _('Language'),
-        'tables': _('Tables'),
-        'lists': _('Lists'),
-        'media': _('Media'),
-        'dialogs': _('Dialogs & Modals'),
-        'animation': _('Animation'),
-        'timing': _('Timing'),
-        'fonts': _('Fonts'),
-        'semantic_structure': _('Semantic Structure'),
-        'aria': _('ARIA'),
-        'focus_management': _('Focus Management'),
-        'reading_order': _('Reading Order'),
-        'event_handling': _('Event Handling'),
-        'accessible_names': _('Accessible Names'),
-        'page': _('Page'),
-        'documents': _('Documents'),
-        'maps': _('Maps'),
-        'styles': _('Inline Styles'),
-        'iframes': _('Iframes')
+        'headings': lazy_gettext('Headings'),
+        'images': lazy_gettext('Images'),
+        'forms': lazy_gettext('Forms'),
+        'buttons': lazy_gettext('Buttons'),
+        'links': lazy_gettext('Links'),
+        'navigation': lazy_gettext('Navigation'),
+        'colors_contrast': lazy_gettext('Colors & Contrast'),
+        'keyboard_navigation': lazy_gettext('Keyboard Navigation'),
+        'landmarks': lazy_gettext('Landmarks'),
+        'language': lazy_gettext('Language'),
+        'tables': lazy_gettext('Tables'),
+        'lists': lazy_gettext('Lists'),
+        'media': lazy_gettext('Media'),
+        'dialogs': lazy_gettext('Dialogs & Modals'),
+        'animation': lazy_gettext('Animation'),
+        'timing': lazy_gettext('Timing'),
+        'fonts': lazy_gettext('Fonts'),
+        'semantic_structure': lazy_gettext('Semantic Structure'),
+        'aria': lazy_gettext('ARIA'),
+        'focus_management': lazy_gettext('Focus Management'),
+        'reading_order': lazy_gettext('Reading Order'),
+        'event_handling': lazy_gettext('Event Handling'),
+        'accessible_names': lazy_gettext('Accessible Names'),
+        'page': lazy_gettext('Page'),
+        'documents': lazy_gettext('Documents'),
+        'maps': lazy_gettext('Maps'),
+        'styles': lazy_gettext('Inline Styles'),
+        'iframes': lazy_gettext('Iframes')
     }
 
     if request.method == 'POST':

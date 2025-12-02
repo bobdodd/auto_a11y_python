@@ -3119,27 +3119,27 @@
 <script>
 // Translation strings for JavaScript
 const i18n = {
-    'screenshot': '{{ _('Screenshot:') }}',
-    'discovered': '{{ _('Discovered') }}',
-    'queued': '{{ _('Queued') }}',
-    'testing': '{{ _('Testing') }}',
-    'tested': '{{ _('Tested') }}',
-    'error': '{{ _('Error') }}',
-    'cancelTest': '{{ _('Cancel Test') }}',
-    'runTest': '{{ _('Run Test') }}',
-    'testComplete': '{{ _('Test Complete') }}',
-    'refreshingResults': '{{ _('Refreshing page to show results...') }}',
-    'testCancelled': '{{ _('Test Cancelled') }}',
-    'testCancelledMsg': '{{ _('The page test has been cancelled.') }}',
-    'failedToCancel': '{{ _('Failed to cancel test') }}',
-    'failedToCancelMsg': '{{ _('Failed to cancel test:') }}',
-    'unknownError': '{{ _('Unknown error') }}',
-    'testStarted': '{{ _('Test started') }}',
-    'testStartedMsg': '{{ _('The accessibility test is running. The page will refresh when complete.') }}',
-    'testFailed': '{{ _('Test failed:') }}',
-    'failedToStart': '{{ _('Failed to start test') }}',
-    'startingTest': '{{ _('Starting Test...') }}',
-    'cancelling': '{{ _('Cancelling...') }}'
+    'screenshot': {{ _('Screenshot:') | tojson }},
+    'discovered': {{ _('Discovered') | tojson }},
+    'queued': {{ _('Queued') | tojson }},
+    'testing': {{ _('Testing') | tojson }},
+    'tested': {{ _('Tested') | tojson }},
+    'error': {{ _('Error') | tojson }},
+    'cancelTest': {{ _('Cancel Test') | tojson }},
+    'runTest': {{ _('Run Test') | tojson }},
+    'testComplete': {{ _('Test Complete') | tojson }},
+    'refreshingResults': {{ _('Refreshing page to show results...') | tojson }},
+    'testCancelled': {{ _('Test Cancelled') | tojson }},
+    'testCancelledMsg': {{ _('The page test has been cancelled.') | tojson }},
+    'failedToCancel': {{ _('Failed to cancel test') | tojson }},
+    'failedToCancelMsg': {{ _('Failed to cancel test:') | tojson }},
+    'unknownError': {{ _('Unknown error') | tojson }},
+    'testStarted': {{ _('Test started') | tojson }},
+    'testStartedMsg': {{ _('The accessibility test is running. The page will refresh when complete.') | tojson }},
+    'testFailed': {{ _('Test failed:') | tojson }},
+    'failedToStart': {{ _('Failed to start test') | tojson }},
+    'startingTest': {{ _('Starting Test...') | tojson }},
+    'cancelling': {{ _('Cancelling...') | tojson }}
 };
 
 function showScreenshot(screenshotUrl, pageUrl) {

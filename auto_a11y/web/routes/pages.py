@@ -318,36 +318,47 @@ def view_page(page_id):
     website_users = current_app.db.get_website_users(page.website_id, enabled_only=True)
 
     # Touchpoint display names (translated)
+    # Match actual touchpoint keys used in test results
     touchpoint_names = {
         'accessible_names': _('Accessible Names'),
         'animation': _('Animation'),
         'aria': _('ARIA'),
         'buttons': _('Buttons'),
-        'colors_contrast': _('Colors & Contrast'),
+        'colors': _('Colors & Contrast'),
+        'colors_contrast': _('Colors & Contrast'),  # Legacy key
         'dialogs': _('Dialogs & Modals'),
+        'document_links': _('Documents'),
         'documents': _('Documents'),
+        'event_handlers': _('Event Handling'),
         'event_handling': _('Event Handling'),
+        'floating_dialogs': _('Dialogs & Modals'),
         'focus_management': _('Focus Management'),
+        'fonts': _('Fonts'),
         'forms': _('Forms'),
         'headings': _('Headings'),
         'iframes': _('Iframes'),
-        'styles': _('Inline Styles'),
         'images': _('Images'),
         'keyboard_navigation': _('Keyboard Navigation'),
         'landmarks': _('Landmarks'),
         'language': _('Language'),
         'links': _('Links'),
+        'list': _('Lists'),
         'lists': _('Lists'),
         'maps': _('Maps'),
         'media': _('Media'),
+        'modals': _('Dialogs & Modals'),
         'navigation': _('Navigation'),
         'page': _('Page'),
         'reading_order': _('Reading Order'),
+        'responsive': _('Responsive Design'),
         'semantic_structure': _('Semantic Structure'),
+        'styles': _('Inline Styles'),
+        'tabindex': _('Keyboard Navigation'),
         'tables': _('Tables'),
+        'timers': _('Timing'),
         'timing': _('Timing'),
         'title_attributes': _('Title Attributes'),
-        'fonts': _('Fonts'),
+        'video': _('Media'),
         'other': _('Other')
     }
 

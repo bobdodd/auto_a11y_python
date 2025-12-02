@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-12-01 21:10-0500\n"
+"POT-Creation-Date: 2025-12-01 21:23-0500\n"
 "PO-Revision-Date: 2025-11-21 13:16-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -508,6 +508,7 @@ msgstr "Total des problèmes"
 #: auto_a11y/web/templates/pages/view.html:279
 #: auto_a11y/web/templates/pages/view.html:555
 #: auto_a11y/web/templates/pages/view.html:3029
+#: auto_a11y/web/templates/pages/view.html:3460
 #: auto_a11y/web/templates/testing/dashboard.html:83
 msgid "Errors"
 msgstr "Erreurs"
@@ -516,6 +517,7 @@ msgstr "Erreurs"
 #: auto_a11y/web/templates/pages/view.html:288
 #: auto_a11y/web/templates/pages/view.html:1673
 #: auto_a11y/web/templates/pages/view.html:3030
+#: auto_a11y/web/templates/pages/view.html:3461
 #: auto_a11y/web/templates/reports/dashboard.html:383
 #: auto_a11y/web/templates/testing/dashboard.html:84
 #: auto_a11y/web/templates/testing/result.html:59
@@ -532,6 +534,7 @@ msgstr "Notes d'information"
 #: auto_a11y/web/templates/dashboard.html:112
 #: auto_a11y/web/templates/pages/view.html:306
 #: auto_a11y/web/templates/pages/view.html:3032
+#: auto_a11y/web/templates/pages/view.html:3463
 #: auto_a11y/web/templates/testing/dashboard.html:86
 msgid "Discovery"
 msgstr "Découverte"
@@ -576,6 +579,7 @@ msgid "Tested"
 msgstr "Testées"
 
 #: auto_a11y/web/templates/dashboard.html:161
+#: auto_a11y/web/templates/pages/view.html:3457
 #: auto_a11y/web/templates/websites/view.html:287
 msgid "of"
 msgstr "sur"
@@ -1323,6 +1327,7 @@ msgstr "Synchronisation Drupal"
 
 #: auto_a11y/web/templates/drupal_sync/sync_card.html:9
 #: auto_a11y/web/templates/drupal_sync/sync_card.html:18
+#: auto_a11y/web/templates/pages/view.html:3470
 #: auto_a11y/web/templates/projects/create.html:401
 #: auto_a11y/web/templates/projects/create.html:517
 #: auto_a11y/web/templates/projects/create.html:720
@@ -1547,6 +1552,7 @@ msgstr "Critique"
 
 #: auto_a11y/web/templates/pages/edit.html:47
 #: auto_a11y/web/templates/pages/view.html:153
+#: auto_a11y/web/templates/pages/view.html:3465
 #: auto_a11y/web/templates/recordings/list.html:96
 #: auto_a11y/web/templates/websites/view.html:573
 msgid "High"
@@ -1560,6 +1566,7 @@ msgstr "Minimal"
 
 #: auto_a11y/web/templates/pages/edit.html:49
 #: auto_a11y/web/templates/pages/view.html:157
+#: auto_a11y/web/templates/pages/view.html:3467
 #: auto_a11y/web/templates/recordings/list.html:102
 #: auto_a11y/web/templates/websites/view.html:574
 msgid "Low"
@@ -1800,6 +1807,7 @@ msgstr "Trouvé"
 
 #: auto_a11y/web/templates/pages/view.html:297
 #: auto_a11y/web/templates/pages/view.html:3031
+#: auto_a11y/web/templates/pages/view.html:3462
 #: auto_a11y/web/templates/testing/dashboard.html:85
 msgid "Info"
 msgstr "Info"
@@ -2374,6 +2382,89 @@ msgstr "Démarrage..."
 #: auto_a11y/web/templates/websites/view.html:1598
 msgid "Cancelling..."
 msgstr "Annulation..."
+
+#: auto_a11y/web/templates/pages/view.html:3453
+msgid "Filter Test Results"
+msgstr "Filtrer les résultats des tests"
+
+#: auto_a11y/web/templates/pages/view.html:3454
+#: auto_a11y/web/templates/websites/view.html:59
+#: auto_a11y/web/templates/websites/view.html:103
+#: auto_a11y/web/templates/websites/view.html:524
+#: auto_a11y/web/templates/websites/view.html:621
+msgid "Clear All"
+msgstr "Tout sélectionner"
+
+#: auto_a11y/web/templates/pages/view.html:3455
+msgid "Active Filters:"
+msgstr "Filtres actifs :"
+
+#: auto_a11y/web/templates/pages/view.html:3456
+msgid "Showing:"
+msgstr "Affichage :"
+
+#: auto_a11y/web/templates/pages/view.html:3458
+msgid "items"
+msgstr "éléments"
+
+#: auto_a11y/web/templates/pages/view.html:3459
+msgid "Issue Type"
+msgstr "Type de problème"
+
+#: auto_a11y/web/templates/pages/view.html:3464
+msgid "Impact Level"
+msgstr "Niveau d'impact"
+
+#: auto_a11y/web/templates/pages/view.html:3466
+#: auto_a11y/web/templates/recordings/list.html:99
+msgid "Medium"
+msgstr "Modifier"
+
+#: auto_a11y/web/templates/pages/view.html:3468
+#: auto_a11y/web/templates/reports/dashboard.html:1335
+msgid "WCAG Criteria"
+msgstr "Critères WCAG :"
+
+#: auto_a11y/web/templates/pages/view.html:3469
+msgid "Touchpoint"
+msgstr "Point de contact"
+
+#: auto_a11y/web/templates/pages/view.html:3471
+msgid "Affected User Groups"
+msgstr "Groupes d'utilisateurs affectés"
+
+#: auto_a11y/web/templates/pages/view.html:3472
+msgid "Vision"
+msgstr "Vision"
+
+#: auto_a11y/web/templates/pages/view.html:3473
+msgid "Hearing"
+msgstr "Audition"
+
+#: auto_a11y/web/templates/pages/view.html:3474
+msgid "Motor"
+msgstr "Motricité"
+
+#: auto_a11y/web/templates/pages/view.html:3475
+msgid "Cognitive"
+msgstr "Cognitif"
+
+#: auto_a11y/web/templates/pages/view.html:3476
+msgid "Seizure"
+msgstr "Épilepsie"
+
+#: auto_a11y/web/templates/pages/view.html:3477
+#: auto_a11y/web/templates/website_users/view.html:3
+msgid "Test User"
+msgstr "Utilisateurs de test"
+
+#: auto_a11y/web/templates/pages/view.html:3478
+msgid "Quick Search"
+msgstr "Recherche rapide"
+
+#: auto_a11y/web/templates/pages/view.html:3479
+msgid "Search in issue descriptions, IDs, or code..."
+msgstr "Rechercher dans les descriptions, ID ou code..."
 
 #: auto_a11y/web/templates/project_participants/create_supervisor.html:3
 #: auto_a11y/web/templates/project_participants/create_supervisor.html:21
@@ -5149,10 +5240,6 @@ msgstr "Navigation et orientation d'expérience vécue"
 msgid "Test Account"
 msgstr "Testées"
 
-#: auto_a11y/web/templates/recordings/list.html:99
-msgid "Medium"
-msgstr "Modifier"
-
 #: auto_a11y/web/templates/recordings/list.html:110
 #: auto_a11y/web/templates/websites/view.html:415
 msgid "View Details"
@@ -6065,10 +6152,6 @@ msgstr "Tous les enregistrements combinés"
 #: auto_a11y/web/templates/reports/dashboard.html:1329
 msgid "Timecodes"
 msgstr "Codes temporels :"
-
-#: auto_a11y/web/templates/reports/dashboard.html:1335
-msgid "WCAG Criteria"
-msgstr "Critères WCAG :"
 
 #: auto_a11y/web/templates/reports/dashboard.html:1341
 msgid "Group Issues by Touchpoint"
@@ -7093,10 +7176,6 @@ msgstr "Chargement des détails du test..."
 msgid "Error deleting user:"
 msgstr "Chargement des détails du test..."
 
-#: auto_a11y/web/templates/website_users/view.html:3
-msgid "Test User"
-msgstr "Utilisateurs de test"
-
 #: auto_a11y/web/templates/website_users/view.html:40
 #: auto_a11y/web/templates/website_users/view.html:183
 msgid "Edit User"
@@ -7234,13 +7313,6 @@ msgstr "Tester le site web"
 #: auto_a11y/web/templates/websites/view.html:30
 msgid "Discovery Users"
 msgstr "Découvrir les pages"
-
-#: auto_a11y/web/templates/websites/view.html:59
-#: auto_a11y/web/templates/websites/view.html:103
-#: auto_a11y/web/templates/websites/view.html:524
-#: auto_a11y/web/templates/websites/view.html:621
-msgid "Clear All"
-msgstr "Tout sélectionner"
 
 #: auto_a11y/web/templates/websites/view.html:65
 #: auto_a11y/web/templates/websites/view.html:1054

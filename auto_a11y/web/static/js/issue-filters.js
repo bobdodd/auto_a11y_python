@@ -79,27 +79,31 @@ class IssueFilterManager {
         // Find the test results container
         const testResultsCard = document.querySelector('.test-results-card');
         if (!testResultsCard) return;
-        
+
+        // Get translations (fallback to English if not available)
+        const t = window.i18n || {};
+        const translate = (key) => t[key] || key;
+
         // Create filter panel HTML
         const filterPanelHTML = `
             <div class="filter-panel mb-3" style="background: #f8f9fa; border-radius: 8px; padding: 1.5rem;">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Test Results</h5>
+                    <h5 class="mb-0"><i class="bi bi-funnel"></i> ${translate('Filter Test Results')}</h5>
                     <button class="btn btn-sm btn-outline-secondary" id="clearFilters">
-                        <i class="bi bi-x-circle"></i> Clear All
+                        <i class="bi bi-x-circle"></i> ${translate('Clear All')}
                     </button>
                 </div>
 
                 <!-- Active Filters Display -->
                 <div id="activeFilters" class="mb-3" style="display: none; padding: 1rem; background: #e7f3ff; border-radius: 8px;">
-                    <strong>Active Filters:</strong>
+                    <strong>${translate('Active Filters:')}</strong>
                     <div id="activeFilterTags" class="mt-2"></div>
                 </div>
 
                 <!-- Filter Statistics -->
                 <div class="filter-stats mb-3" style="padding: 0.75rem; background: white; border-radius: 8px; border: 1px solid #dee2e6;">
-                    <strong>Showing:</strong> 
-                    <span id="visibleCount">0</span> of <span id="totalCount">0</span> items
+                    <strong>${translate('Showing:')}</strong>
+                    <span id="visibleCount">0</span> ${translate('of')} <span id="totalCount">0</span> ${translate('items')}
                     <span class="text-muted mx-2">|</span>
                     <span id="filterSummary"></span>
                 </div>
@@ -108,52 +112,52 @@ class IssueFilterManager {
                 <div class="row g-3">
                     <!-- Issue Type Filter -->
                     <div class="col-md-6 col-lg-3">
-                        <label class="form-label fw-bold small">Issue Type</label>
+                        <label class="form-label fw-bold small">${translate('Issue Type')}</label>
                         <div class="filter-chips">
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="type" data-filter-value="error">
-                                Errors <span class="badge bg-danger ms-1 error-count">0</span>
+                                ${translate('Errors')} <span class="badge bg-danger ms-1 error-count">0</span>
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="type" data-filter-value="warning">
-                                Warnings <span class="badge bg-warning text-dark ms-1 warning-count">0</span>
+                                ${translate('Warnings')} <span class="badge bg-warning text-dark ms-1 warning-count">0</span>
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="type" data-filter-value="info">
-                                Info <span class="badge bg-info ms-1 info-count">0</span>
+                                ${translate('Info')} <span class="badge bg-info ms-1 info-count">0</span>
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="type" data-filter-value="discovery">
-                                Discovery <span class="badge bg-purple ms-1 discovery-count" style="background-color: #6f42c1;">0</span>
+                                ${translate('Discovery')} <span class="badge bg-purple ms-1 discovery-count" style="background-color: #6f42c1;">0</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Impact Level Filter -->
                     <div class="col-md-6 col-lg-3">
-                        <label class="form-label fw-bold small">Impact Level</label>
+                        <label class="form-label fw-bold small">${translate('Impact Level')}</label>
                         <div class="filter-chips">
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="impact" data-filter-value="high">
-                                High <span class="badge bg-danger ms-1" id="highImpactCount">0</span>
+                                ${translate('High')} <span class="badge bg-danger ms-1" id="highImpactCount">0</span>
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="impact" data-filter-value="medium">
-                                Medium <span class="badge bg-warning text-dark ms-1" id="mediumImpactCount">0</span>
+                                ${translate('Medium')} <span class="badge bg-warning text-dark ms-1" id="mediumImpactCount">0</span>
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="impact" data-filter-value="low">
-                                Low <span class="badge bg-info ms-1" id="lowImpactCount">0</span>
+                                ${translate('Low')} <span class="badge bg-info ms-1" id="lowImpactCount">0</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- WCAG Criteria Filter -->
                     <div class="col-md-6 col-lg-3">
-                        <label class="form-label fw-bold small">WCAG Criteria</label>
+                        <label class="form-label fw-bold small">${translate('WCAG Criteria')}</label>
                         <select class="form-select form-select-sm" id="wcagFilter" multiple style="height: 100px;">
-                            <option value="">Loading...</option>
+                            <option value="">${translate('Loading...')}</option>
                         </select>
                     </div>
 
                     <!-- Touchpoint Filter -->
                     <div class="col-md-6 col-lg-3">
-                        <label class="form-label fw-bold small">Touchpoint</label>
+                        <label class="form-label fw-bold small">${translate('Touchpoint')}</label>
                         <select class="form-select form-select-sm" id="touchpointFilter" multiple style="height: 100px;">
-                            <option value="">Loading...</option>
+                            <option value="">${translate('Loading...')}</option>
                         </select>
                     </div>
                 </div>
@@ -161,22 +165,22 @@ class IssueFilterManager {
                 <!-- User Impact Filter -->
                 <div class="row g-3 mt-2">
                     <div class="col-12">
-                        <label class="form-label fw-bold small">Affected User Groups</label>
+                        <label class="form-label fw-bold small">${translate('Affected User Groups')}</label>
                         <div class="filter-chips">
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user" data-filter-value="vision">
-                                <i class="bi bi-eye-slash me-1"></i>Vision
+                                <i class="bi bi-eye-slash me-1"></i>${translate('Vision')}
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user" data-filter-value="hearing">
-                                <i class="bi bi-ear me-1"></i>Hearing
+                                <i class="bi bi-ear me-1"></i>${translate('Hearing')}
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user" data-filter-value="motor">
-                                <i class="bi bi-hand-index me-1"></i>Motor
+                                <i class="bi bi-hand-index me-1"></i>${translate('Motor')}
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user" data-filter-value="cognitive">
-                                <i class="bi bi-brain me-1"></i>Cognitive
+                                <i class="bi bi-brain me-1"></i>${translate('Cognitive')}
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user" data-filter-value="seizure">
-                                <i class="bi bi-lightning me-1"></i>Seizure
+                                <i class="bi bi-lightning me-1"></i>${translate('Seizure')}
                             </button>
                         </div>
                     </div>
@@ -185,7 +189,7 @@ class IssueFilterManager {
                 <!-- Test User Filter -->
                 <div class="row g-3 mt-2">
                     <div class="col-12">
-                        <label class="form-label fw-bold small">Test User</label>
+                        <label class="form-label fw-bold small">${translate('Test User')}</label>
                         <div class="filter-chips" id="testUserFilterChips">
                             <!-- Dynamically populated based on test results -->
                         </div>
@@ -197,14 +201,14 @@ class IssueFilterManager {
                     <div class="col-12">
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-search"></i></span>
-                            <input type="text" class="form-control" id="quickSearch" 
-                                   placeholder="Search in issue descriptions, IDs, or code...">
+                            <input type="text" class="form-control" id="quickSearch"
+                                   placeholder="${translate('Search in issue descriptions, IDs, or code...')}">
                         </div>
                     </div>
                 </div>
             </div>
         `;
-        
+
         // Insert filter panel before test results
         testResultsCard.insertAdjacentHTML('beforebegin', filterPanelHTML);
     }

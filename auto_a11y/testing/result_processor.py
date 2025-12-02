@@ -5,6 +5,7 @@ Process and transform JavaScript test results into structured data
 import logging
 from typing import List, Dict, Any, Optional
 from datetime import datetime
+from flask_babel import gettext as _
 
 from auto_a11y.models import TestResult, Violation, ImpactLevel
 from auto_a11y.reporting.issue_descriptions import get_issue_description, get_wcag_link
@@ -341,9 +342,10 @@ class ResultProcessor:
         for issue in all_issues:
             touchpoint = issue.touchpoint
             if touchpoint not in touchpoint_summary:
+                touchpoint_name = touchpoint.replace('_', ' ').lower()
                 touchpoint_summary[touchpoint] = {
                     'test_name': touchpoint.replace('_', ' ').title(),
-                    'description': f'Accessibility checks for {touchpoint.replace("_", " ").lower()}',
+                    'description': _('Accessibility checks for %(touchpoint)s', touchpoint=touchpoint_name),
                     'wcag': set(),
                     'total': 0,
                     'passed': 0,

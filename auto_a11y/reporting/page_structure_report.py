@@ -4,13 +4,12 @@ Generates a tree view of website pages based on URL hierarchy
 """
 
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from urllib.parse import urlparse, unquote
 from datetime import datetime
 import json
 import csv
 from io import StringIO
-from collections import defaultdict
 
 from auto_a11y.models import Page, PageStatus
 
@@ -82,23 +81,95 @@ class PageNode:
 class PageStructureReport:
     """Generates site structure tree report"""
     
-    def __init__(self, database, website, pages: List[Page], project=None):
+    def __init__(self, database, website, pages: List[Page], project=None, language='en'):
         """
         Initialize site structure report
-        
+
         Args:
             database: Database instance
             website: Website object
             pages: List of pages to include in report
             project: Optional Project object
+            language: Language code for report (e.g., 'en', 'fr')
         """
         self.database = database
         self.website = website
         self.pages = pages
         self.project = project
+        self.language = language
         self.root = None
         self.tree_data = None
-    
+
+    def _get_translations(self) -> Dict[str, str]:
+        """Get translations for the current language"""
+        translations = {
+            'en': {
+                'site_structure_report': 'Site Structure Report',
+                'project': 'Project',
+                'website': 'Website',
+                'generated': 'Generated',
+                'no_project': 'No Project',
+                'summary': 'Summary',
+                'total_pages': 'Total Pages',
+                'tested_pages': 'Tested Pages',
+                'pages_with_issues': 'Pages with Issues',
+                'total_violations': 'Total Violations',
+                'total_warnings': 'Total Warnings',
+                'max_depth': 'Max Depth',
+                'levels': 'levels',
+                'legend': 'Legend',
+                'directory_section': 'Directory/Section',
+                'page': 'Page',
+                'tested': 'Tested',
+                'page_has_been_tested': 'Page has been tested',
+                'issues': 'Issues',
+                'page_has_issues': 'Page has accessibility issues',
+                'not_tested': 'Not tested',
+                'page_not_tested': 'Page not yet tested',
+                'expand_all': 'Expand All',
+                'collapse_all': 'Collapse All',
+                'site_structure_tree': 'Site Structure Tree',
+                'language': 'Language',
+                'pages_with_issues_count': 'pages with issues',
+                'page_with_issues_count': 'page with issues',
+                'total_violations_count': 'total violations',
+                'x_tested': 'tested',
+            },
+            'fr': {
+                'site_structure_report': 'Rapport de structure du site',
+                'project': 'Projet',
+                'website': 'Site Web',
+                'generated': 'Généré',
+                'no_project': 'Aucun projet',
+                'summary': 'Résumé',
+                'total_pages': 'Total des pages',
+                'tested_pages': 'Pages testées',
+                'pages_with_issues': 'Pages avec problèmes',
+                'total_violations': 'Total des violations',
+                'total_warnings': 'Total des avertissements',
+                'max_depth': 'Profondeur maximale',
+                'levels': 'niveaux',
+                'legend': 'Légende',
+                'directory_section': 'Répertoire/Section',
+                'page': 'Page',
+                'tested': 'Testé',
+                'page_has_been_tested': 'La page a été testée',
+                'issues': 'Problèmes',
+                'page_has_issues': 'La page a des problèmes d\'accessibilité',
+                'not_tested': 'Non testé',
+                'page_not_tested': 'Page pas encore testée',
+                'expand_all': 'Tout développer',
+                'collapse_all': 'Tout réduire',
+                'site_structure_tree': 'Arborescence du site',
+                'language': 'Langue',
+                'pages_with_issues_count': 'pages avec problèmes',
+                'page_with_issues_count': 'page avec problèmes',
+                'total_violations_count': 'violations totales',
+                'x_tested': 'testées',
+            }
+        }
+        return translations.get(self.language, translations['en'])
+
     def generate(self) -> Dict[str, Any]:
         """
         Generate the page structure report
@@ -242,20 +313,37 @@ class PageStructureReport:
     def to_html(self) -> str:
         """
         Generate HTML report with interactive tree view
-        
+
         Returns:
             HTML string
         """
         if not self.tree_data:
             self.generate()
-        
+
+        # Get all translations as JSON for JavaScript
+        # Temporarily change language to get translations for both languages
+        original_lang = self.language
+        self.language = 'en'
+        translations_en = self._get_translations()
+        self.language = 'fr'
+        translations_fr = self._get_translations()
+        self.language = original_lang
+
+        all_translations = {
+            'en': translations_en,
+            'fr': translations_fr
+        }
+
+        # Get translations for the current language to use as default in HTML
+        t = self._get_translations()
+
         html = f"""
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{self.language}" data-current-lang="{self.language}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site Structure Report - {self.website.name}</title>
+    <title data-i18n="site_structure_report">{t['site_structure_report']} - {self.website.name}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -368,70 +456,116 @@ class PageStructureReport:
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
-                <h1>Site Structure Report</h1>
-                <p class="text-muted">
-                    <strong>Project:</strong> {self.project.name if self.project else 'No Project'}<br>
-                    <strong>Website:</strong> {self.website.name} ({self.website.url})<br>
-                    <strong>Generated:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-                </p>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 data-i18n="site_structure_report">{t['site_structure_report']}</h1>
+                        <p class="text-muted">
+                            <strong><span data-i18n="project">{t['project']}</span>:</strong> <span id="project-name">{self.project.name if self.project else ''}</span><span id="no-project" data-i18n="no_project" style="display:{'none' if self.project else 'inline'}">{t['no_project']}</span><br>
+                            <strong><span data-i18n="website">{t['website']}</span>:</strong> {self.website.name} ({self.website.url})<br>
+                            <strong><span data-i18n="generated">{t['generated']}</span>:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+                        </p>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-translate"></i> <span data-i18n="language">{t['language']}</span>: <span id="current-lang-display">{self.language.upper()}</span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="switchLanguage('en'); return false;">English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="switchLanguage('fr'); return false;">Français</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-        
+
         <div class="row mt-3">
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Summary</h5>
+                        <h5 class="card-title" data-i18n="summary">{t['summary']}</h5>
                         <ul class="list-unstyled">
-                            <li><strong>Total Pages:</strong> {self.tree_data['summary']['total_pages']}</li>
-                            <li><strong>Tested Pages:</strong> {self.tree_data['summary']['tested_pages']}</li>
-                            <li><strong>Pages with Issues:</strong> {self.tree_data['summary']['pages_with_issues']}</li>
-                            <li><strong>Total Violations:</strong> <span class="text-danger">{self.tree_data['summary']['total_violations']}</span></li>
-                            <li><strong>Total Warnings:</strong> <span class="text-warning">{self.tree_data['summary']['total_warnings']}</span></li>
-                            <li><strong>Max Depth:</strong> {self.tree_data['summary']['max_depth']} levels</li>
+                            <li><strong><span data-i18n="total_pages">{t['total_pages']}</span>:</strong> {self.tree_data['summary']['total_pages']}</li>
+                            <li><strong><span data-i18n="tested_pages">{t['tested_pages']}</span>:</strong> {self.tree_data['summary']['tested_pages']}</li>
+                            <li><strong><span data-i18n="pages_with_issues">{t['pages_with_issues']}</span>:</strong> {self.tree_data['summary']['pages_with_issues']}</li>
+                            <li><strong><span data-i18n="total_violations">{t['total_violations']}</span>:</strong> <span class="text-danger">{self.tree_data['summary']['total_violations']}</span></li>
+                            <li><strong><span data-i18n="total_warnings">{t['total_warnings']}</span>:</strong> <span class="text-warning">{self.tree_data['summary']['total_warnings']}</span></li>
+                            <li><strong><span data-i18n="max_depth">{t['max_depth']}</span>:</strong> {self.tree_data['summary']['max_depth']} <span data-i18n="levels">{t['levels']}</span></li>
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="card mt-3">
                     <div class="card-body">
-                        <h5 class="card-title">Legend</h5>
+                        <h5 class="card-title" data-i18n="legend">{t['legend']}</h5>
                         <div class="legend">
-                            <div><i class="bi bi-folder text-warning"></i> Directory/Section</div>
-                            <div><i class="bi bi-file-earmark text-primary"></i> Page</div>
-                            <div><span class="badge bg-success">Tested</span> Page has been tested</div>
-                            <div><span class="badge bg-danger">Issues</span> Page has accessibility issues</div>
-                            <div><span class="badge bg-secondary">Not tested</span> Page not yet tested</div>
+                            <div><i class="bi bi-folder text-warning"></i> <span data-i18n="directory_section">{t['directory_section']}</span></div>
+                            <div><i class="bi bi-file-earmark text-primary"></i> <span data-i18n="page">{t['page']}</span></div>
+                            <div><span class="badge bg-success" data-i18n="tested">{t['tested']}</span> <span data-i18n="page_has_been_tested">{t['page_has_been_tested']}</span></div>
+                            <div><span class="badge bg-danger" data-i18n="issues">{t['issues']}</span> <span data-i18n="page_has_issues">{t['page_has_issues']}</span></div>
+                            <div><span class="badge bg-secondary" data-i18n="not_tested">{t['not_tested']}</span> <span data-i18n="page_not_tested">{t['page_not_tested']}</span></div>
                         </div>
                         <button class="btn btn-sm btn-outline-primary" onclick="expandAll()">
-                            <i class="bi bi-arrows-expand"></i> Expand All
+                            <i class="bi bi-arrows-expand"></i> <span data-i18n="expand_all">{t['expand_all']}</span>
                         </button>
                         <button class="btn btn-sm btn-outline-secondary" onclick="collapseAll()">
-                            <i class="bi bi-arrows-collapse"></i> Collapse All
+                            <i class="bi bi-arrows-collapse"></i> <span data-i18n="collapse_all">{t['collapse_all']}</span>
                         </button>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Site Structure Tree</h5>
+                        <h5 class="card-title" data-i18n="site_structure_tree">{t['site_structure_tree']}</h5>
                         <div class="tree tree-root" id="tree-container">
-                            {self._generate_tree_html(self.root)}
+                            {self._generate_tree_html(self.root, t=t)}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // All translations embedded in the report
+        const translations = {json.dumps(all_translations)};
+
+        // Current language
+        let currentLang = '{self.language}';
+
+        function switchLanguage(lang) {{
+            if (lang === currentLang) return;
+
+            currentLang = lang;
+
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            document.documentElement.setAttribute('data-current-lang', lang);
+
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {{
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {{
+                    element.textContent = translations[lang][key];
+                }}
+            }});
+
+            // Update current language display
+            document.getElementById('current-lang-display').textContent = lang.toUpperCase();
+
+            // Update document title
+            if (translations[lang] && translations[lang]['site_structure_report']) {{
+                document.title = translations[lang]['site_structure_report'] + ' - {self.website.name}';
+            }}
+        }}
+
         function toggleNode(nodeId) {{
             const node = document.getElementById(nodeId);
             const toggleId = nodeId.replace('-children', '');
             const toggle = document.getElementById('toggle-' + toggleId);
-            
+
             if (node.classList.contains('tree-collapsed')) {{
                 // Expanding
                 node.classList.remove('tree-collapsed');
@@ -442,7 +576,7 @@ class PageStructureReport:
                 toggle.classList.remove('expanded');
             }}
         }}
-        
+
         function expandAll() {{
             document.querySelectorAll('.tree-children').forEach(node => {{
                 node.classList.remove('tree-collapsed');
@@ -451,7 +585,7 @@ class PageStructureReport:
                 toggle.classList.add('expanded');
             }});
         }}
-        
+
         function collapseAll() {{
             document.querySelectorAll('.tree-children').forEach(node => {{
                 node.classList.add('tree-collapsed');
@@ -466,18 +600,22 @@ class PageStructureReport:
 """
         return html
     
-    def _generate_tree_html(self, node: PageNode, node_id: str = "root", depth: int = 0) -> str:
+    def _generate_tree_html(self, node: PageNode, node_id: str = "root", depth: int = 0, t: Dict[str, str] = None) -> str:
         """
         Generate HTML for a tree node
-        
+
         Args:
             node: Node to generate HTML for
             node_id: Unique ID for the node
             depth: Current depth in tree
-            
+            t: Translation dictionary
+
         Returns:
             HTML string
         """
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
         # Add class for directories
         node_classes = 'tree-node'
         if node.is_directory:
@@ -509,22 +647,22 @@ class PageStructureReport:
         # Stats badges
         if node.stats['total_pages'] > 0:
             html += '<span class="node-stats">'
-            
+
             if node.stats['tested_pages'] == node.stats['total_pages']:
-                html += '<span class="badge bg-success stats-badge">Tested</span>'
+                html += f'<span class="badge bg-success stats-badge" data-i18n="tested">{t["tested"]}</span>'
             elif node.stats['tested_pages'] > 0:
-                html += f'<span class="badge bg-warning stats-badge">{node.stats["tested_pages"]}/{node.stats["total_pages"]} tested</span>'
+                html += f'<span class="badge bg-warning stats-badge">{node.stats["tested_pages"]}/{node.stats["total_pages"]} <span data-i18n="x_tested">{t["x_tested"]}</span></span>'
             else:
-                html += '<span class="badge bg-secondary stats-badge">Not tested</span>'
-            
+                html += f'<span class="badge bg-secondary stats-badge" data-i18n="not_tested">{t["not_tested"]}</span>'
+
             if node.stats['pages_with_issues'] > 0:
                 # Clarify this is counting pages, not issue types
-                page_text = "page" if node.stats["pages_with_issues"] == 1 else "pages"
-                html += f'<span class="badge bg-danger stats-badge">{node.stats["pages_with_issues"]} {page_text} with issues</span>'
-            
+                page_text_key = "page_with_issues_count" if node.stats["pages_with_issues"] == 1 else "pages_with_issues_count"
+                html += f'<span class="badge bg-danger stats-badge">{node.stats["pages_with_issues"]} <span data-i18n="{page_text_key}">{t[page_text_key]}</span></span>'
+
             if node.stats['total_violations'] > 0:
-                html += f'<span class="text-danger ms-2">({node.stats["total_violations"]} total violations)</span>'
-            
+                html += f'<span class="text-danger ms-2">({node.stats["total_violations"]} <span data-i18n="total_violations_count">{t["total_violations_count"]}</span>)</span>'
+
             html += '</span>'
         
         html += '</div>'
@@ -536,9 +674,9 @@ class PageStructureReport:
             html += f'<div class="{children_class}" id="{node_id}-children">'
             for i, child in enumerate(node.children):
                 child_id = f"{node_id}-{i}"
-                html += self._generate_tree_html(child, child_id, depth + 1)
+                html += self._generate_tree_html(child, child_id, depth + 1, t)
             html += '</div>'
-        
+
         return html
     
     def to_json(self) -> str:

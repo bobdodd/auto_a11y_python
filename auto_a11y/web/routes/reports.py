@@ -2,7 +2,7 @@
 Report generation routes
 """
 
-from flask import Blueprint, render_template, request, jsonify, send_file, current_app, url_for, flash, redirect
+from flask import Blueprint, render_template, request, jsonify, send_file, current_app, url_for, flash, redirect, session
 from auto_a11y.models import PageStatus
 from auto_a11y.reporting import ReportGenerator, PageStructureReport
 from auto_a11y.reporting.discovery_report import DiscoveryReportGenerator
@@ -351,6 +351,9 @@ def generate_page_structure_report_download(website_id):
     format = request.form.get('format', 'html')
 
     try:
+        # Get current language from session
+        language = session.get('language', 'en')
+
         # Get website and pages
         website = current_app.db.get_website(website_id)
         if not website:
@@ -365,8 +368,8 @@ def generate_page_structure_report_download(website_id):
         if not pages:
             return jsonify({'error': 'No pages found for website'}), 404
 
-        # Generate report with project information
-        report = PageStructureReport(current_app.db, website, pages, project)
+        # Generate report with project information and language
+        report = PageStructureReport(current_app.db, website, pages, project, language=language)
         report.generate()
 
         # Save report in requested format
@@ -399,6 +402,9 @@ def generate_page_structure_report():
     format = data.get('format', 'html')
 
     try:
+        # Get current language from session
+        language = session.get('language', 'en')
+
         # Get website and pages
         website = current_app.db.get_website(website_id)
         if not website:
@@ -413,8 +419,8 @@ def generate_page_structure_report():
         if not pages:
             return jsonify({'success': False, 'error': 'No pages found for website'}), 404
 
-        # Generate report with project information
-        report = PageStructureReport(current_app.db, website, pages, project)
+        # Generate report with project information and language
+        report = PageStructureReport(current_app.db, website, pages, project, language=language)
         report.generate()
 
         # Save report in requested format (this saves to reports directory)

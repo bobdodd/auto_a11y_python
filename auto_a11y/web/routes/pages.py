@@ -40,31 +40,9 @@ def enrich_test_result_with_catalog(test_result):
                         error_code = '_'.join(parts[i:])
                         break
             
-            # Check if metadata has unfilled placeholders that need fixing
-            # This handles old test results stored before placeholder mapping was fixed
-            if violation.metadata.get('what'):
-                what_text = violation.metadata.get('what', '')
-                # Check if it has unfilled contrast placeholders
-                if any(placeholder in what_text for placeholder in ['{ratio}', '{fg}', '{bg}']):
-                    # Has unfilled placeholders - fix them
-                    contrast_ratio = violation.metadata.get('contrastRatio', '')
-                    if isinstance(contrast_ratio, str) and contrast_ratio.endswith(':1'):
-                        contrast_ratio = contrast_ratio[:-2]
-
-                    # Replace placeholders in all description fields
-                    for field in ['what', 'why', 'title', 'full_remediation']:
-                        if field in violation.metadata and isinstance(violation.metadata[field], str):
-                            text = violation.metadata[field]
-                            text = text.replace('{ratio}', str(contrast_ratio))
-                            text = text.replace('{fg}', str(violation.metadata.get('textColor', '')))
-                            text = text.replace('{bg}', str(violation.metadata.get('backgroundColor', '')))
-                            text = text.replace('{fontSize}', str(violation.metadata.get('fontSize', '')))
-                            violation.metadata[field] = text
-                    # Skip further enrichment since we just fixed the placeholders
-                    continue
-                else:
-                    # Already enriched and placeholders are filled, skip
-                    continue
+            # Always re-enrich to get fresh translations based on current locale
+            # (Previously we skipped if metadata existed, but we need to re-enrich
+            # to support runtime translation)
 
             # Get catalog info for this issue as fallback
             catalog_info = IssueCatalog.get_issue(error_code)
@@ -98,10 +76,10 @@ def enrich_test_result_with_catalog(test_result):
 
                 # Replace placeholders in templates
                 try:
-                    violation.metadata['what'] = what_template.format(**placeholder_values)
-                    violation.metadata['why'] = why_template.format(**placeholder_values)
-                    violation.metadata['how'] = how_template.format(**placeholder_values)
-                except (KeyError, ValueError):
+                    violation.metadata['what'] = what_template % placeholder_values
+                    violation.metadata['why'] = why_template % placeholder_values
+                    violation.metadata['how'] = how_template % placeholder_values
+                except (KeyError, ValueError, TypeError):
                     # If placeholder replacement fails, use templates as-is
                     violation.metadata['what'] = what_template
                     violation.metadata['why'] = why_template
@@ -133,11 +111,8 @@ def enrich_test_result_with_catalog(test_result):
                 error_code = issue_id.split('_', 1)[1]
             else:
                 error_code = issue_id
-            
-            # Skip if already has enhanced metadata with 'what' field
-            if warning.metadata.get('what'):
-                continue
-                
+
+            # Always re-enrich for translations
             catalog_info = IssueCatalog.get_issue(error_code)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
@@ -170,11 +145,8 @@ def enrich_test_result_with_catalog(test_result):
                 error_code = issue_id.split('_', 1)[1]
             else:
                 error_code = issue_id
-            
-            # Skip if already has enhanced metadata with 'what' field
-            if info.metadata.get('what'):
-                continue
-                
+
+            # Always re-enrich for translations
             catalog_info = IssueCatalog.get_issue(error_code)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":

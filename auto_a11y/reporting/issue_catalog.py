@@ -5,7 +5,7 @@ Contains enriched descriptions for all accessibility issues
 """
 
 from typing import Dict, List, Any
-from .issue_descriptions_enhanced import get_detailed_issue_description
+from .issue_descriptions_translated import get_detailed_issue_description
 
 
 class IssueCatalog:

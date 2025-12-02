@@ -659,7 +659,7 @@
                                                         {% if violation.metadata and violation.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-danger mb-3">
-                                                            <h6 class="alert-heading">{{ violation.description }}</h6>
+                                                            <h6 class="alert-heading">{{ violation.metadata.what if violation.metadata.what else violation.description }}</h6>
                                                         </div>
                                                         
                                                         <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
@@ -1002,7 +1002,7 @@
                                                         {% if violation.metadata and violation.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-danger mb-3">
-                                                            <h6 class="alert-heading">{{ violation.description }}</h6>
+                                                            <h6 class="alert-heading">{{ violation.metadata.what if violation.metadata.what else violation.description }}</h6>
                                                         </div>
                                                         
                                                         <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
@@ -1738,7 +1738,7 @@
                                                         {% if warning.metadata and warning.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-warning mb-3">
-                                                            <h6 class="alert-heading">{{ warning.description }}</h6>
+                                                            <h6 class="alert-heading">{{ warning.metadata.what if warning.metadata.what else warning.description }}</h6>
                                                         </div>
                                                         
                                                         <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
@@ -2247,7 +2247,7 @@
                                                         {% if info.metadata and info.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-info mb-3">
-                                                            <h6 class="alert-heading">{{ info.description }}</h6>
+                                                            <h6 class="alert-heading">{{ info.metadata.what if info.metadata.what else info.description }}</h6>
                                                         </div>
                                                         
                                                         <h6 class="text-info mb-2">{{ _('About this issue:') }}</h6>
@@ -2631,7 +2631,7 @@
                                                         {% if discovery.metadata and discovery.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
-                                                            <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.description }}</h6>
+                                                            <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.metadata.what if discovery.metadata.what else discovery.description }}</h6>
                                                         </div>
                                                         
                                                         <h6 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h6>

@@ -56,7 +56,7 @@ def api_test_details(test_id):
     """API endpoint to get detailed information about a test"""
     try:
         from auto_a11y.reporting.issue_catalog import IssueCatalog
-        from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+        from auto_a11y.reporting.issue_descriptions_translated import get_detailed_issue_description
 
         # Get test details from the issue catalog
         test_info = IssueCatalog.get_issue(test_id)

@@ -9,7 +9,7 @@ from flask_babel import gettext as _
 
 from auto_a11y.models import TestResult, Violation, ImpactLevel
 from auto_a11y.reporting.issue_descriptions import get_issue_description, get_wcag_link
-from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+from auto_a11y.reporting.issue_descriptions_translated import get_detailed_issue_description
 from auto_a11y.reporting.wcag_mapper import get_wcag_criteria, enrich_wcag_criteria
 from auto_a11y.core.touchpoints import TouchpointMapper
 

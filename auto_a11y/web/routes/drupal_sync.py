@@ -939,7 +939,7 @@ def upload_to_drupal(project_id):
                             # Try to build enhanced description from catalog
                             description = violation.description
                             try:
-                                from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+                                from auto_a11y.reporting.issue_descriptions_translated import get_detailed_issue_description
                                 import html as html_module
 
                                 # Build issue_code from touchpoint and id

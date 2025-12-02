@@ -19,7 +19,7 @@ from pathlib import Path
 # Add parent directory to path to import from auto_a11y
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+from auto_a11y.reporting.issue_descriptions_translated import get_detailed_issue_description
 
 
 def has_placeholders(text):

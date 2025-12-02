@@ -3447,6 +3447,39 @@ function copyXpathToClipboard(xpath, button) {
 }
 </script>
 
+<!-- Translation strings for JavaScript -->
+<script>
+window.i18n = {
+    'Filter Test Results': {{ _('Filter Test Results') | tojson }},
+    'Clear All': {{ _('Clear All') | tojson }},
+    'Active Filters:': {{ _('Active Filters:') | tojson }},
+    'Showing:': {{ _('Showing:') | tojson }},
+    'of': {{ _('of') | tojson }},
+    'items': {{ _('items') | tojson }},
+    'Issue Type': {{ _('Issue Type') | tojson }},
+    'Errors': {{ _('Errors') | tojson }},
+    'Warnings': {{ _('Warnings') | tojson }},
+    'Info': {{ _('Info') | tojson }},
+    'Discovery': {{ _('Discovery') | tojson }},
+    'Impact Level': {{ _('Impact Level') | tojson }},
+    'High': {{ _('High') | tojson }},
+    'Medium': {{ _('Medium') | tojson }},
+    'Low': {{ _('Low') | tojson }},
+    'WCAG Criteria': {{ _('WCAG Criteria') | tojson }},
+    'Touchpoint': {{ _('Touchpoint') | tojson }},
+    'Loading...': {{ _('Loading...') | tojson }},
+    'Affected User Groups': {{ _('Affected User Groups') | tojson }},
+    'Vision': {{ _('Vision') | tojson }},
+    'Hearing': {{ _('Hearing') | tojson }},
+    'Motor': {{ _('Motor') | tojson }},
+    'Cognitive': {{ _('Cognitive') | tojson }},
+    'Seizure': {{ _('Seizure') | tojson }},
+    'Test User': {{ _('Test User') | tojson }},
+    'Quick Search': {{ _('Quick Search') | tojson }},
+    'Search in issue descriptions, IDs, or code...': {{ _('Search in issue descriptions, IDs, or code...') | tojson }}
+};
+</script>
+
 <!-- Include the issue filtering script -->
 <script src="{{ url_for('static', filename='js/issue-filters.js') }}"></script>
 <!-- Include the help system -->

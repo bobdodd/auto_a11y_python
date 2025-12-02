@@ -3,6 +3,7 @@ Page management routes
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
+from flask_babel import gettext as _
 from auto_a11y.models import PageStatus
 from auto_a11y.reporting.issue_catalog import IssueCatalog
 from datetime import datetime
@@ -316,6 +317,40 @@ def view_page(page_id):
     # Get available test users for this website
     website_users = current_app.db.get_website_users(page.website_id, enabled_only=True)
 
+    # Touchpoint display names (translated)
+    touchpoint_names = {
+        'accessible_names': _('Accessible Names'),
+        'animation': _('Animation'),
+        'aria': _('ARIA'),
+        'buttons': _('Buttons'),
+        'colors_contrast': _('Colors & Contrast'),
+        'dialogs': _('Dialogs & Modals'),
+        'documents': _('Documents'),
+        'event_handling': _('Event Handling'),
+        'focus_management': _('Focus Management'),
+        'forms': _('Forms'),
+        'headings': _('Headings'),
+        'iframes': _('Iframes'),
+        'styles': _('Inline Styles'),
+        'images': _('Images'),
+        'keyboard_navigation': _('Keyboard Navigation'),
+        'landmarks': _('Landmarks'),
+        'language': _('Language'),
+        'links': _('Links'),
+        'lists': _('Lists'),
+        'maps': _('Maps'),
+        'media': _('Media'),
+        'navigation': _('Navigation'),
+        'page': _('Page'),
+        'reading_order': _('Reading Order'),
+        'semantic_structure': _('Semantic Structure'),
+        'tables': _('Tables'),
+        'timing': _('Timing'),
+        'title_attributes': _('Title Attributes'),
+        'fonts': _('Fonts'),
+        'other': _('Other')
+    }
+
     return render_template('pages/view.html',
                          page=page,
                          website=website,
@@ -326,7 +361,8 @@ def view_page(page_id):
                          score_data=score_data,
                          compliance_score=compliance_score,
                          test_history=test_history,
-                         website_users=website_users)
+                         website_users=website_users,
+                         touchpoint_names=touchpoint_names)
 
 
 @pages_bp.route('/<page_id>/edit', methods=['GET', 'POST'])

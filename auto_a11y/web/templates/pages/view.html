@@ -444,7 +444,7 @@
                     <tbody>
                         {% for check in latest_result.metadata.checks %}
                         <tr>
-                            <td>{{ check.test_name }}</td>
+                            <td>{{ touchpoint_names.get(check.test_name, check.test_name|replace('_', ' ')|title) }}</td>
                             <td>{{ check.description }}</td>
                             <td>
                                 {% for criterion in check.wcag %}

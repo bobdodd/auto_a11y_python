@@ -187,7 +187,7 @@ class IssueExporter:
 
         if hasattr(issue, 'issue_code') and issue.issue_code:
             try:
-                from auto_a11y.reporting.issue_descriptions_enhanced import get_detailed_issue_description
+                from auto_a11y.reporting.issue_descriptions_translated import get_detailed_issue_description
 
                 # Build metadata for contextual substitution
                 metadata = {}

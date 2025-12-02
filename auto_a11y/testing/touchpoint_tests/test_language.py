@@ -190,23 +190,37 @@ async def test_language(page) -> Dict[str, Any]:
 
                 // Simple XPath generator
                 function getXPath(element) {
+                    if (!element || element.nodeType !== 1) {
+                        return '';
+                    }
                     if (element.id) {
                         return `//*[@id="${element.id}"]`;
+                    }
+                    if (element === document.documentElement) {
+                        return '/html';
                     }
                     if (element === document.body) {
                         return '/html/body';
                     }
+                    if (!element.parentNode) {
+                        return '';
+                    }
                     let ix = 0;
-                    const siblings = element.parentNode ? element.parentNode.childNodes : [];
+                    const siblings = element.parentNode.childNodes;
                     for (let i = 0; i < siblings.length; i++) {
                         const sibling = siblings[i];
                         if (sibling === element) {
-                            return getXPath(element.parentNode) + '/' + element.tagName.toLowerCase() + '[' + (ix + 1) + ']';
+                            const parentPath = getXPath(element.parentNode);
+                            if (!parentPath) {
+                                return '/' + element.tagName.toLowerCase() + '[' + (ix + 1) + ']';
+                            }
+                            return parentPath + '/' + element.tagName.toLowerCase() + '[' + (ix + 1) + ']';
                         }
                         if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {
                             ix++;
                         }
                     }
+                    return '';
                 }
 
                 return {

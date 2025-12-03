@@ -1085,7 +1085,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchTerm = quickSearch.value.toLowerCase();
         let visible = 0;
 
+        // Count impact levels
+        let highCount = 0;
+        let mediumCount = 0;
+        let lowCount = 0;
+
         allItems.forEach(item => {
+            // Count by impact level
+            const itemImpact = item.dataset.impact;
+            if (itemImpact === 'high' || itemImpact === 'serious' || itemImpact === 'critical') {
+                highCount++;
+            } else if (itemImpact === 'medium' || itemImpact === 'moderate') {
+                mediumCount++;
+            } else if (itemImpact === 'low' || itemImpact === 'minor') {
+                lowCount++;
+            }
+
+
             let show = true;
 
             // Type filter
@@ -1127,6 +1143,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update counts
         visibleCount.textContent = visible;
         totalCount.textContent = allItems.length;
+
+        // Update impact level counts
+        document.getElementById('highImpactCount').textContent = highCount;
+        document.getElementById('mediumImpactCount').textContent = mediumCount;
+        document.getElementById('lowImpactCount').textContent = lowCount;
 
         // Update active filters display
         const hasActiveFilters = activeFilters.type.length > 0 || activeFilters.impact.length > 0 || activeFilters.touchpoint.length > 0 || searchTerm;

@@ -13,6 +13,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import jinja2
+from flask_babel import force_locale
 
 from auto_a11y.core.database import Database
 
@@ -20,23 +21,34 @@ from auto_a11y.core.database import Database
 class StaticHTMLReportGenerator:
     """Generates self-contained multi-page static HTML accessibility reports"""
 
-    def __init__(self, database: Database, output_dir: Optional[Path] = None):
+    def __init__(self, database: Database, output_dir: Optional[Path] = None, language: str = 'en'):
         """
         Initialize the static HTML report generator
 
         Args:
             database: Database manager instance
             output_dir: Base directory for generated reports (defaults to reports/ in project root)
+            language: Language code for translations ('en' or 'fr', defaults to 'en')
         """
         self.db = database
         self.output_dir = output_dir or Path(__file__).parent.parent.parent / 'reports'
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.language = language
 
         # Setup Jinja2 template environment - set to templates directory so relative paths work
         template_dir = Path(__file__).parent.parent / 'web' / 'templates'
         self.template_env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(str(template_dir)),
-            autoescape=jinja2.select_autoescape(['html', 'xml'])
+            autoescape=jinja2.select_autoescape(['html', 'xml']),
+            extensions=['jinja2.ext.i18n']
+        )
+
+        # Configure Jinja2 for Flask-Babel translations
+        # These callables will be replaced by force_locale context manager
+        self.template_env.install_gettext_callables(
+            gettext=lambda x: x,
+            ngettext=lambda s, p, n: s if n == 1 else p,
+            newstyle=True
         )
 
         # Add custom filters
@@ -546,18 +558,19 @@ class StaticHTMLReportGenerator:
         """Generate index.html file"""
         template = self.template_env.get_template('static_report/index.html')
 
-        html = template.render(
-            pages=pages_data,
-            summary=summary,
-            project_name=project_name,
-            website_url=website_url,
-            wcag_level=wcag_level,
-            touchpoints_tested=touchpoints_tested or [],
-            generation_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            current_page='index',
-            asset_path='assets/',
-            index_path=''
-        )
+        with force_locale(self.language):
+            html = template.render(
+                pages=pages_data,
+                summary=summary,
+                project_name=project_name,
+                website_url=website_url,
+                wcag_level=wcag_level,
+                touchpoints_tested=touchpoints_tested or [],
+                generation_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                current_page='index',
+                asset_path='assets/',
+                index_path=''
+            )
 
         (report_dir / 'index.html').write_text(html, encoding='utf-8')
 
@@ -568,20 +581,21 @@ class StaticHTMLReportGenerator:
         """Generate summary.html file"""
         template = self.template_env.get_template('static_report/summary.html')
 
-        html = template.render(
-            pages=pages_data,
-            summary=summary,
-            project_name=project_name,
-            website_url=website_url,
-            wcag_level=wcag_level,
-            touchpoints_tested=touchpoints_tested or [],
-            ai_tests_enabled=ai_tests_enabled,
-            generation_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            current_page='summary',
-            asset_path='assets/',
-            index_path='',
-            report_version='1.0.0'
-        )
+        with force_locale(self.language):
+            html = template.render(
+                pages=pages_data,
+                summary=summary,
+                project_name=project_name,
+                website_url=website_url,
+                wcag_level=wcag_level,
+                touchpoints_tested=touchpoints_tested or [],
+                ai_tests_enabled=ai_tests_enabled,
+                generation_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                current_page='summary',
+                asset_path='assets/',
+                index_path='',
+                report_version='1.0.0'
+            )
 
         (report_dir / 'summary.html').write_text(html, encoding='utf-8')
 
@@ -660,32 +674,33 @@ class StaticHTMLReportGenerator:
             if navigation['next']:
                 navigation['next']['number'] = index + 1
 
-            html = template.render(
-                page=page,
-                violations=page['violations'],
-                warnings=page['warnings'],
-                informational=page['informational'],
-                discovery=page['discovery'],
-                errors_count=page['issues']['errors'],
-                warnings_count=page['issues']['warnings'],
-                info_count=page['issues']['info'],
-                discovery_count=page['issues']['discovery'],
-                compliance_score=page.get('compliance_score'),
-                all_touchpoints=sorted(all_touchpoints),
-                navigation=navigation,
-                project_name=project_name,
-                wcag_level=wcag_level,
-                touchpoints_tested=touchpoints_tested or [],
-                generation_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                asset_path='../assets/',
-                index_path='../',
-                # Inlined CSS and JS
-                bootstrap_css=bootstrap_css,
-                bootstrap_icons_css=bootstrap_icons_css,
-                bootstrap_js=bootstrap_js,
-                filters_js=filters_js,
-                inline_mode=True
-            )
+            with force_locale(self.language):
+                html = template.render(
+                    page=page,
+                    violations=page['violations'],
+                    warnings=page['warnings'],
+                    informational=page['informational'],
+                    discovery=page['discovery'],
+                    errors_count=page['issues']['errors'],
+                    warnings_count=page['issues']['warnings'],
+                    info_count=page['issues']['info'],
+                    discovery_count=page['issues']['discovery'],
+                    compliance_score=page.get('compliance_score'),
+                    all_touchpoints=sorted(all_touchpoints),
+                    navigation=navigation,
+                    project_name=project_name,
+                    wcag_level=wcag_level,
+                    touchpoints_tested=touchpoints_tested or [],
+                    generation_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    asset_path='../assets/',
+                    index_path='../',
+                    # Inlined CSS and JS
+                    bootstrap_css=bootstrap_css,
+                    bootstrap_icons_css=bootstrap_icons_css,
+                    bootstrap_js=bootstrap_js,
+                    filters_js=filters_js,
+                    inline_mode=True
+                )
 
             filename = f'page_{str(index).zfill(3)}.html'
             (report_dir / 'pages' / filename).write_text(html, encoding='utf-8')
@@ -1052,8 +1067,9 @@ class StaticHTMLReportGenerator:
                         else:
                             issue_dict = issue if isinstance(issue, dict) else {}
 
-                        # Enrich with catalog information
-                        issue_dict = IssueCatalog.enrich_issue(issue_dict)
+                        # Enrich with catalog information (with proper locale)
+                        with force_locale(self.language):
+                            issue_dict = IssueCatalog.enrich_issue(issue_dict)
 
                         rule_id = issue_dict.get('id', '')
                         issue_xpath = issue_dict.get('xpath', '')
@@ -1271,21 +1287,23 @@ class StaticHTMLReportGenerator:
 
         # Render template
         template = self.template_env.get_template('static_report/dedup_index.html')
-        html = template.render(
-            asset_path='assets/',
-            project=project,
-            project_name=project_name,
-            components_with_issues=components_with_issues,
-            pages_with_unassigned=pages_with_unassigned,
-            total_violations=total_violations,
-            total_warnings=total_warnings,
-            total_info=total_info,
-            total_components=len(common_components),
-            total_pages=total_pages,
-            overall_accessibility_score=overall_accessibility_score,
-            overall_compliance_score=overall_compliance_score,
-            report_date=datetime.now()
-        )
+
+        with force_locale(self.language):
+            html = template.render(
+                asset_path='assets/',
+                project=project,
+                project_name=project_name,
+                components_with_issues=components_with_issues,
+                pages_with_unassigned=pages_with_unassigned,
+                total_violations=total_violations,
+                total_warnings=total_warnings,
+                total_info=total_info,
+                total_components=len(common_components),
+                total_pages=total_pages,
+                overall_accessibility_score=overall_accessibility_score,
+                overall_compliance_score=overall_compliance_score,
+                report_date=datetime.now()
+            )
 
         # Write to file
         (report_dir / 'index.html').write_text(html, encoding='utf-8')
@@ -1311,18 +1329,19 @@ class StaticHTMLReportGenerator:
             # Create safe filename
             safe_sig = re.sub(r'[^a-zA-Z0-9_-]', '_', signature)
 
-            html = template.render(
-                asset_path='../assets/',
-                component_type=comp_data['type'],
-                component_label=comp_data['label'],
-                component_signature=signature,
-                page_count=len(comp_data['pages']),
-                pages=sorted(list(comp_data['pages'])),
-                issues=issues,
-                total_issues=len(issues),
-                component_score=component_score,
-                report_date=datetime.now()
-            )
+            with force_locale(self.language):
+                html = template.render(
+                    asset_path='../assets/',
+                    component_type=comp_data['type'],
+                    component_label=comp_data['label'],
+                    component_signature=signature,
+                    page_count=len(comp_data['pages']),
+                    pages=sorted(list(comp_data['pages'])),
+                    issues=issues,
+                    total_issues=len(issues),
+                    component_score=component_score,
+                    report_date=datetime.now()
+                )
 
             # Write to file
             (report_dir / 'components' / f'{safe_sig}.html').write_text(html, encoding='utf-8')
@@ -1679,27 +1698,28 @@ class StaticHTMLReportGenerator:
                 test_date=page_data.get('test_date', 'Recently')
             )
 
-            html = template.render(
-                asset_path='../assets/',
-                page=page,
-                page_url=page_data['url'],
-                page_title=page_data.get('title'),
-                violations=page_data['issues']['violations'],
-                warnings=page_data['issues']['warnings'],
-                info=page_data['issues']['info'],
-                discovery=page_data['issues']['discovery'],
-                total_issues=page_data['total_issues'],
-                errors_count=page_data.get('errors_count', 0),
-                warnings_count=page_data.get('warnings_count', 0),
-                info_count=page_data.get('info_count', 0),
-                discovery_count=page_data.get('discovery_count', 0),
-                compliance_score=page_data.get('compliance_score'),
-                dedup_score=page_data.get('dedup_score', 0),  # Score for non-component issues
-                report_date=datetime.now(),
-                generation_date=generation_date,
-                project_name=project_name,
-                wcag_level=wcag_level
-            )
+            with force_locale(self.language):
+                html = template.render(
+                    asset_path='../assets/',
+                    page=page,
+                    page_url=page_data['url'],
+                    page_title=page_data.get('title'),
+                    violations=page_data['issues']['violations'],
+                    warnings=page_data['issues']['warnings'],
+                    info=page_data['issues']['info'],
+                    discovery=page_data['issues']['discovery'],
+                    total_issues=page_data['total_issues'],
+                    errors_count=page_data.get('errors_count', 0),
+                    warnings_count=page_data.get('warnings_count', 0),
+                    info_count=page_data.get('info_count', 0),
+                    discovery_count=page_data.get('discovery_count', 0),
+                    compliance_score=page_data.get('compliance_score'),
+                    dedup_score=page_data.get('dedup_score', 0),  # Score for non-component issues
+                    report_date=datetime.now(),
+                    generation_date=generation_date,
+                    project_name=project_name,
+                    wcag_level=wcag_level
+                )
 
             # Write to file
             (report_dir / 'pages' / f"{page_data['safe_url']}.html").write_text(html, encoding='utf-8')

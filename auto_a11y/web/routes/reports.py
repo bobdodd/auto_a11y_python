@@ -576,10 +576,14 @@ def generate_static_html_report():
                         touchpoints_set.add(violation.touchpoint)
                 touchpoints_tested = sorted(list(touchpoints_set))
 
+        # Get current language from session
+        language = session.get('language', 'en')
+
         # Initialize static HTML generator
         generator = StaticHTMLReportGenerator(
             current_app.db,
-            output_dir=current_app.app_config.REPORTS_DIR
+            output_dir=current_app.app_config.REPORTS_DIR,
+            language=language
         )
 
         # Generate report
@@ -611,10 +615,14 @@ def generate_deduplicated_report():
     website_id = request.form.get('website_id')
 
     try:
+        # Get current language from session
+        language = session.get('language', 'en')
+
         # Initialize static HTML generator
         generator = StaticHTMLReportGenerator(
             current_app.db,
-            output_dir=current_app.app_config.REPORTS_DIR
+            output_dir=current_app.app_config.REPORTS_DIR,
+            language=language
         )
 
         # Generate deduplicated report (returns ZIP path)

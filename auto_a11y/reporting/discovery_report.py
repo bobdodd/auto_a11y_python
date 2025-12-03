@@ -1294,11 +1294,11 @@ class DiscoveryReportGenerator:
         issues_html = ""
         for issue in issues:
             issue_id = issue.get('id', 'Unknown')
-            description = issue.get('description', 'No description available')
 
             # Get enriched info from catalog with language context
             with force_locale(self.language):
                 catalog_info = IssueCatalog.get_issue(issue_id)
+                description = catalog_info.get('description', issue.get('description', 'No description available'))
                 why_it_matters = catalog_info.get('why_it_matters', '')
                 how_to_fix = catalog_info.get('how_to_fix', '')
 

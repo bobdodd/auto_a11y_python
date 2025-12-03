@@ -16,6 +16,7 @@ import jinja2
 from flask_babel import force_locale, lazy_gettext
 
 from auto_a11y.core.database import Database
+from auto_a11y.reporting.issue_catalog import IssueCatalog
 
 
 class StaticHTMLReportGenerator:
@@ -76,6 +77,7 @@ class StaticHTMLReportGenerator:
                 'no_common_components': 'No common components found',
 
                 # Component detail page
+                'component_deduplicated_issues': 'Component Deduplicated Issues',
                 'back_to_index': 'Back to Index',
                 'found_on': 'Found on',
                 'page_s': 'page(s)',
@@ -114,8 +116,18 @@ class StaticHTMLReportGenerator:
                 'issue_touchpoint': 'Issue Touchpoint',
                 'all_touchpoints': 'All Touchpoints',
                 'general': 'General',
+
+                # Impact levels (all variations)
+                'critical': 'Critical',
+                'high': 'High',
+                'serious': 'Serious',
+                'moderate': 'Moderate',
+                'medium': 'Medium',
+                'minor': 'Minor',
+                'low': 'Low',
                 'quick_search': 'Quick Search',
                 'search_in_issues': 'Search in issue descriptions, error codes, or XPaths...',
+                'search_placeholder': 'Search in issue descriptions, error codes, or XPaths...',
                 'non_component_issues_for_page': 'Non-Component Issues for This Page',
                 'issues_not_part_of_common': 'Issues not part of common components',
                 'informational': 'Informational',
@@ -149,6 +161,25 @@ class StaticHTMLReportGenerator:
                 'help': 'Help',
                 'how_to_fix': 'How to fix:',
 
+                # Component types
+                'form': 'Form',
+                'navigation': 'Navigation',
+                'aside': 'Aside',
+                'section': 'Section',
+                'header': 'Header',
+
+                # Touchpoints
+                'fonts': 'Fonts',
+                'headings': 'Headings',
+                'images': 'Images',
+                'landmarks': 'Landmarks',
+                'links': 'Links',
+                'color_contrast': 'Color Contrast',
+                'tabindex': 'Tab Index',
+
+                # User roles
+                'no login': 'Guest (no login)',
+
                 # Misc
                 'language': 'Language',
                 'violation_s': 'violation(s)',
@@ -177,6 +208,7 @@ class StaticHTMLReportGenerator:
                 'no_common_components': 'Aucun composant commun trouvé',
 
                 # Component detail page
+                'component_deduplicated_issues': 'Problèmes dédupliqués du composant',
                 'back_to_index': 'Retour à l\'index',
                 'found_on': 'Trouvé sur',
                 'page_s': 'page(s)',
@@ -215,8 +247,18 @@ class StaticHTMLReportGenerator:
                 'issue_touchpoint': 'Point de contact',
                 'all_touchpoints': 'Tous les points de contact',
                 'general': 'Général',
+
+                # Impact levels (all variations)
+                'critical': 'Critique',
+                'high': 'Élevé',
+                'serious': 'Grave',
+                'moderate': 'Modéré',
+                'medium': 'Moyen',
+                'minor': 'Mineur',
+                'low': 'Faible',
                 'quick_search': 'Recherche rapide',
                 'search_in_issues': 'Rechercher dans les descriptions, codes d\'erreur ou XPath...',
+                'search_placeholder': 'Rechercher dans les descriptions, codes d\'erreur ou XPath...',
                 'non_component_issues_for_page': 'Problèmes hors composants pour cette page',
                 'issues_not_part_of_common': 'Problèmes ne faisant pas partie de composants communs',
                 'informational': 'Informatif',
@@ -249,6 +291,25 @@ class StaticHTMLReportGenerator:
                 'rule': 'Règle',
                 'help': 'Aide',
                 'how_to_fix': 'Comment corriger :',
+
+                # Component types
+                'form': 'Formulaire',
+                'navigation': 'Navigation',
+                'aside': 'Aparté',
+                'section': 'Section',
+                'header': 'En-tête',
+
+                # Touchpoints
+                'fonts': 'Polices',
+                'headings': 'Titres',
+                'images': 'Images',
+                'landmarks': 'Points de repère',
+                'links': 'Liens',
+                'color_contrast': 'Contraste des couleurs',
+                'tabindex': 'Index de tabulation',
+
+                # User roles
+                'no login': 'Invité (sans connexion)',
 
                 # Misc
                 'language': 'Langue',
@@ -289,6 +350,50 @@ class StaticHTMLReportGenerator:
         self.template_env.filters['wcag_name'] = wcag_name
         self.template_env.filters['wcag_understanding_url'] = wcag_understanding_url
         self.template_env.filters['wcag_quickref_url'] = wcag_quickref_url
+
+    def _read_embedded_assets(self) -> dict:
+        """Read Bootstrap CSS and JS files for embedding inline"""
+        import re
+        static_dir = Path(__file__).parent.parent / 'web' / 'static'
+
+        assets = {}
+        try:
+            # Read Bootstrap CSS
+            bootstrap_css_path = static_dir / 'css' / 'bootstrap.min.css'
+            bootstrap_css = bootstrap_css_path.read_text(encoding='utf-8')
+            # Remove source map reference to prevent browser from trying to load it
+            bootstrap_css = bootstrap_css.replace('/*# sourceMappingURL=bootstrap.min.css.map */', '')
+            assets['bootstrap_css'] = bootstrap_css
+
+            # Read Bootstrap Icons CSS
+            bootstrap_icons_path = static_dir / 'css' / 'bootstrap-icons.css'
+            bootstrap_icons_css = bootstrap_icons_path.read_text(encoding='utf-8')
+            # Replace font file URLs with empty string to prevent 404 errors
+            # The icons won't display but there won't be console errors
+            bootstrap_icons_css = re.sub(
+                r'src:\s*url\([^)]+\)(\s*format\([^)]+\))?(,\s*url\([^)]+\)(\s*format\([^)]+\))?)*;',
+                'src: url("");',
+                bootstrap_icons_css
+            )
+            assets['bootstrap_icons_css'] = bootstrap_icons_css
+
+            # Read Bootstrap JS
+            bootstrap_js_path = static_dir / 'js' / 'bootstrap.bundle.min.js'
+            bootstrap_js = bootstrap_js_path.read_text(encoding='utf-8')
+            # Remove source map reference to prevent browser from trying to load it
+            bootstrap_js = bootstrap_js.replace('//# sourceMappingURL=bootstrap.bundle.min.js.map', '')
+            assets['bootstrap_js'] = bootstrap_js
+
+        except Exception as e:
+            logger.error(f"Failed to read embedded assets: {e}")
+            # Return empty strings if files can't be read
+            assets = {
+                'bootstrap_css': '',
+                'bootstrap_icons_css': '',
+                'bootstrap_js': ''
+            }
+
+        return assets
 
     def generate_report(
         self,
@@ -1275,9 +1380,15 @@ class StaticHTMLReportGenerator:
                         else:
                             issue_dict = issue if isinstance(issue, dict) else {}
 
-                        # Enrich with catalog information (with proper locale)
-                        with force_locale(self.language):
-                            issue_dict = IssueCatalog.enrich_issue(issue_dict)
+                        # Enrich with catalog information in both EN and FR for client-side switching
+                        with force_locale('en'):
+                            issue_dict_en = IssueCatalog.enrich_issue(issue_dict if isinstance(issue, dict) else {})
+
+                        with force_locale('fr'):
+                            issue_dict_fr = IssueCatalog.enrich_issue(issue_dict if isinstance(issue, dict) else {})
+
+                        # Use the current language version for primary data
+                        issue_dict = issue_dict_en if self.language == 'en' else issue_dict_fr
 
                         rule_id = issue_dict.get('id', '')
                         issue_xpath = issue_dict.get('xpath', '')
@@ -1309,8 +1420,10 @@ class StaticHTMLReportGenerator:
 
                         # Initialize or update issue data
                         if dedup_key not in unique_issues:
-                            # Get enriched metadata
+                            # Get enriched metadata for both languages
                             issue_metadata = issue_dict.get('metadata', {})
+                            issue_metadata_en = issue_dict_en.get('metadata', {})
+                            issue_metadata_fr = issue_dict_fr.get('metadata', {})
 
                             unique_issues[dedup_key] = {
                                 'type': issue_type,
@@ -1325,10 +1438,15 @@ class StaticHTMLReportGenerator:
                                 'component_signature': component_signature,
                                 'component_type': component_type,
                                 'component_label': component_label,
-                                # Enriched content from IssueCatalog
-                                'why': issue_metadata.get('why', ''),
-                                'who': issue_metadata.get('who', ''),
-                                'full_remediation': issue_metadata.get('full_remediation', ''),
+                                # Enriched content from IssueCatalog - both languages
+                                'description_en': issue_dict_en.get('description', ''),
+                                'description_fr': issue_dict_fr.get('description', ''),
+                                'why_en': issue_metadata_en.get('why', ''),
+                                'why_fr': issue_metadata_fr.get('why', ''),
+                                'who_en': issue_metadata_en.get('who', ''),
+                                'who_fr': issue_metadata_fr.get('who', ''),
+                                'full_remediation_en': issue_metadata_en.get('full_remediation', ''),
+                                'full_remediation_fr': issue_metadata_fr.get('full_remediation', ''),
                                 'pages': set(),
                                 'test_users': set(),
                                 'user_roles': set()
@@ -1499,6 +1617,9 @@ class StaticHTMLReportGenerator:
         translations_fr = all_translations['fr']
         t = all_translations[self.language]  # Current language translations
 
+        # Read embedded assets for standalone HTML
+        embedded_assets = self._read_embedded_assets()
+
         # Render template
         template = self.template_env.get_template('static_report/dedup_index.html')
 
@@ -1522,7 +1643,11 @@ class StaticHTMLReportGenerator:
                 translations_en=translations_en,
                 translations_fr=translations_fr,
                 translations_json=json.dumps({'en': translations_en, 'fr': translations_fr}),
-                t=t
+                t=t,
+                # Embedded assets for standalone HTML
+                bootstrap_css=embedded_assets['bootstrap_css'],
+                bootstrap_icons_css=embedded_assets['bootstrap_icons_css'],
+                bootstrap_js=embedded_assets['bootstrap_js']
             )
 
         # Write to file
@@ -1544,6 +1669,9 @@ class StaticHTMLReportGenerator:
         translations_en = all_translations['en']
         translations_fr = all_translations['fr']
         t = all_translations[self.language]
+
+        # Read embedded assets for standalone HTML
+        embedded_assets = self._read_embedded_assets()
 
         # Generate page for each component
         for signature, comp_data in common_components.items():
@@ -1572,7 +1700,11 @@ class StaticHTMLReportGenerator:
                     translations_en=translations_en,
                     translations_fr=translations_fr,
                     translations_json=json.dumps({'en': translations_en, 'fr': translations_fr}),
-                    t=t
+                    t=t,
+                    # Embedded assets for standalone HTML
+                    bootstrap_css=embedded_assets['bootstrap_css'],
+                    bootstrap_icons_css=embedded_assets['bootstrap_icons_css'],
+                    bootstrap_js=embedded_assets['bootstrap_js']
                 )
 
             # Write to file
@@ -1926,6 +2058,9 @@ class StaticHTMLReportGenerator:
         translations_fr = all_translations['fr']
         t = all_translations[self.language]
 
+        # Read embedded assets for standalone HTML
+        embedded_assets = self._read_embedded_assets()
+
         for page_data in pages_with_unassigned:
             # Create page object for template
             from types import SimpleNamespace
@@ -1936,34 +2071,105 @@ class StaticHTMLReportGenerator:
                 test_date=page_data.get('test_date', 'Recently')
             )
 
-            with force_locale(self.language):
-                html = template.render(
-                    asset_path='../assets/',
-                    page=page,
-                    page_url=page_data['url'],
-                    page_title=page_data.get('title'),
-                    violations=page_data['issues']['violations'],
-                    warnings=page_data['issues']['warnings'],
-                    info=page_data['issues']['info'],
-                    discovery=page_data['issues']['discovery'],
-                    total_issues=page_data['total_issues'],
-                    errors_count=page_data.get('errors_count', 0),
-                    warnings_count=page_data.get('warnings_count', 0),
-                    info_count=page_data.get('info_count', 0),
-                    discovery_count=page_data.get('discovery_count', 0),
-                    compliance_score=page_data.get('compliance_score'),
-                    dedup_score=page_data.get('dedup_score', 0),  # Score for non-component issues
-                    report_date=datetime.now(),
-                    generation_date=generation_date,
-                    project_name=project_name,
-                    wcag_level=wcag_level,
-                    # Translation support
-                    language=self.language,
-                    translations_en=translations_en,
-                    translations_fr=translations_fr,
-                    translations_json=json.dumps({'en': translations_en, 'fr': translations_fr}),
-                    t=t
-                )
+            # Enrich issues in both EN and FR for client-side switching
+            def enrich_issue_bilingual(issue):
+                """Convert issue object to dict with bilingual enrichment"""
+                # Convert issue object to dict
+                issue_dict = {
+                    'id': issue.id if hasattr(issue, 'id') else '',
+                    'description': issue.description if hasattr(issue, 'description') else '',
+                    'impact': issue.impact if hasattr(issue, 'impact') else 'moderate',
+                    'xpath': issue.xpath if hasattr(issue, 'xpath') else '',
+                    'html_snippet': issue.html if hasattr(issue, 'html') else '',
+                    'touchpoint': issue.touchpoint if hasattr(issue, 'touchpoint') else '',
+                    'failure_summary': issue.failure_summary if hasattr(issue, 'failure_summary') else '',
+                    'metadata': {}
+                }
+
+                # Copy metadata if present
+                if hasattr(issue, 'metadata') and issue.metadata:
+                    issue_dict['metadata'] = dict(issue.metadata)
+
+                # Enrich with IssueCatalog in both languages
+                with force_locale('en'):
+                    enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                with force_locale('fr'):
+                    enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                # DEBUG: Log what we got
+                if issue_dict.get('id') == 'ErrAriaLabelMayNotBeFoundByVoiceControl':
+                    logger.warning("=" * 60)
+                    logger.warning(f"DEBUG BILINGUAL ENRICHMENT - Issue ID: {issue_dict.get('id')}")
+                    logger.warning(f"EN description_full: {enriched_en.get('description_full', 'N/A')[:80]}")
+                    logger.warning(f"FR description_full: {enriched_fr.get('description_full', 'N/A')[:80]}")
+                    logger.warning(f"Same? {enriched_en.get('description_full') == enriched_fr.get('description_full')}")
+                    logger.warning("=" * 60)
+
+                # Merge bilingual fields into the issue_dict
+                issue_dict['description_en'] = enriched_en.get('description_full', enriched_en.get('description', ''))
+                issue_dict['description_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', ''))
+
+                # Store bilingual metadata fields - IssueCatalog.enrich_issue() returns these exact field names
+                issue_dict['metadata']['what_en'] = enriched_en['description_full']
+                issue_dict['metadata']['what_fr'] = enriched_fr['description_full']
+                issue_dict['metadata']['what_generic_en'] = enriched_en['description_full']
+                issue_dict['metadata']['what_generic_fr'] = enriched_fr['description_full']
+                issue_dict['metadata']['why_en'] = enriched_en['why_it_matters']
+                issue_dict['metadata']['why_fr'] = enriched_fr['why_it_matters']
+                issue_dict['metadata']['who_en'] = enriched_en['who_it_affects']
+                issue_dict['metadata']['who_fr'] = enriched_fr['who_it_affects']
+                issue_dict['metadata']['full_remediation_en'] = enriched_en['how_to_fix']
+                issue_dict['metadata']['full_remediation_fr'] = enriched_fr['how_to_fix']
+                issue_dict['metadata']['wcag_full'] = enriched_en['wcag_full']
+
+                # Copy other metadata fields that might exist
+                if hasattr(issue, 'metadata') and issue.metadata:
+                    if hasattr(issue.metadata, 'authenticated_user'):
+                        issue_dict['metadata']['authenticated_user'] = issue.metadata.authenticated_user
+                    if hasattr(issue.metadata, 'breakpoint'):
+                        issue_dict['metadata']['breakpoint'] = issue.metadata.breakpoint
+                    if hasattr(issue.metadata, 'pseudoclass'):
+                        issue_dict['metadata']['pseudoclass'] = issue.metadata.pseudoclass
+
+                return issue_dict
+
+            # Enrich all issues
+            violations_enriched = [enrich_issue_bilingual(v) for v in page_data['issues']['violations']]
+            warnings_enriched = [enrich_issue_bilingual(w) for w in page_data['issues']['warnings']]
+            info_enriched = [enrich_issue_bilingual(i) for i in page_data['issues']['info']]
+            discovery_enriched = [enrich_issue_bilingual(d) for d in page_data['issues']['discovery']]
+
+            html = template.render(
+                page=page,
+                page_url=page_data['url'],
+                page_title=page_data.get('title'),
+                violations=violations_enriched,
+                warnings=warnings_enriched,
+                info=info_enriched,
+                discovery=discovery_enriched,
+                total_issues=page_data['total_issues'],
+                errors_count=page_data.get('errors_count', 0),
+                warnings_count=page_data.get('warnings_count', 0),
+                info_count=page_data.get('info_count', 0),
+                discovery_count=page_data.get('discovery_count', 0),
+                compliance_score=page_data.get('compliance_score'),
+                dedup_score=page_data.get('dedup_score', 0),  # Score for non-component issues
+                report_date=datetime.now(),
+                generation_date=generation_date,
+                project_name=project_name,
+                wcag_level=wcag_level,
+                # Translation support
+                language=self.language,
+                translations_en=translations_en,
+                translations_fr=translations_fr,
+                translations_json=json.dumps({'en': translations_en, 'fr': translations_fr}),
+                t=t,
+                # Embedded assets for standalone HTML
+                bootstrap_css=embedded_assets['bootstrap_css'],
+                bootstrap_icons_css=embedded_assets['bootstrap_icons_css'],
+                bootstrap_js=embedded_assets['bootstrap_js']
+            )
 
             # Write to file
             (report_dir / 'pages' / f"{page_data['safe_url']}.html").write_text(html, encoding='utf-8')

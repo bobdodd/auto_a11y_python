@@ -138,6 +138,12 @@ class DiscoveryReportGenerator:
                 'accessible_name_issues_total': 'Accessible Name Issues (%(count)s total)',
                 'no_issues_display': 'No issues to display.',
                 'total': 'total',
+                # Page summaries
+                'items_requiring_inspection': 'items requiring inspection',
+                'informational_notices': 'informational notices',
+                'accessible_name_issues_count': 'accessible name issues',
+                'why_it_matters': 'Why it matters',
+                'how_to_fix': 'How to fix',
             },
             'fr': {
                 'discovery_report': 'Rapport de découverte',
@@ -231,6 +237,12 @@ class DiscoveryReportGenerator:
                 'accessible_name_issues_total': 'Problèmes de noms accessibles (%(count)s au total)',
                 'no_issues_display': 'Aucun problème à afficher.',
                 'total': 'au total',
+                # Page summaries
+                'items_requiring_inspection': 'éléments nécessitant une inspection',
+                'informational_notices': 'avis informatifs',
+                'accessible_name_issues_count': 'problèmes de noms accessibles',
+                'why_it_matters': 'Pourquoi c\'est important',
+                'how_to_fix': 'Comment corriger',
             }
         }
         return translations.get(self.language, translations['en'])
@@ -1216,10 +1228,19 @@ class DiscoveryReportGenerator:
         # Generate unique ID for accordion using index
         accordion_id = f"page-{index}"
 
+        # Build translated issue summary
+        issue_summary_parts = []
+        if page_data['disco_issues']:
+            issue_summary_parts.append(f"{len(page_data['disco_issues'])} {t['items_requiring_inspection']}")
+        if page_data['info_issues']:
+            issue_summary_parts.append(f"{len(page_data['info_issues'])} {t['informational_notices']}")
+        if page_data['accessible_name_issues']:
+            issue_summary_parts.append(f"{len(page_data['accessible_name_issues'])} {t['accessible_name_issues_count']}")
+
         # Escape HTML in user-generated content
         title_escaped = html.escape(page_data['title'])
         url_escaped = html.escape(page_data['url'])
-        summary_escaped = html.escape(' | '.join(page_data['issue_summary']))
+        summary_escaped = html.escape(' | '.join(issue_summary_parts))
 
         # Generate issue lists
         disco_html = self._generate_issue_list_html(page_data['disco_issues'], t['discovery'], t)
@@ -1285,8 +1306,8 @@ class DiscoveryReportGenerator:
                     <span class="issue-id">{issue_id}</span>
                 </div>
                 <div class="issue-description">{html.escape(description)}</div>
-                {f'<div class="issue-why"><strong>Why it matters:</strong> {html.escape(why_it_matters)}</div>' if why_it_matters else ''}
-                {f'<div class="issue-fix"><strong>How to fix:</strong> {html.escape(how_to_fix)}</div>' if how_to_fix else ''}
+                {f'<div class="issue-why"><strong data-i18n="why_it_matters">{t["why_it_matters"]}:</strong> {html.escape(why_it_matters)}</div>' if why_it_matters else ''}
+                {f'<div class="issue-fix"><strong data-i18n="how_to_fix">{t["how_to_fix"]}:</strong> {html.escape(how_to_fix)}</div>' if how_to_fix else ''}
             </div>
             """
 

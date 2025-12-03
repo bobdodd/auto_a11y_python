@@ -13,7 +13,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import jinja2
-from flask_babel import force_locale
+from flask_babel import force_locale, lazy_gettext
 
 from auto_a11y.core.database import Database
 
@@ -53,6 +53,214 @@ class StaticHTMLReportGenerator:
 
         # Add custom filters
         self._setup_template_filters()
+
+    def _get_translations(self) -> Dict[str, Dict[str, str]]:
+        """Get translations for both EN and FR languages"""
+        translations = {
+            'en': {
+                # Index page
+                'deduplicated_report': 'Deduplicated Accessibility Report',
+                'issues_grouped_by_components': 'Issues grouped by common components',
+                'accessibility_score': 'Accessibility Score',
+                'compliance_score': 'Compliance Score',
+                'violations': 'Violations',
+                'warnings': 'Warnings',
+                'info_items': 'Info Items',
+                'components': 'Components',
+                'pages': 'Pages',
+                'common_components': 'Common Components',
+                'click_component_to_view': 'Click a component to view its deduplicated issues',
+                'pages_with_non_component_issues': 'Pages with Non-Component Issues',
+                'issues_not_in_components': 'Issues not associated with common components, organized by page',
+                'search_pages': 'Search pages...',
+                'no_common_components': 'No common components found',
+
+                # Component detail page
+                'back_to_index': 'Back to Index',
+                'found_on': 'Found on',
+                'page_s': 'page(s)',
+                'deduplicated_issue_s': 'deduplicated issue(s)',
+                'no_issues_found': 'No issues found for this component',
+
+                # Page detail / unassigned page
+                'index': 'Index',
+                'untitled_page': 'Untitled Page',
+                'status': 'Status',
+                'tested': 'Tested',
+                'last_tested': 'Last Tested',
+                'recently': 'Recently',
+                'issues_found': 'Issues Found',
+                'errors': 'Errors',
+                'score': 'Score',
+                'full_page_accessibility_score': 'Full Page Accessibility Score',
+                'all_issues_full_page': 'All issues (full page)',
+                'non_component_issues_score': 'Non-Component Issues Score',
+                'issues_not_in_common_components': 'Issues not in common components',
+                'compliance_score': 'Compliance Score',
+                'tests_passed': 'tests passed',
+                'n_a': 'N/A',
+                'no_data_available': 'No data available',
+                'filter_test_results': 'Filter Test Results',
+                'clear_all_filters': 'Clear All Filters',
+                'active_filters': 'Active Filters',
+                'showing': 'Showing',
+                'of': 'of',
+                'items': 'items',
+                'issue_type': 'Issue Type',
+                'impact_level': 'Impact Level',
+                'high': 'High',
+                'medium': 'Medium',
+                'low': 'Low',
+                'issue_touchpoint': 'Issue Touchpoint',
+                'all_touchpoints': 'All Touchpoints',
+                'general': 'General',
+                'quick_search': 'Quick Search',
+                'search_in_issues': 'Search in issue descriptions, error codes, or XPaths...',
+                'non_component_issues_for_page': 'Non-Component Issues for This Page',
+                'issues_not_part_of_common': 'Issues not part of common components',
+                'informational': 'Informational',
+                'discovery': 'Discovery',
+
+                # Issue details
+                'instance': 'Instance',
+                'guest': 'Guest',
+                'about_this_issue': 'About this issue:',
+                'what_the_issue_is': 'What the issue is:',
+                'why_this_is_important': 'Why this is important:',
+                'who_it_affects': 'Who it affects:',
+                'how_to_remediate': 'How to remediate:',
+                'relevant_test_criteria': 'Relevant test criteria:',
+                'wcag_success_criteria': 'WCAG Success Criteria:',
+                'touchpoint': 'Touchpoint',
+                'impact': 'Impact',
+                'more_about': 'More about',
+                'ways_to_meet': 'Ways to meet',
+                'affected_pages': 'Affected Pages',
+                'show_all_pages': 'Show all',
+                'element_details': 'Element Details:',
+                'element': 'Element',
+                'xpath': 'XPath',
+                'location': 'Location',
+                'responsive_breakpoint': 'Responsive Breakpoint',
+                'px_width': 'px width',
+                'css_state': 'CSS State',
+                'code_snippet': 'Code Snippet',
+                'rule': 'Rule',
+                'help': 'Help',
+                'how_to_fix': 'How to fix:',
+
+                # Misc
+                'language': 'Language',
+                'violation_s': 'violation(s)',
+                'warning_s': 'warning(s)',
+                'info': 'info',
+                'hidden': 'hidden',
+                'text': 'text',
+                'search': 'search',
+            },
+            'fr': {
+                # Index page
+                'deduplicated_report': 'Rapport d\'accessibilité dédupliqué',
+                'issues_grouped_by_components': 'Problèmes regroupés par composants communs',
+                'accessibility_score': 'Score d\'accessibilité',
+                'compliance_score': 'Score de conformité',
+                'violations': 'Violations',
+                'warnings': 'Avertissements',
+                'info_items': 'Éléments informatifs',
+                'components': 'Composants',
+                'pages': 'Pages',
+                'common_components': 'Composants communs',
+                'click_component_to_view': 'Cliquez sur un composant pour afficher ses problèmes dédupliqués',
+                'pages_with_non_component_issues': 'Pages avec problèmes hors composants',
+                'issues_not_in_components': 'Problèmes non associés aux composants communs, organisés par page',
+                'search_pages': 'Rechercher des pages...',
+                'no_common_components': 'Aucun composant commun trouvé',
+
+                # Component detail page
+                'back_to_index': 'Retour à l\'index',
+                'found_on': 'Trouvé sur',
+                'page_s': 'page(s)',
+                'deduplicated_issue_s': 'problème(s) dédupliqué(s)',
+                'no_issues_found': 'Aucun problème trouvé pour ce composant',
+
+                # Page detail / unassigned page
+                'index': 'Index',
+                'untitled_page': 'Page sans titre',
+                'status': 'Statut',
+                'tested': 'Testé',
+                'last_tested': 'Dernier test',
+                'recently': 'Récemment',
+                'issues_found': 'Problèmes trouvés',
+                'errors': 'Erreurs',
+                'score': 'Score',
+                'full_page_accessibility_score': 'Score d\'accessibilité de la page complète',
+                'all_issues_full_page': 'Tous les problèmes (page complète)',
+                'non_component_issues_score': 'Score des problèmes hors composants',
+                'issues_not_in_common_components': 'Problèmes non présents dans les composants communs',
+                'compliance_score': 'Score de conformité',
+                'tests_passed': 'tests réussis',
+                'n_a': 'N/D',
+                'no_data_available': 'Aucune donnée disponible',
+                'filter_test_results': 'Filtrer les résultats',
+                'clear_all_filters': 'Effacer tous les filtres',
+                'active_filters': 'Filtres actifs',
+                'showing': 'Affichage',
+                'of': 'sur',
+                'items': 'éléments',
+                'issue_type': 'Type de problème',
+                'impact_level': 'Niveau d\'impact',
+                'high': 'Élevé',
+                'medium': 'Moyen',
+                'low': 'Faible',
+                'issue_touchpoint': 'Point de contact',
+                'all_touchpoints': 'Tous les points de contact',
+                'general': 'Général',
+                'quick_search': 'Recherche rapide',
+                'search_in_issues': 'Rechercher dans les descriptions, codes d\'erreur ou XPath...',
+                'non_component_issues_for_page': 'Problèmes hors composants pour cette page',
+                'issues_not_part_of_common': 'Problèmes ne faisant pas partie de composants communs',
+                'informational': 'Informatif',
+                'discovery': 'Découverte',
+
+                # Issue details
+                'instance': 'Instance',
+                'guest': 'Invité',
+                'about_this_issue': 'À propos de ce problème :',
+                'what_the_issue_is': 'En quoi consiste le problème :',
+                'why_this_is_important': 'Pourquoi c\'est important :',
+                'who_it_affects': 'Qui est affecté :',
+                'how_to_remediate': 'Comment corriger :',
+                'relevant_test_criteria': 'Critères de test pertinents :',
+                'wcag_success_criteria': 'Critères de succès WCAG :',
+                'touchpoint': 'Point de contact',
+                'impact': 'Impact',
+                'more_about': 'En savoir plus sur',
+                'ways_to_meet': 'Comment satisfaire',
+                'affected_pages': 'Pages affectées',
+                'show_all_pages': 'Afficher toutes',
+                'element_details': 'Détails de l\'élément :',
+                'element': 'Élément',
+                'xpath': 'XPath',
+                'location': 'Emplacement',
+                'responsive_breakpoint': 'Point d\'arrêt responsive',
+                'px_width': 'px de largeur',
+                'css_state': 'État CSS',
+                'code_snippet': 'Extrait de code',
+                'rule': 'Règle',
+                'help': 'Aide',
+                'how_to_fix': 'Comment corriger :',
+
+                # Misc
+                'language': 'Langue',
+                'violation_s': 'violation(s)',
+                'warning_s': 'avertissement(s)',
+                'info': 'info',
+                'hidden': 'caché',
+                'text': 'texte',
+                'search': 'recherche',
+            }
+        }
+        return translations
 
     def _setup_template_filters(self):
         """Setup custom Jinja2 filters"""
@@ -1285,6 +1493,12 @@ class StaticHTMLReportGenerator:
             key=lambda x: (type_order.get(x['type'], 99), -x['violations'], -x['total_issues'])
         )
 
+        # Get translations
+        all_translations = self._get_translations()
+        translations_en = all_translations['en']
+        translations_fr = all_translations['fr']
+        t = all_translations[self.language]  # Current language translations
+
         # Render template
         template = self.template_env.get_template('static_report/dedup_index.html')
 
@@ -1302,7 +1516,13 @@ class StaticHTMLReportGenerator:
                 total_pages=total_pages,
                 overall_accessibility_score=overall_accessibility_score,
                 overall_compliance_score=overall_compliance_score,
-                report_date=datetime.now()
+                report_date=datetime.now(),
+                # Translation support
+                language=self.language,
+                translations_en=translations_en,
+                translations_fr=translations_fr,
+                translations_json=json.dumps({'en': translations_en, 'fr': translations_fr}),
+                t=t
             )
 
         # Write to file
@@ -1318,6 +1538,12 @@ class StaticHTMLReportGenerator:
         template = self.template_env.get_template('static_report/dedup_component.html')
 
         import re
+
+        # Get translations
+        all_translations = self._get_translations()
+        translations_en = all_translations['en']
+        translations_fr = all_translations['fr']
+        t = all_translations[self.language]
 
         # Generate page for each component
         for signature, comp_data in common_components.items():
@@ -1340,7 +1566,13 @@ class StaticHTMLReportGenerator:
                     issues=issues,
                     total_issues=len(issues),
                     component_score=component_score,
-                    report_date=datetime.now()
+                    report_date=datetime.now(),
+                    # Translation support
+                    language=self.language,
+                    translations_en=translations_en,
+                    translations_fr=translations_fr,
+                    translations_json=json.dumps({'en': translations_en, 'fr': translations_fr}),
+                    t=t
                 )
 
             # Write to file
@@ -1688,6 +1920,12 @@ class StaticHTMLReportGenerator:
 
         wcag_level = project.wcag_level if project and hasattr(project, 'wcag_level') else 'AA'
 
+        # Get translations
+        all_translations = self._get_translations()
+        translations_en = all_translations['en']
+        translations_fr = all_translations['fr']
+        t = all_translations[self.language]
+
         for page_data in pages_with_unassigned:
             # Create page object for template
             from types import SimpleNamespace
@@ -1718,7 +1956,13 @@ class StaticHTMLReportGenerator:
                     report_date=datetime.now(),
                     generation_date=generation_date,
                     project_name=project_name,
-                    wcag_level=wcag_level
+                    wcag_level=wcag_level,
+                    # Translation support
+                    language=self.language,
+                    translations_en=translations_en,
+                    translations_fr=translations_fr,
+                    translations_json=json.dumps({'en': translations_en, 'fr': translations_fr}),
+                    t=t
                 )
 
             # Write to file

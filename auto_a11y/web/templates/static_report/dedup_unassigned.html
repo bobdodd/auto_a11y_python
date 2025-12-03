@@ -155,28 +155,28 @@
     }
 
     .lang-switcher {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1000;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        padding: 5px;
+        display: inline-flex;
+        background: #f8f9fa;
+        border-radius: 6px;
+        padding: 4px;
+        gap: 4px;
     }
 
     .lang-switcher button {
-        padding: 8px 16px;
+        padding: 6px 14px;
         border: none;
         background: transparent;
         cursor: pointer;
-        border-radius: 6px;
+        border-radius: 4px;
         font-weight: 500;
+        font-size: 0.875rem;
         transition: all 0.2s;
+        color: #6c757d;
     }
 
     .lang-switcher button:hover {
-        background: #f8f9fa;
+        background: #e9ecef;
+        color: #495057;
     }
 
     .lang-switcher button.active {
@@ -335,12 +335,6 @@
 {% endif %}
 {% endmacro %}
 
-    <!-- Language Switcher -->
-    <div class="lang-switcher">
-        <button onclick="switchLanguage('en')" id="lang-en" class="{{ 'active' if language == 'en' else '' }}">EN</button>
-        <button onclick="switchLanguage('fr')" id="lang-fr" class="{{ 'active' if language == 'fr' else '' }}">FR</button>
-    </div>
-
 <div class="container py-4">
     <!-- Page Navigation -->
     <nav aria-label="breadcrumb" class="mb-3 no-print">
@@ -352,8 +346,8 @@
         </ol>
     </nav>
 
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Page Header with Language Switcher -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <h1 class="h2">{{ page.title|default('Untitled Page') }}</h1>
             <p class="text-muted">
@@ -361,6 +355,10 @@
                     {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
                 </a>
             </p>
+        </div>
+        <div class="lang-switcher">
+            <button onclick="switchLanguage('en')" id="lang-en" class="{{ 'active' if language == 'en' else '' }}" aria-label="Switch to English">EN</button>
+            <button onclick="switchLanguage('fr')" id="lang-fr" class="{{ 'active' if language == 'fr' else '' }}" aria-label="Switch to French">FR</button>
         </div>
     </div>
 
@@ -661,6 +659,7 @@
                      data-impact="{{ impact_text|lower }}"
                      data-touchpoint="{{ touchpoint|lower }}"
                      data-id="{{ error_code }}"
+                     data-instance-count="{{ group_list|length }}"
                      data-description="{{ first_violation.metadata.what_generic_en|lower if first_violation.metadata and first_violation.metadata.what_generic_en else first_violation.description_en|lower }}"
                      data-xpath="{{ first_violation.xpath|lower if first_violation.xpath else '' }}">
                     <h2 class="accordion-header">
@@ -753,6 +752,7 @@
                      data-impact="{{ impact_text|lower }}"
                      data-touchpoint="{{ touchpoint|lower }}"
                      data-id="{{ warning_code }}"
+                     data-instance-count="{{ group_list|length }}"
                      data-description="{{ first_warning.metadata.what_generic_en|lower if first_warning.metadata and first_warning.metadata.what_generic_en else first_warning.description_en|lower }}"
                      data-xpath="{{ first_warning.xpath|lower if first_warning.xpath else '' }}">
                     <h2 class="accordion-header">
@@ -845,6 +845,7 @@
                      data-impact="{{ impact_text|lower }}"
                      data-touchpoint="{{ touchpoint|lower }}"
                      data-id="{{ info_code }}"
+                     data-instance-count="{{ group_list|length }}"
                      data-description="{{ first_info.metadata.what_generic_en|lower if first_info.metadata and first_info.metadata.what_generic_en else first_info.description_en|lower }}"
                      data-xpath="{{ first_info.xpath|lower if first_info.xpath else '' }}">
                     <h2 class="accordion-header">
@@ -938,6 +939,7 @@
                      data-impact=""
                      data-touchpoint="{{ touchpoint|lower }}"
                      data-id="{{ disco_code }}"
+                     data-instance-count="{{ group_list|length }}"
                      data-description="{{ first_disco.metadata.what_generic_en|lower if first_disco.metadata and first_disco.metadata.what_generic_en else first_disco.description_en|lower }}"
                      data-xpath="{{ first_disco.xpath|lower if first_disco.xpath else '' }}">
                     <h2 class="accordion-header">
@@ -1016,11 +1018,15 @@
 <script>
 // Embedded translations
 const translations = {{ translations_json|safe }};
-let currentLanguage = '{{ language }}';
+// Check localStorage for saved language preference, fallback to server language
+let currentLanguage = localStorage.getItem('reportLanguage') || '{{ language }}';
 
 // Language switching
 function switchLanguage(lang) {
     currentLanguage = lang;
+
+    // Save preference to localStorage
+    localStorage.setItem('reportLanguage', lang);
 
     // Update active button
     document.querySelectorAll('.lang-switcher button').forEach(btn => {
@@ -1063,6 +1069,11 @@ function switchLanguage(lang) {
     });
 }
 
+// Apply saved language on page load
+if (currentLanguage !== '{{ language }}') {
+    switchLanguage(currentLanguage);
+}
+
 // Filter functionality
 document.addEventListener('DOMContentLoaded', function() {
     const filterChips = document.querySelectorAll('.filter-chip');
@@ -1085,20 +1096,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchTerm = quickSearch.value.toLowerCase();
         let visible = 0;
 
-        // Count impact levels
+        // Count impact levels (accounting for instance counts)
         let highCount = 0;
         let mediumCount = 0;
         let lowCount = 0;
 
         allItems.forEach(item => {
-            // Count by impact level
+            // Count by impact level, multiplying by instance count
             const itemImpact = item.dataset.impact;
+            const instanceCount = parseInt(item.dataset.instanceCount || '1', 10);
+
             if (itemImpact === 'high' || itemImpact === 'serious' || itemImpact === 'critical') {
-                highCount++;
+                highCount += instanceCount;
             } else if (itemImpact === 'medium' || itemImpact === 'moderate') {
-                mediumCount++;
+                mediumCount += instanceCount;
             } else if (itemImpact === 'low' || itemImpact === 'minor') {
-                lowCount++;
+                lowCount += instanceCount;
             }
 
 

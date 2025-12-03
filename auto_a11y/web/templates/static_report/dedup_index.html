@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="deduplicated_report">{{ t['deduplicated_report'] }}</title>
-    <link rel="stylesheet" href="{{ asset_path }}css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ asset_path }}css/bootstrap-icons.css">
+    <style>
+    /* Bootstrap CSS */
+    {{ bootstrap_css|safe }}
+    </style>
+    <style>
+    /* Bootstrap Icons CSS */
+    {{ bootstrap_icons_css|safe }}
+    </style>
     <style>
     .summary-cards {
         display: grid;
@@ -111,6 +117,49 @@
         padding: 3rem;
         color: #6c757d;
     }
+
+    /* Language Switcher */
+    .lang-switcher {
+        display: inline-flex;
+        background: #f8f9fa;
+        border-radius: 6px;
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .lang-switcher button {
+        padding: 6px 14px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        color: #6c757d;
+    }
+
+    .lang-switcher button:hover {
+        background: #e9ecef;
+        color: #495057;
+    }
+
+    .lang-switcher button.active {
+        background: #0d6efd;
+        color: white;
+    }
+
+    .lang-inactive {
+        display: none !important;
+    }
+
+    .lang-active {
+        display: block;
+    }
+
+    span.lang-active {
+        display: inline;
+    }
     </style>
 </head>
 <body>
@@ -123,14 +172,9 @@
                 <span data-i18n="issues_grouped_by_components">{{ t['issues_grouped_by_components'] }}</span> • {{ report_date.strftime('%Y-%m-%d %H:%M') }}
             </p>
         </div>
-        <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-translate"></i> <span data-i18n="language">{{ t['language'] }}</span>: <span id="current-lang-display">{{ language.upper() }}</span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                <li><a class="dropdown-item" href="#" onclick="switchLanguage('en'); return false;">English</a></li>
-                <li><a class="dropdown-item" href="#" onclick="switchLanguage('fr'); return false;">Français</a></li>
-            </ul>
+        <div class="lang-switcher">
+            <button onclick="switchLanguage('en')" id="lang-en" class="{{ 'active' if language == 'en' else '' }}" aria-label="Switch to English">EN</button>
+            <button onclick="switchLanguage('fr')" id="lang-fr" class="{{ 'active' if language == 'fr' else '' }}" aria-label="Switch to French">FR</button>
         </div>
     </div>
 
@@ -281,18 +325,29 @@
     {% endif %}
 </div>
 
-<script src="{{ asset_path }}js/bootstrap.bundle.min.js"></script>
+<script>
+/* Bootstrap JS */
+{{ bootstrap_js|safe }}
+</script>
 <script>
 // All translations embedded in the report
 const translations = {{ translations_json|safe }};
 
-// Current language
-let currentLang = '{{ language }}';
+// Check localStorage for saved language preference, fallback to server language
+let currentLang = localStorage.getItem('reportLanguage') || '{{ language }}';
 
+// Language switching
 function switchLanguage(lang) {
-    if (lang === currentLang) return;
-
     currentLang = lang;
+
+    // Save preference to localStorage
+    localStorage.setItem('reportLanguage', lang);
+
+    // Update active button
+    document.querySelectorAll('.lang-switcher button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.getElementById(`lang-${lang}`).classList.add('active');
 
     // Update HTML lang attribute
     document.documentElement.lang = lang;
@@ -313,13 +368,15 @@ function switchLanguage(lang) {
         }
     });
 
-    // Update current language display
-    document.getElementById('current-lang-display').textContent = lang.toUpperCase();
-
     // Update document title
     if (translations[lang] && translations[lang]['deduplicated_report']) {
         document.title = translations[lang]['deduplicated_report'];
     }
+}
+
+// Apply saved language on page load
+if (currentLang !== '{{ language }}') {
+    switchLanguage(currentLang);
 }
 
 // Simple page search filter

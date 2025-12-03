@@ -1,12 +1,286 @@
-<!DOCTYPE html>
-<html lang="{{ language }}" data-current-lang="{{ language }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="non_component_issues">{{ t['non_component_issues'] }}: {{ page.title|default('Untitled Page') }}</title>
-    <link rel="stylesheet" href="{{ asset_path }}css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ asset_path }}css/bootstrap-icons.css">
-    <style>
+{% extends "static_report/base.html" %}
+
+{% block title %}Issues Not in Common Components - Deduplicated Report{% endblock %}
+
+<!-- Macro for rendering instance accordion -->
+{% macro render_instance_accordion(violation, instance_id, parent_id, alert_type, loop_index) %}
+<div class="accordion-item">
+    <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#{{ instance_id }}">
+            <strong>Instance {{ loop_index }}:</strong>
+            {% if violation.metadata and violation.metadata.authenticated_user %}
+                <span class="badge bg-secondary ms-2">
+                    <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                    {% if violation.metadata.authenticated_user.roles %}
+                        ({{ violation.metadata.authenticated_user.roles|join(', ') }})
+                    {% endif %}
+                </span>
+            {% else %}
+                <span class="badge bg-secondary ms-2">
+                    <i class="bi bi-person"></i> Guest
+                </span>
+            {% endif %}
+            {% if violation.xpath %}
+            <code class="ms-2">{{ violation.xpath }}</code>
+            {% endif %}
+        </button>
+    </h2>
+    <div id="{{ instance_id }}"
+         class="accordion-collapse collapse"
+         data-bs-parent="#{{ parent_id }}">
+        <div class="accordion-body">
+            {{ render_violation_details(violation, alert_type) }}
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+<!-- Macro for rendering violation details -->
+{% macro render_violation_details(violation, alert_type) %}
+<!-- Issue Details - Match online view exactly -->
+{% if violation.metadata and violation.metadata.what %}
+<!-- Enhanced description available -->
+<div class="alert alert-{{ alert_type }} mb-3">
+    <h6 class="alert-heading">{{ violation.description }}</h6>
+</div>
+
+<h6 class="text-{{ alert_type }} mb-2">About this issue:</h6>
+
+<div class="mb-3">
+    <strong>What the issue is:</strong>
+    <p>{{ violation.description }}</p>
+</div>
+
+{% if violation.metadata.why %}
+<div class="mb-3">
+    <strong>Why this is important:</strong>
+    <p>{{ violation.metadata.why }}</p>
+</div>
+{% endif %}
+
+{% if violation.metadata.who %}
+<div class="mb-3">
+    <strong>Who it affects:</strong>
+    <p>{{ violation.metadata.who }}</p>
+</div>
+{% endif %}
+
+{% if violation.metadata.full_remediation %}
+<div class="mb-3">
+    <strong>How to remediate:</strong>
+    <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
+</div>
+{% endif %}
+
+{% if violation.metadata.wcag_full %}
+<h6 class="text-{{ alert_type }} mb-2 mt-4">Relevant test criteria:</h6>
+<div class="mb-3">
+    <strong>WCAG Success Criteria:</strong>
+    <ul>
+    {% for criterion in violation.metadata.wcag_full %}
+        <li>{{ criterion|safe }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% else %}
+<!-- Standard description -->
+<p><strong>Rule:</strong> {{ violation.id }}</p>
+<p><strong>Help:</strong> {{ violation.description }}</p>
+{% if violation.failure_summary %}
+<p><strong>How to fix:</strong> {{ violation.failure_summary }}</p>
+{% endif %}
+{% endif %}
+
+<hr>
+<div class="row">
+    <div class="col-md-6">
+        <p><strong>Touchpoint:</strong> {{ violation.touchpoint|replace('_', ' ')|title }}</p>
+        <p><strong>Impact:</strong>
+            {% set impact_clean = violation.impact|string|replace('IMPACT_LEVEL.', '')|replace('ImpactLevel.', '') %}
+            <span class="badge bg-{{ {'high': 'danger', 'serious': 'danger', 'critical': 'danger', 'medium': 'warning', 'moderate': 'warning', 'low': 'info', 'minor': 'info'}[impact_clean|lower] or 'secondary' }} impact-badge">
+                {{ impact_clean|upper }}
+            </span>
+        </p>
+    </div>
+    <div class="col-md-6">
+        {% if violation.metadata and violation.metadata.wcag_full %}
+            {% for criterion in violation.metadata.wcag_full|sort %}
+            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                <p style="margin: 0 0 8px 0; font-weight: bold;">
+                    WCAG {{ criterion|safe }}
+                </p>
+
+                {% set criterion_code = criterion.split()[0] %}
+                <p style="margin: 0 0 5px 0;">
+                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion_code }}" target="_blank">
+                        More about {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                </p>
+                <p style="margin: 0;">
+                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion_code }}" target="_blank">
+                        Ways to meet {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                </p>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+{% if violation.xpath %}
+<p class="mt-3">
+    <strong>Location:</strong>
+    <code>{{ violation.xpath }}</code>
+</p>
+{% endif %}
+
+{% if violation.metadata and violation.metadata.breakpoint %}
+<p>
+    <strong>Responsive Breakpoint:</strong> <span class="badge bg-info">{{ violation.metadata.breakpoint }}px width</span>
+</p>
+{% endif %}
+
+{% if violation.metadata and violation.metadata.pseudoclass %}
+<p>
+    <strong>CSS State:</strong>
+    {% if '@' in violation.metadata.pseudoclass %}
+        {% set parts = violation.metadata.pseudoclass.split('@') %}
+        <span class="badge bg-warning">{{ parts[0] }}</span>
+        <span class="badge bg-secondary">{{ parts[1] }}</span>
+    {% else %}
+        <span class="badge bg-warning">{{ violation.metadata.pseudoclass }}</span>
+    {% endif %}
+</p>
+{% endif %}
+
+{% if violation.html_snippet %}
+<h6 class="mt-3">Code Snippet</h6>
+<pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html_snippet|e }}</code></pre>
+{% endif %}
+{% endmacro %}
+
+<!-- Macro for rendering issue details (legacy, for deduplicated view) -->
+{% macro render_issue_details(issue, alert_type) %}
+    <div class="alert alert-{{ alert_type }}">
+        <h6 class="alert-heading">{{ issue.description }}</h6>
+    </div>
+
+    <h6 class="text-{{ alert_type }} mb-2">About this issue:</h6>
+
+    <div class="mb-3">
+        <strong>What the issue is:</strong>
+        <p>{{ issue.description }}</p>
+    </div>
+
+    {% if issue.why %}
+    <div class="mb-3">
+        <strong>Why this is important:</strong>
+        <p>{{ issue.why }}</p>
+    </div>
+    {% endif %}
+
+    {% if issue.who %}
+    <div class="mb-3">
+        <strong>Who it affects:</strong>
+        <p>{{ issue.who }}</p>
+    </div>
+    {% endif %}
+
+    {% if issue.full_remediation %}
+    <div class="mb-3">
+        <strong>How to remediate:</strong>
+        <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ issue.full_remediation }}</div>
+    </div>
+    {% endif %}
+
+    {% if issue.wcag_full %}
+    <h6 class="text-{{ alert_type }} mb-2 mt-4">Relevant test criteria:</h6>
+    <div class="mb-3">
+        <strong>WCAG Success Criteria:</strong>
+        <ul>
+        {% for criterion in issue.wcag_full %}
+            <li>{{ criterion|safe }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% if issue.touchpoint %}
+            <p><strong>Touchpoint:</strong> {{ issue.touchpoint|replace('_', ' ')|title }}</p>
+            {% endif %}
+            <p><strong>Impact:</strong>
+                <span class="badge bg-{{ {'critical': 'danger', 'high': 'danger', 'serious': 'danger', 'moderate': 'warning', 'medium': 'warning', 'minor': 'info', 'low': 'info'}[issue.impact|lower] or 'secondary' }} impact-badge">
+                    {{ issue.impact|upper }}
+                </span>
+            </p>
+        </div>
+        <div class="col-md-6">
+            {% if issue.wcag_full %}
+                {% for criterion in issue.wcag_full|sort %}
+                <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                    <p style="margin: 0 0 8px 0; font-weight: bold;">
+                        WCAG {{ criterion|safe }}
+                    </p>
+                    {% set criterion_code = criterion.split()[0] %}
+                    <p style="margin: 0 0 5px 0;">
+                        <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion_code }}" target="_blank">
+                            More about {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </p>
+                    <p style="margin: 0;">
+                        <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion_code }}" target="_blank">
+                            Ways to meet {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </p>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+    <div class="mb-3">
+        <strong>Affected Pages ({{ issue.page_count }}):</strong>
+        <div class="mt-2">
+            <details>
+                <summary class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-chevron-down"></i> Show all {{ issue.page_count }} page(s)
+                </summary>
+                <div class="mt-2 p-3 bg-light rounded">
+                    {% for page_url in issue.pages %}
+                    <div class="mb-2">
+                        <i class="bi bi-file-earmark-text text-muted"></i> <code>{{ page_url }}</code>
+                    </div>
+                    {% endfor %}
+                </div>
+            </details>
+        </div>
+    </div>
+
+    {% if issue.element or issue.xpath %}
+    <hr>
+    <h6 class="text-{{ alert_type }} mb-2">Element Details:</h6>
+    {% if issue.element %}
+    <p><strong>Element:</strong> <code>{{ issue.element }}</code></p>
+    {% endif %}
+    {% if issue.xpath %}
+    <p><strong>XPath:</strong></p>
+    <div class="bg-light p-2 rounded" style="font-family: monospace; font-size: 0.875rem; overflow-x: auto;">
+        {{ issue.xpath }}
+    </div>
+    {% endif %}
+    {% endif %}
+{% endmacro %}
+
+{% block extra_css %}
+<style>
     .touchpoint-header {
         background-color: #f8f9fa;
         padding: 8px;
@@ -147,29 +421,19 @@
     .test-results-card {
         margin-bottom: 2rem;
     }
-    </style>
-</head>
-<body>
+</style>
+{% endblock %}
+
+{% block content %}
 <div class="container py-4">
-    <!-- Page Navigation with Language Switcher -->
+    <!-- Page Navigation -->
     <nav aria-label="breadcrumb" class="mb-3 no-print">
-        <div class="d-flex justify-content-between align-items-center">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item">
-                    <a href="../index.html" data-i18n="index">{{ t['index'] }}</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">{{ page.title|default('Untitled Page') }}</li>
-            </ol>
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-translate"></i> <span data-i18n="language">{{ t['language'] }}</span>: <span id="current-lang-display">{{ language.upper() }}</span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                    <li><a class="dropdown-item" href="#" onclick="switchLanguage('en'); return false;">English</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="switchLanguage('fr'); return false;">Français</a></li>
-                </ul>
-            </div>
-        </div>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="../index.html">Index</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ page.title|default('Untitled Page') }}</li>
+        </ol>
     </nav>
 
     <!-- Page Header -->
@@ -189,9 +453,9 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted" data-i18n="status">{{ t['status'] }}</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Status</h6>
                     <p class="mb-0">
-                        <span class="badge bg-success" data-i18n="tested">{{ t['tested'] }}</span>
+                        <span class="badge bg-success">Tested</span>
                     </p>
                 </div>
             </div>
@@ -199,7 +463,7 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted" data-i18n="last_tested">{{ t['last_tested'] }}</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Last Tested</h6>
                     <p class="mb-0">
                         {{ page.test_date|default('Recently') }}
                     </p>
@@ -209,10 +473,10 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted" data-i18n="issues_found">{{ t['issues_found'] }}</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Issues Found</h6>
                     <p class="mb-0">
-                        <span class="text-danger fw-bold">{{ errors_count|default(0) }}</span> <span data-i18n="errors">{{ t['errors'] }}</span>,
-                        <span class="text-warning fw-bold">{{ warnings_count|default(0) }}</span> <span data-i18n="warnings">{{ t['warnings'] }}</span>
+                        <span class="text-danger fw-bold">{{ errors_count|default(0) }}</span> errors,
+                        <span class="text-warning fw-bold">{{ warnings_count|default(0) }}</span> warnings
                     </p>
                 </div>
             </div>
@@ -220,7 +484,7 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted" data-i18n="score">{{ t['score'] }}</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Score</h6>
                     <p class="mb-0">
                         {% set score = page.score|default(0) %}
                         <span class="fw-bold {% if score >= 90 %}text-success{% elif score >= 70 %}text-warning{% else %}text-danger{% endif %}">
@@ -240,11 +504,11 @@
             <div class="card h-100">
                 <div class="card-body text-center">
                     {% set score = page.score|default(0) %}
-                    <h6 class="card-title" data-i18n="full_page_accessibility_score">{{ t['full_page_accessibility_score'] }}</h6>
+                    <h6 class="card-title">Full Page Accessibility Score</h6>
                     <div class="display-4 fw-bold {% if score >= 90 %}text-success{% elif score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                         {{ "%.1f"|format(score) }}%
                     </div>
-                    <p class="text-muted small mb-0" data-i18n="all_issues_full_page">{{ t['all_issues_full_page'] }}</p>
+                    <p class="text-muted small mb-0">All issues (full page)</p>
                 </div>
             </div>
         </div>
@@ -254,11 +518,11 @@
             <div class="card h-100">
                 <div class="card-body text-center">
                     {% set dscore = dedup_score|default(0) %}
-                    <h6 class="card-title" data-i18n="non_component_issues_score">{{ t['non_component_issues_score'] }}</h6>
+                    <h6 class="card-title">Non-Component Issues Score</h6>
                     <div class="display-4 fw-bold {% if dscore >= 90 %}text-success{% elif dscore >= 70 %}text-warning{% else %}text-danger{% endif %}">
                         {{ "%.1f"|format(dscore) }}%
                     </div>
-                    <p class="text-muted small mb-0" data-i18n="issues_not_in_components">{{ t['issues_not_in_components'] }}</p>
+                    <p class="text-muted small mb-0">Issues not in common components</p>
                 </div>
             </div>
         </div>
@@ -269,15 +533,15 @@
         <div class="col-md-12">
             <div class="card h-100">
                 <div class="card-body text-center">
-                    <h6 class="card-title" data-i18n="compliance_score">{{ t['compliance_score'] }}</h6>
+                    <h6 class="card-title">Compliance Score</h6>
                     {% if compliance_score %}
                     <div class="display-4 fw-bold {% if compliance_score.score >= 90 %}text-success{% elif compliance_score.score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                         {{ "%.1f"|format(compliance_score.score) }}%
                     </div>
-                    <p class="text-muted small mb-0">{{ compliance_score.passed_tests }} / {{ compliance_score.total_tests }} <span data-i18n="tests_passed">{{ t['tests_passed'] }}</span></p>
+                    <p class="text-muted small mb-0">{{ compliance_score.passed_tests }} / {{ compliance_score.total_tests }} tests passed</p>
                     {% else %}
                     <div class="display-4 fw-bold text-muted">N/A</div>
-                    <p class="text-muted small mb-0" data-i18n="no_data_available">{{ t['no_data_available'] }}</p>
+                    <p class="text-muted small mb-0">No data available</p>
                     {% endif %}
                 </div>
             </div>
@@ -287,7 +551,7 @@
     <!-- Issue Breakdown -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-bug"></i> <span data-i18n="issues_found_non_component_only">{{ t['issues_found_non_component_only'] }}</span></h5>
+            <h5 class="mb-0"><i class="bi bi-bug"></i> Issues Found (Non-Component Issues Only)</h5>
         </div>
         <div class="card-body">
             <div class="row g-3">
@@ -296,7 +560,7 @@
                         <i class="bi bi-x-circle text-danger me-2 fs-4"></i>
                         <div>
                             <div class="fw-bold">{{ errors_count|default(0) }}</div>
-                            <small class="text-muted" data-i18n="errors">{{ t['errors'] }}</small>
+                            <small class="text-muted">Errors</small>
                         </div>
                     </div>
                 </div>
@@ -305,7 +569,7 @@
                         <i class="bi bi-exclamation-triangle text-warning me-2 fs-4"></i>
                         <div>
                             <div class="fw-bold">{{ warnings_count|default(0) }}</div>
-                            <small class="text-muted" data-i18n="warnings">{{ t['warnings'] }}</small>
+                            <small class="text-muted">Warnings</small>
                         </div>
                     </div>
                 </div>
@@ -314,7 +578,7 @@
                         <i class="bi bi-info-circle text-info me-2 fs-4"></i>
                         <div>
                             <div class="fw-bold">{{ info_count|default(0) }}</div>
-                            <small class="text-muted" data-i18n="info">{{ t['info'] }}</small>
+                            <small class="text-muted">Info</small>
                         </div>
                     </div>
                 </div>
@@ -323,7 +587,7 @@
                         <i class="bi bi-search" style="color: #6f42c1;" class="me-2 fs-4"></i>
                         <div>
                             <div class="fw-bold">{{ discovery_count|default(0) }}</div>
-                            <small class="text-muted" data-i18n="discovery">{{ t['discovery'] }}</small>
+                            <small class="text-muted">Discovery</small>
                         </div>
                     </div>
                 </div>
@@ -336,22 +600,22 @@
     {% if violations or warnings or info or discovery %}
     <div class="filter-panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> <span data-i18n="filter_test_results">{{ t['filter_test_results'] }}</span></h5>
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Test Results</h5>
             <button class="btn btn-sm btn-outline-secondary" id="clearFilters">
-                <i class="bi bi-x-circle"></i> <span data-i18n="clear_all_filters">{{ t['clear_all_filters'] }}</span>
+                <i class="bi bi-x-circle"></i> Clear All Filters
             </button>
         </div>
 
         <!-- Active Filters Display -->
         <div id="activeFilters" class="active-filters" style="display: none;">
-            <strong data-i18n="active_filters">{{ t['active_filters'] }}</strong>
+            <strong>Active Filters:</strong>
             <div id="activeFilterTags"></div>
         </div>
 
         <!-- Filter Statistics -->
         <div class="filter-stats">
-            <strong data-i18n="showing">{{ t['showing'] }}</strong>
-            <span id="visibleCount">0</span> <span data-i18n="of">{{ t['of'] }}</span> <span id="totalCount">0</span> <span data-i18n="items">{{ t['items'] }}</span>
+            <strong>Showing:</strong>
+            <span id="visibleCount">0</span> of <span id="totalCount">0</span> items
             | <span id="filterSummary"></span>
         </div>
 
@@ -360,26 +624,26 @@
             <!-- Issue Type Filter -->
             <div class="col-md-3">
                 <div class="filter-group">
-                    <label class="form-label fw-bold" data-i18n="issue_type">{{ t['issue_type'] }}</label>
+                    <label class="form-label fw-bold">Issue Type</label>
                     <div class="filter-chips">
                         {% if violations %}
                         <div class="filter-chip" data-filter-type="type" data-filter-value="error">
-                            <span data-i18n="errors">{{ t['errors'] }}</span> ({{ violations|length }})
+                            Errors ({{ violations|length }})
                         </div>
                         {% endif %}
                         {% if warnings %}
                         <div class="filter-chip" data-filter-type="type" data-filter-value="warning">
-                            <span data-i18n="warnings">{{ t['warnings'] }}</span> ({{ warnings|length }})
+                            Warnings ({{ warnings|length }})
                         </div>
                         {% endif %}
                         {% if info %}
                         <div class="filter-chip" data-filter-type="type" data-filter-value="info">
-                            <span data-i18n="info">{{ t['info'] }}</span> ({{ info|length }})
+                            Info ({{ info|length }})
                         </div>
                         {% endif %}
                         {% if discovery %}
                         <div class="filter-chip" data-filter-type="type" data-filter-value="discovery">
-                            <span data-i18n="discovery">{{ t['discovery'] }}</span> ({{ discovery|length }})
+                            Discovery ({{ discovery|length }})
                         </div>
                         {% endif %}
                     </div>
@@ -389,18 +653,18 @@
             <!-- Impact Level Filter -->
             <div class="col-md-3">
                 <div class="filter-group">
-                    <label class="form-label fw-bold" data-i18n="impact_level">{{ t['impact_level'] }}</label>
+                    <label class="form-label fw-bold">Impact Level</label>
                     <div class="filter-chips">
                         <div class="filter-chip" data-filter-type="impact" data-filter-value="high">
-                            <span class="badge bg-danger me-1" data-i18n="high">{{ t['high'] }}</span>
+                            <span class="badge bg-danger me-1">High</span>
                             <span id="highImpactCount">0</span>
                         </div>
                         <div class="filter-chip" data-filter-type="impact" data-filter-value="medium">
-                            <span class="badge bg-warning text-dark me-1" data-i18n="medium">{{ t['medium'] }}</span>
+                            <span class="badge bg-warning text-dark me-1">Medium</span>
                             <span id="mediumImpactCount">0</span>
                         </div>
                         <div class="filter-chip" data-filter-type="impact" data-filter-value="low">
-                            <span class="badge bg-info me-1" data-i18n="low">{{ t['low'] }}</span>
+                            <span class="badge bg-info me-1">Low</span>
                             <span id="lowImpactCount">0</span>
                         </div>
                     </div>
@@ -410,9 +674,9 @@
             <!-- Touchpoint Filter -->
             <div class="col-md-6">
                 <div class="filter-group">
-                    <label class="form-label fw-bold" data-i18n="issue_touchpoint">{{ t['issue_touchpoint'] }}</label>
+                    <label class="form-label fw-bold">Issue Touchpoint</label>
                     <select class="form-select form-select-sm" id="touchpointFilter" multiple size="3">
-                        <option value="" data-i18n="all_touchpoints">{{ t['all_touchpoints'] }}</option>
+                        <option value="">All Touchpoints</option>
                         {% set all_issues = violations + warnings + info + discovery %}
                         {% set touchpoints = all_issues|map(attribute='touchpoint')|unique|sort %}
                         {% for touchpoint in touchpoints %}
@@ -429,7 +693,7 @@
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input type="text" class="form-control" id="quickSearch"
-                           data-i18n-placeholder="search_in_issues" placeholder="{{ t['search_in_issues'] }}">
+                           placeholder="Search in issue descriptions, error codes, or XPaths...">
                 </div>
             </div>
         </div>
@@ -439,15 +703,15 @@
     <!-- Test Results -->
     <div class="card test-results-card mt-4">
         <div class="card-header">
-            <h5 class="mb-0" data-i18n="non_component_issues_for_this_page">{{ t['non_component_issues_for_this_page'] }}</h5>
-            <small class="text-muted" data-i18n="issues_not_part_of_common_components">{{ t['issues_not_part_of_common_components'] }}</small>
+            <h5 class="mb-0">Non-Component Issues for This Page</h5>
+            <small class="text-muted">Issues not part of common components</small>
         </div>
         <div class="card-body">
 
     <!-- Violations -->
     {% if violations %}
     <h6 class="text-danger mb-3">
-        <i class="bi bi-x-circle"></i> <span data-i18n="errors">{{ t['errors'] }}</span> ({{ violations|length }})
+        <i class="bi bi-x-circle"></i> Errors ({{ violations|length }})
     </h6>
     <div class="accordion mb-4" id="violationsAccordion">
         {% set viol_counter = namespace(value=0) %}
@@ -487,44 +751,12 @@
                             <!-- Multiple instances - show nested accordion -->
                             <div class="accordion" id="viol_instances_{{ viol_counter.value }}">
                                 {% for instance in group_list %}
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#viol_inst_{{ viol_counter.value }}_{{ loop.index }}">
-                                            <strong data-i18n="instance">{{ t['instance'] }}</strong> {{ loop.index }}:
-                                            {% if instance.metadata and instance.metadata.authenticated_user %}
-                                                <span class="badge bg-secondary ms-2">
-                                                    <i class="bi bi-person-fill"></i> {{ instance.metadata.authenticated_user.display_name }}
-                                                    {% if instance.metadata.authenticated_user.roles %}
-                                                        ({{ instance.metadata.authenticated_user.roles|join(', ') }})
-                                                    {% endif %}
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-secondary ms-2">
-                                                    <i class="bi bi-person"></i> <span data-i18n="guest">{{ t['guest'] }}</span>
-                                                </span>
-                                            {% endif %}
-                                            {% if instance.xpath %}
-                                            <code class="ms-2">{{ instance.xpath }}</code>
-                                            {% endif %}
-                                        </button>
-                                    </h2>
-                                    <div id="viol_inst_{{ viol_counter.value }}_{{ loop.index }}"
-                                         class="accordion-collapse collapse"
-                                         data-bs-parent="#viol_instances_{{ viol_counter.value }}">
-                                        <div class="accordion-body">
-                                            {% include 'static_report/violation_details.html' %}
-                                        </div>
-                                    </div>
-                                </div>
+                                {{ render_instance_accordion(instance, 'viol_inst_' ~ viol_counter.value ~ '_' ~ loop.index, 'viol_instances_' ~ viol_counter.value, 'danger', loop.index) }}
                                 {% endfor %}
                             </div>
                             {% else %}
                             <!-- Single instance - show details directly -->
-                            {% set violation = first_violation %}
-                            {% set alert_type = 'danger' %}
-                            {% include 'static_report/violation_details.html' %}
+                            {{ render_violation_details(first_violation, 'danger') }}
                             {% endif %}
                         </div>
                     </div>
@@ -537,7 +769,7 @@
     <!-- Warnings -->
     {% if warnings %}
     <h6 class="text-warning mb-3">
-        <i class="bi bi-exclamation-triangle"></i> <span data-i18n="warnings">{{ t['warnings'] }}</span> ({{ warnings|length }})
+        <i class="bi bi-exclamation-triangle"></i> Warnings ({{ warnings|length }})
     </h6>
     <div class="accordion mb-4" id="warningsAccordion">
         {% set warn_counter = namespace(value=0) %}
@@ -577,46 +809,12 @@
                             <!-- Multiple instances - show nested accordion -->
                             <div class="accordion" id="warn_instances_{{ warn_counter.value }}">
                                 {% for instance in group_list %}
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#warn_inst_{{ warn_counter.value }}_{{ loop.index }}">
-                                            <strong data-i18n="instance">{{ t['instance'] }}</strong> {{ loop.index }}:
-                                            {% if instance.metadata and instance.metadata.authenticated_user %}
-                                                <span class="badge bg-secondary ms-2">
-                                                    <i class="bi bi-person-fill"></i> {{ instance.metadata.authenticated_user.display_name }}
-                                                    {% if instance.metadata.authenticated_user.roles %}
-                                                        ({{ instance.metadata.authenticated_user.roles|join(', ') }})
-                                                    {% endif %}
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-secondary ms-2">
-                                                    <i class="bi bi-person"></i> <span data-i18n="guest">{{ t['guest'] }}</span>
-                                                </span>
-                                            {% endif %}
-                                            {% if instance.xpath %}
-                                            <code class="ms-2">{{ instance.xpath }}</code>
-                                            {% endif %}
-                                        </button>
-                                    </h2>
-                                    <div id="warn_inst_{{ warn_counter.value }}_{{ loop.index }}"
-                                         class="accordion-collapse collapse"
-                                         data-bs-parent="#warn_instances_{{ warn_counter.value }}">
-                                        <div class="accordion-body">
-                                            {% set violation = instance %}
-                                            {% set alert_type = 'warning' %}
-                                            {% include 'static_report/violation_details.html' %}
-                                        </div>
-                                    </div>
-                                </div>
+                                {{ render_instance_accordion(instance, 'warn_inst_' ~ warn_counter.value ~ '_' ~ loop.index, 'warn_instances_' ~ warn_counter.value, 'warning', loop.index) }}
                                 {% endfor %}
                             </div>
                             {% else %}
                             <!-- Single instance - show details directly -->
-                            {% set violation = first_warning %}
-                            {% set alert_type = 'warning' %}
-                            {% include 'static_report/violation_details.html' %}
+                            {{ render_violation_details(first_warning, 'warning') }}
                             {% endif %}
                         </div>
                     </div>
@@ -629,7 +827,7 @@
     <!-- Info -->
     {% if info %}
     <h6 class="text-info mb-3">
-        <i class="bi bi-info-circle"></i> <span data-i18n="informational">{{ t['informational'] }}</span> ({{ info|length }})
+        <i class="bi bi-info-circle"></i> Informational ({{ info|length }})
     </h6>
     <div class="accordion mb-4" id="infoAccordion">
         {% set info_counter = namespace(value=0) %}
@@ -671,46 +869,12 @@
                             <!-- Multiple instances - show nested accordion -->
                             <div class="accordion" id="info_instances_{{ info_counter.value }}">
                                 {% for instance in group_list %}
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#info_inst_{{ info_counter.value }}_{{ loop.index }}">
-                                            <strong data-i18n="instance">{{ t['instance'] }}</strong> {{ loop.index }}:
-                                            {% if instance.metadata and instance.metadata.authenticated_user %}
-                                                <span class="badge bg-secondary ms-2">
-                                                    <i class="bi bi-person-fill"></i> {{ instance.metadata.authenticated_user.display_name }}
-                                                    {% if instance.metadata.authenticated_user.roles %}
-                                                        ({{ instance.metadata.authenticated_user.roles|join(', ') }})
-                                                    {% endif %}
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-secondary ms-2">
-                                                    <i class="bi bi-person"></i> <span data-i18n="guest">{{ t['guest'] }}</span>
-                                                </span>
-                                            {% endif %}
-                                            {% if instance.xpath %}
-                                            <code class="ms-2">{{ instance.xpath }}</code>
-                                            {% endif %}
-                                        </button>
-                                    </h2>
-                                    <div id="info_inst_{{ info_counter.value }}_{{ loop.index }}"
-                                         class="accordion-collapse collapse"
-                                         data-bs-parent="#info_instances_{{ info_counter.value }}">
-                                        <div class="accordion-body">
-                                            {% set violation = instance %}
-                                            {% set alert_type = 'info' %}
-                                            {% include 'static_report/violation_details.html' %}
-                                        </div>
-                                    </div>
-                                </div>
+                                {{ render_instance_accordion(instance, 'info_inst_' ~ info_counter.value ~ '_' ~ loop.index, 'info_instances_' ~ info_counter.value, 'info', loop.index) }}
                                 {% endfor %}
                             </div>
                             {% else %}
                             <!-- Single instance - show details directly -->
-                            {% set violation = first_info %}
-                            {% set alert_type = 'info' %}
-                            {% include 'static_report/violation_details.html' %}
+                            {{ render_violation_details(first_info, 'info') }}
                             {% endif %}
                         </div>
                     </div>
@@ -723,7 +887,7 @@
     <!-- Discovery -->
     {% if discovery %}
     <h6 class="mb-3" style="color: #6f42c1;">
-        <i class="bi bi-search"></i> <span data-i18n="discovery">{{ t['discovery'] }}</span> ({{ discovery|length }})
+        <i class="bi bi-search"></i> Discovery ({{ discovery|length }})
     </h6>
     <div class="accordion mb-4" id="discoveryAccordion">
         {% set disco_counter = namespace(value=0) %}
@@ -750,7 +914,7 @@
                             <span class="badge me-2" style="background-color: #6f42c1;">{{ group_list|length }}</span>
                             {% endif %}
                             <span class="badge me-2 impact-badge" style="background-color: #6f42c1;">
-                                <span data-i18n="discovery_upper">{{ t['discovery_upper'] }}</span>
+                                DISCOVERY
                             </span>
                             <code class="me-2">{{ disco_code }}</code>
                             {{ first_disco.metadata.what_generic if first_disco.metadata and first_disco.metadata.what_generic else first_disco.description }}
@@ -762,46 +926,12 @@
                             <!-- Multiple instances - show nested accordion -->
                             <div class="accordion" id="disco_instances_{{ disco_counter.value }}">
                                 {% for instance in group_list %}
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#disco_inst_{{ disco_counter.value }}_{{ loop.index }}">
-                                            <strong data-i18n="instance">{{ t['instance'] }}</strong> {{ loop.index }}:
-                                            {% if instance.metadata and instance.metadata.authenticated_user %}
-                                                <span class="badge bg-secondary ms-2">
-                                                    <i class="bi bi-person-fill"></i> {{ instance.metadata.authenticated_user.display_name }}
-                                                    {% if instance.metadata.authenticated_user.roles %}
-                                                        ({{ instance.metadata.authenticated_user.roles|join(', ') }})
-                                                    {% endif %}
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-secondary ms-2">
-                                                    <i class="bi bi-person"></i> <span data-i18n="guest">{{ t['guest'] }}</span>
-                                                </span>
-                                            {% endif %}
-                                            {% if instance.xpath %}
-                                            <code class="ms-2">{{ instance.xpath }}</code>
-                                            {% endif %}
-                                        </button>
-                                    </h2>
-                                    <div id="disco_inst_{{ disco_counter.value }}_{{ loop.index }}"
-                                         class="accordion-collapse collapse"
-                                         data-bs-parent="#disco_instances_{{ disco_counter.value }}">
-                                        <div class="accordion-body">
-                                            {% set violation = instance %}
-                                            {% set alert_type = 'primary' %}
-                                            {% include 'static_report/violation_details.html' %}
-                                        </div>
-                                    </div>
-                                </div>
+                                {{ render_instance_accordion(instance, 'disco_inst_' ~ disco_counter.value ~ '_' ~ loop.index, 'disco_instances_' ~ disco_counter.value, 'primary', loop.index) }}
                                 {% endfor %}
                             </div>
                             {% else %}
                             <!-- Single instance - show details directly -->
-                            {% set violation = first_disco %}
-                            {% set alert_type = 'primary' %}
-                            {% include 'static_report/violation_details.html' %}
+                            {{ render_violation_details(first_disco, 'primary') }}
                             {% endif %}
                         </div>
                     </div>
@@ -814,200 +944,4 @@
         </div><!-- End card-body -->
     </div><!-- End card -->
 </div><!-- End container -->
-
-<script src="{{ asset_path }}js/bootstrap.bundle.min.js"></script>
-<script>
-// All translations embedded in the report
-const translations = {{ translations_json|safe }};
-
-// Current language
-let currentLang = '{{ language }}';
-
-function switchLanguage(lang) {
-    if (lang === currentLang) return;
-
-    currentLang = lang;
-
-    // Update HTML lang attribute
-    document.documentElement.lang = lang;
-    document.documentElement.setAttribute('data-current-lang', lang);
-
-    // Update all elements with data-i18n attribute
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-            element.textContent = translations[lang][key];
-        }
-    });
-
-    // Update placeholders
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-        const key = element.getAttribute('data-i18n-placeholder');
-        if (translations[lang] && translations[lang][key]) {
-            element.placeholder = translations[lang][key];
-        }
-    });
-
-    // Update current language display
-    document.getElementById('current-lang-display').textContent = lang.toUpperCase();
-
-    // Update document title
-    if (translations[lang] && translations[lang]['non_component_issues']) {
-        document.title = translations[lang]['non_component_issues'] + ': {{ page.title|default("Untitled Page") }}';
-    }
-}
-
-// Filter functionality
-const filterState = {
-    types: new Set(),
-    impacts: new Set(),
-    touchpoints: new Set(),
-    searchTerm: ''
-};
-
-function updateFilters() {
-    const items = document.querySelectorAll('.issue-item');
-    let visibleCount = 0;
-
-    items.forEach(item => {
-        const type = item.dataset.type;
-        const impact = item.dataset.impact;
-        const touchpoint = item.dataset.touchpoint;
-        const description = item.dataset.description;
-        const xpath = item.dataset.xpath;
-
-        let visible = true;
-
-        // Filter by type
-        if (filterState.types.size > 0 && !filterState.types.has(type)) {
-            visible = false;
-        }
-
-        // Filter by impact
-        if (filterState.impacts.size > 0 && !filterState.impacts.has(impact)) {
-            visible = false;
-        }
-
-        // Filter by touchpoint
-        if (filterState.touchpoints.size > 0) {
-            let touchpointMatch = false;
-            filterState.touchpoints.forEach(tp => {
-                if (touchpoint === tp) {
-                    touchpointMatch = true;
-                }
-            });
-            if (!touchpointMatch) {
-                visible = false;
-            }
-        }
-
-        // Filter by search term
-        if (filterState.searchTerm) {
-            const searchLower = filterState.searchTerm.toLowerCase();
-            if (!description.includes(searchLower) && !xpath.includes(searchLower)) {
-                visible = false;
-            }
-        }
-
-        if (visible) {
-            item.classList.remove('filtered-out');
-            visibleCount++;
-        } else {
-            item.classList.add('filtered-out');
-        }
-    });
-
-    // Update counts
-    document.getElementById('visibleCount').textContent = visibleCount;
-    document.getElementById('totalCount').textContent = items.length;
-
-    // Show/hide active filters section
-    const hasActiveFilters = filterState.types.size > 0 ||
-                            filterState.impacts.size > 0 ||
-                            filterState.touchpoints.size > 0 ||
-                            filterState.searchTerm;
-    document.getElementById('activeFilters').style.display = hasActiveFilters ? 'block' : 'none';
-}
-
-// Filter chip click handlers
-document.querySelectorAll('.filter-chip').forEach(chip => {
-    chip.addEventListener('click', function() {
-        const filterType = this.dataset.filterType;
-        const filterValue = this.dataset.filterValue;
-
-        this.classList.toggle('active');
-
-        if (this.classList.contains('active')) {
-            filterState[filterType + 's'].add(filterValue);
-        } else {
-            filterState[filterType + 's'].delete(filterValue);
-        }
-
-        updateFilters();
-    });
-});
-
-// Touchpoint filter
-const touchpointFilter = document.getElementById('touchpointFilter');
-if (touchpointFilter) {
-    touchpointFilter.addEventListener('change', function() {
-        filterState.touchpoints.clear();
-        Array.from(this.selectedOptions).forEach(option => {
-            if (option.value) {
-                filterState.touchpoints.add(option.value);
-            }
-        });
-        updateFilters();
-    });
-}
-
-// Quick search
-const quickSearch = document.getElementById('quickSearch');
-if (quickSearch) {
-    quickSearch.addEventListener('input', function() {
-        filterState.searchTerm = this.value.toLowerCase();
-        updateFilters();
-    });
-}
-
-// Clear all filters
-document.getElementById('clearFilters').addEventListener('click', function() {
-    filterState.types.clear();
-    filterState.impacts.clear();
-    filterState.touchpoints.clear();
-    filterState.searchTerm = '';
-
-    document.querySelectorAll('.filter-chip').forEach(chip => {
-        chip.classList.remove('active');
-    });
-
-    if (touchpointFilter) {
-        touchpointFilter.selectedIndex = -1;
-    }
-
-    if (quickSearch) {
-        quickSearch.value = '';
-    }
-
-    updateFilters();
-});
-
-// Initialize counts
-updateFilters();
-
-// Count impact levels
-const items = document.querySelectorAll('.issue-item');
-let highCount = 0, mediumCount = 0, lowCount = 0;
-items.forEach(item => {
-    const impact = item.dataset.impact;
-    if (['high', 'serious', 'critical'].includes(impact)) highCount++;
-    else if (['medium', 'moderate'].includes(impact)) mediumCount++;
-    else if (['low', 'minor'].includes(impact)) lowCount++;
-});
-
-document.getElementById('highImpactCount').textContent = highCount;
-document.getElementById('mediumImpactCount').textContent = mediumCount;
-document.getElementById('lowImpactCount').textContent = lowCount;
-</script>
-</body>
-</html>
+{% endblock %}

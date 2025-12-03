@@ -1902,13 +1902,8 @@ class StaticHTMLReportGenerator:
                                     'total_tests': total_tests
                                 }
 
-                            # Get full issue counts from test result
-                            errors_count = len(violations_list)
-                            warnings_count = len(warnings_list)
-                            info_count = len(info_list)
-                            discovery_count = len(discovery_list)
-
                             # Filter to only non-component issues for this page
+                            # Note: Issue counts will be set after filtering is complete
                             # Match the logic from _extract_common_components to identify which issues
                             # are NOT part of common components
                             for issue in violations_list:
@@ -1977,6 +1972,12 @@ class StaticHTMLReportGenerator:
 
             # Create safe URL for filename
             safe_url = hashlib.md5(page_url.encode()).hexdigest()[:12]
+
+            # Set issue counts based on filtered non-component issues
+            errors_count = len(page_violations)
+            warnings_count = len(page_warnings)
+            info_count = len(page_info)
+            discovery_count = len(page_discovery)
 
             # Calculate score for non-component issues on this page
             # Use the same scoring system as online test reporting (ResultProcessor.calculate_score)

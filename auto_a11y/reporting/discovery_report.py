@@ -17,6 +17,7 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 from pathlib import Path
 from collections import defaultdict
+from flask_babel import force_locale
 
 from auto_a11y.models import TestResult, Page, Website, Project
 from auto_a11y.core.database import Database
@@ -1295,10 +1296,11 @@ class DiscoveryReportGenerator:
             issue_id = issue.get('id', 'Unknown')
             description = issue.get('description', 'No description available')
 
-            # Get enriched info from catalog
-            catalog_info = IssueCatalog.get_issue(issue_id)
-            why_it_matters = catalog_info.get('why_it_matters', '')
-            how_to_fix = catalog_info.get('how_to_fix', '')
+            # Get enriched info from catalog with language context
+            with force_locale(self.language):
+                catalog_info = IssueCatalog.get_issue(issue_id)
+                why_it_matters = catalog_info.get('why_it_matters', '')
+                how_to_fix = catalog_info.get('how_to_fix', '')
 
             issues_html += f"""
             <div class="issue-item">
@@ -2090,8 +2092,9 @@ class DiscoveryReportGenerator:
                                'landmarks_DiscoSearchFound', 'DiscoSearchFound'):
                     continue
                 has_other_issues = True
-                catalog_info = IssueCatalog.get_issue(issue_id)
-                description = catalog_info.get('description', issue_id)
+                with force_locale(self.language):
+                    catalog_info = IssueCatalog.get_issue(issue_id)
+                    description = catalog_info.get('description', issue_id)
                 percentage = (page_count / total_pages * 100) if total_pages > 0 else 0
                 disco_html += f"""
                 <li>
@@ -2115,8 +2118,9 @@ class DiscoveryReportGenerator:
         if common_issues['info']:
             info_html = "<ul class='common-issue-list'>"
             for issue_id, page_count in sorted(common_issues['info'].items(), key=lambda x: x[1], reverse=True):
-                catalog_info = IssueCatalog.get_issue(issue_id)
-                description = catalog_info.get('description', issue_id)
+                with force_locale(self.language):
+                    catalog_info = IssueCatalog.get_issue(issue_id)
+                    description = catalog_info.get('description', issue_id)
                 percentage = (page_count / total_pages * 100) if total_pages > 0 else 0
                 info_html += f"""
                 <li>
@@ -2137,8 +2141,9 @@ class DiscoveryReportGenerator:
         if common_issues['accessible_names']:
             an_html = "<ul class='common-issue-list'>"
             for issue_id, page_count in sorted(common_issues['accessible_names'].items(), key=lambda x: x[1], reverse=True):
-                catalog_info = IssueCatalog.get_issue(issue_id)
-                description = catalog_info.get('description', issue_id)
+                with force_locale(self.language):
+                    catalog_info = IssueCatalog.get_issue(issue_id)
+                    description = catalog_info.get('description', issue_id)
                 percentage = (page_count / total_pages * 100) if total_pages > 0 else 0
                 an_html += f"""
                 <li>
@@ -2187,8 +2192,9 @@ class DiscoveryReportGenerator:
                                'landmarks_DiscoFooterFound', 'DiscoFooterFound',
                                'landmarks_DiscoSearchFound', 'DiscoSearchFound'):
                     continue
-                catalog_info = IssueCatalog.get_issue(issue_id)
-                description = catalog_info.get('description', issue_id)
+                with force_locale(self.language):
+                    catalog_info = IssueCatalog.get_issue(issue_id)
+                    description = catalog_info.get('description', issue_id)
                 disco_html += f"<li><strong>{issue_id}</strong> ({count}): {description}</li>"
             disco_html += "</ul>"
 
@@ -2216,8 +2222,9 @@ class DiscoveryReportGenerator:
             info_items = sorted(breakdown['info'].items(), key=lambda x: x[1], reverse=True)
             info_html = "<ul>"
             for issue_id, count in info_items[:10]:  # Top 10
-                catalog_info = IssueCatalog.get_issue(issue_id)
-                description = catalog_info.get('description', issue_id)
+                with force_locale(self.language):
+                    catalog_info = IssueCatalog.get_issue(issue_id)
+                    description = catalog_info.get('description', issue_id)
                 info_html += f"<li><strong>{issue_id}</strong> ({count}): {description}</li>"
             info_html += "</ul>"
 
@@ -2235,8 +2242,9 @@ class DiscoveryReportGenerator:
             an_items = sorted(breakdown['accessible_names'].items(), key=lambda x: x[1], reverse=True)
             an_html = "<ul>"
             for issue_id, count in an_items[:10]:  # Top 10
-                catalog_info = IssueCatalog.get_issue(issue_id)
-                description = catalog_info.get('description', issue_id)
+                with force_locale(self.language):
+                    catalog_info = IssueCatalog.get_issue(issue_id)
+                    description = catalog_info.get('description', issue_id)
                 an_html += f"<li><strong>{issue_id}</strong> ({count}): {description}</li>"
             an_html += "</ul>"
 

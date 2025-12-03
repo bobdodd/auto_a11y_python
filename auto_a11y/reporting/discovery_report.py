@@ -80,6 +80,64 @@ class DiscoveryReportGenerator:
                 'total_issues': 'Total Issues',
                 'issues': 'issues',
                 'pages': 'pages',
+                'site_wide_issues': 'Site-Wide Issues',
+                'site_wide_intro': 'The following issues appear on most pages throughout the site. Address these globally rather than page-by-page.',
+                'common_discovery_issues': 'Common Discovery Issues',
+                'common_informational_items': 'Common Informational Items',
+                'common_accessible_name_issues': 'Common Accessible Name Issues',
+                'common_issues_intro': 'These issues appear on more than 70% of pages and have been filtered from individual page listings:',
+                'appears_on': 'Appears on',
+                'fonts_used_across_site': 'Fonts Used Across Site',
+                'fonts_intro': 'The following fonts were detected across %(count)s unique font families. Review these for readability and accessibility best practices. Consider using fonts with clear character distinction and good readability at various sizes.',
+                'page': 'page',
+                'sizes': 'Sizes',
+                # Forms section
+                'forms_found_across_site': 'Forms Found Across Site',
+                'forms_intro': 'The following %(count)s unique form%(plural)s detected. Each form has been assigned a signature for tracking across pages. Forms require comprehensive manual testing including keyboard navigation, screen reader compatibility, error validation, and field labeling.',
+                'found_on': 'Found on',
+                'example_page': 'Example page',
+                'fields': 'Fields',
+                'submits_to': 'Submits to',
+                'xpath': 'XPath',
+                'search_form': 'Search Form',
+                'unknown_fields': 'unknown fields',
+                'were': 'were',
+                'was': 'was',
+                # Navigation section
+                'navigation_regions_found': 'Navigation Regions Found Across Site',
+                'navs_intro': 'The following %(count)s unique navigation region%(plural)s detected. Each navigation has been assigned a signature for tracking across pages. Verify each navigation is keyboard accessible, properly labeled (if multiple exist), and provides current page indication.',
+                'label': 'Label',
+                'links': 'Links',
+                'no_label': '(no label)',
+                # Aside section
+                'complementary_regions_found': 'Complementary Regions (Aside) Found Across Site',
+                'asides_intro': 'The following %(count)s unique complementary region%(plural)s detected. Each aside has been assigned a signature for tracking across pages. Verify each contains truly complementary content and is properly labeled when multiple exist.',
+                # Section section
+                'section_regions_found': 'Section Regions Found Across Site',
+                'sections_intro': 'The following %(count)s unique section region%(plural)s detected. Each section has been assigned a signature for tracking across pages. Verify each has a meaningful, unique accessible name and represents a significant content region.',
+                # Header section
+                'banner_regions_found': 'Banner Regions (Header) Found Across Site',
+                'headers_intro': 'The following %(count)s unique banner region%(plural)s detected. Each header has been assigned a signature for tracking across pages. Verify there is only one banner per page and it contains site-level content.',
+                # Footer section
+                'contentinfo_regions_found': 'Contentinfo Regions (Footer) Found Across Site',
+                'footers_intro': 'The following %(count)s unique contentinfo region%(plural)s detected. Each footer has been assigned a signature for tracking across pages. Verify there is only one contentinfo per page and it contains site-level information.',
+                # Search section
+                'search_regions_found': 'Search Regions Found Across Site',
+                'searches_intro': 'The following %(count)s unique search region%(plural)s detected. Each search region has been assigned a signature for tracking across pages. Verify each contains actual search functionality and is properly labeled.',
+                # Documents section
+                'electronic_documents_found': 'Electronic Documents Found (%(count)s total)',
+                'documents_intro': 'The following electronic documents were discovered during website scraping. Each document should be reviewed for accessibility compliance. Electronic documents like PDFs require specific accessibility features such as proper tagging, reading order, alternative text for images, and semantic structure.',
+                'internal_documents': 'Internal Documents',
+                'external_documents': 'External Documents',
+                'language_unknown': 'Language Unknown',
+                'document': 'document',
+                'documents': 'documents',
+                # Issue breakdown section
+                'discovery_issues_total': 'Discovery Issues (%(count)s total)',
+                'informational_items_total': 'Informational Items (%(count)s total)',
+                'accessible_name_issues_total': 'Accessible Name Issues (%(count)s total)',
+                'no_issues_display': 'No issues to display.',
+                'total': 'total',
             },
             'fr': {
                 'discovery_report': 'Rapport de découverte',
@@ -115,6 +173,64 @@ class DiscoveryReportGenerator:
                 'total_issues': 'Total des problèmes',
                 'issues': 'problèmes',
                 'pages': 'pages',
+                'site_wide_issues': 'Problèmes à l\'échelle du site',
+                'site_wide_intro': 'Les problèmes suivants apparaissent sur la plupart des pages du site. Adressez-les globalement plutôt que page par page.',
+                'common_discovery_issues': 'Problèmes de découverte courants',
+                'common_informational_items': 'Éléments informatifs courants',
+                'common_accessible_name_issues': 'Problèmes de noms accessibles courants',
+                'common_issues_intro': 'Ces problèmes apparaissent sur plus de 70% des pages et ont été filtrés des listes de pages individuelles :',
+                'appears_on': 'Apparaît sur',
+                'fonts_used_across_site': 'Polices utilisées sur le site',
+                'fonts_intro': 'Les polices suivantes ont été détectées parmi %(count)s familles de polices uniques. Examinez-les pour la lisibilité et les bonnes pratiques d\'accessibilité. Envisagez d\'utiliser des polices avec une distinction claire des caractères et une bonne lisibilité à différentes tailles.',
+                'page': 'page',
+                'sizes': 'Tailles',
+                # Forms section
+                'forms_found_across_site': 'Formulaires trouvés sur le site',
+                'forms_intro': 'Les %(count)s formulaire%(plural)s unique%(plural)s suivant%(plural)s ont été détecté%(plural)s. Chaque formulaire a reçu une signature pour le suivi sur les pages. Les formulaires nécessitent des tests manuels complets, y compris la navigation au clavier, la compatibilité avec les lecteurs d\'écran, la validation des erreurs et l\'étiquetage des champs.',
+                'found_on': 'Trouvé sur',
+                'example_page': 'Exemple de page',
+                'fields': 'Champs',
+                'submits_to': 'Soumet à',
+                'xpath': 'XPath',
+                'search_form': 'Formulaire de recherche',
+                'unknown_fields': 'champs inconnus',
+                'were': 'ont été',
+                'was': 'a été',
+                # Navigation section
+                'navigation_regions_found': 'Régions de navigation trouvées sur le site',
+                'navs_intro': 'Les %(count)s région%(plural)s de navigation unique%(plural)s suivante%(plural)s ont été détectée%(plural)s. Chaque navigation a reçu une signature pour le suivi sur les pages. Vérifiez que chaque navigation est accessible au clavier, correctement étiquetée (si plusieurs existent) et fournit une indication de la page actuelle.',
+                'label': 'Étiquette',
+                'links': 'Liens',
+                'no_label': '(pas d\'étiquette)',
+                # Aside section
+                'complementary_regions_found': 'Régions complémentaires (Aside) trouvées sur le site',
+                'asides_intro': 'Les %(count)s région%(plural)s complémentaire%(plural)s unique%(plural)s suivante%(plural)s ont été détectée%(plural)s. Chaque aside a reçu une signature pour le suivi sur les pages. Vérifiez que chacune contient un contenu véritablement complémentaire et est correctement étiquetée lorsque plusieurs existent.',
+                # Section section
+                'section_regions_found': 'Régions de section trouvées sur le site',
+                'sections_intro': 'Les %(count)s région%(plural)s de section unique%(plural)s suivante%(plural)s ont été détectée%(plural)s. Chaque section a reçu une signature pour le suivi sur les pages. Vérifiez que chacune a un nom accessible significatif et unique et représente une région de contenu importante.',
+                # Header section
+                'banner_regions_found': 'Régions de bannière (Header) trouvées sur le site',
+                'headers_intro': 'Les %(count)s région%(plural)s de bannière unique%(plural)s suivante%(plural)s ont été détectée%(plural)s. Chaque en-tête a reçu une signature pour le suivi sur les pages. Vérifiez qu\'il n\'y a qu\'une seule bannière par page et qu\'elle contient du contenu au niveau du site.',
+                # Footer section
+                'contentinfo_regions_found': 'Régions d\'information de contenu (Footer) trouvées sur le site',
+                'footers_intro': 'Les %(count)s région%(plural)s d\'information de contenu unique%(plural)s suivante%(plural)s ont été détectée%(plural)s. Chaque pied de page a reçu une signature pour le suivi sur les pages. Vérifiez qu\'il n\'y a qu\'une seule région d\'information de contenu par page et qu\'elle contient des informations au niveau du site.',
+                # Search section
+                'search_regions_found': 'Régions de recherche trouvées sur le site',
+                'searches_intro': 'Les %(count)s région%(plural)s de recherche unique%(plural)s suivante%(plural)s ont été détectée%(plural)s. Chaque région de recherche a reçu une signature pour le suivi sur les pages. Vérifiez que chacune contient une fonctionnalité de recherche réelle et est correctement étiquetée.',
+                # Documents section
+                'electronic_documents_found': 'Documents électroniques trouvés (%(count)s au total)',
+                'documents_intro': 'Les documents électroniques suivants ont été découverts lors de l\'exploration du site Web. Chaque document doit être examiné pour la conformité à l\'accessibilité. Les documents électroniques tels que les PDF nécessitent des fonctionnalités d\'accessibilité spécifiques telles qu\'un balisage approprié, un ordre de lecture, un texte alternatif pour les images et une structure sémantique.',
+                'internal_documents': 'Documents internes',
+                'external_documents': 'Documents externes',
+                'language_unknown': 'Langue inconnue',
+                'document': 'document',
+                'documents': 'documents',
+                # Issue breakdown section
+                'discovery_issues_total': 'Problèmes de découverte (%(count)s au total)',
+                'informational_items_total': 'Éléments informatifs (%(count)s au total)',
+                'accessible_name_issues_total': 'Problèmes de noms accessibles (%(count)s au total)',
+                'no_issues_display': 'Aucun problème à afficher.',
+                'total': 'au total',
             }
         }
         return translations.get(self.language, translations['en'])
@@ -906,7 +1022,7 @@ class DiscoveryReportGenerator:
         logger.info(f"Completed generating HTML for all {total_pages} pages")
 
         # Generate issue breakdown
-        issue_breakdown_html = self._generate_issue_breakdown_html(data['issue_breakdown'])
+        issue_breakdown_html = self._generate_issue_breakdown_html(data['issue_breakdown'], t)
 
         # Generate scope info
         if data['website']:
@@ -973,25 +1089,25 @@ class DiscoveryReportGenerator:
             </div>
         </section>
 
-        {self._generate_common_issues_html(data['common_issues'], data['statistics']['total_pages_tested'])}
+        {self._generate_common_issues_html(data['common_issues'], data['statistics']['total_pages_tested'], t)}
 
-        {self._generate_fonts_html(data.get('fonts', {}))}
+        {self._generate_fonts_html(data.get('fonts', {}), t)}
 
-        {self._generate_forms_html(data.get('forms', {}), data['statistics']['total_pages_tested'])}
+        {self._generate_forms_html(data.get('forms', {}), data['statistics']['total_pages_tested'], t)}
 
-        {self._generate_navs_html(data.get('navs', {}), data['statistics']['total_pages_tested'])}
+        {self._generate_navs_html(data.get('navs', {}), data['statistics']['total_pages_tested'], t)}
 
-        {self._generate_asides_html(data.get('asides', {}), data['statistics']['total_pages_tested'])}
+        {self._generate_asides_html(data.get('asides', {}), data['statistics']['total_pages_tested'], t)}
 
-        {self._generate_sections_html(data.get('sections', {}), data['statistics']['total_pages_tested'])}
+        {self._generate_sections_html(data.get('sections', {}), data['statistics']['total_pages_tested'], t)}
 
-        {self._generate_headers_html(data.get('headers', {}), data['statistics']['total_pages_tested'])}
+        {self._generate_headers_html(data.get('headers', {}), data['statistics']['total_pages_tested'], t)}
 
-        {self._generate_footers_html(data.get('footers', {}), data['statistics']['total_pages_tested'])}
+        {self._generate_footers_html(data.get('footers', {}), data['statistics']['total_pages_tested'], t)}
 
-        {self._generate_searches_html(data.get('searches', {}), data['statistics']['total_pages_tested'])}
+        {self._generate_searches_html(data.get('searches', {}), data['statistics']['total_pages_tested'], t)}
 
-        {self._generate_documents_html(data.get('documents', {}))}
+        {self._generate_documents_html(data.get('documents', {}), t)}
 
         <section class="issue-breakdown">
             <h2 data-i18n="issue_breakdown_by_type">{t['issue_breakdown_by_type']}</h2>
@@ -1183,12 +1299,16 @@ class DiscoveryReportGenerator:
         </div>
         """
 
-    def _generate_fonts_html(self, fonts_data: Dict[str, Dict]) -> str:
+    def _generate_fonts_html(self, fonts_data: Dict[str, Dict], t: Dict[str, str] = None) -> str:
         """Generate HTML section for fonts found across the site"""
         logger.warning(f"_generate_fonts_html called with {len(fonts_data) if fonts_data else 0} fonts")
         if not fonts_data:
             logger.warning("No fonts data - returning empty string")
             return ""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
 
         # Sort fonts by name
         sorted_fonts = sorted(fonts_data.items())
@@ -1197,33 +1317,39 @@ class DiscoveryReportGenerator:
         for font_name, font_info in sorted_fonts:
             sizes = sorted(font_info['sizes'], key=lambda x: float(x.replace('px', '').replace('rem', '').replace('em', '')))
             pages_count = len(font_info['pages'])
+            page_text = t['page'] if pages_count == 1 else t['pages']
 
             fonts_html += f"""
             <div class="font-item">
                 <div class="font-header">
                     <h3 class="font-name">{html.escape(font_name)}</h3>
-                    <span class="font-pages-count">{pages_count} page{'' if pages_count == 1 else 's'}</span>
+                    <span class="font-pages-count">{pages_count} <span data-i18n="{page_text}">{page_text}</span></span>
                 </div>
                 <div class="font-sizes">
-                    <strong>Sizes:</strong> {', '.join(html.escape(s) for s in sizes)}
+                    <strong data-i18n="sizes">{t['sizes']}:</strong> {', '.join(html.escape(s) for s in sizes)}
                 </div>
             </div>
             """
 
+        fonts_intro = t['fonts_intro'].replace('%(count)s', str(len(fonts_data)))
+
         return f"""
         <section class="fonts-section">
-            <h2>Fonts Used Across Site</h2>
-            <p class="section-intro">The following fonts were detected across {len(fonts_data)} unique font famil{'y' if len(fonts_data) == 1 else 'ies'}.
-            Review these for readability and accessibility best practices. Consider using fonts with clear character distinction
-            and good readability at various sizes.</p>
+            <h2 data-i18n="fonts_used_across_site">{t['fonts_used_across_site']}</h2>
+            <p class="section-intro" data-i18n="fonts_intro">{fonts_intro}</p>
             <div class="fonts-grid">
                 {fonts_html}
             </div>
         </section>
         """
 
-    def _generate_forms_html(self, forms_data: Dict[str, Dict], total_pages: int) -> str:
+    def _generate_forms_html(self, forms_data: Dict[str, Dict], total_pages: int, t: Dict[str, str] = None) -> str:
         """Generate HTML section for forms found across the site"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
+
         logger.warning(f"_generate_forms_html called with {len(forms_data) if forms_data else 0} forms")
         if not forms_data:
             logger.warning("No forms data - returning empty string")
@@ -1241,11 +1367,11 @@ class DiscoveryReportGenerator:
             field_types = form_info.get('fieldTypes', {})
             field_summary = ', '.join([f"{count} {ftype}" for ftype, count in field_types.items()])
             if not field_summary:
-                field_summary = "unknown fields"
+                field_summary = t['unknown_fields']
 
             search_indicator = ""
             if form_info.get('isSearchForm'):
-                search_indicator = '<span class="search-badge">🔍 Search Form</span>'
+                search_indicator = f'<span class="search-badge" data-i18n="search_form">🔍 {t["search_form"]}</span>'
 
             action_display = form_info.get('formAction', 'unknown')
             if len(action_display) > 50:
@@ -1259,7 +1385,7 @@ class DiscoveryReportGenerator:
                                           for url in sorted(form_info['pages'])])
                 pages_list_html = f"""
                     <div class="form-detail-row">
-                        <strong>Found on:</strong><br>
+                        <strong data-i18n="found_on">{t['found_on']}:</strong><br>
                         {pages_list}
                     </div>
                 """
@@ -1278,47 +1404,56 @@ class DiscoveryReportGenerator:
 
                 pages_list_html = f"""
                     <div class="form-detail-row">
-                        <strong>Example page:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
+                        <strong data-i18n="example_page">{t['example_page']}:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
                     </div>
                 """
 
+            page_label = t['page'] if pages_count == 1 else t['pages']
             forms_html += f"""
             <div class="form-item">
                 <div class="form-header">
                     <h3 class="form-signature">Form {html.escape(form_signature)}</h3>
                     {search_indicator}
-                    <span class="form-pages-count">{pages_count} page{'' if pages_count == 1 else 's'} ({percentage:.0f}%)</span>
+                    <span class="form-pages-count">{pages_count} <span data-i18n="page">{page_label}</span> ({percentage:.0f}%)</span>
                 </div>
                 <div class="form-details">
                     <div class="form-detail-row">
-                        <strong>Fields:</strong> {form_info.get('fieldCount', 0)} ({html.escape(field_summary)})
+                        <strong data-i18n="fields">{t['fields']}:</strong> {form_info.get('fieldCount', 0)} ({html.escape(field_summary)})
                     </div>
                     <div class="form-detail-row">
-                        <strong>Submits to:</strong> {html.escape(action_display)}
+                        <strong data-i18n="submits_to">{t['submits_to']}:</strong> {html.escape(action_display)}
                         <span class="form-method">({html.escape(form_info.get('formMethod', 'unknown').upper())})</span>
                     </div>
                     <div class="form-detail-row">
-                        <strong>XPath:</strong> <code>{html.escape(form_info.get('xpath', 'unknown'))}</code>
+                        <strong data-i18n="xpath">{t['xpath']}:</strong> <code>{html.escape(form_info.get('xpath', 'unknown'))}</code>
                     </div>
                     {pages_list_html}
                 </div>
             </div>
             """
 
+        plural_suffix = 's' if len(forms_data) != 1 else ''
+        verb = t['were'] if len(forms_data) != 1 else t['was']
+        forms_intro_text = t['forms_intro'] % {'count': len(forms_data), 'plural': plural_suffix}
+        forms_intro_text = forms_intro_text.replace('%(plural)s', plural_suffix).replace(' detected', f' {verb} detected')
+
         return f"""
         <section class="forms-section">
-            <h2>Forms Found Across Site</h2>
-            <p class="section-intro">The following {len(forms_data)} unique form{'s were' if len(forms_data) != 1 else ' was'} detected.
-            Each form has been assigned a signature for tracking across pages. Forms require comprehensive manual testing including
-            keyboard navigation, screen reader compatibility, error validation, and field labeling.</p>
+            <h2 data-i18n="forms_found_across_site">{t['forms_found_across_site']}</h2>
+            <p class="section-intro" data-i18n="forms_intro">{forms_intro_text}</p>
             <div class="forms-list">
                 {forms_html}
             </div>
         </section>
         """
 
-    def _generate_navs_html(self, navs_data: Dict[str, Dict], total_pages: int) -> str:
+    def _generate_navs_html(self, navs_data: Dict[str, Dict], total_pages: int, t: Dict[str, str] = None) -> str:
         """Generate HTML section for navigations found across the site"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
+
         logger.warning(f"_generate_navs_html called with {len(navs_data) if navs_data else 0} navs")
         if not navs_data:
             logger.warning("No navs data - returning empty string")
@@ -1332,9 +1467,9 @@ class DiscoveryReportGenerator:
             pages_count = len(nav_info['pages'])
             percentage = (pages_count / total_pages * 100) if total_pages > 0 else 0
 
-            label_display = nav_info.get('navLabel', '(no label)')
+            label_display = nav_info.get('navLabel', t['no_label'])
             if not label_display:
-                label_display = '(no label)'
+                label_display = t['no_label']
 
             # Show page URLs: all pages if <= 3, or just first example if many
             pages_list_html = ""
@@ -1343,7 +1478,7 @@ class DiscoveryReportGenerator:
                                           for url in sorted(nav_info['pages'])])
                 pages_list_html = f"""
                     <div class="nav-detail-row">
-                        <strong>Found on:</strong><br>
+                        <strong data-i18n="found_on">{t['found_on']}:</strong><br>
                         {pages_list}
                     </div>
                 """
@@ -1358,45 +1493,54 @@ class DiscoveryReportGenerator:
 
                 pages_list_html = f"""
                     <div class="nav-detail-row">
-                        <strong>Example page:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
+                        <strong data-i18n="example_page">{t['example_page']}:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
                     </div>
                 """
 
+            page_label = t['page'] if pages_count == 1 else t['pages']
             navs_html += f"""
             <div class="nav-item">
                 <div class="nav-header">
                     <h3 class="nav-signature">Nav {html.escape(nav_signature)}</h3>
-                    <span class="nav-pages-count">{pages_count} page{'' if pages_count == 1 else 's'} ({percentage:.0f}%)</span>
+                    <span class="nav-pages-count">{pages_count} <span data-i18n="page">{page_label}</span> ({percentage:.0f}%)</span>
                 </div>
                 <div class="nav-details">
                     <div class="nav-detail-row">
-                        <strong>Label:</strong> {html.escape(label_display)}
+                        <strong data-i18n="label">{t['label']}:</strong> {html.escape(label_display)}
                     </div>
                     <div class="nav-detail-row">
-                        <strong>Links:</strong> {nav_info.get('linkCount', 0)}
+                        <strong data-i18n="links">{t['links']}:</strong> {nav_info.get('linkCount', 0)}
                     </div>
                     <div class="nav-detail-row">
-                        <strong>XPath:</strong> <code>{html.escape(nav_info.get('xpath', 'unknown'))}</code>
+                        <strong data-i18n="xpath">{t['xpath']}:</strong> <code>{html.escape(nav_info.get('xpath', 'unknown'))}</code>
                     </div>
                     {pages_list_html}
                 </div>
             </div>
             """
 
+        plural_suffix = 's' if len(navs_data) != 1 else ''
+        verb = t['were'] if len(navs_data) != 1 else t['was']
+        navs_intro_text = t['navs_intro'] % {'count': len(navs_data), 'plural': plural_suffix}
+        navs_intro_text = navs_intro_text.replace('%(plural)s', plural_suffix).replace(' detected', f' {verb} detected')
+
         return f"""
         <section class="navs-section">
-            <h2>Navigation Regions Found Across Site</h2>
-            <p class="section-intro">The following {len(navs_data)} unique navigation region{'s were' if len(navs_data) != 1 else ' was'} detected.
-            Each navigation has been assigned a signature for tracking across pages. Verify each navigation is keyboard accessible,
-            properly labeled (if multiple exist), and provides current page indication.</p>
+            <h2 data-i18n="navigation_regions_found">{t['navigation_regions_found']}</h2>
+            <p class="section-intro" data-i18n="navs_intro">{navs_intro_text}</p>
             <div class="navs-list">
                 {navs_html}
             </div>
         </section>
         """
 
-    def _generate_asides_html(self, asides_data: Dict[str, Dict], total_pages: int) -> str:
+    def _generate_asides_html(self, asides_data: Dict[str, Dict], total_pages: int, t: Dict[str, str] = None) -> str:
         """Generate HTML section for aside/complementary regions found across the site"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
+
         logger.warning(f"_generate_asides_html called with {len(asides_data) if asides_data else 0} asides")
         if not asides_data:
             logger.warning("No asides data - returning empty string")
@@ -1409,9 +1553,9 @@ class DiscoveryReportGenerator:
             pages_count = len(aside_info['pages'])
             percentage = (pages_count / total_pages * 100) if total_pages > 0 else 0
 
-            label_display = aside_info.get('asideLabel', '(no label)')
+            label_display = aside_info.get('asideLabel', t['no_label'])
             if not label_display:
-                label_display = '(no label)'
+                label_display = t['no_label']
 
             pages_list_html = ""
             if pages_count <= 3:
@@ -1419,7 +1563,7 @@ class DiscoveryReportGenerator:
                                           for url in sorted(aside_info['pages'])])
                 pages_list_html = f"""
                     <div class="aside-detail-row">
-                        <strong>Found on:</strong><br>
+                        <strong data-i18n="found_on">{t['found_on']}:</strong><br>
                         {pages_list}
                     </div>
                 """
@@ -1433,41 +1577,51 @@ class DiscoveryReportGenerator:
 
                 pages_list_html = f"""
                     <div class="aside-detail-row">
-                        <strong>Example page:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
+                        <strong data-i18n="example_page">{t['example_page']}:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
                     </div>
                 """
 
+            page_label = t['page'] if pages_count == 1 else t['pages']
             asides_html += f"""
             <div class="aside-item">
                 <div class="aside-header">
                     <h3 class="aside-signature">Aside {html.escape(aside_signature)}</h3>
-                    <span class="aside-pages-count">{pages_count} page{'' if pages_count == 1 else 's'} ({percentage:.0f}%)</span>
+                    <span class="aside-pages-count">{pages_count} <span data-i18n="page">{page_label}</span> ({percentage:.0f}%)</span>
                 </div>
                 <div class="aside-details">
                     <div class="aside-detail-row">
-                        <strong>Label:</strong> {html.escape(label_display)}
+                        <strong data-i18n="label">{t['label']}:</strong> {html.escape(label_display)}
                     </div>
                     <div class="aside-detail-row">
-                        <strong>XPath:</strong> <code>{html.escape(aside_info.get('xpath', 'unknown'))}</code>
+                        <strong data-i18n="xpath">{t['xpath']}:</strong> <code>{html.escape(aside_info.get('xpath', 'unknown'))}</code>
                     </div>
                     {pages_list_html}
                 </div>
             </div>
             """
 
+        plural_suffix = 's' if len(asides_data) != 1 else ''
+        verb = t['were'] if len(asides_data) != 1 else t['was']
+        asides_intro_text = t['asides_intro'] % {'count': len(asides_data), 'plural': plural_suffix}
+        asides_intro_text = asides_intro_text.replace('%(plural)s', plural_suffix).replace(' detected', f' {verb} detected')
+
         return f"""
         <section class="asides-section">
-            <h2>Complementary Regions (Aside) Found Across Site</h2>
-            <p class="section-intro">The following {len(asides_data)} unique complementary region{'s were' if len(asides_data) != 1 else ' was'} detected.
-            Each aside has been assigned a signature for tracking across pages. Verify each contains truly complementary content and is properly labeled when multiple exist.</p>
+            <h2 data-i18n="complementary_regions_found">{t['complementary_regions_found']}</h2>
+            <p class="section-intro" data-i18n="asides_intro">{asides_intro_text}</p>
             <div class="asides-list">
                 {asides_html}
             </div>
         </section>
         """
 
-    def _generate_sections_html(self, sections_data: Dict[str, Dict], total_pages: int) -> str:
+    def _generate_sections_html(self, sections_data: Dict[str, Dict], total_pages: int, t: Dict[str, str] = None) -> str:
         """Generate HTML section for section/region landmarks found across the site"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
+
         logger.warning(f"_generate_sections_html called with {len(sections_data) if sections_data else 0} sections")
         if not sections_data:
             logger.warning("No sections data - returning empty string")
@@ -1480,9 +1634,9 @@ class DiscoveryReportGenerator:
             pages_count = len(section_info['pages'])
             percentage = (pages_count / total_pages * 100) if total_pages > 0 else 0
 
-            label_display = section_info.get('sectionLabel', '(no label)')
+            label_display = section_info.get('sectionLabel', t['no_label'])
             if not label_display:
-                label_display = '(no label)'
+                label_display = t['no_label']
 
             pages_list_html = ""
             if pages_count <= 3:
@@ -1490,7 +1644,7 @@ class DiscoveryReportGenerator:
                                           for url in sorted(section_info['pages'])])
                 pages_list_html = f"""
                     <div class="section-detail-row">
-                        <strong>Found on:</strong><br>
+                        <strong data-i18n="found_on">{t['found_on']}:</strong><br>
                         {pages_list}
                     </div>
                 """
@@ -1504,41 +1658,51 @@ class DiscoveryReportGenerator:
 
                 pages_list_html = f"""
                     <div class="section-detail-row">
-                        <strong>Example page:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
+                        <strong data-i18n="example_page">{t['example_page']}:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
                     </div>
                 """
 
+            page_label = t['page'] if pages_count == 1 else t['pages']
             sections_html += f"""
             <div class="section-item">
                 <div class="section-header">
                     <h3 class="section-signature">Section {html.escape(section_signature)}</h3>
-                    <span class="section-pages-count">{pages_count} page{'' if pages_count == 1 else 's'} ({percentage:.0f}%)</span>
+                    <span class="section-pages-count">{pages_count} <span data-i18n="page">{page_label}</span> ({percentage:.0f}%)</span>
                 </div>
                 <div class="section-details">
                     <div class="section-detail-row">
-                        <strong>Label:</strong> {html.escape(label_display)}
+                        <strong data-i18n="label">{t['label']}:</strong> {html.escape(label_display)}
                     </div>
                     <div class="section-detail-row">
-                        <strong>XPath:</strong> <code>{html.escape(section_info.get('xpath', 'unknown'))}</code>
+                        <strong data-i18n="xpath">{t['xpath']}:</strong> <code>{html.escape(section_info.get('xpath', 'unknown'))}</code>
                     </div>
                     {pages_list_html}
                 </div>
             </div>
             """
 
+        plural_suffix = 's' if len(sections_data) != 1 else ''
+        verb = t['were'] if len(sections_data) != 1 else t['was']
+        sections_intro_text = t['sections_intro'] % {'count': len(sections_data), 'plural': plural_suffix}
+        sections_intro_text = sections_intro_text.replace('%(plural)s', plural_suffix).replace(' detected', f' {verb} detected')
+
         return f"""
         <section class="sections-section">
-            <h2>Section Regions Found Across Site</h2>
-            <p class="section-intro">The following {len(sections_data)} unique section region{'s were' if len(sections_data) != 1 else ' was'} detected.
-            Each section has been assigned a signature for tracking across pages. Verify each has a meaningful, unique accessible name and represents a significant content region.</p>
+            <h2 data-i18n="section_regions_found">{t['section_regions_found']}</h2>
+            <p class="section-intro" data-i18n="sections_intro">{sections_intro_text}</p>
             <div class="sections-list">
                 {sections_html}
             </div>
         </section>
         """
 
-    def _generate_headers_html(self, headers_data: Dict[str, Dict], total_pages: int) -> str:
+    def _generate_headers_html(self, headers_data: Dict[str, Dict], total_pages: int, t: Dict[str, str] = None) -> str:
         """Generate HTML section for header/banner landmarks found across the site"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
+
         logger.warning(f"_generate_headers_html called with {len(headers_data) if headers_data else 0} headers")
         if not headers_data:
             logger.warning("No headers data - returning empty string")
@@ -1551,9 +1715,9 @@ class DiscoveryReportGenerator:
             pages_count = len(header_info['pages'])
             percentage = (pages_count / total_pages * 100) if total_pages > 0 else 0
 
-            label_display = header_info.get('headerLabel', '(no label)')
+            label_display = header_info.get('headerLabel', t['no_label'])
             if not label_display:
-                label_display = '(no label)'
+                label_display = t['no_label']
 
             pages_list_html = ""
             if pages_count <= 3:
@@ -1561,7 +1725,7 @@ class DiscoveryReportGenerator:
                                           for url in sorted(header_info['pages'])])
                 pages_list_html = f"""
                     <div class="header-detail-row">
-                        <strong>Found on:</strong><br>
+                        <strong data-i18n="found_on">{t['found_on']}:</strong><br>
                         {pages_list}
                     </div>
                 """
@@ -1575,41 +1739,51 @@ class DiscoveryReportGenerator:
 
                 pages_list_html = f"""
                     <div class="header-detail-row">
-                        <strong>Example page:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
+                        <strong data-i18n="example_page">{t['example_page']}:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
                     </div>
                 """
 
+            page_label = t['page'] if pages_count == 1 else t['pages']
             headers_html += f"""
             <div class="header-item">
                 <div class="header-header">
                     <h3 class="header-signature">Header {html.escape(header_signature)}</h3>
-                    <span class="header-pages-count">{pages_count} page{'' if pages_count == 1 else 's'} ({percentage:.0f}%)</span>
+                    <span class="header-pages-count">{pages_count} <span data-i18n="page">{page_label}</span> ({percentage:.0f}%)</span>
                 </div>
                 <div class="header-details">
                     <div class="header-detail-row">
-                        <strong>Label:</strong> {html.escape(label_display)}
+                        <strong data-i18n="label">{t['label']}:</strong> {html.escape(label_display)}
                     </div>
                     <div class="header-detail-row">
-                        <strong>XPath:</strong> <code>{html.escape(header_info.get('xpath', 'unknown'))}</code>
+                        <strong data-i18n="xpath">{t['xpath']}:</strong> <code>{html.escape(header_info.get('xpath', 'unknown'))}</code>
                     </div>
                     {pages_list_html}
                 </div>
             </div>
             """
 
+        plural_suffix = 's' if len(headers_data) != 1 else ''
+        verb = t['were'] if len(headers_data) != 1 else t['was']
+        headers_intro_text = t['headers_intro'] % {'count': len(headers_data), 'plural': plural_suffix}
+        headers_intro_text = headers_intro_text.replace('%(plural)s', plural_suffix).replace(' detected', f' {verb} detected')
+
         return f"""
         <section class="headers-section">
-            <h2>Banner Regions (Header) Found Across Site</h2>
-            <p class="section-intro">The following {len(headers_data)} unique banner region{'s were' if len(headers_data) != 1 else ' was'} detected.
-            Each header has been assigned a signature for tracking across pages. Verify there is only one banner per page and it contains site-level content.</p>
+            <h2 data-i18n="banner_regions_found">{t['banner_regions_found']}</h2>
+            <p class="section-intro" data-i18n="headers_intro">{headers_intro_text}</p>
             <div class="headers-list">
                 {headers_html}
             </div>
         </section>
         """
 
-    def _generate_footers_html(self, footers_data: Dict[str, Dict], total_pages: int) -> str:
+    def _generate_footers_html(self, footers_data: Dict[str, Dict], total_pages: int, t: Dict[str, str] = None) -> str:
         """Generate HTML section for footer/contentinfo landmarks found across the site"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
+
         logger.warning(f"_generate_footers_html called with {len(footers_data) if footers_data else 0} footers")
         if not footers_data:
             logger.warning("No footers data - returning empty string")
@@ -1622,9 +1796,9 @@ class DiscoveryReportGenerator:
             pages_count = len(footer_info['pages'])
             percentage = (pages_count / total_pages * 100) if total_pages > 0 else 0
 
-            label_display = footer_info.get('footerLabel', '(no label)')
+            label_display = footer_info.get('footerLabel', t['no_label'])
             if not label_display:
-                label_display = '(no label)'
+                label_display = t['no_label']
 
             pages_list_html = ""
             if pages_count <= 3:
@@ -1632,7 +1806,7 @@ class DiscoveryReportGenerator:
                                           for url in sorted(footer_info['pages'])])
                 pages_list_html = f"""
                     <div class="footer-detail-row">
-                        <strong>Found on:</strong><br>
+                        <strong data-i18n="found_on">{t['found_on']}:</strong><br>
                         {pages_list}
                     </div>
                 """
@@ -1646,41 +1820,51 @@ class DiscoveryReportGenerator:
 
                 pages_list_html = f"""
                     <div class="footer-detail-row">
-                        <strong>Example page:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
+                        <strong data-i18n="example_page">{t['example_page']}:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
                     </div>
                 """
 
+            page_label = t['page'] if pages_count == 1 else t['pages']
             footers_html += f"""
             <div class="footer-item">
                 <div class="footer-header">
                     <h3 class="footer-signature">Footer {html.escape(footer_signature)}</h3>
-                    <span class="footer-pages-count">{pages_count} page{'' if pages_count == 1 else 's'} ({percentage:.0f}%)</span>
+                    <span class="footer-pages-count">{pages_count} <span data-i18n="page">{page_label}</span> ({percentage:.0f}%)</span>
                 </div>
                 <div class="footer-details">
                     <div class="footer-detail-row">
-                        <strong>Label:</strong> {html.escape(label_display)}
+                        <strong data-i18n="label">{t['label']}:</strong> {html.escape(label_display)}
                     </div>
                     <div class="footer-detail-row">
-                        <strong>XPath:</strong> <code>{html.escape(footer_info.get('xpath', 'unknown'))}</code>
+                        <strong data-i18n="xpath">{t['xpath']}:</strong> <code>{html.escape(footer_info.get('xpath', 'unknown'))}</code>
                     </div>
                     {pages_list_html}
                 </div>
             </div>
             """
 
+        plural_suffix = 's' if len(footers_data) != 1 else ''
+        verb = t['were'] if len(footers_data) != 1 else t['was']
+        footers_intro_text = t['footers_intro'] % {'count': len(footers_data), 'plural': plural_suffix}
+        footers_intro_text = footers_intro_text.replace('%(plural)s', plural_suffix).replace(' detected', f' {verb} detected')
+
         return f"""
         <section class="footers-section">
-            <h2>Contentinfo Regions (Footer) Found Across Site</h2>
-            <p class="section-intro">The following {len(footers_data)} unique contentinfo region{'s were' if len(footers_data) != 1 else ' was'} detected.
-            Each footer has been assigned a signature for tracking across pages. Verify there is only one contentinfo per page and it contains site-level information.</p>
+            <h2 data-i18n="contentinfo_regions_found">{t['contentinfo_regions_found']}</h2>
+            <p class="section-intro" data-i18n="footers_intro">{footers_intro_text}</p>
             <div class="footers-list">
                 {footers_html}
             </div>
         </section>
         """
 
-    def _generate_searches_html(self, searches_data: Dict[str, Dict], total_pages: int) -> str:
+    def _generate_searches_html(self, searches_data: Dict[str, Dict], total_pages: int, t: Dict[str, str] = None) -> str:
         """Generate HTML section for search landmarks found across the site"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
+
         logger.warning(f"_generate_searches_html called with {len(searches_data) if searches_data else 0} searches")
         if not searches_data:
             logger.warning("No searches data - returning empty string")
@@ -1693,9 +1877,9 @@ class DiscoveryReportGenerator:
             pages_count = len(search_info['pages'])
             percentage = (pages_count / total_pages * 100) if total_pages > 0 else 0
 
-            label_display = search_info.get('searchLabel', '(no label)')
+            label_display = search_info.get('searchLabel', t['no_label'])
             if not label_display:
-                label_display = '(no label)'
+                label_display = t['no_label']
 
             pages_list_html = ""
             if pages_count <= 3:
@@ -1703,7 +1887,7 @@ class DiscoveryReportGenerator:
                                           for url in sorted(search_info['pages'])])
                 pages_list_html = f"""
                     <div class="search-detail-row">
-                        <strong>Found on:</strong><br>
+                        <strong data-i18n="found_on">{t['found_on']}:</strong><br>
                         {pages_list}
                     </div>
                 """
@@ -1717,41 +1901,51 @@ class DiscoveryReportGenerator:
 
                 pages_list_html = f"""
                     <div class="search-detail-row">
-                        <strong>Example page:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
+                        <strong data-i18n="example_page">{t['example_page']}:</strong> <a href="{html.escape(example_url)}" target="_blank">{html.escape(example_url)}</a>
                     </div>
                 """
 
+            page_label = t['page'] if pages_count == 1 else t['pages']
             searches_html += f"""
             <div class="search-item">
                 <div class="search-header">
                     <h3 class="search-signature">Search {html.escape(search_signature)}</h3>
-                    <span class="search-pages-count">{pages_count} page{'' if pages_count == 1 else 's'} ({percentage:.0f}%)</span>
+                    <span class="search-pages-count">{pages_count} <span data-i18n="page">{page_label}</span> ({percentage:.0f}%)</span>
                 </div>
                 <div class="search-details">
                     <div class="search-detail-row">
-                        <strong>Label:</strong> {html.escape(label_display)}
+                        <strong data-i18n="label">{t['label']}:</strong> {html.escape(label_display)}
                     </div>
                     <div class="search-detail-row">
-                        <strong>XPath:</strong> <code>{html.escape(search_info.get('xpath', 'unknown'))}</code>
+                        <strong data-i18n="xpath">{t['xpath']}:</strong> <code>{html.escape(search_info.get('xpath', 'unknown'))}</code>
                     </div>
                     {pages_list_html}
                 </div>
             </div>
             """
 
+        plural_suffix = 's' if len(searches_data) != 1 else ''
+        verb = t['were'] if len(searches_data) != 1 else t['was']
+        searches_intro_text = t['searches_intro'] % {'count': len(searches_data), 'plural': plural_suffix}
+        searches_intro_text = searches_intro_text.replace('%(plural)s', plural_suffix).replace(' detected', f' {verb} detected')
+
         return f"""
         <section class="searches-section">
-            <h2>Search Regions Found Across Site</h2>
-            <p class="section-intro">The following {len(searches_data)} unique search region{'s were' if len(searches_data) != 1 else ' was'} detected.
-            Each search region has been assigned a signature for tracking across pages. Verify each contains actual search functionality and is properly labeled.</p>
+            <h2 data-i18n="search_regions_found">{t['search_regions_found']}</h2>
+            <p class="section-intro" data-i18n="searches_intro">{searches_intro_text}</p>
             <div class="searches-list">
                 {searches_html}
             </div>
         </section>
         """
 
-    def _generate_documents_html(self, documents_by_type: Dict[str, List]) -> str:
+    def _generate_documents_html(self, documents_by_type: Dict[str, List], t: Dict[str, str] = None) -> str:
         """Generate HTML section for electronic documents found during scraping"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
+
         if not documents_by_type:
             return ""
 
@@ -1766,7 +1960,7 @@ class DiscoveryReportGenerator:
 
             docs_html = ""
             if internal_docs:
-                docs_html += "<h4>Internal Documents</h4><ul class='documents-list'>"
+                docs_html += f"<h4 data-i18n='internal_documents'>{t['internal_documents']}</h4><ul class='documents-list'>"
                 for doc in sorted(internal_docs, key=lambda x: (x.language or 'zzz', x.document_url)):
                     link_text_display = html.escape(doc.link_text) if doc.link_text else html.escape(doc.document_url.split('/')[-1])
 
@@ -1776,7 +1970,7 @@ class DiscoveryReportGenerator:
                         confidence_pct = f" ({int(doc.language_confidence * 100)}%)" if doc.language_confidence else ""
                         language_info = f'<span class="lang-badge">{html.escape(doc.language_display)}{confidence_pct}</span>'
                     else:
-                        language_info = '<span class="lang-badge lang-unknown">Language Unknown</span>'
+                        language_info = f'<span class="lang-badge lang-unknown" data-i18n="language_unknown">{t["language_unknown"]}</span>'
 
                     docs_html += f"""
                     <li class="document-item">
@@ -1787,14 +1981,14 @@ class DiscoveryReportGenerator:
                             {language_info}
                         </div>
                         <div class="document-meta">
-                            <span class="document-referring">Found on: <a href="{html.escape(doc.referring_page_url)}" target="_blank">{html.escape(doc.referring_page_url)}</a></span>
+                            <span class="document-referring" data-i18n="found_on">{t['found_on']}: <a href="{html.escape(doc.referring_page_url)}" target="_blank">{html.escape(doc.referring_page_url)}</a></span>
                         </div>
                     </li>
                     """
                 docs_html += "</ul>"
 
             if external_docs:
-                docs_html += "<h4>External Documents</h4><ul class='documents-list'>"
+                docs_html += f"<h4 data-i18n='external_documents'>{t['external_documents']}</h4><ul class='documents-list'>"
                 for doc in sorted(external_docs, key=lambda x: (x.language or 'zzz', x.document_url)):
                     link_text_display = html.escape(doc.link_text) if doc.link_text else html.escape(doc.document_url.split('/')[-1])
 
@@ -1804,7 +1998,7 @@ class DiscoveryReportGenerator:
                         confidence_pct = f" ({int(doc.language_confidence * 100)}%)" if doc.language_confidence else ""
                         language_info = f'<span class="lang-badge">{html.escape(doc.language_display)}{confidence_pct}</span>'
                     else:
-                        language_info = '<span class="lang-badge lang-unknown">Language Unknown</span>'
+                        language_info = f'<span class="lang-badge lang-unknown" data-i18n="language_unknown">{t["language_unknown"]}</span>'
 
                     docs_html += f"""
                     <li class="document-item">
@@ -1815,36 +2009,40 @@ class DiscoveryReportGenerator:
                             {language_info}
                         </div>
                         <div class="document-meta">
-                            <span class="document-referring">Found on: <a href="{html.escape(doc.referring_page_url)}" target="_blank">{html.escape(doc.referring_page_url)}</a></span>
+                            <span class="document-referring" data-i18n="found_on">{t['found_on']}: <a href="{html.escape(doc.referring_page_url)}" target="_blank">{html.escape(doc.referring_page_url)}</a></span>
                         </div>
                     </li>
                     """
                 docs_html += "</ul>"
 
+            doc_label = t['document'] if len(docs) == 1 else t['documents']
             documents_html += f"""
             <div class="document-type-section">
                 <h3 class="document-type-title">
                     {html.escape(doc_type)}
-                    <span class="document-count">({len(docs)} document{'s' if len(docs) != 1 else ''})</span>
+                    <span class="document-count">({len(docs)} <span data-i18n="document">{doc_label}</span>)</span>
                 </h3>
                 {docs_html}
             </div>
             """
 
+        docs_title = t['electronic_documents_found'] % {'count': total_docs}
         return f"""
         <section class="documents-section">
-            <h2>Electronic Documents Found ({total_docs} total)</h2>
-            <p class="section-intro">The following electronic documents were discovered during website scraping.
-            Each document should be reviewed for accessibility compliance. Electronic documents like PDFs require specific accessibility features
-            such as proper tagging, reading order, alternative text for images, and semantic structure.</p>
+            <h2 data-i18n="electronic_documents_found">{docs_title}</h2>
+            <p class="section-intro" data-i18n="documents_intro">{t['documents_intro']}</p>
             <div class="documents-container">
                 {documents_html}
             </div>
         </section>
         """
 
-    def _generate_common_issues_html(self, common_issues: Dict[str, Dict], total_pages: int) -> str:
+    def _generate_common_issues_html(self, common_issues: Dict[str, Dict], total_pages: int, t: Dict[str, str] = None) -> str:
         """Generate HTML section for common issues appearing on >70% of pages"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
 
         has_common_issues = (common_issues['disco'] or
                             common_issues['info'] or
@@ -1876,7 +2074,7 @@ class DiscoveryReportGenerator:
                 percentage = (page_count / total_pages * 100) if total_pages > 0 else 0
                 disco_html += f"""
                 <li>
-                    <strong>{html.escape(issue_id)}</strong> - Appears on {page_count} pages ({percentage:.0f}%)
+                    <strong>{html.escape(issue_id)}</strong> - <span data-i18n="appears_on">{t['appears_on']}</span> {page_count} <span data-i18n="pages">{t['pages']}</span> ({percentage:.0f}%)
                     <div class="common-issue-desc">{html.escape(description)}</div>
                 </li>
                 """
@@ -1886,8 +2084,8 @@ class DiscoveryReportGenerator:
             if has_other_issues:
                 sections_html += f"""
                 <div class="common-section disco">
-                    <h3>Common Discovery Issues</h3>
-                    <p class="common-intro">These issues appear on more than 70% of pages and have been filtered from individual page listings:</p>
+                    <h3 data-i18n="common_discovery_issues">{t['common_discovery_issues']}</h3>
+                    <p class="common-intro" data-i18n="common_issues_intro">{t['common_issues_intro']}</p>
                     {disco_html}
                 </div>
                 """
@@ -1901,15 +2099,15 @@ class DiscoveryReportGenerator:
                 percentage = (page_count / total_pages * 100) if total_pages > 0 else 0
                 info_html += f"""
                 <li>
-                    <strong>{html.escape(issue_id)}</strong> - Appears on {page_count} pages ({percentage:.0f}%)
+                    <strong>{html.escape(issue_id)}</strong> - <span data-i18n="appears_on">{t['appears_on']}</span> {page_count} <span data-i18n="pages">{t['pages']}</span> ({percentage:.0f}%)
                     <div class="common-issue-desc">{html.escape(description)}</div>
                 </li>
                 """
             info_html += "</ul>"
             sections_html += f"""
             <div class="common-section info">
-                <h3>Common Informational Items</h3>
-                <p class="common-intro">These items appear on more than 70% of pages and have been filtered from individual page listings:</p>
+                <h3 data-i18n="common_informational_items">{t['common_informational_items']}</h3>
+                <p class="common-intro" data-i18n="common_issues_intro">{t['common_issues_intro']}</p>
                 {info_html}
             </div>
             """
@@ -1923,29 +2121,33 @@ class DiscoveryReportGenerator:
                 percentage = (page_count / total_pages * 100) if total_pages > 0 else 0
                 an_html += f"""
                 <li>
-                    <strong>{html.escape(issue_id)}</strong> - Appears on {page_count} pages ({percentage:.0f}%)
+                    <strong>{html.escape(issue_id)}</strong> - <span data-i18n="appears_on">{t['appears_on']}</span> {page_count} <span data-i18n="pages">{t['pages']}</span> ({percentage:.0f}%)
                     <div class="common-issue-desc">{html.escape(description)}</div>
                 </li>
                 """
             an_html += "</ul>"
             sections_html += f"""
             <div class="common-section accessible-names">
-                <h3>Common Accessible Name Issues</h3>
-                <p class="common-intro">These issues appear on more than 70% of pages and have been filtered from individual page listings:</p>
+                <h3 data-i18n="common_accessible_name_issues">{t['common_accessible_name_issues']}</h3>
+                <p class="common-intro" data-i18n="common_issues_intro">{t['common_issues_intro']}</p>
                 {an_html}
             </div>
             """
 
         return f"""
         <section class="common-issues-section">
-            <h2>Site-Wide Issues</h2>
-            <p class="section-intro">The following issues appear on most pages throughout the site. Address these globally rather than page-by-page.</p>
+            <h2 data-i18n="site_wide_issues">{t['site_wide_issues']}</h2>
+            <p class="section-intro" data-i18n="site_wide_intro">{t['site_wide_intro']}</p>
             {sections_html}
         </section>
         """
 
-    def _generate_issue_breakdown_html(self, breakdown: Dict[str, Dict]) -> str:
+    def _generate_issue_breakdown_html(self, breakdown: Dict[str, Dict], t: Dict[str, str] = None) -> str:
         """Generate HTML for issue breakdown by type"""
+
+        # Get translations if not provided
+        if t is None:
+            t = self._get_translations()
 
         sections_html = ""
 
@@ -1980,9 +2182,10 @@ class DiscoveryReportGenerator:
                                               'landmarks_DiscoHeaderFound', 'DiscoHeaderFound',
                                               'landmarks_DiscoFooterFound', 'DiscoFooterFound',
                                               'landmarks_DiscoSearchFound', 'DiscoSearchFound'))
+                disco_title = t['discovery_issues_total'] % {'count': total_disco}
                 sections_html += f"""
                 <div class="breakdown-section disco">
-                    <h3>Discovery Issues ({total_disco} total)</h3>
+                    <h3 data-i18n="discovery_issues_total">{disco_title}</h3>
                     {disco_html}
                 </div>
                 """
@@ -1997,9 +2200,11 @@ class DiscoveryReportGenerator:
                 info_html += f"<li><strong>{issue_id}</strong> ({count}): {description}</li>"
             info_html += "</ul>"
 
+            info_total = sum(breakdown['info'].values())
+            info_title = t['informational_items_total'] % {'count': info_total}
             sections_html += f"""
             <div class="breakdown-section info">
-                <h3>Informational Items ({sum(breakdown['info'].values())} total)</h3>
+                <h3 data-i18n="informational_items_total">{info_title}</h3>
                 {info_html}
             </div>
             """
@@ -2014,14 +2219,16 @@ class DiscoveryReportGenerator:
                 an_html += f"<li><strong>{issue_id}</strong> ({count}): {description}</li>"
             an_html += "</ul>"
 
+            an_total = sum(breakdown['accessible_names'].values())
+            an_title = t['accessible_name_issues_total'] % {'count': an_total}
             sections_html += f"""
             <div class="breakdown-section accessible-names">
-                <h3>Accessible Name Issues ({sum(breakdown['accessible_names'].values())} total)</h3>
+                <h3 data-i18n="accessible_name_issues_total">{an_title}</h3>
                 {an_html}
             </div>
             """
 
-        return sections_html if sections_html else "<p>No issues to display.</p>"
+        return sections_html if sections_html else f"<p data-i18n='no_issues_display'>{t['no_issues_display']}</p>"
 
     def _generate_pdf_report(self, data: Dict[str, Any]) -> bytes:
         """

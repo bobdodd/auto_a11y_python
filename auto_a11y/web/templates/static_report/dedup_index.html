@@ -1,9 +1,12 @@
-{% extends "static_report/base.html" %}
-
-{% block title %}Deduplicated Report - Index{% endblock %}
-
-{% block extra_css %}
-<style>
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="deduplicated_report">{{ t['deduplicated_report'] }}</title>
+    <link rel="stylesheet" href="{{ asset_path }}css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset_path }}css/bootstrap-icons.css">
+    <style>
     .summary-cards {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -108,14 +111,27 @@
         padding: 3rem;
         color: #6c757d;
     }
-</style>
-{% endblock %}
-
-{% block content %}
+    </style>
+</head>
+<body>
 <div class="container py-4">
-    <div class="mb-4">
-        <h1 class="h2">Deduplicated Accessibility Report</h1>
-        <p class="text-muted">Issues grouped by common components • {{ report_date.strftime('%Y-%m-%d %H:%M') }}</p>
+    <!-- Header with Language Switcher -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1 data-i18n="deduplicated_report">{{ t['deduplicated_report'] }}</h1>
+            <p class="text-muted">
+                <span data-i18n="issues_grouped_by_components">{{ t['issues_grouped_by_components'] }}</span> • {{ report_date.strftime('%Y-%m-%d %H:%M') }}
+            </p>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-translate"></i> <span data-i18n="language">{{ t['language'] }}</span>: <span id="current-lang-display">{{ language.upper() }}</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                <li><a class="dropdown-item" href="#" onclick="switchLanguage('en'); return false;">English</a></li>
+                <li><a class="dropdown-item" href="#" onclick="switchLanguage('fr'); return false;">Français</a></li>
+            </ul>
+        </div>
     </div>
 
     <!-- Statistics Dashboard -->
@@ -126,7 +142,7 @@
             <div class="stat-value {% if overall_accessibility_score >= 90 %}text-success{% elif overall_accessibility_score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                 {{ "%.1f"|format(overall_accessibility_score) }}%
             </div>
-            <div class="stat-label">Accessibility Score</div>
+            <div class="stat-label" data-i18n="accessibility_score">{{ t['accessibility_score'] }}</div>
         </div>
         {% endif %}
 
@@ -136,37 +152,37 @@
             <div class="stat-value {% if overall_compliance_score >= 90 %}text-success{% elif overall_compliance_score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                 {{ "%.1f"|format(overall_compliance_score) }}%
             </div>
-            <div class="stat-label">Compliance Score</div>
+            <div class="stat-label" data-i18n="compliance_score">{{ t['compliance_score'] }}</div>
         </div>
         {% endif %}
 
         <div class="stat-card">
             <div class="stat-value text-danger">{{ total_violations }}</div>
-            <div class="stat-label">Violations</div>
+            <div class="stat-label" data-i18n="violations">{{ t['violations'] }}</div>
         </div>
         <div class="stat-card">
             <div class="stat-value text-warning">{{ total_warnings }}</div>
-            <div class="stat-label">Warnings</div>
+            <div class="stat-label" data-i18n="warnings">{{ t['warnings'] }}</div>
         </div>
         <div class="stat-card">
             <div class="stat-value text-info">{{ total_info }}</div>
-            <div class="stat-label">Info Items</div>
+            <div class="stat-label" data-i18n="info_items">{{ t['info_items'] }}</div>
         </div>
         <div class="stat-card">
             <div class="stat-value text-primary">{{ total_components }}</div>
-            <div class="stat-label">Components</div>
+            <div class="stat-label" data-i18n="components">{{ t['components'] }}</div>
         </div>
         <div class="stat-card">
             <div class="stat-value text-secondary">{{ total_pages }}</div>
-            <div class="stat-label">Pages</div>
+            <div class="stat-label" data-i18n="pages">{{ t['pages'] }}</div>
         </div>
     </div>
 
     <!-- Common Components List -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Common Components</h5>
-            <small class="text-muted">Click a component to view its deduplicated issues</small>
+            <h5 class="mb-0" data-i18n="common_components">{{ t['common_components'] }}</h5>
+            <small class="text-muted" data-i18n="click_component_to_view">{{ t['click_component_to_view'] }}</small>
         </div>
         <div class="card-body">
             {% if components_with_issues %}
@@ -179,9 +195,9 @@
                                 {{ comp_data.label }}
                             </div>
                             <div class="component-meta">
-                                <span><i class="bi bi-file-earmark"></i> {{ comp_data.page_count }} page(s)</span>
+                                <span><i class="bi bi-file-earmark"></i> {{ comp_data.page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span></span>
                                 {% if comp_data.score is defined %}
-                                <span><i class="bi bi-graph-up"></i> Score:
+                                <span><i class="bi bi-graph-up"></i> <span data-i18n="score">{{ t['score'] }}</span>:
                                     <strong class="{% if comp_data.score >= 90 %}text-success{% elif comp_data.score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                                         {{ "%.1f"|format(comp_data.score) }}%
                                     </strong>
@@ -191,13 +207,13 @@
                         </div>
                         <div class="issue-summary">
                             {% if comp_data.violations > 0 %}
-                            <span class="issue-count violations">{{ comp_data.violations }} violation(s)</span>
+                            <span class="issue-count violations">{{ comp_data.violations }} <span data-i18n="violation_s">{{ t['violation_s'] }}</span></span>
                             {% endif %}
                             {% if comp_data.warnings > 0 %}
-                            <span class="issue-count warnings">{{ comp_data.warnings }} warning(s)</span>
+                            <span class="issue-count warnings">{{ comp_data.warnings }} <span data-i18n="warning_s">{{ t['warning_s'] }}</span></span>
                             {% endif %}
                             {% if comp_data.info > 0 %}
-                            <span class="issue-count info">{{ comp_data.info }} info</span>
+                            <span class="issue-count info">{{ comp_data.info }} <span data-i18n="info">{{ t['info'] }}</span></span>
                             {% endif %}
                             <i class="bi bi-chevron-right"></i>
                         </div>
@@ -207,7 +223,7 @@
             {% else %}
                 <div class="no-components">
                     <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
-                    <p class="mt-3">No common components found</p>
+                    <p class="mt-3" data-i18n="no_common_components">{{ t['no_common_components'] }}</p>
                 </div>
             {% endif %}
 
@@ -218,12 +234,12 @@
     {% if pages_with_unassigned %}
     <div class="card mt-4">
         <div class="card-header">
-            <h5 class="mb-0">Pages with Non-Component Issues</h5>
-            <small class="text-muted">Issues not associated with common components, organized by page</small>
+            <h5 class="mb-0" data-i18n="pages_with_non_component_issues">{{ t['pages_with_non_component_issues'] }}</h5>
+            <small class="text-muted" data-i18n="issues_not_in_components">{{ t['issues_not_in_components'] }}</small>
         </div>
         <div class="card-body">
             <div class="page-search-filter mb-3">
-                <input type="text" class="form-control" id="pageSearch" placeholder="Search pages...">
+                <input type="text" class="form-control" id="pageSearch" data-i18n-placeholder="search_pages" placeholder="{{ t['search_pages'] }}">
             </div>
 
             {% for page_data in pages_with_unassigned %}
@@ -237,7 +253,7 @@
                         <div class="component-meta">
                             <span><i class="bi bi-link-45deg"></i> {{ page_data.url }}</span>
                             {% if page_data.dedup_score is defined %}
-                            <span><i class="bi bi-graph-up"></i> Score:
+                            <span><i class="bi bi-graph-up"></i> <span data-i18n="score">{{ t['score'] }}</span>:
                                 <strong class="{% if page_data.dedup_score >= 90 %}text-success{% elif page_data.dedup_score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                                     {{ "%.1f"|format(page_data.dedup_score) }}%
                                 </strong>
@@ -247,13 +263,13 @@
                     </div>
                     <div class="issue-summary">
                         {% if page_data.violations > 0 %}
-                        <span class="issue-count violations">{{ page_data.violations }} violation(s)</span>
+                        <span class="issue-count violations">{{ page_data.violations }} <span data-i18n="violation_s">{{ t['violation_s'] }}</span></span>
                         {% endif %}
                         {% if page_data.warnings > 0 %}
-                        <span class="issue-count warnings">{{ page_data.warnings }} warning(s)</span>
+                        <span class="issue-count warnings">{{ page_data.warnings }} <span data-i18n="warning_s">{{ t['warning_s'] }}</span></span>
                         {% endif %}
                         {% if page_data.info > 0 %}
-                        <span class="issue-count info">{{ page_data.info }} info</span>
+                        <span class="issue-count info">{{ page_data.info }} <span data-i18n="info">{{ t['info'] }}</span></span>
                         {% endif %}
                         <i class="bi bi-chevron-right"></i>
                     </div>
@@ -265,7 +281,47 @@
     {% endif %}
 </div>
 
+<script src="{{ asset_path }}js/bootstrap.bundle.min.js"></script>
 <script>
+// All translations embedded in the report
+const translations = {{ translations_json|safe }};
+
+// Current language
+let currentLang = '{{ language }}';
+
+function switchLanguage(lang) {
+    if (lang === currentLang) return;
+
+    currentLang = lang;
+
+    // Update HTML lang attribute
+    document.documentElement.lang = lang;
+
+    // Update all elements with data-i18n attribute
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
+
+    // Update placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        if (translations[lang] && translations[lang][key]) {
+            element.placeholder = translations[lang][key];
+        }
+    });
+
+    // Update current language display
+    document.getElementById('current-lang-display').textContent = lang.toUpperCase();
+
+    // Update document title
+    if (translations[lang] && translations[lang]['deduplicated_report']) {
+        document.title = translations[lang]['deduplicated_report'];
+    }
+}
+
 // Simple page search filter
 const pageSearch = document.getElementById('pageSearch');
 if (pageSearch) {
@@ -284,4 +340,5 @@ if (pageSearch) {
     });
 }
 </script>
-{% endblock %}
+</body>
+</html>

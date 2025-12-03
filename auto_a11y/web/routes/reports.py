@@ -440,10 +440,14 @@ def generate_discovery_website_report(website_id):
     format = request.form.get('format', 'html')
 
     try:
+        # Get current language from session
+        language = session.get('language', 'en')
+
         # Initialize discovery report generator
         generator = DiscoveryReportGenerator(
             current_app.db,
-            current_app.app_config.__dict__
+            current_app.app_config.__dict__,
+            language=language
         )
 
         # Generate report (saves to reports directory)
@@ -468,10 +472,14 @@ def generate_discovery_project_report(project_id):
     format = request.form.get('format', 'html')
 
     try:
+        # Get current language from session
+        language = session.get('language', 'en')
+
         # Initialize discovery report generator
         generator = DiscoveryReportGenerator(
             current_app.db,
-            current_app.app_config.__dict__
+            current_app.app_config.__dict__,
+            language=language
         )
 
         # Generate report (saves to reports directory)

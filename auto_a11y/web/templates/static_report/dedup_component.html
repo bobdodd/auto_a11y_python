@@ -1,9 +1,12 @@
-{% extends "static_report/base.html" %}
-
-{% block title %}{{ component_type }}: {{ component_label }} - Deduplicated Issues{% endblock %}
-
-{% block extra_css %}
-<style>
+<!DOCTYPE html>
+<html lang="{{ language }}" data-current-lang="{{ language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="component_deduplicated_issues">{{ t['component_deduplicated_issues'] }}: {{ component_type }}: {{ component_label }}</title>
+    <link rel="stylesheet" href="{{ asset_path }}css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset_path }}css/bootstrap-icons.css">
+    <style>
     .component-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -194,22 +197,40 @@
         padding: 3rem;
         color: #6c757d;
     }
-</style>
-{% endblock %}
 
-{% block content %}
+    .touchpoint-header {
+        background-color: #f8f9fa;
+        padding: 8px;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        padding-left: 0.5rem;
+    }
+    </style>
+</head>
+<body>
 <div class="container py-4">
-    <!-- Component Header -->
+    <!-- Component Header with Language Switcher -->
     <div class="component-header {{ component_type|lower }}">
-        <a href="../index.html" class="back-link">
-            <i class="bi bi-arrow-left"></i> Back to Index
-        </a>
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <a href="../index.html" class="back-link">
+                <i class="bi bi-arrow-left"></i> <span data-i18n="back_to_index">{{ t['back_to_index'] }}</span>
+            </a>
+            <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-translate"></i> <span data-i18n="language">{{ t['language'] }}</span>: <span id="current-lang-display">{{ language.upper() }}</span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                    <li><a class="dropdown-item" href="#" onclick="switchLanguage('en'); return false;">English</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="switchLanguage('fr'); return false;">Français</a></li>
+                </ul>
+            </div>
+        </div>
         <h1 class="h2 mb-0">{{ component_type }}: {{ component_label }}</h1>
         <div class="component-meta">
-            <span><i class="bi bi-file-earmark"></i> Found on {{ page_count }} page(s)</span>
-            <span><i class="bi bi-bug"></i> {{ total_issues }} deduplicated issue(s)</span>
+            <span><i class="bi bi-file-earmark"></i> <span data-i18n="found_on">{{ t['found_on'] }}</span> {{ page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span></span>
+            <span><i class="bi bi-bug"></i> {{ total_issues }} <span data-i18n="deduplicated_issue_s">{{ t['deduplicated_issue_s'] }}</span></span>
             {% if component_score is defined %}
-            <span><i class="bi bi-graph-up"></i> Accessibility Score:
+            <span><i class="bi bi-graph-up"></i> <span data-i18n="accessibility_score">{{ t['accessibility_score'] }}</span>:
                 <strong class="{% if component_score >= 90 %}text-success{% elif component_score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                     {{ "%.1f"|format(component_score) }}%
                 </strong>
@@ -242,7 +263,7 @@
                         {% if issue.description %}
                             {{ issue.description }}
                         {% endif %}
-                        <span class="badge bg-secondary ms-auto me-2">{{ issue.page_count }} page(s)</span>
+                        <span class="badge bg-secondary ms-auto me-2">{{ issue.page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span></span>
                         {% if issue.test_users %}
                         {% for user in issue.test_users %}
                         <span class="badge bg-secondary ms-1">
@@ -264,18 +285,18 @@
                         <h6 class="alert-heading">{{ issue.description }}</h6>
                     </div>
 
-                    <h6 class="text-{{ alert_type }} mb-2">About this issue:</h6>
+                    <h6 class="text-{{ alert_type }} mb-2" data-i18n="about_this_issue">{{ t['about_this_issue'] }}</h6>
 
                     <!-- What -->
                     <div class="mb-3">
-                        <strong>What the issue is:</strong>
+                        <strong data-i18n="what_the_issue_is">{{ t['what_the_issue_is'] }}</strong>
                         <p>{{ issue.description }}</p>
                     </div>
 
                     <!-- Why -->
                     {% if issue.why %}
                     <div class="mb-3">
-                        <strong>Why this is important:</strong>
+                        <strong data-i18n="why_this_is_important">{{ t['why_this_is_important'] }}</strong>
                         <p>{{ issue.why }}</p>
                     </div>
                     {% endif %}
@@ -283,7 +304,7 @@
                     <!-- Who -->
                     {% if issue.who %}
                     <div class="mb-3">
-                        <strong>Who it affects:</strong>
+                        <strong data-i18n="who_it_affects">{{ t['who_it_affects'] }}</strong>
                         <p>{{ issue.who }}</p>
                     </div>
                     {% endif %}
@@ -291,16 +312,16 @@
                     <!-- How to Fix -->
                     {% if issue.full_remediation %}
                     <div class="mb-3">
-                        <strong>How to remediate:</strong>
+                        <strong data-i18n="how_to_remediate">{{ t['how_to_remediate'] }}</strong>
                         <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ issue.full_remediation }}</div>
                     </div>
                     {% endif %}
 
                     <!-- WCAG Criteria -->
                     {% if issue.wcag_full %}
-                    <h6 class="text-{{ alert_type }} mb-2 mt-4">Relevant test criteria:</h6>
+                    <h6 class="text-{{ alert_type }} mb-2 mt-4" data-i18n="relevant_test_criteria">{{ t['relevant_test_criteria'] }}</h6>
                     <div class="mb-3">
-                        <strong>WCAG Success Criteria:</strong>
+                        <strong data-i18n="wcag_success_criteria">{{ t['wcag_success_criteria'] }}</strong>
                         <ul>
                         {% for criterion in issue.wcag_full %}
                             <li>{{ criterion|safe }}</li>
@@ -315,9 +336,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             {% if issue.touchpoint %}
-                            <p><strong>Touchpoint:</strong> {{ issue.touchpoint|replace('_', ' ')|title }}</p>
+                            <p><strong data-i18n="touchpoint">{{ t['touchpoint'] }}</strong> {{ issue.touchpoint|replace('_', ' ')|title }}</p>
                             {% endif %}
-                            <p><strong>Impact:</strong>
+                            <p><strong data-i18n="impact">{{ t['impact'] }}</strong>
                                 <span class="badge bg-{{ {'critical': 'danger', 'high': 'danger', 'serious': 'danger', 'moderate': 'warning', 'medium': 'warning', 'minor': 'info', 'low': 'info'}[issue.impact|lower] or 'secondary' }} impact-badge">
                                     {{ issue.impact|upper }}
                                 </span>
@@ -335,12 +356,12 @@
                                     {% set criterion_code = criterion.split()[0] %}
                                     <p style="margin: 0 0 5px 0;">
                                         <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion_code }}" target="_blank">
-                                            More about {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                                            <span data-i18n="more_about">{{ t['more_about'] }}</span> {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
                                         </a>
                                     </p>
                                     <p style="margin: 0;">
                                         <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion_code }}" target="_blank">
-                                            Ways to meet {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                                            <span data-i18n="ways_to_meet">{{ t['ways_to_meet'] }}</span> {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
                                         </a>
                                     </p>
                                 </div>
@@ -352,11 +373,11 @@
                     <!-- Affected Pages -->
                     <hr>
                     <div class="mb-3">
-                        <strong>Affected Pages ({{ issue.page_count }}):</strong>
+                        <strong data-i18n="affected_pages">{{ t['affected_pages'] }}</strong> ({{ issue.page_count }}):
                         <div class="mt-2">
                             <details>
                                 <summary class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-chevron-down"></i> Show all {{ issue.page_count }} page(s)
+                                    <i class="bi bi-chevron-down"></i> <span data-i18n="show_all">{{ t['show_all'] }}</span> {{ issue.page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span>
                                 </summary>
                                 <div class="mt-2 p-3 bg-light rounded">
                                     {% for page_url in issue.pages %}
@@ -372,9 +393,9 @@
                     <!-- Element Details -->
                     {% if issue.element or issue.xpath %}
                     <hr>
-                    <h6 class="text-{{ alert_type }} mb-2">Element Details:</h6>
+                    <h6 class="text-{{ alert_type }} mb-2" data-i18n="element_details">{{ t['element_details'] }}</h6>
                     {% if issue.element %}
-                    <p><strong>Element:</strong> <code>{{ issue.element }}</code></p>
+                    <p><strong data-i18n="element">{{ t['element'] }}</strong> <code>{{ issue.element }}</code></p>
                     {% endif %}
                     {% if issue.xpath %}
                     <p><strong>XPath:</strong></p>
@@ -392,8 +413,44 @@
     {% else %}
         <div class="no-issues">
             <i class="bi bi-check-circle" style="font-size: 3rem; opacity: 0.3;"></i>
-            <p class="mt-3">No issues found for this component</p>
+            <p class="mt-3" data-i18n="no_issues_found_for_component">{{ t['no_issues_found_for_component'] }}</p>
         </div>
     {% endif %}
 </div>
-{% endblock %}
+
+<script src="{{ asset_path }}js/bootstrap.bundle.min.js"></script>
+<script>
+// All translations embedded in the report
+const translations = {{ translations_json|safe }};
+
+// Current language
+let currentLang = '{{ language }}';
+
+function switchLanguage(lang) {
+    if (lang === currentLang) return;
+
+    currentLang = lang;
+
+    // Update HTML lang attribute
+    document.documentElement.lang = lang;
+    document.documentElement.setAttribute('data-current-lang', lang);
+
+    // Update all elements with data-i18n attribute
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
+
+    // Update current language display
+    document.getElementById('current-lang-display').textContent = lang.toUpperCase();
+
+    // Update document title
+    if (translations[lang] && translations[lang]['component_deduplicated_issues']) {
+        document.title = translations[lang]['component_deduplicated_issues'] + ': {{ component_type }}: {{ component_label }}';
+    }
+}
+</script>
+</body>
+</html>

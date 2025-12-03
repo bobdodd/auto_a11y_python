@@ -1161,10 +1161,7 @@ class StaticHTMLReportGenerator:
         # Group issues by component
         issues_by_component = self._group_issues_by_component(deduplicated_issues, common_components)
 
-        # Calculate statistics
-        total_violations = sum(1 for issue in deduplicated_issues if issue['type'] == 'violation')
-        total_warnings = sum(1 for issue in deduplicated_issues if issue['type'] == 'warning')
-        total_info = sum(1 for issue in deduplicated_issues if issue['type'] == 'info')
+        # Note: Issue counts will be calculated after pages_with_unassigned is created
         total_pages = sum(len(wd['pages']) for wd in project_data['websites'])
 
         # Calculate overall site scores (average across all pages)
@@ -1217,6 +1214,28 @@ class StaticHTMLReportGenerator:
             pages_with_unassigned = self._group_unassigned_by_page(
                 project_data, issues_by_component.get('unassigned', []), common_components
             )
+
+            # Calculate statistics based on actual deduplicated issues that will be displayed
+            # Count issues in components
+            total_violations = 0
+            total_warnings = 0
+            total_info = 0
+
+            for component_signature, component_issues in issues_by_component.items():
+                if component_signature != 'unassigned':
+                    for issue in component_issues:
+                        if issue['type'] == 'violation':
+                            total_violations += 1
+                        elif issue['type'] == 'warning':
+                            total_warnings += 1
+                        elif issue['type'] == 'info':
+                            total_info += 1
+
+            # Count issues in unassigned (non-component) pages
+            for page_data in pages_with_unassigned:
+                total_violations += len(page_data['issues']['violations'])
+                total_warnings += len(page_data['issues']['warnings'])
+                total_info += len(page_data['issues']['info'])
 
             # Generate index page
             self._generate_dedup_index(

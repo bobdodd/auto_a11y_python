@@ -145,6 +145,21 @@ class DiscoveryReportGenerator:
                 'accessible_name_issues_count': 'accessible name issues',
                 'why_it_matters': 'Why it matters',
                 'how_to_fix': 'How to fix',
+                # Form field types
+                'hidden': 'hidden',
+                'text': 'text',
+                'search': 'search',
+                'email': 'email',
+                'tel': 'tel',
+                'url': 'url',
+                'password': 'password',
+                'number': 'number',
+                'checkbox': 'checkbox',
+                'radio': 'radio',
+                'submit': 'submit',
+                'button': 'button',
+                'select': 'select',
+                'textarea': 'textarea',
             },
             'fr': {
                 'discovery_report': 'Rapport de découverte',
@@ -244,6 +259,21 @@ class DiscoveryReportGenerator:
                 'accessible_name_issues_count': 'problèmes de noms accessibles',
                 'why_it_matters': 'Pourquoi c\'est important',
                 'how_to_fix': 'Comment corriger',
+                # Form field types
+                'hidden': 'caché',
+                'text': 'texte',
+                'search': 'recherche',
+                'email': 'courriel',
+                'tel': 'téléphone',
+                'url': 'url',
+                'password': 'mot de passe',
+                'number': 'nombre',
+                'checkbox': 'case à cocher',
+                'radio': 'bouton radio',
+                'submit': 'soumettre',
+                'button': 'bouton',
+                'select': 'sélection',
+                'textarea': 'zone de texte',
             }
         }
         return translations.get(self.language, translations['en'])
@@ -1386,9 +1416,14 @@ class DiscoveryReportGenerator:
             pages_count = len(form_info['pages'])
             percentage = (pages_count / total_pages * 100) if total_pages > 0 else 0
 
-            # Build field types summary
+            # Build field types summary with translations
             field_types = form_info.get('fieldTypes', {})
-            field_summary = ', '.join([f"{count} {ftype}" for ftype, count in field_types.items()])
+            translated_field_parts = []
+            for ftype, count in field_types.items():
+                # Translate field type if translation exists, otherwise use original
+                translated_type = t.get(ftype.lower(), ftype)
+                translated_field_parts.append(f"{count} {translated_type}")
+            field_summary = ', '.join(translated_field_parts)
             if not field_summary:
                 field_summary = t['unknown_fields']
 

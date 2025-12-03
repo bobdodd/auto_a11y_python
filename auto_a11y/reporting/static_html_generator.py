@@ -1850,12 +1850,7 @@ class StaticHTMLReportGenerator:
 
         # Create page data list
         pages_with_unassigned = []
-        for page_url, page_issues in issues_by_page.items():
-            # Count by type
-            violations = [i for i in page_issues if i['type'] == 'violation']
-            warnings = [i for i in page_issues if i['type'] == 'warning']
-            info = [i for i in page_issues if i['type'] == 'info']
-
+        for page_url in issues_by_page.keys():
             # Find page metadata and actual test results from project_data
             page_title = None
             page_test_date = None
@@ -2041,10 +2036,10 @@ class StaticHTMLReportGenerator:
                 'warnings_count': warnings_count,
                 'info_count': info_count,
                 'discovery_count': discovery_count,
-                'violations': len(violations),
-                'warnings': len(warnings),
-                'info': len(info),
-                'total_issues': len(page_issues),
+                'violations': len(page_violations),  # Use actual filtered non-component issue counts
+                'warnings': len(page_warnings),
+                'info': len(page_info),
+                'total_issues': len(page_violations) + len(page_warnings) + len(page_info) + len(page_discovery),
                 'issues': {
                     'violations': page_violations,  # Use actual test result issues, not deduplicated
                     'warnings': page_warnings,

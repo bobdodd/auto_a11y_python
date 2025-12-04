@@ -227,24 +227,35 @@ class IssueFilterManager {
                 typeCounts[type] = (typeCounts[type] || 0) + 1;
             });
 
-            const summary = [];
-            if (typeCounts.error) summary.push(`${typeCounts.error} errors`);
-            if (typeCounts.warning) summary.push(`${typeCounts.warning} warnings`);
-            if (typeCounts.info) summary.push(`${typeCounts.info} info`);
-            if (typeCounts.discovery) summary.push(`${typeCounts.discovery} discovery`);
+            // Get current language from global translations object or default to 'en'
+            const currentLang = (typeof currentLanguage !== 'undefined') ? currentLanguage : 'en';
+            const t = (typeof translations !== 'undefined' && translations[currentLang]) ? translations[currentLang] : {};
 
-            filterSummaryEl.textContent = summary.join(', ') || 'No items';
+            const summary = [];
+            if (typeCounts.error) summary.push(`${typeCounts.error} ${t.errors || 'errors'}`);
+            if (typeCounts.warning) summary.push(`${typeCounts.warning} ${t.warnings || 'warnings'}`);
+            if (typeCounts.info) summary.push(`${typeCounts.info} ${t.info || 'info'}`);
+            if (typeCounts.discovery) summary.push(`${typeCounts.discovery} ${t.discovery || 'discovery'}`);
+
+            filterSummaryEl.textContent = summary.join(', ') || (t.no_items || 'No items');
         }
     }
 
     updateCounts() {
-        // Count impact levels
+        // Count impact levels (accounting for instance counts)
         const impactCounts = { high: 0, medium: 0, low: 0 };
 
         document.querySelectorAll('.issue-item').forEach(item => {
             const impact = item.dataset.impact;
-            if (impact && impactCounts.hasOwnProperty(impact)) {
-                impactCounts[impact]++;
+            const instanceCount = parseInt(item.dataset.instanceCount || '1', 10);
+
+            // Map all impact variations to the three main levels
+            if (impact === 'high' || impact === 'serious' || impact === 'critical') {
+                impactCounts.high += instanceCount;
+            } else if (impact === 'medium' || impact === 'moderate') {
+                impactCounts.medium += instanceCount;
+            } else if (impact === 'low' || impact === 'minor') {
+                impactCounts.low += instanceCount;
             }
         });
 

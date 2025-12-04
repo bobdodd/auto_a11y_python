@@ -211,31 +211,65 @@
 <div class="container-xl">
     <!-- Test Information -->
     <div class="test-info">
-        <h2><i class="bi bi-info-circle"></i> Test Information</h2>
+        <h2>
+            <i class="bi bi-info-circle"></i>
+            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Test Information</span>
+            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Informations sur le test</span>
+        </h2>
         <div class="test-info-grid">
             <div class="test-info-item">
-                <span class="test-info-label">Project</span>
+                <span class="test-info-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Project</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Projet</span>
+                </span>
                 <span class="test-info-value">{{ project_name|default('Unknown Project') }}</span>
             </div>
             <div class="test-info-item">
-                <span class="test-info-label">Website URL</span>
+                <span class="test-info-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Website URL</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">URL du site web</span>
+                </span>
                 <span class="test-info-value">{{ website_url|default('N/A') }}</span>
             </div>
             <div class="test-info-item">
-                <span class="test-info-label">Test Date</span>
+                <span class="test-info-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Test Date</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Date du test</span>
+                </span>
                 <span class="test-info-value">{{ generation_date|default('N/A') }}</span>
             </div>
             <div class="test-info-item">
-                <span class="test-info-label">WCAG Level</span>
+                <span class="test-info-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">WCAG Level</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Niveau WCAG</span>
+                </span>
                 <span class="test-info-value">{{ wcag_level|default('AA') }}</span>
             </div>
             <div class="test-info-item">
-                <span class="test-info-label">Pages Tested</span>
+                <span class="test-info-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Pages Tested</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Pages testées</span>
+                </span>
                 <span class="test-info-value">{{ pages|length }}</span>
             </div>
             <div class="test-info-item">
-                <span class="test-info-label">Touchpoints Tested</span>
-                <span class="test-info-value">{{ touchpoints_tested|join(', ')|default('All') }}</span>
+                <span class="test-info-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Touchpoints Tested</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Points de contact testés</span>
+                </span>
+                <span class="test-info-value">
+                    {% if touchpoints_tested %}
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                            {% for tp in touchpoints_tested %}{{ translations_en.get(tp|lower, translations_en.get(tp, tp)) }}{% if not loop.last %}, {% endif %}{% endfor %}
+                        </span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                            {% for tp in touchpoints_tested %}{{ translations_fr.get(tp|lower, translations_fr.get(tp, tp)) }}{% if not loop.last %}, {% endif %}{% endfor %}
+                        </span>
+                    {% else %}
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">All</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Tous</span>
+                    {% endif %}
+                </span>
             </div>
         </div>
     </div>
@@ -244,27 +278,45 @@
     <div class="summary-cards">
         <div class="stat-card bg-light">
             <div class="stat-value text-dark">{{ pages|length }}</div>
-            <div class="stat-label">Pages Tested</div>
+            <div class="stat-label">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Pages Tested</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Pages testées</span>
+            </div>
         </div>
         <div class="stat-card" style="background-color: #fee;">
             <div class="stat-value text-danger">{{ summary.total_errors|default(0) }}</div>
-            <div class="stat-label">Total Errors</div>
+            <div class="stat-label">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Total Errors</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Total des erreurs</span>
+            </div>
         </div>
         <div class="stat-card" style="background-color: #fff3cd;">
             <div class="stat-value text-warning">{{ summary.total_warnings|default(0) }}</div>
-            <div class="stat-label">Total Warnings</div>
+            <div class="stat-label">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Total Warnings</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Total des avertissements</span>
+            </div>
         </div>
         <div class="stat-card" style="background-color: #e7f5ff;">
             <div class="stat-value text-info">{{ summary.total_info|default(0) }}</div>
-            <div class="stat-label">Informational</div>
+            <div class="stat-label">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Informational</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Informatifs</span>
+            </div>
         </div>
         <div class="stat-card" style="background-color: #f0f0f0;">
             <div class="stat-value text-muted">{{ summary.total_discovery|default(0) }}</div>
-            <div class="stat-label">Discovery Items</div>
+            <div class="stat-label">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Discovery Items</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Éléments de découverte</span>
+            </div>
         </div>
         <div class="stat-card" style="background-color: #d1ecf1;">
             <div class="stat-value text-primary">{{ "%.1f"|format(summary.average_score|default(0)) }}%</div>
-            <div class="stat-label">Average Score</div>
+            <div class="stat-label">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Average Score</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Score moyen</span>
+            </div>
         </div>
     </div>
 
@@ -277,32 +329,36 @@
                         type="search"
                         id="page-search"
                         class="form-control"
-                        placeholder="Search by page title or URL..."
+                        data-i18n-placeholder="search_by_page_title_or_url"
+                        placeholder="{{ t['search_by_page_title_or_url'] }}"
                         aria-label="Search pages">
                 </div>
                 <div>
                     <select id="filter-by-issues" class="form-select" aria-label="Filter by issue type">
-                        <option value="all">All Pages</option>
-                        <option value="has-errors">Has Errors</option>
-                        <option value="has-warnings">Has Warnings</option>
-                        <option value="no-errors">No Errors</option>
+                        <option value="all" data-i18n="all_pages">{{ t['all_pages'] }}</option>
+                        <option value="has-errors" data-i18n="has_errors">{{ t['has_errors'] }}</option>
+                        <option value="has-warnings" data-i18n="has_warnings">{{ t['has_warnings'] }}</option>
+                        <option value="no-errors" data-i18n="no_errors">{{ t['no_errors'] }}</option>
                     </select>
                 </div>
                 <div>
                     <select id="sort-by" class="form-select" aria-label="Sort pages">
-                        <option value="title">Sort by Title</option>
-                        <option value="errors-desc">Errors (High to Low)</option>
-                        <option value="errors-asc">Errors (Low to High)</option>
-                        <option value="score-asc">Score (Low to High)</option>
-                        <option value="score-desc">Score (High to Low)</option>
+                        <option value="title" data-i18n="sort_by_title">{{ t['sort_by_title'] }}</option>
+                        <option value="errors-desc" data-i18n="errors_high_to_low">{{ t['errors_high_to_low'] }}</option>
+                        <option value="errors-asc" data-i18n="errors_low_to_high">{{ t['errors_low_to_high'] }}</option>
+                        <option value="score-asc" data-i18n="score_low_to_high">{{ t['score_low_to_high'] }}</option>
+                        <option value="score-desc" data-i18n="score_high_to_low">{{ t['score_high_to_low'] }}</option>
                     </select>
                 </div>
                 <button id="reset-filters" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Reset</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Réinitialiser</span>
                 </button>
             </div>
             <div class="results-summary" id="results-summary">
-                Showing {{ pages|length }} of {{ pages|length }} pages
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Showing {{ pages|length }} of {{ pages|length }} pages</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Affichage de {{ pages|length }} sur {{ pages|length }} pages</span>
             </div>
         </div>
     </div>
@@ -348,34 +404,48 @@
                     {% if page.issues.errors > 0 %}
                     <span class="issue-badge errors">
                         <i class="bi bi-x-circle-fill"></i>
-                        <span>{{ page.issues.errors }} Error{{ 's' if page.issues.errors != 1 }}</span>
+                        <span>{{ page.issues.errors }}
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Error{{ 's' if page.issues.errors != 1 }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Erreur{{ 's' if page.issues.errors != 1 }}</span>
+                        </span>
                     </span>
                     {% endif %}
 
                     {% if page.issues.warnings > 0 %}
                     <span class="issue-badge warnings">
                         <i class="bi bi-exclamation-triangle-fill"></i>
-                        <span>{{ page.issues.warnings }} Warning{{ 's' if page.issues.warnings != 1 }}</span>
+                        <span>{{ page.issues.warnings }}
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Warning{{ 's' if page.issues.warnings != 1 }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Avertissement{{ 's' if page.issues.warnings != 1 }}</span>
+                        </span>
                     </span>
                     {% endif %}
 
                     {% if page.issues.info > 0 %}
                     <span class="issue-badge info">
                         <i class="bi bi-info-circle-fill"></i>
-                        <span>{{ page.issues.info }} Info</span>
+                        <span>{{ page.issues.info }}
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Info</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Info</span>
+                        </span>
                     </span>
                     {% endif %}
 
                     {% if page.issues.discovery > 0 %}
                     <span class="issue-badge discovery">
                         <i class="bi bi-lightbulb-fill"></i>
-                        <span>{{ page.issues.discovery }} Discovery</span>
+                        <span>{{ page.issues.discovery }}
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Discovery</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Découverte</span>
+                        </span>
                     </span>
                     {% endif %}
 
                     {% if page.issues.errors == 0 and page.issues.warnings == 0 and page.issues.info == 0 and page.issues.discovery == 0 %}
                     <span class="badge bg-success">
-                        <i class="bi bi-check-circle-fill"></i> No Issues
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">No Issues</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Aucun problème</span>
                     </span>
                     {% endif %}
                 </div>
@@ -383,10 +453,14 @@
 
             <div class="page-card-footer">
                 <div class="text-muted small">
-                    <i class="bi bi-clock"></i> Tested {{ page.test_date|default('Recently') }}
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Tested {{ page.test_date|default('Recently') }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Testé {{ page.test_date|default('Récemment') }}</span>
                 </div>
                 <a href="pages/page_{{ '%03d'|format(loop.index) }}.html" class="view-details-btn">
-                    View Details <i class="bi bi-arrow-right"></i>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">View Details</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
         </div>
@@ -396,8 +470,14 @@
     <!-- No Results Message -->
     <div id="no-results" class="no-results" style="display: none;">
         <i class="bi bi-search"></i>
-        <h3>No Pages Found</h3>
-        <p>Try adjusting your search or filter criteria.</p>
+        <h3>
+            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">No Pages Found</span>
+            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Aucune page trouvée</span>
+        </h3>
+        <p>
+            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Try adjusting your search or filter criteria.</span>
+            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Essayez d'ajuster vos critères de recherche ou de filtre.</span>
+        </p>
     </div>
 </div>
 {% endblock %}
@@ -471,9 +551,13 @@
             allPages.forEach(page => page.style.display = 'none');
             visiblePages.forEach(page => page.style.display = 'flex');
 
-            // Update summary
+            // Update summary with bilingual support
             const visibleCount = visiblePages.length;
-            resultsSummary.textContent = `Showing ${visibleCount} of ${totalPages} pages`;
+            const currentLang = localStorage.getItem('reportLanguage') || '{{ language }}';
+            resultsSummary.innerHTML = `
+                <span data-lang="en" class="${currentLang === 'en' ? 'lang-active' : 'lang-inactive'}">Showing ${visibleCount} of ${totalPages} pages</span>
+                <span data-lang="fr" class="${currentLang === 'fr' ? 'lang-active' : 'lang-inactive'}">Affichage de ${visibleCount} sur ${totalPages} pages</span>
+            `;
 
             // Show/hide no results message
             if (visibleCount === 0) {

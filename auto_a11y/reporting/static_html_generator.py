@@ -13,10 +13,253 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import jinja2
-from flask_babel import force_locale, lazy_gettext
+from flask_babel import force_locale, lazy_gettext, pgettext
 
 from auto_a11y.core.database import Database
 from auto_a11y.reporting.issue_catalog import IssueCatalog
+
+
+# WCAG 2.2 French translations
+WCAG_FR_TRANSLATIONS = {
+    # Level A
+    '1.1.1': 'Contenu non textuel',
+    '1.2.1': 'Contenus seulement audio et seulement vidéo (pré-enregistrés)',
+    '1.2.2': 'Sous-titres (pré-enregistrés)',
+    '1.2.3': 'Audio-description ou version de remplacement pour un média temporel (pré-enregistré)',
+    '1.3.1': 'Information et relations',
+    '1.3.2': 'Ordre séquentiel logique',
+    '1.3.3': 'Caractéristiques sensorielles',
+    '1.4.1': 'Utilisation de la couleur',
+    '1.4.2': 'Contrôle du son',
+    '2.1.1': 'Clavier',
+    '2.1.2': 'Pas de piège au clavier',
+    '2.1.4': 'Raccourcis clavier utilisant des caractères',
+    '2.2.1': 'Réglage du délai',
+    '2.2.2': 'Mettre en pause, arrêter, masquer',
+    '2.4.1': 'Contourner des blocs',
+    '2.4.2': 'Titre de page',
+    '2.4.3': 'Parcours du focus',
+    '2.4.4': 'Fonction du lien (selon le contexte)',
+    '3.1.1': 'Langue de la page',
+    '3.2.1': 'Au focus',
+    '3.2.2': 'À la saisie',
+    '3.3.1': 'Identification des erreurs',
+    '3.3.2': 'Étiquettes ou instructions',
+    '3.2.6': 'Aide cohérente',
+    '3.3.7': 'Saisie redondante',
+    '4.1.2': 'Nom, rôle et valeur',
+    '4.1.3': 'Messages d\'état',
+    # Level AA
+    '1.2.4': 'Sous-titres (en direct)',
+    '1.2.5': 'Audio-description (pré-enregistrée)',
+    '1.3.4': 'Orientation',
+    '1.3.5': 'Identifier la finalité de la saisie',
+    '1.4.3': 'Contraste (minimum)',
+    '1.4.4': 'Redimensionnement du texte',
+    '1.4.5': 'Texte sous forme d\'image',
+    '1.4.10': 'Redistribution',
+    '1.4.11': 'Contraste du contenu non textuel',
+    '1.4.12': 'Espacement du texte',
+    '1.4.13': 'Contenu au survol ou au focus',
+    '2.4.5': 'Accès multiples',
+    '2.4.6': 'En-têtes et étiquettes',
+    '2.4.7': 'Visibilité du focus',
+    '2.4.11': 'Focus non masqué (minimum)',
+    '2.5.1': 'Gestes pour le contrôle du pointeur',
+    '2.5.2': 'Annulation de l\'action du pointeur',
+    '2.5.3': 'Étiquette dans le nom',
+    '2.5.7': 'Mouvements de glissement',
+    '2.5.8': 'Taille de la cible (minimum)',
+    '3.2.3': 'Navigation cohérente',
+    '3.2.4': 'Identification cohérente',
+    '3.3.3': 'Suggestion après une erreur',
+    '3.3.4': 'Prévention des erreurs (juridiques, financières, de données)',
+    '3.3.8': 'Authentification accessible (minimum)',
+    # Level AAA
+    '1.2.6': 'Langue des signes (pré-enregistrée)',
+    '1.2.7': 'Audio-description étendue (pré-enregistrée)',
+    '1.2.8': 'Version de remplacement pour un média temporel (pré-enregistrée)',
+    '1.2.9': 'Seulement audio (en direct)',
+    '1.3.6': 'Identifier la fonction',
+    '1.4.6': 'Contraste (amélioré)',
+    '1.4.7': 'Arrière-plan sonore de faible volume ou absent',
+    '1.4.8': 'Présentation visuelle',
+    '1.4.9': 'Texte sous forme d\'image (sans exception)',
+    '2.1.3': 'Clavier (pas d\'exception)',
+    '2.2.3': 'Pas de délai d\'exécution',
+    '2.2.4': 'Interruptions',
+    '2.2.5': 'Nouvelle authentification',
+    '2.2.6': 'Délais d\'expiration',
+    '2.3.1': 'Pas plus de trois flashs ou sous le seuil critique',
+    '2.3.2': 'Trois flashs',
+    '2.3.3': 'Animation résultant d\'interactions',
+    '2.4.8': 'Localisation',
+    '2.4.9': 'Fonction du lien (lien uniquement)',
+    '2.4.10': 'En-têtes de section',
+    '2.4.12': 'Focus non masqué (amélioré)',
+    '2.4.13': 'Apparence du focus',
+    '2.5.4': 'Activation par le mouvement',
+    '2.5.5': 'Taille de la cible (amélioré)',
+    '2.5.6': 'Modalités d\'entrées concurrentes',
+    '3.1.2': 'Langue d\'un passage',
+    '3.1.3': 'Mots rares',
+    '3.1.4': 'Abréviations',
+    '3.1.5': 'Niveau de lecture',
+    '3.1.6': 'Prononciation',
+    '3.2.5': 'Changement à la demande',
+    '3.3.5': 'Aide',
+    '3.3.6': 'Prévention des erreurs (toutes)',
+    '3.3.9': 'Authentification accessible (amélioré)',
+}
+
+# Level translations
+WCAG_LEVEL_TRANSLATIONS = {
+    'en': {
+        'A': 'Level A',
+        'AA': 'Level AA',
+        'AAA': 'Level AAA',
+    },
+    'fr': {
+        'A': 'Niveau A',
+        'AA': 'Niveau AA',
+        'AAA': 'Niveau AAA',
+    }
+}
+
+# WCAG URL slug mappings for Understanding and Quick Reference pages
+WCAG_URL_SLUGS = {
+    '1.1.1': 'non-text-content',
+    '1.2.1': 'audio-only-and-video-only-prerecorded',
+    '1.2.2': 'captions-prerecorded',
+    '1.2.3': 'audio-description-or-media-alternative-prerecorded',
+    '1.2.4': 'captions-live',
+    '1.2.5': 'audio-description-prerecorded',
+    '1.2.6': 'sign-language-prerecorded',
+    '1.2.7': 'extended-audio-description-prerecorded',
+    '1.2.8': 'media-alternative-prerecorded',
+    '1.2.9': 'audio-only-live',
+    '1.3.1': 'info-and-relationships',
+    '1.3.2': 'meaningful-sequence',
+    '1.3.3': 'sensory-characteristics',
+    '1.3.4': 'orientation',
+    '1.3.5': 'identify-input-purpose',
+    '1.3.6': 'identify-purpose',
+    '1.4.1': 'use-of-color',
+    '1.4.2': 'audio-control',
+    '1.4.3': 'contrast-minimum',
+    '1.4.4': 'resize-text',
+    '1.4.5': 'images-of-text',
+    '1.4.6': 'contrast-enhanced',
+    '1.4.7': 'low-or-no-background-audio',
+    '1.4.8': 'visual-presentation',
+    '1.4.9': 'images-of-text-no-exception',
+    '1.4.10': 'reflow',
+    '1.4.11': 'non-text-contrast',
+    '1.4.12': 'text-spacing',
+    '1.4.13': 'content-on-hover-or-focus',
+    '2.1.1': 'keyboard',
+    '2.1.2': 'no-keyboard-trap',
+    '2.1.3': 'keyboard-no-exception',
+    '2.1.4': 'character-key-shortcuts',
+    '2.2.1': 'timing-adjustable',
+    '2.2.2': 'pause-stop-hide',
+    '2.2.3': 'no-timing',
+    '2.2.4': 'interruptions',
+    '2.2.5': 're-authenticating',
+    '2.2.6': 'timeouts',
+    '2.3.1': 'three-flashes-or-below-threshold',
+    '2.3.2': 'three-flashes',
+    '2.3.3': 'animation-from-interactions',
+    '2.4.1': 'bypass-blocks',
+    '2.4.2': 'page-titled',
+    '2.4.3': 'focus-order',
+    '2.4.4': 'link-purpose-in-context',
+    '2.4.5': 'multiple-ways',
+    '2.4.6': 'headings-and-labels',
+    '2.4.7': 'focus-visible',
+    '2.4.8': 'location',
+    '2.4.9': 'link-purpose-link-only',
+    '2.4.10': 'section-headings',
+    '2.4.11': 'focus-not-obscured-minimum',
+    '2.4.12': 'focus-not-obscured-enhanced',
+    '2.4.13': 'focus-appearance',
+    '2.5.1': 'pointer-gestures',
+    '2.5.2': 'pointer-cancellation',
+    '2.5.3': 'label-in-name',
+    '2.5.4': 'motion-actuation',
+    '2.5.5': 'target-size-enhanced',
+    '2.5.6': 'concurrent-input-mechanisms',
+    '2.5.7': 'dragging-movements',
+    '2.5.8': 'target-size-minimum',
+    '3.1.1': 'language-of-page',
+    '3.1.2': 'language-of-parts',
+    '3.1.3': 'unusual-words',
+    '3.1.4': 'abbreviations',
+    '3.1.5': 'reading-level',
+    '3.1.6': 'pronunciation',
+    '3.2.1': 'on-focus',
+    '3.2.2': 'on-input',
+    '3.2.3': 'consistent-navigation',
+    '3.2.4': 'consistent-identification',
+    '3.2.5': 'change-on-request',
+    '3.2.6': 'consistent-help',
+    '3.3.1': 'error-identification',
+    '3.3.2': 'labels-or-instructions',
+    '3.3.3': 'error-suggestion',
+    '3.3.4': 'error-prevention-legal-financial-data',
+    '3.3.5': 'help',
+    '3.3.6': 'error-prevention-all',
+    '3.3.7': 'redundant-entry',
+    '3.3.8': 'accessible-authentication-minimum',
+    '3.3.9': 'accessible-authentication-enhanced',
+    '4.1.1': 'parsing',
+    '4.1.2': 'name-role-value',
+    '4.1.3': 'status-messages',
+}
+
+
+def translate_wcag_criterion(criterion_text: str, language: str = 'en') -> str:
+    """
+    Translate a WCAG criterion from English to the specified language.
+
+    Args:
+        criterion_text: WCAG criterion in format "2.5.3 Label in Name (Level A)" or "1.3.1, 3.3.2"
+        language: Target language ('en' or 'fr')
+
+    Returns:
+        Translated criterion text
+    """
+    if language == 'en':
+        return criterion_text
+
+    import re
+
+    # Handle multiple criteria separated by commas
+    if ',' in criterion_text:
+        criteria = [c.strip() for c in criterion_text.split(',')]
+        translated = [translate_wcag_criterion(c, language) for c in criteria]
+        return ', '.join(translated)
+
+    # Parse format like "2.5.3 Label in Name (Level A)"
+    match = re.match(r'([\d.]+)\s+([^(]+)\s*\(Level\s+(A{1,3})\)', criterion_text)
+    if match:
+        criterion_num = match.group(1)
+        level = match.group(3)
+
+        french_title = WCAG_FR_TRANSLATIONS.get(criterion_num, match.group(2).strip())
+        french_level = WCAG_LEVEL_TRANSLATIONS['fr'].get(level, f'Niveau {level}')
+
+        return f"{criterion_num} {french_title} ({french_level})"
+
+    # Parse format like "2.5.3" (just the number)
+    match = re.match(r'^([\d.]+)$', criterion_text.strip())
+    if match:
+        criterion_num = match.group(1)
+        french_title = WCAG_FR_TRANSLATIONS.get(criterion_num, criterion_text)
+        return f"{criterion_num} {french_title}" if french_title != criterion_text else criterion_text
+
+    # If no pattern matches, return original
+    return criterion_text
 
 
 class StaticHTMLReportGenerator:
@@ -169,11 +412,19 @@ class StaticHTMLReportGenerator:
                 'header': 'Header',
 
                 # Touchpoints
+                'accessible_names': 'Accessible Names',
+                'colors': 'Colors',
+                'electronic_documents': 'Electronic Documents',
+                'event_handling': 'Event Handling',
                 'fonts': 'Fonts',
+                'forms': 'Forms',
                 'headings': 'Headings',
                 'images': 'Images',
                 'landmarks': 'Landmarks',
                 'links': 'Links',
+                'lists': 'Lists',
+                'page': 'Page',
+                'styles': 'Styles',
                 'color_contrast': 'Color Contrast',
                 'tabindex': 'Tab Index',
 
@@ -188,6 +439,22 @@ class StaticHTMLReportGenerator:
                 'hidden': 'hidden',
                 'text': 'text',
                 'search': 'search',
+
+                # Static report index page
+                'search_by_page_title_or_url': 'Search by page title or URL...',
+                'all_pages': 'All Pages',
+                'has_errors': 'Has Errors',
+                'has_warnings': 'Has Warnings',
+                'no_errors': 'No Errors',
+                'sort_by_title': 'Sort by Title',
+                'errors_high_to_low': 'Errors (High to Low)',
+                'errors_low_to_high': 'Errors (Low to High)',
+                'score_low_to_high': 'Score (Low to High)',
+                'score_high_to_low': 'Score (High to Low)',
+                'reset': 'Reset',
+                'view_details': 'View Details',
+                'no_pages_found': 'No Pages Found',
+                'try_adjusting_search': 'Try adjusting your search or filter criteria.',
             },
             'fr': {
                 # Index page
@@ -233,12 +500,14 @@ class StaticHTMLReportGenerator:
                 'tests_passed': 'tests réussis',
                 'n_a': 'N/D',
                 'no_data_available': 'Aucune donnée disponible',
+                'based_on_automated_checks': 'Basé sur des vérifications automatisées',
                 'filter_test_results': 'Filtrer les résultats',
                 'clear_all_filters': 'Effacer tous les filtres',
                 'active_filters': 'Filtres actifs',
                 'showing': 'Affichage',
                 'of': 'sur',
                 'items': 'éléments',
+                'no_items': 'Aucun élément',
                 'issue_type': 'Type de problème',
                 'impact_level': 'Niveau d\'impact',
                 'high': 'Élevé',
@@ -300,11 +569,19 @@ class StaticHTMLReportGenerator:
                 'header': 'En-tête',
 
                 # Touchpoints
+                'accessible_names': 'Noms accessibles',
+                'colors': 'Couleurs',
+                'electronic_documents': 'Documents électroniques',
+                'event_handling': 'Gestion des événements',
                 'fonts': 'Polices',
+                'forms': 'Formulaires',
                 'headings': 'Titres',
                 'images': 'Images',
                 'landmarks': 'Points de repère',
                 'links': 'Liens',
+                'lists': 'Listes',
+                'page': 'Page',
+                'styles': 'Styles',
                 'color_contrast': 'Contraste des couleurs',
                 'tabindex': 'Index de tabulation',
 
@@ -319,6 +596,22 @@ class StaticHTMLReportGenerator:
                 'hidden': 'caché',
                 'text': 'texte',
                 'search': 'recherche',
+
+                # Static report index page
+                'search_by_page_title_or_url': 'Rechercher par titre de page ou URL...',
+                'all_pages': 'Toutes les pages',
+                'has_errors': 'Avec erreurs',
+                'has_warnings': 'Avec avertissements',
+                'no_errors': 'Sans erreurs',
+                'sort_by_title': 'Trier par titre',
+                'errors_high_to_low': 'Erreurs (Élevé à faible)',
+                'errors_low_to_high': 'Erreurs (Faible à élevé)',
+                'score_low_to_high': 'Score (Faible à élevé)',
+                'score_high_to_low': 'Score (Élevé à faible)',
+                'reset': 'Réinitialiser',
+                'view_details': 'Voir les détails',
+                'no_pages_found': 'Aucune page trouvée',
+                'try_adjusting_search': 'Essayez d\'ajuster vos critères de recherche ou de filtre.',
             }
         }
         return translations
@@ -338,18 +631,33 @@ class StaticHTMLReportGenerator:
             return parts[0] if parts else criterion
 
         def wcag_understanding_url(criterion_code: str) -> str:
-            """Generate WCAG Understanding URL"""
-            return f"https://www.w3.org/WAI/WCAG22/Understanding/{criterion_code}"
+            """Generate WCAG Understanding URL with correct slug
+
+            Note: Both English and French link to English Understanding pages as the
+            official French WCAG translation does (marked as 'en anglais')
+            """
+            slug = WCAG_URL_SLUGS.get(criterion_code, criterion_code)
+            return f"https://www.w3.org/WAI/WCAG22/Understanding/{slug}"
 
         def wcag_quickref_url(criterion_code: str) -> str:
-            """Generate WCAG Quick Reference URL"""
-            return f"https://www.w3.org/WAI/WCAG22/quickref/#{criterion_code}"
+            """Generate WCAG Quick Reference URL with correct slug
+
+            Note: Both English and French link to English Quick Reference pages as the
+            official French WCAG translation does (marked as 'en anglais')
+            """
+            slug = WCAG_URL_SLUGS.get(criterion_code, criterion_code)
+            return f"https://www.w3.org/WAI/WCAG22/quickref/#{slug}"
+
+        def translate_wcag(criterion_text: str, language: str = 'en') -> str:
+            """Translate WCAG criterion text"""
+            return translate_wcag_criterion(criterion_text, language)
 
         # Register filters
         self.template_env.filters['error_code_only'] = error_code_only
         self.template_env.filters['wcag_name'] = wcag_name
         self.template_env.filters['wcag_understanding_url'] = wcag_understanding_url
         self.template_env.filters['wcag_quickref_url'] = wcag_quickref_url
+        self.template_env.filters['translate_wcag'] = translate_wcag
 
     def _read_embedded_assets(self) -> dict:
         """Read Bootstrap CSS and JS files for embedding inline"""
@@ -515,7 +823,7 @@ class StaticHTMLReportGenerator:
 
             # Process violations (errors)
             for violation in latest_result.violations or []:
-                violations.append({
+                issue_dict = {
                     'id': violation.id,
                     'description': violation.description,
                     'touchpoint': violation.touchpoint,
@@ -524,11 +832,38 @@ class StaticHTMLReportGenerator:
                     'html_snippet': violation.html,
                     'metadata': violation.metadata,
                     'wcag_criteria': violation.wcag_criteria
-                })
+                }
+
+                # Enrich with IssueCatalog for bilingual descriptions
+                with force_locale('en'):
+                    enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+                with force_locale('fr'):
+                    enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                # Add bilingual descriptions
+                issue_dict['description_en'] = enriched_en.get('description_full', enriched_en.get('description', violation.description or violation.id))
+                issue_dict['description_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', violation.description or violation.id))
+
+                # Merge enriched metadata for bilingual support
+                if not issue_dict['metadata']:
+                    issue_dict['metadata'] = {}
+                # Copy bilingual metadata from original issue (already translated when stored in DB)
+                orig_metadata = violation.metadata if hasattr(violation, 'metadata') and violation.metadata else {}
+                issue_dict['metadata']['what_en'] = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
+                issue_dict['metadata']['what_fr'] = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
+                issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
+                issue_dict['metadata']['why_fr'] = orig_metadata.get('why_fr', enriched_fr.get('why_it_matters', ''))
+                issue_dict['metadata']['who_en'] = orig_metadata.get('who_en', enriched_en.get('who_it_affects', ''))
+                issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
+                issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
+                issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
+                issue_dict['metadata']['wcag_full'] = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+
+                violations.append(issue_dict)
 
             # Process warnings
             for warning in latest_result.warnings or []:
-                warnings.append({
+                issue_dict = {
                     'id': warning.id,
                     'description': warning.description,
                     'touchpoint': warning.touchpoint,
@@ -537,11 +872,38 @@ class StaticHTMLReportGenerator:
                     'html_snippet': warning.html,
                     'metadata': warning.metadata,
                     'wcag_criteria': warning.wcag_criteria
-                })
+                }
+
+                # Enrich with IssueCatalog for bilingual descriptions
+                with force_locale('en'):
+                    enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+                with force_locale('fr'):
+                    enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                # Add bilingual descriptions
+                issue_dict['description_en'] = enriched_en.get('description_full', enriched_en.get('description', warning.description or warning.id))
+                issue_dict['description_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', warning.description or warning.id))
+
+                # Merge enriched metadata for bilingual support
+                if not issue_dict['metadata']:
+                    issue_dict['metadata'] = {}
+                # Copy bilingual metadata from original issue (already translated when stored in DB)
+                orig_metadata = violation.metadata if hasattr(violation, 'metadata') and violation.metadata else {}
+                issue_dict['metadata']['what_en'] = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
+                issue_dict['metadata']['what_fr'] = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
+                issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
+                issue_dict['metadata']['why_fr'] = orig_metadata.get('why_fr', enriched_fr.get('why_it_matters', ''))
+                issue_dict['metadata']['who_en'] = orig_metadata.get('who_en', enriched_en.get('who_it_affects', ''))
+                issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
+                issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
+                issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
+                issue_dict['metadata']['wcag_full'] = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+
+                warnings.append(issue_dict)
 
             # Process info items
             for info_item in latest_result.info or []:
-                informational.append({
+                issue_dict = {
                     'id': info_item.id,
                     'description': info_item.description,
                     'touchpoint': info_item.touchpoint,
@@ -550,12 +912,43 @@ class StaticHTMLReportGenerator:
                     'html_snippet': info_item.html,
                     'metadata': info_item.metadata,
                     'wcag_criteria': info_item.wcag_criteria
-                })
+                }
+
+                # Enrich with IssueCatalog for bilingual descriptions
+                with force_locale('en'):
+                    enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+                with force_locale('fr'):
+                    enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                # Add bilingual descriptions
+                issue_dict['description_en'] = enriched_en.get('description_full', enriched_en.get('description', info_item.description or info_item.id))
+                issue_dict['description_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', info_item.description or info_item.id))
+
+                # Merge enriched metadata for bilingual support
+                if not issue_dict['metadata']:
+                    issue_dict['metadata'] = {}
+                enriched_metadata_en = enriched_en.get('metadata', {})
+                enriched_metadata_fr = enriched_fr.get('metadata', {})
+                issue_dict['metadata']['what_en'] = enriched_metadata_en.get('what', '')
+                issue_dict['metadata']['what_fr'] = enriched_metadata_fr.get('what', '')
+                issue_dict['metadata']['what_generic_en'] = enriched_metadata_en.get('what_generic', '')
+                issue_dict['metadata']['what_generic_fr'] = enriched_metadata_fr.get('what_generic', '')
+                issue_dict['metadata']['title_en'] = enriched_metadata_en.get('title', '')
+                issue_dict['metadata']['title_fr'] = enriched_metadata_fr.get('title', '')
+                issue_dict['metadata']['why_en'] = enriched_metadata_en.get('why', '')
+                issue_dict['metadata']['why_fr'] = enriched_metadata_fr.get('why', '')
+                issue_dict['metadata']['who_en'] = enriched_metadata_en.get('who', '')
+                issue_dict['metadata']['who_fr'] = enriched_metadata_fr.get('who', '')
+                issue_dict['metadata']['full_remediation_en'] = enriched_metadata_en.get('full_remediation', '')
+                issue_dict['metadata']['full_remediation_fr'] = enriched_metadata_fr.get('full_remediation', '')
+                issue_dict['metadata']['wcag_full'] = enriched_metadata_en.get('wcag_full', [])
+
+                informational.append(issue_dict)
 
             # Process discovery items (if included)
             if include_discovery:
                 for disco_item in latest_result.discovery or []:
-                    discovery.append({
+                    issue_dict = {
                         'id': disco_item.id,
                         'description': disco_item.description,
                         'touchpoint': disco_item.touchpoint,
@@ -564,7 +957,38 @@ class StaticHTMLReportGenerator:
                         'html_snippet': disco_item.html,
                         'metadata': disco_item.metadata,
                         'wcag_criteria': disco_item.wcag_criteria
-                    })
+                    }
+
+                    # Enrich with IssueCatalog for bilingual descriptions
+                    with force_locale('en'):
+                        enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+                    with force_locale('fr'):
+                        enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                    # Add bilingual descriptions
+                    issue_dict['description_en'] = enriched_en.get('description_full', enriched_en.get('description', disco_item.description or disco_item.id))
+                    issue_dict['description_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', disco_item.description or disco_item.id))
+
+                    # Merge enriched metadata for bilingual support
+                    if not issue_dict['metadata']:
+                        issue_dict['metadata'] = {}
+                    enriched_metadata_en = enriched_en.get('metadata', {})
+                    enriched_metadata_fr = enriched_fr.get('metadata', {})
+                    issue_dict['metadata']['what_en'] = enriched_metadata_en.get('what', '')
+                    issue_dict['metadata']['what_fr'] = enriched_metadata_fr.get('what', '')
+                    issue_dict['metadata']['what_generic_en'] = enriched_metadata_en.get('what_generic', '')
+                    issue_dict['metadata']['what_generic_fr'] = enriched_metadata_fr.get('what_generic', '')
+                    issue_dict['metadata']['title_en'] = enriched_metadata_en.get('title', '')
+                    issue_dict['metadata']['title_fr'] = enriched_metadata_fr.get('title', '')
+                    issue_dict['metadata']['why_en'] = enriched_metadata_en.get('why', '')
+                    issue_dict['metadata']['why_fr'] = enriched_metadata_fr.get('why', '')
+                    issue_dict['metadata']['who_en'] = enriched_metadata_en.get('who', '')
+                    issue_dict['metadata']['who_fr'] = enriched_metadata_fr.get('who', '')
+                    issue_dict['metadata']['full_remediation_en'] = enriched_metadata_en.get('full_remediation', '')
+                    issue_dict['metadata']['full_remediation_fr'] = enriched_metadata_fr.get('full_remediation', '')
+                    issue_dict['metadata']['wcag_full'] = enriched_metadata_en.get('wcag_full', [])
+
+                    discovery.append(issue_dict)
 
             # Calculate score
             score = self._calculate_page_score(latest_result)
@@ -585,7 +1009,7 @@ class StaticHTMLReportGenerator:
 
                     # Process violations for this state
                     for violation in state_result.violations or []:
-                        state_violations.append({
+                        issue_dict = {
                             'id': violation.id,
                             'description': violation.description,
                             'touchpoint': violation.touchpoint,
@@ -594,11 +1018,42 @@ class StaticHTMLReportGenerator:
                             'html_snippet': violation.html,
                             'metadata': violation.metadata,
                             'wcag_criteria': violation.wcag_criteria
-                        })
+                        }
+
+                        # Enrich with IssueCatalog for bilingual descriptions
+                        with force_locale('en'):
+                            enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+                        with force_locale('fr'):
+                            enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                        # Add bilingual descriptions
+                        issue_dict['description_en'] = enriched_en.get('description_full', enriched_en.get('description', violation.description or violation.id))
+                        issue_dict['description_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', violation.description or violation.id))
+
+                        # Merge enriched metadata for bilingual support
+                        if not issue_dict['metadata']:
+                            issue_dict['metadata'] = {}
+                        enriched_metadata_en = enriched_en.get('metadata', {})
+                        enriched_metadata_fr = enriched_fr.get('metadata', {})
+                        issue_dict['metadata']['what_en'] = enriched_metadata_en.get('what', '')
+                        issue_dict['metadata']['what_fr'] = enriched_metadata_fr.get('what', '')
+                        issue_dict['metadata']['what_generic_en'] = enriched_metadata_en.get('what_generic', '')
+                        issue_dict['metadata']['what_generic_fr'] = enriched_metadata_fr.get('what_generic', '')
+                        issue_dict['metadata']['title_en'] = enriched_metadata_en.get('title', '')
+                        issue_dict['metadata']['title_fr'] = enriched_metadata_fr.get('title', '')
+                        issue_dict['metadata']['why_en'] = enriched_metadata_en.get('why', '')
+                        issue_dict['metadata']['why_fr'] = enriched_metadata_fr.get('why', '')
+                        issue_dict['metadata']['who_en'] = enriched_metadata_en.get('who', '')
+                        issue_dict['metadata']['who_fr'] = enriched_metadata_fr.get('who', '')
+                        issue_dict['metadata']['full_remediation_en'] = enriched_metadata_en.get('full_remediation', '')
+                        issue_dict['metadata']['full_remediation_fr'] = enriched_metadata_fr.get('full_remediation', '')
+                        issue_dict['metadata']['wcag_full'] = enriched_metadata_en.get('wcag_full', [])
+
+                        state_violations.append(issue_dict)
 
                     # Process warnings for this state
                     for warning in state_result.warnings or []:
-                        state_warnings.append({
+                        issue_dict = {
                             'id': warning.id,
                             'description': warning.description,
                             'touchpoint': warning.touchpoint,
@@ -607,7 +1062,38 @@ class StaticHTMLReportGenerator:
                             'html_snippet': warning.html,
                             'metadata': warning.metadata,
                             'wcag_criteria': warning.wcag_criteria
-                        })
+                        }
+
+                        # Enrich with IssueCatalog for bilingual descriptions
+                        with force_locale('en'):
+                            enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+                        with force_locale('fr'):
+                            enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                        # Add bilingual descriptions
+                        issue_dict['description_en'] = enriched_en.get('description_full', enriched_en.get('description', warning.description or warning.id))
+                        issue_dict['description_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', warning.description or warning.id))
+
+                        # Merge enriched metadata for bilingual support
+                        if not issue_dict['metadata']:
+                            issue_dict['metadata'] = {}
+                        enriched_metadata_en = enriched_en.get('metadata', {})
+                        enriched_metadata_fr = enriched_fr.get('metadata', {})
+                        issue_dict['metadata']['what_en'] = enriched_metadata_en.get('what', '')
+                        issue_dict['metadata']['what_fr'] = enriched_metadata_fr.get('what', '')
+                        issue_dict['metadata']['what_generic_en'] = enriched_metadata_en.get('what_generic', '')
+                        issue_dict['metadata']['what_generic_fr'] = enriched_metadata_fr.get('what_generic', '')
+                        issue_dict['metadata']['title_en'] = enriched_metadata_en.get('title', '')
+                        issue_dict['metadata']['title_fr'] = enriched_metadata_fr.get('title', '')
+                        issue_dict['metadata']['why_en'] = enriched_metadata_en.get('why', '')
+                        issue_dict['metadata']['why_fr'] = enriched_metadata_fr.get('why', '')
+                        issue_dict['metadata']['who_en'] = enriched_metadata_en.get('who', '')
+                        issue_dict['metadata']['who_fr'] = enriched_metadata_fr.get('who', '')
+                        issue_dict['metadata']['full_remediation_en'] = enriched_metadata_en.get('full_remediation', '')
+                        issue_dict['metadata']['full_remediation_fr'] = enriched_metadata_fr.get('full_remediation', '')
+                        issue_dict['metadata']['wcag_full'] = enriched_metadata_en.get('wcag_full', [])
+
+                        state_warnings.append(issue_dict)
 
                     # Get state description - handle both object and dict
                     state_description = f"State {state_result.state_sequence if hasattr(state_result, 'state_sequence') else 0}"
@@ -871,6 +1357,12 @@ class StaticHTMLReportGenerator:
         """Generate index.html file"""
         template = self.template_env.get_template('static_report/index.html')
 
+        # Get translations for both languages
+        all_translations = self._get_translations()
+        translations_en = all_translations['en']
+        translations_fr = all_translations['fr']
+        t = all_translations[self.language]  # Current language translations
+
         with force_locale(self.language):
             html = template.render(
                 pages=pages_data,
@@ -882,7 +1374,13 @@ class StaticHTMLReportGenerator:
                 generation_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 current_page='index',
                 asset_path='assets/',
-                index_path=''
+                index_path='',
+                # Language support
+                language=self.language,
+                translations_en=translations_en,
+                translations_fr=translations_fr,
+                translations_json=json.dumps({'en': translations_en, 'fr': translations_fr}),
+                t=t
             )
 
         (report_dir / 'index.html').write_text(html, encoding='utf-8')
@@ -967,6 +1465,12 @@ class StaticHTMLReportGenerator:
         if filters_js_path.exists():
             filters_js = filters_js_path.read_text(encoding='utf-8')
 
+        # Get translations for both languages
+        all_translations = self._get_translations()
+        translations_en = all_translations['en']
+        translations_fr = all_translations['fr']
+        t = all_translations[self.language]  # Current language translations
+
         for index, page in enumerate(pages_data, start=1):
             # Collect all unique touchpoints for filters
             all_touchpoints = set()
@@ -1007,6 +1511,12 @@ class StaticHTMLReportGenerator:
                     generation_date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     asset_path='../assets/',
                     index_path='../',
+                    # Language support
+                    language=self.language,
+                    translations_en=translations_en,
+                    translations_fr=translations_fr,
+                    translations_json=json.dumps({'en': translations_en, 'fr': translations_fr}),
+                    t=t,
                     # Inlined CSS and JS
                     bootstrap_css=bootstrap_css,
                     bootstrap_icons_css=bootstrap_icons_css,

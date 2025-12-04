@@ -249,7 +249,10 @@
     <strong>WCAG <span data-i18n="success_criteria">{{ t.get('success_criteria', 'Success Criteria:') }}</span></strong>
     <ul>
     {% for criterion in violation.metadata.wcag_full %}
-        <li>{{ criterion|safe }}</li>
+        <li>
+            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ criterion|translate_wcag('en')|safe }}</span>
+            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ criterion|translate_wcag('fr')|safe }}</span>
+        </li>
     {% endfor %}
     </ul>
 </div>
@@ -283,18 +286,31 @@
             {% for criterion in violation.metadata.wcag_full|sort %}
             <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
                 <p style="margin: 0 0 8px 0; font-weight: bold;">
-                    WCAG {{ criterion|safe }}
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">WCAG {{ criterion|translate_wcag('en')|safe }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">WCAG {{ criterion|translate_wcag('fr')|safe }}</span>
                 </p>
 
                 {% set criterion_code = criterion.split()[0] %}
                 <p style="margin: 0 0 5px 0;">
-                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion_code }}" target="_blank">
-                        <span data-i18n="more_about">{{ t.get('more_about', 'More about') }}</span> {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                    <a href="{{ criterion_code|wcag_understanding_url }}" target="_blank">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                            {{ translations_en.get('more_about', 'More about') }} {{ criterion_code }}
+                        </span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                            {{ translations_fr.get('more_about', 'En savoir plus sur') }} {{ criterion_code }} (en anglais)
+                        </span>
+                        <i class="bi bi-box-arrow-up-right"></i>
                     </a>
                 </p>
                 <p style="margin: 0;">
-                    <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion_code }}" target="_blank">
-                        <span data-i18n="ways_to_meet">{{ t.get('ways_to_meet', 'Ways to meet') }}</span> {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                    <a href="{{ criterion_code|wcag_quickref_url }}" target="_blank">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                            {{ translations_en.get('ways_to_meet', 'Ways to meet') }} {{ criterion_code }}
+                        </span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                            {{ translations_fr.get('ways_to_meet', 'Comment satisfaire') }} {{ criterion_code }} (en anglais)
+                        </span>
+                        <i class="bi bi-box-arrow-up-right"></i>
                     </a>
                 </p>
             </div>

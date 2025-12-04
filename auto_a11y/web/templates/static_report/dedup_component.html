@@ -329,55 +329,79 @@
                     <!-- Issue Type Alert -->
                     <div class="alert alert-{{ alert_type }}">
                         <h6 class="alert-heading">
-                            <span data-lang="en" style="display: {{ 'block' if language == 'en' else 'none' }}">{{ issue.description_en }}</span>
-                            <span data-lang="fr" style="display: {{ 'block' if language == 'fr' else 'none' }}">{{ issue.description_fr }}</span>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ issue.description_en }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ issue.description_fr }}</span>
                         </h6>
                     </div>
 
-                    <h6 class="text-{{ alert_type }} mb-2" data-i18n="about_this_issue">{{ t['about_this_issue'] }}</h6>
+                    <h6 class="text-{{ alert_type }} mb-2">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['about_this_issue'] }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['about_this_issue'] }}</span>
+                    </h6>
 
                     <!-- What -->
                     <div class="mb-3">
-                        <strong data-i18n="what_the_issue_is">{{ t['what_the_issue_is'] }}</strong>
-                        <p data-lang="en" style="display: {{ 'block' if language == 'en' else 'none' }}">{{ issue.description_en }}</p>
-                        <p data-lang="fr" style="display: {{ 'block' if language == 'fr' else 'none' }}">{{ issue.description_fr }}</p>
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['what_the_issue_is'] }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['what_the_issue_is'] }}</span>
+                        </strong>
+                        <p data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ issue.description_en }}</p>
+                        <p data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ issue.description_fr }}</p>
                     </div>
 
                     <!-- Why -->
                     {% if issue.why_en or issue.why_fr %}
                     <div class="mb-3">
-                        <strong data-i18n="why_this_is_important">{{ t['why_this_is_important'] }}</strong>
-                        {% if issue.why_en %}<p data-lang="en" style="display: {{ 'block' if language == 'en' else 'none' }}">{{ issue.why_en }}</p>{% endif %}
-                        {% if issue.why_fr %}<p data-lang="fr" style="display: {{ 'block' if language == 'fr' else 'none' }}">{{ issue.why_fr }}</p>{% endif %}
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['why_this_is_important'] }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['why_this_is_important'] }}</span>
+                        </strong>
+                        {% if issue.why_en %}<p data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ issue.why_en }}</p>{% endif %}
+                        {% if issue.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ issue.why_fr }}</p>{% endif %}
                     </div>
                     {% endif %}
 
                     <!-- Who -->
                     {% if issue.who_en or issue.who_fr %}
                     <div class="mb-3">
-                        <strong data-i18n="who_it_affects">{{ t['who_it_affects'] }}</strong>
-                        {% if issue.who_en %}<p data-lang="en" style="display: {{ 'block' if language == 'en' else 'none' }}">{{ issue.who_en }}</p>{% endif %}
-                        {% if issue.who_fr %}<p data-lang="fr" style="display: {{ 'block' if language == 'fr' else 'none' }}">{{ issue.who_fr }}</p>{% endif %}
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['who_it_affects'] }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['who_it_affects'] }}</span>
+                        </strong>
+                        {% if issue.who_en %}<p data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ issue.who_en }}</p>{% endif %}
+                        {% if issue.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ issue.who_fr }}</p>{% endif %}
                     </div>
                     {% endif %}
 
                     <!-- How to Fix -->
                     {% if issue.full_remediation_en or issue.full_remediation_fr %}
                     <div class="mb-3">
-                        <strong data-i18n="how_to_remediate">{{ t['how_to_remediate'] }}</strong>
-                        {% if issue.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace; display: {{ 'block' if language == 'en' else 'none' }}">{{ issue.full_remediation_en }}</div>{% endif %}
-                        {% if issue.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace; display: {{ 'block' if language == 'fr' else 'none' }}">{{ issue.full_remediation_fr }}</div>{% endif %}
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['how_to_remediate'] }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['how_to_remediate'] }}</span>
+                        </strong>
+                        {% if issue.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if language == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ issue.full_remediation_en }}</div>{% endif %}
+                        {% if issue.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if language == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ issue.full_remediation_fr }}</div>{% endif %}
                     </div>
                     {% endif %}
 
                     <!-- WCAG Criteria -->
                     {% if issue.wcag_full %}
-                    <h6 class="text-{{ alert_type }} mb-2 mt-4" data-i18n="relevant_test_criteria">{{ t['relevant_test_criteria'] }}</h6>
+                    <h6 class="text-{{ alert_type }} mb-2 mt-4">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['relevant_test_criteria'] }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['relevant_test_criteria'] }}</span>
+                    </h6>
                     <div class="mb-3">
-                        <strong data-i18n="wcag_success_criteria">{{ t['wcag_success_criteria'] }}</strong>
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['wcag_success_criteria'] }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['wcag_success_criteria'] }}</span>
+                        </strong>
                         <ul>
                         {% for criterion in issue.wcag_full %}
-                            <li>{{ criterion|safe }}</li>
+                            <li>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ criterion|translate_wcag('en')|safe }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ criterion|translate_wcag('fr')|safe }}</span>
+                            </li>
                         {% endfor %}
                         </ul>
                     </div>
@@ -389,12 +413,22 @@
                     <div class="row">
                         <div class="col-md-6">
                             {% if issue.touchpoint %}
-                            <p><strong data-i18n="touchpoint">{{ t['touchpoint'] }}</strong> {{ issue.touchpoint|replace('_', ' ')|title }}</p>
+                            <p>
+                                <strong>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['touchpoint'] }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['touchpoint'] }}</span>
+                                </strong> {{ issue.touchpoint|replace('_', ' ')|title }}
+                            </p>
                             {% endif %}
-                            <p><strong data-i18n="impact">{{ t['impact'] }}</strong>
+                            <p>
+                                <strong>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['impact'] }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['impact'] }}</span>
+                                </strong>
                                 {% set impact_lower = issue.impact|lower %}
-                                <span class="badge bg-{{ {'critical': 'danger', 'high': 'danger', 'serious': 'danger', 'moderate': 'warning', 'medium': 'warning', 'minor': 'info', 'low': 'info'}[impact_lower] or 'secondary' }} impact-badge" data-i18n="{{ impact_lower }}">
-                                    {{ t.get(impact_lower, issue.impact|upper) }}
+                                <span class="badge bg-{{ {'critical': 'danger', 'high': 'danger', 'serious': 'danger', 'moderate': 'warning', 'medium': 'warning', 'minor': 'info', 'low': 'info'}[impact_lower] or 'secondary' }} impact-badge">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get(impact_lower, issue.impact|upper) }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t.get(impact_lower, issue.impact|upper) }}</span>
                                 </span>
                             </p>
                         </div>
@@ -404,18 +438,31 @@
                                 {% for criterion in issue.wcag_full|sort %}
                                 <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
                                     <p style="margin: 0 0 8px 0; font-weight: bold;">
-                                        WCAG {{ criterion|safe }}
+                                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">WCAG {{ criterion|translate_wcag('en')|safe }}</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">WCAG {{ criterion|translate_wcag('fr')|safe }}</span>
                                     </p>
 
                                     {% set criterion_code = criterion.split()[0] %}
                                     <p style="margin: 0 0 5px 0;">
-                                        <a href="https://www.w3.org/WAI/WCAG22/Understanding/{{ criterion_code }}" target="_blank">
-                                            <span data-i18n="more_about">{{ t['more_about'] }}</span> {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                                        <a href="{{ criterion_code|wcag_understanding_url }}" target="_blank">
+                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                                                {{ t['more_about'] }} {{ criterion_code }}
+                                            </span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                                                {{ t['more_about'] }} {{ criterion_code }} (en anglais)
+                                            </span>
+                                            <i class="bi bi-box-arrow-up-right"></i>
                                         </a>
                                     </p>
                                     <p style="margin: 0;">
-                                        <a href="https://www.w3.org/WAI/WCAG22/quickref/#{{ criterion_code }}" target="_blank">
-                                            <span data-i18n="ways_to_meet">{{ t['ways_to_meet'] }}</span> {{ criterion_code }} <i class="bi bi-box-arrow-up-right"></i>
+                                        <a href="{{ criterion_code|wcag_quickref_url }}" target="_blank">
+                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                                                {{ t['ways_to_meet'] }} {{ criterion_code }}
+                                            </span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                                                {{ t['ways_to_meet'] }} {{ criterion_code }} (en anglais)
+                                            </span>
+                                            <i class="bi bi-box-arrow-up-right"></i>
                                         </a>
                                     </p>
                                 </div>
@@ -427,11 +474,19 @@
                     <!-- Affected Pages -->
                     <hr>
                     <div class="mb-3">
-                        <strong data-i18n="affected_pages">{{ t['affected_pages'] }}</strong> ({{ issue.page_count }}):
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['affected_pages'] }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['affected_pages'] }}</span>
+                        </strong> ({{ issue.page_count }}):
                         <div class="mt-2">
                             <details>
                                 <summary class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-chevron-down"></i> <span data-i18n="show_all">{{ t['show_all'] }}</span> {{ issue.page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span>
+                                    <i class="bi bi-chevron-down"></i>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['show_all'] }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['show_all'] }}</span>
+                                    {{ issue.page_count }}
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['page_s'] }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['page_s'] }}</span>
                                 </summary>
                                 <div class="mt-2 p-3 bg-light rounded">
                                     {% for page_url in issue.pages %}
@@ -447,9 +502,17 @@
                     <!-- Element Details -->
                     {% if issue.element or issue.xpath %}
                     <hr>
-                    <h6 class="text-{{ alert_type }} mb-2" data-i18n="element_details">{{ t['element_details'] }}</h6>
+                    <h6 class="text-{{ alert_type }} mb-2">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['element_details'] }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['element_details'] }}</span>
+                    </h6>
                     {% if issue.element %}
-                    <p><strong data-i18n="element">{{ t['element'] }}</strong> <code>{{ issue.element }}</code></p>
+                    <p>
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['element'] }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ t['element'] }}</span>
+                        </strong> <code>{{ issue.element }}</code>
+                    </p>
                     {% endif %}
                     {% if issue.xpath %}
                     <p><strong>XPath:</strong></p>
@@ -508,10 +571,16 @@ function switchLanguage(lang) {
         }
     });
 
-    // Toggle visibility of language-specific content
+    // Toggle visibility of language-specific content using classes
     document.querySelectorAll('[data-lang]').forEach(element => {
         const elementLang = element.getAttribute('data-lang');
-        element.style.display = (elementLang === lang) ? 'block' : 'none';
+        if (elementLang === lang) {
+            element.classList.remove('lang-inactive');
+            element.classList.add('lang-active');
+        } else {
+            element.classList.remove('lang-active');
+            element.classList.add('lang-inactive');
+        }
     });
 
     // Update document title

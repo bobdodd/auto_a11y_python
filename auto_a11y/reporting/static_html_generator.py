@@ -1946,13 +1946,23 @@ class StaticHTMLReportGenerator:
                             issue_metadata_en = issue_dict_en.get('metadata', {})
                             issue_metadata_fr = issue_dict_fr.get('metadata', {})
 
+                            # Ensure wcag_full is a list (split if it's a string)
+                            wcag_full_raw = issue_metadata.get('wcag_full', [])
+                            if isinstance(wcag_full_raw, str):
+                                # Split comma-separated string and clean up whitespace
+                                wcag_full = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                            elif isinstance(wcag_full_raw, list):
+                                wcag_full = wcag_full_raw
+                            else:
+                                wcag_full = []
+
                             unique_issues[dedup_key] = {
                                 'type': issue_type,
                                 'rule_id': rule_id,
                                 'description': issue_dict.get('description', ''),
                                 'impact': issue_dict.get('impact', 'moderate'),
                                 'wcag': ', '.join(issue_dict.get('wcag', [])),
-                                'wcag_full': issue_metadata.get('wcag_full', []),
+                                'wcag_full': wcag_full,
                                 'touchpoint': issue_dict.get('touchpoint', ''),
                                 'element': issue_dict.get('element', ''),
                                 'xpath': issue_xpath,

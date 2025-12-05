@@ -1931,10 +1931,10 @@ class StaticHTMLReportGenerator:
 
                         # Enrich with catalog information in both EN and FR for client-side switching
                         with force_locale('en'):
-                            issue_dict_en = IssueCatalog.enrich_issue(issue_dict if isinstance(issue, dict) else {})
+                            issue_dict_en = IssueCatalog.enrich_issue(issue_dict)
 
                         with force_locale('fr'):
-                            issue_dict_fr = IssueCatalog.enrich_issue(issue_dict if isinstance(issue, dict) else {})
+                            issue_dict_fr = IssueCatalog.enrich_issue(issue_dict)
 
                         # Use the current language version for primary data
                         issue_dict = issue_dict_en if self.language == 'en' else issue_dict_fr

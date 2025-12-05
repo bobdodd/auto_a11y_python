@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Static Accessibility Test Report">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
+    <title>Index - Auto A11y</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+
+    
+<style>
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .page-search-filter {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: white;
+        padding: 1rem 0;
+        margin-bottom: 1rem;
+    }
+
+    .page-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .page-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
+    }
+
+    .page-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 0.25rem 0;
+        flex: 1;
+    }
+
+    .page-url {
+        color: #6c757d;
+        font-size: 0.875rem;
+        word-break: break-all;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-meta {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .issue-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .issue-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .issue-badge i {
+        font-size: 1rem;
+    }
+
+    .issue-badge.errors {
+        background-color: #fee;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+    .issue-badge.warnings {
+        background-color: #fff3cd;
+        color: #996404;
+        border: 1px solid #ffc107;
+    }
+
+    .issue-badge.info {
+        background-color: #e7f5ff;
+        color: #0c5a8a;
+        border: 1px solid #0dcaf0;
+    }
+
+    .issue-badge.discovery {
+        background-color: #f0f0f0;
+        color: #495057;
+        border: 1px solid #6c757d;
+    }
+
+    .page-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .view-details-btn {
+        text-decoration: none;
+        color: white;
+        background-color: var(--primary-color);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .view-details-btn:hover {
+        background-color: #0b5ed7;
+        color: white;
+    }
+
+    .filter-controls {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .filter-controls input,
+    .filter-controls select {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .results-summary {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 1rem;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .no-results i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .test-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .test-info h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .test-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .test-info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .test-info-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .test-info-value {
+        color: #212529;
+        font-size: 1rem;
+    }
+</style>
+
+
+    <style>
+        /* Custom styles for static report */
+        :root {
+            --primary-color: #0d6efd;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #0dcaf0;
+            --success-color: #198754;
+        }
+
+        /* Language switcher styles */
+        .lang-switcher {
+            display: flex;
+            gap: 0.25rem;
+            margin-left: 1rem;
+        }
+
+        .lang-switcher button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .lang-switcher button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .lang-switcher button.active {
+            background: white;
+            color: var(--primary-color);
+            border-color: white;
+        }
+
+        .lang-active {
+            display: inline !important;
+        }
+
+        .lang-inactive {
+            display: none !important;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+        }
+
+        .stat-card {
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+        }
+
+        .badge-count {
+            font-size: 0.875rem;
+            padding: 0.35em 0.65em;
+        }
+
+        .page-list-item {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: box-shadow 0.2s;
+        }
+
+        .page-list-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .accordion-button {
+            padding-left: 2.5rem;
+        }
+
+        .accordion-button::after {
+            position: absolute;
+            left: 1rem;
+            right: auto;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .score-badge {
+            font-size: 1.25rem;
+            padding: 0.5em 0.75em;
+        }
+
+        .score-excellent { background-color: #198754; }
+        .score-good { background-color: #20c997; }
+        .score-fair { background-color: #ffc107; color: #000; }
+        .score-poor { background-color: #fd7e14; }
+        .score-critical { background-color: #dc3545; }
+
+        @media print {
+            .navbar, .filter-section, .no-print {
+                display: none !important;
+            }
+
+            .accordion-collapse {
+                display: block !important;
+                height: auto !important;
+            }
+
+            .accordion-button {
+                pointer-events: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary no-print">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-universal-access-circle"></i>
+                <span data-lang="en" class="lang-active"></span>
+                <span data-lang="fr" class="lang-inactive"></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house"></i>
+                            <span data-lang="en" class="lang-active">Index</span>
+                            <span data-lang="fr" class="lang-inactive">Index</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <div class="lang-switcher">
+                    <button onclick="switchLanguage('en')" id="lang-en" class="active" aria-label="Switch to English">EN</button>
+                    <button onclick="switchLanguage('fr')" id="lang-fr" class="" aria-label="Switch to French">FR</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid py-4">
+        
+<div class="container-xl">
+    <!-- Test Information -->
+    <div class="test-info">
+        <h2>
+            <i class="bi bi-info-circle"></i>
+            <span data-lang="en" class="lang-active">Test Information</span>
+            <span data-lang="fr" class="lang-inactive">Informations sur le test</span>
+        </h2>
+        <div class="test-info-grid">
+            <div class="test-info-item">
+                <span class="test-info-label">
+                    <span data-lang="en" class="lang-active">Project</span>
+                    <span data-lang="fr" class="lang-inactive">Projet</span>
+                </span>
+                <span class="test-info-value">Access Labs</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">
+                    <span data-lang="en" class="lang-active">Website URL</span>
+                    <span data-lang="fr" class="lang-inactive">URL du site web</span>
+                </span>
+                <span class="test-info-value">https://cnib-accesslabs.ca</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">
+                    <span data-lang="en" class="lang-active">Test Date</span>
+                    <span data-lang="fr" class="lang-inactive">Date du test</span>
+                </span>
+                <span class="test-info-value">2025-12-04 09:44:14</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">
+                    <span data-lang="en" class="lang-active">WCAG Level</span>
+                    <span data-lang="fr" class="lang-inactive">Niveau WCAG</span>
+                </span>
+                <span class="test-info-value">AA</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">
+                    <span data-lang="en" class="lang-active">Pages Tested</span>
+                    <span data-lang="fr" class="lang-inactive">Pages testées</span>
+                </span>
+                <span class="test-info-value">10</span>
+            </div>
+            <div class="test-info-item">
+                <span class="test-info-label">
+                    <span data-lang="en" class="lang-active">Touchpoints Tested</span>
+                    <span data-lang="fr" class="lang-inactive">Points de contact testés</span>
+                </span>
+                <span class="test-info-value">
+                    
+                        <span data-lang="en" class="lang-active">
+                            Accessible Names, Colors, Images, Language, Links, Lists, Navigation, Styles
+                        </span>
+                        <span data-lang="fr" class="lang-inactive">
+                            Noms accessibles, Couleurs, Images, Langue, Liens, Listes, Navigation, Styles
+                        </span>
+                    
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="summary-cards">
+        <div class="stat-card bg-light">
+            <div class="stat-value text-dark">10</div>
+            <div class="stat-label">
+                <span data-lang="en" class="lang-active">Pages Tested</span>
+                <span data-lang="fr" class="lang-inactive">Pages testées</span>
+            </div>
+        </div>
+        <div class="stat-card" style="background-color: #fee;">
+            <div class="stat-value text-danger">1522</div>
+            <div class="stat-label">
+                <span data-lang="en" class="lang-active">Total Errors</span>
+                <span data-lang="fr" class="lang-inactive">Total des erreurs</span>
+            </div>
+        </div>
+        <div class="stat-card" style="background-color: #fff3cd;">
+            <div class="stat-value text-warning">898</div>
+            <div class="stat-label">
+                <span data-lang="en" class="lang-active">Total Warnings</span>
+                <span data-lang="fr" class="lang-inactive">Total des avertissements</span>
+            </div>
+        </div>
+        <div class="stat-card" style="background-color: #e7f5ff;">
+            <div class="stat-value text-info">8</div>
+            <div class="stat-label">
+                <span data-lang="en" class="lang-active">Informational</span>
+                <span data-lang="fr" class="lang-inactive">Informatifs</span>
+            </div>
+        </div>
+        <div class="stat-card" style="background-color: #f0f0f0;">
+            <div class="stat-value text-muted">735</div>
+            <div class="stat-label">
+                <span data-lang="en" class="lang-active">Discovery Items</span>
+                <span data-lang="fr" class="lang-inactive">Éléments de découverte</span>
+            </div>
+        </div>
+        <div class="stat-card" style="background-color: #d1ecf1;">
+            <div class="stat-value text-primary">87.8%</div>
+            <div class="stat-label">
+                <span data-lang="en" class="lang-active">Average Score</span>
+                <span data-lang="fr" class="lang-inactive">Score moyen</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="page-search-filter">
+        <div class="filter-section">
+            <div class="filter-controls">
+                <div style="flex: 2; min-width: 300px;">
+                    <input
+                        type="search"
+                        id="page-search"
+                        class="form-control"
+                        data-i18n-placeholder="search_by_page_title_or_url"
+                        placeholder="Search by page title or URL..."
+                        aria-label="Search pages">
+                </div>
+                <div>
+                    <select id="filter-by-issues" class="form-select" aria-label="Filter by issue type">
+                        <option value="all" data-i18n="all_pages">All Pages</option>
+                        <option value="has-errors" data-i18n="has_errors">Has Errors</option>
+                        <option value="has-warnings" data-i18n="has_warnings">Has Warnings</option>
+                        <option value="no-errors" data-i18n="no_errors">No Errors</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="sort-by" class="form-select" aria-label="Sort pages">
+                        <option value="title" data-i18n="sort_by_title">Sort by Title</option>
+                        <option value="errors-desc" data-i18n="errors_high_to_low">Errors (High to Low)</option>
+                        <option value="errors-asc" data-i18n="errors_low_to_high">Errors (Low to High)</option>
+                        <option value="score-asc" data-i18n="score_low_to_high">Score (Low to High)</option>
+                        <option value="score-desc" data-i18n="score_high_to_low">Score (High to Low)</option>
+                    </select>
+                </div>
+                <button id="reset-filters" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    <span data-lang="en" class="lang-active">Reset</span>
+                    <span data-lang="fr" class="lang-inactive">Réinitialiser</span>
+                </button>
+            </div>
+            <div class="results-summary" id="results-summary">
+                <span data-lang="en" class="lang-active">Showing 10 of 10 pages</span>
+                <span data-lang="fr" class="lang-inactive">Affichage de 10 sur 10 pages</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pages List -->
+    <div id="pages-container">
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e92046953959"
+             data-title="accessible signage - cnib access labs"
+             data-url="https://cnib-accesslabs.ca/inclusive-built-environment/accessible-signage"
+             data-errors="134"
+             data-warnings="80"
+             data-score="92.6">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">Accessible Signage - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca/inclusive-built-environment/accessible-signage
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-excellent score-badge">
+                        93%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>134
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>80
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>69
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-11-01 21:43:41</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-11-01 21:43:41</span>
+                </div>
+                <a href="pages/page_001.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e92046953961"
+             data-title="be my eyes - cnib access labs"
+             data-url="https://cnib-accesslabs.ca/inclusive-built-environment/be-my-eyes"
+             data-errors="134"
+             data-warnings="82"
+             data-score="92.2">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">Be My Eyes - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca/inclusive-built-environment/be-my-eyes
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-excellent score-badge">
+                        92%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>134
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>82
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>71
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-11-01 21:47:03</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-11-01 21:47:03</span>
+                </div>
+                <a href="pages/page_002.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e9204695395d"
+             data-title="become an accessibility tester - cnib access labs"
+             data-url="https://cnib-accesslabs.ca/become-a-tester"
+             data-errors="158"
+             data-warnings="75"
+             data-score="90.5">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">Become an Accessibility Tester - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca/become-a-tester
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-excellent score-badge">
+                        90%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>158
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>75
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge info">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>1
+                            <span data-lang="en" class="lang-active">Info</span>
+                            <span data-lang="fr" class="lang-inactive">Info</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>66
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-11-01 21:45:19</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-11-01 21:45:19</span>
+                </div>
+                <a href="pages/page_003.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e92046953960"
+             data-title="contact us - cnib access labs"
+             data-url="https://cnib-accesslabs.ca/contact-us"
+             data-errors="91"
+             data-warnings="80"
+             data-score="94.2">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">Contact Us - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca/contact-us
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-excellent score-badge">
+                        94%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>91
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>80
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>70
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-11-01 21:46:38</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-11-01 21:46:38</span>
+                </div>
+                <a href="pages/page_004.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e9204695395e"
+             data-title="digital design &amp; testing - cnib access labs"
+             data-url="https://cnib-accesslabs.ca/inclusive-built-environment/digital-design-testing"
+             data-errors="142"
+             data-warnings="104"
+             data-score="92.6">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">Digital Design &amp; Testing - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca/inclusive-built-environment/digital-design-testing
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-excellent score-badge">
+                        93%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>142
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>104
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>74
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-11-01 21:45:46</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-11-01 21:45:46</span>
+                </div>
+                <a href="pages/page_005.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e92046953958"
+             data-title="home - cnib access labs"
+             data-url="https://cnib-accesslabs.ca"
+             data-errors="314"
+             data-warnings="121"
+             data-score="45.9">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">Home - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-critical score-badge">
+                        46%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>314
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>121
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge info">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>2
+                            <span data-lang="en" class="lang-active">Info</span>
+                            <span data-lang="fr" class="lang-inactive">Info</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>83
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-12-02 17:11:41</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-12-02 17:11:41</span>
+                </div>
+                <a href="pages/page_006.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e9204695395f"
+             data-title="lived experience accessibility testing - cnib access labs"
+             data-url="https://cnib-accesslabs.ca/inclusive-built-environment/lived-experience-accessibility-testing"
+             data-errors="139"
+             data-warnings="93"
+             data-score="93.0">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">Lived Experience Accessibility Testing - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca/inclusive-built-environment/lived-experience-accessibility-testing
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-excellent score-badge">
+                        93%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>139
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>93
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge info">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>3
+                            <span data-lang="en" class="lang-active">Info</span>
+                            <span data-lang="fr" class="lang-inactive">Info</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>76
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-11-01 21:46:13</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-11-01 21:46:13</span>
+                </div>
+                <a href="pages/page_007.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e9204695395c"
+             data-title="navigation &amp; wayfinding - cnib access labs"
+             data-url="https://cnib-accesslabs.ca/inclusive-built-environment/navigation-wayfinding"
+             data-errors="150"
+             data-warnings="95"
+             data-score="92.6">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">Navigation &amp; Wayfinding - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca/inclusive-built-environment/navigation-wayfinding
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-excellent score-badge">
+                        93%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>150
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>95
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>76
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-11-01 21:44:57</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-11-01 21:44:57</span>
+                </div>
+                <a href="pages/page_008.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e9204695395a"
+             data-title="news - cnib access labs"
+             data-url="https://cnib-accesslabs.ca/news"
+             data-errors="123"
+             data-warnings="89"
+             data-score="92.9">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">News - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca/news
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-excellent score-badge">
+                        93%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>123
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>89
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge info">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>2
+                            <span data-lang="en" class="lang-active">Info</span>
+                            <span data-lang="fr" class="lang-inactive">Info</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>83
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-11-01 21:44:06</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-11-01 21:44:06</span>
+                </div>
+                <a href="pages/page_009.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="page-card"
+             data-page-id="6906998956a9e9204695395b"
+             data-title="workplace assessment - cnib access labs"
+             data-url="https://cnib-accesslabs.ca/inclusive-built-environment/workplace-assessment"
+             data-errors="137"
+             data-warnings="79"
+             data-score="92.0">
+            <div class="page-card-header">
+                <div style="flex: 1;">
+                    <h3 class="page-title">Workplace Assessment - CNIB Access Labs</h3>
+                    <div class="page-url">
+                        <i class="bi bi-link-45deg"></i> https://cnib-accesslabs.ca/inclusive-built-environment/workplace-assessment
+                    </div>
+                </div>
+                <div>
+                    
+                    
+                        
+                    
+                    <span class="badge score-excellent score-badge">
+                        92%
+                    </span>
+                </div>
+            </div>
+
+            <div class="page-meta">
+                <div class="issue-badges">
+                    
+                    <span class="issue-badge errors">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <span>137
+                            <span data-lang="en" class="lang-active">Errors</span>
+                            <span data-lang="fr" class="lang-inactive">Erreurs</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                    <span class="issue-badge warnings">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>79
+                            <span data-lang="en" class="lang-active">Warnings</span>
+                            <span data-lang="fr" class="lang-inactive">Avertissements</span>
+                        </span>
+                    </span>
+                    
+
+                    
+
+                    
+                    <span class="issue-badge discovery">
+                        <i class="bi bi-lightbulb-fill"></i>
+                        <span>67
+                            <span data-lang="en" class="lang-active">Discovery</span>
+                            <span data-lang="fr" class="lang-inactive">Découverte</span>
+                        </span>
+                    </span>
+                    
+
+                    
+                </div>
+            </div>
+
+            <div class="page-card-footer">
+                <div class="text-muted small">
+                    <i class="bi bi-clock"></i>
+                    <span data-lang="en" class="lang-active">Tested 2025-11-01 21:44:31</span>
+                    <span data-lang="fr" class="lang-inactive">Testé 2025-11-01 21:44:31</span>
+                </div>
+                <a href="pages/page_010.html" class="view-details-btn">
+                    <span data-lang="en" class="lang-active">View Details</span>
+                    <span data-lang="fr" class="lang-inactive">Voir les détails</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- No Results Message -->
+    <div id="no-results" class="no-results" style="display: none;">
+        <i class="bi bi-search"></i>
+        <h3>
+            <span data-lang="en" class="lang-active">No Pages Found</span>
+            <span data-lang="fr" class="lang-inactive">Aucune page trouvée</span>
+        </h3>
+        <p>
+            <span data-lang="en" class="lang-active">Try adjusting your search or filter criteria.</span>
+            <span data-lang="fr" class="lang-inactive">Essayez d'ajuster vos critères de recherche ou de filtre.</span>
+        </p>
+    </div>
+</div>
+
+    </main>
+
+    <footer class="footer mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">
+                        <strong>
+                            <span data-lang="en" class="lang-active"></span>
+                            <span data-lang="fr" class="lang-inactive"></span>:
+                        </strong> 2025-12-04 09:44:14
+                    </p>
+                    <p class="text-muted mb-0">
+                        <strong>
+                            <span data-lang="en" class="lang-active"></span>
+                            <span data-lang="fr" class="lang-inactive"></span>:
+                        </strong> Access Labs
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted mb-0">
+                        <strong>
+                            <span data-lang="en" class="lang-active"></span>
+                            <span data-lang="fr" class="lang-inactive"></span>:
+                        </strong> AA
+                    </p>
+                    <p class="text-muted mb-0">
+                        <span data-lang="en" class="lang-active"></span>
+                        <span data-lang="fr" class="lang-inactive"></span>
+                        <strong>Auto A11y</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/filters.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script src="assets/js/search.js"></script>
+
+    
+<script>
+    // Page filtering and search functionality
+    (function() {
+        const searchInput = document.getElementById('page-search');
+        const filterSelect = document.getElementById('filter-by-issues');
+        const sortSelect = document.getElementById('sort-by');
+        const resetButton = document.getElementById('reset-filters');
+        const pagesContainer = document.getElementById('pages-container');
+        const resultsSummary = document.getElementById('results-summary');
+        const noResults = document.getElementById('no-results');
+
+        let allPages = Array.from(document.querySelectorAll('.page-card'));
+        const totalPages = allPages.length;
+
+        function filterAndSortPages() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterValue = filterSelect.value;
+            const sortValue = sortSelect.value;
+
+            // Filter pages
+            let visiblePages = allPages.filter(page => {
+                // Search filter
+                const title = page.dataset.title;
+                const url = page.dataset.url;
+                const matchesSearch = !searchTerm ||
+                    title.includes(searchTerm) ||
+                    url.includes(searchTerm);
+
+                if (!matchesSearch) return false;
+
+                // Issue filter
+                const errors = parseInt(page.dataset.errors);
+                const warnings = parseInt(page.dataset.warnings);
+
+                switch(filterValue) {
+                    case 'has-errors':
+                        return errors > 0;
+                    case 'has-warnings':
+                        return warnings > 0;
+                    case 'no-errors':
+                        return errors === 0;
+                    default:
+                        return true;
+                }
+            });
+
+            // Sort pages
+            visiblePages.sort((a, b) => {
+                switch(sortValue) {
+                    case 'title':
+                        return a.dataset.title.localeCompare(b.dataset.title);
+                    case 'errors-desc':
+                        return parseInt(b.dataset.errors) - parseInt(a.dataset.errors);
+                    case 'errors-asc':
+                        return parseInt(a.dataset.errors) - parseInt(b.dataset.errors);
+                    case 'score-asc':
+                        return parseFloat(a.dataset.score) - parseFloat(b.dataset.score);
+                    case 'score-desc':
+                        return parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+                    default:
+                        return 0;
+                }
+            });
+
+            // Update display
+            allPages.forEach(page => page.style.display = 'none');
+            visiblePages.forEach(page => page.style.display = 'flex');
+
+            // Update summary with bilingual support
+            const visibleCount = visiblePages.length;
+            const currentLang = localStorage.getItem('reportLanguage') || 'en';
+            resultsSummary.innerHTML = `
+                <span data-lang="en" class="${currentLang === 'en' ? 'lang-active' : 'lang-inactive'}">Showing ${visibleCount} of ${totalPages} pages</span>
+                <span data-lang="fr" class="${currentLang === 'fr' ? 'lang-active' : 'lang-inactive'}">Affichage de ${visibleCount} sur ${totalPages} pages</span>
+            `;
+
+            // Show/hide no results message
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+                pagesContainer.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                pagesContainer.style.display = 'block';
+            }
+        }
+
+        function resetFilters() {
+            searchInput.value = '';
+            filterSelect.value = 'all';
+            sortSelect.value = 'title';
+            filterAndSortPages();
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterAndSortPages);
+        filterSelect.addEventListener('change', filterAndSortPages);
+        sortSelect.addEventListener('change', filterAndSortPages);
+        resetButton.addEventListener('click', resetFilters);
+
+        // Initial filter
+        filterAndSortPages();
+    })();
+</script>
+
+
+    <script>
+        // Language switching functionality
+        const translations = {"en": {"deduplicated_report": "Deduplicated Accessibility Report", "issues_grouped_by_components": "Issues grouped by common components", "accessibility_score": "Accessibility Score", "compliance_score": "Compliance Score", "violations": "Violations", "warnings": "Warnings", "info_items": "Info Items", "components": "Components", "pages": "Pages", "common_components": "Common Components", "click_component_to_view": "Click a component to view its deduplicated issues", "pages_with_non_component_issues": "Pages with Non-Component Issues", "issues_not_in_components": "Issues not associated with common components, organized by page", "search_pages": "Search pages...", "no_common_components": "No common components found", "component_deduplicated_issues": "Component Deduplicated Issues", "back_to_index": "Back to Index", "found_on": "Found on", "page_s": "page(s)", "deduplicated_issue_s": "deduplicated issue(s)", "no_issues_found": "No issues found for this component", "index": "Index", "untitled_page": "Untitled Page", "status": "Status", "tested": "Tested", "last_tested": "Last Tested", "recently": "Recently", "issues_found": "Issues Found", "errors": "Errors", "score": "Score", "full_page_accessibility_score": "Full Page Accessibility Score", "all_issues_full_page": "All issues (full page)", "non_component_issues_score": "Non-Component Issues Score", "issues_not_in_common_components": "Issues not in common components", "tests_passed": "tests passed", "n_a": "N/A", "no_data_available": "No data available", "filter_test_results": "Filter Test Results", "clear_all_filters": "Clear All Filters", "active_filters": "Active Filters", "showing": "Showing", "of": "of", "items": "items", "issue_type": "Issue Type", "impact_level": "Impact Level", "high": "High", "medium": "Medium", "low": "Low", "issue_touchpoint": "Issue Touchpoint", "all_touchpoints": "All Touchpoints", "general": "General", "critical": "Critical", "serious": "Serious", "moderate": "Moderate", "minor": "Minor", "quick_search": "Quick Search", "search_in_issues": "Search in issue descriptions, error codes, or XPaths...", "search_placeholder": "Search in issue descriptions, error codes, or XPaths...", "non_component_issues_for_page": "Non-Component Issues for This Page", "issues_not_part_of_common": "Issues not part of common components", "informational": "Informational", "discovery": "Discovery", "instance": "Instance", "guest": "Guest", "about_this_issue": "About this issue:", "what_the_issue_is": "What the issue is:", "why_this_is_important": "Why this is important:", "who_it_affects": "Who it affects:", "how_to_remediate": "How to remediate:", "relevant_test_criteria": "Relevant test criteria:", "wcag_success_criteria": "WCAG Success Criteria:", "touchpoint": "Touchpoint", "impact": "Impact", "more_about": "More about", "ways_to_meet": "Ways to meet", "affected_pages": "Affected Pages", "show_all_pages": "Show all", "element_details": "Element Details:", "element": "Element", "xpath": "XPath", "location": "Location", "responsive_breakpoint": "Responsive Breakpoint", "px_width": "px width", "css_state": "CSS State", "code_snippet": "Code Snippet", "rule": "Rule", "help": "Help", "how_to_fix": "How to fix:", "form": "Form", "navigation": "Navigation", "aside": "Aside", "section": "Section", "header": "Header", "accessible_names": "Accessible Names", "colors": "Colors", "electronic_documents": "Electronic Documents", "event_handling": "Event Handling", "fonts": "Fonts", "forms": "Forms", "headings": "Headings", "images": "Images", "landmarks": "Landmarks", "links": "Links", "lists": "Lists", "page": "Page", "styles": "Styles", "color_contrast": "Color Contrast", "tabindex": "Tab Index", "no login": "Guest (no login)", "language": "Language", "violation_s": "violation(s)", "warning_s": "warning(s)", "info": "info", "hidden": "hidden", "text": "text", "search": "search", "search_by_page_title_or_url": "Search by page title or URL...", "all_pages": "All Pages", "has_errors": "Has Errors", "has_warnings": "Has Warnings", "no_errors": "No Errors", "sort_by_title": "Sort by Title", "errors_high_to_low": "Errors (High to Low)", "errors_low_to_high": "Errors (Low to High)", "score_low_to_high": "Score (Low to High)", "score_high_to_low": "Score (High to Low)", "reset": "Reset", "view_details": "View Details", "no_pages_found": "No Pages Found", "try_adjusting_search": "Try adjusting your search or filter criteria."}, "fr": {"deduplicated_report": "Rapport d'accessibilit\u00e9 d\u00e9dupliqu\u00e9", "issues_grouped_by_components": "Probl\u00e8mes regroup\u00e9s par composants communs", "accessibility_score": "Score d'accessibilit\u00e9", "compliance_score": "Score de conformit\u00e9", "violations": "Violations", "warnings": "Avertissements", "info_items": "\u00c9l\u00e9ments informatifs", "components": "Composants", "pages": "Pages", "common_components": "Composants communs", "click_component_to_view": "Cliquez sur un composant pour afficher ses probl\u00e8mes d\u00e9dupliqu\u00e9s", "pages_with_non_component_issues": "Pages avec probl\u00e8mes hors composants", "issues_not_in_components": "Probl\u00e8mes non associ\u00e9s aux composants communs, organis\u00e9s par page", "search_pages": "Rechercher des pages...", "no_common_components": "Aucun composant commun trouv\u00e9", "component_deduplicated_issues": "Probl\u00e8mes d\u00e9dupliqu\u00e9s du composant", "back_to_index": "Retour \u00e0 l'index", "found_on": "Trouv\u00e9 sur", "page_s": "page(s)", "deduplicated_issue_s": "probl\u00e8me(s) d\u00e9dupliqu\u00e9(s)", "no_issues_found": "Aucun probl\u00e8me trouv\u00e9 pour ce composant", "index": "Index", "untitled_page": "Page sans titre", "status": "Statut", "tested": "Test\u00e9", "last_tested": "Dernier test", "recently": "R\u00e9cemment", "issues_found": "Probl\u00e8mes trouv\u00e9s", "errors": "Erreurs", "score": "Score", "full_page_accessibility_score": "Score d'accessibilit\u00e9 de la page compl\u00e8te", "all_issues_full_page": "Tous les probl\u00e8mes (page compl\u00e8te)", "non_component_issues_score": "Score des probl\u00e8mes hors composants", "issues_not_in_common_components": "Probl\u00e8mes non pr\u00e9sents dans les composants communs", "tests_passed": "tests r\u00e9ussis", "n_a": "N/D", "no_data_available": "Aucune donn\u00e9e disponible", "based_on_automated_checks": "Bas\u00e9 sur des v\u00e9rifications automatis\u00e9es", "filter_test_results": "Filtrer les r\u00e9sultats", "clear_all_filters": "Effacer tous les filtres", "active_filters": "Filtres actifs", "showing": "Affichage", "of": "sur", "items": "\u00e9l\u00e9ments", "no_items": "Aucun \u00e9l\u00e9ment", "issue_type": "Type de probl\u00e8me", "impact_level": "Niveau d'impact", "high": "\u00c9lev\u00e9", "medium": "Moyen", "low": "Faible", "issue_touchpoint": "Point de contact", "all_touchpoints": "Tous les points de contact", "general": "G\u00e9n\u00e9ral", "critical": "Critique", "serious": "Grave", "moderate": "Mod\u00e9r\u00e9", "minor": "Mineur", "quick_search": "Recherche rapide", "search_in_issues": "Rechercher dans les descriptions, codes d'erreur ou XPath...", "search_placeholder": "Rechercher dans les descriptions, codes d'erreur ou XPath...", "non_component_issues_for_page": "Probl\u00e8mes hors composants pour cette page", "issues_not_part_of_common": "Probl\u00e8mes ne faisant pas partie de composants communs", "informational": "Informatif", "discovery": "D\u00e9couverte", "instance": "Instance", "guest": "Invit\u00e9", "about_this_issue": "\u00c0 propos de ce probl\u00e8me :", "what_the_issue_is": "En quoi consiste le probl\u00e8me :", "why_this_is_important": "Pourquoi c'est important :", "who_it_affects": "Qui est affect\u00e9 :", "how_to_remediate": "Comment corriger :", "relevant_test_criteria": "Crit\u00e8res de test pertinents :", "wcag_success_criteria": "Crit\u00e8res de succ\u00e8s WCAG :", "touchpoint": "Point de contact", "impact": "Impact", "more_about": "En savoir plus sur", "ways_to_meet": "Comment satisfaire", "affected_pages": "Pages affect\u00e9es", "show_all_pages": "Afficher toutes", "element_details": "D\u00e9tails de l'\u00e9l\u00e9ment :", "element": "\u00c9l\u00e9ment", "xpath": "XPath", "location": "Emplacement", "responsive_breakpoint": "Point d'arr\u00eat responsive", "px_width": "px de largeur", "css_state": "\u00c9tat CSS", "code_snippet": "Extrait de code", "rule": "R\u00e8gle", "help": "Aide", "how_to_fix": "Comment corriger :", "form": "Formulaire", "navigation": "Navigation", "aside": "Apart\u00e9", "section": "Section", "header": "En-t\u00eate", "accessible_names": "Noms accessibles", "colors": "Couleurs", "electronic_documents": "Documents \u00e9lectroniques", "event_handling": "Gestion des \u00e9v\u00e9nements", "fonts": "Polices", "forms": "Formulaires", "headings": "Titres", "images": "Images", "landmarks": "Points de rep\u00e8re", "links": "Liens", "lists": "Listes", "page": "Page", "styles": "Styles", "color_contrast": "Contraste des couleurs", "tabindex": "Index de tabulation", "no login": "Invit\u00e9 (sans connexion)", "language": "Langue", "violation_s": "violation(s)", "warning_s": "avertissement(s)", "info": "info", "hidden": "cach\u00e9", "text": "texte", "search": "recherche", "search_by_page_title_or_url": "Rechercher par titre de page ou URL...", "all_pages": "Toutes les pages", "has_errors": "Avec erreurs", "has_warnings": "Avec avertissements", "no_errors": "Sans erreurs", "sort_by_title": "Trier par titre", "errors_high_to_low": "Erreurs (\u00c9lev\u00e9 \u00e0 faible)", "errors_low_to_high": "Erreurs (Faible \u00e0 \u00e9lev\u00e9)", "score_low_to_high": "Score (Faible \u00e0 \u00e9lev\u00e9)", "score_high_to_low": "Score (\u00c9lev\u00e9 \u00e0 faible)", "reset": "R\u00e9initialiser", "view_details": "Voir les d\u00e9tails", "no_pages_found": "Aucune page trouv\u00e9e", "try_adjusting_search": "Essayez d'ajuster vos crit\u00e8res de recherche ou de filtre."}};
+        let currentLanguage = localStorage.getItem('reportLanguage') || 'en';
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('reportLanguage', lang);
+
+            // Update active button
+            document.querySelectorAll('.lang-switcher button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const langButton = document.getElementById(`lang-${lang}`);
+            if (langButton) {
+                langButton.classList.add('active');
+            }
+
+            // Toggle visibility of language-specific content using classes
+            document.querySelectorAll('[data-lang]').forEach(element => {
+                const elementLang = element.getAttribute('data-lang');
+                if (elementLang === lang) {
+                    element.classList.remove('lang-inactive');
+                    element.classList.add('lang-active');
+                } else {
+                    element.classList.remove('lang-active');
+                    element.classList.add('lang-inactive');
+                }
+            });
+
+            // Update translatable text elements (for compatibility)
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if (element.tagName !== 'INPUT' && element.tagName !== 'TEXTAREA') {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+
+            // Update placeholder text for input elements
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[lang] && translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+        }
+
+        // Apply saved language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentLanguage !== 'en') {
+                switchLanguage(currentLanguage);
+            }
+        });
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+
+        // Copy XPath to clipboard
+        function copyXpathToClipboard(xpath, button) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(xpath).then(function() {
+                    const icon = button.querySelector('i');
+                    const originalClass = icon.className;
+                    icon.className = 'bi bi-check';
+                    button.classList.add('text-success');
+
+                    setTimeout(function() {
+                        icon.className = originalClass;
+                        button.classList.remove('text-success');
+                    }, 2000);
+                }).catch(function(err) {
+                    alert('Could not copy to clipboard');
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = xpath;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('XPath copied to clipboard');
+                } catch (err) {
+                    alert('Could not copy to clipboard');
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+    </script>
+</body>
+</html>

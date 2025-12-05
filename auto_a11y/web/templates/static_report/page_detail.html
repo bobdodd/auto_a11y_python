@@ -1264,7 +1264,7 @@
             </div>
             {% endif %}
 
-            <!-- Informational - Similar pattern, shortened for brevity -->
+            <!-- Informational Items -->
             {% if informational %}
             <h6 class="text-info mb-3">
                 <i class="bi bi-info-circle"></i>
@@ -1272,7 +1272,59 @@
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['info'] }}</span>
                 ({{ informational|length }})
             </h6>
-            {# Similar structure as violations/warnings - abbreviated for space #}
+            <div class="accordion mb-4" id="informationalAccordion">
+                {% set info_counter = namespace(value=0) %}
+                {% for touchpoint, touchpoint_info in informational|groupby('touchpoint') %}
+                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #0dcaf0;">
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
+                        </strong>
+                    </div>
+
+                    {% for info_code, description_group in touchpoint_info|groupby('id') %}
+                        {% set group_list = description_group|list %}
+                        {% set info_counter.value = info_counter.value + 1 %}
+                        {% set first_info = group_list[0] %}
+
+                        <div class="accordion-item issue-item"
+                             data-type="info"
+                             data-touchpoint="{{ touchpoint|lower }}"
+                             data-id="{{ info_code }}"
+                             data-instance-count="{{ group_list|length }}"
+                             data-description="{{ first_info.description_en|lower if first_info.description_en else first_info.description|lower }}">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#info-group-{{ info_counter.value }}">
+                                    {% if group_list|length > 1 %}
+                                    <span class="badge bg-info me-2">{{ group_list|length }}</span>
+                                    {% endif %}
+                                    <code class="me-2">{{ info_code }}</code>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ first_info.description_en if first_info.description_en else first_info.description }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ first_info.description_fr if first_info.description_fr else first_info.description }}</span>
+                                </button>
+                            </h2>
+                            <div id="info-group-{{ info_counter.value }}"
+                                 class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    {% if group_list|length > 1 %}
+                                        <div class="accordion" id="info-group-instances-{{ info_counter.value }}">
+                                        {% for info_item in group_list %}
+                                        {% set instance_id = 'info-instance-' ~ info_counter.value ~ '-' ~ loop.index %}
+                                        {% set parent_id = 'info-group-instances-' ~ info_counter.value %}
+                                        {{ render_instance_accordion(info_item, instance_id, parent_id, 'info', loop.index) }}
+                                        {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ render_violation_details(group_list[0], 'info') }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
             {% endif %}
 
             <!-- Discovery Items -->
@@ -1283,7 +1335,59 @@
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['discovery'] }}</span>
                 ({{ discovery|length }})
             </h6>
-            {# Similar structure as violations/warnings - abbreviated for space #}
+            <div class="accordion mb-4" id="discoveryAccordion">
+                {% set disc_counter = namespace(value=0) %}
+                {% for touchpoint, touchpoint_discovery in discovery|groupby('touchpoint') %}
+                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #6c757d;">
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
+                        </strong>
+                    </div>
+
+                    {% for disc_code, description_group in touchpoint_discovery|groupby('id') %}
+                        {% set group_list = description_group|list %}
+                        {% set disc_counter.value = disc_counter.value + 1 %}
+                        {% set first_disc = group_list[0] %}
+
+                        <div class="accordion-item issue-item"
+                             data-type="discovery"
+                             data-touchpoint="{{ touchpoint|lower }}"
+                             data-id="{{ disc_code }}"
+                             data-instance-count="{{ group_list|length }}"
+                             data-description="{{ first_disc.description_en|lower if first_disc.description_en else first_disc.description|lower }}">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#disc-group-{{ disc_counter.value }}">
+                                    {% if group_list|length > 1 %}
+                                    <span class="badge bg-secondary me-2">{{ group_list|length }}</span>
+                                    {% endif %}
+                                    <code class="me-2">{{ disc_code }}</code>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ first_disc.description_en if first_disc.description_en else first_disc.description }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ first_disc.description_fr if first_disc.description_fr else first_disc.description }}</span>
+                                </button>
+                            </h2>
+                            <div id="disc-group-{{ disc_counter.value }}"
+                                 class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    {% if group_list|length > 1 %}
+                                        <div class="accordion" id="disc-group-instances-{{ disc_counter.value }}">
+                                        {% for disc_item in group_list %}
+                                        {% set instance_id = 'disc-instance-' ~ disc_counter.value ~ '-' ~ loop.index %}
+                                        {% set parent_id = 'disc-group-instances-' ~ disc_counter.value %}
+                                        {{ render_instance_accordion(disc_item, instance_id, parent_id, 'discovery', loop.index) }}
+                                        {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ render_violation_details(group_list[0], 'discovery') }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
             {% endif %}
             {% endif %} {# End of single-state / multi-state conditional #}
 

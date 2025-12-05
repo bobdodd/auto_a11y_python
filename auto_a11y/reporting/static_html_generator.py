@@ -857,7 +857,14 @@ class StaticHTMLReportGenerator:
                 issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
                 issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
                 issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
-                issue_dict['metadata']['wcag_full'] = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                # Ensure wcag_full is always a list
+                wcag_full_raw = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                if isinstance(wcag_full_raw, str):
+                    issue_dict['metadata']['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                elif isinstance(wcag_full_raw, list):
+                    issue_dict['metadata']['wcag_full'] = wcag_full_raw
+                else:
+                    issue_dict['metadata']['wcag_full'] = []
 
                 violations.append(issue_dict)
 
@@ -897,7 +904,14 @@ class StaticHTMLReportGenerator:
                 issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
                 issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
                 issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
-                issue_dict['metadata']['wcag_full'] = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                # Ensure wcag_full is always a list
+                wcag_full_raw = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                if isinstance(wcag_full_raw, str):
+                    issue_dict['metadata']['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                elif isinstance(wcag_full_raw, list):
+                    issue_dict['metadata']['wcag_full'] = wcag_full_raw
+                else:
+                    issue_dict['metadata']['wcag_full'] = []
 
                 warnings.append(issue_dict)
 
@@ -937,7 +951,14 @@ class StaticHTMLReportGenerator:
                 issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
                 issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
                 issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
-                issue_dict['metadata']['wcag_full'] = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                # Ensure wcag_full is always a list
+                wcag_full_raw = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                if isinstance(wcag_full_raw, str):
+                    issue_dict['metadata']['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                elif isinstance(wcag_full_raw, list):
+                    issue_dict['metadata']['wcag_full'] = wcag_full_raw
+                else:
+                    issue_dict['metadata']['wcag_full'] = []
 
                 informational.append(issue_dict)
 
@@ -978,7 +999,14 @@ class StaticHTMLReportGenerator:
                     issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
                     issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
                     issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
-                    issue_dict['metadata']['wcag_full'] = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                    # Ensure wcag_full is always a list
+                    wcag_full_raw = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                    if isinstance(wcag_full_raw, str):
+                        issue_dict['metadata']['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                    elif isinstance(wcag_full_raw, list):
+                        issue_dict['metadata']['wcag_full'] = wcag_full_raw
+                    else:
+                        issue_dict['metadata']['wcag_full'] = []
 
                     discovery.append(issue_dict)
 

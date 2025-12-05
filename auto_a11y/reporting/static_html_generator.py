@@ -1975,7 +1975,8 @@ class StaticHTMLReportGenerator:
                             issue_metadata_fr = issue_dict_fr.get('metadata', {})
 
                             # Ensure wcag_full is a list (split if it's a string)
-                            wcag_full_raw = issue_metadata.get('wcag_full', [])
+                            # Get wcag_full from enriched metadata (it's not in the original metadata)
+                            wcag_full_raw = issue_metadata_en.get('wcag_full', [])
                             if isinstance(wcag_full_raw, str):
                                 # Split comma-separated string and clean up whitespace
                                 wcag_full = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]

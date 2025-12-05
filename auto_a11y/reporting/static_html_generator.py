@@ -927,21 +927,17 @@ class StaticHTMLReportGenerator:
                 # Merge enriched metadata for bilingual support
                 if not issue_dict['metadata']:
                     issue_dict['metadata'] = {}
-                enriched_metadata_en = enriched_en.get('metadata', {})
-                enriched_metadata_fr = enriched_fr.get('metadata', {})
-                issue_dict['metadata']['what_en'] = enriched_metadata_en.get('what', '')
-                issue_dict['metadata']['what_fr'] = enriched_metadata_fr.get('what', '')
-                issue_dict['metadata']['what_generic_en'] = enriched_metadata_en.get('what_generic', '')
-                issue_dict['metadata']['what_generic_fr'] = enriched_metadata_fr.get('what_generic', '')
-                issue_dict['metadata']['title_en'] = enriched_metadata_en.get('title', '')
-                issue_dict['metadata']['title_fr'] = enriched_metadata_fr.get('title', '')
-                issue_dict['metadata']['why_en'] = enriched_metadata_en.get('why', '')
-                issue_dict['metadata']['why_fr'] = enriched_metadata_fr.get('why', '')
-                issue_dict['metadata']['who_en'] = enriched_metadata_en.get('who', '')
-                issue_dict['metadata']['who_fr'] = enriched_metadata_fr.get('who', '')
-                issue_dict['metadata']['full_remediation_en'] = enriched_metadata_en.get('full_remediation', '')
-                issue_dict['metadata']['full_remediation_fr'] = enriched_metadata_fr.get('full_remediation', '')
-                issue_dict['metadata']['wcag_full'] = enriched_metadata_en.get('wcag_full', [])
+                # Copy bilingual metadata from original issue (already translated when stored in DB)
+                orig_metadata = info_item.metadata if hasattr(info_item, 'metadata') and info_item.metadata else {}
+                issue_dict['metadata']['what_en'] = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
+                issue_dict['metadata']['what_fr'] = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
+                issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
+                issue_dict['metadata']['why_fr'] = orig_metadata.get('why_fr', enriched_fr.get('why_it_matters', ''))
+                issue_dict['metadata']['who_en'] = orig_metadata.get('who_en', enriched_en.get('who_it_affects', ''))
+                issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
+                issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
+                issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
+                issue_dict['metadata']['wcag_full'] = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
 
                 informational.append(issue_dict)
 
@@ -972,21 +968,17 @@ class StaticHTMLReportGenerator:
                     # Merge enriched metadata for bilingual support
                     if not issue_dict['metadata']:
                         issue_dict['metadata'] = {}
-                    enriched_metadata_en = enriched_en.get('metadata', {})
-                    enriched_metadata_fr = enriched_fr.get('metadata', {})
-                    issue_dict['metadata']['what_en'] = enriched_metadata_en.get('what', '')
-                    issue_dict['metadata']['what_fr'] = enriched_metadata_fr.get('what', '')
-                    issue_dict['metadata']['what_generic_en'] = enriched_metadata_en.get('what_generic', '')
-                    issue_dict['metadata']['what_generic_fr'] = enriched_metadata_fr.get('what_generic', '')
-                    issue_dict['metadata']['title_en'] = enriched_metadata_en.get('title', '')
-                    issue_dict['metadata']['title_fr'] = enriched_metadata_fr.get('title', '')
-                    issue_dict['metadata']['why_en'] = enriched_metadata_en.get('why', '')
-                    issue_dict['metadata']['why_fr'] = enriched_metadata_fr.get('why', '')
-                    issue_dict['metadata']['who_en'] = enriched_metadata_en.get('who', '')
-                    issue_dict['metadata']['who_fr'] = enriched_metadata_fr.get('who', '')
-                    issue_dict['metadata']['full_remediation_en'] = enriched_metadata_en.get('full_remediation', '')
-                    issue_dict['metadata']['full_remediation_fr'] = enriched_metadata_fr.get('full_remediation', '')
-                    issue_dict['metadata']['wcag_full'] = enriched_metadata_en.get('wcag_full', [])
+                    # Copy bilingual metadata from original issue (already translated when stored in DB)
+                    orig_metadata = disco_item.metadata if hasattr(disco_item, 'metadata') and disco_item.metadata else {}
+                    issue_dict['metadata']['what_en'] = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
+                    issue_dict['metadata']['what_fr'] = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
+                    issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
+                    issue_dict['metadata']['why_fr'] = orig_metadata.get('why_fr', enriched_fr.get('why_it_matters', ''))
+                    issue_dict['metadata']['who_en'] = orig_metadata.get('who_en', enriched_en.get('who_it_affects', ''))
+                    issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
+                    issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
+                    issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
+                    issue_dict['metadata']['wcag_full'] = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
 
                     discovery.append(issue_dict)
 

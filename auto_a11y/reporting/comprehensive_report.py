@@ -1277,15 +1277,14 @@ class ComprehensiveReportGenerator:
 
         function switchLanguage(lang) {
             currentLanguage = lang;
+            localStorage.setItem('reportLanguage', lang);
 
-            // Hide all language content
-            document.querySelectorAll('[data-lang]').forEach(el => {
+            // Toggle visibility of language content divs (for old report format)
+            document.querySelectorAll('.lang-content[data-lang]').forEach(el => {
                 if (el.getAttribute('data-lang') === lang) {
-                    el.classList.remove('lang-inactive');
-                    el.classList.add('lang-active');
+                    el.style.display = 'block';
                 } else {
-                    el.classList.remove('lang-active');
-                    el.classList.add('lang-inactive');
+                    el.style.display = 'none';
                 }
             });
 
@@ -1298,6 +1297,14 @@ class ComprehensiveReportGenerator:
                 }
             });
         }
+
+        // Load saved language preference on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('reportLanguage');
+            if (savedLang && savedLang !== currentLanguage) {
+                switchLanguage(savedLang);
+            }
+        });
         </script>
         """
     

@@ -593,7 +593,7 @@
                                     '3.3.2': {'en': 'Labels or Instructions', 'fr': 'Étiquettes ou instructions'},
                                     '4.1.2': {'en': 'Name, Role, Value', 'fr': 'Nom, rôle, valeur'}
                                 } %}
-                                {% for criterion, count in analytics.wcag_compliance.items()|sort(attribute='1.count', reverse=True)[:10] %}
+                                {% for criterion, count in (analytics.wcag_compliance.items()|sort(attribute='1.count', reverse=True)|list)[:10] %}
                                 <tr>
                                     <td><code>{{ criterion }}</code></td>
                                     <td>
@@ -751,7 +751,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for touchpoint, count in analytics.by_touchpoint.items()|sort(attribute='1', reverse=True)[:10] %}
+                            {% for touchpoint, count in (analytics.by_touchpoint.items()|sort(attribute='1', reverse=True)|list)[:10] %}
                             <tr>
                                 <td style="font-weight: 500;">{{ touchpoint }}</td>
                                 <td>{{ count }}</td>
@@ -928,7 +928,7 @@
         const wcagCtx = document.getElementById('wcagChart');
         if (wcagCtx) {
             const wcagData = [
-                {% for criterion, count in analytics.wcag_compliance.items()|sort(attribute='1.count', reverse=True)[:10] %}
+                {% for criterion, count in (analytics.wcag_compliance.items()|sort(attribute='1.count', reverse=True)|list)[:10] %}
                 { criterion: '{{ criterion }}', count: {{ count.count }} }{% if not loop.last %},{% endif %}
                 {% endfor %}
             ];

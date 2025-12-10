@@ -55,14 +55,19 @@ class ComprehensiveReportGenerator:
         # Analyze the data
         analytics = self._perform_analytics(data)
         
-        # Generate executive summary analysis if requested
-        ai_summary = None
+        # Generate executive summary analysis in both languages if requested
+        ai_summary_en = None
+        ai_summary_fr = None
         if include_ai_summary and self.ai_summary_generator:
             try:
-                ai_summary = self.ai_summary_generator.generate_executive_summary(data)
+                logger.info("Generating English executive summary...")
+                ai_summary_en = self.ai_summary_generator.generate_executive_summary(data, language='en')
+                logger.info("Generating French executive summary...")
+                ai_summary_fr = self.ai_summary_generator.generate_executive_summary(data, language='fr')
             except Exception as e:
                 logger.error(f"Failed to generate executive summary analysis: {e}")
-                ai_summary = None
+                ai_summary_en = None
+                ai_summary_fr = None
         
         html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -76,7 +81,7 @@ class ComprehensiveReportGenerator:
 <body>
     <div class="report-container">
         {self._generate_header(data)}
-        {self._generate_executive_summary(data, analytics, ai_summary)}
+        {self._generate_executive_summary(data, analytics, ai_summary_en, ai_summary_fr)}
         {self._generate_key_metrics(analytics)}
         {self._generate_impact_analysis(analytics)}
         {self._generate_wcag_analysis(analytics)}
@@ -91,7 +96,168 @@ class ComprehensiveReportGenerator:
 </body>
 </html>"""
         return html
-    
+
+    def generate_bilingual_standalone_html(self, data: Dict[str, Any], output_path: str, include_ai_summary: bool = True) -> str:
+        """
+        Generate standalone bilingual HTML report with embedded Bootstrap and bilingual AI analysis
+
+        Args:
+            data: Report data including project, websites, recordings, statistics
+            output_path: Path where the report should be saved
+            include_ai_summary: Whether to include AI-generated executive summaries
+
+        Returns:
+            Path to generated report file
+        """
+        import jinja2
+        from pathlib import Path
+
+        # Perform analytics
+        analytics = self._perform_analytics(data)
+
+        # Generate AI summaries in both languages if requested
+        ai_summary_en = None
+        ai_summary_fr = None
+        if include_ai_summary and self.ai_summary_generator:
+            try:
+                logger.info("Generating English executive summary...")
+                ai_summary_en = self.ai_summary_generator.generate_executive_summary(data, language='en')
+                logger.info("Generating French executive summary...")
+                ai_summary_fr = self.ai_summary_generator.generate_executive_summary(data, language='fr')
+            except Exception as e:
+                logger.error(f"Failed to generate AI executive summaries: {e}")
+                ai_summary_en = None
+                ai_summary_fr = None
+
+        # Read embedded Bootstrap assets
+        embedded_assets = self._read_embedded_assets()
+
+        # Setup Jinja2 environment
+        templates_dir = Path(__file__).parent.parent / 'web' / 'templates'
+        env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(str(templates_dir)),
+            autoescape=jinja2.select_autoescape(['html', 'xml'])
+        )
+
+        # Load the standalone template
+        template = env.get_template('static_report/comprehensive_report_standalone.html')
+
+        # Get translations
+        translations = self._get_translations()
+
+        # Prepare template context
+        context = {
+            'data': data,
+            'analytics': analytics,
+            'ai_summary_en': ai_summary_en,
+            'ai_summary_fr': ai_summary_fr,
+            'translations_en': translations['en'],
+            'translations_fr': translations['fr'],
+            'report_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'bootstrap_css': embedded_assets['bootstrap_css'],
+            'bootstrap_icons_css': embedded_assets['bootstrap_icons_css'],
+            'bootstrap_js': embedded_assets['bootstrap_js'],
+            'chart_colors': self.chart_colors
+        }
+
+        # Render the template
+        html_content = template.render(**context)
+
+        # Write to file
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+
+        logger.info(f"Generated bilingual standalone comprehensive report: {output_path}")
+        return output_path
+
+    def _read_embedded_assets(self) -> Dict[str, str]:
+        """Read Bootstrap and icon CSS/JS files for embedding"""
+        from pathlib import Path
+
+        assets_dir = Path(__file__).parent.parent / 'web' / 'static'
+        assets = {}
+
+        # Read Bootstrap CSS
+        bootstrap_css_path = assets_dir / 'css' / 'bootstrap.min.css'
+        if bootstrap_css_path.exists():
+            with open(bootstrap_css_path, 'r', encoding='utf-8') as f:
+                assets['bootstrap_css'] = f.read()
+        else:
+            assets['bootstrap_css'] = ''
+
+        # Read Bootstrap Icons CSS
+        bootstrap_icons_path = assets_dir / 'css' / 'bootstrap-icons.min.css'
+        if bootstrap_icons_path.exists():
+            with open(bootstrap_icons_path, 'r', encoding='utf-8') as f:
+                assets['bootstrap_icons_css'] = f.read()
+        else:
+            assets['bootstrap_icons_css'] = ''
+
+        # Read Bootstrap JS
+        bootstrap_js_path = assets_dir / 'js' / 'bootstrap.bundle.min.js'
+        if bootstrap_js_path.exists():
+            with open(bootstrap_js_path, 'r', encoding='utf-8') as f:
+                assets['bootstrap_js'] = f.read()
+        else:
+            assets['bootstrap_js'] = ''
+
+        return assets
+
+    def _get_translations(self) -> Dict[str, Dict[str, str]]:
+        """Get translations for English and French"""
+        return {
+            'en': {
+                'comprehensive_report': 'Comprehensive Accessibility Report',
+                'executive_summary': 'Executive Summary',
+                'compliance_score': 'Compliance Score',
+                'key_metrics': 'Key Metrics',
+                'violations': 'Violations',
+                'high_impact': 'High Impact',
+                'medium_impact': 'Medium Impact',
+                'low_impact': 'Low Impact',
+                'overall_assessment': 'Overall Assessment',
+                'key_strengths': 'Key Strengths',
+                'critical_risks': 'Critical Risk Areas',
+                'show_stoppers': 'Show Stoppers',
+                'maturity_level': 'Accessibility Maturity Level',
+                'user_impact': 'User Impact Analysis',
+                'legal_risk': 'Legal & Compliance Risk',
+                'action_plan': 'Recommended Action Plan',
+                'immediate_actions': 'Immediate Actions (Do Now)',
+                'short_term_goals': 'Short-term Goals (1-3 months)',
+                'long_term_strategy': 'Long-term Strategy (3-12 months)',
+                'training_needs': 'Recommended Training',
+                'recordings': 'Lived Experience Testing',
+                'total_recordings': 'Total Recordings',
+                'recording_issues': 'Issues from Recordings'
+            },
+            'fr': {
+                'comprehensive_report': 'Rapport d\'accessibilité complet',
+                'executive_summary': 'Résumé exécutif',
+                'compliance_score': 'Score de conformité',
+                'key_metrics': 'Indicateurs clés',
+                'violations': 'Violations',
+                'high_impact': 'Impact élevé',
+                'medium_impact': 'Impact moyen',
+                'low_impact': 'Impact faible',
+                'overall_assessment': 'Évaluation globale',
+                'key_strengths': 'Points forts clés',
+                'critical_risks': 'Zones de risque critiques',
+                'show_stoppers': 'Bloqueurs critiques',
+                'maturity_level': 'Niveau de maturité en accessibilité',
+                'user_impact': 'Analyse de l\'impact sur les utilisateurs',
+                'legal_risk': 'Risque juridique et de conformité',
+                'action_plan': 'Plan d\'action recommandé',
+                'immediate_actions': 'Actions immédiates (à faire maintenant)',
+                'short_term_goals': 'Objectifs à court terme (1-3 mois)',
+                'long_term_strategy': 'Stratégie à long terme (3-12 mois)',
+                'training_needs': 'Besoins en formation recommandés',
+                'recordings': 'Tests d\'expérience vécue',
+                'total_recordings': 'Total des enregistrements',
+                'recording_issues': 'Problèmes issus des enregistrements'
+            }
+        }
+
     def _perform_analytics(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Perform comprehensive analytics on test data"""
         analytics = {
@@ -274,8 +440,8 @@ class ComprehensiveReportGenerator:
         </header>
         """
     
-    def _generate_executive_summary(self, data: Dict[str, Any], analytics: Dict[str, Any], ai_summary: Optional[Dict[str, Any]] = None) -> str:
-        """Generate executive summary section with integrated analysis"""
+    def _generate_executive_summary(self, data: Dict[str, Any], analytics: Dict[str, Any], ai_summary_en: Optional[Dict[str, Any]] = None, ai_summary_fr: Optional[Dict[str, Any]] = None) -> str:
+        """Generate executive summary section with integrated bilingual analysis"""
         stats = data.get('statistics', {})
         total_issues = analytics['total_issues']
         critical_issues = analytics['by_impact'].get('high', 0)
@@ -295,7 +461,7 @@ class ComprehensiveReportGenerator:
         logger.info(f"COMPLIANCE CALCULATION: passes={total_passes}, errors={total_errors}, warnings={total_warnings}, total_violations={total_violations}, total_tests={total_tests}, score={compliance_score:.1f}%")
         print(f"DEBUG COMPLIANCE: passes={total_passes}, errors={total_errors}, warnings={total_warnings}, total_violations={total_violations}, total_tests={total_tests}, score={compliance_score:.1f}%")
         print(f"DEBUG STATS DICT: {stats}")
-        
+
         return f"""
         <section class="executive-summary">
             <h2>Executive Summary</h2>
@@ -304,8 +470,8 @@ class ComprehensiveReportGenerator:
                     <div class="score-circle" data-score="{compliance_score:.1f}">
                         <svg viewBox="0 0 200 200">
                             <circle cx="100" cy="100" r="90" fill="none" stroke="#e0e0e0" stroke-width="20"/>
-                            <circle cx="100" cy="100" r="90" fill="none" stroke="{self._get_score_color(compliance_score)}" 
-                                    stroke-width="20" stroke-dasharray="{compliance_score * 5.65} 565" 
+                            <circle cx="100" cy="100" r="90" fill="none" stroke="{self._get_score_color(compliance_score)}"
+                                    stroke-width="20" stroke-dasharray="{compliance_score * 5.65} 565"
                                     transform="rotate(-90 100 100)"/>
                         </svg>
                         <div class="score-text">
@@ -315,9 +481,9 @@ class ComprehensiveReportGenerator:
                     </div>
                     <div class="score-grade">{self._get_grade(compliance_score)}</div>
                 </div>
-                
+
                 <div class="summary-text">
-                    {self._format_executive_content(data, analytics, ai_summary)}
+                    {self._format_executive_content(data, analytics, ai_summary_en, ai_summary_fr)}
                 </div>
                 </div>
             </div>
@@ -1251,12 +1417,40 @@ class ComprehensiveReportGenerator:
         """Calculate percentage safely"""
         return (value / total * 100) if total > 0 else 0
     
-    def _format_executive_content(self, data: Dict[str, Any], analytics: Dict[str, Any], ai_summary: Optional[Dict[str, Any]] = None) -> str:
-        """Format executive summary content with optional AI insights"""
+    def _format_executive_content(self, data: Dict[str, Any], analytics: Dict[str, Any], ai_summary_en: Optional[Dict[str, Any]] = None, ai_summary_fr: Optional[Dict[str, Any]] = None) -> str:
+        """Format executive summary content with optional bilingual AI insights"""
+        # Add language switcher if we have both languages
+        html_output = ""
+        if ai_summary_en and ai_summary_fr:
+            html_output += """
+                <div class="language-switcher" style="text-align: right; margin-bottom: 1rem;">
+                    <button class="lang-btn lang-btn-active" data-lang="en" onclick="switchLanguage('en')" style="padding: 0.5rem 1rem; margin-left: 0.5rem; border: 2px solid #667eea; background: #667eea; color: white; border-radius: 4px; cursor: pointer; font-weight: bold;">English</button>
+                    <button class="lang-btn" data-lang="fr" onclick="switchLanguage('fr')" style="padding: 0.5rem 1rem; margin-left: 0.5rem; border: 2px solid #667eea; background: white; color: #667eea; border-radius: 4px; cursor: pointer; font-weight: bold;">Français</button>
+                </div>
+            """
+
+        # Generate English content
+        if ai_summary_en:
+            lang_wrapper_start = '<div class="lang-content" data-lang="en" style="display: block;">' if ai_summary_fr else '<div class="lang-content" data-lang="en">'
+            html_output += lang_wrapper_start + self._format_summary_for_language(data, analytics, ai_summary_en) + '</div>'
+
+        # Generate French content
+        if ai_summary_fr:
+            lang_wrapper_start = '<div class="lang-content" data-lang="fr" style="display: none;">'
+            html_output += lang_wrapper_start + self._format_summary_for_language(data, analytics, ai_summary_fr) + '</div>'
+
+        # If we don't have AI summaries, show basic content
+        if not ai_summary_en and not ai_summary_fr:
+            html_output += self._format_basic_summary(data, analytics)
+
+        return html_output
+
+    def _format_summary_for_language(self, data: Dict[str, Any], analytics: Dict[str, Any], ai_summary: Optional[Dict[str, Any]] = None) -> str:
+        """Format executive summary content for a specific language"""
         stats = data.get('statistics', {})
         total_violations = analytics.get('total_violations', 0)
         critical_issues = analytics['by_impact'].get('high', 0)
-        
+
         # If we have AI analysis, use it for richer content
         if ai_summary:
             assessment = ai_summary.get('overall_assessment', {})

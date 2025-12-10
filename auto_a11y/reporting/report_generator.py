@@ -541,7 +541,7 @@ class ReportGenerator:
         website_data: List[Dict]
     ) -> Dict[str, Any]:
         """Prepare data for project report"""
-        
+
         # Calculate aggregate statistics for all categories
         total_websites = len(website_data)
         total_pages = sum(len(wd['pages']) for wd in website_data)
@@ -550,7 +550,7 @@ class ReportGenerator:
         total_info = 0
         total_discovery = 0
         total_passes = 0
-        
+
         for wd in website_data:
             for pr in wd['pages']:
                 test_result = pr['test_result']
@@ -560,10 +560,26 @@ class ReportGenerator:
                     total_info += test_result.info_count
                     total_discovery += test_result.discovery_count
                     total_passes += test_result.pass_count
-        
+
+        # Get recordings for this project
+        recordings_data = []
+        recordings = self.db.get_recordings(project_id=project.id)
+        for recording in recordings:
+            # Get recording issues
+            recording_issues = self.db.get_recording_issues(recording_id=recording.id)
+
+            recordings_data.append({
+                'recording': recording,
+                'issues': recording_issues,
+                'key_takeaways': recording.get_key_takeaways('en') if hasattr(recording, 'get_key_takeaways') else [],
+                'user_painpoints': recording.get_user_painpoints('en') if hasattr(recording, 'get_user_painpoints') else [],
+                'user_assertions': recording.get_user_assertions('en') if hasattr(recording, 'get_user_assertions') else []
+            })
+
         return {
             'project': project.__dict__,
             'websites': website_data,
+            'recordings': recordings_data,
             'statistics': {
                 'total_websites': total_websites,
                 'total_pages': total_pages,
@@ -573,7 +589,9 @@ class ReportGenerator:
                 'total_discovery': total_discovery,
                 'total_passes': total_passes,
                 'average_violations_per_page': total_violations / total_pages if total_pages else 0,
-                'average_warnings_per_page': total_warnings / total_pages if total_pages else 0
+                'average_warnings_per_page': total_warnings / total_pages if total_pages else 0,
+                'total_recordings': len(recordings_data),
+                'total_recording_issues': sum(len(r['issues']) for r in recordings_data)
             },
             'generated_at': datetime.now().isoformat()
         }

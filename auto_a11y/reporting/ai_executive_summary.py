@@ -24,31 +24,32 @@ class AIExecutiveSummaryGenerator:
         """
         self.claude_client = claude_client
         
-    def generate_executive_summary(self, report_data: Dict[str, Any]) -> Dict[str, Any]:
+    def generate_executive_summary(self, report_data: Dict[str, Any], language: str = 'en') -> Dict[str, Any]:
         """
         Generate comprehensive executive summary using Claude AI
-        
+
         Args:
             report_data: Complete report data including test results
-            
+            language: Language for the summary ('en' or 'fr')
+
         Returns:
             Dictionary containing AI-generated insights
         """
         if not self.claude_client:
             return self._get_fallback_summary(report_data)
-        
+
         try:
             # Prepare data for Claude
-            analysis_prompt = self._create_analysis_prompt(report_data)
-            
+            analysis_prompt = self._create_analysis_prompt(report_data, language)
+
             # Get AI analysis using sync client
             response = self._get_claude_response(analysis_prompt)
-            
+
             # Parse and structure the response
             return self._parse_ai_response(response, report_data)
-            
+
         except Exception as e:
-            logger.error(f"Failed to generate AI executive summary: {e}")
+            logger.error(f"Failed to generate AI executive summary ({language}): {e}")
             return self._get_fallback_summary(report_data)
     
     def _get_claude_response(self, prompt: str) -> str:
@@ -79,10 +80,17 @@ class AIExecutiveSummaryGenerator:
             logger.error(f"Error calling Claude API: {e}")
             raise
     
-    def _create_analysis_prompt(self, report_data: Dict[str, Any]) -> str:
+    def _create_analysis_prompt(self, report_data: Dict[str, Any], language: str = 'en') -> str:
         """Create detailed prompt for Claude analysis"""
-        
+
         stats = report_data.get('statistics', {})
+
+        # Language-specific instructions
+        language_instruction = ""
+        if language == 'fr':
+            language_instruction = "\n\nIMPORTANT: Please provide your entire response in French. All analysis, recommendations, and insights should be written in French."
+        else:
+            language_instruction = "\n\nIMPORTANT: Please provide your entire response in English."
         
         # Collect all issues for analysis
         all_violations = []
@@ -126,6 +134,36 @@ class AIExecutiveSummaryGenerator:
 
         testing_context = "\n".join(f"- {note}" for note in set(testing_notes)) if testing_notes else ""
 
+        # Collect recordings data
+        recordings_summary = ""
+        recordings = report_data.get('recordings', [])
+        if recordings:
+            total_recordings = len(recordings)
+            total_recording_issues = sum(len(r.get('issues', [])) for r in recordings)
+
+            # Sample key painpoints and takeaways
+            sample_painpoints = []
+            sample_takeaways = []
+            for recording_data in recordings[:3]:  # Sample first 3 recordings
+                painpoints = recording_data.get('user_painpoints', [])
+                takeaways = recording_data.get('key_takeaways', [])
+                if painpoints:
+                    sample_painpoints.extend([{'title': p.get('title'), 'impact': p.get('impact')} for p in painpoints[:2]])
+                if takeaways:
+                    sample_takeaways.extend([t.get('topic') for t in takeaways[:2]])
+
+            recordings_summary = f"""
+        LIVED EXPERIENCE TESTING RESULTS:
+        - Total Recordings: {total_recordings}
+        - Total Issues from Recordings: {total_recording_issues}
+
+        Sample User Painpoints from Recordings:
+        {json.dumps(sample_painpoints[:5], indent=2) if sample_painpoints else 'No painpoints captured'}
+
+        Sample Key Takeaways:
+        {json.dumps(sample_takeaways[:5], indent=2) if sample_takeaways else 'No takeaways captured'}
+        """
+
         prompt = f"""
         Analyze the following accessibility test results and provide a comprehensive executive summary.
 
@@ -146,12 +184,13 @@ class AIExecutiveSummaryGenerator:
         - Total Discovery Items: {stats.get('total_discovery', 0)}
         - Total Passed Tests: {stats.get('total_passes', 0)}
         - High Impact Issues: {len(critical_issues)}
-        
+
         CRITICAL ISSUES FOUND:
         {json.dumps(critical_issues[:10], indent=2) if critical_issues else 'No critical issues found'}
-        
+
         TOP VIOLATION PATTERNS:
         {self._get_violation_patterns(all_violations)}
+        {recordings_summary if recordings else ''}
         
         Please provide a comprehensive executive summary that includes:
         
@@ -208,8 +247,9 @@ class AIExecutiveSummaryGenerator:
           }},
           "training_needs": ["array of strings"]
         }}
+        {language_instruction}
         """
-        
+
         return prompt
     
     def _get_violation_patterns(self, violations: List[Dict]) -> str:

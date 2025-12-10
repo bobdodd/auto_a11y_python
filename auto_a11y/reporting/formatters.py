@@ -4,6 +4,8 @@ Report formatters for different output formats
 
 import json
 import csv
+import tempfile
+import os
 from typing import Dict, Any, List
 from datetime import datetime
 from pathlib import Path

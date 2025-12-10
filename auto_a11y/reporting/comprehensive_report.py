@@ -1267,9 +1267,37 @@ class ComprehensiveReportGenerator:
         """
     
     def _get_chart_scripts(self) -> str:
-        """Get Chart.js script includes"""
+        """Get Chart.js script includes and language switcher"""
         return """
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+        // Language switcher function - must be defined before body renders
+        let currentLanguage = 'en';
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+
+            // Hide all language content
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                if (el.getAttribute('data-lang') === lang) {
+                    el.classList.remove('lang-inactive');
+                    el.classList.add('lang-active');
+                } else {
+                    el.classList.remove('lang-active');
+                    el.classList.add('lang-inactive');
+                }
+            });
+
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('lang-btn-active');
+                } else {
+                    btn.classList.remove('lang-btn-active');
+                }
+            });
+        }
+        </script>
         """
     
     def _get_chart_initialization_script(self, analytics: Dict[str, Any]) -> str:

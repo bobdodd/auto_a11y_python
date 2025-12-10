@@ -71,7 +71,7 @@
             margin-bottom: 0.5rem;
         }
 
-        .lang-btn {
+        .lang-switcher button {
             padding: 0.5rem 1.5rem;
             margin: 0 0.25rem;
             border: 2px solid #667eea;
@@ -79,19 +79,16 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
-        }
-
-        .lang-btn-active {
-            background: #667eea;
-            color: white;
-        }
-
-        .lang-btn:not(.lang-btn-active) {
             background: white;
             color: #667eea;
         }
 
-        .lang-btn:hover {
+        .lang-switcher button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .lang-switcher button:hover {
             opacity: 0.8;
         }
     </style>
@@ -106,11 +103,11 @@
 
             // Update active button
             document.querySelectorAll('.lang-switcher button').forEach(btn => {
-                btn.classList.remove('lang-btn-active');
+                btn.classList.remove('active');
             });
             const langButton = document.getElementById(`lang-${lang}`);
             if (langButton) {
-                langButton.classList.add('lang-btn-active');
+                langButton.classList.add('active');
             }
 
             // Toggle visibility of language-specific content
@@ -149,8 +146,8 @@
                 </div>
                 <div class="text-end">
                     <div class="lang-switcher">
-                        <button id="lang-en" class="lang-btn {{ 'lang-btn-active' if language == 'en' else '' }}" data-lang="en" onclick="switchLanguage('en')">English</button>
-                        <button id="lang-fr" class="lang-btn {{ 'lang-btn-active' if language == 'fr' else '' }}" data-lang="fr" onclick="switchLanguage('fr')">Français</button>
+                        <button id="lang-en" class="{{ 'active' if language == 'en' else '' }}" onclick="switchLanguage('en')">English</button>
+                        <button id="lang-fr" class="{{ 'active' if language == 'fr' else '' }}" onclick="switchLanguage('fr')">Français</button>
                     </div>
                     <small class="text-muted d-block mt-2">{{ report_date }}</small>
                 </div>

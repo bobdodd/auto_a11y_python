@@ -4,8 +4,6 @@ Report formatters for different output formats
 
 import json
 import csv
-import tempfile
-import os
 from typing import Dict, Any, List
 from datetime import datetime
 from pathlib import Path
@@ -217,19 +215,10 @@ class HTMLFormatter(BaseFormatter):
         return self.comprehensive_generator.generate_comprehensive_html(data)
     
     def format_project_report(self, data: Dict[str, Any]) -> str:
-        """Generate bilingual HTML report for a project"""
-
-        # Generate temporary output path
-        project_name = data.get('project', {}).get('name', 'project').replace(' ', '_')
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        output_path = os.path.join(tempfile.gettempdir(), f"project_{project_name}_{timestamp}.html")
-
-        # Use new bilingual standalone report generator
-        self.comprehensive_generator.generate_bilingual_standalone_html(data, output_path, include_ai_summary=True)
-
-        # Read and return the generated HTML
-        with open(output_path, 'r', encoding='utf-8') as f:
-            return f.read()
+        """Generate HTML report for a project"""
+        
+        # Use comprehensive report generator for project reports
+        return self.comprehensive_generator.generate_comprehensive_html(data)
     
     def format_summary_report(self, data: Dict[str, Any]) -> str:
         """Generate executive summary report"""

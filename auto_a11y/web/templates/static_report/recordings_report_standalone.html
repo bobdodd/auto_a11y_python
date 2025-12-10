@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Recordings Accessibility Report">
+    <title>Recordings Report - {{ project.name }} - Auto A11y</title>
+
+    <!-- Embedded Bootstrap CSS -->
+    <style>
+{{ bootstrap_css|safe }}
+    </style>
+
+    <!-- Embedded Bootstrap Icons CSS -->
+    <style>
+{{ bootstrap_icons_css|safe }}
+    </style>
+
+    <!-- Custom styles for report -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #0dcaf0;
+            --success-color: #198754;
+        }
+
+        /* Language switcher styles */
+        .lang-switcher {
+            display: flex;
+            gap: 0.25rem;
+            margin-left: auto;
+        }
+
+        .lang-switcher button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .lang-switcher button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .lang-switcher button.active {
+            background: white;
+            color: var(--primary-color);
+            border-color: white;
+        }
+
+        .lang-active {
+            display: inline !important;
+        }
+
+        .lang-inactive {
+            display: none !important;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-card {
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['auto_a11y_report'] }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['auto_a11y_report'] }}</span>
+            </span>
+            <div class="lang-switcher">
+                <button onclick="switchLanguage('en')" id="lang-en" class="{{ 'active' if language == 'en' else '' }}" aria-label="Switch to English">EN</button>
+                <button onclick="switchLanguage('fr')" id="lang-fr" class="{{ 'active' if language == 'fr' else '' }}" aria-label="Switch to French">FR</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="mb-4">
+            <h1 class="display-4">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                    {{ t['recordings_report'] }}: {{ project.name }}
+                </span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                    {{ translations_fr['recordings_report'] }} : {{ project.name }}
+                </span>
+            </h1>
+            <p class="text-muted">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                    {{ t['generated'] }}: {{ report_date }}
+                </span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                    {{ translations_fr['generated'] }} : {{ report_date }}
+                </span>
+            </p>
+        </div>
+
+        {% if include_summary %}
+        <!-- Summary Statistics -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['executive_summary'] }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['executive_summary'] }}</span>
+                </h2>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <!-- Total Recordings -->
+            <div class="col-md-3">
+                <div class="stat-card bg-primary text-white">
+                    <div class="stat-value">{{ stats.total_recordings }}</div>
+                    <div class="stat-label text-white">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['total_recordings'] }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['total_recordings'] }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Issues -->
+            <div class="col-md-3">
+                <div class="stat-card bg-info text-white">
+                    <div class="stat-value">{{ stats.total_issues }}</div>
+                    <div class="stat-label text-white">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['total_issues'] }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['total_issues'] }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- High Impact Issues -->
+            <div class="col-md-2">
+                <div class="stat-card bg-danger text-white">
+                    <div class="stat-value">{{ stats.high_count }}</div>
+                    <div class="stat-label text-white">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['high'] }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['high'] }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medium Impact Issues -->
+            <div class="col-md-2">
+                <div class="stat-card bg-warning">
+                    <div class="stat-value">{{ stats.medium_count }}</div>
+                    <div class="stat-label">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['medium'] }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['medium'] }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Low Impact Issues -->
+            <div class="col-md-2">
+                <div class="stat-card bg-secondary text-white">
+                    <div class="stat-value">{{ stats.low_count }}</div>
+                    <div class="stat-label text-white">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['low'] }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['low'] }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Recordings List -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['recordings'] }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['recordings'] }}</span>
+                </h2>
+            </div>
+        </div>
+
+        {% for recording in recordings %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">{{ recording.recording_id }}: {{ recording.title }}</h3>
+                {% if recording.description %}
+                <p class="text-muted mb-0 mt-2">{{ recording.description }}</p>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <!-- Recording Metadata -->
+                <div class="row mb-3">
+                    {% if recording.auditor_name %}
+                    <div class="col-md-6">
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['auditor'] }}:</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['auditor'] }} :</span>
+                        </strong>
+                        {{ recording.auditor_name }}
+                    </div>
+                    {% endif %}
+                    {% if recording.auditor_role %}
+                    <div class="col-md-6">
+                        <strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['role'] }}:</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['role'] }} :</span>
+                        </strong>
+                        {{ recording.auditor_role }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Recording Content Accordion -->
+                <div class="accordion mb-4" id="recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
+
+                    <!-- Key Takeaways -->
+                    {% set takeaways = recording.get_key_takeaways(language) %}
+                    {% if takeaways %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseKeyTakeaways-{{ recording.recording_id|replace(' ', '-') }}">
+                                <i class="bi bi-list-ol me-2"></i>
+                                <strong>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['key_takeaways'] }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['key_takeaways'] }}</span>
+                                    ({{ takeaways|length }})
+                                </strong>
+                            </button>
+                        </h2>
+                        <div id="collapseKeyTakeaways-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
+                             data-bs-parent="#recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
+                            <div class="accordion-body">
+                                {% for takeaway in takeaways %}
+                                <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
+                                    <h4>{{ takeaway.number }}. {{ takeaway.topic }}</h4>
+                                    <p>{{ takeaway.description }}</p>
+                                    {% if include_timecodes and takeaway.timecodes %}
+                                    <p class="text-muted small mb-0">
+                                        <i class="bi bi-clock"></i>
+                                        {% for tc in takeaway.timecodes %}
+                                        <code>{{ tc.start }} - {{ tc.end }}</code>{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- User Painpoints -->
+                    {% set painpoints = recording.get_user_painpoints(language) %}
+                    {% if painpoints %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapsePainpoints-{{ recording.recording_id|replace(' ', '-') }}">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <strong>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['user_painpoints'] }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['user_painpoints'] }}</span>
+                                    ({{ painpoints|length }})
+                                </strong>
+                            </button>
+                        </h2>
+                        <div id="collapsePainpoints-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
+                             data-bs-parent="#recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
+                            <div class="accordion-body">
+                                {% for painpoint in painpoints %}
+                                <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
+                                    <h4>
+                                        {% if painpoint.impact %}
+                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}.get(painpoint.impact|lower, 'secondary') }} me-2">
+                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get(painpoint.impact|lower, painpoint.impact|upper) }}</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(painpoint.impact|lower, painpoint.impact|upper) }}</span>
+                                        </span>
+                                        {% endif %}
+                                        {{ painpoint.title }}
+                                    </h4>
+                                    {% if painpoint.user_quote %}
+                                    <div class="mb-3">
+                                        <strong class="text-primary">
+                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">User Quote:</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Citation de l'utilisateur :</span>
+                                        </strong>
+                                        <p class="fst-italic ms-3">"{{ painpoint.user_quote }}"</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if include_timecodes and painpoint.timecodes %}
+                                    <div>
+                                        <strong class="text-primary">
+                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Timecode{% if painpoint.timecodes|length > 1 %}s{% endif %}:</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Code{% if painpoint.timecodes|length > 1 %}s{% endif %} temporel{% if painpoint.timecodes|length > 1 %}s{% endif %} :</span>
+                                        </strong>
+                                        {% for tc in painpoint.timecodes %}
+                                        <div class="ms-3 mb-2">
+                                            <i class="bi bi-clock"></i>
+                                            <span class="text-muted small">
+                                                <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
+                                                {% if tc.duration %}
+                                                (<span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Duration:</span> <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Durée :</span> <code>{{ tc.duration }}</code>)
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- User Assertions -->
+                    {% set assertions = recording.get_user_assertions(language) %}
+                    {% if assertions %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseAssertions-{{ recording.recording_id|replace(' ', '-') }}">
+                                <i class="bi bi-chat-quote me-2"></i>
+                                <strong>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['user_assertions'] }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['user_assertions'] }}</span>
+                                    ({{ assertions|length }})
+                                </strong>
+                            </button>
+                        </h2>
+                        <div id="collapseAssertions-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
+                             data-bs-parent="#recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
+                            <div class="accordion-body">
+                                {% for assertion in assertions %}
+                                <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
+                                    <h4>{{ assertion.number }}. {{ assertion.assertion }}</h4>
+                                    {% if assertion.user_quote %}
+                                    <div class="mb-3">
+                                        <strong class="text-primary">
+                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">User Quote:</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Citation de l'utilisateur :</span>
+                                        </strong>
+                                        <p class="fst-italic ms-3">"{{ assertion.user_quote }}"</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if include_timecodes and assertion.timecodes %}
+                                    <div>
+                                        <strong class="text-primary">
+                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Timecode{% if assertion.timecodes|length > 1 %}s{% endif %}:</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Code{% if assertion.timecodes|length > 1 %}s{% endif %} temporel{% if assertion.timecodes|length > 1 %}s{% endif %} :</span>
+                                        </strong>
+                                        {% for tc in assertion.timecodes %}
+                                        <div class="ms-3 mb-2">
+                                            <i class="bi bi-clock"></i>
+                                            <span class="text-muted small">
+                                                <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
+                                                {% if tc.duration %}
+                                                (<span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Duration:</span> <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Durée :</span> <code>{{ tc.duration }}</code>)
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    {% if assertion.context %}
+                                    <div class="mt-2">
+                                        <strong class="text-primary">
+                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Context:</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Contexte :</span>
+                                        </strong>
+                                        <p class="ms-3">{{ assertion.context }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Accessibility Issues -->
+                    {% set recording_issues = issues_by_recording.get(recording.recording_id, []) %}
+                    {% if recording_issues %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseIssues-{{ recording.recording_id|replace(' ', '-') }}" aria-expanded="true">
+                                <i class="bi bi-bug me-2"></i>
+                                <strong>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['accessibility_issues'] }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['accessibility_issues'] }}</span>
+                                    ({{ recording_issues|length }})
+                                </strong>
+                            </button>
+                        </h2>
+                        <div id="collapseIssues-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse show"
+                             data-bs-parent="#recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
+                            <div class="accordion-body">
+                                <div class="accordion" id="accordion-issues-{{ recording.recording_id|replace(' ', '-') }}">
+                                    {% for issue in recording_issues %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#issue-{{ loop.index }}-{{ recording.recording_id|replace(' ', '-') }}">
+                                                    <div class="w-100 d-flex justify-content-between align-items-center me-2">
+                                                        <span>
+                                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}[issue.impact.value] }} me-2">
+                                                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get(issue.impact.value, issue.impact.value|upper) }}</span>
+                                                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(issue.impact.value, issue.impact.value|upper) }}</span>
+                                                            </span>
+                                                            {{ issue.title }}
+                                                        </span>
+                                                        {% if issue.timecodes %}
+                                                        <span class="badge bg-info">
+                                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }}
+                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">timecode(s)</span>
+                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">code(s) temporel(s)</span>
+                                                        </span>
+                                                        {% endif %}
+                                                    </div>
+                                                </button>
+                                            </h2>
+                                            <div id="issue-{{ loop.index }}-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
+                                                 data-bs-parent="#accordion-issues-{{ recording.recording_id|replace(' ', '-') }}">
+                                                <div class="accordion-body">
+                                                    {% if issue.short_title %}
+                                                    <p class="text-muted fst-italic">{{ issue.short_title }}</p>
+                                                    {% endif %}
+
+                                                    {% if include_timecodes and issue.timecodes %}
+                                                    <div class="mb-3">
+                                                        <strong>
+                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['timecodes'] }}:</span>
+                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['timecodes'] }} :</span>
+                                                        </strong>
+                                                        <div class="mt-1">
+                                                            {% for tc in issue.timecodes %}
+                                                            <span class="badge bg-secondary me-2">
+                                                                {{ tc.start }} - {{ tc.end }}{% if tc.duration %} ({{ tc.duration }}){% endif %}
+                                                            </span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if issue.what %}
+                                                    <div class="mb-3">
+                                                        <strong>
+                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get('what', 'What') }}:</span>
+                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('what', 'Quoi') }} :</span>
+                                                        </strong>
+                                                        <p class="mb-0">{{ issue.what }}</p>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if issue.why %}
+                                                    <div class="mb-3">
+                                                        <strong>
+                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get('why', 'Why') }}:</span>
+                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('why', 'Pourquoi') }} :</span>
+                                                        </strong>
+                                                        <p class="mb-0">{{ issue.why }}</p>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if issue.who %}
+                                                    <div class="mb-3">
+                                                        <strong>
+                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get('who_affected', 'Who is affected') }}:</span>
+                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('who_affected', 'Qui est affecté') }} :</span>
+                                                        </strong>
+                                                        <p class="mb-0">{{ issue.who }}</p>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if issue.remediation %}
+                                                    <div class="mb-3">
+                                                        <strong>
+                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get('how_to_fix', 'How to fix') }}:</span>
+                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('how_to_fix', 'Comment corriger') }} :</span>
+                                                        </strong>
+                                                        <p class="mb-0">{{ issue.remediation }}</p>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if include_wcag and issue.wcag %}
+                                                    <div class="mb-3">
+                                                        <strong>
+                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['wcag_criteria'] }}:</span>
+                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['wcag_criteria'] }} :</span>
+                                                        </strong>
+                                                        <div class="mt-1">
+                                                            {% for wcag_ref in issue.wcag %}
+                                                            <span class="badge bg-primary me-1">
+                                                                {{ wcag_ref.criteria }}
+                                                                (<span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Level</span><span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Niveau</span> {{ wcag_ref.level }})
+                                                            </span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div> <!-- End Recording Content Accordion -->
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Embedded Bootstrap JS -->
+    <script>
+{{ bootstrap_js|safe }}
+    </script>
+
+    <!-- Language switching JavaScript -->
+    <script>
+        let currentLanguage = '{{ language }}';
+        const translations = {{ translations_json|safe }};
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('reportLanguage', lang);
+
+            // Update active button
+            document.querySelectorAll('.lang-switcher button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const langButton = document.getElementById(`lang-${lang}`);
+            if (langButton) {
+                langButton.classList.add('active');
+            }
+
+            // Toggle visibility of language-specific content
+            document.querySelectorAll('[data-lang]').forEach(element => {
+                const elementLang = element.getAttribute('data-lang');
+                if (elementLang === lang) {
+                    element.classList.remove('lang-inactive');
+                    element.classList.add('lang-active');
+                } else {
+                    element.classList.remove('lang-active');
+                    element.classList.add('lang-inactive');
+                }
+            });
+        }
+
+        // Load saved language preference on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('reportLanguage');
+            if (savedLang && savedLang !== currentLanguage) {
+                switchLanguage(savedLang);
+            }
+        });
+    </script>
+</body>
+</html>

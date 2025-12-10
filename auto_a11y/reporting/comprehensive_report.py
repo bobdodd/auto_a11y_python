@@ -281,7 +281,18 @@ class ComprehensiveReportGenerator:
                 'pages_affected': 'Pages Affected',
                 'page_analysis': 'Page-by-Page Analysis',
                 'page_url': 'Page URL',
-                'total_issues_label': 'Total Issues'
+                'total_issues_label': 'Total Issues',
+                'historical_trends': 'Historical Trends',
+                'trend_analysis': 'Trend Analysis',
+                'current_snapshot': 'Current Snapshot',
+                'trend_note': 'Note: This report represents a current snapshot. Historical trend data would be available through regular testing cycles.',
+                'implementation_roadmap': 'Implementation Roadmap',
+                'priority_matrix': 'Priority Matrix',
+                'critical_priority': 'Critical (Do First)',
+                'high_priority': 'High Priority',
+                'medium_priority': 'Medium Priority',
+                'low_priority': 'Low Priority',
+                'roadmap_note': 'Priority is determined by combining issue impact with frequency of occurrence.'
             },
             'fr': {
                 'comprehensive_report': 'Rapport d\'accessibilité complet',
@@ -347,7 +358,18 @@ class ComprehensiveReportGenerator:
                 'pages_affected': 'Pages affectées',
                 'page_analysis': 'Analyse page par page',
                 'page_url': 'URL de la page',
-                'total_issues_label': 'Total des problèmes'
+                'total_issues_label': 'Total des problèmes',
+                'historical_trends': 'Tendances historiques',
+                'trend_analysis': 'Analyse des tendances',
+                'current_snapshot': 'Instantané actuel',
+                'trend_note': 'Remarque : Ce rapport représente un instantané actuel. Les données de tendances historiques seraient disponibles via des cycles de tests réguliers.',
+                'implementation_roadmap': 'Feuille de route de mise en œuvre',
+                'priority_matrix': 'Matrice de priorités',
+                'critical_priority': 'Critique (à faire en premier)',
+                'high_priority': 'Priorité élevée',
+                'medium_priority': 'Priorité moyenne',
+                'low_priority': 'Priorité faible',
+                'roadmap_note': 'La priorité est déterminée en combinant l\'impact du problème avec la fréquence d\'occurrence.'
             }
         }
 

@@ -769,6 +769,50 @@
             {% endif %}
         </section>
 
+        <!-- Historical Trends Section -->
+        <section class="bg-white rounded shadow-sm p-4 mb-4">
+            <h2 class="mb-4">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.historical_trends }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.historical_trends }}</span>
+            </h2>
+
+            <div class="alert alert-info">
+                <h5>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.current_snapshot }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.current_snapshot }}</span>
+                </h5>
+                <p class="mb-0">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.trend_note }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.trend_note }}</span>
+                </p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Total Issues</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Total des problèmes</span>
+                            </h5>
+                            <p class="display-6">{{ analytics.total_violations }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">High Impact Issues</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Problèmes à impact élevé</span>
+                            </h5>
+                            <p class="display-6">{{ analytics.by_impact.high }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Detailed Issues Section -->
         <section class="bg-white rounded shadow-sm p-4 mb-4">
             <h2 class="mb-4">
@@ -894,6 +938,143 @@
                     </tbody>
                 </table>
             </div>
+        </section>
+
+        <!-- Implementation Roadmap Section -->
+        <section class="bg-white rounded shadow-sm p-4 mb-4">
+            <h2 class="mb-4">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.implementation_roadmap }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.implementation_roadmap }}</span>
+            </h2>
+
+            <div class="alert alert-info mb-4">
+                <p class="mb-0">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.roadmap_note }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.roadmap_note }}</span>
+                </p>
+            </div>
+
+            <h4 class="mb-3">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.priority_matrix }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.priority_matrix }}</span>
+            </h4>
+
+            <!-- Critical Priority Issues -->
+            {% set critical_issues = [] %}
+            {% for issue in analytics.top_issues %}
+                {% if issue.details.impact %}
+                    {% if issue.details.impact.value is defined %}
+                        {% set impact = issue.details.impact.value|lower %}
+                    {% else %}
+                        {% set impact = issue.details.impact|string|lower %}
+                    {% endif %}
+                {% else %}
+                    {% set impact = 'medium' %}
+                {% endif %}
+                {% if impact == 'high' and issue.count >= 5 %}
+                    {% set _ = critical_issues.append(issue) %}
+                {% endif %}
+            {% endfor %}
+
+            {% if critical_issues|length > 0 %}
+            <div class="card border-danger mb-3">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.critical_priority }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.critical_priority }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        {% for issue in critical_issues[:5] %}
+                        <li class="mb-2">
+                            <strong>{{ issue.type }}</strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- High Priority Issues -->
+            {% set high_issues = [] %}
+            {% for issue in analytics.top_issues %}
+                {% if issue.details.impact %}
+                    {% if issue.details.impact.value is defined %}
+                        {% set impact = issue.details.impact.value|lower %}
+                    {% else %}
+                        {% set impact = issue.details.impact|string|lower %}
+                    {% endif %}
+                {% else %}
+                    {% set impact = 'medium' %}
+                {% endif %}
+                {% if (impact == 'high' and issue.count < 5) or (impact == 'medium' and issue.count >= 10) %}
+                    {% set _ = high_issues.append(issue) %}
+                {% endif %}
+            {% endfor %}
+
+            {% if high_issues|length > 0 %}
+            <div class="card border-warning mb-3">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.high_priority }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.high_priority }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        {% for issue in high_issues[:5] %}
+                        <li class="mb-2">
+                            <strong>{{ issue.type }}</strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Medium Priority Issues -->
+            {% set medium_issues = [] %}
+            {% for issue in analytics.top_issues %}
+                {% if issue.details.impact %}
+                    {% if issue.details.impact.value is defined %}
+                        {% set impact = issue.details.impact.value|lower %}
+                    {% else %}
+                        {% set impact = issue.details.impact|string|lower %}
+                    {% endif %}
+                {% else %}
+                    {% set impact = 'medium' %}
+                {% endif %}
+                {% if impact == 'medium' and issue.count < 10 %}
+                    {% set _ = medium_issues.append(issue) %}
+                {% endif %}
+            {% endfor %}
+
+            {% if medium_issues|length > 0 %}
+            <div class="card border-info mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.medium_priority }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.medium_priority }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        {% for issue in medium_issues[:5] %}
+                        <li class="mb-2">
+                            <strong>{{ issue.type }}</strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
         </section>
     </div>
 

@@ -153,6 +153,7 @@ class ComprehensiveReportGenerator:
             'ai_summary_fr': ai_summary_fr,
             'translations_en': translations['en'],
             'translations_fr': translations['fr'],
+            'language': 'en',  # Default to English
             'report_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'bootstrap_css': embedded_assets['bootstrap_css'],
             'bootstrap_icons_css': embedded_assets['bootstrap_icons_css'],

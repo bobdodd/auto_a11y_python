@@ -843,7 +843,13 @@
                     <tbody>
                         {% for issue in analytics.top_issues[:10] %}
                         <tr>
-                            <td><code style="font-size: 0.85rem;">{{ issue.id }}</code></td>
+                            <td>
+                                {% if issue.details.description %}
+                                    {{ issue.details.description }}
+                                {% else %}
+                                    <code style="font-size: 0.85rem;">{{ issue.id }}</code>
+                                {% endif %}
+                            </td>
                             <td><strong>{{ issue.count }}</strong></td>
                             <td>
                                 {% if issue.details.impact %}
@@ -985,7 +991,13 @@
                     <ul class="mb-0">
                         {% for issue in critical_issues[:5] %}
                         <li class="mb-2">
-                            <strong><code style="font-size: 0.9rem;">{{ issue.id }}</code></strong>
+                            <strong>
+                                {% if issue.details.description %}
+                                    {{ issue.details.description }}
+                                {% else %}
+                                    <code style="font-size: 0.9rem;">{{ issue.id }}</code>
+                                {% endif %}
+                            </strong>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
                         </li>
@@ -1024,7 +1036,13 @@
                     <ul class="mb-0">
                         {% for issue in high_issues[:5] %}
                         <li class="mb-2">
-                            <strong><code style="font-size: 0.9rem;">{{ issue.id }}</code></strong>
+                            <strong>
+                                {% if issue.details.description %}
+                                    {{ issue.details.description }}
+                                {% else %}
+                                    <code style="font-size: 0.9rem;">{{ issue.id }}</code>
+                                {% endif %}
+                            </strong>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
                         </li>
@@ -1063,7 +1081,13 @@
                     <ul class="mb-0">
                         {% for issue in medium_issues[:5] %}
                         <li class="mb-2">
-                            <strong><code style="font-size: 0.9rem;">{{ issue.id }}</code></strong>
+                            <strong>
+                                {% if issue.details.description %}
+                                    {{ issue.details.description }}
+                                {% else %}
+                                    <code style="font-size: 0.9rem;">{{ issue.id }}</code>
+                                {% endif %}
+                            </strong>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">({{ issue.count }} occurrences)</span>
                         </li>

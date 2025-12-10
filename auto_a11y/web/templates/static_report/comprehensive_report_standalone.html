@@ -800,7 +800,15 @@
                             <td><code style="font-size: 0.85rem;">{{ issue.id }}</code></td>
                             <td><strong>{{ issue.count }}</strong></td>
                             <td>
-                                {% set impact = issue.details.impact.value if issue.details.impact and hasattr(issue.details.impact, 'value') else (issue.details.impact|string|lower if issue.details.impact else 'medium') %}
+                                {% if issue.details.impact %}
+                                    {% if issue.details.impact.value is defined %}
+                                        {% set impact = issue.details.impact.value|lower %}
+                                    {% else %}
+                                        {% set impact = issue.details.impact|string|lower %}
+                                    {% endif %}
+                                {% else %}
+                                    {% set impact = 'medium' %}
+                                {% endif %}
                                 <span class="badge" style="background-color: {% if impact == 'high' %}#dc3545{% elif impact == 'medium' %}#ffc107; color: #000;{% else %}#17a2b8{% endif %}">
                                     {{ impact|title }}
                                 </span>

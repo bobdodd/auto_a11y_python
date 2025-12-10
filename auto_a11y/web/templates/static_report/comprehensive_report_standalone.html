@@ -93,31 +93,41 @@
 
     <!-- Language Switcher Script - Must be in head before body renders -->
     <script>
-        let currentLanguage = 'en';
+        let currentLanguage = '{{ language }}';
 
         function switchLanguage(lang) {
             currentLanguage = lang;
+            localStorage.setItem('reportLanguage', lang);
 
-            // Hide all language content
-            document.querySelectorAll('[data-lang]').forEach(el => {
-                if (el.getAttribute('data-lang') === lang) {
-                    el.classList.remove('lang-inactive');
-                    el.classList.add('lang-active');
-                } else {
-                    el.classList.remove('lang-active');
-                    el.classList.add('lang-inactive');
-                }
+            // Update active button
+            document.querySelectorAll('.lang-switcher button').forEach(btn => {
+                btn.classList.remove('lang-btn-active');
             });
+            const langButton = document.getElementById(`lang-${lang}`);
+            if (langButton) {
+                langButton.classList.add('lang-btn-active');
+            }
 
-            // Update button states
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if (btn.getAttribute('data-lang') === lang) {
-                    btn.classList.add('lang-btn-active');
+            // Toggle visibility of language-specific content
+            document.querySelectorAll('[data-lang]').forEach(element => {
+                const elementLang = element.getAttribute('data-lang');
+                if (elementLang === lang) {
+                    element.classList.remove('lang-inactive');
+                    element.classList.add('lang-active');
                 } else {
-                    btn.classList.remove('lang-btn-active');
+                    element.classList.remove('lang-active');
+                    element.classList.add('lang-inactive');
                 }
             });
         }
+
+        // Load saved language preference on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('reportLanguage');
+            if (savedLang && savedLang !== currentLanguage) {
+                switchLanguage(savedLang);
+            }
+        });
     </script>
 </head>
 <body style="background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
@@ -127,16 +137,17 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="mb-2">
-                        <span data-lang="en" class="lang-active">{{ translations_en.comprehensive_report }}</span>
-                        <span data-lang="fr" class="lang-inactive">{{ translations_fr.comprehensive_report }}</span>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.comprehensive_report }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.comprehensive_report }}</span>
                     </h1>
                     <p class="text-muted mb-0">{{ data.project.name }}</p>
                 </div>
                 <div class="text-end">
-                    <button class="lang-btn lang-btn-active" data-lang="en" onclick="switchLanguage('en')">English</button>
-                    <button class="lang-btn" data-lang="fr" onclick="switchLanguage('fr')">Français</button>
-                    <br>
-                    <small class="text-muted">{{ report_date }}</small>
+                    <div class="lang-switcher">
+                        <button id="lang-en" class="lang-btn {{ 'lang-btn-active' if language == 'en' else '' }}" data-lang="en" onclick="switchLanguage('en')">English</button>
+                        <button id="lang-fr" class="lang-btn {{ 'lang-btn-active' if language == 'fr' else '' }}" data-lang="fr" onclick="switchLanguage('fr')">Français</button>
+                    </div>
+                    <small class="text-muted d-block mt-2">{{ report_date }}</small>
                 </div>
             </div>
         </header>
@@ -144,8 +155,8 @@
         <!-- Executive Summary Section -->
         <section class="bg-white rounded shadow-sm p-4 mb-4">
             <h2 class="mb-4">
-                <span data-lang="en" class="lang-active">{{ translations_en.executive_summary }}</span>
-                <span data-lang="fr" class="lang-inactive">{{ translations_fr.executive_summary }}</span>
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.executive_summary }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.executive_summary }}</span>
             </h2>
 
             <!-- Compliance Score -->
@@ -166,8 +177,8 @@
                         <div class="score-text">
                             <span class="score-value">{{ "%.1f"|format(compliance_score) }}%</span>
                             <span class="score-label">
-                                <span data-lang="en" class="lang-active">{{ translations_en.compliance_score }}</span>
-                                <span data-lang="fr" class="lang-inactive">{{ translations_fr.compliance_score }}</span>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.compliance_score }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.compliance_score }}</span>
                             </span>
                         </div>
                     </div>
@@ -178,7 +189,7 @@
                     {% if ai_summary_en or ai_summary_fr %}
                         <!-- English Summary -->
                         {% if ai_summary_en %}
-                        <div data-lang="en" class="lang-active">
+                        <div data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
                             <div class="mb-3">
                                 <h3>
                                     {{ translations_en.overall_assessment }}:
@@ -193,7 +204,7 @@
 
                         <!-- French Summary -->
                         {% if ai_summary_fr %}
-                        <div data-lang="fr" class="lang-inactive">
+                        <div data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
                             <div class="mb-3">
                                 <h3>
                                     {{ translations_fr.overall_assessment }} :
@@ -294,8 +305,8 @@
         <!-- Key Metrics Section -->
         <section class="bg-white rounded shadow-sm p-4 mb-4">
             <h2 class="mb-4">
-                <span data-lang="en" class="lang-active">{{ translations_en.key_metrics }}</span>
-                <span data-lang="fr" class="lang-inactive">{{ translations_fr.key_metrics }}</span>
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.key_metrics }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.key_metrics }}</span>
             </h2>
 
             <div class="row g-3">
@@ -303,8 +314,8 @@
                     <div class="metric-card">
                         <div class="metric-value text-danger">{{ data.statistics.total_violations + data.statistics.total_warnings }}</div>
                         <div class="metric-label">
-                            <span data-lang="en" class="lang-active">{{ translations_en.violations }}</span>
-                            <span data-lang="fr" class="lang-inactive">{{ translations_fr.violations }}</span>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.violations }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.violations }}</span>
                         </div>
                     </div>
                 </div>
@@ -312,8 +323,8 @@
                     <div class="metric-card">
                         <div class="metric-value" style="color: #dc3545;">{{ analytics.by_impact.high }}</div>
                         <div class="metric-label">
-                            <span data-lang="en" class="lang-active">{{ translations_en.high_impact }}</span>
-                            <span data-lang="fr" class="lang-inactive">{{ translations_fr.high_impact }}</span>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.high_impact }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.high_impact }}</span>
                         </div>
                     </div>
                 </div>
@@ -321,8 +332,8 @@
                     <div class="metric-card">
                         <div class="metric-value" style="color: #ffc107;">{{ analytics.by_impact.medium }}</div>
                         <div class="metric-label">
-                            <span data-lang="en" class="lang-active">{{ translations_en.medium_impact }}</span>
-                            <span data-lang="fr" class="lang-inactive">{{ translations_fr.medium_impact }}</span>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.medium_impact }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.medium_impact }}</span>
                         </div>
                     </div>
                 </div>
@@ -330,8 +341,8 @@
                     <div class="metric-card">
                         <div class="metric-value" style="color: #17a2b8;">{{ analytics.by_impact.low }}</div>
                         <div class="metric-label">
-                            <span data-lang="en" class="lang-active">{{ translations_en.low_impact }}</span>
-                            <span data-lang="fr" class="lang-inactive">{{ translations_fr.low_impact }}</span>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.low_impact }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.low_impact }}</span>
                         </div>
                     </div>
                 </div>
@@ -341,8 +352,8 @@
                     <div class="metric-card">
                         <div class="metric-value" style="color: #6f42c1;">{{ data.statistics.total_recordings }}</div>
                         <div class="metric-label">
-                            <span data-lang="en" class="lang-active">{{ translations_en.total_recordings }}</span>
-                            <span data-lang="fr" class="lang-inactive">{{ translations_fr.total_recordings }}</span>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.total_recordings }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.total_recordings }}</span>
                         </div>
                     </div>
                 </div>
@@ -350,8 +361,8 @@
                     <div class="metric-card">
                         <div class="metric-value" style="color: #6f42c1;">{{ data.statistics.total_recording_issues }}</div>
                         <div class="metric-label">
-                            <span data-lang="en" class="lang-active">{{ translations_en.recording_issues }}</span>
-                            <span data-lang="fr" class="lang-inactive">{{ translations_fr.recording_issues }}</span>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.recording_issues }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.recording_issues }}</span>
                         </div>
                     </div>
                 </div>
@@ -363,13 +374,13 @@
         {% if ai_summary_en or ai_summary_fr %}
         <section class="bg-white rounded shadow-sm p-4 mb-4">
             <h2 class="mb-4">
-                <span data-lang="en" class="lang-active">{{ translations_en.action_plan }}</span>
-                <span data-lang="fr" class="lang-inactive">{{ translations_fr.action_plan }}</span>
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.action_plan }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.action_plan }}</span>
             </h2>
 
             <!-- English Action Plan -->
             {% if ai_summary_en and ai_summary_en.recommendations %}
-            <div data-lang="en" class="lang-active">
+            <div data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
                 {% if ai_summary_en.recommendations.quick_wins %}
                 <div class="mb-4">
                     <h4 class="text-success"><i class="bi bi-lightning-fill"></i> {{ translations_en.immediate_actions }}</h4>
@@ -407,7 +418,7 @@
 
             <!-- French Action Plan -->
             {% if ai_summary_fr and ai_summary_fr.recommendations %}
-            <div data-lang="fr" class="lang-inactive">
+            <div data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
                 {% if ai_summary_fr.recommendations.quick_wins %}
                 <div class="mb-4">
                     <h4 class="text-success"><i class="bi bi-lightning-fill"></i> {{ translations_fr.immediate_actions }}</h4>

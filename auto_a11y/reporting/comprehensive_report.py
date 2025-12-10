@@ -158,6 +158,7 @@ class ComprehensiveReportGenerator:
             'bootstrap_css': embedded_assets['bootstrap_css'],
             'bootstrap_icons_css': embedded_assets['bootstrap_icons_css'],
             'bootstrap_js': embedded_assets['bootstrap_js'],
+            'chartjs': embedded_assets['chartjs'],
             'chart_colors': self.chart_colors
         }
 
@@ -172,7 +173,7 @@ class ComprehensiveReportGenerator:
         return output_path
 
     def _read_embedded_assets(self) -> Dict[str, str]:
-        """Read Bootstrap and icon CSS/JS files for embedding"""
+        """Read Bootstrap, Chart.js and icon CSS/JS files for embedding"""
         from pathlib import Path
 
         assets_dir = Path(__file__).parent.parent / 'web' / 'static'
@@ -202,6 +203,15 @@ class ComprehensiveReportGenerator:
         else:
             assets['bootstrap_js'] = ''
 
+        # Read Chart.js
+        chartjs_path = assets_dir / 'js' / 'chart.min.js'
+        if chartjs_path.exists():
+            with open(chartjs_path, 'r', encoding='utf-8') as f:
+                assets['chartjs'] = f.read()
+        else:
+            # Use CDN fallback if local file not found
+            assets['chartjs'] = ''
+
         return assets
 
     def _get_translations(self) -> Dict[str, Dict[str, str]]:
@@ -230,7 +240,48 @@ class ComprehensiveReportGenerator:
                 'training_needs': 'Recommended Training',
                 'recordings': 'Lived Experience Testing',
                 'total_recordings': 'Total Recordings',
-                'recording_issues': 'Issues from Recordings'
+                'recording_issues': 'Issues from Recordings',
+                'impact_analysis': 'Impact Analysis',
+                'issues_by_impact': 'Issues by Impact Level',
+                'impact_breakdown': 'Impact Breakdown',
+                'impact_level': 'Impact Level',
+                'count': 'Count',
+                'percentage': 'Percentage',
+                'typical_user_impact': 'Typical User Impact',
+                'blocks_access': 'Blocks access to content or functionality',
+                'degrades_experience': 'Significantly degrades user experience',
+                'minor_inconvenience': 'Minor inconvenience or confusion',
+                'wcag_analysis': 'WCAG Compliance Analysis',
+                'wcag_criteria_violations': 'Top WCAG Criteria Violations',
+                'wcag_details': 'WCAG Success Criteria Details',
+                'criterion': 'Criterion',
+                'description_label': 'Description',
+                'level': 'Level',
+                'issue_categories': 'Issue Categories',
+                'findings_by_type': 'All Findings by Type',
+                'errors': 'Errors',
+                'warnings': 'Warnings',
+                'info_items': 'Info',
+                'discovery': 'Discovery',
+                'wcag_violations': 'WCAG violations',
+                'potential_issues': 'Potential issues',
+                'non_violations': 'Non-violations',
+                'manual_review': 'Manual review areas',
+                'understanding_categories': 'Understanding the Categories',
+                'errors_warnings_desc': 'These are actual accessibility violations that need to be fixed. They count toward your compliance score and may expose you to legal risk.',
+                'info_desc': 'General reporting of non-violating items for awareness. These do NOT count as violations but provide useful context about your site\'s accessibility features.',
+                'discovery_desc': 'Highlights areas of potential risk that require manual inspection.',
+                'distribution_by_touchpoint': 'Distribution by Touchpoint',
+                'touchpoint': 'Touchpoint',
+                'top_issues': 'Top Issues',
+                'issue_type': 'Issue Type',
+                'occurrences': 'Occurrences',
+                'impact': 'Impact',
+                'wcag_criteria': 'WCAG Criteria',
+                'pages_affected': 'Pages Affected',
+                'page_analysis': 'Page-by-Page Analysis',
+                'page_url': 'Page URL',
+                'total_issues_label': 'Total Issues'
             },
             'fr': {
                 'comprehensive_report': 'Rapport d\'accessibilité complet',
@@ -255,7 +306,48 @@ class ComprehensiveReportGenerator:
                 'training_needs': 'Besoins en formation recommandés',
                 'recordings': 'Tests d\'expérience vécue',
                 'total_recordings': 'Total des enregistrements',
-                'recording_issues': 'Problèmes issus des enregistrements'
+                'recording_issues': 'Problèmes issus des enregistrements',
+                'impact_analysis': 'Analyse d\'impact',
+                'issues_by_impact': 'Problèmes par niveau d\'impact',
+                'impact_breakdown': 'Répartition de l\'impact',
+                'impact_level': 'Niveau d\'impact',
+                'count': 'Nombre',
+                'percentage': 'Pourcentage',
+                'typical_user_impact': 'Impact typique sur l\'utilisateur',
+                'blocks_access': 'Bloque l\'accès au contenu ou aux fonctionnalités',
+                'degrades_experience': 'Dégrade considérablement l\'expérience utilisateur',
+                'minor_inconvenience': 'Désagrément ou confusion mineure',
+                'wcag_analysis': 'Analyse de conformité WCAG',
+                'wcag_criteria_violations': 'Principales violations des critères WCAG',
+                'wcag_details': 'Détails des critères de succès WCAG',
+                'criterion': 'Critère',
+                'description_label': 'Description',
+                'level': 'Niveau',
+                'issue_categories': 'Catégories de problèmes',
+                'findings_by_type': 'Toutes les constatations par type',
+                'errors': 'Erreurs',
+                'warnings': 'Avertissements',
+                'info_items': 'Info',
+                'discovery': 'Découverte',
+                'wcag_violations': 'Violations WCAG',
+                'potential_issues': 'Problèmes potentiels',
+                'non_violations': 'Non-violations',
+                'manual_review': 'Zones à révision manuelle',
+                'understanding_categories': 'Comprendre les catégories',
+                'errors_warnings_desc': 'Ce sont des violations réelles de l\'accessibilité qui doivent être corrigées. Elles comptent dans votre score de conformité et peuvent vous exposer à des risques juridiques.',
+                'info_desc': 'Rapport général d\'éléments non violants à titre informatif. Ceux-ci ne comptent PAS comme des violations mais fournissent un contexte utile sur les fonctionnalités d\'accessibilité de votre site.',
+                'discovery_desc': 'Met en évidence les zones de risque potentiel qui nécessitent une inspection manuelle.',
+                'distribution_by_touchpoint': 'Répartition par point de contact',
+                'touchpoint': 'Point de contact',
+                'top_issues': 'Principaux problèmes',
+                'issue_type': 'Type de problème',
+                'occurrences': 'Occurrences',
+                'impact': 'Impact',
+                'wcag_criteria': 'Critères WCAG',
+                'pages_affected': 'Pages affectées',
+                'page_analysis': 'Analyse page par page',
+                'page_url': 'URL de la page',
+                'total_issues_label': 'Total des problèmes'
             }
         }
 

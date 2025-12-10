@@ -455,11 +455,546 @@
             {% endif %}
         </section>
         {% endif %}
+
+        <!-- Impact Analysis Section -->
+        <section class="bg-white rounded shadow-sm p-4 mb-4">
+            <h2 class="mb-4">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.impact_analysis }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.impact_analysis }}</span>
+            </h2>
+
+            <div class="row">
+                <!-- Impact Chart -->
+                <div class="col-md-6 mb-4">
+                    <h4>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.issues_by_impact }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.issues_by_impact }}</span>
+                    </h4>
+                    <canvas id="impactChart" style="max-height: 300px;"></canvas>
+                </div>
+
+                <!-- Impact Breakdown Table -->
+                <div class="col-md-6">
+                    <h4>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.impact_breakdown }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.impact_breakdown }}</span>
+                    </h4>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Impact Level</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Niveau d'impact</span>
+                                </th>
+                                <th>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Count</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Nombre</span>
+                                </th>
+                                <th>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">User Impact</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Impact utilisateur</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge" style="background-color: #dc3545;">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">High</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Élevé</span>
+                                </span></td>
+                                <td><strong>{{ analytics.by_impact.high }}</strong></td>
+                                <td>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.blocks_access }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.blocks_access }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge" style="background-color: #ffc107; color: #000;">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Medium</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Moyen</span>
+                                </span></td>
+                                <td><strong>{{ analytics.by_impact.medium }}</strong></td>
+                                <td>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.degrades_experience }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.degrades_experience }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge" style="background-color: #17a2b8;">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Low</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Faible</span>
+                                </span></td>
+                                <td><strong>{{ analytics.by_impact.low }}</strong></td>
+                                <td>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.minor_inconvenience }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.minor_inconvenience }}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- WCAG Analysis Section -->
+        <section class="bg-white rounded shadow-sm p-4 mb-4">
+            <h2 class="mb-4">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.wcag_analysis }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.wcag_analysis }}</span>
+            </h2>
+
+            <div class="row">
+                <!-- WCAG Chart -->
+                <div class="col-md-6 mb-4">
+                    <h4>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.wcag_criteria_violations }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.wcag_criteria_violations }}</span>
+                    </h4>
+                    <canvas id="wcagChart" style="max-height: 400px;"></canvas>
+                </div>
+
+                <!-- WCAG Details Table -->
+                <div class="col-md-6">
+                    <h4>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Top WCAG Criteria</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Principaux critères WCAG</span>
+                    </h4>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-sm">
+                            <thead style="position: sticky; top: 0; background: white;">
+                                <tr>
+                                    <th>
+                                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.criterion }}</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.criterion }}</span>
+                                    </th>
+                                    <th>
+                                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.description_label }}</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.description_label }}</span>
+                                    </th>
+                                    <th>
+                                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Count</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Nombre</span>
+                                    </th>
+                                    <th>
+                                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.level }}</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.level }}</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set wcag_descriptions = {
+                                    '1.1.1': {'en': 'Non-text Content', 'fr': 'Contenu non textuel'},
+                                    '1.3.1': {'en': 'Info and Relationships', 'fr': 'Information et relations'},
+                                    '1.4.3': {'en': 'Contrast (Minimum)', 'fr': 'Contraste (minimum)'},
+                                    '2.4.1': {'en': 'Bypass Blocks', 'fr': 'Contourner les blocs'},
+                                    '2.4.2': {'en': 'Page Titled', 'fr': 'Titre de page'},
+                                    '2.4.6': {'en': 'Headings and Labels', 'fr': 'En-têtes et étiquettes'},
+                                    '3.1.1': {'en': 'Language of Page', 'fr': 'Langue de la page'},
+                                    '3.3.2': {'en': 'Labels or Instructions', 'fr': 'Étiquettes ou instructions'},
+                                    '4.1.2': {'en': 'Name, Role, Value', 'fr': 'Nom, rôle, valeur'}
+                                } %}
+                                {% for criterion, count in analytics.wcag_compliance.items()|sort(attribute='1.count', reverse=True)[:10] %}
+                                <tr>
+                                    <td><code>{{ criterion }}</code></td>
+                                    <td>
+                                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                                            {{ wcag_descriptions.get(criterion, {}).get('en', 'Unknown') }}
+                                        </span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                                            {{ wcag_descriptions.get(criterion, {}).get('fr', 'Inconnu') }}
+                                        </span>
+                                    </td>
+                                    <td><strong>{{ count.count }}</strong></td>
+                                    <td><span class="badge bg-secondary">{{ count.level }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Issue Category Breakdown Section -->
+        <section class="bg-white rounded shadow-sm p-4 mb-4">
+            <h2 class="mb-4">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.issue_categories }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.issue_categories }}</span>
+            </h2>
+
+            <div class="row">
+                <!-- Category Chart -->
+                <div class="col-md-6 mb-4">
+                    <h4>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.findings_by_type }}</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.findings_by_type }}</span>
+                    </h4>
+                    <canvas id="categoryChart" style="max-height: 300px;"></canvas>
+                </div>
+
+                <!-- Category Cards -->
+                <div class="col-md-6">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="metric-card" style="border-left: 4px solid #dc3545;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚠️</div>
+                                <div class="metric-value" style="color: #dc3545;">{{ analytics.by_type.error }}</div>
+                                <div class="metric-label">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.errors }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.errors }}</span>
+                                </div>
+                                <small class="text-muted">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">WCAG violations</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Violations WCAG</span>
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="metric-card" style="border-left: 4px solid #ffc107;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
+                                <div class="metric-value" style="color: #ffc107;">{{ analytics.by_type.warning }}</div>
+                                <div class="metric-label">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.warnings }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.warnings }}</span>
+                                </div>
+                                <small class="text-muted">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Potential issues</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Problèmes potentiels</span>
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="metric-card" style="border-left: 4px solid #17a2b8;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">ℹ️</div>
+                                <div class="metric-value" style="color: #17a2b8;">{{ analytics.by_type.info }}</div>
+                                <div class="metric-label">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.info_items }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.info_items }}</span>
+                                </div>
+                                <small class="text-muted">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Non-violations</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Non-violations</span>
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="metric-card" style="border-left: 4px solid #6f42c1;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+                                <div class="metric-value" style="color: #6f42c1;">{{ analytics.by_type.discovery }}</div>
+                                <div class="metric-label">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.discovery }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.discovery }}</span>
+                                </div>
+                                <small class="text-muted">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Manual review</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Révision manuelle</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Understanding Categories -->
+            <div class="alert alert-info mt-4">
+                <h5>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.understanding_categories }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.understanding_categories }}</span>
+                </h5>
+                <dl class="mb-0">
+                    <dt class="mt-2">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">🔴 Errors & Warnings (Violations)</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">🔴 Erreurs et avertissements (Violations)</span>
+                    </dt>
+                    <dd>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Actual accessibility violations that need to be fixed. They count toward your compliance score.</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Violations réelles d'accessibilité à corriger. Elles comptent dans votre score de conformité.</span>
+                    </dd>
+                    <dt class="mt-2">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">🔵 Info (Informational)</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">🔵 Info (Informationnel)</span>
+                    </dt>
+                    <dd>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">General reporting of non-violating items for awareness. These do NOT count as violations.</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Signalement général d'éléments non-violateurs pour information. Ceux-ci ne comptent PAS comme violations.</span>
+                    </dd>
+                    <dt class="mt-2">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">🟣 Discovery (Manual Testing Guidance)</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">🟣 Découverte (Guide de test manuel)</span>
+                    </dt>
+                    <dd>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Highlights areas of potential risk that require manual inspection.</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Met en évidence les zones de risque potentiel nécessitant une inspection manuelle.</span>
+                    </dd>
+                </dl>
+            </div>
+
+            <!-- Touchpoint Distribution (if available) -->
+            {% if analytics.by_touchpoint %}
+            <div class="mt-4">
+                <h4>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Distribution by Touchpoint</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Distribution par point de contact</span>
+                </h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Touchpoint</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Point de contact</span>
+                                </th>
+                                <th>
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Count</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Nombre</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for touchpoint, count in analytics.by_touchpoint.items()|sort(attribute='1', reverse=True)[:10] %}
+                            <tr>
+                                <td style="font-weight: 500;">{{ touchpoint }}</td>
+                                <td>{{ count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Detailed Issues Section -->
+        <section class="bg-white rounded shadow-sm p-4 mb-4">
+            <h2 class="mb-4">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.top_issues }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.top_issues }}</span>
+            </h2>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.issue_type }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.issue_type }}</span>
+                            </th>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.occurrences }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.occurrences }}</span>
+                            </th>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Impact</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Impact</span>
+                            </th>
+                            <th>WCAG</th>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.pages_affected }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.pages_affected }}</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in analytics.top_issues[:10] %}
+                        <tr>
+                            <td><code style="font-size: 0.85rem;">{{ issue.id }}</code></td>
+                            <td><strong>{{ issue.count }}</strong></td>
+                            <td>
+                                {% set impact = issue.details.impact.value if issue.details.impact and hasattr(issue.details.impact, 'value') else (issue.details.impact|string|lower if issue.details.impact else 'medium') %}
+                                <span class="badge" style="background-color: {% if impact == 'high' %}#dc3545{% elif impact == 'medium' %}#ffc107; color: #000;{% else %}#17a2b8{% endif %}">
+                                    {{ impact|title }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if issue.details.wcag_criteria %}
+                                    {{ issue.details.wcag_criteria[:2]|join(', ') }}
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ issue.unique_pages }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Page-by-Page Analysis Section -->
+        <section class="bg-white rounded shadow-sm p-4 mb-4">
+            <h2 class="mb-4">
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.page_analysis }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.page_analysis }}</span>
+            </h2>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.page_url }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.page_url }}</span>
+                            </th>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.total_issues_label }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.total_issues_label }}</span>
+                            </th>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.errors }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.errors }}</span>
+                            </th>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.warnings }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.warnings }}</span>
+                            </th>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.info_items }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.info_items }}</span>
+                            </th>
+                            <th>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.discovery }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.discovery }}</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for page in analytics.pages_with_most_issues[:15] %}
+                        <tr>
+                            <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ page.url }}
+                            </td>
+                            <td><strong>{{ page.total }}</strong></td>
+                            <td>
+                                <span class="badge" style="background-color: #dc3545;">{{ page.breakdown.error }}</span>
+                            </td>
+                            <td>
+                                <span class="badge" style="background-color: #ffc107; color: #000;">{{ page.breakdown.warning }}</span>
+                            </td>
+                            <td>
+                                <span class="badge" style="background-color: #17a2b8;">{{ page.breakdown.info }}</span>
+                            </td>
+                            <td>
+                                <span class="badge" style="background-color: #6f42c1;">{{ page.breakdown.discovery }}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
 
     <!-- Embedded Bootstrap JS -->
     <script>
     {{ bootstrap_js|safe }}
+    </script>
+
+    <!-- Embedded Chart.js -->
+    <script>
+    {{ chartjs|safe }}
+    </script>
+
+    <!-- Chart Initialization -->
+    <script>
+        // Impact Chart
+        const impactCtx = document.getElementById('impactChart');
+        if (impactCtx) {
+            new Chart(impactCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['High', 'Medium', 'Low'],
+                    datasets: [{
+                        data: [
+                            {{ analytics.by_impact.high }},
+                            {{ analytics.by_impact.medium }},
+                            {{ analytics.by_impact.low }}
+                        ],
+                        backgroundColor: ['#dc3545', '#ffc107', '#17a2b8']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // WCAG Chart
+        const wcagCtx = document.getElementById('wcagChart');
+        if (wcagCtx) {
+            const wcagData = [
+                {% for criterion, count in analytics.wcag_compliance.items()|sort(attribute='1.count', reverse=True)[:10] %}
+                { criterion: '{{ criterion }}', count: {{ count.count }} }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            new Chart(wcagCtx, {
+                type: 'bar',
+                data: {
+                    labels: wcagData.map(d => d.criterion),
+                    datasets: [{
+                        label: 'Violations',
+                        data: wcagData.map(d => d.count),
+                        backgroundColor: '#667eea'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart');
+        if (categoryCtx) {
+            new Chart(categoryCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Errors', 'Warnings', 'Info', 'Discovery'],
+                    datasets: [{
+                        label: 'Count',
+                        data: [
+                            {{ analytics.by_type.error }},
+                            {{ analytics.by_type.warning }},
+                            {{ analytics.by_type.info }},
+                            {{ analytics.by_type.discovery }}
+                        ],
+                        backgroundColor: ['#dc3545', '#ffc107', '#17a2b8', '#6f42c1']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

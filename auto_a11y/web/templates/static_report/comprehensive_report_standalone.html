@@ -90,6 +90,35 @@
             opacity: 0.8;
         }
     </style>
+
+    <!-- Language Switcher Script - Must be in head before body renders -->
+    <script>
+        let currentLanguage = 'en';
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+
+            // Hide all language content
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                if (el.getAttribute('data-lang') === lang) {
+                    el.classList.remove('lang-inactive');
+                    el.classList.add('lang-active');
+                } else {
+                    el.classList.remove('lang-active');
+                    el.classList.add('lang-inactive');
+                }
+            });
+
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('lang-btn-active');
+                } else {
+                    btn.classList.remove('lang-btn-active');
+                }
+            });
+        }
+    </script>
 </head>
 <body style="background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
     <div class="container-fluid py-4">
@@ -420,35 +449,6 @@
     <!-- Embedded Bootstrap JS -->
     <script>
     {{ bootstrap_js|safe }}
-    </script>
-
-    <!-- Language Switcher Script -->
-    <script>
-        let currentLanguage = 'en';
-
-        function switchLanguage(lang) {
-            currentLanguage = lang;
-
-            // Hide all language content
-            document.querySelectorAll('[data-lang]').forEach(el => {
-                if (el.getAttribute('data-lang') === lang) {
-                    el.classList.remove('lang-inactive');
-                    el.classList.add('lang-active');
-                } else {
-                    el.classList.remove('lang-active');
-                    el.classList.add('lang-inactive');
-                }
-            });
-
-            // Update button states
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if (btn.getAttribute('data-lang') === lang) {
-                    btn.classList.add('lang-btn-active');
-                } else {
-                    btn.classList.remove('lang-btn-active');
-                }
-            });
-        }
     </script>
 </body>
 </html>

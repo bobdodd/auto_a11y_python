@@ -7,20 +7,46 @@ from collections import defaultdict, Counter
 from datetime import datetime, timedelta
 import json
 import logging
+from flask_babel import force_locale
 
 from auto_a11y.reporting.ai_executive_summary import AIExecutiveSummaryGenerator
 from auto_a11y.ai.claude_client import ClaudeClient, ClaudeConfig
+from auto_a11y.reporting.issue_descriptions_translated import get_detailed_issue_description
 
 logger = logging.getLogger(__name__)
 
 
 class ComprehensiveReportGenerator:
     """Generate comprehensive accessibility reports with analytics"""
-    
+
+    # WCAG 2.1 and 2.2 Success Criteria Levels
+    WCAG_LEVELS = {
+        # Level A
+        '1.1.1': 'A', '1.2.1': 'A', '1.2.2': 'A', '1.2.3': 'A', '1.3.1': 'A', '1.3.2': 'A', '1.3.3': 'A',
+        '1.4.1': 'A', '1.4.2': 'A', '2.1.1': 'A', '2.1.2': 'A', '2.1.4': 'A', '2.2.1': 'A', '2.2.2': 'A',
+        '2.3.1': 'A', '2.4.1': 'A', '2.4.2': 'A', '2.4.3': 'A', '2.4.4': 'A', '2.5.1': 'A', '2.5.2': 'A',
+        '2.5.3': 'A', '2.5.4': 'A', '3.1.1': 'A', '3.2.1': 'A', '3.2.2': 'A', '3.3.1': 'A', '3.3.2': 'A',
+        '4.1.1': 'A', '4.1.2': 'A',
+        # Level AA
+        '1.2.4': 'AA', '1.2.5': 'AA', '1.3.4': 'AA', '1.3.5': 'AA', '1.4.3': 'AA', '1.4.4': 'AA', '1.4.5': 'AA',
+        '1.4.10': 'AA', '1.4.11': 'AA', '1.4.12': 'AA', '1.4.13': 'AA', '2.4.5': 'AA', '2.4.6': 'AA', '2.4.7': 'AA',
+        '2.4.11': 'AA', '2.5.7': 'AA', '2.5.8': 'AA', '3.1.2': 'AA', '3.2.3': 'AA', '3.2.4': 'AA', '3.2.6': 'AA',
+        '3.3.3': 'AA', '3.3.4': 'AA', '3.3.7': 'AA', '3.3.8': 'AA', '4.1.3': 'AA',
+        # Level AAA
+        '1.2.6': 'AAA', '1.2.7': 'AAA', '1.2.8': 'AAA', '1.2.9': 'AAA', '1.3.6': 'AAA', '1.4.6': 'AAA',
+        '1.4.7': 'AAA', '1.4.8': 'AAA', '1.4.9': 'AAA', '2.1.3': 'AAA', '2.2.3': 'AAA', '2.2.4': 'AAA',
+        '2.2.5': 'AAA', '2.2.6': 'AAA', '2.3.2': 'AAA', '2.3.3': 'AAA', '2.4.8': 'AAA', '2.4.9': 'AAA',
+        '2.4.10': 'AAA', '2.4.12': 'AAA', '2.4.13': 'AAA', '2.5.5': 'AAA', '2.5.6': 'AAA', '3.1.3': 'AAA',
+        '3.1.4': 'AAA', '3.1.5': 'AAA', '3.1.6': 'AAA', '3.2.5': 'AAA', '3.3.5': 'AAA', '3.3.6': 'AAA',
+        '3.3.9': 'AAA',
+        # Custom
+        '5.2.4': 'A'  # Accessibility Supported
+    }
+
     def __init__(self, claude_api_key: Optional[str] = None):
         self.chart_colors = {
             'high': '#dc3545',
-            'medium': '#ffc107', 
+            'medium': '#ffc107',
             'low': '#17a2b8',
             'error': '#dc3545',
             'warning': '#ffc107',
@@ -199,7 +225,10 @@ class ComprehensiveReportGenerator:
         bootstrap_js_path = assets_dir / 'js' / 'bootstrap.bundle.min.js'
         if bootstrap_js_path.exists():
             with open(bootstrap_js_path, 'r', encoding='utf-8') as f:
-                assets['bootstrap_js'] = f.read()
+                js_content = f.read()
+                # Remove source map reference to prevent console errors
+                js_content = js_content.replace('//# sourceMappingURL=bootstrap.bundle.min.js.map', '')
+                assets['bootstrap_js'] = js_content
         else:
             assets['bootstrap_js'] = ''
 
@@ -207,7 +236,10 @@ class ComprehensiveReportGenerator:
         chartjs_path = assets_dir / 'js' / 'chart.min.js'
         if chartjs_path.exists():
             with open(chartjs_path, 'r', encoding='utf-8') as f:
-                assets['chartjs'] = f.read()
+                js_content = f.read()
+                # Remove source map reference to prevent console errors
+                js_content = js_content.replace('//# sourceMappingURL=chart.umd.js.map', '')
+                assets['chartjs'] = js_content
         else:
             # Use CDN fallback if local file not found
             assets['chartjs'] = ''
@@ -461,11 +493,33 @@ class ComprehensiveReportGenerator:
             if hasattr(issue, 'id'):
                 issue_frequency[issue.id] += 1
                 issue_pages[issue.id].add(page)
-                
+
                 # Store issue details if we haven't seen this issue before
                 if issue.id not in issue_details:
+                    # Get translated descriptions for both languages
+                    desc_en = None
+                    desc_fr = None
+
+                    try:
+                        # Get English description
+                        with force_locale('en'):
+                            enhanced_en = get_detailed_issue_description(issue.id, getattr(issue, 'metadata', {}))
+                            desc_en = enhanced_en.get('title', '') if enhanced_en else ''
+
+                        # Get French description
+                        with force_locale('fr'):
+                            enhanced_fr = get_detailed_issue_description(issue.id, getattr(issue, 'metadata', {}))
+                            desc_fr = enhanced_fr.get('title', '') if enhanced_fr else ''
+                    except Exception as e:
+                        logger.warning(f"Failed to get translated descriptions for {issue.id}: {e}")
+                        # Fallback to stored description
+                        desc_en = getattr(issue, 'description', '')
+                        desc_fr = getattr(issue, 'description', '')
+
                     issue_details[issue.id] = {
-                        'description': getattr(issue, 'description', ''),
+                        'description': desc_en or getattr(issue, 'description', ''),
+                        'description_en': desc_en or getattr(issue, 'description', ''),
+                        'description_fr': desc_fr or getattr(issue, 'description', ''),
                         'impact': getattr(issue, 'impact', 'unknown'),
                         'wcag_criteria': getattr(issue, 'wcag_criteria', []),
                         'help_url': getattr(issue, 'help_url', ''),
@@ -501,7 +555,8 @@ class ComprehensiveReportGenerator:
             for criterion, count in analytics['by_wcag'].items():
                 analytics['wcag_compliance'][criterion] = {
                     'count': count,
-                    'percentage': (count / total_wcag_issues) * 100
+                    'percentage': (count / total_wcag_issues) * 100,
+                    'level': self.WCAG_LEVELS.get(criterion, '')
                 }
         
         return analytics

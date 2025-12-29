@@ -557,6 +557,96 @@
 
                 <!-- WCAG Details Table -->
                 <div class="col-md-6">
+                    {% set wcag_descriptions = {
+                                    '1.1.1': {'en': 'Non-text Content', 'fr': 'Contenu non textuel'},
+                                    '1.2.1': {'en': 'Audio-only and Video-only (Prerecorded)', 'fr': 'Audio seulement et vidéo seulement (préenregistrés)'},
+                                    '1.2.2': {'en': 'Captions (Prerecorded)', 'fr': 'Sous-titres (préenregistrés)'},
+                                    '1.2.3': {'en': 'Audio Description or Media Alternative (Prerecorded)', 'fr': 'Audio-description ou version de remplacement (préenregistrée)'},
+                                    '1.2.4': {'en': 'Captions (Live)', 'fr': 'Sous-titres (en direct)'},
+                                    '1.2.5': {'en': 'Audio Description (Prerecorded)', 'fr': 'Audio-description (préenregistrée)'},
+                                    '1.2.6': {'en': 'Sign Language (Prerecorded)', 'fr': 'Langue des signes (préenregistrée)'},
+                                    '1.2.7': {'en': 'Extended Audio Description (Prerecorded)', 'fr': 'Audio-description étendue (préenregistrée)'},
+                                    '1.2.8': {'en': 'Media Alternative (Prerecorded)', 'fr': 'Version de remplacement pour un média temporel (préenregistrée)'},
+                                    '1.2.9': {'en': 'Audio-only (Live)', 'fr': 'Audio seulement (en direct)'},
+                                    '1.3.1': {'en': 'Info and Relationships', 'fr': 'Information et relations'},
+                                    '1.3.2': {'en': 'Meaningful Sequence', 'fr': 'Ordre séquentiel logique'},
+                                    '1.3.3': {'en': 'Sensory Characteristics', 'fr': 'Caractéristiques sensorielles'},
+                                    '1.3.4': {'en': 'Orientation', 'fr': 'Orientation'},
+                                    '1.3.5': {'en': 'Identify Input Purpose', 'fr': 'Identifier la finalité de la saisie'},
+                                    '1.3.6': {'en': 'Identify Purpose', 'fr': 'Identifier la fonction'},
+                                    '1.4.1': {'en': 'Use of Color', 'fr': 'Utilisation de la couleur'},
+                                    '1.4.2': {'en': 'Audio Control', 'fr': 'Contrôle du son'},
+                                    '1.4.3': {'en': 'Contrast (Minimum)', 'fr': 'Contraste (minimum)'},
+                                    '1.4.4': {'en': 'Resize Text', 'fr': 'Redimensionnement du texte'},
+                                    '1.4.5': {'en': 'Images of Text', 'fr': 'Texte sous forme d\'image'},
+                                    '1.4.6': {'en': 'Contrast (Enhanced)', 'fr': 'Contraste (amélioré)'},
+                                    '1.4.7': {'en': 'Low or No Background Audio', 'fr': 'Arrière-plan sonore de faible volume ou absent'},
+                                    '1.4.8': {'en': 'Visual Presentation', 'fr': 'Présentation visuelle'},
+                                    '1.4.9': {'en': 'Images of Text (No Exception)', 'fr': 'Texte sous forme d\'image (sans exception)'},
+                                    '1.4.10': {'en': 'Reflow', 'fr': 'Redistribution'},
+                                    '1.4.11': {'en': 'Non-text Contrast', 'fr': 'Contraste du contenu non textuel'},
+                                    '1.4.12': {'en': 'Text Spacing', 'fr': 'Espacement du texte'},
+                                    '1.4.13': {'en': 'Content on Hover or Focus', 'fr': 'Contenu au survol ou au focus'},
+                                    '2.1.1': {'en': 'Keyboard', 'fr': 'Clavier'},
+                                    '2.1.2': {'en': 'No Keyboard Trap', 'fr': 'Pas de piège au clavier'},
+                                    '2.1.3': {'en': 'Keyboard (No Exception)', 'fr': 'Clavier (sans exception)'},
+                                    '2.1.4': {'en': 'Character Key Shortcuts', 'fr': 'Raccourcis clavier à caractère unique'},
+                                    '2.2.1': {'en': 'Timing Adjustable', 'fr': 'Réglage du délai'},
+                                    '2.2.2': {'en': 'Pause, Stop, Hide', 'fr': 'Mettre en pause, arrêter, masquer'},
+                                    '2.2.3': {'en': 'No Timing', 'fr': 'Pas de délai d\'exécution'},
+                                    '2.2.4': {'en': 'Interruptions', 'fr': 'Interruptions'},
+                                    '2.2.5': {'en': 'Re-authenticating', 'fr': 'Nouvelle authentification'},
+                                    '2.2.6': {'en': 'Timeouts', 'fr': 'Délais d\'expiration'},
+                                    '2.3.1': {'en': 'Three Flashes or Below Threshold', 'fr': 'Pas plus de trois flashs ou sous le seuil critique'},
+                                    '2.3.2': {'en': 'Three Flashes', 'fr': 'Trois flashs'},
+                                    '2.3.3': {'en': 'Animation from Interactions', 'fr': 'Animation résultant d\'interactions'},
+                                    '2.4.1': {'en': 'Bypass Blocks', 'fr': 'Contourner les blocs'},
+                                    '2.4.2': {'en': 'Page Titled', 'fr': 'Titre de page'},
+                                    '2.4.3': {'en': 'Focus Order', 'fr': 'Parcours du focus'},
+                                    '2.4.4': {'en': 'Link Purpose (In Context)', 'fr': 'Fonction du lien (selon le contexte)'},
+                                    '2.4.5': {'en': 'Multiple Ways', 'fr': 'Accès multiples'},
+                                    '2.4.6': {'en': 'Headings and Labels', 'fr': 'En-têtes et étiquettes'},
+                                    '2.4.7': {'en': 'Focus Visible', 'fr': 'Visibilité du focus'},
+                                    '2.4.8': {'en': 'Location', 'fr': 'Localisation'},
+                                    '2.4.9': {'en': 'Link Purpose (Link Only)', 'fr': 'Fonction du lien (lien uniquement)'},
+                                    '2.4.10': {'en': 'Section Headings', 'fr': 'En-têtes de section'},
+                                    '2.4.11': {'en': 'Focus Not Obscured (Minimum)', 'fr': 'Focus non masqué (minimum)'},
+                                    '2.4.12': {'en': 'Focus Not Obscured (Enhanced)', 'fr': 'Focus non masqué (amélioré)'},
+                                    '2.4.13': {'en': 'Focus Appearance', 'fr': 'Apparence du focus'},
+                                    '2.5.1': {'en': 'Pointer Gestures', 'fr': 'Gestes pour le contrôle du pointeur'},
+                                    '2.5.2': {'en': 'Pointer Cancellation', 'fr': 'Annulation de l\'action du pointeur'},
+                                    '2.5.3': {'en': 'Label in Name', 'fr': 'Étiquette dans le nom'},
+                                    '2.5.4': {'en': 'Motion Actuation', 'fr': 'Activation par le mouvement'},
+                                    '2.5.5': {'en': 'Target Size (Enhanced)', 'fr': 'Taille de la cible (améliorée)'},
+                                    '2.5.6': {'en': 'Concurrent Input Mechanisms', 'fr': 'Mécanismes de saisie simultanés'},
+                                    '2.5.7': {'en': 'Dragging Movements', 'fr': 'Mouvements de glissement'},
+                                    '2.5.8': {'en': 'Target Size (Minimum)', 'fr': 'Taille de la cible (minimum)'},
+                                    '3.1.1': {'en': 'Language of Page', 'fr': 'Langue de la page'},
+                                    '3.1.2': {'en': 'Language of Parts', 'fr': 'Langue d\'un passage'},
+                                    '3.1.3': {'en': 'Unusual Words', 'fr': 'Mots rares ou limités'},
+                                    '3.1.4': {'en': 'Abbreviations', 'fr': 'Abréviations'},
+                                    '3.1.5': {'en': 'Reading Level', 'fr': 'Niveau de lecture'},
+                                    '3.1.6': {'en': 'Pronunciation', 'fr': 'Prononciation'},
+                                    '3.2.1': {'en': 'On Focus', 'fr': 'Au focus'},
+                                    '3.2.2': {'en': 'On Input', 'fr': 'À la saisie'},
+                                    '3.2.3': {'en': 'Consistent Navigation', 'fr': 'Navigation cohérente'},
+                                    '3.2.4': {'en': 'Consistent Identification', 'fr': 'Identification cohérente'},
+                                    '3.2.5': {'en': 'Change on Request', 'fr': 'Changement à la demande'},
+                                    '3.2.6': {'en': 'Consistent Help', 'fr': 'Aide cohérente'},
+                                    '3.3.1': {'en': 'Error Identification', 'fr': 'Identification des erreurs'},
+                                    '3.3.2': {'en': 'Labels or Instructions', 'fr': 'Étiquettes ou instructions'},
+                                    '3.3.3': {'en': 'Error Suggestion', 'fr': 'Suggestion après une erreur'},
+                                    '3.3.4': {'en': 'Error Prevention (Legal, Financial, Data)', 'fr': 'Prévention des erreurs (juridique, financier, données)'},
+                                    '3.3.5': {'en': 'Help', 'fr': 'Aide'},
+                                    '3.3.6': {'en': 'Error Prevention (All)', 'fr': 'Prévention des erreurs (toutes)'},
+                                    '3.3.7': {'en': 'Redundant Entry', 'fr': 'Saisie redondante'},
+                                    '3.3.8': {'en': 'Accessible Authentication (Minimum)', 'fr': 'Authentification accessible (minimum)'},
+                                    '3.3.9': {'en': 'Accessible Authentication (Enhanced)', 'fr': 'Authentification accessible (améliorée)'},
+                                    '4.1.1': {'en': 'Parsing', 'fr': 'Analyse syntaxique'},
+                                    '4.1.2': {'en': 'Name, Role, Value', 'fr': 'Nom, rôle, valeur'},
+                                    '4.1.3': {'en': 'Status Messages', 'fr': 'Messages d\'état'},
+                                    '5.2.4': {'en': 'Accessibility Supported', 'fr': 'Accessibilité prise en charge'}
+                                } %}
                     <h4>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Top WCAG Criteria</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Principaux critères WCAG</span>
@@ -584,17 +674,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set wcag_descriptions = {
-                                    '1.1.1': {'en': 'Non-text Content', 'fr': 'Contenu non textuel'},
-                                    '1.3.1': {'en': 'Info and Relationships', 'fr': 'Information et relations'},
-                                    '1.4.3': {'en': 'Contrast (Minimum)', 'fr': 'Contraste (minimum)'},
-                                    '2.4.1': {'en': 'Bypass Blocks', 'fr': 'Contourner les blocs'},
-                                    '2.4.2': {'en': 'Page Titled', 'fr': 'Titre de page'},
-                                    '2.4.6': {'en': 'Headings and Labels', 'fr': 'En-têtes et étiquettes'},
-                                    '3.1.1': {'en': 'Language of Page', 'fr': 'Langue de la page'},
-                                    '3.3.2': {'en': 'Labels or Instructions', 'fr': 'Étiquettes ou instructions'},
-                                    '4.1.2': {'en': 'Name, Role, Value', 'fr': 'Nom, rôle, valeur'}
-                                } %}
                                 {% for criterion, count in (analytics.wcag_compliance.items()|sort(attribute='1.count', reverse=True)|list)[:10] %}
                                 <tr>
                                     <td><code>{{ criterion }}</code></td>
@@ -733,6 +812,35 @@
 
             <!-- Touchpoint Distribution (if available) -->
             {% if analytics.by_touchpoint %}
+            {% set touchpoint_names = {
+                'accessible_names': {'en': 'Accessible Names', 'fr': 'Noms accessibles'},
+                'animation': {'en': 'Animation', 'fr': 'Animation'},
+                'buttons': {'en': 'Buttons', 'fr': 'Boutons'},
+                'colors': {'en': 'Colors and Contrast', 'fr': 'Couleurs et contraste'},
+                'dialogs': {'en': 'Dialogs', 'fr': 'Dialogues et modales'},
+                'electronic_documents': {'en': 'Electronic Documents', 'fr': 'Documents électroniques'},
+                'event_handling': {'en': 'Event Handling', 'fr': 'Gestion des événements'},
+                'floating_content': {'en': 'Floating Content', 'fr': 'Contenu flottant'},
+                'focus_management': {'en': 'Focus Management', 'fr': 'Gestion du focus'},
+                'fonts': {'en': 'Fonts', 'fr': 'Polices'},
+                'forms': {'en': 'Forms', 'fr': 'Formulaires'},
+                'styles': {'en': 'Inline Styles', 'fr': 'Styles en ligne'},
+                'headings': {'en': 'Headings', 'fr': 'En-têtes'},
+                'images': {'en': 'Images', 'fr': 'Images'},
+                'landmarks': {'en': 'Landmarks', 'fr': 'Points de repère'},
+                'language': {'en': 'Language', 'fr': 'Langue'},
+                'links': {'en': 'Links', 'fr': 'Liens'},
+                'lists': {'en': 'Lists', 'fr': 'Listes'},
+                'maps': {'en': 'Maps', 'fr': 'Cartes'},
+                'navigation': {'en': 'Navigation', 'fr': 'Navigation'},
+                'page': {'en': 'Page', 'fr': 'Page'},
+                'read_more_links': {'en': 'Read More Links', 'fr': 'Liens "Lire plus"'},
+                'tabindex': {'en': 'Tabindex', 'fr': 'Tabindex'},
+                'title_attributes': {'en': 'Title Attributes', 'fr': 'Attributs title'},
+                'tables': {'en': 'Tables', 'fr': 'Tableaux'},
+                'timers': {'en': 'Timers', 'fr': 'Minuteries'},
+                'videos': {'en': 'Videos', 'fr': 'Vidéos'}
+            } %}
             <div class="mt-4">
                 <h4>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Distribution by Touchpoint</span>
@@ -755,7 +863,14 @@
                         <tbody>
                             {% for touchpoint, count in (analytics.by_touchpoint.items()|sort(attribute='1', reverse=True)|list)[:10] %}
                             <tr>
-                                <td style="font-weight: 500;">{{ touchpoint }}</td>
+                                <td style="font-weight: 500;">
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                                        {{ touchpoint_names.get(touchpoint, {}).get('en', touchpoint) }}
+                                    </span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                                        {{ touchpoint_names.get(touchpoint, {}).get('fr', touchpoint) }}
+                                    </span>
+                                </td>
                                 <td>{{ count }}</td>
                             </tr>
                             {% endfor %}
@@ -844,7 +959,10 @@
                         {% for issue in analytics.top_issues[:10] %}
                         <tr>
                             <td>
-                                {% if issue.details.description %}
+                                {% if issue.details.description_en and issue.details.description_fr %}
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ issue.details.description_en }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ issue.details.description_fr }}</span>
+                                {% elif issue.details.description %}
                                     {{ issue.details.description }}
                                 {% else %}
                                     <code style="font-size: 0.85rem;">{{ issue.id }}</code>
@@ -992,7 +1110,10 @@
                         {% for issue in critical_issues[:5] %}
                         <li class="mb-2">
                             <strong>
-                                {% if issue.details.description %}
+                                {% if issue.details.description_en and issue.details.description_fr %}
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ issue.details.description_en }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ issue.details.description_fr }}</span>
+                                {% elif issue.details.description %}
                                     {{ issue.details.description }}
                                 {% else %}
                                     <code style="font-size: 0.9rem;">{{ issue.id }}</code>
@@ -1037,7 +1158,10 @@
                         {% for issue in high_issues[:5] %}
                         <li class="mb-2">
                             <strong>
-                                {% if issue.details.description %}
+                                {% if issue.details.description_en and issue.details.description_fr %}
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ issue.details.description_en }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ issue.details.description_fr }}</span>
+                                {% elif issue.details.description %}
                                     {{ issue.details.description }}
                                 {% else %}
                                     <code style="font-size: 0.9rem;">{{ issue.id }}</code>
@@ -1082,7 +1206,10 @@
                         {% for issue in medium_issues[:5] %}
                         <li class="mb-2">
                             <strong>
-                                {% if issue.details.description %}
+                                {% if issue.details.description_en and issue.details.description_fr %}
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ issue.details.description_en }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ issue.details.description_fr }}</span>
+                                {% elif issue.details.description %}
                                     {{ issue.details.description }}
                                 {% else %}
                                     <code style="font-size: 0.9rem;">{{ issue.id }}</code>

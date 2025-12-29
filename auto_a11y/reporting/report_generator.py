@@ -565,8 +565,11 @@ class ReportGenerator:
         recordings_data = []
         recordings = self.db.get_recordings(project_id=project.id)
         for recording in recordings:
-            # Get recording issues
-            recording_issues = self.db.get_recording_issues(recording_id=recording.id)
+            # Get recording issues - use recording.recording_id (human-readable ID) not recording.id (ObjectId)
+            recording_issues = self.db.get_recording_issues(recording_id=recording.recording_id)
+
+            # Debug: log recordings and issue counts
+            logger.info(f"Recording {recording.recording_id}: Found {len(recording_issues)} issues")
 
             recordings_data.append({
                 'recording': recording,
@@ -575,6 +578,13 @@ class ReportGenerator:
                 'user_painpoints': recording.get_user_painpoints('en') if hasattr(recording, 'get_user_painpoints') else [],
                 'user_assertions': recording.get_user_assertions('en') if hasattr(recording, 'get_user_assertions') else []
             })
+
+        # Calculate recording statistics
+        total_recordings = len(recordings_data)
+        total_recording_issues = sum(len(r['issues']) for r in recordings_data)
+
+        # Debug: log final totals
+        logger.info(f"Project {project.name}: {total_recordings} recordings with {total_recording_issues} total issues")
 
         return {
             'project': project.__dict__,
@@ -590,8 +600,8 @@ class ReportGenerator:
                 'total_passes': total_passes,
                 'average_violations_per_page': total_violations / total_pages if total_pages else 0,
                 'average_warnings_per_page': total_warnings / total_pages if total_pages else 0,
-                'total_recordings': len(recordings_data),
-                'total_recording_issues': sum(len(r['issues']) for r in recordings_data)
+                'total_recordings': total_recordings,
+                'total_recording_issues': total_recording_issues
             },
             'generated_at': datetime.now().isoformat()
         }

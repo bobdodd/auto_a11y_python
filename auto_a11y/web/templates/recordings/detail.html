@@ -3,6 +3,8 @@
 {% block title %}{{ recording.title }} - {{ _('Recordings') }}{% endblock %}
 
 {% block content %}
+{# Set default language if not provided #}
+{% set current_language = current_language|default('en') %}
 <div class="container-fluid">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -33,6 +35,7 @@
             </form>
         </div>
     </div>
+
 
     <!-- Recording Metadata -->
     <div class="row mb-4">
@@ -101,6 +104,18 @@
                                 {{ recording.recording_type.value|replace('_', ' ')|title }}
                             </span>
                         </div>
+                        {% if recording.available_languages %}
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-1">{{ _('Available Languages') }}</h6>
+                            {% for lang in recording.available_languages %}
+                                {% if lang == 'en' %}
+                                <span class="badge bg-secondary">English</span>
+                                {% elif lang == 'fr' %}
+                                <span class="badge bg-secondary">Français (French)</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                         {% if project %}
                         <div class="col-md-6 mb-3">
                             <h6 class="text-muted mb-1">{{ _('Project') }}</h6>
@@ -369,19 +384,20 @@
     <!-- Recording Content Accordion (Key Takeaways, Painpoints, Assertions, Issues) -->
     <div class="accordion mb-4" id="recordingContentAccordion">
         <!-- Key Takeaways -->
-        {% if recording.key_takeaways %}
+        {% set key_takeaways_list = recording.get_key_takeaways(current_language) %}
+        {% if key_takeaways_list %}
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingKeyTakeaways">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseKeyTakeaways" aria-expanded="false" aria-controls="collapseKeyTakeaways">
-                    <i class="bi bi-list-ol me-2"></i> <strong>{{ _('Key Takeaways') }} ({{ recording.key_takeaways|length }})</strong>
+                    <i class="bi bi-list-ol me-2"></i> <strong>{{ _('Key Takeaways') }} ({{ key_takeaways_list|length }})</strong>
                 </button>
             </h2>
             <div id="collapseKeyTakeaways" class="accordion-collapse collapse"
                  aria-labelledby="headingKeyTakeaways" data-bs-parent="#recordingContentAccordion">
                 <div class="accordion-body">
                     <div class="recording-content">
-                        {% for takeaway in recording.key_takeaways %}
+                        {% for takeaway in key_takeaways_list %}
                         <div class="takeaway-item mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
                             <h4>{{ takeaway.number }}. {{ takeaway.topic }}</h4>
                             <p>{{ takeaway.description }}</p>
@@ -402,19 +418,20 @@
         {% endif %}
 
         <!-- User Painpoints -->
-        {% if recording.user_painpoints %}
+        {% set user_painpoints_list = recording.get_user_painpoints(current_language) %}
+        {% if user_painpoints_list %}
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingPainpoints">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapsePainpoints" aria-expanded="false" aria-controls="collapsePainpoints">
-                    <i class="bi bi-exclamation-triangle me-2"></i> <strong>{{ _('User Painpoints') }} ({{ recording.user_painpoints|length }})</strong>
+                    <i class="bi bi-exclamation-triangle me-2"></i> <strong>{{ _('User Painpoints') }} ({{ user_painpoints_list|length }})</strong>
                 </button>
             </h2>
             <div id="collapsePainpoints" class="accordion-collapse collapse"
                  aria-labelledby="headingPainpoints" data-bs-parent="#recordingContentAccordion">
                 <div class="accordion-body">
                     <div class="recording-content">
-                        {% for painpoint in recording.user_painpoints %}
+                        {% for painpoint in user_painpoints_list %}
                         <div class="painpoint-item mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
                             <h4>
                                 {% if painpoint.impact %}
@@ -454,19 +471,20 @@
         {% endif %}
 
         <!-- User Assertions -->
-        {% if recording.user_assertions %}
+        {% set user_assertions_list = recording.get_user_assertions(current_language) %}
+        {% if user_assertions_list %}
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingAssertions">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseAssertions" aria-expanded="false" aria-controls="collapseAssertions">
-                    <i class="bi bi-chat-quote me-2"></i> <strong>{{ _('User Assertions') }} ({{ recording.user_assertions|length }})</strong>
+                    <i class="bi bi-chat-quote me-2"></i> <strong>{{ _('User Assertions') }} ({{ user_assertions_list|length }})</strong>
                 </button>
             </h2>
             <div id="collapseAssertions" class="accordion-collapse collapse"
                  aria-labelledby="headingAssertions" data-bs-parent="#recordingContentAccordion">
                 <div class="accordion-body">
                     <div class="recording-content">
-                        {% for assertion in recording.user_assertions %}
+                        {% for assertion in user_assertions_list %}
                         <div class="assertion-item mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
                             <h4>{{ assertion.number }}. {{ assertion.assertion }}</h4>
                             {% if assertion.user_quote %}
@@ -508,7 +526,7 @@
             <h2 class="accordion-header" id="headingIssues">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseIssues" aria-expanded="true" aria-controls="collapseIssues">
-                    <i class="bi bi-bug me-2"></i> <strong>{{ _('Accessibility Issues') }} ({{ recording.total_issues }})</strong>
+                    <i class="bi bi-bug me-2"></i> <strong>{{ _('Accessibility Issues') }} ({{ issues|length }})</strong>
                 </button>
             </h2>
             <div id="collapseIssues" class="accordion-collapse collapse show"
@@ -518,7 +536,7 @@
                 {% for touchpoint, touchpoint_issues in issues_by_touchpoint.items()|sort %}
                 <div class="mb-4">
                     <h5 class="border-bottom pb-2 mb-3">
-                        <i class="bi bi-folder"></i> {{ touchpoint }}
+                        <i class="bi bi-folder"></i> {{ _(touchpoint) }}
                         <span class="badge bg-secondary">{{ touchpoint_issues|length }}</span>
                     </h5>
 

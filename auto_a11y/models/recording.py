@@ -67,10 +67,11 @@ class Recording:
     medium_impact_count: int = 0
     low_impact_count: int = 0
 
-    # Recording Content (Structured data)
-    key_takeaways: List[Dict[str, Any]] = field(default_factory=list)  # List of {number, topic, description}
-    user_painpoints: List[Dict[str, Any]] = field(default_factory=list)  # List of {title, user_quote, timecodes: [{start, end, duration}]}
-    user_assertions: List[Dict[str, Any]] = field(default_factory=list)  # List of {number, assertion, user_quote, timecodes, context}
+    # Recording Content (Structured data) - Multi-language support
+    # Each can contain 'en' and/or 'fr' keys with the content in that language
+    key_takeaways: Dict[str, List[Dict[str, Any]]] = field(default_factory=dict)  # {'en': [...], 'fr': [...]}
+    user_painpoints: Dict[str, List[Dict[str, Any]]] = field(default_factory=dict)  # {'en': [...], 'fr': [...]}
+    user_assertions: Dict[str, List[Dict[str, Any]]] = field(default_factory=dict)  # {'en': [...], 'fr': [...]}
 
     # Metadata
     created_at: datetime = field(default_factory=datetime.now)
@@ -101,6 +102,47 @@ class Recording:
     def needs_sync(self) -> bool:
         """Check if recording needs to be synced to Drupal"""
         return self.drupal_sync_status in [DrupalSyncStatus.NOT_SYNCED, DrupalSyncStatus.SYNC_FAILED]
+
+    def get_key_takeaways(self, language: str = 'en') -> List[Dict[str, Any]]:
+        """Get key takeaways in specified language, fallback to English"""
+        # Handle both old format (list) and new format (dict with language keys)
+        if isinstance(self.key_takeaways, dict):
+            return self.key_takeaways.get(language, self.key_takeaways.get('en', []))
+        # Old format: just a list, return it regardless of language
+        return self.key_takeaways if self.key_takeaways else []
+
+    def get_user_painpoints(self, language: str = 'en') -> List[Dict[str, Any]]:
+        """Get user painpoints in specified language, fallback to English"""
+        # Handle both old format (list) and new format (dict with language keys)
+        if isinstance(self.user_painpoints, dict):
+            return self.user_painpoints.get(language, self.user_painpoints.get('en', []))
+        # Old format: just a list, return it regardless of language
+        return self.user_painpoints if self.user_painpoints else []
+
+    def get_user_assertions(self, language: str = 'en') -> List[Dict[str, Any]]:
+        """Get user assertions in specified language, fallback to English"""
+        # Handle both old format (list) and new format (dict with language keys)
+        if isinstance(self.user_assertions, dict):
+            return self.user_assertions.get(language, self.user_assertions.get('en', []))
+        # Old format: just a list, return it regardless of language
+        return self.user_assertions if self.user_assertions else []
+
+    @property
+    def available_languages(self) -> List[str]:
+        """Get list of languages that have content"""
+        languages = set()
+        # Handle both old format (list) and new format (dict with language keys)
+        if self.key_takeaways and isinstance(self.key_takeaways, dict):
+            languages.update(self.key_takeaways.keys())
+        if self.user_painpoints and isinstance(self.user_painpoints, dict):
+            languages.update(self.user_painpoints.keys())
+        if self.user_assertions and isinstance(self.user_assertions, dict):
+            languages.update(self.user_assertions.keys())
+        # If no languages found from dicts, default to 'en' if any content exists
+        if not languages:
+            if self.key_takeaways or self.user_painpoints or self.user_assertions:
+                languages.add('en')
+        return sorted(list(languages))
 
     def to_dict(self) -> dict:
         """Convert to dictionary for MongoDB"""

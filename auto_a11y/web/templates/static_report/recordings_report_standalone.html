@@ -243,174 +243,250 @@
                 <div class="accordion mb-4" id="recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
 
                     <!-- Key Takeaways -->
-                    {% set takeaways = recording.get_key_takeaways(language) %}
-                    {% if takeaways %}
+                    {% set takeaways_en = recording.get_key_takeaways('en') %}
+                    {% set takeaways_fr = recording.get_key_takeaways('fr') %}
+                    {% if takeaways_en or takeaways_fr %}
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseKeyTakeaways-{{ recording.recording_id|replace(' ', '-') }}">
                                 <i class="bi bi-list-ol me-2"></i>
                                 <strong>
-                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['key_takeaways'] }}</span>
-                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['key_takeaways'] }}</span>
-                                    ({{ takeaways|length }})
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['key_takeaways'] }} ({{ takeaways_en|length }})</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['key_takeaways'] }} ({{ takeaways_fr|length }})</span>
                                 </strong>
                             </button>
                         </h2>
                         <div id="collapseKeyTakeaways-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
                              data-bs-parent="#recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
                             <div class="accordion-body">
-                                {% for takeaway in takeaways %}
-                                <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
-                                    <h4>{{ takeaway.number }}. {{ takeaway.topic }}</h4>
-                                    <p>{{ takeaway.description }}</p>
-                                    {% if include_timecodes and takeaway.timecodes %}
-                                    <p class="text-muted small mb-0">
-                                        <i class="bi bi-clock"></i>
-                                        {% for tc in takeaway.timecodes %}
-                                        <code>{{ tc.start }} - {{ tc.end }}</code>{% if not loop.last %}, {% endif %}
-                                        {% endfor %}
-                                    </p>
-                                    {% endif %}
+                                <!-- English Takeaways -->
+                                <div data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                                    {% for takeaway in takeaways_en %}
+                                    <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
+                                        <h4>{{ takeaway.number }}. {{ takeaway.topic }}</h4>
+                                        <p>{{ takeaway.description }}</p>
+                                        {% if include_timecodes and takeaway.timecodes %}
+                                        <p class="text-muted small mb-0">
+                                            <i class="bi bi-clock"></i>
+                                            {% for tc in takeaway.timecodes %}
+                                            <code>{{ tc.start }} - {{ tc.end }}</code>{% if not loop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
+                                <!-- French Takeaways -->
+                                <div data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                                    {% for takeaway in takeaways_fr %}
+                                    <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
+                                        <h4>{{ takeaway.number }}. {{ takeaway.topic }}</h4>
+                                        <p>{{ takeaway.description }}</p>
+                                        {% if include_timecodes and takeaway.timecodes %}
+                                        <p class="text-muted small mb-0">
+                                            <i class="bi bi-clock"></i>
+                                            {% for tc in takeaway.timecodes %}
+                                            <code>{{ tc.start }} - {{ tc.end }}</code>{% if not loop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </div>
                     {% endif %}
 
                     <!-- User Painpoints -->
-                    {% set painpoints = recording.get_user_painpoints(language) %}
-                    {% if painpoints %}
+                    {% set painpoints_en = recording.get_user_painpoints('en') %}
+                    {% set painpoints_fr = recording.get_user_painpoints('fr') %}
+                    {% if painpoints_en or painpoints_fr %}
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapsePainpoints-{{ recording.recording_id|replace(' ', '-') }}">
                                 <i class="bi bi-exclamation-triangle me-2"></i>
                                 <strong>
-                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['user_painpoints'] }}</span>
-                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['user_painpoints'] }}</span>
-                                    ({{ painpoints|length }})
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['user_painpoints'] }} ({{ painpoints_en|length }})</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['user_painpoints'] }} ({{ painpoints_fr|length }})</span>
                                 </strong>
                             </button>
                         </h2>
                         <div id="collapsePainpoints-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
                              data-bs-parent="#recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
                             <div class="accordion-body">
-                                {% for painpoint in painpoints %}
-                                <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
-                                    <h4>
-                                        {% if painpoint.impact %}
-                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}.get(painpoint.impact|lower, 'secondary') }} me-2">
-                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get(painpoint.impact|lower, painpoint.impact|upper) }}</span>
-                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(painpoint.impact|lower, painpoint.impact|upper) }}</span>
-                                        </span>
-                                        {% endif %}
-                                        {{ painpoint.title }}
-                                    </h4>
-                                    {% if painpoint.user_quote %}
-                                    <div class="mb-3">
-                                        <strong class="text-primary">
-                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">User Quote:</span>
-                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Citation de l'utilisateur :</span>
-                                        </strong>
-                                        <p class="fst-italic ms-3">"{{ painpoint.user_quote }}"</p>
-                                    </div>
-                                    {% endif %}
-                                    {% if include_timecodes and painpoint.timecodes %}
-                                    <div>
-                                        <strong class="text-primary">
-                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Timecode{% if painpoint.timecodes|length > 1 %}s{% endif %}:</span>
-                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Code{% if painpoint.timecodes|length > 1 %}s{% endif %} temporel{% if painpoint.timecodes|length > 1 %}s{% endif %} :</span>
-                                        </strong>
-                                        {% for tc in painpoint.timecodes %}
-                                        <div class="ms-3 mb-2">
-                                            <i class="bi bi-clock"></i>
-                                            <span class="text-muted small">
-                                                <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
-                                                {% if tc.duration %}
-                                                (<span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Duration:</span> <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Durée :</span> <code>{{ tc.duration }}</code>)
-                                                {% endif %}
+                                <!-- English Painpoints -->
+                                <div data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                                    {% for painpoint in painpoints_en %}
+                                    <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
+                                        <h4>
+                                            {% if painpoint.impact %}
+                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}.get(painpoint.impact|lower, 'secondary') }} me-2">
+                                                {{ t.get(painpoint.impact|lower, painpoint.impact|upper) }}
                                             </span>
+                                            {% endif %}
+                                            {{ painpoint.title }}
+                                        </h4>
+                                        {% if painpoint.user_quote %}
+                                        <div class="mb-3">
+                                            <strong class="text-primary">User Quote:</strong>
+                                            <p class="fst-italic ms-3">"{{ painpoint.user_quote }}"</p>
                                         </div>
-                                        {% endfor %}
+                                        {% endif %}
+                                        {% if include_timecodes and painpoint.timecodes %}
+                                        <div>
+                                            <strong class="text-primary">Timecode{% if painpoint.timecodes|length > 1 %}s{% endif %}:</strong>
+                                            {% for tc in painpoint.timecodes %}
+                                            <div class="ms-3 mb-2">
+                                                <i class="bi bi-clock"></i>
+                                                <span class="text-muted small">
+                                                    <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
+                                                    {% if tc.duration %}(Duration: <code>{{ tc.duration }}</code>){% endif %}
+                                                </span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
                                     </div>
-                                    {% endif %}
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
+                                <!-- French Painpoints -->
+                                <div data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                                    {% for painpoint in painpoints_fr %}
+                                    <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
+                                        <h4>
+                                            {% if painpoint.impact %}
+                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}.get(painpoint.impact|lower, 'secondary') }} me-2">
+                                                {{ translations_fr.get(painpoint.impact|lower, painpoint.impact|upper) }}
+                                            </span>
+                                            {% endif %}
+                                            {{ painpoint.title }}
+                                        </h4>
+                                        {% if painpoint.user_quote %}
+                                        <div class="mb-3">
+                                            <strong class="text-primary">Citation de l'utilisateur :</strong>
+                                            <p class="fst-italic ms-3">"{{ painpoint.user_quote }}"</p>
+                                        </div>
+                                        {% endif %}
+                                        {% if include_timecodes and painpoint.timecodes %}
+                                        <div>
+                                            <strong class="text-primary">Code{% if painpoint.timecodes|length > 1 %}s{% endif %} temporel{% if painpoint.timecodes|length > 1 %}s{% endif %} :</strong>
+                                            {% for tc in painpoint.timecodes %}
+                                            <div class="ms-3 mb-2">
+                                                <i class="bi bi-clock"></i>
+                                                <span class="text-muted small">
+                                                    <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
+                                                    {% if tc.duration %}(Durée : <code>{{ tc.duration }}</code>){% endif %}
+                                                </span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </div>
                     {% endif %}
 
                     <!-- User Assertions -->
-                    {% set assertions = recording.get_user_assertions(language) %}
-                    {% if assertions %}
+                    {% set assertions_en = recording.get_user_assertions('en') %}
+                    {% set assertions_fr = recording.get_user_assertions('fr') %}
+                    {% if assertions_en or assertions_fr %}
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseAssertions-{{ recording.recording_id|replace(' ', '-') }}">
                                 <i class="bi bi-chat-quote me-2"></i>
                                 <strong>
-                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['user_assertions'] }}</span>
-                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['user_assertions'] }}</span>
-                                    ({{ assertions|length }})
+                                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['user_assertions'] }} ({{ assertions_en|length }})</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['user_assertions'] }} ({{ assertions_fr|length }})</span>
                                 </strong>
                             </button>
                         </h2>
                         <div id="collapseAssertions-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
                              data-bs-parent="#recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
                             <div class="accordion-body">
-                                {% for assertion in assertions %}
-                                <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
-                                    <h4>{{ assertion.number }}. {{ assertion.assertion }}</h4>
-                                    {% if assertion.user_quote %}
-                                    <div class="mb-3">
-                                        <strong class="text-primary">
-                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">User Quote:</span>
-                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Citation de l'utilisateur :</span>
-                                        </strong>
-                                        <p class="fst-italic ms-3">"{{ assertion.user_quote }}"</p>
-                                    </div>
-                                    {% endif %}
-                                    {% if include_timecodes and assertion.timecodes %}
-                                    <div>
-                                        <strong class="text-primary">
-                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Timecode{% if assertion.timecodes|length > 1 %}s{% endif %}:</span>
-                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Code{% if assertion.timecodes|length > 1 %}s{% endif %} temporel{% if assertion.timecodes|length > 1 %}s{% endif %} :</span>
-                                        </strong>
-                                        {% for tc in assertion.timecodes %}
-                                        <div class="ms-3 mb-2">
-                                            <i class="bi bi-clock"></i>
-                                            <span class="text-muted small">
-                                                <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
-                                                {% if tc.duration %}
-                                                (<span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Duration:</span> <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Durée :</span> <code>{{ tc.duration }}</code>)
-                                                {% endif %}
-                                            </span>
+                                <!-- English Assertions -->
+                                <div data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                                    {% for assertion in assertions_en %}
+                                    <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
+                                        <h4>{{ assertion.number }}. {{ assertion.assertion }}</h4>
+                                        {% if assertion.user_quote %}
+                                        <div class="mb-3">
+                                            <strong class="text-primary">User Quote:</strong>
+                                            <p class="fst-italic ms-3">"{{ assertion.user_quote }}"</p>
                                         </div>
-                                        {% endfor %}
+                                        {% endif %}
+                                        {% if include_timecodes and assertion.timecodes %}
+                                        <div>
+                                            <strong class="text-primary">Timecode{% if assertion.timecodes|length > 1 %}s{% endif %}:</strong>
+                                            {% for tc in assertion.timecodes %}
+                                            <div class="ms-3 mb-2">
+                                                <i class="bi bi-clock"></i>
+                                                <span class="text-muted small">
+                                                    <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
+                                                    {% if tc.duration %}(Duration: <code>{{ tc.duration }}</code>){% endif %}
+                                                </span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        {% if assertion.context %}
+                                        <div class="mt-2">
+                                            <strong class="text-primary">Context:</strong>
+                                            <p class="ms-3">{{ assertion.context }}</p>
+                                        </div>
+                                        {% endif %}
                                     </div>
-                                    {% endif %}
-                                    {% if assertion.context %}
-                                    <div class="mt-2">
-                                        <strong class="text-primary">
-                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Context:</span>
-                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Contexte :</span>
-                                        </strong>
-                                        <p class="ms-3">{{ assertion.context }}</p>
-                                    </div>
-                                    {% endif %}
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
+                                <!-- French Assertions -->
+                                <div data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                                    {% for assertion in assertions_fr %}
+                                    <div class="mb-4{% if not loop.last %} pb-3 border-bottom{% endif %}">
+                                        <h4>{{ assertion.number }}. {{ assertion.assertion }}</h4>
+                                        {% if assertion.user_quote %}
+                                        <div class="mb-3">
+                                            <strong class="text-primary">Citation de l'utilisateur :</strong>
+                                            <p class="fst-italic ms-3">"{{ assertion.user_quote }}"</p>
+                                        </div>
+                                        {% endif %}
+                                        {% if include_timecodes and assertion.timecodes %}
+                                        <div>
+                                            <strong class="text-primary">Code{% if assertion.timecodes|length > 1 %}s{% endif %} temporel{% if assertion.timecodes|length > 1 %}s{% endif %} :</strong>
+                                            {% for tc in assertion.timecodes %}
+                                            <div class="ms-3 mb-2">
+                                                <i class="bi bi-clock"></i>
+                                                <span class="text-muted small">
+                                                    <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
+                                                    {% if tc.duration %}(Durée : <code>{{ tc.duration }}</code>){% endif %}
+                                                </span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        {% if assertion.context %}
+                                        <div class="mt-2">
+                                            <strong class="text-primary">Contexte :</strong>
+                                            <p class="ms-3">{{ assertion.context }}</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </div>
                     {% endif %}
 
                     <!-- Accessibility Issues -->
-                    {% set recording_issues = issues_by_recording.get(recording.recording_id, []) %}
-                    {% if recording_issues %}
+                    {% set recording_issues_en = issues_by_recording_en.get(recording.recording_id, []) %}
+                    {% set recording_issues_fr = issues_by_recording_fr.get(recording.recording_id, []) %}
+                    {% if recording_issues_en or recording_issues_fr %}
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -419,39 +495,37 @@
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['accessibility_issues'] }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['accessibility_issues'] }}</span>
-                                    ({{ recording_issues|length }})
+                                    (<span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ recording_issues_en|length }}</span><span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ recording_issues_fr|length }}</span>)
                                 </strong>
                             </button>
                         </h2>
                         <div id="collapseIssues-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse show"
                              data-bs-parent="#recordingContentAccordion-{{ recording.recording_id|replace(' ', '-') }}">
                             <div class="accordion-body">
-                                <div class="accordion" id="accordion-issues-{{ recording.recording_id|replace(' ', '-') }}">
-                                    {% for issue in recording_issues %}
+                                <!-- English Issues -->
+                                <div class="accordion" id="accordion-issues-en-{{ recording.recording_id|replace(' ', '-') }}" data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                                    {% for issue in recording_issues_en %}
                                         <div class="accordion-item">
                                             <h2 class="accordion-header">
                                                 <button class="accordion-button collapsed" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#issue-{{ loop.index }}-{{ recording.recording_id|replace(' ', '-') }}">
+                                                        data-bs-toggle="collapse" data-bs-target="#issue-en-{{ loop.index }}-{{ recording.recording_id|replace(' ', '-') }}">
                                                     <div class="w-100 d-flex justify-content-between align-items-center me-2">
                                                         <span>
                                                             <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}[issue.impact.value] }} me-2">
-                                                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get(issue.impact.value, issue.impact.value|upper) }}</span>
-                                                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(issue.impact.value, issue.impact.value|upper) }}</span>
+                                                                {{ t.get(issue.impact.value, issue.impact.value|upper) }}
                                                             </span>
                                                             {{ issue.title }}
                                                         </span>
                                                         {% if issue.timecodes %}
                                                         <span class="badge bg-info">
-                                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }}
-                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">timecode(s)</span>
-                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">code(s) temporel(s)</span>
+                                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} timecode(s)
                                                         </span>
                                                         {% endif %}
                                                     </div>
                                                 </button>
                                             </h2>
-                                            <div id="issue-{{ loop.index }}-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
-                                                 data-bs-parent="#accordion-issues-{{ recording.recording_id|replace(' ', '-') }}">
+                                            <div id="issue-en-{{ loop.index }}-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
+                                                 data-bs-parent="#accordion-issues-en-{{ recording.recording_id|replace(' ', '-') }}">
                                                 <div class="accordion-body">
                                                     {% if issue.short_title %}
                                                     <p class="text-muted fst-italic">{{ issue.short_title }}</p>
@@ -459,10 +533,7 @@
 
                                                     {% if include_timecodes and issue.timecodes %}
                                                     <div class="mb-3">
-                                                        <strong>
-                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['timecodes'] }}:</span>
-                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['timecodes'] }} :</span>
-                                                        </strong>
+                                                        <strong>{{ t['timecodes'] }}:</strong>
                                                         <div class="mt-1">
                                                             {% for tc in issue.timecodes %}
                                                             <span class="badge bg-secondary me-2">
@@ -475,55 +546,126 @@
 
                                                     {% if issue.what %}
                                                     <div class="mb-3">
-                                                        <strong>
-                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get('what', 'What') }}:</span>
-                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('what', 'Quoi') }} :</span>
-                                                        </strong>
+                                                        <strong>{{ t.get('what', 'What') }}:</strong>
                                                         <p class="mb-0">{{ issue.what }}</p>
                                                     </div>
                                                     {% endif %}
 
                                                     {% if issue.why %}
                                                     <div class="mb-3">
-                                                        <strong>
-                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get('why', 'Why') }}:</span>
-                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('why', 'Pourquoi') }} :</span>
-                                                        </strong>
+                                                        <strong>{{ t.get('why', 'Why') }}:</strong>
                                                         <p class="mb-0">{{ issue.why }}</p>
                                                     </div>
                                                     {% endif %}
 
                                                     {% if issue.who %}
                                                     <div class="mb-3">
-                                                        <strong>
-                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get('who_affected', 'Who is affected') }}:</span>
-                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('who_affected', 'Qui est affecté') }} :</span>
-                                                        </strong>
+                                                        <strong>{{ t.get('who_affected', 'Who is affected') }}:</strong>
                                                         <p class="mb-0">{{ issue.who }}</p>
                                                     </div>
                                                     {% endif %}
 
                                                     {% if issue.remediation %}
                                                     <div class="mb-3">
-                                                        <strong>
-                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get('how_to_fix', 'How to fix') }}:</span>
-                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('how_to_fix', 'Comment corriger') }} :</span>
-                                                        </strong>
+                                                        <strong>{{ t.get('how_to_fix', 'How to fix') }}:</strong>
                                                         <p class="mb-0">{{ issue.remediation }}</p>
                                                     </div>
                                                     {% endif %}
 
                                                     {% if include_wcag and issue.wcag %}
                                                     <div class="mb-3">
-                                                        <strong>
-                                                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['wcag_criteria'] }}:</span>
-                                                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['wcag_criteria'] }} :</span>
-                                                        </strong>
+                                                        <strong>{{ t['wcag_criteria'] }}:</strong>
                                                         <div class="mt-1">
                                                             {% for wcag_ref in issue.wcag %}
                                                             <span class="badge bg-primary me-1">
-                                                                {{ wcag_ref.criteria }}
-                                                                (<span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Level</span><span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Niveau</span> {{ wcag_ref.level }})
+                                                                {{ wcag_ref.criteria }} (Level {{ wcag_ref.level }})
+                                                            </span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <!-- French Issues -->
+                                <div class="accordion" id="accordion-issues-fr-{{ recording.recording_id|replace(' ', '-') }}" data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                                    {% for issue in recording_issues_fr %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#issue-fr-{{ loop.index }}-{{ recording.recording_id|replace(' ', '-') }}">
+                                                    <div class="w-100 d-flex justify-content-between align-items-center me-2">
+                                                        <span>
+                                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}[issue.impact.value] }} me-2">
+                                                                {{ translations_fr.get(issue.impact.value, issue.impact.value|upper) }}
+                                                            </span>
+                                                            {{ issue.title }}
+                                                        </span>
+                                                        {% if issue.timecodes %}
+                                                        <span class="badge bg-info">
+                                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} code(s) temporel(s)
+                                                        </span>
+                                                        {% endif %}
+                                                    </div>
+                                                </button>
+                                            </h2>
+                                            <div id="issue-fr-{{ loop.index }}-{{ recording.recording_id|replace(' ', '-') }}" class="accordion-collapse collapse"
+                                                 data-bs-parent="#accordion-issues-fr-{{ recording.recording_id|replace(' ', '-') }}">
+                                                <div class="accordion-body">
+                                                    {% if issue.short_title %}
+                                                    <p class="text-muted fst-italic">{{ issue.short_title }}</p>
+                                                    {% endif %}
+
+                                                    {% if include_timecodes and issue.timecodes %}
+                                                    <div class="mb-3">
+                                                        <strong>{{ translations_fr['timecodes'] }} :</strong>
+                                                        <div class="mt-1">
+                                                            {% for tc in issue.timecodes %}
+                                                            <span class="badge bg-secondary me-2">
+                                                                {{ tc.start }} - {{ tc.end }}{% if tc.duration %} ({{ tc.duration }}){% endif %}
+                                                            </span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if issue.what %}
+                                                    <div class="mb-3">
+                                                        <strong>{{ translations_fr.get('what', 'Quoi') }} :</strong>
+                                                        <p class="mb-0">{{ issue.what }}</p>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if issue.why %}
+                                                    <div class="mb-3">
+                                                        <strong>{{ translations_fr.get('why', 'Pourquoi') }} :</strong>
+                                                        <p class="mb-0">{{ issue.why }}</p>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if issue.who %}
+                                                    <div class="mb-3">
+                                                        <strong>{{ translations_fr.get('who_affected', 'Qui est affecté') }} :</strong>
+                                                        <p class="mb-0">{{ issue.who }}</p>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if issue.remediation %}
+                                                    <div class="mb-3">
+                                                        <strong>{{ translations_fr.get('how_to_fix', 'Comment corriger') }} :</strong>
+                                                        <p class="mb-0">{{ issue.remediation }}</p>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if include_wcag and issue.wcag %}
+                                                    <div class="mb-3">
+                                                        <strong>{{ translations_fr['wcag_criteria'] }} :</strong>
+                                                        <div class="mt-1">
+                                                            {% for wcag_ref in issue.wcag %}
+                                                            <span class="badge bg-primary me-1">
+                                                                {{ wcag_ref.criteria }} (Niveau {{ wcag_ref.level }})
                                                             </span>
                                                             {% endfor %}
                                                         </div>

@@ -18,53 +18,100 @@
             <div class="card">
                 <div class="card-body">
                     <form method="post" action="{{ url_for('recordings.upload_recording') }}" enctype="multipart/form-data">
-                        <!-- JSON File Upload -->
+                        <!-- JSON File Upload - Multi-language -->
                         <div class="mb-4">
-                            <label for="json_file" class="form-label">{{ _('Dictaphone JSON File *') }}</label>
-                            <input type="file" class="form-control" id="json_file" name="json_file"
-                                   accept=".json" required>
-                            <div class="form-text">
-                                {{ _('Select the JSON file exported from Dictaphone containing accessibility issues and timecodes.') }}
+                            <label class="form-label">{{ _('Dictaphone JSON Files') }}</label>
+
+                            <div class="border rounded p-3 mb-2 bg-light">
+                                <label for="json_file_en" class="form-label">{{ _('English Issues (EN) *') }}</label>
+                                <input type="file" class="form-control" id="json_file_en" name="json_file_en"
+                                       accept=".json" required>
+                                <div class="form-text">
+                                    {{ _('JSON file with accessibility issues in English.') }}
+                                </div>
+                            </div>
+
+                            <div class="border rounded p-3 bg-light">
+                                <label for="json_file_fr" class="form-label">{{ _('French Issues (FR)') }}</label>
+                                <input type="file" class="form-control" id="json_file_fr" name="json_file_fr"
+                                       accept=".json">
+                                <div class="form-text">
+                                    {{ _('Optional: JSON file with accessibility issues in French.') }}
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Recording Content Files (HTML) -->
+                        <!-- Recording Content Files (HTML/JSON) - Multi-language Support -->
                         <div class="card mb-4 bg-light">
                             <div class="card-header">
                                 <h6 class="mb-0"><i class="bi bi-file-earmark-text"></i> {{ _('Recording Content (Optional)') }}</h6>
                             </div>
                             <div class="card-body">
                                 <p class="small text-muted mb-3">
-                                    {{ _('Upload HTML or JSON files for key takeaways, user painpoints, and user assertions. Both formats are supported.') }}
+                                    {{ _('Upload HTML or JSON files for key takeaways, user painpoints, and user assertions. You can upload English and/or French versions.') }}
                                 </p>
 
-                                <!-- Key Takeaways HTML or JSON Upload -->
-                                <div class="mb-3">
-                                    <label for="key_takeaways_file" class="form-label">{{ _('Key Takeaways (HTML or JSON)') }}</label>
-                                    <input type="file" class="form-control" id="key_takeaways_file" name="key_takeaways_file"
-                                           accept=".html,.htm,.json">
-                                    <div class="form-text">
-                                        {{ _('Numbered list of the most important accessibility issues found. Accepts HTML or JSON format.') }}
+                                <!-- English Content -->
+                                <div class="border rounded p-3 mb-3 bg-white">
+                                    <h6 class="text-primary mb-3"><i class="bi bi-flag"></i> {{ _('English Content') }}</h6>
+
+                                    <div class="mb-3">
+                                        <label for="key_takeaways_file_en" class="form-label">{{ _('Key Takeaways (EN)') }}</label>
+                                        <input type="file" class="form-control" id="key_takeaways_file_en" name="key_takeaways_file_en"
+                                               accept=".html,.htm,.json">
+                                        <div class="form-text">
+                                            {{ _('Numbered list of the most important accessibility issues found.') }}
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="user_painpoints_file_en" class="form-label">{{ _('User Painpoints (EN)') }}</label>
+                                        <input type="file" class="form-control" id="user_painpoints_file_en" name="user_painpoints_file_en"
+                                               accept=".html,.htm,.json">
+                                        <div class="form-text">
+                                            {{ _('User-focused description of difficulties experienced during testing.') }}
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-0">
+                                        <label for="user_assertions_file_en" class="form-label">{{ _('User Assertions (EN)') }}</label>
+                                        <input type="file" class="form-control" id="user_assertions_file_en" name="user_assertions_file_en"
+                                               accept=".html,.htm,.json">
+                                        <div class="form-text">
+                                            {{ _('Direct quotes and observations from the tester with timecodes.') }}
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- User Painpoints HTML or JSON Upload -->
-                                <div class="mb-3">
-                                    <label for="user_painpoints_file" class="form-label">{{ _('User Painpoints (HTML or JSON)') }}</label>
-                                    <input type="file" class="form-control" id="user_painpoints_file" name="user_painpoints_file"
-                                           accept=".html,.htm,.json">
-                                    <div class="form-text">
-                                        {{ _('User-focused description of difficulties experienced during testing. Accepts HTML or JSON format.') }}
-                                    </div>
-                                </div>
+                                <!-- French Content -->
+                                <div class="border rounded p-3 bg-white">
+                                    <h6 class="text-primary mb-3"><i class="bi bi-flag"></i> {{ _('French Content (Contenu français)') }}</h6>
 
-                                <!-- User Assertions HTML or JSON Upload -->
-                                <div class="mb-0">
-                                    <label for="user_assertions_file" class="form-label">{{ _('User Assertions (HTML or JSON)') }}</label>
-                                    <input type="file" class="form-control" id="user_assertions_file" name="user_assertions_file"
-                                           accept=".html,.htm,.json">
-                                    <div class="form-text">
-                                        {{ _('Direct quotes and observations from the tester with timecodes. Accepts HTML or JSON format.') }}
+                                    <div class="mb-3">
+                                        <label for="key_takeaways_file_fr" class="form-label">{{ _('Key Takeaways (FR)') }}</label>
+                                        <input type="file" class="form-control" id="key_takeaways_file_fr" name="key_takeaways_file_fr"
+                                               accept=".html,.htm,.json">
+                                        <div class="form-text">
+                                            {{ _('Liste numérotée des problèmes d\'accessibilité les plus importants trouvés.') }}
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="user_painpoints_file_fr" class="form-label">{{ _('User Painpoints (FR)') }}</label>
+                                        <input type="file" class="form-control" id="user_painpoints_file_fr" name="user_painpoints_file_fr"
+                                               accept=".html,.htm,.json">
+                                        <div class="form-text">
+                                            {{ _('Description des difficultés rencontrées lors des tests.') }}
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-0">
+                                        <label for="user_assertions_file_fr" class="form-label">{{ _('User Assertions (FR)') }}</label>
+                                        <input type="file" class="form-control" id="user_assertions_file_fr" name="user_assertions_file_fr"
+                                               accept=".html,.htm,.json">
+                                        <div class="form-text">
+                                            {{ _('Citations directes et observations du testeur avec les codes temporels.') }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

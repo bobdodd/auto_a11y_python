@@ -46,7 +46,8 @@ class DictaphoneImporter:
         task_description: Optional[str] = None,
         auditor_info: Optional[Dict[str, Any]] = None,
         recording_type: str = "audit",
-        testing_scope: Optional[Dict[str, bool]] = None
+        testing_scope: Optional[Dict[str, bool]] = None,
+        language: str = "en"
     ) -> Tuple[Recording, List[RecordingIssue]]:
         """
         Import a Dictaphone JSON file.
@@ -97,7 +98,8 @@ class DictaphoneImporter:
             task_description=task_description,
             auditor_info=auditor_info or {},
             recording_type=recording_type,
-            testing_scope=testing_scope or {}
+            testing_scope=testing_scope or {},
+            language=language
         )
 
         logger.info(f"Successfully parsed recording '{recording.recording_id}' with {len(issues)} issues")
@@ -118,7 +120,8 @@ class DictaphoneImporter:
         task_description: Optional[str],
         auditor_info: Dict[str, Any],
         recording_type: str,
-        testing_scope: Dict[str, bool]
+        testing_scope: Dict[str, bool],
+        language: str = 'en'
     ) -> Tuple[Recording, List[RecordingIssue]]:
         """
         Parse Dictaphone JSON structure into Recording and RecordingIssue objects.
@@ -206,9 +209,9 @@ class DictaphoneImporter:
             device_sections=device_sections,
             task_description=task_description,
             testing_scope=testing_scope,
-            key_takeaways=auditor_info.get('key_takeaways', []),
-            user_painpoints=auditor_info.get('user_painpoints', []),
-            user_assertions=auditor_info.get('user_assertions', []),
+            key_takeaways=auditor_info.get('key_takeaways', {}),
+            user_painpoints=auditor_info.get('user_painpoints', {}),
+            user_assertions=auditor_info.get('user_assertions', {}),
             total_issues=len(issues_data),
             high_impact_count=high_count,
             medium_impact_count=medium_count,
@@ -224,7 +227,8 @@ class DictaphoneImporter:
                 issue = RecordingIssue.from_dictaphone_issue(
                     issue_data,
                     recording_id=recording_id,
-                    project_id=project_id
+                    project_id=project_id,
+                    language=language
                 )
                 # Add component references from recording
                 issue.website_ids = website_ids

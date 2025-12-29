@@ -2677,7 +2677,16 @@ class StaticHTMLReportGenerator:
                 issue_dict['metadata']['who_fr'] = enriched_fr['who_it_affects']
                 issue_dict['metadata']['full_remediation_en'] = enriched_en['how_to_fix']
                 issue_dict['metadata']['full_remediation_fr'] = enriched_fr['how_to_fix']
-                issue_dict['metadata']['wcag_full'] = enriched_en['wcag_full']
+
+                # Convert wcag_full from string to list for template iteration
+                wcag_full_raw = enriched_en['wcag_full']
+                if isinstance(wcag_full_raw, str):
+                    # Split comma-separated string and clean up whitespace
+                    issue_dict['metadata']['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                elif isinstance(wcag_full_raw, list):
+                    issue_dict['metadata']['wcag_full'] = wcag_full_raw
+                else:
+                    issue_dict['metadata']['wcag_full'] = []
 
                 # Copy other metadata fields that might exist
                 if hasattr(issue, 'metadata') and issue.metadata:

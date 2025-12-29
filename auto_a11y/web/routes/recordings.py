@@ -4,7 +4,7 @@ Recording management routes for manual audits
 
 from flask import (
     Blueprint, render_template, request, redirect,
-    url_for, flash, jsonify, current_app
+    url_for, flash, jsonify, current_app, g, session
 )
 from werkzeug.utils import secure_filename
 import logging
@@ -64,8 +64,31 @@ def view_recording(recording_id):
             flash("Recording not found", "danger")
             return redirect(url_for('recordings.list_recordings'))
 
-        # Get issues for this recording
-        issues = current_app.db.get_recording_issues_for_recording(recording.recording_id)
+        # Get language preference - use page language from session/locale
+        language = request.args.get('lang')
+        if not language:
+            # Use the current page language (from session or browser)
+            language = session.get('language', request.accept_languages.best_match(['en', 'fr']) or 'en')
+        if language not in ['en', 'fr']:
+            language = 'en'
+
+        logger.info(f"Viewing recording {recording.recording_id} with language: {language}")
+
+        # Get ALL issues for this recording
+        all_issues = current_app.db.get_recording_issues_for_recording(recording.recording_id)
+
+        logger.info(f"Total issues found: {len(all_issues)}")
+
+        # Filter issues by selected language
+        issues = [issue for issue in all_issues if issue.language == language]
+
+        logger.info(f"Filtered to {len(issues)} issues for language '{language}'")
+
+        # Get available issue languages for this recording
+        issue_languages = sorted(list(set(issue.language for issue in all_issues)))
+
+        logger.info(f"Available issue languages: {issue_languages}")
+        logger.info(f"Recording available_languages: {recording.available_languages}")
 
         # Calculate manual scores
         from auto_a11y.scoring import ManualAccessibilityScorer
@@ -124,7 +147,9 @@ def view_recording(recording_id):
             scores=scores,
             all_criteria=all_criteria,
             applicable_criteria=applicable_criteria,
-            removed_criteria=removed_criteria
+            removed_criteria=removed_criteria,
+            current_language=language,
+            issue_languages=issue_languages
         )
     except Exception as e:
         logger.error(f"Error viewing recording: {e}", exc_info=True)
@@ -197,19 +222,23 @@ def upload_recording():
         return render_template('recordings/upload.html', projects=projects)
 
     try:
-        # Validate file upload
-        if 'json_file' not in request.files:
-            flash("No file uploaded", "danger")
+        # Validate file uploads - at least English required
+        if 'json_file_en' not in request.files:
+            flash("English JSON file is required", "danger")
             return redirect(url_for('recordings.upload_recording'))
 
-        file = request.files['json_file']
-        if file.filename == '':
-            flash("No file selected", "danger")
+        file_en = request.files['json_file_en']
+        if file_en.filename == '':
+            flash("English JSON file is required", "danger")
             return redirect(url_for('recordings.upload_recording'))
 
-        if not file.filename.endswith('.json'):
+        if not file_en.filename.endswith('.json'):
             flash("File must be a JSON file", "danger")
             return redirect(url_for('recordings.upload_recording'))
+
+        # Optional French file
+        file_fr = request.files.get('json_file_fr')
+        has_french = file_fr and file_fr.filename and file_fr.filename.endswith('.json')
 
         # Get form data
         project_id = request.form.get('project_id')
@@ -255,7 +284,7 @@ def upload_recording():
         # Get discovered page IDs (from checkboxes)
         discovered_page_ids = request.form.getlist('discovered_page_ids')
 
-        # Process HTML or JSON content files (key takeaways, painpoints, assertions)
+        # Process HTML or JSON content files (key takeaways, painpoints, assertions) - Multi-language
         from auto_a11y.parsers import (
             parse_key_takeaways_html,
             parse_user_painpoints_html,
@@ -265,100 +294,130 @@ def upload_recording():
             parse_user_assertions_json
         )
 
-        key_takeaways_data = []
-        user_painpoints_data = []
-        user_assertions_data = []
+        # Store content by language: {'en': [...], 'fr': [...]}
+        key_takeaways_data = {}
+        user_painpoints_data = {}
+        user_assertions_data = {}
 
-        if 'key_takeaways_file' in request.files:
-            takeaways_file = request.files['key_takeaways_file']
-            if takeaways_file.filename:
-                content = takeaways_file.read().decode('utf-8')
-                try:
-                    if takeaways_file.filename.endswith('.json'):
-                        json_data = json.loads(content)
-                        key_takeaways_data = parse_key_takeaways_json(json_data)
-                        logger.info(f"✓ Parsed {len(key_takeaways_data)} key takeaways from JSON")
-                        if key_takeaways_data:
-                            logger.info(f"  First takeaway keys: {list(key_takeaways_data[0].keys())}")
-                    elif takeaways_file.filename.endswith('.html') or takeaways_file.filename.endswith('.htm'):
-                        key_takeaways_data = parse_key_takeaways_html(content)
-                        logger.info(f"✓ Parsed {len(key_takeaways_data)} key takeaways from HTML")
-                except Exception as e:
-                    logger.warning(f"Error parsing key takeaways: {e}")
+        # Process English content files
+        for lang_suffix, lang_code in [('_en', 'en'), ('_fr', 'fr')]:
+            # Key Takeaways
+            file_key = f'key_takeaways_file{lang_suffix}'
+            if file_key in request.files:
+                takeaways_file = request.files[file_key]
+                if takeaways_file.filename:
+                    content = takeaways_file.read().decode('utf-8')
+                    try:
+                        if takeaways_file.filename.endswith('.json'):
+                            json_data = json.loads(content)
+                            key_takeaways_data[lang_code] = parse_key_takeaways_json(json_data)
+                            logger.info(f"✓ Parsed {len(key_takeaways_data[lang_code])} key takeaways ({lang_code.upper()}) from JSON")
+                        elif takeaways_file.filename.endswith('.html') or takeaways_file.filename.endswith('.htm'):
+                            key_takeaways_data[lang_code] = parse_key_takeaways_html(content)
+                            logger.info(f"✓ Parsed {len(key_takeaways_data[lang_code])} key takeaways ({lang_code.upper()}) from HTML")
+                    except Exception as e:
+                        logger.error(f"Error parsing key takeaways ({lang_code}): {e}", exc_info=True)
+                        flash(f"Error parsing key takeaways ({lang_code}): {str(e)}", "warning")
 
-        if 'user_painpoints_file' in request.files:
-            painpoints_file = request.files['user_painpoints_file']
-            if painpoints_file.filename:
-                content = painpoints_file.read().decode('utf-8')
-                try:
-                    if painpoints_file.filename.endswith('.json'):
-                        json_data = json.loads(content)
-                        user_painpoints_data = parse_user_painpoints_json(json_data)
-                        logger.info(f"✓ Parsed {len(user_painpoints_data)} painpoints from JSON")
-                        if user_painpoints_data:
-                            logger.info(f"  First painpoint keys: {list(user_painpoints_data[0].keys())}")
-                    elif painpoints_file.filename.endswith('.html') or painpoints_file.filename.endswith('.htm'):
-                        user_painpoints_data = parse_user_painpoints_html(content)
-                        logger.info(f"✓ Parsed {len(user_painpoints_data)} painpoints from HTML")
-                except Exception as e:
-                    logger.warning(f"Error parsing user painpoints: {e}")
+            # User Painpoints
+            file_key = f'user_painpoints_file{lang_suffix}'
+            if file_key in request.files:
+                painpoints_file = request.files[file_key]
+                if painpoints_file.filename:
+                    content = painpoints_file.read().decode('utf-8')
+                    try:
+                        if painpoints_file.filename.endswith('.json'):
+                            json_data = json.loads(content)
+                            user_painpoints_data[lang_code] = parse_user_painpoints_json(json_data)
+                            logger.info(f"✓ Parsed {len(user_painpoints_data[lang_code])} painpoints ({lang_code.upper()}) from JSON")
+                        elif painpoints_file.filename.endswith('.html') or painpoints_file.filename.endswith('.htm'):
+                            user_painpoints_data[lang_code] = parse_user_painpoints_html(content)
+                            logger.info(f"✓ Parsed {len(user_painpoints_data[lang_code])} painpoints ({lang_code.upper()}) from HTML")
+                    except Exception as e:
+                        logger.error(f"Error parsing user painpoints ({lang_code}): {e}", exc_info=True)
+                        flash(f"Error parsing user painpoints ({lang_code}): {str(e)}", "warning")
 
-        if 'user_assertions_file' in request.files:
-            assertions_file = request.files['user_assertions_file']
-            if assertions_file.filename:
-                content = assertions_file.read().decode('utf-8')
-                try:
-                    if assertions_file.filename.endswith('.json'):
-                        json_data = json.loads(content)
-                        user_assertions_data = parse_user_assertions_json(json_data)
-                    elif assertions_file.filename.endswith('.html') or assertions_file.filename.endswith('.htm'):
-                        user_assertions_data = parse_user_assertions_html(content)
-                except Exception as e:
-                    logger.warning(f"Error parsing user assertions: {e}")
+            # User Assertions
+            file_key = f'user_assertions_file{lang_suffix}'
+            if file_key in request.files:
+                assertions_file = request.files[file_key]
+                if assertions_file.filename:
+                    content = assertions_file.read().decode('utf-8')
+                    try:
+                        if assertions_file.filename.endswith('.json'):
+                            json_data = json.loads(content)
+                            user_assertions_data[lang_code] = parse_user_assertions_json(json_data)
+                            logger.info(f"✓ Parsed user assertions ({lang_code.upper()}) from JSON")
+                        elif assertions_file.filename.endswith('.html') or assertions_file.filename.endswith('.htm'):
+                            user_assertions_data[lang_code] = parse_user_assertions_html(content)
+                            logger.info(f"✓ Parsed user assertions ({lang_code.upper()}) from HTML")
+                    except Exception as e:
+                        logger.error(f"Error parsing user assertions ({lang_code}): {e}", exc_info=True)
+                        flash(f"Error parsing user assertions ({lang_code}): {str(e)}", "warning")
 
-        # Save uploaded JSON file temporarily
+        # Process JSON files for both languages
         import tempfile
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp_file:
-            # Read file content
-            content = file.read().decode('utf-8')
-            tmp_file.write(content)
-            tmp_file_path = tmp_file.name
 
+        # Read English file content
+        content_en = file_en.read().decode('utf-8')
+        data_en = json.loads(content_en)
+        recording_id_value = data_en.get('recording', 'Unknown')
+
+        # Read French file content if provided
+        content_fr = None
+        data_fr = None
+        if has_french:
+            content_fr = file_fr.read().decode('utf-8')
+            data_fr = json.loads(content_fr)
+            # Verify both files have the same recording_id
+            recording_id_fr = data_fr.get('recording', '')
+            if recording_id_fr != recording_id_value:
+                flash(f"Recording IDs don't match: EN='{recording_id_value}', FR='{recording_id_fr}'", "danger")
+                return redirect(url_for('recordings.upload_recording'))
+
+        # If lived experience tester selected but no auditor name, look up tester name
+        if lived_experience_tester_id and not auditor_name:
+            project = current_app.db.get_project(project_id)
+            if project and project.lived_experience_testers:
+                for tester in project.lived_experience_testers:
+                    if tester.get('_id') == lived_experience_tester_id:
+                        # Format: "Name (Disability)"
+                        name = tester.get('name', 'Unknown')
+                        disability = tester.get('disability_type', '')
+                        auditor_name = f"{name} ({disability})" if disability else name
+                        break
+
+        # Prepare auditor info
+        auditor_info = {
+            'title': title or f"Recording {recording_id_value}",
+            'description': description,
+            'auditor_name': auditor_name,
+            'auditor_role': auditor_role,
+            'test_user_account': test_user_account,
+            'lived_experience_tester_id': lived_experience_tester_id,
+            'test_supervisor_id': test_supervisor_id,
+            'media_file_path': media_file_path,
+            'key_takeaways': key_takeaways_data,
+            'user_painpoints': user_painpoints_data,
+            'user_assertions': user_assertions_data
+        }
+
+        # Check if recording with this recording_id already exists
+        existing = current_app.db.get_recording_by_recording_id(recording_id_value)
+        if existing:
+            flash(f"Recording '{recording_id_value}' already exists. Please use a different recording ID.", "danger")
+            return redirect(url_for('recordings.upload_recording'))
+
+        # Process English issues
+        tmp_file_en = None
         try:
-            # Parse JSON to get recording_id
-            data = json.loads(content)
+            with tempfile.NamedTemporaryFile(mode='w', suffix='_en.json', delete=False) as tmp_file:
+                tmp_file.write(content_en)
+                tmp_file_en = tmp_file.name
 
-            # If lived experience tester selected but no auditor name, look up tester name
-            if lived_experience_tester_id and not auditor_name:
-                project = current_app.db.get_project(project_id)
-                if project and project.lived_experience_testers:
-                    for tester in project.lived_experience_testers:
-                        if tester.get('_id') == lived_experience_tester_id:
-                            # Format: "Name (Disability)"
-                            name = tester.get('name', 'Unknown')
-                            disability = tester.get('disability_type', '')
-                            auditor_name = f"{name} ({disability})" if disability else name
-                            break
-
-            # Prepare auditor info
-            auditor_info = {
-                'title': title or f"Recording {data.get('recording', 'Unknown')}",
-                'description': description,
-                'auditor_name': auditor_name,
-                'auditor_role': auditor_role,
-                'test_user_account': test_user_account,
-                'lived_experience_tester_id': lived_experience_tester_id,
-                'test_supervisor_id': test_supervisor_id,
-                'media_file_path': media_file_path,
-                'key_takeaways': key_takeaways_data,
-                'user_painpoints': user_painpoints_data,
-                'user_assertions': user_assertions_data
-            }
-
-            # Import the recording
             importer = DictaphoneImporter()
-            recording, issues = importer.import_from_file(
-                tmp_file_path,
+            recording, issues_en = importer.import_from_file(
+                tmp_file_en,
                 project_id=project_id,
                 page_urls=page_urls,
                 discovered_page_ids=discovered_page_ids,
@@ -368,18 +427,42 @@ def upload_recording():
                 task_description=task_description,
                 auditor_info=auditor_info,
                 recording_type=recording_type,
-                testing_scope=testing_scope
+                testing_scope=testing_scope,
+                language='en'
             )
 
-            # Check if recording with this recording_id already exists
-            existing = current_app.db.get_recording_by_recording_id(recording.recording_id)
-            if existing:
-                flash(f"Recording '{recording.recording_id}' already exists. Please use a different recording ID.", "danger")
-                return redirect(url_for('recordings.upload_recording'))
+            all_issues = issues_en
+
+            # Process French issues if provided
+            if has_french:
+                tmp_file_fr = None
+                try:
+                    with tempfile.NamedTemporaryFile(mode='w', suffix='_fr.json', delete=False) as tmp_file:
+                        tmp_file.write(content_fr)
+                        tmp_file_fr = tmp_file.name
+
+                    _, issues_fr = importer.import_from_file(
+                        tmp_file_fr,
+                        project_id=project_id,
+                        page_urls=page_urls,
+                        discovered_page_ids=discovered_page_ids,
+                        component_names=component_names,
+                        app_screens=app_screens,
+                        device_sections=device_sections,
+                        task_description=task_description,
+                        auditor_info=auditor_info,
+                        recording_type=recording_type,
+                        testing_scope=testing_scope,
+                        language='fr'
+                    )
+                    all_issues.extend(issues_fr)
+                finally:
+                    if tmp_file_fr:
+                        Path(tmp_file_fr).unlink(missing_ok=True)
 
             # Save to database
             recording_id = current_app.db.create_recording(recording)
-            issue_ids = current_app.db.create_recording_issues_bulk(issues)
+            issue_ids = current_app.db.create_recording_issues_bulk(all_issues)
 
             # Update project's recording_ids
             project = current_app.db.get_project(project_id)
@@ -388,12 +471,13 @@ def upload_recording():
                     project.recording_ids.append(recording_id)
                     current_app.db.update_project(project)
 
-            flash(f"Successfully imported recording '{recording.recording_id}' with {len(issues)} issues", "success")
+            flash(f"Successfully imported recording '{recording.recording_id}' with {len(all_issues)} issues ({len(issues_en)} EN" + (f", {len(issues_fr)} FR" if has_french else "") + ")", "success")
             return redirect(url_for('recordings.view_recording', recording_id=recording_id))
 
         finally:
-            # Clean up temp file
-            Path(tmp_file_path).unlink(missing_ok=True)
+            # Clean up temp files
+            if tmp_file_en:
+                Path(tmp_file_en).unlink(missing_ok=True)
 
     except json.JSONDecodeError as e:
         logger.error(f"Invalid JSON file: {e}")

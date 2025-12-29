@@ -24,6 +24,7 @@ from auto_a11y.web.routes import (
     discovered_pages_bp,
     automated_tests_bp
 )
+from auto_a11y.web.routes.demo import demo_bp
 
 logger = logging.getLogger(__name__)
 
@@ -121,6 +122,7 @@ def create_app(config):
     app.register_blueprint(drupal_sync_bp, url_prefix='/drupal')
     app.register_blueprint(discovered_pages_bp, url_prefix='')
     app.register_blueprint(automated_tests_bp, url_prefix='/automated_tests')
+    app.register_blueprint(demo_bp, url_prefix='/demo')
 
     # Custom Jinja filters
     @app.template_filter('error_code_only')

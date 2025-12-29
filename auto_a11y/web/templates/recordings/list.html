@@ -55,11 +55,24 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <h5 class="card-title">{{ recording.title }}</h5>
-                        <span class="badge bg-info">{{ recording.recording_type.value|replace('_', ' ')|title }}</span>
+                        <div>
+                            <span class="badge bg-info">{{ recording.recording_type.value|replace('_', ' ')|title }}</span>
+                        </div>
                     </div>
 
                     <h6 class="text-muted mb-3">
                         <i class="bi bi-file-earmark-text"></i> {{ recording.recording_id }}
+                        {% if recording.available_languages %}
+                        <span class="ms-2">
+                            {% for lang in recording.available_languages %}
+                                {% if lang == 'en' %}
+                                <span class="badge bg-secondary">EN</span>
+                                {% elif lang == 'fr' %}
+                                <span class="badge bg-secondary">FR</span>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                        {% endif %}
                     </h6>
 
                     {% if recording.auditor_name %}

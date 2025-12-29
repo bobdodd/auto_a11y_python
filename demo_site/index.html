@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assurance Québec Plus - Accueil</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header with navigation -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="images/quebec-logo.svg" alt="">
+                    <h1>Assurance Québec Plus</h1>
+                </div>
+            </div>
+
+            <!-- Navigation with inappropriate menu role -->
+            <nav role="menu" aria-label="Navigation principale">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="services.html">Assurances</a></li>
+                    <li><a href="#" aria-haspopup="true">Réclamations</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li class="language-switch">
+                        <a href="index.html">FR</a>
+                        <a href="index-en.html">EN</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main>
+        <!-- Hero carousel with auto-play and no controls (ErrTimersWithoutControls) -->
+        <div class="hero-carousel" id="carousel">
+            <div class="carousel-item active">
+                <img src="images/hero1.svg" alt="Protection complète pour votre famille">
+                <div class="carousel-caption">
+                    <h2>Protection Complète pour Votre Famille</h2>
+                    <p>We're committed to providing comprehensive insurance coverage for all Quebecers.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/hero2.svg" alt="Assurance habitation">
+                <div class="carousel-caption">
+                    <h2>Assurance Habitation et Auto</h2>
+                    <p>Protecting your home and vehicle with the best rates in Quebec.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/hero3.svg" alt="Services en ligne 24/7">
+                <div class="carousel-caption">
+                    <h2>Services en Ligne 24/7</h2>
+                    <p>Manage your policies and file claims online anytime, anywhere.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Loading spinner without screen reader announcement -->
+            <div class="loading-section">
+                <div class="spinner" aria-hidden="true"></div>
+                <p>Chargement de vos informations...</p>
+            </div>
+
+            <!-- Services section -->
+            <section class="services-section">
+                <!-- This should be h2 but using div with styling instead -->
+                <div class="fake-heading">Nos Produits d'Assurance</div>
+
+                <div class="services-grid">
+                    <div class="service-card">
+                        <img src="images/service1.svg" alt="Assurance auto">
+                        <div class="fake-heading-small">Assurance Auto</div>
+                        <p>Protégez votre véhicule avec nos plans flexible and affordable insurance options.</p>
+                        <a href="#" class="btn-primary">Obtenir une soumission</a>
+                    </div>
+
+                    <div class="service-card">
+                        <img src="images/service2.svg" alt="Assurance habitation">
+                        <div class="fake-heading-small">Assurance Habitation</div>
+                        <p>Couvrez votre maison et vos biens avec peace of mind and comprehensive protection.</p>
+                        <!-- Link to English PDF without language warning -->
+                        <a href="pdfs/guide-habitation-en.pdf" class="btn-primary">Guide d'assurance (PDF)</a>
+                    </div>
+
+                    <div class="service-card">
+                        <img src="images/service3.svg" alt="Assurance vie">
+                        <div class="fake-heading-small">Assurance Vie</div>
+                        <p>Sécurisez l'avenir de votre famille with our life insurance products tailored to your needs.</p>
+                        <a href="#" class="btn-primary">En savoir plus</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interactive map hidden with aria-hidden -->
+            <section class="map-section">
+                <h2>Trouvez un Bureau près de Chez Vous</h2>
+                <p>Localisez notre office closest to your location pour consultation en personne.</p>
+
+                <!-- Map hidden with aria-hidden but still keyboard focusable -->
+                <div class="map-container" aria-hidden="true">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2795.926340251352!2d-73.56850268444144!3d45.50866797910156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc91a56830b0d47%3A0xbb8000d663ab0e07!2sQuebec%20City%2C%20QC%2C%20Canada!5e0!3m2!1sen!2sus!4v1639000000000!5m2!1sen!2sus"
+                        width="100%"
+                        height="400"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy">
+                    </iframe>
+                    <div class="map-controls">
+                        <button>Zoom +</button>
+                        <button>Zoom -</button>
+                        <button>Ma position</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Desktop-only sidebar with color contrast issue -->
+            <aside class="desktop-only-sidebar">
+                <div class="fake-heading-small">Accès Rapide</div>
+                <ul class="sidebar-links">
+                    <li><a href="#" style="color: #999; background: #ddd;">Faire une réclamation</a></li>
+                    <li><a href="#" style="color: #999; background: #ddd;">Mes polices</a></li>
+                    <li><a href="#" style="color: #999; background: #ddd;">Payer ma prime</a></li>
+                </ul>
+            </aside>
+
+            <!-- Toolbar with icon button without accessible name -->
+            <div class="toolbar">
+                <button class="icon-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" aria-label="Rechercher">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" aria-label="Imprimer">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="fake-heading-small">À propos</div>
+                    <ul>
+                        <li><a href="#">Notre compagnie</a></li>
+                        <li><a href="#">Équipe</a></li>
+                        <li><a href="#">Carrières</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="fake-heading-small">Produits</div>
+                    <ul>
+                        <li><a href="#">Assurance auto</a></li>
+                        <li><a href="#">Assurance habitation</a></li>
+                        <li><a href="#">Assurance vie</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="fake-heading-small">Contact</div>
+                    <ul>
+                        <li><a href="#">Service à la clientèle</a></li>
+                        <li><a href="#">Bureaux</a></li>
+                        <li><a href="#">Urgences 24/7</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Assurance Québec Plus. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/carousel.js"></script>
+    <script src="js/spinner.js"></script>
+</body>
+</html>

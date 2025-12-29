@@ -88,14 +88,22 @@ def enrich_test_result_with_catalog(test_result):
                 violation.metadata['what_generic'] = catalog_info['description']  # Always store generic for grouped headers
                 violation.metadata['who'] = catalog_info['who_it_affects']
 
-                # Handle WCAG criteria properly
-                wcag = catalog_info.get('wcag', [])
-                if isinstance(wcag, list) and wcag:
-                    violation.metadata['wcag_full'] = wcag
-                elif isinstance(wcag, str) and wcag != 'N/A':
-                    violation.metadata['wcag_full'] = [wcag]
+                # Handle WCAG criteria properly - use wcag_full for full translated names
+                wcag_full_raw = catalog_info.get('wcag_full', '')
+                if isinstance(wcag_full_raw, str) and wcag_full_raw and wcag_full_raw != 'N/A':
+                    # Split comma-separated string into list
+                    violation.metadata['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                elif isinstance(wcag_full_raw, list):
+                    violation.metadata['wcag_full'] = wcag_full_raw
                 else:
-                    violation.metadata['wcag_full'] = []
+                    # Fallback to wcag codes if wcag_full not available
+                    wcag = catalog_info.get('wcag', [])
+                    if isinstance(wcag, list) and wcag:
+                        violation.metadata['wcag_full'] = wcag
+                    elif isinstance(wcag, str) and wcag != 'N/A':
+                        violation.metadata['wcag_full'] = [wcag]
+                    else:
+                        violation.metadata['wcag_full'] = []
                 violation.metadata['full_remediation'] = catalog_info['how_to_fix']
                 violation.metadata['impact_detail'] = catalog_info['impact']
     
@@ -122,14 +130,20 @@ def enrich_test_result_with_catalog(test_result):
                 warning.metadata['why'] = catalog_info['why_it_matters']
                 warning.metadata['who'] = catalog_info['who_it_affects']
                 warning.metadata['how'] = catalog_info['how_to_fix']
-                # Handle WCAG criteria properly
-                wcag = catalog_info.get('wcag', [])
-                if isinstance(wcag, list) and wcag:
-                    warning.metadata['wcag_full'] = wcag
-                elif isinstance(wcag, str) and wcag != 'N/A':
-                    warning.metadata['wcag_full'] = [wcag]
+                # Handle WCAG criteria properly - use wcag_full for full translated names
+                wcag_full_raw = catalog_info.get('wcag_full', '')
+                if isinstance(wcag_full_raw, str) and wcag_full_raw and wcag_full_raw != 'N/A':
+                    warning.metadata['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                elif isinstance(wcag_full_raw, list):
+                    warning.metadata['wcag_full'] = wcag_full_raw
                 else:
-                    warning.metadata['wcag_full'] = []
+                    wcag = catalog_info.get('wcag', [])
+                    if isinstance(wcag, list) and wcag:
+                        warning.metadata['wcag_full'] = wcag
+                    elif isinstance(wcag, str) and wcag != 'N/A':
+                        warning.metadata['wcag_full'] = [wcag]
+                    else:
+                        warning.metadata['wcag_full'] = []
                 warning.metadata['full_remediation'] = catalog_info['how_to_fix']
                 warning.metadata['impact_detail'] = catalog_info['impact']
     
@@ -156,14 +170,20 @@ def enrich_test_result_with_catalog(test_result):
                 info.metadata['why'] = catalog_info['why_it_matters']
                 info.metadata['who'] = catalog_info['who_it_affects']
                 info.metadata['how'] = catalog_info['how_to_fix']
-                # Handle WCAG criteria properly
-                wcag = catalog_info.get('wcag', [])
-                if isinstance(wcag, list) and wcag:
-                    info.metadata['wcag_full'] = wcag
-                elif isinstance(wcag, str) and wcag != 'N/A':
-                    info.metadata['wcag_full'] = [wcag]
+                # Handle WCAG criteria properly - use wcag_full for full translated names
+                wcag_full_raw = catalog_info.get('wcag_full', '')
+                if isinstance(wcag_full_raw, str) and wcag_full_raw and wcag_full_raw != 'N/A':
+                    info.metadata['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                elif isinstance(wcag_full_raw, list):
+                    info.metadata['wcag_full'] = wcag_full_raw
                 else:
-                    info.metadata['wcag_full'] = []
+                    wcag = catalog_info.get('wcag', [])
+                    if isinstance(wcag, list) and wcag:
+                        info.metadata['wcag_full'] = wcag
+                    elif isinstance(wcag, str) and wcag != 'N/A':
+                        info.metadata['wcag_full'] = [wcag]
+                    else:
+                        info.metadata['wcag_full'] = []
                 info.metadata['full_remediation'] = catalog_info['how_to_fix']
                 info.metadata['impact_detail'] = catalog_info['impact']
     
@@ -194,16 +214,22 @@ def enrich_test_result_with_catalog(test_result):
                 discovery.metadata['why'] = catalog_info['why_it_matters']
                 discovery.metadata['who'] = catalog_info['who_it_affects']
                 discovery.metadata['how'] = catalog_info['how_to_fix']
-                
-                # Handle WCAG criteria properly - may be list, string, or N/A
-                wcag = catalog_info.get('wcag', [])
-                if isinstance(wcag, list) and wcag:
-                    discovery.metadata['wcag_full'] = wcag
-                elif isinstance(wcag, str) and wcag != 'N/A':
-                    discovery.metadata['wcag_full'] = [wcag]
+
+                # Handle WCAG criteria properly - use wcag_full for full translated names
+                wcag_full_raw = catalog_info.get('wcag_full', '')
+                if isinstance(wcag_full_raw, str) and wcag_full_raw and wcag_full_raw != 'N/A':
+                    discovery.metadata['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                elif isinstance(wcag_full_raw, list):
+                    discovery.metadata['wcag_full'] = wcag_full_raw
                 else:
-                    discovery.metadata['wcag_full'] = []
-                    
+                    wcag = catalog_info.get('wcag', [])
+                    if isinstance(wcag, list) and wcag:
+                        discovery.metadata['wcag_full'] = wcag
+                    elif isinstance(wcag, str) and wcag != 'N/A':
+                        discovery.metadata['wcag_full'] = [wcag]
+                    else:
+                        discovery.metadata['wcag_full'] = []
+
                 discovery.metadata['full_remediation'] = catalog_info['how_to_fix']
                 discovery.metadata['impact_detail'] = catalog_info['impact']
                 logger.debug(f"Enriched discovery item with catalog data: {discovery.metadata.get('title')}")

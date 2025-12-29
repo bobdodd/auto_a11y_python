@@ -23,6 +23,7 @@ class RecordingIssue:
     recording_id: str  # Link to Recording.recording_id
     title: str
     short_title: Optional[str] = None
+    language: str = "en"  # Language of this issue: "en" or "fr"
 
     # Issue details (Dictaphone format)
     what: str = ""  # Description of the issue
@@ -94,6 +95,7 @@ class RecordingIssue:
             'recording_id': self.recording_id,
             'title': self.title,
             'short_title': self.short_title,
+            'language': self.language,
             'what': self.what,
             'why': self.why,
             'who': self.who,
@@ -162,6 +164,7 @@ class RecordingIssue:
             recording_id=data['recording_id'],
             title=data['title'],
             short_title=data.get('short_title'),
+            language=data.get('language', 'en'),
             what=data.get('what', ''),
             why=data.get('why', ''),
             who=data.get('who', ''),
@@ -200,7 +203,8 @@ class RecordingIssue:
         cls,
         issue_data: dict,
         recording_id: str,
-        project_id: Optional[str] = None
+        project_id: Optional[str] = None,
+        language: str = 'en'
     ) -> 'RecordingIssue':
         """
         Create RecordingIssue from Dictaphone JSON issue format
@@ -248,6 +252,7 @@ class RecordingIssue:
             recording_id=recording_id,
             title=issue_data['title'],
             short_title=issue_data.get('short_title'),
+            language=language,
             what=issue_data.get('what', ''),
             why=issue_data.get('why', ''),
             who=issue_data.get('who', ''),

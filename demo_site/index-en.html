@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quebec Insurance Plus - Home</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header with navigation -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="images/quebec-logo.svg" alt="">
+                    <h1>Quebec Insurance Plus</h1>
+                </div>
+
+                <!-- Language switcher - buried deep in tab order -->
+            </div>
+
+            <!-- Navigation with inappropriate menu role -->
+            <nav role="menu" aria-label="Main navigation">
+                <ul>
+                    <li><a href="index-en.html">Home</a></li>
+                    <li><a href="services-en.html">Services</a></li>
+                    <li><a href="#" aria-haspopup="true">Resources</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li class="language-switch">
+                        <a href="index.html">FR</a>
+                        <a href="index-en.html">EN</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main>
+        <!-- Hero carousel with auto-play and no controls -->
+        <div class="hero-carousel" id="carousel">
+            <div class="carousel-item active">
+                <img src="images/hero1.svg" alt="Digital services for all citizens">
+                <div class="carousel-caption">
+                    <h2>Accessible Digital Services</h2>
+                    <p>We're committed to digital excellence and accessibility for all citizens.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/hero2.svg" alt="Innovation and technology">
+                <div class="carousel-caption">
+                    <h2>Innovation and Technology</h2>
+                    <p>Leading the way in digital transformation.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="images/hero3.svg" alt="Online services">
+                <div class="carousel-caption">
+                    <h2>Online Services</h2>
+                    <p>Access government services 24/7 from anywhere.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Loading spinner without screen reader announcement -->
+            <div class="loading-section">
+                <div class="spinner" aria-hidden="true"></div>
+                <p>Loading services...</p>
+            </div>
+
+            <!-- Services section -->
+            <section class="services-section">
+                <!-- This should be h2 but using div with styling instead -->
+                <div class="fake-heading">Our Main Services</div>
+
+                <div class="services-grid">
+                    <div class="service-card">
+                        <img src="images/service1.svg" alt="Online services">
+                        <div class="fake-heading-small">Online Services</div>
+                        <p>Access your government services online and manage your account.</p>
+                        <a href="#" class="btn-primary">Learn more</a>
+                    </div>
+
+                    <div class="service-card">
+                        <img src="images/service2.svg" alt="Documentation">
+                        <div class="fake-heading-small">Documentation and Guides</div>
+                        <p>Download important guides and documents for your needs.</p>
+                        <a href="pdfs/guide-services-en.pdf" class="btn-primary">Download guide (PDF)</a>
+                    </div>
+
+                    <div class="service-card">
+                        <img src="images/service3.svg" alt="Support">
+                        <div class="fake-heading-small">Help Center</div>
+                        <p>Our team is available to assist you with any questions.</p>
+                        <a href="#" class="btn-primary">Contact support</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interactive map hidden with aria-hidden -->
+            <section class="map-section">
+                <h2>Find a Service Office</h2>
+                <p>Locate the government office closest to your location.</p>
+
+                <!-- Map hidden with aria-hidden but still keyboard focusable -->
+                <div class="map-container" aria-hidden="true">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2795.926340251352!2d-73.56850268444144!3d45.50866797910156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc91a56830b0d47%3A0xbb8000d663ab0e07!2sQuebec%20City%2C%20QC%2C%20Canada!5e0!3m2!1sen!2sus!4v1639000000000!5m2!1sen!2sus"
+                        width="100%"
+                        height="400"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy">
+                    </iframe>
+                    <div class="map-controls">
+                        <button>Zoom +</button>
+                        <button>Zoom -</button>
+                        <button>My location</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Desktop-only sidebar with color contrast issue -->
+            <aside class="desktop-only-sidebar">
+                <div class="fake-heading-small">Quick Access</div>
+                <ul class="sidebar-links">
+                    <li><a href="#" style="color: #999; background: #ddd;">Online forms</a></li>
+                    <li><a href="#" style="color: #999; background: #ddd;">My file</a></li>
+                    <li><a href="#" style="color: #999; background: #ddd;">Payments</a></li>
+                    <li class="language-switch">
+                        <a href="index.html">FR</a>
+                        <a href="index-en.html">EN</a>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- Toolbar with icon button without accessible name -->
+            <div class="toolbar">
+                <button class="icon-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" aria-label="Search">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" aria-label="Print">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="fake-heading-small">About</div>
+                    <ul>
+                        <li><a href="#">Mission</a></li>
+                        <li><a href="#">Team</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li class="language-switch">
+                        <a href="index.html">FR</a>
+                        <a href="index-en.html">EN</a>
+                    </li>
+                </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="fake-heading-small">Services</div>
+                    <ul>
+                        <li><a href="#">For citizens</a></li>
+                        <li><a href="#">For businesses</a></li>
+                        <li><a href="#">For municipalities</a></li>
+                        <li class="language-switch">
+                        <a href="index.html">FR</a>
+                        <a href="index-en.html">EN</a>
+                    </li>
+                </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="fake-heading-small">Contact</div>
+                    <ul>
+                        <li><a href="#">Technical support</a></li>
+                        <li><a href="#">Regional offices</a></li>
+                        <li><a href="#">Emergency</a></li>
+                        <li class="language-switch">
+                        <a href="index.html">FR</a>
+                        <a href="index-en.html">EN</a>
+                    </li>
+                </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Assurance Québec Plus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/carousel.js"></script>
+    <script src="js/spinner.js"></script>
+</body>
+</html>

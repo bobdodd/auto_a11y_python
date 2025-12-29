@@ -17,6 +17,7 @@ from typing import Dict, List, Tuple
 from datetime import datetime, timedelta
 import uuid
 import time
+import concurrent.futures
 
 # Add the project root to the path
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
@@ -47,6 +48,7 @@ class FixtureTestRunner:
         self.website_manager = WebsiteManager(self.db, browser_config)
         self.test_runner = TestRunner(self.db, browser_config)
         self.results = []
+        self.result_futs = []
         self.test_run_id = str(uuid.uuid4())  # Unique ID for this test run
 
         # Check if AI analysis is available
@@ -517,25 +519,39 @@ class FixtureTestRunner:
 
         # Test fixtures by category
         fixture_num = 0
+#        for category, category_fixtures in sorted(categories.items()):
+#
+#            for fixture_path, expected_code in category_fixtures:
+#                fixture_num += 1
+#                result = await self.test_fixture(fixture_path, expected_code, fixture_num, len(fixtures))
+#                self.results.append(result)
+#
+#                if result["success"]:
+#                    success_count += 1
+#                else:
+#                    failure_count += 1
+#
+#                # Show running totals every 10 fixtures
+#                if fixture_num % 10 == 0:
+#                    print(f"\n   ➡  Progress: {fixture_num}/{len(fixtures)} tested | ✅ {success_count} passed | ❌ {failure_count} failed")
         for category, category_fixtures in sorted(categories.items()):
             print(f"\n{'=' * 60}")
             print(f"📁 Category: {category} ({len(category_fixtures)} fixtures)")
             print(f"{'=' * 60}")
-
-            for fixture_path, expected_code in category_fixtures:
-                fixture_num += 1
-                result = await self.test_fixture(fixture_path, expected_code, fixture_num, len(fixtures))
-                self.results.append(result)
-
+            async with asyncio.TaskGroup() as tg:
+                futs = []
+                for fixture_path, expected_code in category_fixtures:
+                    fixture_num += 1
+                    fut = tg.create_task(self.test_fixture(fixture_path, expected_code, fixture_num, len(fixtures)))
+                    futs.append(fut)
+            
+            for fut in futs:
+                result = fut.result()
                 if result["success"]:
-                    success_count += 1
+                  success_count += 1
                 else:
-                    failure_count += 1
-
-                # Show running totals every 10 fixtures
-                if fixture_num % 10 == 0:
-                    print(f"\n   ➡️  Progress: {fixture_num}/{len(fixtures)} tested | ✅ {success_count} passed | ❌ {failure_count} failed")
-        
+                  failure_count += 1
+                self.results.append(result)
         # Calculate per-error-code success
         # An error code is only considered passing if ALL its fixtures pass
         error_code_status = {}

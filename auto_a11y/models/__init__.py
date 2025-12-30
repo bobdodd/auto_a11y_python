@@ -14,6 +14,9 @@ from .page_setup_script import (
     ScriptExecutionSession, ScriptExecutionRecord, ConditionCheck,
     PageTestState
 )
+from .test_state_matrix import (
+    TestStateMatrix, ScriptStateDefinition, StateCombination
+)
 from .website_user import WebsiteUser, LoginConfig, AuthenticationMethod
 from .project_user import ProjectUser
 from .recording import Recording, RecordingType, Timecode, WCAGReference
@@ -32,6 +35,7 @@ __all__ = [
     'ActionType', 'ScriptScope', 'ExecutionTrigger',
     'ScriptExecutionSession', 'ScriptExecutionRecord', 'ConditionCheck',
     'PageTestState',
+    'TestStateMatrix', 'ScriptStateDefinition', 'StateCombination',
     'WebsiteUser', 'LoginConfig', 'AuthenticationMethod',
     'ProjectUser',
     'Recording', 'RecordingType', 'Timecode', 'WCAGReference',

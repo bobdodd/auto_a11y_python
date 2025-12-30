@@ -116,8 +116,12 @@ class MultiStateTestRunner:
                     await page.goto(current_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
                     logger.info(f"Page navigation completed successfully")
 
-                    # Wait a moment for any dynamic content (like cookie notices) to appear
-                    await asyncio.sleep(0.5)
+                    # Wait for page to be fully interactive and cookie notice to appear
+                    # Increased wait time to ensure page is stable before script execution
+                    await asyncio.sleep(2.0)
+
+                    # Ensure body is present and interactive
+                    await page.waitForSelector('body', {'timeout': 5000})
                 except Exception as e:
                     logger.error(f"Error during browser state clearing/navigation: {e}")
                     # Skip this script and continue with next one

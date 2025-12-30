@@ -419,12 +419,21 @@ class ScriptExecutor:
 
         # Clear cookies and/or localStorage if configured
         if script.clear_cookies_before or script.clear_local_storage_before:
-            await self._clear_browser_state(page, script)
+            try:
+                await self._clear_browser_state(page, script)
 
-            # Reload page to apply the cleared state
-            logger.info(f"Reloading page after clearing browser state")
-            await page.reload({'waitUntil': 'networkidle2'})
-            logger.info(f"Page reloaded successfully")
+                # Reload page to apply the cleared state
+                logger.info(f"Reloading page after clearing browser state")
+                await page.reload({'waitUntil': 'networkidle2', 'timeout': 30000})
+                logger.info(f"Page reloaded successfully")
+            except Exception as e:
+                logger.error(f"Error during browser state clearing/reload: {e}")
+                # Return error result instead of continuing
+                return {
+                    'success': False,
+                    'error': f'Failed to clear browser state and reload: {str(e)}',
+                    'duration_ms': 0
+                }
 
         # Execute script
         start_time = time.time()

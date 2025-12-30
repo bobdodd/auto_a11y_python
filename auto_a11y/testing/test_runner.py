@@ -798,42 +798,53 @@ class TestRunner:
         pages: List[Page],
         parallel: int = 1,
         take_screenshots: bool = True,
-        progress_callback: Optional[callable] = None
+        progress_callback: Optional[callable] = None,
+        website_user_id: Optional[str] = None
     ) -> List[TestResult]:
         """
-        Test multiple pages
-        
+        Test multiple pages with multi-state support
+
         Args:
             pages: Pages to test
             parallel: Number of parallel tests
             take_screenshots: Whether to capture screenshots
             progress_callback: Progress callback function
-            
+            website_user_id: Optional user ID for authenticated testing
+
         Returns:
-            List of test results
+            List of test results (flattened from all states)
         """
         results = []
         total = len(pages)
         completed = 0
-        
+
         # Process pages in batches
         for i in range(0, total, parallel):
             batch = pages[i:i+parallel]
-            
-            # Test batch in parallel
+
+            # Test batch in parallel - use test_page_multi_state for each page
             tasks = [
-                self.test_page(page, take_screenshots)
+                self.test_page_multi_state(
+                    page=page,
+                    enable_multi_state=True,
+                    take_screenshot=take_screenshots,
+                    website_user_id=website_user_id
+                )
                 for page in batch
             ]
             
             batch_results = await asyncio.gather(*tasks, return_exceptions=True)
-            
-            # Process results
-            for result in batch_results:
-                if isinstance(result, Exception):
-                    logger.error(f"Test failed with exception: {result}")
+
+            # Process results - test_page_multi_state returns List[TestResult]
+            for result_list in batch_results:
+                if isinstance(result_list, Exception):
+                    logger.error(f"Test failed with exception: {result_list}")
+                elif isinstance(result_list, list):
+                    # Flatten the list of results from multi-state testing
+                    results.extend(result_list)
                 else:
-                    results.append(result)
+                    # Single result (shouldn't happen with multi_state, but handle it)
+                    results.append(result_list)
             
             completed += len(batch)
             

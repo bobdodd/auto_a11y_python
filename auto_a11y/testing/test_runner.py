@@ -127,20 +127,25 @@ class TestRunner:
                         if not user.enabled:
                             logger.warning(f"User {user.username} is disabled, skipping authentication")
                         else:
-                            logger.info(f"Authenticating as user: {user.username} (roles: {user.role_display})")
-                            login_result = await self.login_automation.perform_login(
-                                browser_page,
-                                user,
-                                timeout=30000
-                            )
-
-                            if login_result['success']:
-                                logger.info(f"Successfully authenticated as {user.username} in {login_result['duration_ms']}ms")
-                                authenticated_user = user
-                                self._logged_in_user = user
+                            # Check if already logged in as this user
+                            if self._logged_in_user and self._logged_in_user.id == user.id:
+                                logger.info(f"Already authenticated as {user.username}, reusing session")
+                                authenticated_user = self._logged_in_user
                             else:
-                                logger.error(f"Authentication failed: {login_result['error']}")
-                                # Continue with testing even if login fails, but record the failure
+                                logger.info(f"Authenticating as user: {user.username} (roles: {user.role_display})")
+                                login_result = await self.login_automation.perform_login(
+                                    browser_page,
+                                    user,
+                                    timeout=30000
+                                )
+
+                                if login_result['success']:
+                                    logger.info(f"Successfully authenticated as {user.username} in {login_result['duration_ms']}ms")
+                                    authenticated_user = user
+                                    self._logged_in_user = user
+                                else:
+                                    logger.error(f"Authentication failed: {login_result['error']}")
+                                    # Continue with testing even if login fails, but record the failure
                     else:
                         logger.warning(f"User ID {website_user_id} not found")
 

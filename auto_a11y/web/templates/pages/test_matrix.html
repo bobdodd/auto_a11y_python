@@ -224,14 +224,14 @@
                         <tr>
                             <th class="corner">{{ _('Row / Column') }}</th>
                             {% for col_header in col_headers %}
-                            <th>{{ col_header.replace('_', ' ').title() }}</th>
+                            <th>{{ state_labels.get(col_header, col_header) }}</th>
                             {% endfor %}
                         </tr>
                     </thead>
                     <tbody>
                         {% for row_header in row_headers %}
                         <tr>
-                            <th class="row-header">{{ row_header.replace('_', ' ').title() }}</th>
+                            <th class="row-header">{{ state_labels.get(row_header, row_header) }}</th>
                             {% for col_header in col_headers %}
                             <td class="matrix-cell {% if matrix.is_combination_enabled(row_header, col_header) %}enabled{% else %}disabled{% endif %}"
                                 data-row="{{ row_header }}"

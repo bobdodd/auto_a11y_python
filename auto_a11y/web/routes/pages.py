@@ -710,6 +710,14 @@ def configure_test_matrix(page_id):
     # Get row and column headers
     row_headers, col_headers = matrix.get_matrix_dimensions() if matrix.scripts else ([], [])
 
+    # Create mapping from state IDs to human-readable labels
+    state_labels = {}
+    for script_def in matrix.scripts:
+        for state_id in script_def.get_state_ids():
+            # state_id is like "script_id_before" or "script_id_after"
+            state = "Before" if state_id.endswith("_before") else "After"
+            state_labels[state_id] = f"{script_def.script_name} ({state})"
+
     # Get enabled combinations count
     enabled_combinations = matrix.get_enabled_combinations() if matrix.scripts else []
     total_possible = 2 ** len(matrix.scripts) if matrix.scripts else 0
@@ -722,5 +730,6 @@ def configure_test_matrix(page_id):
                          testable_scripts=testable_scripts,
                          row_headers=row_headers,
                          col_headers=col_headers,
+                         state_labels=state_labels,
                          enabled_count=len(enabled_combinations),
                          total_possible=total_possible)

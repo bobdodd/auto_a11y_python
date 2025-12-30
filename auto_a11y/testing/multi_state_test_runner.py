@@ -4,6 +4,7 @@ Multi-state test runner for page setup scripts
 Executes accessibility tests across multiple page states.
 """
 
+import asyncio
 import logging
 from typing import List, Dict, Any, Optional
 from datetime import datetime
@@ -110,6 +111,9 @@ class MultiStateTestRunner:
                     logger.info(f"Navigating to {current_url} after clearing browser state")
                     await page.goto(current_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
                     logger.info(f"Page navigation completed successfully")
+
+                    # Wait a moment for any dynamic content (like cookie notices) to appear
+                    await asyncio.sleep(0.5)
                 except Exception as e:
                     logger.error(f"Error during browser state clearing/navigation: {e}")
                     # Skip this script and continue with next one

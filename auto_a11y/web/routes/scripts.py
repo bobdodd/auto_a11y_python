@@ -124,10 +124,9 @@ def create_page_script(page_id):
     ]
 
     trigger_options = [
-        {'value': ExecutionTrigger.ALWAYS.value, 'label': 'Always (Every Test)', 'description': 'Runs every time this page is tested'},
-        {'value': ExecutionTrigger.ONCE_PER_PAGE.value, 'label': 'Once Per Page', 'description': 'Runs every time this page is tested'},
-        {'value': ExecutionTrigger.ONCE_PER_PAGE_FIRST_VISIT.value, 'label': 'Once Per Page (First Visit Only)', 'description': 'Runs only on the first test of this page in a session'},
-        {'value': ExecutionTrigger.CONDITIONAL.value, 'label': 'Conditional (If Element Exists)', 'description': 'Runs only if the condition selector exists'}
+        {'value': ExecutionTrigger.ONCE_PER_PAGE.value, 'label': 'On This Page (Every Test)', 'description': 'Runs every time this page is tested'},
+        {'value': ExecutionTrigger.ONCE_PER_PAGE_FIRST_VISIT.value, 'label': 'On This Page (First Visit Only)', 'description': 'Runs only on the first test of this page in a session'},
+        {'value': ExecutionTrigger.CONDITIONAL.value, 'label': 'Conditional (If Element Exists)', 'description': 'Runs only if the condition selector exists on this page'}
     ]
 
     scope_options = [
@@ -237,6 +236,9 @@ def create_website_script(website_id):
     scope_options = [
         {'value': ScriptScope.WEBSITE.value, 'label': 'Website-Level', 'description': 'Applies to all pages in this website'},
     ]
+
+    # Website-level scripts already have appropriate trigger options defined above
+    # No changes needed here
 
     return render_template('scripts/create.html',
                          page=None,  # No specific page
@@ -380,13 +382,21 @@ def edit_script(script_id):
         {'value': ActionType.SCREENSHOT.value, 'label': 'Take Screenshot'}
     ]
 
-    trigger_options = [
-        {'value': ExecutionTrigger.ONCE_PER_SESSION.value, 'label': 'Once Per Session', 'description': 'Runs once at the start of testing'},
-        {'value': ExecutionTrigger.ONCE_PER_PAGE.value, 'label': 'Once Per Page', 'description': 'Runs before testing each page'},
-        {'value': ExecutionTrigger.ONCE_PER_PAGE_FIRST_VISIT.value, 'label': 'Once Per Page (First Visit Only)', 'description': 'Runs only on the first test of this page in a session'},
-        {'value': ExecutionTrigger.ALWAYS.value, 'label': 'Always (Every Test)', 'description': 'Runs every time a page is tested'},
-        {'value': ExecutionTrigger.CONDITIONAL.value, 'label': 'Conditional', 'description': 'Runs only if element exists'}
-    ]
+    # Provide different trigger options based on script scope
+    if script.scope == ScriptScope.PAGE:
+        trigger_options = [
+            {'value': ExecutionTrigger.ONCE_PER_PAGE.value, 'label': 'On This Page (Every Test)', 'description': 'Runs every time this page is tested'},
+            {'value': ExecutionTrigger.ONCE_PER_PAGE_FIRST_VISIT.value, 'label': 'On This Page (First Visit Only)', 'description': 'Runs only on the first test of this page in a session'},
+            {'value': ExecutionTrigger.CONDITIONAL.value, 'label': 'Conditional (If Element Exists)', 'description': 'Runs only if the condition selector exists on this page'}
+        ]
+    else:  # Website-level scripts
+        trigger_options = [
+            {'value': ExecutionTrigger.ONCE_PER_SESSION.value, 'label': 'Once Per Session', 'description': 'Runs once at the start of testing'},
+            {'value': ExecutionTrigger.ONCE_PER_PAGE.value, 'label': 'Once Per Page', 'description': 'Runs before testing each page'},
+            {'value': ExecutionTrigger.ONCE_PER_PAGE_FIRST_VISIT.value, 'label': 'Once Per Page (First Visit Only)', 'description': 'Runs only on the first test of each page in a session'},
+            {'value': ExecutionTrigger.ALWAYS.value, 'label': 'Always (Every Test)', 'description': 'Runs every time a page is tested'},
+            {'value': ExecutionTrigger.CONDITIONAL.value, 'label': 'Conditional', 'description': 'Runs only if element exists'}
+        ]
 
     scope_options = [
         {'value': ScriptScope.PAGE.value, 'label': 'Page-Level', 'description': 'Runs only on this specific page'},

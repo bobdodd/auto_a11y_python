@@ -57,7 +57,7 @@ class LoginAutomation:
             # Update user's login status in database
             duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)
             user.mark_login_attempt(result['success'], result.get('error'))
-            self.db.update_website_user(user)
+            self.db.update_project_user(user)
 
             result['duration_ms'] = duration_ms
             return result
@@ -69,7 +69,7 @@ class LoginAutomation:
 
             # Update user's login status
             user.mark_login_attempt(False, error_msg)
-            self.db.update_website_user(user)
+            self.db.update_project_user(user)
 
             return {
                 'success': False,

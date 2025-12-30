@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Quebec Insurance Plus</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="images/quebec-logo.svg" alt="">
+                    <span class="site-name">Quebec Insurance Plus</span>
+                </div>
+            </div>
+
+            <nav role="menu" aria-label="Main navigation">
+                <ul>
+                    <li><a href="index-en.html">Home</a></li>
+                    <li><a href="services-en.html">Insurance</a></li>
+                    <li><a href="#" aria-haspopup="true">Claims</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li class="language-switch">
+                        <a href="login.html">FR</a>
+                        <a href="login-en.html">EN</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h1 id="main-content" tabindex="-1">Login to your account</h1>
+
+        <div class="container">
+            <div class="login-container">
+                <div class="login-box">
+                    <h2>Access your customer portal</h2>
+                    <p>Gérez vos polices, faites des réclamations et accédez à vos documents en ligne.</p>
+
+
+                    <!-- Demo credentials for testing -->
+                    <div class="demo-credentials">
+                        <strong>Demo Credentials:</strong><br>
+                        Email: <code>marie.tremblay@example.com</code><br>
+                        Password: <code>assurance2025</code>
+                    </div>
+                    <form action="/demo/login" method="post" class="login-form">
+                        <!-- Error message display -->
+                        <div id="error-container"></div>
+                        <!-- Email field with missing label (intentional issue) -->
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Email address" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+
+                        <!-- Remember me checkbox with poor contrast label -->
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember" style="color: #999;">Remember me</label>
+                        </div>
+
+                        <button type="submit" class="btn-primary btn-full">Sign in</button>
+
+                        <div class="form-links">
+                            <a href="#">Forgot password?</a>
+                            <a href="#">Create an account</a>
+                        </div>
+                    </form>
+
+                    <div class="security-notice">
+                        <strong>Important:</strong> Ne partagez jamais votre mot de passe. We will never ask for your password by email or phone.
+                    </div>
+                </div>
+
+                <div class="login-benefits">
+                    <div class="fake-heading">Benefits of your customer portal</div>
+                    <ul>
+                        <li>Visualisez toutes vos polices au même endroit</li>
+                        <li>File claims online 24/7</li>
+                        <li>Téléchargez vos documents et preuves d'assurance</li>
+                        <li>Update your personal information</li>
+                        <li>Accédez à votre historique de paiements</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="fake-heading-small">About</div>
+                    <ul>
+                        <li><a href="#">Our Mission</a></li>
+                        <li><a href="#">Team</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="fake-heading-small">Products</div>
+                    <ul>
+                        <li><a href="#">Auto Insurance</a></li>
+                        <li><a href="#">Home Insurance</a></li>
+                        <li><a href="#">Life Insurance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="fake-heading-small">Customer Service</div>
+                    <ul>
+                        <li><a href="#">Technical Support</a></li>
+                        <li><a href="#">Regional Offices</a></li>
+                        <li><a href="#">Emergency</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Quebec Insurance Plus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Display error message if login failed
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("error") === "1") {
+            document.getElementById("error-container").innerHTML = 
+                '<div class="error-message">Incorrect email or password. Please try again.</div>';
+        }
+    </script>
+</body>
+</html>

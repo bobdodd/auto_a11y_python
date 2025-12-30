@@ -95,8 +95,15 @@ class ScrapingEngine:
         base_url = self._normalize_url(website.url)
         parsed_base = urlparse(base_url)
         base_domain = parsed_base.netloc
-        base_path = parsed_base.path.rstrip('/')  # Base path without trailing slash
-        
+
+        # Extract base path - if URL points to a file, get its directory
+        base_path = parsed_base.path.rstrip('/')
+        if base_path and '.' in base_path.split('/')[-1]:
+            # Last component has an extension (like index.html), strip it to get directory
+            base_path = '/'.join(base_path.split('/')[:-1])
+
+        logger.info(f"Discovery starting from {base_url} (base_domain: {base_domain}, base_path: {base_path})")
+
         # Initialize queue with starting URL
         self.queued_urls.add(base_url)
         
@@ -124,8 +131,9 @@ class ScrapingEngine:
                 return None
 
             try:
-                user = self.db.get_website_user(website_user_id)
+                user = self.db.get_project_user(website_user_id)
                 if not user:
+                    logger.warning(f"Project user {website_user_id} not found for authentication")
                     return None
 
                 if not user.enabled:
@@ -134,8 +142,33 @@ class ScrapingEngine:
 
                 logger.info(f"Authenticating as user: {user.username} (roles: {user.role_display}){context_msg}")
 
-                # Get a page from the browser to perform login
-                browser_page = await self.browser_manager.get_page()
+                # Ensure browser is running and connected
+                await self.browser_manager.ensure_running()
+
+                # Create a new page for login
+                browser_page = await self.browser_manager.browser.newPage()
+
+                # Apply stealth techniques
+                await self.browser_manager._apply_stealth(browser_page)
+
+                # Set viewport
+                await browser_page.setViewport({
+                    'width': self.browser_manager.config.get('viewport_width', 1920),
+                    'height': self.browser_manager.config.get('viewport_height', 1080)
+                })
+
+                # Set user agent
+                user_agent = (
+                    self.browser_manager.config.get('user_agent') or
+                    self.browser_manager.config.get('USER_AGENT') or
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                )
+                await browser_page.setUserAgent(user_agent)
+
+                # Set default timeout
+                browser_page.setDefaultNavigationTimeout(self.browser_manager.config.get('timeout', 60000))
+
+                self.browser_manager.pages.append(browser_page)
 
                 # Perform login
                 login_result = await login_automation.perform_login(
@@ -146,9 +179,17 @@ class ScrapingEngine:
 
                 if login_result['success']:
                     logger.info(f"Successfully authenticated as {user.username} in {login_result['duration_ms']}ms{context_msg}")
+                    # Keep the page alive for subsequent discovery - DON'T close it yet
                     return user
                 else:
                     logger.error(f"Failed to authenticate as {user.username}: {login_result.get('error', 'Unknown error')}{context_msg}")
+                    # Close the page on login failure
+                    try:
+                        await browser_page.close()
+                        if browser_page in self.browser_manager.pages:
+                            self.browser_manager.pages.remove(browser_page)
+                    except:
+                        pass
                     return None
             except Exception as e:
                 logger.error(f"Error during authentication{context_msg}: {e}")
@@ -156,6 +197,23 @@ class ScrapingEngine:
 
         # Perform initial authentication if user specified
         authenticated_user = await perform_authentication(" for initial discovery")
+
+        # If authenticated, capture the post-login landing page and add to queue
+        if authenticated_user:
+            try:
+                # Get the authenticated page from the browser manager's pages list
+                if self.browser_manager.pages:
+                    browser_page = self.browser_manager.pages[0]  # The authenticated page
+                    post_login_url = browser_page.url
+                    logger.info(f"Post-login page URL: {post_login_url}")
+                    if post_login_url and post_login_url != base_url:
+                        # Normalize and add the post-login page to discovery queue
+                        normalized_post_login = self._normalize_url(post_login_url)
+                        if normalized_post_login and normalized_post_login not in self.discovered_urls:
+                            self.queued_urls.add(normalized_post_login)
+                            logger.info(f"Added post-login page to discovery queue: {normalized_post_login}")
+            except Exception as e:
+                logger.warning(f"Error capturing post-login page: {e}")
 
         try:
             depth = 0
@@ -544,7 +602,7 @@ class ScrapingEngine:
             # Navigate to URL with proper error handling
             response = None
             try:
-                logger.warning(f"Navigating to {url} with User-Agent: {user_agent}")
+                logger.debug(f"Navigating to {url}")
                 response = await self.browser_manager.goto(
                     page=page,
                     url=url,
@@ -552,14 +610,10 @@ class ScrapingEngine:
                     timeout=nav_timeout
                 )
 
-                # Log response details for debugging
                 if response:
-                    logger.warning(f"Response received for {url}:")
-                    logger.warning(f"  Status: {response.status}")
-                    logger.warning(f"  Headers: {dict(response.headers)}")
-                    logger.warning(f"  URL: {response.url}")
+                    logger.debug(f"Response received for {url}: status {response.status}")
                 else:
-                    logger.warning(f"No response object returned for {url}")
+                    logger.debug(f"No response object returned for {url}")
 
                 # Wait additional time for JavaScript challenges if in stealth mode
                 if post_nav_wait > 0:
@@ -569,13 +623,11 @@ class ScrapingEngine:
                 try:
                     page_title = await page.title()
                     page_content = await page.content()
-                    logger.warning(f"Page title: {page_title}")
-                    logger.warning(f"Page content length: {len(page_content)} bytes")
+                    logger.debug(f"Page title: {page_title}")
 
                     # Detect Cloudflare challenge indicators
                     if 'cloudflare' in page_title.lower() or 'checking your browser' in page_content.lower():
                         logger.warning(f"Cloudflare challenge detected on: {url}")
-                        logger.warning(f"Page title: {page_title}")
                         # Wait longer for challenge to complete
                         await asyncio.sleep(10)
                         page_title = await page.title()
@@ -822,15 +874,16 @@ class ScrapingEngine:
                     # Only follow links on same domain
                     if parsed.netloc != base_domain:
                         # Check subdomains if configured
-                        if not (website.scraping_config.include_subdomains and 
+                        if not (website.scraping_config.include_subdomains and
                                parsed.netloc.endswith(f'.{base_domain}')):
+                            logger.warning(f"Skipping link (external domain): {normalized}")
                             continue
-                    
+
                     # If the base URL has a path component, ensure links stay within that path
                     if base_path:
                         # The link must start with the base path to be considered internal
                         if not parsed.path.startswith(base_path + '/') and parsed.path != base_path:
-                            logger.debug(f"Skipping URL outside base path: {normalized} (base_path: {base_path})")
+                            logger.warning(f"Skipping URL outside base path: {normalized} (path: {parsed.path}, base_path: {base_path})")
                             continue
                 
                 # Apply path filters

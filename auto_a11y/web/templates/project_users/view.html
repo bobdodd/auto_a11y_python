@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.name_display }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('project_users.list_users', project_id=project.id) }}">{{ _('Test Users') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ user.name_display }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-person"></i> {{ user.name_display }}
+        </h1>
+        <div>
+            <a href="{{ url_for('project_users.edit_user', user_id=user.id) }}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> {{ _('Edit') }}
+            </a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Basic Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person"></i> {{ _('User Information') }}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3">{{ _('Display Name:') }}</dt>
+                        <dd class="col-sm-9">{{ user.display_name or user.username }}</dd>
+
+                        <dt class="col-sm-3">{{ _('Username:') }}</dt>
+                        <dd class="col-sm-9"><code>{{ user.username }}</code></dd>
+
+                        <dt class="col-sm-3">{{ _('Roles:') }}</dt>
+                        <dd class="col-sm-9">
+                            {% if user.roles %}
+                                {% for role in user.roles %}
+                                <span class="badge bg-secondary">{{ role }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-muted">{{ _('No roles assigned') }}</span>
+                            {% endif %}
+                        </dd>
+
+                        {% if user.description %}
+                        <dt class="col-sm-3">{{ _('Description:') }}</dt>
+                        <dd class="col-sm-9">{{ user.description }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-3">{{ _('Status:') }}</dt>
+                        <dd class="col-sm-9">
+                            {% if user.enabled %}
+                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> {{ _('Enabled') }}</span>
+                            {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> {{ _('Disabled') }}</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Login Configuration -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-key"></i> {{ _('Login Configuration') }}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3">{{ _('Authentication Method:') }}</dt>
+                        <dd class="col-sm-9">{{ user.login_config.authentication_method.value.replace('_', ' ').title() }}</dd>
+
+                        {% if user.login_config.authentication_method.value == 'form_login' %}
+                        <dt class="col-sm-3">{{ _('Login URL:') }}</dt>
+                        <dd class="col-sm-9"><code>{{ user.login_config.login_url }}</code></dd>
+
+                        <dt class="col-sm-3">{{ _('Username Field:') }}</dt>
+                        <dd class="col-sm-9"><code>{{ user.login_config.username_field_selector }}</code></dd>
+
+                        <dt class="col-sm-3">{{ _('Password Field:') }}</dt>
+                        <dd class="col-sm-9"><code>{{ user.login_config.password_field_selector }}</code></dd>
+
+                        <dt class="col-sm-3">{{ _('Submit Button:') }}</dt>
+                        <dd class="col-sm-9"><code>{{ user.login_config.submit_button_selector }}</code></dd>
+
+                        {% if user.login_config.success_indicator_selector %}
+                        <dt class="col-sm-3">{{ _('Success Indicator:') }}</dt>
+                        <dd class="col-sm-9"><code>{{ user.login_config.success_indicator_selector }}</code></dd>
+                        {% endif %}
+                        {% endif %}
+
+                        <dt class="col-sm-3">{{ _('Session Timeout:') }}</dt>
+                        <dd class="col-sm-9">{{ _('%(minutes)s minutes', minutes=user.login_config.session_timeout_minutes) }}</dd>
+
+                        {% if user.login_config.logout_url %}
+                        <dt class="col-sm-3">{{ _('Logout URL:') }}</dt>
+                        <dd class="col-sm-9"><code>{{ user.login_config.logout_url }}</code></dd>
+                        {% endif %}
+
+                        {% if user.login_config.logout_button_selector %}
+                        <dt class="col-sm-3">{{ _('Logout Button:') }}</dt>
+                        <dd class="col-sm-9"><code>{{ user.login_config.logout_button_selector }}</code></dd>
+                        {% endif %}
+
+                        {% if user.login_config.logout_success_indicator_selector %}
+                        <dt class="col-sm-3">{{ _('Logout Success Indicator:') }}</dt>
+                        <dd class="col-sm-9"><code>{{ user.login_config.logout_success_indicator_selector }}</code></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Usage History -->
+            {% if user.last_used %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> {{ _('Usage History') }}</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3">{{ _('Last Used:') }}</dt>
+                        <dd class="col-sm-9">{{ user.last_used.strftime('%Y-%m-%d %H:%M:%S') }}</dd>
+
+                        <dt class="col-sm-3">{{ _('Last Login Status:') }}</dt>
+                        <dd class="col-sm-9">
+                            {% if user.last_login_success == True %}
+                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> {{ _('Success') }}</span>
+                            {% elif user.last_login_success == False %}
+                            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> {{ _('Failed') }}</span>
+                            {% else %}
+                            <span class="text-muted">{{ _('Not attempted yet') }}</span>
+                            {% endif %}
+                        </dd>
+
+                        {% if user.last_login_error %}
+                        <dt class="col-sm-3">{{ _('Last Error:') }}</dt>
+                        <dd class="col-sm-9">
+                            <code class="text-danger">{{ user.last_login_error }}</code>
+                        </dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Action Sidebar -->
+        <div class="col-md-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-gear"></i> {{ _('Actions') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('project_users.edit_user', user_id=user.id) }}" class="btn btn-primary">
+                            <i class="bi bi-pencil"></i> {{ _('Edit User') }}
+                        </a>
+
+                        <form action="{{ url_for('project_users.toggle_user', user_id=user.id) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-{{ 'warning' if user.enabled else 'success' }} w-100">
+                                <i class="bi bi-{{ 'pause-circle' if user.enabled else 'play-circle' }}"></i>
+                                {{ _('Disable') if user.enabled else _('Enable') }}
+                            </button>
+                        </form>
+
+                        <hr>
+
+                        <form action="{{ url_for('project_users.delete_user', user_id=user.id) }}" method="POST"
+                              onsubmit="return confirm('{{ _('Are you sure you want to delete this user? This action cannot be undone.') }}');">
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="bi bi-trash"></i> {{ _('Delete User') }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card-footer text-muted small">
+                    <div class="mb-2">
+                        <strong>{{ _('Created:') }}</strong><br>
+                        {{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else _('Unknown') }}
+                    </div>
+                    {% if user.updated_at %}
+                    <div>
+                        <strong>{{ _('Last Modified:') }}</strong><br>
+                        {{ user.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-8">
+            <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> {{ _('Back to Test Users') }}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

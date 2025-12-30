@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - Quebec Insurance Plus</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header with navigation -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="images/quebec-logo.svg" alt="">
+                    <span class="site-name">Quebec Insurance Plus</span>
+                </div>
+            </div>
+
+            <!-- Navigation with inappropriate menu role -->
+            <nav role="menu" aria-label="Main navigation">
+                <ul>
+                    <li><a href="index-en.html">Home</a></li>
+                    <li><a href="services-en.html">Insurance</a></li>
+                    <li><a href="dashboard-en.html">My Account</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li class="language-switch">
+                        <a href="dashboard.html">FR</a>
+                        <a href="dashboard-en.html">EN</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main>
+        <h1 id="main-content" tabindex="-1">Dashboard</h1>
+
+        <div class="container">
+            <!-- Welcome banner -->
+            <div class="welcome-banner">
+                <h2>Welcome, Marie Tremblay</h2>
+                <p>Dernière connexion: 29 décembre 2025 à 9h45</p>
+            </div>
+
+            <!-- Account summary cards -->
+            <div class="dashboard-grid">
+                <!-- Active Policies Card -->
+                <div class="dashboard-card">
+                    <div class="fake-heading">Active Policies</div>
+                    <div class="card-stat">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">polices actives</span>
+                    </div>
+                    <ul class="policy-list">
+                        <li>
+                            <strong>Auto Insurance</strong> - Toyota Camry 2022
+                            <span class="policy-number">Number: AUTO-2024-789456</span>
+                        </li>
+                        <li>
+                            <strong>Assurance Habitation</strong> - 1234 Rue Principale, Montréal
+                            <span class="policy-number">Numéro: HOME-2024-123789</span>
+                        </li>
+                        <li>
+                            <strong>Life Insurance</strong> - $500,000 coverage
+                            <span class="policy-number">Number: LIFE-2024-456123</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="btn-secondary">View all policies</a>
+                </div>
+
+                <!-- Payment Status Card -->
+                <div class="dashboard-card">
+                    <div class="fake-heading">Payment Status</div>
+                    <div class="card-stat">
+                        <span class="stat-number">$289.45</span>
+                        <span class="stat-label">prochain paiement dû</span>
+                    </div>
+                    <div class="payment-info">
+                        <p><strong>Due date:</strong> January 15, 2026</p>
+                        <p><strong>Method:</strong> Automatic withdrawal</p>
+                        <p><strong>Statut:</strong> <span class="status-badge status-good">Up to date</span></p>
+                    </div>
+                    <a href="#" class="btn-secondary">Faire un paiement</a>
+                </div>
+
+                <!-- Recent Claims Card -->
+                <div class="dashboard-card">
+                    <div class="fake-heading">Recent Claims</div>
+                    <div class="card-stat">
+                        <span class="stat-number">1</span>
+                        <span class="stat-label">réclamation en cours</span>
+                    </div>
+                    <div class="claim-item">
+                        <p><strong>Auto - Minor collision</strong></p>
+                        <p>Claim number: CLM-2025-998877</p>
+                        <p>Déposée: December 15, 2025</p>
+                        <p><strong>Status:</strong> <span class="status-badge status-warning">Processing</span></p>
+                    </div>
+                    <a href="#" class="btn-secondary">View claims</a>
+                </div>
+
+                <!-- Quick Actions Card -->
+                <div class="dashboard-card">
+                    <div class="fake-heading">Quick Actions</div>
+                    <div class="quick-actions">
+                        <!-- Icon buttons without accessible names (intentional issue) -->
+                        <button class="icon-btn-large">
+                            <svg width="32" height="32" viewBox="0 0 24 24">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            <span>Nouvelle réclamation</span>
+                        </button>
+                        <button class="icon-btn-large">
+                            <svg width="32" height="32" viewBox="0 0 24 24">
+                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                            </svg>
+                            <span>Documents</span>
+                        </button>
+                        <button class="icon-btn-large">
+                            <svg width="32" height="32" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                            </svg>
+                            <span>Obtenir de l'aide</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coverage Summary Card with data table -->
+                <div class="dashboard-card card-wide">
+                    <div class="fake-heading">Coverage Summary</div>
+                    <!-- Table without proper headers (intentional issue) -->
+                    <table class="coverage-table">
+                        <tr>
+                            <td><strong>Type</strong></td>
+                            <td><strong>Montant de couverture</strong></td>
+                            <td><strong>Monthly Premium</strong></td>
+                            <td><strong>Expiration</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Auto Insurance</td>
+                            <td>$1,000,000</td>
+                            <td>$124.99</td>
+                            <td>30 juin 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Assurance Habitation</td>
+                            <td>$350,000</td>
+                            <td>$89.99</td>
+                            <td>August 15, 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Life Insurance</td>
+                            <td>$500,000</td>
+                            <td>$74.47</td>
+                            <td>1er décembre 2026</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Account Information Card -->
+                <div class="dashboard-card">
+                    <div class="fake-heading">Account Information</div>
+                    <div class="account-info">
+                        <p><strong>Name:</strong> Marie Tremblay</p>
+                        <p><strong>Courriel:</strong> marie.tremblay@example.com</p>
+                        <p><strong>Phone:</strong> (514) 555-0123</p>
+                        <p><strong>Adresse:</strong> 1234 Rue Principale<br>Montréal, QC H3B 1A1</p>
+                        <p><strong>Membre depuis:</strong> January 2020</p>
+                    </div>
+                    <a href="#" class="btn-secondary">Mettre à jour les informations</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="fake-heading-small">About</div>
+                    <ul>
+                        <li><a href="#">Our Mission</a></li>
+                        <li><a href="#">Team</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="fake-heading-small">Products</div>
+                    <ul>
+                        <li><a href="#">Auto Insurance</a></li>
+                        <li><a href="#">Home Insurance</a></li>
+                        <li><a href="#">Life Insurance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="fake-heading-small">Customer Service</div>
+                    <ul>
+                        <li><a href="#">Technical Support</a></li>
+                        <li><a href="#">Regional Offices</a></li>
+                        <li><a href="#">Emergency</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Quebec Insurance Plus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

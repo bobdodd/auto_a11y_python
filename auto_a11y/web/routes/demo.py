@@ -3,12 +3,19 @@ Demo site route for Quebec insurance company presentation
 Serves the static demo site with intentional accessibility issues
 """
 
-from flask import Blueprint, send_from_directory, current_app
+from flask import Blueprint, send_from_directory, current_app, request, redirect, url_for, session, render_template_string
 from pathlib import Path
 import logging
 
 logger = logging.getLogger(__name__)
 demo_bp = Blueprint('demo', __name__)
+
+# Hardcoded user credentials for demo
+DEMO_USER = {
+    'email': 'marie.tremblay@example.com',
+    'password': 'assurance2025',
+    'name': 'Marie Tremblay'
+}
 
 
 @demo_bp.route('/')
@@ -83,3 +90,49 @@ def demo_info():
     </body>
     </html>
     """
+
+@demo_bp.route('/login', methods=['POST'])
+def login():
+    """Handle login form submission"""
+    email = request.form.get('email', '')
+    password = request.form.get('password', '')
+    
+    # Check credentials
+    if email == DEMO_USER['email'] and password == DEMO_USER['password']:
+        session['demo_user'] = DEMO_USER['name']
+        session['demo_email'] = DEMO_USER['email']
+        logger.info(f"Demo user logged in: {email}")
+        
+        # Redirect to dashboard based on language
+        referer = request.referrer or ''
+        if 'login-en.html' in referer:
+            return redirect(url_for('demo.serve_demo', filename='dashboard-en.html'))
+        else:
+            return redirect(url_for('demo.serve_demo', filename='dashboard.html'))
+    else:
+        # Login failed - redirect back with error
+        logger.warning(f"Failed login attempt: {email}")
+        referer = request.referrer or url_for('demo.serve_demo', filename='login.html')
+        return redirect(referer + '?error=1')
+
+
+@demo_bp.route('/logout')
+def logout():
+    """Handle logout"""
+    session.pop('demo_user', None)
+    session.pop('demo_email', None)
+    logger.info("Demo user logged out")
+    return redirect(url_for('demo.serve_demo', filename='index.html'))
+
+
+@demo_bp.route('/check-auth')
+def check_auth():
+    """Check if user is authenticated (for testing purposes)"""
+    if 'demo_user' in session:
+        return {
+            'authenticated': True,
+            'user': session['demo_user'],
+            'email': session['demo_email']
+        }
+    else:
+        return {'authenticated': False}

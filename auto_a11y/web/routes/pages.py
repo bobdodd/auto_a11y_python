@@ -623,9 +623,11 @@ def configure_test_matrix(page_id):
     project = current_app.db.get_project(website.project_id)
 
     # Get all scripts for this page (page-level and website-level)
-    page_scripts = current_app.db.list_page_scripts(page_id=page_id)
-    website_scripts = current_app.db.list_website_scripts(website_id=page.website_id)
-    all_scripts = page_scripts + website_scripts
+    all_scripts = current_app.db.get_scripts_for_page_v2(
+        page_id=page_id,
+        website_id=page.website_id,
+        enabled_only=False
+    )
 
     # Filter to only enabled scripts with multi-state testing
     testable_scripts = [

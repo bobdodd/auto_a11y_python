@@ -103,6 +103,20 @@
         margin-bottom: 8px;
     }
 
+    .script-order-item .drag-handle {
+        width: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        cursor: grab;
+        font-size: 1.2em;
+    }
+
+    .script-order-item .drag-handle:active {
+        cursor: grabbing;
+    }
+
     .script-order-item .order-number {
         width: 40px;
         text-align: center;
@@ -117,6 +131,25 @@
     .script-order-item .move-buttons {
         display: flex;
         gap: 4px;
+    }
+
+    .script-order-item {
+        cursor: move;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .script-order-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .script-order-item.drag-over {
+        background-color: #e7f3ff;
+        border-color: #0d6efd;
+        transform: scale(1.02);
+    }
+
+    .script-order-item[draggable="true"] {
+        user-select: none;
     }
 </style>
 {% endblock %}
@@ -264,6 +297,9 @@
             <div id="script-order-list">
                 {% for script_def in matrix.scripts %}
                 <div class="script-order-item" data-script-id="{{ script_def.script_id }}">
+                    <div class="drag-handle" title="{{ _('Drag to reorder') }}">
+                        <i class="bi bi-grip-vertical"></i>
+                    </div>
                     <div class="order-number">{{ loop.index }}</div>
                     <div class="script-name">
                         <strong>{{ script_def.script_name }}</strong>
@@ -278,14 +314,16 @@
                         </small>
                     </div>
                     <div class="move-buttons">
-                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-move-up"
                                 onclick="moveScript('{{ script_def.script_id }}', -1)"
-                                {% if loop.first %}disabled{% endif %}>
+                                {% if loop.first %}disabled{% endif %}
+                                title="{{ _('Move up') }}">
                             <i class="bi bi-arrow-up"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-move-down"
                                 onclick="moveScript('{{ script_def.script_id }}', 1)"
-                                {% if loop.last %}disabled{% endif %}>
+                                {% if loop.last %}disabled{% endif %}
+                                title="{{ _('Move down') }}">
                             <i class="bi bi-arrow-down"></i>
                         </button>
                     </div>
@@ -420,8 +458,9 @@ function moveScript(scriptId, direction) {
         container.insertBefore(items[newIndex], item);
     }
 
-    // Update order numbers
+    // Update order numbers and button states
     updateOrderNumbers();
+    updateButtonStates();
 }
 
 // Update order numbers display
@@ -429,6 +468,88 @@ function updateOrderNumbers() {
     const items = document.querySelectorAll('.script-order-item');
     items.forEach((item, index) => {
         item.querySelector('.order-number').textContent = index + 1;
+    });
+}
+
+// Update button disabled states
+function updateButtonStates() {
+    const items = document.querySelectorAll('.script-order-item');
+    items.forEach((item, index) => {
+        const upBtn = item.querySelector('.btn-move-up');
+        const downBtn = item.querySelector('.btn-move-down');
+
+        if (upBtn) upBtn.disabled = (index === 0);
+        if (downBtn) downBtn.disabled = (index === items.length - 1);
+    });
+}
+
+// Drag and drop functionality
+let draggedElement = null;
+
+function initializeDragAndDrop() {
+    const items = document.querySelectorAll('.script-order-item');
+
+    items.forEach(item => {
+        // Make items draggable
+        item.draggable = true;
+
+        item.addEventListener('dragstart', function(e) {
+            draggedElement = this;
+            this.style.opacity = '0.5';
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        });
+
+        item.addEventListener('dragend', function(e) {
+            this.style.opacity = '';
+            draggedElement = null;
+
+            // Remove all drag-over classes
+            document.querySelectorAll('.script-order-item').forEach(i => {
+                i.classList.remove('drag-over');
+            });
+        });
+
+        item.addEventListener('dragover', function(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+            return false;
+        });
+
+        item.addEventListener('dragleave', function(e) {
+            this.classList.remove('drag-over');
+        });
+
+        item.addEventListener('drop', function(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            if (draggedElement !== this) {
+                const container = document.getElementById('script-order-list');
+                const allItems = Array.from(container.querySelectorAll('.script-order-item'));
+                const draggedIndex = allItems.indexOf(draggedElement);
+                const targetIndex = allItems.indexOf(this);
+
+                if (draggedIndex < targetIndex) {
+                    container.insertBefore(draggedElement, this.nextSibling);
+                } else {
+                    container.insertBefore(draggedElement, this);
+                }
+
+                updateOrderNumbers();
+                updateButtonStates();
+            }
+
+            this.classList.remove('drag-over');
+            return false;
+        });
     });
 }
 
@@ -466,7 +587,10 @@ document.getElementById('matrix-form').addEventListener('submit', function(e) {
     document.getElementById('matrix-data-input').value = JSON.stringify(matrixState);
 });
 
-// Initialize combinations count
-updateCombinationsCount();
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCombinationsCount();
+    initializeDragAndDrop();
+});
 </script>
 {% endblock %}

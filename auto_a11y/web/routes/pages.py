@@ -599,11 +599,126 @@ def view_violations(page_id):
     page = current_app.db.get_page(page_id)
     if not page:
         return jsonify({'error': 'Page not found'}), 404
-    
+
     test_result = current_app.db.get_latest_test_result(page_id)
     if not test_result:
         return jsonify({'error': 'No test results found'}), 404
-    
+
     return render_template('pages/violations.html',
                          page=page,
                          test_result=test_result)
+
+
+@pages_bp.route('/<page_id>/matrix', methods=['GET', 'POST'])
+def configure_test_matrix(page_id):
+    """Configure test state matrix for page"""
+    from auto_a11y.models import TestStateMatrix, ScriptStateDefinition
+
+    page = current_app.db.get_page(page_id)
+    if not page:
+        flash(_('Page not found'), 'error')
+        return redirect(url_for('projects.list_projects'))
+
+    website = current_app.db.get_website(page.website_id)
+    project = current_app.db.get_project(website.project_id)
+
+    # Get all scripts for this page (page-level and website-level)
+    page_scripts = current_app.db.list_page_scripts(page_id=page_id)
+    website_scripts = current_app.db.list_website_scripts(website_id=page.website_id)
+    all_scripts = page_scripts + website_scripts
+
+    # Filter to only enabled scripts with multi-state testing
+    testable_scripts = [
+        s for s in all_scripts
+        if s.enabled and (s.test_before_execution or s.test_after_execution)
+    ]
+
+    if request.method == 'POST':
+        try:
+            # Get or create matrix
+            matrix = current_app.db.get_test_state_matrix_by_page(page_id)
+
+            if not matrix:
+                # Create new matrix
+                matrix = TestStateMatrix(
+                    page_id=page_id,
+                    website_id=page.website_id
+                )
+
+            # Update scripts in matrix
+            matrix.scripts = []
+            for script in testable_scripts:
+                script_def = ScriptStateDefinition(
+                    script_id=script.id,
+                    script_name=script.name,
+                    test_before=script.test_before_execution,
+                    test_after=script.test_after_execution,
+                    execution_order=len(matrix.scripts)  # Assign order based on position
+                )
+                matrix.scripts.append(script_def)
+
+            # Parse matrix data from form
+            matrix_data = request.form.get('matrix_data')
+            if matrix_data:
+                import json
+                matrix.matrix = json.loads(matrix_data)
+            else:
+                # Initialize with defaults if no data provided
+                matrix.initialize_matrix()
+
+            # Save or update matrix
+            if matrix._id:
+                current_app.db.update_test_state_matrix(matrix)
+                flash(_('Test matrix updated successfully'), 'success')
+            else:
+                current_app.db.create_test_state_matrix(matrix)
+                flash(_('Test matrix created successfully'), 'success')
+
+            return redirect(url_for('pages.configure_test_matrix', page_id=page_id))
+
+        except Exception as e:
+            logger.error(f"Error saving test matrix: {e}")
+            flash(_('Failed to save test matrix: %(error)s', error=str(e)), 'error')
+
+    # GET request - load existing matrix or create default
+    matrix = current_app.db.get_test_state_matrix_by_page(page_id)
+
+    if not matrix:
+        # Create default matrix for display
+        matrix = TestStateMatrix(
+            page_id=page_id,
+            website_id=page.website_id
+        )
+
+        # Add testable scripts to matrix
+        for script in testable_scripts:
+            script_def = ScriptStateDefinition(
+                script_id=script.id,
+                script_name=script.name,
+                test_before=script.test_before_execution,
+                test_after=script.test_after_execution,
+                execution_order=len(matrix.scripts)
+            )
+            matrix.scripts.append(script_def)
+
+        # Initialize with defaults
+        if matrix.scripts:
+            matrix.initialize_matrix()
+
+    # Get row and column headers
+    row_headers, col_headers = matrix.get_matrix_dimensions() if matrix.scripts else ([], [])
+
+    # Get enabled combinations count
+    enabled_combinations = matrix.get_enabled_combinations() if matrix.scripts else []
+    total_possible = 2 ** len(matrix.scripts) if matrix.scripts else 0
+
+    return render_template('pages/test_matrix.html',
+                         page=page,
+                         website=website,
+                         project=project,
+                         matrix=matrix,
+                         testable_scripts=testable_scripts,
+                         row_headers=row_headers,
+                         col_headers=col_headers,
+                         enabled_count=len(enabled_combinations),
+                         total_possible=total_possible)

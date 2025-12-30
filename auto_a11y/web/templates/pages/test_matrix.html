@@ -1,0 +1,472 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Configure Test Matrix') }} - {{ page.title or page.url }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .matrix-container {
+        overflow-x: auto;
+        margin: 20px 0;
+    }
+
+    .matrix-table {
+        border-collapse: collapse;
+        min-width: 100%;
+        background: white;
+    }
+
+    .matrix-table th,
+    .matrix-table td {
+        border: 1px solid #dee2e6;
+        padding: 12px;
+        text-align: center;
+        min-width: 120px;
+    }
+
+    .matrix-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        position: sticky;
+        z-index: 10;
+    }
+
+    .matrix-table th.row-header {
+        position: sticky;
+        left: 0;
+        background-color: #f8f9fa;
+        text-align: left;
+        min-width: 200px;
+        z-index: 11;
+    }
+
+    .matrix-table th.corner {
+        left: 0;
+        top: 0;
+        z-index: 12;
+        background-color: #e9ecef;
+    }
+
+    .matrix-cell {
+        cursor: pointer;
+        transition: all 0.2s;
+        user-select: none;
+    }
+
+    .matrix-cell:hover {
+        background-color: #e7f3ff;
+    }
+
+    .matrix-cell.enabled {
+        background-color: #d1e7dd;
+        color: #0f5132;
+        font-weight: bold;
+    }
+
+    .matrix-cell.enabled:hover {
+        background-color: #badbcc;
+    }
+
+    .matrix-cell.disabled {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+
+    .matrix-cell .check-icon {
+        font-size: 1.2em;
+    }
+
+    .preset-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .info-box {
+        background: #e7f3ff;
+        border-left: 4px solid #0d6efd;
+        padding: 15px;
+        margin: 20px 0;
+    }
+
+    .script-order-section {
+        margin: 20px 0;
+    }
+
+    .script-order-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+
+    .script-order-item .order-number {
+        width: 40px;
+        text-align: center;
+        font-weight: bold;
+        color: #0d6efd;
+    }
+
+    .script-order-item .script-name {
+        flex: 1;
+    }
+
+    .script-order-item .move-buttons {
+        display: flex;
+        gap: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages.view_page', page_id=page.id) }}">{{ page.title or _('Page') }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}">{{ _('Scripts') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Test Matrix') }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">
+                <i class="bi bi-grid-3x3"></i> {{ _('Configure Test Matrix') }}
+            </h1>
+            <p class="text-muted">{{ page.url }}</p>
+        </div>
+        <div>
+            <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> {{ _('Back to Scripts') }}
+            </a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if not testable_scripts %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i>
+        <strong>{{ _('No Testable Scripts') }}</strong><br>
+        {{ _('This page has no enabled scripts with multi-state testing configured. Please create or enable scripts with "Test Before" or "Test After" options.') }}
+        <div class="mt-3">
+            <a href="{{ url_for('scripts.create_page_script', page_id=page.id) }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> {{ _('Create New Script') }}
+            </a>
+        </div>
+    </div>
+    {% else %}
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <h5><i class="bi bi-info-circle"></i> {{ _('About the Test Matrix') }}</h5>
+        <p class="mb-2">
+            {{ _('The test matrix defines which combinations of script states should be tested. Each script can be in a "before" or "after" state:') }}
+        </p>
+        <ul class="mb-2">
+            <li><strong>{{ _('Before') }}:</strong> {{ _('Script has not been executed (initial state)') }}</li>
+            <li><strong>{{ _('After') }}:</strong> {{ _('Script has been executed') }}</li>
+        </ul>
+        <p class="mb-0">
+            <strong>{{ _('Click cells to enable/disable state combinations.') }}</strong>
+            {{ _('Testing %(enabled)s of %(total)s possible combinations.', enabled=enabled_count, total=total_possible) }}
+        </p>
+    </div>
+
+    <!-- Preset Buttons -->
+    <div class="preset-buttons">
+        <button type="button" class="btn btn-outline-primary" onclick="applyPreset('sequential')">
+            <i class="bi bi-arrow-right-circle"></i> {{ _('Sequential Only (Default)') }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('initial_final')">
+            <i class="bi bi-arrow-left-right"></i> {{ _('Initial + Final') }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('all')">
+            <i class="bi bi-grid-fill"></i> {{ _('All Combinations') }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('none')">
+            <i class="bi bi-x-circle"></i> {{ _('Clear All') }}
+        </button>
+    </div>
+
+    <!-- Matrix Grid -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">{{ _('State Combination Matrix') }}</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="matrix-container">
+                <table class="matrix-table" id="matrix-table">
+                    <thead>
+                        <tr>
+                            <th class="corner">{{ _('Row / Column') }}</th>
+                            {% for col_header in col_headers %}
+                            <th>{{ col_header.replace('_', ' ').title() }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row_header in row_headers %}
+                        <tr>
+                            <th class="row-header">{{ row_header.replace('_', ' ').title() }}</th>
+                            {% for col_header in col_headers %}
+                            <td class="matrix-cell {% if matrix.is_combination_enabled(row_header, col_header) %}enabled{% else %}disabled{% endif %}"
+                                data-row="{{ row_header }}"
+                                data-col="{{ col_header }}"
+                                onclick="toggleCell(this)">
+                                {% if matrix.is_combination_enabled(row_header, col_header) %}
+                                <span class="check-icon">✓</span>
+                                {% else %}
+                                <span class="check-icon">&nbsp;</span>
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Execution Order -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-sort-numeric-down"></i> {{ _('Script Execution Order') }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">{{ _('Scripts will be executed in this order when reaching the "after" state:') }}</p>
+            <div id="script-order-list">
+                {% for script_def in matrix.scripts %}
+                <div class="script-order-item" data-script-id="{{ script_def.script_id }}">
+                    <div class="order-number">{{ loop.index }}</div>
+                    <div class="script-name">
+                        <strong>{{ script_def.script_name }}</strong>
+                        <br><small class="text-muted">
+                            {% if script_def.test_before and script_def.test_after %}
+                                {{ _('Tests: Before & After') }}
+                            {% elif script_def.test_before %}
+                                {{ _('Tests: Before only') }}
+                            {% elif script_def.test_after %}
+                                {{ _('Tests: After only') }}
+                            {% endif %}
+                        </small>
+                    </div>
+                    <div class="move-buttons">
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                onclick="moveScript('{{ script_def.script_id }}', -1)"
+                                {% if loop.first %}disabled{% endif %}>
+                            <i class="bi bi-arrow-up"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                onclick="moveScript('{{ script_def.script_id }}', 1)"
+                                {% if loop.last %}disabled{% endif %}>
+                            <i class="bi bi-arrow-down"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Form -->
+    <form method="POST" id="matrix-form">
+        <input type="hidden" name="matrix_data" id="matrix-data-input">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-save"></i> {{ _('Save Matrix Configuration') }}
+                </button>
+                <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-secondary btn-lg">
+                    {{ _('Cancel') }}
+                </a>
+            </div>
+            <div class="text-muted">
+                <span id="combinations-count">{{ enabled_count }}</span> {{ _('combinations enabled') }}
+            </div>
+        </div>
+    </form>
+
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Current matrix state
+let matrixState = {{ matrix.matrix | tojson }};
+
+// Toggle a single cell
+function toggleCell(cell) {
+    const row = cell.dataset.row;
+    const col = cell.dataset.col;
+
+    // Toggle state in memory
+    if (!matrixState[row]) {
+        matrixState[row] = {};
+    }
+    matrixState[row][col] = !matrixState[row][col];
+
+    // Update UI
+    updateCellUI(cell, matrixState[row][col]);
+    updateCombinationsCount();
+}
+
+// Update cell UI
+function updateCellUI(cell, enabled) {
+    if (enabled) {
+        cell.classList.add('enabled');
+        cell.classList.remove('disabled');
+        cell.querySelector('.check-icon').textContent = '✓';
+    } else {
+        cell.classList.remove('enabled');
+        cell.classList.add('disabled');
+        cell.querySelector('.check-icon').textContent = '\u00A0';
+    }
+}
+
+// Apply preset configurations
+function applyPreset(presetName) {
+    const cells = document.querySelectorAll('.matrix-cell');
+
+    switch (presetName) {
+        case 'none':
+            // Clear all
+            cells.forEach(cell => {
+                const row = cell.dataset.row;
+                const col = cell.dataset.col;
+                if (!matrixState[row]) matrixState[row] = {};
+                matrixState[row][col] = false;
+                updateCellUI(cell, false);
+            });
+            break;
+
+        case 'all':
+            // Enable all
+            cells.forEach(cell => {
+                const row = cell.dataset.row;
+                const col = cell.dataset.col;
+                if (!matrixState[row]) matrixState[row] = {};
+                matrixState[row][col] = true;
+                updateCellUI(cell, true);
+            });
+            break;
+
+        case 'sequential':
+            // Re-initialize with default sequential pattern
+            fetch(`{{ url_for('pages.configure_test_matrix', page_id=page.id) }}?preset=sequential`)
+                .then(() => location.reload());
+            return;
+
+        case 'initial_final':
+            // Only initial and final states
+            cells.forEach(cell => {
+                const row = cell.dataset.row;
+                const col = cell.dataset.col;
+                if (!matrixState[row]) matrixState[row] = {};
+
+                // Enable if both are "before" (initial) or both are "after" (final)
+                const isInitial = row.endsWith('_before') && col.endsWith('_before');
+                const isFinal = row.endsWith('_after') && col.endsWith('_after');
+                matrixState[row][col] = isInitial || isFinal;
+                updateCellUI(cell, matrixState[row][col]);
+            });
+            break;
+    }
+
+    updateCombinationsCount();
+}
+
+// Move script up or down in execution order
+function moveScript(scriptId, direction) {
+    const items = Array.from(document.querySelectorAll('.script-order-item'));
+    const item = items.find(i => i.dataset.scriptId === scriptId);
+    const index = items.indexOf(item);
+    const newIndex = index + direction;
+
+    if (newIndex < 0 || newIndex >= items.length) return;
+
+    // Swap in DOM
+    const container = document.getElementById('script-order-list');
+    if (direction < 0) {
+        container.insertBefore(item, items[newIndex]);
+    } else {
+        container.insertBefore(items[newIndex], item);
+    }
+
+    // Update order numbers
+    updateOrderNumbers();
+}
+
+// Update order numbers display
+function updateOrderNumbers() {
+    const items = document.querySelectorAll('.script-order-item');
+    items.forEach((item, index) => {
+        item.querySelector('.order-number').textContent = index + 1;
+    });
+}
+
+// Count enabled combinations
+function updateCombinationsCount() {
+    let count = 0;
+    const seenCombinations = new Set();
+
+    for (const row in matrixState) {
+        for (const col in matrixState[row]) {
+            if (matrixState[row][col]) {
+                // Create a normalized combination key
+                const rowScript = row.substring(0, row.lastIndexOf('_'));
+                const rowState = row.substring(row.lastIndexOf('_') + 1);
+                const colScript = col.substring(0, col.lastIndexOf('_'));
+                const colState = col.substring(col.lastIndexOf('_') + 1);
+
+                const comboKey = JSON.stringify({
+                    [rowScript]: rowState,
+                    [colScript]: colState
+                });
+
+                seenCombinations.add(comboKey);
+            }
+        }
+    }
+
+    count = seenCombinations.size;
+    document.getElementById('combinations-count').textContent = count;
+}
+
+// Save form submission
+document.getElementById('matrix-form').addEventListener('submit', function(e) {
+    // Store current matrix state in hidden input
+    document.getElementById('matrix-data-input').value = JSON.stringify(matrixState);
+});
+
+// Initialize combinations count
+updateCombinationsCount();
+</script>
+{% endblock %}

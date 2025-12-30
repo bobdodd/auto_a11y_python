@@ -577,12 +577,16 @@ class TestRunner:
             if script.test_before_execution or script.test_after_execution
         ]
 
+        logger.warning(f"DEBUG: Found {len(scripts_to_execute)} scripts, filtering for multi-state")
+        for script in scripts_to_execute:
+            logger.warning(f"DEBUG: Script '{script.name}' - test_before={script.test_before_execution}, test_after={script.test_after_execution}")
+
         if not multi_state_scripts:
             logger.info(f"No multi-state scripts configured for page {page.url}, using single-state testing")
             result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key)
             return [result]
 
-        logger.info(f"Testing page {page.url} with {len(multi_state_scripts)} multi-state scripts")
+        logger.warning(f"DEBUG: Testing page {page.url} with {len(multi_state_scripts)} multi-state scripts")
 
         # Update page status
         page.status = PageStatus.TESTING

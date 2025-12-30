@@ -212,6 +212,16 @@ class ScrapingEngine:
                         if normalized_post_login and normalized_post_login not in self.discovered_urls:
                             self.queued_urls.add(normalized_post_login)
                             logger.info(f"Added post-login page to discovery queue: {normalized_post_login}")
+
+                    # Close the authenticated page now that we've captured the URL
+                    # We don't need it anymore since discovery uses HTTP requests
+                    try:
+                        await browser_page.close()
+                        if browser_page in self.browser_manager.pages:
+                            self.browser_manager.pages.remove(browser_page)
+                        logger.debug("Closed authenticated browser page after capturing post-login URL")
+                    except Exception as close_error:
+                        logger.debug(f"Error closing authenticated page (may already be closed): {close_error}")
             except Exception as e:
                 logger.warning(f"Error capturing post-login page: {e}")
 

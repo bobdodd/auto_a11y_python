@@ -659,11 +659,11 @@ def configure_test_matrix(page_id):
                 )
                 matrix.scripts.append(script_def)
 
-            # Parse matrix data from form
-            matrix_data = request.form.get('matrix_data')
-            if matrix_data:
+            # Parse matrix data from form (new format from v2 template)
+            combinations_data = request.form.get('combinations_data')
+            if combinations_data:
                 import json
-                matrix.matrix = json.loads(matrix_data)
+                matrix.matrix = json.loads(combinations_data)
             else:
                 # Initialize with defaults if no data provided
                 matrix.initialize_matrix()
@@ -722,14 +722,10 @@ def configure_test_matrix(page_id):
     enabled_combinations = matrix.get_enabled_combinations() if matrix.scripts else []
     total_possible = 2 ** len(matrix.scripts) if matrix.scripts else 0
 
-    return render_template('pages/test_matrix.html',
+    return render_template('pages/test_matrix_v2.html',
                          page=page,
                          website=website,
                          project=project,
                          matrix=matrix,
                          testable_scripts=testable_scripts,
-                         row_headers=row_headers,
-                         col_headers=col_headers,
-                         state_labels=state_labels,
-                         enabled_count=len(enabled_combinations),
-                         total_possible=total_possible)
+                         enabled_count=len(enabled_combinations))

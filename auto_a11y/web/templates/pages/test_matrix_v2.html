@@ -1,0 +1,480 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Configure Test Matrix') }} - {{ page.title or page.url }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .info-box {
+        background: #e7f3ff;
+        border-left: 4px solid #0d6efd;
+        padding: 15px;
+        margin: 20px 0;
+    }
+
+    .preset-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .combination-row {
+        cursor: move;
+        transition: background-color 0.2s;
+    }
+
+    .combination-row:hover {
+        background-color: #f8f9fa;
+    }
+
+    .combination-row.drag-over {
+        background-color: #e7f3ff;
+        border-top: 2px solid #0d6efd;
+    }
+
+    .drag-handle {
+        cursor: grab;
+        color: #6c757d;
+    }
+
+    .drag-handle:active {
+        cursor: grabbing;
+    }
+
+    .state-select {
+        width: 120px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.display_name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('pages.view_page', page_id=page.id) }}">{{ page.title or _('Page') }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}">{{ _('Scripts') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Test Matrix') }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">
+                <i class="bi bi-grid-3x3"></i> {{ _('Configure Test Matrix') }}
+            </h1>
+            <p class="text-muted">{{ page.url }}</p>
+        </div>
+        <div>
+            <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> {{ _('Back to Scripts') }}
+            </a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if not testable_scripts %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i>
+        <strong>{{ _('No Testable Scripts') }}</strong><br>
+        {{ _('This page has no enabled scripts with multi-state testing configured.') }}
+        <div class="mt-3">
+            <a href="{{ url_for('scripts.create_page_script', page_id=page.id) }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> {{ _('Create New Script') }}
+            </a>
+        </div>
+    </div>
+    {% else %}
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <h5><i class="bi bi-info-circle"></i> {{ _('About Test Combinations') }}</h5>
+        <p class="mb-2">
+            {{ _('Each row defines one test run. Select which state each script should be in for that test.') }}
+        </p>
+        <ul class="mb-0">
+            <li><strong>{{ _('Before') }}:</strong> {{ _('Script not executed (initial state)') }}</li>
+            <li><strong>{{ _('After') }}:</strong> {{ _('Script executed') }}</li>
+        </ul>
+    </div>
+
+    <!-- Preset Buttons -->
+    <div class="preset-buttons">
+        <button type="button" class="btn btn-outline-primary" onclick="applyPreset('sequential')">
+            <i class="bi bi-arrow-right-circle"></i> {{ _('Sequential (Default)') }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('initial_final')">
+            <i class="bi bi-arrow-left-right"></i> {{ _('Initial + Final') }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('all')">
+            <i class="bi bi-grid-fill"></i> {{ _('All Combinations') }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('clear')">
+            <i class="bi bi-x-circle"></i> {{ _('Clear All') }}
+        </button>
+        <button type="button" class="btn btn-success" onclick="addCombination()">
+            <i class="bi bi-plus-circle"></i> {{ _('Add Combination') }}
+        </button>
+    </div>
+
+    <!-- Combinations Table -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ _('Test Combinations') }}</h5>
+            <span class="badge bg-light text-dark"><span id="combinations-count">0</span> {{ _('combinations') }}</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"></th>
+                            <th style="width: 50px;">#</th>
+                            {% for script in matrix.scripts %}
+                            <th>{{ script.script_name }}</th>
+                            {% endfor %}
+                            <th style="width: 80px;">{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="combinations-tbody">
+                        <!-- Rows will be generated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Form -->
+    <form method="POST" id="matrix-form">
+        <input type="hidden" name="combinations_data" id="combinations-data-input">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-save"></i> {{ _('Save Configuration') }}
+                </button>
+                <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-secondary btn-lg">
+                    {{ _('Cancel') }}
+                </a>
+            </div>
+        </div>
+    </form>
+
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Script definitions from server
+const scripts = {{ matrix.scripts | tojson }};
+const scriptsList = scripts.map(s => ({
+    id: s.script_id,
+    name: s.script_name,
+    test_before: s.test_before,
+    test_after: s.test_after
+}));
+
+// Current combinations (array of objects)
+let combinations = [];
+
+// Load existing combinations from matrix
+function loadExistingCombinations() {
+    const matrixData = {{ matrix.matrix | tojson }};
+    const seen = new Set();
+
+    // Extract unique combinations from matrix
+    for (const rowId in matrixData) {
+        for (const colId in matrixData[rowId]) {
+            if (matrixData[rowId][colId]) {
+                const combo = {};
+
+                // Parse row state
+                const rowParts = rowId.split('_');
+                const rowState = rowParts.pop();
+                const rowScriptId = rowParts.join('_');
+                combo[rowScriptId] = rowState;
+
+                // Parse col state
+                const colParts = colId.split('_');
+                const colState = colParts.pop();
+                const colScriptId = colParts.join('_');
+                combo[colScriptId] = colState;
+
+                const comboKey = JSON.stringify(combo);
+                if (!seen.has(comboKey)) {
+                    seen.add(comboKey);
+                    combinations.push(combo);
+                }
+            }
+        }
+    }
+
+    if (combinations.length === 0) {
+        // Add initial combination (all "before")
+        const initialCombo = {};
+        scriptsList.forEach(s => {
+            if (s.test_before) initialCombo[s.id] = 'before';
+        });
+        combinations.push(initialCombo);
+    }
+}
+
+// Render the table
+function renderTable() {
+    const tbody = document.getElementById('combinations-tbody');
+    tbody.innerHTML = '';
+
+    combinations.forEach((combo, index) => {
+        const row = document.createElement('tr');
+        row.className = 'combination-row';
+        row.draggable = true;
+        row.dataset.index = index;
+
+        // Drag handle
+        const handleCell = document.createElement('td');
+        handleCell.innerHTML = '<i class="bi bi-grip-vertical drag-handle"></i>';
+        row.appendChild(handleCell);
+
+        // Row number
+        const numberCell = document.createElement('td');
+        numberCell.textContent = index + 1;
+        row.appendChild(numberCell);
+
+        // Script state selects
+        scriptsList.forEach(script => {
+            const cell = document.createElement('td');
+            const select = document.createElement('select');
+            select.className = 'form-select form-select-sm state-select';
+            select.dataset.scriptId = script.id;
+
+            if (script.test_before) {
+                const beforeOpt = document.createElement('option');
+                beforeOpt.value = 'before';
+                beforeOpt.textContent = 'Before';
+                select.appendChild(beforeOpt);
+            }
+
+            if (script.test_after) {
+                const afterOpt = document.createElement('option');
+                afterOpt.value = 'after';
+                afterOpt.textContent = 'After';
+                select.appendChild(afterOpt);
+            }
+
+            select.value = combo[script.id] || 'before';
+            select.addEventListener('change', () => {
+                combo[script.id] = select.value;
+                updateCount();
+            });
+
+            cell.appendChild(select);
+            row.appendChild(cell);
+        });
+
+        // Actions
+        const actionsCell = document.createElement('td');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-sm btn-outline-danger';
+        deleteBtn.innerHTML = '<i class="bi bi-trash"></i>';
+        deleteBtn.title = 'Delete';
+        deleteBtn.onclick = () => deleteCombination(index);
+        actionsCell.appendChild(deleteBtn);
+        row.appendChild(actionsCell);
+
+        tbody.appendChild(row);
+    });
+
+    initializeDragDrop();
+    updateCount();
+}
+
+// Add a new combination
+function addCombination() {
+    const newCombo = {};
+    scriptsList.forEach(s => {
+        newCombo[s.id] = s.test_before ? 'before' : 'after';
+    });
+    combinations.push(newCombo);
+    renderTable();
+}
+
+// Delete a combination
+function deleteCombination(index) {
+    if (combinations.length <= 1) {
+        alert('You must have at least one combination');
+        return;
+    }
+    combinations.splice(index, 1);
+    renderTable();
+}
+
+// Apply presets
+function applyPreset(preset) {
+    combinations = [];
+
+    switch (preset) {
+        case 'sequential':
+            // Initial state
+            const initial = {};
+            scriptsList.forEach(s => {
+                initial[s.id] = 'before';
+            });
+            combinations.push(initial);
+
+            // Progressive states
+            scriptsList.forEach((script, idx) => {
+                const combo = {};
+                scriptsList.forEach((s, sidx) => {
+                    combo[s.id] = sidx <= idx ? 'after' : 'before';
+                });
+                combinations.push(combo);
+            });
+            break;
+
+        case 'initial_final':
+            // All before
+            const allBefore = {};
+            scriptsList.forEach(s => {
+                allBefore[s.id] = 'before';
+            });
+            combinations.push(allBefore);
+
+            // All after
+            const allAfter = {};
+            scriptsList.forEach(s => {
+                allAfter[s.id] = 'after';
+            });
+            combinations.push(allAfter);
+            break;
+
+        case 'all':
+            // Generate all permutations
+            const generate = (index, current) => {
+                if (index >= scriptsList.length) {
+                    combinations.push({...current});
+                    return;
+                }
+                const script = scriptsList[index];
+                if (script.test_before) {
+                    current[script.id] = 'before';
+                    generate(index + 1, current);
+                }
+                if (script.test_after) {
+                    current[script.id] = 'after';
+                    generate(index + 1, current);
+                }
+            };
+            generate(0, {});
+            break;
+
+        case 'clear':
+            const clearCombo = {};
+            scriptsList.forEach(s => {
+                clearCombo[s.id] = 'before';
+            });
+            combinations.push(clearCombo);
+            break;
+    }
+
+    renderTable();
+}
+
+// Update count
+function updateCount() {
+    document.getElementById('combinations-count').textContent = combinations.length;
+}
+
+// Drag and drop
+let draggedRow = null;
+
+function initializeDragDrop() {
+    const rows = document.querySelectorAll('.combination-row');
+
+    rows.forEach(row => {
+        row.addEventListener('dragstart', function(e) {
+            draggedRow = this;
+            this.style.opacity = '0.5';
+        });
+
+        row.addEventListener('dragend', function(e) {
+            this.style.opacity = '';
+            document.querySelectorAll('.combination-row').forEach(r => {
+                r.classList.remove('drag-over');
+            });
+        });
+
+        row.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            if (this !== draggedRow) {
+                this.classList.add('drag-over');
+            }
+        });
+
+        row.addEventListener('dragleave', function(e) {
+            this.classList.remove('drag-over');
+        });
+
+        row.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (draggedRow !== this) {
+                const fromIndex = parseInt(draggedRow.dataset.index);
+                const toIndex = parseInt(this.dataset.index);
+
+                const [moved] = combinations.splice(fromIndex, 1);
+                combinations.splice(toIndex, 0, moved);
+
+                renderTable();
+            }
+        });
+    });
+}
+
+// Form submission
+document.getElementById('matrix-form').addEventListener('submit', function(e) {
+    // Convert to matrix format
+    const matrix = {};
+
+    combinations.forEach(combo => {
+        // Create all pairs of states in this combination
+        const states = Object.entries(combo);
+        states.forEach(([scriptId1, state1]) => {
+            states.forEach(([scriptId2, state2]) => {
+                const rowId = `${scriptId1}_${state1}`;
+                const colId = `${scriptId2}_${state2}`;
+
+                if (!matrix[rowId]) matrix[rowId] = {};
+                matrix[rowId][colId] = true;
+            });
+        });
+    });
+
+    document.getElementById('combinations-data-input').value = JSON.stringify(matrix);
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadExistingCombinations();
+    renderTable();
+});
+</script>
+{% endblock %}

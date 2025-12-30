@@ -122,7 +122,7 @@ class TestRunner:
                 # Perform authentication if user specified
                 authenticated_user = None
                 if website_user_id:
-                    user = self.db.get_website_user(website_user_id)
+                    user = self.db.get_project_user(website_user_id)
                     if user:
                         if not user.enabled:
                             logger.warning(f"User {user.username} is disabled, skipping authentication")

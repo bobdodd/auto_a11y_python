@@ -72,6 +72,7 @@ class MultiStateTestRunner:
         logger.warning(f"DEBUG: test_initial_state={test_initial_state}")
 
         if test_initial_state:
+            logger.warning(f"DEBUG: Testing initial state (before any scripts)")
             logger.info(f"Testing page {page_id} in initial state (sequence {state_sequence})")
 
             # Create initial state
@@ -86,6 +87,7 @@ class MultiStateTestRunner:
 
             # Run accessibility tests
             test_result = await test_function(page, page_id)
+            logger.warning(f"DEBUG: Initial state tests complete, violations={len(test_result.violations)}")
 
             # Add state metadata
             test_result.page_state = initial_state.to_dict()
@@ -129,11 +131,13 @@ class MultiStateTestRunner:
                     continue
 
             # Execute script
+            logger.warning(f"DEBUG: About to execute script '{script.name}'")
             script_result = await self.script_executor.execute_script(
                 page=page,
                 script=script,
                 environment_vars=environment_vars
             )
+            logger.warning(f"DEBUG: Script execution complete - success={script_result['success']}")
 
             scripts_executed_so_far.append(script.id)
 
@@ -166,10 +170,12 @@ class MultiStateTestRunner:
 
             # Test after script execution if configured
             if script.test_after_execution:
+                logger.warning(f"DEBUG: test_after_execution=True, running post-script tests")
                 logger.info(f"Testing page {page_id} after script '{script.name}' (sequence {state_sequence})")
 
                 # Run accessibility tests
                 test_result = await test_function(page, page_id)
+                logger.warning(f"DEBUG: Post-script tests complete, violations={len(test_result.violations)}")
 
                 # Add state validation violations to test result
                 test_result.violations.extend(state_violations)

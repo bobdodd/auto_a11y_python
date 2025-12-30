@@ -292,12 +292,16 @@
                     const response = await $.get(statusUrl);
                     
                     if (test.type === 'page') {
-                        // Page test - check if completed
-                        if (response.status === 'tested' || response.status === 'error') {
-                            completedInThisCheck.push(test);
-                            this.removeTest(test.type, test.id);
-                        } else {
+                        // Page test - check if completed or not actively running
+                        // Only keep tracking if status is 'queued' or 'testing'
+                        if (response.status === 'queued' || response.status === 'testing') {
                             activeCount++;
+                        } else {
+                            // Any other status (tested, error, ready, cancelled) means not running
+                            if (response.status === 'tested' || response.status === 'error') {
+                                completedInThisCheck.push(test);
+                            }
+                            this.removeTest(test.type, test.id);
                         }
                     } else if (test.type === 'website') {
                         // Website test - check if all pages done

@@ -315,16 +315,21 @@ class TestingJob:
                 database.update_page(page)
                 
                 try:
-                    # Test the page
+                    # Test the page with multi-state support
                     logger.info(f"Testing page {i+1}/{len(testable_pages)}: {page.url}")
-                    test_results = await test_runner.test_page(
+                    test_results_list = await test_runner.test_page_multi_state(
                         page=page,
+                        enable_multi_state=True,
                         take_screenshot=take_screenshot,
                         run_ai_analysis=run_ai_analysis,
                         ai_api_key=ai_api_key,
                         website_user_id=self.website_user_id
                     )
-                    
+
+                    # test_page_multi_state returns List[TestResult]
+                    # Use the last result (final state) for page status
+                    test_results = test_results_list[-1] if test_results_list else None
+
                     # Update page status based on results
                     if test_results:
                         page.status = PageStatus.TESTED

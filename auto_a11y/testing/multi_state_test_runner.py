@@ -128,8 +128,15 @@ class MultiStateTestRunner:
                     # If script has a selector (likely the cookie banner button), wait for it
                     if script.steps and script.steps[0].selector:
                         try:
-                            logger.warning(f"DEBUG: Waiting for script target selector: {script.steps[0].selector}")
-                            await page.waitForSelector(script.steps[0].selector, {'timeout': 5000})
+                            selector = script.steps[0].selector
+                            logger.warning(f"DEBUG: Waiting for script target selector: {selector}")
+
+                            # Check if XPath selector (starts with / or //)
+                            if selector.startswith('/'):
+                                await page.waitForXPath(selector, {'timeout': 5000})
+                            else:
+                                await page.waitForSelector(selector, {'timeout': 5000})
+
                             logger.warning(f"DEBUG: Script target selector found and ready")
                         except Exception as e:
                             logger.warning(f"DEBUG: Could not find script target selector (will try anyway): {e}")

@@ -2,6 +2,7 @@
 Database-backed testing job implementation
 """
 
+import asyncio
 import logging
 from datetime import datetime
 from typing import Optional, Dict, Any, List
@@ -372,7 +373,11 @@ class TestingJob:
                         pages_failed=pages_failed,
                         pages_skipped=pages_skipped
                     )
-            
+
+                # Small delay between pages to let browser stabilize after multi-state testing
+                if i < len(testable_pages) - 1:  # Don't delay after last page
+                    await asyncio.sleep(0.5)
+
             # Check final cancellation status
             if self.is_cancelled():
                 logger.info(f"Testing job {self.job_id} was cancelled")

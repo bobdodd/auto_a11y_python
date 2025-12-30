@@ -132,7 +132,7 @@
                         {% endif %}
 
                         <dt class="col-sm-5">{{ _('Session Timeout:') }}</dt>
-                        <dd class="col-sm-7">{{ _('%s minutes') % user.login_config.session_timeout_minutes }}</dd>
+                        <dd class="col-sm-7">{{ _('%(minutes)s minutes', minutes=user.login_config.session_timeout_minutes) }}</dd>
                     </dl>
                 </div>
             </div>

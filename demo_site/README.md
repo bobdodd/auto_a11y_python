@@ -83,7 +83,9 @@ This demonstrates the importance of testing at multiple breakpoints.
 ## Pages
 
 ### index.html (French)
-- Hero carousel with auto-play
+
+- Visually hidden H1: "Bienvenue à Assurance Québec Plus"
+- Hero carousel with auto-play (h2 headings in captions)
 - Service cards with mixed language content
 - Interactive map with aria-hidden
 - Loading spinner
@@ -91,16 +93,26 @@ This demonstrates the importance of testing at multiple breakpoints.
 - Desktop sidebar with contrast issues
 
 ### index-en.html (English)
+
 - English version of homepage
 - Same accessibility issues as French version
+- Visually hidden H1: "Welcome to Quebec Insurance Plus"
 
 ### services.html (French)
+
+- Proper H1: "Catalogue de Produits d'Assurance"
 - Services catalog page
 - Additional examples of:
-  - Fake headings
+  - Fake headings (using divs, not semantic h2/h3)
   - Mixed language content
   - Icon buttons without labels
   - Link to English PDF without warning
+
+### services-en.html (English)
+
+- Proper H1: "Insurance Products Catalog"
+- English version of services page
+- Same accessibility issues as French version
 
 ## Testing with autoA11y
 
@@ -147,3 +159,30 @@ This demo is designed to showcase:
 4. **Quebec-specific concerns** (bilingual content, language switching)
 
 The issues are realistic and represent common problems in insurance company websites.
+
+## Accessibility Features (Good Practices)
+
+While the demo site contains intentional accessibility issues, it also demonstrates proper accessibility features:
+
+### Skip to Main Content Link
+
+- **Location**: First element after `<body>` tag on all pages
+- **Behavior**: Hidden off-screen until focused (keyboard users press Tab)
+- **Target**: Jumps directly to the H1 heading (`#main-content`)
+- **tabindex="-1"**: Allows H1 to receive programmatic focus (prevents screen reader from staying on link)
+- **Text**: 
+  - French: "Aller au contenu principal"
+  - English: "Skip to main content"
+- **WCAG**: 2.4.1 Bypass Blocks (Level A)
+
+### Proper Heading Hierarchy
+
+- **H1**: Visually hidden on homepages, visible on services pages
+- **ID**: All H1 elements have `id="main-content"` for skip link target
+- **Structure**: H1 → H2 → H3 (with intentional fake headings for demo)
+
+### Visually Hidden Content
+
+- `.visually-hidden` class used for screen-reader-only content
+- Positioned absolutely, clipped to 1px × 1px
+- Accessible to assistive technology but invisible visually

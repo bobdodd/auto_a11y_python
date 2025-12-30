@@ -22,7 +22,7 @@
             <h1 class="h2">
                 <i class="bi bi-people"></i> {{ _('Test Users') }}
             </h1>
-            <p class="text-muted">{{ _('Manage authenticated test users for %s') % website.display_name }}</p>
+            <p class="text-muted">{{ _('Manage authenticated test users for %(name)s', name=website.display_name) }}</p>
         </div>
         <div>
             <a href="{{ url_for('website_users.create_user', website_id=website.id) }}" class="btn btn-primary">

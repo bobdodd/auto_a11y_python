@@ -60,14 +60,14 @@
                 <a href="{{ url_for('pages.view_page', page_id=page.id) }}">{{ page.title or _('Page') }}</a>
             </li>
             {% endif %}
-            <li class="breadcrumb-item active" aria-current="page">{{ _('Create %s Script') % (_('Website') if is_website_script else _('Page')) }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Create %(type)s Script', type=(_('Website') if is_website_script else _('Page'))) }}</li>
         </ol>
     </nav>
 
     <div class="row">
         <div class="col-lg-10 col-xl-8">
             <h1 class="h2 mb-4">
-                <i class="bi bi-code-square"></i> {{ _('Create %s Setup Script') % (_('Website-Level') if is_website_script else _('Page-Level')) }}
+                <i class="bi bi-code-square"></i> {{ _('Create %(level)s Setup Script', level=(_('Website-Level') if is_website_script else _('Page-Level'))) }}
             </h1>
 
             <div class="alert alert-info">

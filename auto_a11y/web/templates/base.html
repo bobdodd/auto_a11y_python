@@ -312,8 +312,15 @@
                     }
                 } catch (error) {
                     console.error(`Failed to check status for ${test.type} ${test.id}:`, error);
-                    // Keep the test in the list but mark as unknown
-                    activeCount++;
+                    // If the error is a 404 or network error, remove the stale entry
+                    // This handles cases where Flask was restarted and job no longer exists
+                    if (error.status === 404 || error.status === 0 || error.statusText === 'error') {
+                        console.log(`Removing stale ${test.type} test for ${test.id} due to error: ${error.status || 'network error'}`);
+                        this.removeTest(test.type, test.id);
+                    } else {
+                        // For other errors (e.g., temporary network issues), keep trying
+                        activeCount++;
+                    }
                 }
             }
             

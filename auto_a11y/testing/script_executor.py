@@ -417,6 +417,15 @@ class ScriptExecutor:
                     'duration_ms': 0
                 }
 
+        # Clear cookies and/or localStorage if configured
+        if script.clear_cookies_before or script.clear_local_storage_before:
+            await self._clear_browser_state(page, script)
+
+            # Reload page to apply the cleared state
+            logger.info(f"Reloading page after clearing browser state")
+            await page.reload({'waitUntil': 'networkidle2'})
+            logger.info(f"Page reloaded successfully")
+
         # Execute script
         start_time = time.time()
         result = await self.execute_script(page, script, environment_vars)
@@ -461,3 +470,36 @@ class ScriptExecutor:
         except Exception as e:
             logger.debug(f"Error checking condition selector '{selector}': {e}")
             return False
+
+    async def _clear_browser_state(self, page, script: PageSetupScript):
+        """
+        Clear cookies and/or localStorage before script execution
+
+        Args:
+            page: Pyppeteer page object
+            script: PageSetupScript with clear_cookies_before and clear_local_storage_before flags
+        """
+        try:
+            if script.clear_cookies_before:
+                logger.info(f"Clearing cookies for script '{script.name}'")
+                # Get all cookies
+                cookies = await page.cookies()
+                if cookies:
+                    # Delete all cookies
+                    await page.deleteCookie(*cookies)
+                    logger.info(f"Cleared {len(cookies)} cookies")
+                else:
+                    logger.info("No cookies to clear")
+
+            if script.clear_local_storage_before:
+                logger.info(f"Clearing localStorage and sessionStorage for script '{script.name}'")
+                # Execute JavaScript to clear storage
+                await page.evaluate('''() => {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                }''')
+                logger.info("Cleared localStorage and sessionStorage")
+
+        except Exception as e:
+            logger.error(f"Error clearing browser state: {e}")
+            # Don't raise - continue with script execution even if clearing fails

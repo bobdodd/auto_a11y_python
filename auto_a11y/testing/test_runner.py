@@ -122,16 +122,25 @@ class TestRunner:
                 # Perform authentication if user specified
                 authenticated_user = None
                 if website_user_id:
+                    logger.warning(f"DEBUG: Testing page {page.url} with user_id: {website_user_id}")
                     user = self.db.get_project_user(website_user_id)
                     if user:
+                        logger.warning(f"DEBUG: Found user: {user.username} (id: {user.id})")
                         if not user.enabled:
                             logger.warning(f"User {user.username} is disabled, skipping authentication")
                         else:
                             # Check if already logged in as this user
-                            if self._logged_in_user and self._logged_in_user.id == user.id:
-                                logger.info(f"Already authenticated as {user.username}, reusing session")
-                                authenticated_user = self._logged_in_user
+                            if self._logged_in_user:
+                                logger.warning(f"DEBUG: Already have logged_in_user: {self._logged_in_user.username} (id: {self._logged_in_user.id})")
+                                if self._logged_in_user.id == user.id:
+                                    logger.warning(f"DEBUG: IDs match, reusing session")
+                                    authenticated_user = self._logged_in_user
+                                else:
+                                    logger.warning(f"DEBUG: IDs don't match ({self._logged_in_user.id} != {user.id}), will re-authenticate")
                             else:
+                                logger.warning(f"DEBUG: No logged_in_user set, will authenticate")
+
+                            if not authenticated_user:
                                 logger.info(f"Authenticating as user: {user.username} (roles: {user.role_display})")
                                 login_result = await self.login_automation.perform_login(
                                     browser_page,

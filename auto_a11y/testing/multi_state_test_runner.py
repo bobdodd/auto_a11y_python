@@ -371,3 +371,138 @@ class MultiStateTestRunner:
         except Exception as e:
             logger.error(f"Error clearing browser state: {e}")
             # Don't raise - continue with script execution even if clearing fails
+
+    async def test_page_with_matrix(
+        self,
+        page,
+        page_id: str,
+        test_state_matrix,  # TestStateMatrix instance
+        scripts_by_id: Dict[str, PageSetupScript],
+        test_function,
+        session_id: str,
+        environment_vars: Optional[Dict[str, str]] = None
+    ) -> List[TestResult]:
+        """
+        Test page using a state matrix to define which combinations to test
+
+        This method tests only the state combinations defined in the matrix,
+        avoiding the combinatorial explosion of testing all 2^N permutations.
+
+        Args:
+            page: Pyppeteer page object
+            page_id: ID of page being tested
+            test_state_matrix: TestStateMatrix defining which combinations to test
+            scripts_by_id: Dict mapping script_id to PageSetupScript instances
+            test_function: Async function that runs accessibility tests
+            session_id: Script execution session ID
+            environment_vars: Environment variables for scripts
+
+        Returns:
+            List of TestResult objects (one per state combination tested)
+        """
+        from auto_a11y.models import TestStateMatrix, StateCombination
+
+        logger.info(f"Starting matrix-based multi-state testing for page {page_id}")
+        results = []
+        state_sequence = 0
+
+        # Get all enabled state combinations from the matrix
+        combinations = test_state_matrix.get_enabled_combinations()
+        logger.info(f"Testing {len(combinations)} state combinations (instead of {2**len(test_state_matrix.scripts)} possible permutations)")
+
+        # Save initial page URL for reloading
+        initial_url = page.url
+
+        # Test each combination
+        for combo_idx, combination in enumerate(combinations):
+            logger.info(f"Testing combination {combo_idx + 1}/{len(combinations)}: {combination.script_states}")
+
+            # Reload page to start fresh
+            if combo_idx > 0:
+                logger.info(f"Reloading page to initial state")
+                await page.goto(initial_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
+                await asyncio.sleep(1.0)  # Let page stabilize
+
+            # Execute scripts to reach this state
+            scripts_executed = []
+            for script_def in sorted(test_state_matrix.scripts, key=lambda s: s.execution_order):
+                script_id = script_def.script_id
+                desired_state = combination.script_states.get(script_id)
+
+                if desired_state == "after" and script_id in scripts_by_id:
+                    # Execute this script
+                    script = scripts_by_id[script_id]
+                    logger.info(f"Executing script '{script.name}' to reach desired state")
+
+                    # Clear browser state if configured
+                    if script.clear_cookies_before or script.clear_local_storage_before:
+                        try:
+                            current_url = page.url
+                            await self._clear_browser_state(page, script)
+                            await page.goto(current_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
+                            await asyncio.sleep(2.0)
+                        except Exception as e:
+                            logger.error(f"Error clearing browser state: {e}")
+                            continue
+
+                    # Execute script
+                    script_result = await self.script_executor.execute_script(
+                        page=page,
+                        script=script,
+                        environment_vars=environment_vars
+                    )
+
+                    if script_result['success']:
+                        scripts_executed.append(script_id)
+                        logger.info(f"Successfully executed script '{script.name}'")
+                    else:
+                        logger.warning(f"Script '{script.name}' failed: {script_result.get('error', 'Unknown error')}")
+                        # Continue anyway - we still want to test this state
+
+            # Create state description
+            state_description_parts = []
+            for script_def in test_state_matrix.scripts:
+                script_id = script_def.script_id
+                state = combination.script_states.get(script_id, "before")
+                state_label = f"{script_def.script_name} ({state})"
+                state_description_parts.append(state_label)
+
+            state_description = ", ".join(state_description_parts)
+            if combination.description:
+                state_description = f"{combination.description}: {state_description}"
+
+            logger.info(f"Testing page in state: {state_description}")
+
+            # Create PageTestState
+            from auto_a11y.models import PageTestState
+            page_state = PageTestState(
+                state_id=f"{page_id}_state_{state_sequence}",
+                description=state_description,
+                scripts_executed=scripts_executed,
+                elements_clicked=[],
+                elements_visible=[],
+                elements_hidden=[]
+            )
+
+            # Run accessibility tests
+            test_result = await test_function(page, page_id)
+            logger.info(f"Tests complete for state {state_sequence}, violations={len(test_result.violations)}")
+
+            # Add state metadata
+            test_result.page_state = page_state.to_dict()
+            test_result.state_sequence = state_sequence
+            test_result.session_id = session_id
+            test_result.metadata['state_description'] = state_description
+            test_result.metadata['state_combination'] = combination.to_dict()
+
+            results.append(test_result)
+            state_sequence += 1
+
+        # Link all results together
+        result_ids = [result.id for result in results if result.id]
+        for result in results:
+            result.related_result_ids = [rid for rid in result_ids if rid != result.id]
+
+        logger.info(f"Matrix-based testing complete: {len(results)} test results generated")
+
+        return results

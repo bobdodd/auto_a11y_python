@@ -157,6 +157,13 @@
                     </svg>
                 </button>
             </div>
+
+            <!-- Newsletter subscribe section -->
+            <section class="newsletter-section">
+                <h2>Stay Informed</h2>
+                <p>Subscribe to our newsletter to receive insurance tips and exclusive offers.</p>
+                <button id="open-newsletter-modal" class="btn-primary">Subscribe to Newsletter</button>
+            </section>
         </div>
     </main>
 
@@ -207,14 +214,52 @@
         </div>
     </footer>
 
-    <script src="js/carousel.js"></script>
-    <script src="js/spinner.js"></script>
+    <!-- Newsletter Modal (accessible but fails to return focus when closed) -->
+    <div id="newsletter-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description" hidden>
+        <div class="modal-overlay" aria-hidden="true"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Subscribe to Our Newsletter</h2>
+                <button id="close-modal" class="modal-close" aria-label="Close dialog">
+                    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-description">Receive our latest news, insurance tips and exclusive offers directly in your inbox.</p>
+                <form id="newsletter-form" class="newsletter-form">
+                    <div class="form-group">
+                        <label for="newsletter-name">Full Name</label>
+                        <input type="text" id="newsletter-name" name="name" required aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="newsletter-email">Email Address</label>
+                        <input type="email" id="newsletter-email" name="email" required aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="newsletter-consent" name="consent" required aria-required="true">
+                            I agree to receive marketing communications
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Subscribe</button>
+                        <button type="button" id="cancel-modal" class="btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Cookie notice (intentional issue: placed at end of DOM but visually at bottom) -->
     <div id="cookie-notice" class="cookie-notice">
-        <p>Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre utilisation des cookies.</p>
+        <p>We use cookies to improve your experience. By continuing, you accept our use of cookies.</p>
         <button id="cookie-accept" class="btn-primary">OK</button>
     </div>
 
+    <script src="js/carousel.js"></script>
+    <script src="js/spinner.js"></script>
     <script>
         // Cookie notice functionality
         function getCookie(name) {
@@ -239,6 +284,95 @@
         document.getElementById('cookie-accept').addEventListener('click', function() {
             setCookie('cookieAccepted', 'true', 365);
             document.getElementById('cookie-notice').style.display = 'none';
+        });
+
+        // Newsletter Modal functionality (accessible but fails to restore focus)
+        const modal = document.getElementById('newsletter-modal');
+        const openModalBtn = document.getElementById('open-newsletter-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const cancelModalBtn = document.getElementById('cancel-modal');
+        const newsletterForm = document.getElementById('newsletter-form');
+
+        // Store focusable elements for keyboard trap
+        let focusableElements = [];
+        let firstFocusableElement = null;
+        let lastFocusableElement = null;
+
+        function openModal() {
+            modal.hidden = false;
+            document.body.style.overflow = 'hidden';
+
+            // Get all focusable elements within the modal
+            focusableElements = Array.from(modal.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            )).filter(el => !el.disabled && el.offsetParent !== null);
+
+            firstFocusableElement = focusableElements[0];
+            lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+            // Move focus to first element (close button)
+            if (firstFocusableElement) {
+                firstFocusableElement.focus();
+            }
+        }
+
+        function closeModal() {
+            modal.hidden = true;
+            document.body.style.overflow = '';
+            newsletterForm.reset();
+
+            // INTENTIONAL ACCESSIBILITY ISSUE:
+            // NOT returning focus to the trigger button
+            // Proper implementation would be: openModalBtn.focus();
+            // This creates a keyboard navigation issue where focus is lost
+        }
+
+        // Keyboard trap - keeps focus inside modal
+        function handleKeyDown(e) {
+            if (!modal.hidden) {
+                // Handle Escape key
+                if (e.key === 'Escape') {
+                    closeModal();
+                    return;
+                }
+
+                // Handle Tab key for focus trap
+                if (e.key === 'Tab') {
+                    if (e.shiftKey) {
+                        // Shift+Tab - moving backwards
+                        if (document.activeElement === firstFocusableElement) {
+                            e.preventDefault();
+                            lastFocusableElement.focus();
+                        }
+                    } else {
+                        // Tab - moving forwards
+                        if (document.activeElement === lastFocusableElement) {
+                            e.preventDefault();
+                            firstFocusableElement.focus();
+                        }
+                    }
+                }
+            }
+        }
+
+        // Event listeners
+        openModalBtn.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelModalBtn.addEventListener('click', closeModal);
+        document.addEventListener('keydown', handleKeyDown);
+
+        // Close on overlay click
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Handle form submission
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for subscribing! (This is a demo)');
+            closeModal();
         });
     </script>
 </body>

@@ -256,10 +256,12 @@ def view_page(page_id):
     state_results = []
     selected_state_index = 0  # Default to first state
     if test_result and test_result.session_id:
-        # Get all results for this session, ordered by state_sequence
+        # Get all results for this session
         all_session_results = current_app.db.get_test_results_by_session(test_result.session_id)
+        # Filter to only include results for THIS page (session may span multiple pages)
+        page_session_results = [r for r in all_session_results if r.page_id == page_id]
         # Enrich each one with catalog data
-        state_results = [enrich_test_result_with_catalog(r) for r in all_session_results]
+        state_results = [enrich_test_result_with_catalog(r) for r in page_session_results]
         # Sort by state_sequence to ensure proper order
         state_results.sort(key=lambda r: r.state_sequence if hasattr(r, 'state_sequence') else 0)
 

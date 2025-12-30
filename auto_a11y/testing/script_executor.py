@@ -420,18 +420,22 @@ class ScriptExecutor:
         # Clear cookies and/or localStorage if configured
         if script.clear_cookies_before or script.clear_local_storage_before:
             try:
+                # Get current URL before clearing
+                current_url = page.url
+
                 await self._clear_browser_state(page, script)
 
-                # Reload page to apply the cleared state
-                logger.info(f"Reloading page after clearing browser state")
-                await page.reload({'waitUntil': 'networkidle2', 'timeout': 30000})
-                logger.info(f"Page reloaded successfully")
+                # Navigate to same URL again to apply the cleared state
+                # Using goto instead of reload is more reliable with context managers
+                logger.info(f"Navigating to {current_url} after clearing browser state")
+                await page.goto(current_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
+                logger.info(f"Page navigation completed successfully")
             except Exception as e:
-                logger.error(f"Error during browser state clearing/reload: {e}")
+                logger.error(f"Error during browser state clearing/navigation: {e}")
                 # Return error result instead of continuing
                 return {
                     'success': False,
-                    'error': f'Failed to clear browser state and reload: {str(e)}',
+                    'error': f'Failed to clear browser state and navigate: {str(e)}',
                     'duration_ms': 0
                 }
 

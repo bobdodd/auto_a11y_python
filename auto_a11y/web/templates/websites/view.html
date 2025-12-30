@@ -118,7 +118,7 @@
             <a href="{{ url_for('websites.view_documents', website_id=website.id) }}" class="btn btn-outline-info me-2">
                 <i class="bi bi-file-earmark"></i> {{ _('Documents') }}
             </a>
-            <a href="{{ url_for('scripts.create_website_script', website_id=website.id) }}" class="btn btn-outline-primary me-2">
+            <a href="{{ url_for('scripts.list_website_scripts', website_id=website.id) }}" class="btn btn-outline-primary me-2">
                 <i class="bi bi-code-square"></i> {{ _('Setup Scripts') }}
             </a>
             <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-success me-2">

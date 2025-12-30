@@ -246,6 +246,32 @@ def create_website_script(website_id):
                          is_website_script=True)
 
 
+@scripts_bp.route('/website/<website_id>/scripts')
+def list_website_scripts(website_id):
+    """List all scripts for a website"""
+    website = current_app.db.get_website(website_id)
+    if not website:
+        flash('Website not found', 'error')
+        return redirect(url_for('index'))
+
+    # Get project for context
+    project = current_app.db.get_project(website.project_id) if website else None
+
+    # Get website-level scripts
+    website_scripts = current_app.db.get_scripts_for_website(
+        website_id,
+        scope=ScriptScope.WEBSITE.value,
+        enabled_only=False
+    )
+
+    return render_template('scripts/list.html',
+                         page=None,  # No specific page
+                         website=website,
+                         project=project,
+                         page_scripts=[],  # No page-specific scripts
+                         website_scripts=website_scripts)
+
+
 @scripts_bp.route('/<script_id>')
 def view_script(script_id):
     """View script details"""

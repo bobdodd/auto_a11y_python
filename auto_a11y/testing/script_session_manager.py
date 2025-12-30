@@ -107,6 +107,25 @@ class ScriptSessionManager:
 
         logger.debug(f"Marked script {script_id} as executed on page {page_id}")
 
+    def has_executed_on_page(self, script_id: str, page_id: str) -> bool:
+        """
+        Check if script has been executed on a specific page in this session
+
+        Args:
+            script_id: Script ID
+            page_id: Page ID
+
+        Returns:
+            True if script has been executed on this page
+        """
+        if not self.current_session:
+            return False
+
+        return any(
+            record.script_id == script_id and record.page_id == page_id
+            for record in self.current_session.executed_scripts
+        )
+
     def should_execute_script(
         self,
         script: PageSetupScript,
@@ -134,6 +153,11 @@ class ScriptSessionManager:
         elif script.trigger == ExecutionTrigger.ONCE_PER_PAGE:
             # Always execute for page-level scripts
             pass
+
+        elif script.trigger == ExecutionTrigger.ONCE_PER_PAGE_FIRST_VISIT:
+            # Only execute on first visit to this specific page
+            if self.has_executed_on_page(script.id, page_id):
+                return False, f"Already executed on page {page_id} this session (once_per_page_first_visit trigger)"
 
         elif script.trigger == ExecutionTrigger.CONDITIONAL:
             # Will check element existence before execution

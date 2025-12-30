@@ -19,10 +19,11 @@ class ScriptScope(Enum):
 
 class ExecutionTrigger(Enum):
     """When the script should execute"""
-    ONCE_PER_SESSION = "once_per_session"     # Run once for entire test session
-    ONCE_PER_PAGE = "once_per_page"           # Run every time page is tested
-    CONDITIONAL = "conditional"                # Run only if condition selector exists
-    ALWAYS = "always"                          # Run unconditionally
+    ONCE_PER_SESSION = "once_per_session"           # Run once for entire test session
+    ONCE_PER_PAGE = "once_per_page"                 # Run every time page is tested
+    ONCE_PER_PAGE_FIRST_VISIT = "once_per_page_first_visit"  # Run only on first page visit (for page-scoped scripts)
+    CONDITIONAL = "conditional"                      # Run only if condition selector exists
+    ALWAYS = "always"                                # Run unconditionally
 
 
 class ActionType(Enum):

@@ -124,6 +124,15 @@ class MultiStateTestRunner:
 
                     # Ensure body is present and interactive
                     await page.waitForSelector('body', {'timeout': 5000})
+
+                    # If script has a selector (likely the cookie banner button), wait for it
+                    if script.steps and script.steps[0].selector:
+                        try:
+                            logger.warning(f"DEBUG: Waiting for script target selector: {script.steps[0].selector}")
+                            await page.waitForSelector(script.steps[0].selector, {'timeout': 5000})
+                            logger.warning(f"DEBUG: Script target selector found and ready")
+                        except Exception as e:
+                            logger.warning(f"DEBUG: Could not find script target selector (will try anyway): {e}")
                 except Exception as e:
                     logger.error(f"Error during browser state clearing/navigation: {e}")
                     # Skip this script and continue with next one

@@ -124,9 +124,10 @@ def create_page_script(page_id):
     ]
 
     trigger_options = [
-        {'value': ExecutionTrigger.ALWAYS.value, 'label': 'Always (Every Test)'},
-        {'value': ExecutionTrigger.ONCE_PER_PAGE.value, 'label': 'Once Per Page'},
-        {'value': ExecutionTrigger.CONDITIONAL.value, 'label': 'Conditional (If Element Exists)'}
+        {'value': ExecutionTrigger.ALWAYS.value, 'label': 'Always (Every Test)', 'description': 'Runs every time this page is tested'},
+        {'value': ExecutionTrigger.ONCE_PER_PAGE.value, 'label': 'Once Per Page', 'description': 'Runs every time this page is tested'},
+        {'value': ExecutionTrigger.ONCE_PER_PAGE_FIRST_VISIT.value, 'label': 'Once Per Page (First Visit Only)', 'description': 'Runs only on the first test of this page in a session'},
+        {'value': ExecutionTrigger.CONDITIONAL.value, 'label': 'Conditional (If Element Exists)', 'description': 'Runs only if the condition selector exists'}
     ]
 
     scope_options = [
@@ -228,6 +229,7 @@ def create_website_script(website_id):
     trigger_options = [
         {'value': ExecutionTrigger.ONCE_PER_SESSION.value, 'label': 'Once Per Session', 'description': 'Runs once at the start of testing'},
         {'value': ExecutionTrigger.ONCE_PER_PAGE.value, 'label': 'Once Per Page', 'description': 'Runs before testing each page'},
+        {'value': ExecutionTrigger.ONCE_PER_PAGE_FIRST_VISIT.value, 'label': 'Once Per Page (First Visit Only)', 'description': 'Runs only on the first test of this page in a session'},
         {'value': ExecutionTrigger.ALWAYS.value, 'label': 'Always (Every Test)', 'description': 'Runs every time a page is tested'},
         {'value': ExecutionTrigger.CONDITIONAL.value, 'label': 'Conditional', 'description': 'Runs only if element exists'}
     ]
@@ -381,6 +383,7 @@ def edit_script(script_id):
     trigger_options = [
         {'value': ExecutionTrigger.ONCE_PER_SESSION.value, 'label': 'Once Per Session', 'description': 'Runs once at the start of testing'},
         {'value': ExecutionTrigger.ONCE_PER_PAGE.value, 'label': 'Once Per Page', 'description': 'Runs before testing each page'},
+        {'value': ExecutionTrigger.ONCE_PER_PAGE_FIRST_VISIT.value, 'label': 'Once Per Page (First Visit Only)', 'description': 'Runs only on the first test of this page in a session'},
         {'value': ExecutionTrigger.ALWAYS.value, 'label': 'Always (Every Test)', 'description': 'Runs every time a page is tested'},
         {'value': ExecutionTrigger.CONDITIONAL.value, 'label': 'Conditional', 'description': 'Runs only if element exists'}
     ]

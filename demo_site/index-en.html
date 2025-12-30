@@ -7,13 +7,14 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <!-- Header with navigation -->
     <header>
         <div class="container">
             <div class="header-content">
                 <div class="logo">
                     <img src="images/quebec-logo.svg" alt="">
-                    <h1>Quebec Insurance Plus</h1>
+                    <span class="site-name">Quebec Insurance Plus</span>
                 </div>
 
                 <!-- Language switcher - buried deep in tab order -->
@@ -26,6 +27,7 @@
                     <li><a href="services-en.html">Services</a></li>
                     <li><a href="#" aria-haspopup="true">Resources</a></li>
                     <li><a href="#">Contact</a></li>
+                    <li><a href="login-en.html" class="login-link">Login</a></li>
                     <li class="language-switch">
                         <a href="index.html">FR</a>
                         <a href="index-en.html">EN</a>
@@ -37,6 +39,8 @@
 
     <!-- Main content -->
     <main>
+        <h1 id="main-content" class="visually-hidden" tabindex="-1">Welcome to Quebec Insurance Plus</h1>
+
         <!-- Hero carousel with auto-play and no controls -->
         <div class="hero-carousel" id="carousel">
             <div class="carousel-item active">
@@ -205,5 +209,21 @@
 
     <script src="js/carousel.js"></script>
     <script src="js/spinner.js"></script>
+    <!-- Cookie notice (intentional issue: placed at end of DOM but visually at bottom) -->
+    <div id="cookie-notice" class="cookie-notice">
+        <p>Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre utilisation des cookies.</p>
+        <button id="cookie-accept" class="btn-primary">OK</button>
+    </div>
+
+    <script>
+        // Cookie notice functionality
+        if (!localStorage.getItem('cookieAccepted')) {
+            document.getElementById('cookie-notice').style.display = 'flex';
+        }
+        document.getElementById('cookie-accept').addEventListener('click', function() {
+            localStorage.setItem('cookieAccepted', 'true');
+            document.getElementById('cookie-notice').style.display = 'none';
+        });
+    </script>
 </body>
 </html>

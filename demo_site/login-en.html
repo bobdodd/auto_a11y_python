@@ -136,5 +136,21 @@
                 '<div class="error-message">Incorrect email or password. Please try again.</div>';
         }
     </script>
+    <!-- Cookie notice (intentional issue: placed at end of DOM but visually at bottom) -->
+    <div id="cookie-notice" class="cookie-notice">
+        <p>Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre utilisation des cookies.</p>
+        <button id="cookie-accept" class="btn-primary">OK</button>
+    </div>
+
+    <script>
+        // Cookie notice functionality
+        if (!localStorage.getItem('cookieAccepted')) {
+            document.getElementById('cookie-notice').style.display = 'flex';
+        }
+        document.getElementById('cookie-accept').addEventListener('click', function() {
+            localStorage.setItem('cookieAccepted', 'true');
+            document.getElementById('cookie-notice').style.display = 'none';
+        });
+    </script>
 </body>
 </html>

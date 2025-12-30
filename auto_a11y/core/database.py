@@ -16,7 +16,8 @@ from auto_a11y.models import (
     Recording, RecordingIssue, RecordingType,
     DocumentReference, DiscoveryRun,
     PageSetupScript, ScriptExecutionSession,
-    WebsiteUser, ProjectUser, DiscoveredPage
+    WebsiteUser, ProjectUser, DiscoveredPage,
+    TestStateMatrix
 )
 
 logger = logging.getLogger(__name__)
@@ -53,6 +54,7 @@ class Database:
         self.recording_issues: Collection = self.db.recording_issues  # Issues from manual audits
         self.discovered_pages: Collection = self.db.discovered_pages  # Discovered pages for Drupal export
         self.drupal_issues: Collection = self.db.drupal_issues  # Track Drupal issue uploads by violation ID
+        self.test_state_matrices: Collection = self.db.test_state_matrices  # Multi-state test configuration matrices
 
         # Create indexes
         self._create_indexes()
@@ -127,6 +129,11 @@ class Database:
         self.script_execution_sessions.create_index("session_id", unique=True)
         self.script_execution_sessions.create_index("website_id")
         self.script_execution_sessions.create_index([("website_id", 1), ("started_at", -1)])
+
+        # Test state matrices
+        self.test_state_matrices.create_index("page_id", unique=True)
+        self.test_state_matrices.create_index("website_id")
+        self.test_state_matrices.create_index([("website_id", 1), ("created_date", -1)])
 
         # Website users (test users for authenticated testing)
         self.website_users.create_index("website_id")
@@ -2229,3 +2236,93 @@ class Database:
 
         docs = self.discovered_pages.find(query)
         return [DiscoveredPage.from_dict(doc) for doc in docs]
+
+    # ==========================================
+    # Test State Matrix Methods
+    # ==========================================
+
+    def create_test_state_matrix(self, matrix: TestStateMatrix) -> str:
+        """
+        Create a new test state matrix
+
+        Args:
+            matrix: TestStateMatrix instance
+
+        Returns:
+            Matrix ID (string)
+        """
+        matrix_dict = matrix.to_dict()
+        result = self.test_state_matrices.insert_one(matrix_dict)
+        return str(result.inserted_id)
+
+    def get_test_state_matrix(self, matrix_id: str) -> Optional[TestStateMatrix]:
+        """
+        Get test state matrix by ID
+
+        Args:
+            matrix_id: Matrix ID
+
+        Returns:
+            TestStateMatrix instance or None
+        """
+        doc = self.test_state_matrices.find_one({"_id": ObjectId(matrix_id)})
+        return TestStateMatrix.from_dict(doc) if doc else None
+
+    def get_test_state_matrix_by_page(self, page_id: str) -> Optional[TestStateMatrix]:
+        """
+        Get test state matrix for a specific page
+
+        Args:
+            page_id: Page ID
+
+        Returns:
+            TestStateMatrix instance or None
+        """
+        doc = self.test_state_matrices.find_one({"page_id": page_id})
+        return TestStateMatrix.from_dict(doc) if doc else None
+
+    def update_test_state_matrix(self, matrix: TestStateMatrix):
+        """
+        Update existing test state matrix
+
+        Args:
+            matrix: TestStateMatrix instance with updated data
+        """
+        if not matrix._id:
+            raise ValueError("Matrix must have an ID to update")
+
+        matrix.update_timestamp()
+        matrix_dict = matrix.to_dict()
+
+        self.test_state_matrices.update_one(
+            {"_id": matrix._id},
+            {"$set": matrix_dict}
+        )
+        logger.info(f"Updated test state matrix {matrix.id}")
+
+    def delete_test_state_matrix(self, matrix_id: str):
+        """
+        Delete test state matrix
+
+        Args:
+            matrix_id: Matrix ID
+        """
+        self.test_state_matrices.delete_one({"_id": ObjectId(matrix_id)})
+        logger.info(f"Deleted test state matrix {matrix_id}")
+
+    def list_test_state_matrices(self, website_id: Optional[str] = None) -> List[TestStateMatrix]:
+        """
+        List test state matrices
+
+        Args:
+            website_id: Optional website ID filter
+
+        Returns:
+            List of TestStateMatrix instances
+        """
+        query = {}
+        if website_id:
+            query["website_id"] = website_id
+
+        docs = self.test_state_matrices.find(query).sort("created_date", -1)
+        return [TestStateMatrix.from_dict(doc) for doc in docs]

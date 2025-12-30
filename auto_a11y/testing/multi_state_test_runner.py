@@ -62,12 +62,14 @@ class MultiStateTestRunner:
         Returns:
             List of TestResult objects (one per state tested)
         """
+        logger.warning(f"DEBUG: test_page_multi_state called with {len(scripts)} scripts for page_id={page_id}")
         results = []
         state_sequence = 0
         scripts_executed_so_far = []
 
         # Check if we need to test initial state (before any scripts)
         test_initial_state = any(script.test_before_execution for script in scripts)
+        logger.warning(f"DEBUG: test_initial_state={test_initial_state}")
 
         if test_initial_state:
             logger.info(f"Testing page {page_id} in initial state (sequence {state_sequence})")
@@ -186,7 +188,8 @@ class MultiStateTestRunner:
         for result in results:
             result.related_result_ids = [rid for rid in result_ids if rid != result.id]
 
-        logger.info(f"Multi-state testing complete: {len(results)} test results generated")
+        logger.warning(f"DEBUG: Multi-state testing complete: {len(results)} test results generated")
+        logger.warning(f"DEBUG: Returning results list with {len(results)} items")
 
         return results
 

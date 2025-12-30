@@ -429,10 +429,13 @@ class ScriptExecutor:
                 logger.warning(f"DEBUG: Browser state cleared successfully")
 
                 # Navigate to same URL again to apply the cleared state
-                # Using goto instead of reload is more reliable with context managers
+                # Use domcontentloaded instead of networkidle2 to avoid timeouts
                 logger.warning(f"DEBUG: Navigating to {current_url} after clearing browser state")
-                await page.goto(current_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
+                await page.goto(current_url, {'waitUntil': 'domcontentloaded', 'timeout': 15000})
                 logger.warning(f"DEBUG: Page navigation completed successfully")
+
+                # Wait for dynamic content to load
+                await asyncio.sleep(1.0)
             except Exception as e:
                 logger.error(f"Error during browser state clearing/navigation: {e}")
                 import traceback

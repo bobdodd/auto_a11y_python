@@ -579,7 +579,7 @@ class TestRunner:
 
         logger.warning(f"DEBUG: Found {len(scripts_to_execute)} scripts, filtering for multi-state")
         for script in scripts_to_execute:
-            logger.warning(f"DEBUG: Script '{script.name}' - test_before={script.test_before_execution}, test_after={script.test_after_execution}")
+            logger.warning(f"DEBUG: Script ID={script.id} '{script.name}' - test_before={script.test_before_execution}, test_after={script.test_after_execution}, clear_cookies={script.clear_cookies_before}, clear_localStorage={script.clear_local_storage_before}")
 
         if not multi_state_scripts:
             logger.info(f"No multi-state scripts configured for page {page.url}, using single-state testing")

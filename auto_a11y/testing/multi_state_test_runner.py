@@ -99,9 +99,11 @@ class MultiStateTestRunner:
         # Execute scripts and test after each one
         for script in scripts:
             logger.info(f"Processing script '{script.name}' (ID: {script.id})")
+            logger.warning(f"DEBUG: Script ID={script.id} '{script.name}' clear settings - cookies={script.clear_cookies_before}, localStorage={script.clear_local_storage_before}")
 
             # Clear cookies and/or localStorage if configured
             if script.clear_cookies_before or script.clear_local_storage_before:
+                logger.warning(f"DEBUG: Entering clearing block")
                 try:
                     # Get current URL before clearing
                     current_url = page.url
@@ -109,13 +111,13 @@ class MultiStateTestRunner:
                     await self._clear_browser_state(page, script)
 
                     # Navigate to same URL again to apply the cleared state
-                    # Using goto instead of reload is more reliable with context managers
+                    # Use domcontentloaded instead of networkidle2 to avoid timeouts
                     logger.info(f"Navigating to {current_url} after clearing browser state")
-                    await page.goto(current_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
+                    await page.goto(current_url, {'waitUntil': 'domcontentloaded', 'timeout': 15000})
                     logger.info(f"Page navigation completed successfully")
 
-                    # Wait a moment for any dynamic content (like cookie notices) to appear
-                    await asyncio.sleep(0.5)
+                    # Wait for any dynamic content (like cookie notices) to appear
+                    await asyncio.sleep(1.0)
                 except Exception as e:
                     logger.error(f"Error during browser state clearing/navigation: {e}")
                     # Skip this script and continue with next one

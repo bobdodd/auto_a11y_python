@@ -86,22 +86,13 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                     }
                 }
 
-                // Add common breakpoints if none found
+                // If no breakpoints found in CSS, test at current viewport only
                 if (breakpoints.size === 0) {
-                    return [320, 768, 1024, 1440];
+                    return [window.innerWidth];
                 }
 
-                // Convert to array and sort, add mobile if not present
-                const bpArray = Array.from(breakpoints).sort((a, b) => a - b);
-                if (!bpArray.includes(320)) {
-                    bpArray.unshift(320);
-                }
-                // Add desktop width if largest is small
-                if (bpArray[bpArray.length - 1] < 1200) {
-                    bpArray.push(1440);
-                }
-
-                return bpArray;
+                // Return only the breakpoints declared in the page's CSS
+                return Array.from(breakpoints).sort((a, b) => a - b);
             }
         ''')
 
@@ -266,27 +257,69 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                 // Check for content overlap
                 function checkContentOverlap(dialog) {
                     const dialogRect = dialog.getBoundingClientRect();
+                    const dialogStyle = window.getComputedStyle(dialog);
                     const allElements = Array.from(document.body.querySelectorAll('*'));
                     const overlappingInteractive = [];
+                    
+                    // For fixed-position elements, we need to check what they WOULD cover
+                    // when user scrolls to different parts of the page
+                    const isFixedDialog = dialogStyle.position === 'fixed';
+                    const viewportHeight = window.innerHeight;
+                    const viewportWidth = window.innerWidth;
 
                     allElements.forEach(element => {
                         if (element !== dialog && !dialog.contains(element)) {
+                            // Skip elements inside the dialog
+                            if (dialog.contains(element)) return;
+                            
                             const elementRect = element.getBoundingClientRect();
+                            let overlaps = false;
+                            
+                            if (isFixedDialog) {
+                                // For fixed dialogs (like cookie banners at bottom),
+                                // check if element's horizontal position overlaps
+                                // and if the element exists in the area the dialog covers
+                                const horizontalOverlap = !(elementRect.right < dialogRect.left ||
+                                                          elementRect.left > dialogRect.right);
+                                
+                                // For fixed bottom dialogs, any element at the bottom of its 
+                                // scroll position would be covered when scrolled into view
+                                // Check if this element's document position would put it under the dialog
+                                const elementDocTop = elementRect.top + window.scrollY;
+                                const elementDocBottom = elementRect.bottom + window.scrollY;
+                                const docHeight = document.documentElement.scrollHeight;
+                                
+                                // Element would be covered if when scrolled to show it at bottom of viewport,
+                                // it would be behind the fixed dialog
+                                // This happens if the element is within dialogRect.height of the bottom of content
+                                const dialogHeight = dialogRect.height;
+                                const distanceFromDocBottom = docHeight - elementDocBottom;
+                                
+                                // If element is close enough to bottom that scrolling to it 
+                                // would place it behind the fixed bottom dialog
+                                const wouldBeCovered = distanceFromDocBottom < dialogHeight && horizontalOverlap;
+                                
+                                // Also check current viewport overlap
+                                const currentOverlap = !(elementRect.right < dialogRect.left ||
+                                                        elementRect.left > dialogRect.right ||
+                                                        elementRect.bottom < dialogRect.top ||
+                                                        elementRect.top > dialogRect.bottom);
+                                
+                                overlaps = wouldBeCovered || currentOverlap;
+                            } else {
+                                // Standard overlap check for non-fixed dialogs
+                                overlaps = !(elementRect.right < dialogRect.left ||
+                                            elementRect.left > dialogRect.right ||
+                                            elementRect.bottom < dialogRect.top ||
+                                            elementRect.top > dialogRect.bottom);
+                            }
 
-                            // Check if elements overlap
-                            if (!(elementRect.right < dialogRect.left ||
-                                  elementRect.left > dialogRect.right ||
-                                  elementRect.bottom < dialogRect.top ||
-                                  elementRect.top > dialogRect.bottom)) {
-
-                                // Only include visible interactive elements
-                                if (isVisible(element) && isInteractive(element)) {
-                                    overlappingInteractive.push({
-                                        element: element.tagName.toLowerCase(),
-                                        xpath: getFullXPath(element),
-                                        text: element.textContent.trim().substring(0, 50)
-                                    });
-                                }
+                            if (overlaps && isVisible(element) && isInteractive(element)) {
+                                overlappingInteractive.push({
+                                    element: element.tagName.toLowerCase(),
+                                    xpath: getFullXPath(element),
+                                    text: element.textContent.trim().substring(0, 50)
+                                });
                             }
                         }
                     });
@@ -393,6 +426,22 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                 // Filter for visible dialogs
                 const visibleDialogs = dialogs.filter(isVisible);
                 
+                // Debug info
+                results._debug = {
+                    semanticDialogsCount: semanticDialogs.length,
+                    heuristicDialogsCount: heuristicDialogs.length,
+                    uniqueDialogsCount: uniqueDialogs.length,
+                    contentDialogsCount: contentDialogs.length,
+                    visibleDialogsCount: visibleDialogs.length,
+                    visibleDialogs: visibleDialogs.map(d => ({
+                        tag: d.tagName,
+                        id: d.id,
+                        class: d.className,
+                        ariaModal: d.getAttribute('aria-modal'),
+                        role: d.getAttribute('role')
+                    }))
+                };
+                
                 if (visibleDialogs.length === 0) {
                     results.applicable = false;
                     results.not_applicable_reason = 'No visible dialogs found on the page';
@@ -447,6 +496,16 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                     const isModal = dialog.getAttribute('aria-modal') === 'true' || 
                                    dialog.tagName.toLowerCase() === 'dialog' ||
                                    dialog.getAttribute('role') === 'alertdialog';
+                    
+                    // Add per-dialog debug info
+                    if (!results._dialogDebug) results._dialogDebug = [];
+                    results._dialogDebug.push({
+                        id: dialog.id,
+                        class: dialog.className,
+                        isModal: isModal,
+                        overlappingCount: overlappingElements.length,
+                        overlapping: overlappingElements.slice(0, 5)
+                    });
                     
                     if (overlappingElements.length > 0 && !isModal) {
                         // This is a non-modal floating element obscuring content - problematic
@@ -514,6 +573,12 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
             '''
 
             results = await page.evaluate(js_code)
+
+            # Log debug info for troubleshooting
+            if results.get('_debug'):
+                logger.warning(f"DEBUG floating_dialogs at {breakpoint_width}px: {results['_debug']}")
+            if results.get('_dialogDebug'):
+                logger.warning(f"DEBUG dialog details at {breakpoint_width}px: {results['_dialogDebug']}")
 
             # Aggregate results from this breakpoint
             if results['applicable']:

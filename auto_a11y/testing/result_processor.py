@@ -479,6 +479,8 @@ class ResultProcessor:
                     '(', 'px', ':1', 'alpha=', '°', '%'  # Patterns indicating measured values
                 ])
 
+                # Flatten nested metadata from test results
+                nested_metadata = violation_data.get('metadata', {}) or {}
                 metadata = {
                     'title': original_desc if use_original_as_title else enhanced_desc.get('title', ''),
                     'what': original_desc if use_original_as_title else enhanced_desc.get('what', ''),
@@ -488,7 +490,8 @@ class ResultProcessor:
                     'impact_detail': enhanced_desc.get('impact', ''),
                     'wcag_full': wcag_full,
                     'full_remediation': enhanced_desc.get('remediation', ''),
-                    **violation_data  # Include all original metadata from JS tests
+                    **violation_data,  # Include all original data from JS tests
+                    **nested_metadata  # Flatten nested metadata to top level
                 }
 
             else:
@@ -529,9 +532,12 @@ class ResultProcessor:
                     help_url = self._get_help_url(error_code)
                     failure_summary = self._get_failure_summary(error_code, violation_data)
                     # Include original violation data in metadata
+                    # Flatten nested metadata from test results
+                    nested_metadata = violation_data.get('metadata', {}) or {}
                     metadata = {
                         'wcag_full': wcag_full,
-                        **violation_data
+                        **violation_data,
+                        **nested_metadata
                     }
             
             # Map category to touchpoint

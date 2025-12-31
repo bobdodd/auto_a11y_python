@@ -926,6 +926,7 @@ main h1 {
 }
 
 /* Cookie Notice - positioned at bottom but placed at end of DOM (accessibility issue) */
+/* Intentionally taller on mobile to demonstrate content obscuring issue */
 .cookie-notice {
     display: none;
     position: fixed;
@@ -935,10 +936,16 @@ main h1 {
     background: #333;
     color: #fff;
     padding: 20px;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+}
+
+.cookie-notice-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .cookie-notice p {
@@ -950,6 +957,53 @@ main h1 {
 .cookie-notice button {
     flex-shrink: 0;
     min-width: 100px;
+}
+
+.cookie-notice-links {
+    display: none;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #555;
+    width: 100%;
+}
+
+.cookie-notice-links a {
+    color: #adf;
+    margin-right: 20px;
+    text-decoration: underline;
+}
+
+/* Mobile: Show expanded cookie notice with links - creates content obscuring issue */
+@media (max-width: 768px) {
+    .cookie-notice {
+        padding: 15px;
+    }
+    
+    .cookie-notice-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .cookie-notice p {
+        padding-right: 0;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+    
+    .cookie-notice button {
+        width: 100%;
+    }
+    
+    .cookie-notice-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .cookie-notice-links a {
+        margin-right: 0;
+        font-size: 13px;
+    }
 }
 
 /* Newsletter Section */

@@ -57,34 +57,37 @@ def enrich_test_result_with_catalog(test_result):
                 why_template = catalog_info['why_it_matters']
                 how_template = catalog_info['how_to_fix']
 
-                # Fill in placeholders from violation data (for contrast violations)
+                # Fill in placeholders from violation data
                 placeholder_values = {}
                 if hasattr(violation, 'metadata') and violation.metadata:
+                    # Include all metadata fields for placeholder substitution
+                    for key, value in violation.metadata.items():
+                        if value is not None and not isinstance(value, (dict, list)):
+                            placeholder_values[key] = str(value)
+                    
                     # Extract contrast ratio without ":1" suffix if present
                     contrast_ratio = violation.metadata.get('contrastRatio', '')
                     if isinstance(contrast_ratio, str) and contrast_ratio.endswith(':1'):
                         contrast_ratio = contrast_ratio[:-2]
-
-                    # Convert all values to strings for format()
-                    placeholder_values = {
-                        'ratio': str(contrast_ratio) if contrast_ratio else '',
-                        'fg': str(violation.metadata.get('textColor', '')),
-                        'bg': str(violation.metadata.get('backgroundColor', '')),
-                        'fontSize': str(violation.metadata.get('fontSize', '')),
-                        'breakpoint': str(violation.metadata.get('breakpoint', ''))
-                    }
+                    placeholder_values['ratio'] = str(contrast_ratio) if contrast_ratio else ''
+                    
+                    # Also map common field names for compatibility
+                    placeholder_values['fg'] = str(violation.metadata.get('textColor', ''))
+                    placeholder_values['bg'] = str(violation.metadata.get('backgroundColor', ''))
+                    placeholder_values['fontSize'] = str(violation.metadata.get('fontSize', ''))
 
                 # Replace placeholders in templates
                 try:
                     violation.metadata['what'] = what_template % placeholder_values
                     violation.metadata['why'] = why_template % placeholder_values
                     violation.metadata['how'] = how_template % placeholder_values
-                except (KeyError, ValueError, TypeError):
+                except (KeyError, ValueError, TypeError) as e:
                     # If placeholder replacement fails, use templates as-is
+                    logger.warning(f"Placeholder substitution failed for {error_code}: {e}, keys available: {list(placeholder_values.keys())}")
                     violation.metadata['what'] = what_template
                     violation.metadata['why'] = why_template
                     violation.metadata['how'] = how_template
-
+                
                 violation.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
                 violation.metadata['who'] = catalog_info['who_it_affects']
 

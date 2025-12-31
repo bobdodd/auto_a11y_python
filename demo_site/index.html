@@ -235,10 +235,17 @@
         </div>
     </div>
 
-    <!-- Cookie notice (intentional issue: placed at end of DOM but visually at bottom) -->
+    <!-- Cookie notice (intentional issue: placed at end of DOM, taller on mobile to obscure content) -->
     <div id="cookie-notice" class="cookie-notice">
-        <p>Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre utilisation des cookies.</p>
-        <button id="cookie-accept" class="btn-primary">OK</button>
+        <div class="cookie-notice-content">
+            <p>Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre utilisation des cookies.</p>
+            <button id="cookie-accept" class="btn-primary">OK</button>
+        </div>
+        <div class="cookie-notice-links">
+            <a href="#">Politique de confidentialité</a>
+            <a href="#">Paramètres des cookies</a>
+            <a href="#">En savoir plus</a>
+        </div>
     </div>
 
     <script src="js/carousel.js"></script>
@@ -313,11 +320,11 @@
         // Keyboard trap - keeps focus inside modal
         function handleKeyDown(e) {
             if (!modal.hidden) {
-                // Handle Escape key
-                if (e.key === 'Escape') {
-                    closeModal();
-                    return;
-                }
+                // INTENTIONAL BUG: Escape key handling removed for demo
+                // if (e.key === 'Escape') {
+                //     closeModal();
+                //     return;
+                // }
 
                 // Handle Tab key for focus trap
                 if (e.key === 'Tab') {

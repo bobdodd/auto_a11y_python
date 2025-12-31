@@ -567,7 +567,8 @@
                     {% for error_code, description_group in touchpoint_violations|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set viol_counter.value = viol_counter.value + 1 %}
-                        {% if group_list|length > 1 %}
+                        {% set has_breakpoints = group_list[0].metadata and group_list[0].metadata.get('breakpoint') is not none %}
+                        {% if group_list|length > 1 or has_breakpoints %}
                             <!-- Multiple instances - create sub-accordion -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -598,8 +599,6 @@
                                 <div id="viol-group-{{ viol_counter.value }}"
                                      class="accordion-collapse collapse">
                                     <div class="accordion-body">
-                                        {% set has_breakpoints = group_list[0].metadata and group_list[0].metadata.get('breakpoint') is not none %}
-
                                         {% if has_breakpoints %}
                                             {# Group by breakpoint for contrast violations #}
                                             {% set breakpoint_groups = group_list|groupby('metadata.breakpoint') %}
@@ -806,15 +805,20 @@
                                                         <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                                         {% elif 'ErrContentObscuring' in violation.id and violation.metadata and 'obscuredElements' in violation.metadata %}
-                                                        <p class="mb-2"><strong>Obscuring element (dialog/overlay):</strong></p>
+                                                        {% if violation.metadata.breakpoint %}
+                                                        <div class="alert alert-info mb-3">
+                                                            <strong>{{ _('Breakpoint:') }}</strong> {{ violation.metadata.breakpoint }}{{ _('px width') }}
+                                                        </div>
+                                                        {% endif %}
+                                                        <p class="mb-2"><strong>{{ _('Obscuring element (dialog/overlay):') }}</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                                        <h6 class="mt-4">{{ violation.metadata.obscuredCount }} Interactive element(s) being obscured:</h6>
+                                                        <h6 class="mt-4">{{ violation.metadata.obscuredCount }} {{ _('Interactive element(s) being obscured:') }}</h6>
                                                         {% for element in violation.metadata.obscuredElements %}
                                                         <div class="mb-3 border-start border-warning border-3 ps-3">
                                                             <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
                                                             <p class="mb-1 small text-muted">
-                                                            Location: <code>{{element.xpath}}</code>
-                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                            {{ _('Location:') }} <code>{{element.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="{{ _('Copy XPath to clipboard') }}" style="font-size: 0.875rem;">
                                                                 <i class="bi bi-clipboard"></i>
                                                             </button>
                                                         </p>
@@ -1149,15 +1153,20 @@
                                                         <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                                         {% elif 'ErrContentObscuring' in violation.id and violation.metadata and 'obscuredElements' in violation.metadata %}
-                                                        <p class="mb-2"><strong>Obscuring element (dialog/overlay):</strong></p>
+                                                        {% if violation.metadata.breakpoint %}
+                                                        <div class="alert alert-info mb-3">
+                                                            <strong>{{ _('Breakpoint:') }}</strong> {{ violation.metadata.breakpoint }}{{ _('px width') }}
+                                                        </div>
+                                                        {% endif %}
+                                                        <p class="mb-2"><strong>{{ _('Obscuring element (dialog/overlay):') }}</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                                        <h6 class="mt-4">{{ violation.metadata.obscuredCount }} Interactive element(s) being obscured:</h6>
+                                                        <h6 class="mt-4">{{ violation.metadata.obscuredCount }} {{ _('Interactive element(s) being obscured:') }}</h6>
                                                         {% for element in violation.metadata.obscuredElements %}
                                                         <div class="mb-3 border-start border-warning border-3 ps-3">
                                                             <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
                                                             <p class="mb-1 small text-muted">
-                                                            Location: <code>{{element.xpath}}</code>
-                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
+                                                            {{ _('Location:') }} <code>{{element.xpath}}</code>
+                                                            <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="{{ _('Copy XPath to clipboard') }}" style="font-size: 0.875rem;">
                                                                 <i class="bi bi-clipboard"></i>
                                                             </button>
                                                         </p>
@@ -1505,9 +1514,14 @@
                                 <p class="mb-2"><strong>Current heading (h{{ violation.metadata.skippedTo }}) - skipped h{{ violation.metadata.expectedLevel }}:</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html|e }}</code></pre>
                                 {% elif 'ErrContentObscuring' in violation.id and violation.metadata and 'obscuredElements' in violation.metadata %}
-                                <p class="mb-2"><strong>Obscuring element (dialog/overlay):</strong></p>
+                                {% if violation.metadata.breakpoint %}
+                                <div class="alert alert-info mb-3">
+                                    <strong>{{ _('Breakpoint:') }}</strong> {{ violation.metadata.breakpoint }}{{ _('px width') }}
+                                </div>
+                                {% endif %}
+                                <p class="mb-2"><strong>{{ _('Obscuring element (dialog/overlay):') }}</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                <h6 class="mt-4">{{ violation.metadata.obscuredCount }} Interactive element(s) being obscured:</h6>
+                                <h6 class="mt-4">{{ violation.metadata.obscuredCount }} {{ _('Interactive element(s) being obscured:') }}</h6>
                                 {% for element in violation.metadata.obscuredElements %}
                                 <div class="mb-3 border-start border-warning border-3 ps-3">
                                     <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>

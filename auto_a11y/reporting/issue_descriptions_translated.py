@@ -101,6 +101,16 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             # In that case, keep the original English text
             translated_desc[field] = translated_text
 
+    # Apply metadata substitution to translated text
+    # The translated text has %(variable)s placeholders that need to be filled
+    if metadata:
+        for field in translatable_fields:
+            if field in translated_desc and isinstance(translated_desc[field], str):
+                try:
+                    translated_desc[field] = translated_desc[field] % metadata
+                except (KeyError, ValueError):
+                    pass
+
     return translated_desc
 
 

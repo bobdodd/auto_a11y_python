@@ -205,7 +205,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                     return null;
                 }
                 
-                // Check for close button
+                // Check for close button or dismiss mechanism
                 function hasCloseButton(dialog) {
                     // Find potential close buttons using multiple selectors
                     const closeButtons = dialog.querySelectorAll([
@@ -251,7 +251,49 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                         return true;
                     });
 
-                    return filteredButtons.length > 0;
+                    if (filteredButtons.length > 0) {
+                        return true;
+                    }
+                    
+                    // Check for single-button dialogs (like cookie consent with just "OK")
+                    // These are valid because the single button serves as the dismiss mechanism
+                    const allButtons = dialog.querySelectorAll('button, [role="button"], input[type="button"], input[type="submit"]');
+                    const visibleActionButtons = Array.from(allButtons).filter(btn => {
+                        const style = window.getComputedStyle(btn);
+                        const isDisplayed = style.display !== 'none' &&
+                                          style.visibility !== 'hidden' &&
+                                          style.opacity !== '0';
+                        const isEnabled = !btn.disabled && !btn.hasAttribute('disabled');
+                        return isDisplayed && isEnabled;
+                    });
+                    
+                    // If there's exactly one button, it serves as the dismiss mechanism
+                    // Common for cookie notices, alerts, confirmations
+                    if (visibleActionButtons.length === 1) {
+                        return true;
+                    }
+                    
+                    // Also check for buttons with accept/acknowledge/ok/confirm text
+                    // These are valid dismiss mechanisms for consent dialogs
+                    const dismissActionButtons = Array.from(allButtons).filter(btn => {
+                        const style = window.getComputedStyle(btn);
+                        const isDisplayed = style.display !== 'none' &&
+                                          style.visibility !== 'hidden' &&
+                                          style.opacity !== '0';
+                        const isEnabled = !btn.disabled && !btn.hasAttribute('disabled');
+                        if (!isDisplayed || !isEnabled) return false;
+                        
+                        const text = (btn.textContent || '').toLowerCase().trim();
+                        const label = (btn.getAttribute('aria-label') || '').toLowerCase();
+                        const title = (btn.getAttribute('title') || '').toLowerCase();
+                        const combined = text + ' ' + label + ' ' + title;
+                        
+                        // Accept these as valid dismiss mechanisms
+                        const dismissPatterns = ['ok', 'accept', 'agree', 'confirm', 'got it', 'acknowledge', 'understood', 'i understand', 'continue', 'proceed'];
+                        return dismissPatterns.some(pattern => combined.includes(pattern));
+                    });
+                    
+                    return dismissActionButtons.length > 0;
                 }
                 
                 // Check for content overlap

@@ -21663,6 +21663,36 @@ msgstr ""
 "cibles de liens d'évitement), ajoutez un style de focus temporaire qui "
 "expire ou est supprimé après que le focus se déplace."
 
+#. Issue: WarnTabindexNoVisibleFocus, Field: title
+msgctxt "issue_WarnTabindexNoVisibleFocus_title"
+msgid "Non-interactive element with tabindex lacks visible focus indicator"
+msgstr "Élément non-interactif avec tabindex sans indicateur de focus visible"
+
+#. Issue: WarnTabindexNoVisibleFocus, Field: what
+msgctxt "issue_WarnTabindexNoVisibleFocus_what"
+msgid "A non-interactive element (like a heading, div, or paragraph) has tabindex making it focusable, but lacks a visible focus indicator. This is flagged as a warning because the appropriate solution depends on why tabindex was added."
+msgstr "Un élément non-interactif (comme un titre, div ou paragraphe) a tabindex le rendant focalisable, mais manque d'indicateur de focus visible. Ceci est signalé comme avertissement car la solution appropriée dépend de pourquoi tabindex a été ajouté."
+
+#. Issue: WarnTabindexNoVisibleFocus, Field: what_generic
+msgctxt "issue_WarnTabindexNoVisibleFocus_what_generic"
+msgid "Non-interactive element with tabindex lacks visible focus indicator - review the purpose of tabindex on this element"
+msgstr "Élément non-interactif avec tabindex sans indicateur de focus visible - examinez l'objectif de tabindex sur cet élément"
+
+#. Issue: WarnTabindexNoVisibleFocus, Field: why
+msgctxt "issue_WarnTabindexNoVisibleFocus_why"
+msgid "Adding tabindex to non-interactive elements is a nuanced accessibility pattern with legitimate uses and potential problems. Legitimate uses include: (1) Skip link targets - headings with tabindex=\"-1\" allow 'skip to content' links to move focus to the target. (2) Single-page application navigation - focusing headings after route changes helps screen reader users understand context. (3) Error summary focus - focusing a container after form validation helps users find error messages. However, adding tabindex=\"0\" (positive tab order) to non-interactive content can confuse users who expect focusable elements to be interactive. A visible focus indicator on non-interactive content may further mislead users into thinking they can activate it. The key question is: why is this element focusable? If it's for programmatic focus management (tabindex=\"-1\"), a subtle or temporary focus indicator may be appropriate. If it's accidentally in the tab order (tabindex=\"0\"), removing it entirely is usually better than adding focus styling."
+msgstr "Ajouter tabindex aux éléments non-interactifs est un modèle d'accessibilité nuancé avec des usages légitimes et des problèmes potentiels. Les usages légitimes incluent : (1) Cibles de liens d'évitement - les titres avec tabindex=\"-1\" permettent aux liens 'aller au contenu' de déplacer le focus vers la cible. (2) Navigation d'application monopage - focaliser les titres après les changements de route aide les utilisateurs de lecteurs d'écran à comprendre le contexte. (3) Focus du résumé d'erreurs - focaliser un conteneur après validation de formulaire aide les utilisateurs à trouver les messages d'erreur. Cependant, ajouter tabindex=\"0\" (ordre de tabulation positif) au contenu non-interactif peut dérouter les utilisateurs qui s'attendent à ce que les éléments focalisables soient interactifs. Un indicateur de focus visible sur le contenu non-interactif peut davantage induire les utilisateurs en erreur en leur faisant croire qu'ils peuvent l'activer. La question clé est : pourquoi cet élément est-il focalisable ? S'il est pour la gestion programmatique du focus (tabindex=\"-1\"), un indicateur de focus subtil ou temporaire peut être approprié. S'il est accidentellement dans l'ordre de tabulation (tabindex=\"0\"), le supprimer entièrement est généralement mieux qu'ajouter un style de focus."
+
+#. Issue: WarnTabindexNoVisibleFocus, Field: who
+msgctxt "issue_WarnTabindexNoVisibleFocus_who"
+msgid "This primarily affects keyboard users who may be confused if non-interactive content appears in the tab sequence with focus styling that suggests interactivity. Screen reader users benefit from programmatic focus on headings/landmarks after navigation, but don't need visible focus indicators for these cases. Users with cognitive disabilities may be particularly confused by focus indicators on non-interactive elements."
+msgstr "Ceci affecte principalement les utilisateurs de clavier qui peuvent être déroutés si le contenu non-interactif apparaît dans la séquence de tabulation avec un style de focus suggérant l'interactivité. Les utilisateurs de lecteurs d'écran bénéficient du focus programmatique sur les titres/repères après la navigation, mais n'ont pas besoin d'indicateurs de focus visibles pour ces cas. Les utilisateurs avec des handicaps cognitifs peuvent être particulièrement déroutés par les indicateurs de focus sur les éléments non-interactifs."
+
+#. Issue: WarnTabindexNoVisibleFocus, Field: remediation
+msgctxt "issue_WarnTabindexNoVisibleFocus_remediation"
+msgid "First, determine why this element has tabindex: (1) If tabindex=\"-1\" for programmatic focus (skip links, SPA navigation, error handling): Consider if focus indicator is needed - for skip link targets, a brief highlight that fades can help sighted users, but it's optional. You may choose to add subtle styling or leave as-is. (2) If tabindex=\"0\" putting it in tab order: This is usually wrong for non-interactive content. Remove the tabindex entirely rather than adding focus styling, unless there's a specific reason users need to tab to this element. (3) If using tabindex for scroll containers: Modern CSS scroll-snap may be better. If tabindex is needed, add focus styling since users will interact with the container. (4) If uncertain: Check if removing tabindex breaks any functionality. If not, remove it. If it does, add appropriate focus styling."
+msgstr "D'abord, déterminez pourquoi cet élément a tabindex : (1) Si tabindex=\"-1\" pour le focus programmatique (liens d'évitement, navigation SPA, gestion d'erreurs) : Considérez si un indicateur de focus est nécessaire - pour les cibles de liens d'évitement, une mise en évidence brève qui s'estompe peut aider les utilisateurs voyants, mais c'est optionnel. Vous pouvez choisir d'ajouter un style subtil ou laisser tel quel. (2) Si tabindex=\"0\" le mettant dans l'ordre de tabulation : C'est généralement incorrect pour le contenu non-interactif. Supprimez le tabindex entièrement plutôt que d'ajouter un style de focus, sauf s'il y a une raison spécifique pour que les utilisateurs doivent tabuler vers cet élément. (3) Si vous utilisez tabindex pour les conteneurs défilants : Le CSS moderne scroll-snap peut être mieux. Si tabindex est nécessaire, ajoutez un style de focus car les utilisateurs interagiront avec le conteneur. (4) Si incertain : Vérifiez si supprimer tabindex casse une fonctionnalité. Si non, supprimez-le. Si oui, ajoutez un style de focus approprié."
+
 #. Issue: ErrTabindexOfZeroOnNonInteractiveElement, Field: title
 msgctxt "issue_ErrTabindexOfZeroOnNonInteractiveElement_title"
 msgid "tabindex=\"0\" on non-interactive element"

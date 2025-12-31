@@ -2115,11 +2115,12 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         'ErrNoReducedMotionSupport': {
             'title': "Animations do not respect prefers-reduced-motion setting",
             'what': "Animations do not respect prefers-reduced-motion setting",
-            'why': "Users with vestibular disorders can experience nausea, dizziness, or seizures from motion.",
-            'who': "Users with vestibular disorders, users with motion sensitivity, users with ADHD.",
+            'what_generic': "Animations do not respect prefers-reduced-motion setting",
+            'why': "Animation affects different users in different ways. Users with vestibular (inner ear) disorders can experience dizziness, nausea, migraines, or need to lie down after exposure to motion effects like parallax scrolling or animated transitions. Neurodivergent users, including those with ADHD or autism, may find animations distracting or overwhelming - research shows autistic users are affected to a greater extent by animation, experiencing increased frustration and requiring greater mental effort. Users with sensory processing differences may experience sensory overload from moving content. However, not all animation is harmful: brief, subtle animations can actually help users by drawing attention to important changes, providing feedback on actions, or indicating loading states. The key is giving users control over their experience.",
+            'who': "Users with vestibular disorders who may experience physical symptoms like nausea and dizziness; neurodivergent users (ADHD, autism) who may find motion distracting or overwhelming; users with sensory processing sensitivities who may experience sensory overload; users with cognitive disabilities who need more time to process content; users with attention difficulties who struggle to focus when content moves",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.3.3'],
-            'remediation': "Use CSS @media (prefers-reduced-motion: reduce) to disable or reduce animations, provide animation toggle controls."
+            'remediation': "Respect user preferences by using CSS @media (prefers-reduced-motion: reduce) to disable or significantly reduce animations when the user has requested reduced motion in their system settings. Within this media query, set animation-duration and transition-duration to near-zero values, disable parallax effects, and stop auto-playing animated content. Additionally, consider providing a visible toggle control on your site for users who haven't set system preferences. Essential animations (those required for functionality) are exempt, but decorative animations like parallax scrolling, animated backgrounds, or celebration effects should always be reducible. When reduced motion is active, you can still use instant state changes, simple opacity fades, or reduced-distance movements to maintain usability without causing discomfort."
         },
         'ErrNonInteractiveZeroTabindex': {
             'title': "Non-interactive element has tabindex=\"0\" making it keyboard focusable",

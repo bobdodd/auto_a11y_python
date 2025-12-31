@@ -826,8 +826,26 @@ async def test_event_handlers(page) -> Dict[str, Any]:
 
                 # Check 1: No visible focus indicator
                 if not has_outline and not box_shadow_changed and not border_width_changed and not bg_color_changed:
-                    desc = f"Element with {'tabindex' if elem_type == 'tabindex' else 'event handler'} has no visible focus indicator"
-                    issues_found.append((f'{code_prefix}NoVisibleFocus', desc))
+                    tag = elem.get('tag', '')
+                    role = elem.get('role', '')
+                    has_handler = elem.get('hasInlineHandler', False)
+                    
+                    # Interactive roles that require visible focus
+                    interactive_roles = [
+                        'button', 'link', 'checkbox', 'radio', 'tab', 'menuitem',
+                        'menuitemcheckbox', 'menuitemradio', 'option', 'switch',
+                        'textbox', 'searchbox', 'slider', 'spinbutton', 'combobox',
+                        'scrollbar', 'gridcell', 'treeitem'
+                    ]
+                    
+                    is_interactive = role in interactive_roles or has_handler
+                    
+                    if is_interactive:
+                        desc = f"Interactive element (role='{role}') with tabindex lacks visible focus indicator"
+                        issues_found.append((f'{code_prefix}NoVisibleFocus', desc))
+                    else:
+                        desc = f"Non-interactive <{tag}> with tabindex lacks visible focus indicator. Adding tabindex to non-interactive elements makes them focusable but may confuse users expecting interactivity. Consider: (1) removing tabindex if focus is not needed, (2) adding a visible focus style if focus is intentional, or (3) using tabindex='-1' for programmatic focus only."
+                        issues_found.append((f'{warn_prefix}NoVisibleFocus', desc))
 
                 # Check 2: outline:none without alternative
                 if outline_is_none and not box_shadow_changed and not border_width_changed and not bg_color_changed:

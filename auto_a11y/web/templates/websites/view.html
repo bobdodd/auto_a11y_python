@@ -497,39 +497,6 @@
             </div>
             <form id="discoveryForm">
                 <div class="modal-body">
-                    <div class="mb-4">
-                        <label class="form-label"><strong>{{ _('Select users for discovery:') }}</strong></label>
-                        <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
-                            <div class="form-check mb-2">
-                                <input class="form-check-input modal-discovery-user-checkbox" type="checkbox" value="" id="modal-discovery-user-guest" checked>
-                                <label class="form-check-label" for="modal-discovery-user-guest">
-                                    <strong>{{ _('Guest') }}</strong> ({{ _('no login') }})
-                                </label>
-                            </div>
-                            {% if website_users %}
-                            {% for user in website_users %}
-                            <div class="form-check mb-2">
-                                <input class="form-check-input modal-discovery-user-checkbox" type="checkbox" value="{{ user.id }}" id="modal-discovery-user-{{ user.id }}">
-                                <label class="form-check-label" for="modal-discovery-user-{{ user.id }}">
-                                    <strong>{{ user.name_display }}</strong>
-                                    {% if user.roles %}<br><small class="text-muted">{{ user.roles|join(', ') }}</small>{% endif %}
-                                </label>
-                            </div>
-                            {% endfor %}
-                            {% endif %}
-                        </div>
-                        {% if website_users %}
-                        <div class="mt-2">
-                            <button type="button" class="btn btn-sm btn-link p-0" onclick="selectAllModalDiscoveryUsers()">{{ _('Select All') }}</button> |
-                            <button type="button" class="btn btn-sm btn-link p-0" onclick="clearAllModalDiscoveryUsers()">{{ _('Clear All') }}</button>
-                        </div>
-                        {% else %}
-                        <small class="text-muted mt-2 d-block">
-                            <i class="bi bi-info-circle"></i> {{ _('No test users configured. Discovery will run as guest.') }}
-                            <a href="{{ url_for('website_users.list_users', website_id=website.id) }}">{{ _('Add test users') }}</a>
-                        </small>
-                        {% endif %}
-                    </div>
                     <div class="mb-3">
                         <label for="maxPages" class="form-label">{{ _('Maximum Pages to Discover') }}</label>
                         <input type="number" class="form-control" id="maxPages" min="1" max="9999999"
@@ -594,41 +561,8 @@
             </div>
             <form id="testAllForm">
                 <div class="modal-body">
-                    <div class="mb-4">
-                        <label class="form-label"><strong>{{ _('Select users for testing:') }}</strong></label>
-                        <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
-                            <div class="form-check mb-2">
-                                <input class="form-check-input modal-test-user-checkbox" type="checkbox" value="" id="modal-test-user-guest" checked>
-                                <label class="form-check-label" for="modal-test-user-guest">
-                                    <strong>{{ _('Guest') }}</strong> ({{ _('no login') }})
-                                </label>
-                            </div>
-                            {% if website_users %}
-                            {% for user in website_users %}
-                            <div class="form-check mb-2">
-                                <input class="form-check-input modal-test-user-checkbox" type="checkbox" value="{{ user.id }}" id="modal-test-user-{{ user.id }}">
-                                <label class="form-check-label" for="modal-test-user-{{ user.id }}">
-                                    <strong>{{ user.name_display }}</strong>
-                                    {% if user.roles %}<br><small class="text-muted">{{ user.roles|join(', ') }}</small>{% endif %}
-                                </label>
-                            </div>
-                            {% endfor %}
-                            {% endif %}
-                        </div>
-                        {% if website_users %}
-                        <div class="mt-2">
-                            <button type="button" class="btn btn-sm btn-link p-0" onclick="selectAllModalTestUsers()">{{ _('Select All') }}</button> |
-                            <button type="button" class="btn btn-sm btn-link p-0" onclick="clearAllModalTestUsers()">{{ _('Clear All') }}</button>
-                        </div>
-                        {% else %}
-                        <small class="text-muted mt-2 d-block">
-                            <i class="bi bi-info-circle"></i> {{ _('No test users configured. Testing will run as guest.') }}
-                            <a href="{{ url_for('website_users.list_users', website_id=website.id) }}">{{ _('Add test users') }}</a>
-                        </small>
-                        {% endif %}
-                    </div>
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i> {{ _('This will run accessibility tests on all pages with the selected user(s). Testing multiple users will increase the total test time.') }}
+                        <i class="bi bi-info-circle"></i> {{ _('This will run accessibility tests on all pages with the selected test user(s). Testing multiple users will increase the total test time.') }}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -761,23 +695,6 @@ function clearAllDiscoveryUsers() {
     updateDiscoveryUserSelectionDisplay();
 }
 
-// Modal discovery user selection functions
-function selectAllModalDiscoveryUsers() {
-    document.querySelectorAll('.modal-discovery-user-checkbox').forEach(cb => cb.checked = true);
-}
-
-function clearAllModalDiscoveryUsers() {
-    document.querySelectorAll('.modal-discovery-user-checkbox').forEach(cb => cb.checked = false);
-}
-
-// Modal test user selection functions
-function selectAllModalTestUsers() {
-    document.querySelectorAll('.modal-test-user-checkbox').forEach(cb => cb.checked = true);
-}
-
-function clearAllModalTestUsers() {
-    document.querySelectorAll('.modal-test-user-checkbox').forEach(cb => cb.checked = false);
-}
 
 function updatePageStatus(pageId, status) {
     const statusCell = document.querySelector(`td[data-page-id="${pageId}"]`);
@@ -982,19 +899,14 @@ $(document).ready(function() {
         const maxPages = $('#maxPages').val();
         const btn = $('#discoverBtn');
 
-        // Get selected discovery users from modal (or header if modal doesn't have users)
+        // Get selected discovery users from header dropdown
         const selectedDiscoveryUserIds = [];
-        const modalCheckboxes = document.querySelectorAll('.modal-discovery-user-checkbox:checked');
-        const headerCheckboxes = document.querySelectorAll('.batch-discovery-user-checkbox:checked');
-
-        // Use modal checkboxes if they exist, otherwise use header checkboxes
-        const checkboxesToUse = modalCheckboxes.length > 0 ? modalCheckboxes : headerCheckboxes;
-        checkboxesToUse.forEach(checkbox => {
+        document.querySelectorAll('.batch-discovery-user-checkbox:checked').forEach(checkbox => {
             selectedDiscoveryUserIds.push(checkbox.value); // empty string for guest, user ID for authenticated
         });
 
         if (selectedDiscoveryUserIds.length === 0) {
-            alert('{{ _("Please select at least one user for discovery (or Guest).") }}');
+            alert('{{ _("Please select at least one user for discovery using the Discovery Users dropdown.") }}');
             return;
         }
 
@@ -1072,19 +984,14 @@ $(document).ready(function() {
     $('#testAllForm').submit(function(e) {
         e.preventDefault();
 
-        // Get selected test users from modal (or header if modal doesn't have users)
+        // Get selected test users from header dropdown
         const selectedUserIds = [];
-        const modalCheckboxes = document.querySelectorAll('.modal-test-user-checkbox:checked');
-        const headerCheckboxes = document.querySelectorAll('.batch-test-user-checkbox:checked');
-
-        // Use modal checkboxes if they exist, otherwise use header checkboxes
-        const checkboxesToUse = modalCheckboxes.length > 0 ? modalCheckboxes : headerCheckboxes;
-        checkboxesToUse.forEach(checkbox => {
+        document.querySelectorAll('.batch-test-user-checkbox:checked').forEach(checkbox => {
             selectedUserIds.push(checkbox.value);
         });
 
         if (selectedUserIds.length === 0) {
-            alert('{{ _("Please select at least one test user (or Guest) to continue.") }}');
+            alert('{{ _("Please select at least one test user using the Test Users dropdown.") }}');
             return;
         }
 

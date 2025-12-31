@@ -144,6 +144,18 @@ class TestRunner:
                                     logger.info(f"Successfully authenticated as {user.username} in {login_result['duration_ms']}ms")
                                     authenticated_user = user
                                     self._logged_in_user = user
+
+                                    # Navigate back to the original test page (login may have redirected)
+                                    current_url = browser_page.url
+                                    if current_url != page.url:
+                                        logger.info(f"Navigating back to test page: {page.url}")
+                                        await self.browser_manager.goto(
+                                            browser_page,
+                                            page.url,
+                                            wait_until=wait_strategy,
+                                            timeout=30000
+                                        )
+                                        await browser_page.waitForSelector('body', {'timeout': 5000})
                                 else:
                                     logger.error(f"Authentication failed: {login_result['error']}")
                                     # Continue with testing even if login fails, but record the failure

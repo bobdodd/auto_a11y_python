@@ -1340,7 +1340,7 @@
                                             {{ violation.description }}
                                         {% endif %}
                                         {% if violation.xpath %}
-                                            <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ violation.xpath }}</span>
+                                            <span class="text-muted ms-2" style="font-size: 0.9em;">{{ violation.xpath }}</span>
                                         {% endif %}
                                     </button>
                                 </h2>
@@ -1943,7 +1943,7 @@
                                             {{ warning.description }}
                                         {% endif %}
                                         {% if warning.xpath %}
-                                            <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ warning.xpath }}</span>
+                                            <span class="text-muted ms-2" style="font-size: 0.9em;">{{ warning.xpath }}</span>
                                         {% endif %}
                                     </button>
                                 </h2>
@@ -2388,7 +2388,7 @@
                                 {{ info.description }}
                             {% endif %}
                             {% if info.xpath %}
-                                <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ info.xpath }}</span>
+                                <span class="text-muted ms-2" style="font-size: 0.9em;">{{ info.xpath }}</span>
                             {% endif %}
                                     </button>
                                 </h2>
@@ -2792,7 +2792,7 @@
                                 {{ discovery.description }}
                             {% endif %}
                             {% if discovery.xpath %}
-                                <span class="text-muted ms-2" style="font-size: 0.9em;">• {{ discovery.xpath }}</span>
+                                <span class="text-muted ms-2" style="font-size: 0.9em;">{{ discovery.xpath }}</span>
                             {% endif %}
                                     </button>
                                 </h2>

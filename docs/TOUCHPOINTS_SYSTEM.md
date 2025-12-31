@@ -311,3 +311,42 @@ For questions about touchpoints:
 2. Review error code definitions in issue catalogs
 3. Consult WCAG criteria for touchpoint scope
 4. Contact development team for clarifications
+
+## Technical Improvements (Future)
+
+### Pyppeteer Request Interception for Resource Capture
+
+Currently, `test_event_handlers.py` fetches external JavaScript files using `aiohttp` to analyze them for escape key handlers. This works but has limitations:
+
+- Requires separate HTTP requests
+- May face CORS restrictions
+- Duplicates work the browser already does
+
+**Recommended improvement**: Use Pyppeteer's built-in request interception to capture resources as the browser loads them:
+
+```python
+# Example: Capture all JS content as browser loads it
+js_content = {}
+
+async def intercept_response(response):
+    if response.request.resourceType == 'script':
+        try:
+            content = await response.text()
+            js_content[response.url] = content
+        except:
+            pass
+
+page.on('response', intercept_response)
+await page.goto(url)
+
+# Now js_content contains all loaded JavaScript
+all_js = '\n'.join(js_content.values())
+```
+
+This approach:
+- Captures content as browser naturally loads it
+- Avoids CORS issues (browser has already fetched it)
+- Works for dynamically loaded scripts
+- Can capture other resources too (CSS, images, PDFs, etc.)
+
+**Files to update**: `auto_a11y/testing/touchpoint_tests/test_event_handlers.py`

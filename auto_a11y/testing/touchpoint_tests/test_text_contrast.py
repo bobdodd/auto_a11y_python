@@ -123,26 +123,14 @@ async def test_text_contrast(page) -> Dict[str, Any]:
             'breakpoints_tested': breakpoint_data
         }
 
-        # Get current viewport before testing
-        import asyncio
-        try:
-            current_vp = await page.evaluate('() => ({ width: window.innerWidth, height: window.innerHeight })')
-            logger.warning(f"DEBUG test_text_contrast: Current viewport before breakpoint tests: {current_vp}")
-        except Exception as e:
-            logger.error(f"DEBUG test_text_contrast: Could not get current viewport: {e}")
-            return results
-        
         # Test at each breakpoint
-        for i, breakpoint in enumerate(breakpoint_data):
-            logger.warning(f"DEBUG test_text_contrast: Testing breakpoint {i+1}/{len(breakpoint_data)}: {breakpoint}px")
-            
+        import asyncio
+        for breakpoint in breakpoint_data:
             # Set viewport to this breakpoint
             try:
                 await page.setViewport({'width': breakpoint, 'height': 800})
-                logger.warning(f"DEBUG test_text_contrast: Viewport set to {breakpoint}px successfully")
             except Exception as viewport_err:
-                logger.error(f"DEBUG test_text_contrast: setViewport FAILED for {breakpoint}px: {viewport_err}")
-                # If viewport change fails, the session may be dead - stop testing breakpoints
+                logger.error(f"setViewport failed for {breakpoint}px: {viewport_err}")
                 break
 
             # Wait a moment for any dynamic content to adjust
@@ -383,6 +371,21 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     return overflows;
                 }
 
+                // Check if element or any ancestor is hidden
+                function isElementOrAncestorHidden(element) {
+                    let current = element;
+                    while (current && current !== document.body) {
+                        const style = window.getComputedStyle(current);
+                        if (style.display === 'none' || 
+                            style.visibility === 'hidden' || 
+                            parseFloat(style.opacity) === 0) {
+                            return true;
+                        }
+                        current = current.parentElement;
+                    }
+                    return false;
+                }
+
                 // Get all text nodes
                 const textElements = [];
                 const walker = document.createTreeWalker(
@@ -398,20 +401,13 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                             const parent = node.parentElement;
                             if (!parent) return NodeFilter.FILTER_REJECT;
 
-                            const style = window.getComputedStyle(parent);
-
-                            // Skip if hidden
-                            if (style.display === 'none' || style.visibility === 'hidden') {
+                            // Skip if element or any ancestor is hidden
+                            if (isElementOrAncestorHidden(parent)) {
                                 return NodeFilter.FILTER_REJECT;
                             }
 
                             // Skip if visually hidden (screen reader only)
                             if (isVisuallyHidden(parent)) {
-                                return NodeFilter.FILTER_REJECT;
-                            }
-
-                            // Skip if zero opacity
-                            if (parseFloat(style.opacity) === 0) {
                                 return NodeFilter.FILTER_REJECT;
                             }
 
@@ -687,15 +683,6 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     required_ratio = 3.0 if is_large else 4.5
                     wcag_criterion = '1.4.3'
                     error_code = 'ErrLargeTextContrastAA' if is_large else 'ErrTextContrastAA'
-
-                # Determine if we have complex conditions that require manual testing
-                has_complex_conditions = (
-                    text_elem['hasGradient'] or
-                    text_elem['hasImage'] or
-                    text_elem['hasAnimation'] or
-                    text_elem['hasOverflow'] or
-                    text_elem['stoppedAtZIndex']
-                )
 
                 # Case 1: Text inside FAILS contrast AND has overflow/complex conditions
                 # Result: ErrPartialTextContrastAA or ErrPartialTextContrastAAA (partial failure)

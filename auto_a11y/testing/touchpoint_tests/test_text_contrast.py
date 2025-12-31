@@ -123,13 +123,30 @@ async def test_text_contrast(page) -> Dict[str, Any]:
             'breakpoints_tested': breakpoint_data
         }
 
+        # Get current viewport before testing
+        import asyncio
+        try:
+            current_vp = await page.evaluate('() => ({ width: window.innerWidth, height: window.innerHeight })')
+            logger.warning(f"DEBUG test_text_contrast: Current viewport before breakpoint tests: {current_vp}")
+        except Exception as e:
+            logger.error(f"DEBUG test_text_contrast: Could not get current viewport: {e}")
+            return results
+        
         # Test at each breakpoint
-        for breakpoint in breakpoint_data:
+        for i, breakpoint in enumerate(breakpoint_data):
+            logger.warning(f"DEBUG test_text_contrast: Testing breakpoint {i+1}/{len(breakpoint_data)}: {breakpoint}px")
+            
             # Set viewport to this breakpoint
-            await page.setViewport({'width': breakpoint, 'height': 800})
+            try:
+                await page.setViewport({'width': breakpoint, 'height': 800})
+                logger.warning(f"DEBUG test_text_contrast: Viewport set to {breakpoint}px successfully")
+            except Exception as viewport_err:
+                logger.error(f"DEBUG test_text_contrast: setViewport FAILED for {breakpoint}px: {viewport_err}")
+                # If viewport change fails, the session may be dead - stop testing breakpoints
+                break
 
             # Wait a moment for any dynamic content to adjust
-            await page.waitFor(100)
+            await asyncio.sleep(0.1)
 
             # Extract text elements and their contrast data at this breakpoint
             text_data = await page.evaluate('''

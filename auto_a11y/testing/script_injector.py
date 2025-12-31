@@ -282,12 +282,23 @@ class ScriptInjector:
                 from auto_a11y.testing.touchpoint_tests import TOUCHPOINT_TESTS
                 from auto_a11y.config.touchpoint_tests import get_touchpoint_for_test
                 
+                logger.warning(f"DEBUG run_all_tests: Starting Python touchpoint tests, {len(TOUCHPOINT_TESTS)} tests available")
+                test_count = 0
+                import asyncio
                 for touchpoint_id, test_func in TOUCHPOINT_TESTS.items():
                     # Check if touchpoint is enabled
                     if self.test_config.is_touchpoint_enabled(touchpoint_id):
                         try:
+                            # Verify connection before each test
+                            try:
+                                await asyncio.wait_for(page.evaluate('() => true'), timeout=2.0)
+                            except Exception as conn_err:
+                                logger.error(f"DEBUG: Connection DEAD before test {touchpoint_id}: {conn_err}")
+                                break
+                            
                             # Run the Python-based test
-                            logger.debug(f"Running Python touchpoint test: {touchpoint_id}")
+                            test_count += 1
+                            logger.warning(f"DEBUG run_all_tests: Running test #{test_count}: {touchpoint_id}")
                             result = await test_func(page)
                             
                             # Filter results based on individual test settings AND fixture validation

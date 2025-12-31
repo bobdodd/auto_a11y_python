@@ -305,16 +305,29 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     return hasAnim || hasColorTransition;
                 }
 
+                // Composite two colors (overlay on top of base)
+                function compositeColors(overlay, base) {
+                    const a = overlay.a + base.a * (1 - overlay.a);
+                    if (a === 0) return { r: 0, g: 0, b: 0, a: 0 };
+                    return {
+                        r: Math.round((overlay.r * overlay.a + base.r * base.a * (1 - overlay.a)) / a),
+                        g: Math.round((overlay.g * overlay.a + base.g * base.a * (1 - overlay.a)) / a),
+                        b: Math.round((overlay.b * overlay.a + base.b * base.a * (1 - overlay.a)) / a),
+                        a: a
+                    };
+                }
+
                 // Get effective background color by walking up the DOM
+                // Handles semi-transparent backgrounds by compositing with backgrounds behind
                 // Returns: { backgroundColor, stoppedAtZIndex, hasGradient, hasImage }
                 function getEffectiveBackground(element) {
                     let currentElement = element;
-                    let backgroundColor = 'rgba(0, 0, 0, 0)';
+                    let compositedBg = { r: 0, g: 0, b: 0, a: 0 };
                     let stoppedAtZIndex = false;
                     let hasGradient = false;
                     let hasImage = false;
 
-                    while (currentElement && backgroundColor === 'rgba(0, 0, 0, 0)') {
+                    while (currentElement && compositedBg.a < 1) {
                         const style = window.getComputedStyle(currentElement);
 
                         // Check for gradient or image first
@@ -325,8 +338,13 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         if (complex.hasGradient) hasGradient = true;
                         if (complex.hasImage) hasImage = true;
 
-                        // If we find gradient or image, we still note the solid background color if present
-                        backgroundColor = style.backgroundColor;
+                        // Parse this element's background color
+                        const bgColor = parseColor(style.backgroundColor);
+
+                        // Composite this background with what we've accumulated
+                        if (bgColor.a > 0) {
+                            compositedBg = compositeColors(compositedBg, bgColor);
+                        }
 
                         // Check for z-index (creates stacking context)
                         const zIndex = style.zIndex;
@@ -336,18 +354,20 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                             break;
                         }
 
-                        // If we found a solid background, stop
-                        if (backgroundColor !== 'rgba(0, 0, 0, 0)' && !hasGradient && !hasImage) {
+                        // If we have a fully opaque background, stop
+                        if (compositedBg.a >= 1 && !hasGradient && !hasImage) {
                             break;
                         }
 
                         currentElement = currentElement.parentElement;
                     }
 
-                    // Default to white if we reached the root without finding a background
-                    if (backgroundColor === 'rgba(0, 0, 0, 0)' && !hasGradient && !hasImage) {
-                        backgroundColor = 'rgb(255, 255, 255)';
+                    // Default to white if we reached the root without finding a fully opaque background
+                    if (compositedBg.a < 1 && !hasGradient && !hasImage) {
+                        compositedBg = compositeColors(compositedBg, { r: 255, g: 255, b: 255, a: 1 });
                     }
+
+                    const backgroundColor = `rgba(${compositedBg.r}, ${compositedBg.g}, ${compositedBg.b}, ${compositedBg.a})`;
 
                     return {
                         backgroundColor,
